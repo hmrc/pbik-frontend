@@ -1,0 +1,177 @@
+@import './node_modules/govuk_frontend_toolkit/govuk_frontend_toolkit/stylesheets/_grid_layout.scss', './elements/forms/_form-date-of-birth.scss';
+
+
+.grid-row {
+	@extend %grid-row;
+}
+
+.column-half {
+	@include grid-column( 1/2 );
+}
+
+@media (min-width:641px){
+    .content__body {
+        width: 66.66667%;
+        margin-top: 30px;
+    }
+}
+
+@media (max-width:640px){
+    fieldset legend {
+        float: none;
+    }
+    .nino p {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 100px;
+        display: block;
+        overflow: hidden;
+    }
+    .nino-remove input {
+        width: 45px;
+        text-overflow: ellipsis;
+        display: block;
+        overflow: hidden
+    }
+
+    .service-info .service-info__help {
+        width: 100%;
+    }
+
+}
+
+.line {
+  border-bottom: 1px solid #bfc1c3;
+ }
+
+.button--get-started{
+	margin-bottom: 30px;
+	margin-top: 30px;
+}
+article .list-bullet dl, article .list-bullet dd, article .list-bullet dt {
+	margin-top: 0;
+	margin-bottom: 0
+}
+
+/* select all button */
+form label[for="checkbox-select-all"] {
+ background: white;
+	border: 0;
+	padding-top: 17px;
+	padding-bottom: 0;
+}
+.button {
+	padding: .5em .5em .15em;	
+	margin-bottom: 15px;
+}
+fieldset .button {
+	margin-bottom: 0;
+}
+.list-bullet{
+	margin-bottom: 30px;
+}
+
+.line {
+	margin: 40px 0;
+}
+table td, table th{
+	font-size: 19px;
+}
+.employee-table tbody tr:hover {
+	background-color: #dee0e2;
+}
+
+p button.button--link-style{
+	font-size: 24px;
+}
+
+label span{
+	display: block;
+}
+
+input#nino {
+	text-transform: uppercase;
+}
+
+.date-of-birth .form-group {
+	margin-bottom: 0;
+}
+
+.form-field--error {
+	background-color: white;
+	border-left: 5px solid #df3034;
+}
+
+.error {
+	background-color: white;
+	border-left: 5px solid #df3034;
+}
+
+.error fieldset, .error .error-notification {
+    margin-left: 15px;
+    font-size: 19px;
+}
+
+.error-notification{
+    font-size: 19px;
+}
+
+fieldset .h4-heading{
+	margin-top: 0;
+	font-weight: 700;
+}
+
+.service-info { 
+  .service-info__help {
+    float: left;
+    width: 66.66%;
+    color: #0B0C0C;
+    text-align: right;
+  }
+}
+
+.button-get-started {
+  font-family: "nta", Arial, sans-serif;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 400;
+  text-transform: none;
+  font-weight: 700;
+  line-height: 0.66667;
+  color: #FFF;
+  background-color: #00823b;
+  padding: 14px 41px 10px 16px;
+  background-position: 100% 50%;
+  background-repeat: no-repeat;
+  margin-bottom: 0;
+}
+
+.step-indicator {
+    font-family: "nta",Arial,sans-serif;
+    font-size: 24px;
+    line-height: 1.25;
+    font-weight: 400;
+    text-transform: none;
+    display: block;
+    margin-bottom: 10px;
+    color: #6f777b;
+}
+
+.important {
+    padding-top:15px;
+    padding-bottom:15px
+}
+
+.important img {
+    vertical-align: middle;
+    float:left;
+    margin-right:10px;
+}
+
+.important span {
+
+}
+
+.touchevents .date-of-birth {
+    display: block;
+}

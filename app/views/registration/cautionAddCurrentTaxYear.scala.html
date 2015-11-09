@@ -1,0 +1,47 @@
+@(taxYearRange:TaxYearRange)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+@import uk.gov.hmrc.play.views.html.helpers
+
+@parentTemplate(pageTitle = Messages("AddBenefits.CY.Caution.Title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+
+
+    <h1 id="title">@Messages("AddBenefits.CY.Caution.Title")</h1>
+
+
+    <p class="alert alert--failure">
+        <img src=@routes.AssetsController.at("assets/images/icon-important.png") style="vertical-align: middle">
+        <span style="margin-left:10px">@Messages("AddBenefits.CY.Caution.p1", "" + taxYearRange.cyminus1)</span>
+        <br>
+        <span style="margin-left:50px">@Messages("AddBenefits.CY.Caution.p2", "6th April " + taxYearRange.cy)</span>
+    </p>
+
+    <p class="text">
+        @Messages("AddBenefits.CY.Caution.p3")
+    </p>
+    <ul class="list-bullet text">
+        <li>@Messages("AddBenefits.CY.Caution.p4")</li>
+        <li>@Messages("AddBenefits.CY.Caution.p5")</li>
+        <li>@Messages("AddBenefits.CY.Caution.p6")</li>
+    </ul>
+
+    <p class="text">
+        @Messages("AddBenefits.CY.Caution.p7")
+    </p>
+    <ul class="list-bullet text">
+        <li>@Messages("AddBenefits.CY.Caution.p8", "" + taxYearRange.cyminus1)</li>
+        <li>@Messages("AddBenefits.CY.Caution.p9")</li>
+        <li>@Messages("AddBenefits.CY.Caution.p10")</li>
+        <li>@Messages("AddBenefits.CY.Caution.p11")</li>
+    </ul>
+
+    <p class="">
+        @Messages("AddBenefits.CY.Caution.p12.1")
+        <a href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad" id="link-cy1">@Messages("AddBenefits.CY.Caution.p12.2")</a>
+        @Messages("AddBenefits.CY.Caution.p12.3", "" + taxYearRange.cy)
+    </p>
+
+    <a class="button" id="button-cancel" href="@routes.HomePageController.onPageLoad">@Messages("Service.cancel")</a>
+    <div style="clear:both"></div>
+
+    <a href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad" id="link-cy">@Messages("Service.proceed")</a>
+}

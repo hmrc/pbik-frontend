@@ -1,0 +1,59 @@
+@(taxYearRange:TaxYearRange, isCurrentTaxYear:String, iabdType:String, searchForm: Form[EiLPerson])(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation._
+
+@parentTemplate(pageTitle = Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
+
+    <a class="button-link" id="link-back-top"  href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))'>
+        @Messages("Service.back")</a>
+
+    <h1 id="title">
+        <span class="font-medium step-indicator">
+            @Messages("Service.stepindicator", "2", "4")
+        </span>
+        @Messages("ExclusionSearch.form.title")
+    </h1>
+
+
+    <section id="non-nino-exclusion-form">
+
+        <div class='form-group @if(searchForm("status").hasErrors) {error}' id="search-form">
+            @if(searchForm("status").hasErrors){
+                <span class="error-notification">
+                    @searchForm.error("status").get.message
+                </span>
+            }
+            <fieldset>
+                @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdValueURLMapper(iabdType), "no-nino"), 'autocomplete -> "off") {
+                <div class="form-group">
+                @helpers.input(searchForm("firstname"), '_label -> "First name", '_inputClass -> "form-control")
+                </div>
+                <div class="form-group">
+                    @helpers.input(searchForm("surname"), '_label -> "Last name", '_inputClass -> "form-control")
+                </div>
+
+                @localhelpers.dateFieldsNumberInputs(searchForm, "dob","dob-day", "dob-month", "dob-year", new Html(Messages("Service.field.dob")), '_hintText->Messages("Service.field.dobhint"), '_groupClass -> "form-group")
+                <div style="clear: both"></div>
+                <div class="form-group inline">
+                    @helpers.inputRadioGroup(searchForm("gender"), Seq(("male",Messages("Service.field.gender.male")),("female", Messages("Service.field.gender.female"))), '_labelClass -> "block-label", '_legend -> Messages("Service.field.gender"), '_legendClass -> "form-label")
+                </div>
+            </fieldset>
+        </div>
+
+        <fieldset>
+            <input type="hidden" name="status" id="status" value="10"/>
+            <input type="hidden" name="perOptLock" id="perOptLock" />
+        </fieldset>
+        <div class="form-group">
+            <input type="submit" class="button" id="button-search" value="@Messages("Service.continue")">
+
+            <p><a class="button-link" id="link-exlusion-back"   href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">
+                @Messages("Service.back.excluded")</a></p>
+
+        </div>
+
+        }
+    </section>
+<!---routes.ExclusionListController.submitExclusionSearch--->
+}

@@ -1,0 +1,52 @@
+@(taxYearRange:TaxYearRange, isCurrentTaxYear:String, iabdType:String, searchForm: Form[EiLPerson])(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation._
+
+@parentTemplate(pageTitle = Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
+
+    <a class="button-link" id="link-back-top"  href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))'>
+        @Messages("Service.back")</a>
+
+    <h1 id="title">
+        <span class="font-medium step-indicator">
+            @Messages("Service.stepindicator", "2", "4")
+        </span>
+        @Messages("ExclusionSearch.form.title")
+    </h1>
+
+    <section id="nino-exclusion-form">
+
+        @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdValueURLMapper(iabdType), "nino"), 'autocomplete -> "off") {
+
+        <div class='form-group @if(searchForm("status").hasErrors) {error}' id="search-form">
+            @if(searchForm("status").hasErrors){
+                <span class="error-notification">
+                    @searchForm.error("status").get.message
+                </span>
+            }
+            <fieldset>
+                <div class='form-group'>
+                    @localhelpers.input(searchForm("nino"), '_label -> "National Insurance number", '_inputClass -> "form-control", '_inputHint ->  Messages("Service.field.ninohint"))
+                </div>
+                <div class='form-group'>
+                    @helpers.input(searchForm("firstname"), '_label -> "First name", '_inputClass -> "form-control")
+                </div>
+                <div class='form-group'>
+                    @helpers.input(searchForm("surname"), '_label -> "Last name", '_inputClass -> "form-control")
+                </div>
+            </fieldset>
+        </div>
+
+            <input type="hidden" name="status" id="status" value="10"/>
+            <input type="hidden" name="perOptLock" id="perOptLock"/>
+
+            <input type="submit" class="button" id="button-search" value="@Messages("Service.continue")">
+
+
+            <p><a class="button-link" id="link-exlusion-back"   href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">
+                @Messages("Service.back.excluded")</a></p>
+
+        }
+    </section>
+}

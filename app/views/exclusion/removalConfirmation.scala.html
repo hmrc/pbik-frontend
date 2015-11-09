@@ -1,0 +1,85 @@
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils._
+@import utils.URIInformation._
+
+@(taxYearRange: TaxYearRange, year: String, iabdType:String, individualsToRemove: Form[EiLPersonList])(implicit request: Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+
+@parentTemplate(pageTitle = Messages("ExclusionRemovalConfirmation.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+
+    <h1 id="title">
+        <span class="font-medium step-indicator">
+            @Messages("Service.stepindicator", "1", "2")
+        </span>
+        @Messages("ExclusionRemovalConfirmation.title")
+    </h1>
+
+    <section id="removal-confirmation">
+        <p class="lede text">
+            @Messages("ExclusionRemovalConfirmation.question", Messages("BenefitInKind.label."+iabdValueURLDeMapper(iabdType)).toLowerCase, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+
+           @helpers.form(action=routes.ExclusionListController.removeExclusionsCommit(iabdType)) {
+            @repeatWithIndex(individualsToRemove("individuals"), min=1) { (listItem,index) =>
+        <fieldset>
+            <input type="hidden" id='individuals_@{index}_nino' name='individuals[@index].nino' value='@listItem("nino").value.getOrElse("")' />
+            <input type="hidden" id='individuals_@{index}_firstName' name='individuals[@index].firstName' value='@listItem("firstName").value.get' />
+            @if(listItem("secondName").value.isDefined) {<input type="hidden" id='individuals_@{index}_secondName' name='individuals[@index].secondName' value='@listItem("secondName").value.get' /> }
+            <input type="hidden" id='individuals_@{index}_surname' name='individuals[@index].surname' value='@listItem("surname").value.get' />
+            @if(listItem("worksPayrollNumber").value.isDefined) {<input type="hidden" id='individuals_@{index}_worksPayrollNumber' name='individuals[@index].worksPayrollNumber' value='@listItem("worksPayrollNumber").value.get' /> }
+            @if(listItem("dateOfBirth").value.isDefined) { <input type="hidden" id='individuals_@{index}_dateOfBirth' name='individuals[@index].dateOfBirth' value='@listItem("dateOfBirth").value.get' /> }
+            @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
+            @if(listItem("status").value.isDefined) { <input type="hidden" name="individuals[@index].status" id="status" value='@listItem("status").value.get'/> }
+            @if(listItem("perOptLock").value.isDefined) { <input type="hidden" name="individuals[@index].perOptLock" id="perOptLock" value='@listItem("perOptLock").value.get'/> }
+
+            <table>
+                <tr>
+                    <th>
+                        @Messages("Service.field.name")
+                    </th>
+                    <td id="name">
+                        @listItem("firstName").value.get
+                        @if(listItem("secondName").value.isDefined) { @listItem("secondName").value.get }
+                        @listItem("surname").value.get
+                    </td>
+                </tr>
+                <tr>
+                    <th>@Messages("Service.field.nino")</th>
+
+                    <td id="nino">
+                        @listItem("nino").value.get
+                        <p>(Last letter not shown)</p>
+                    </td>
+
+                </tr>
+                @if((listItem("worksPayrollNumber").value.isDefined)) {
+                <tr>
+                    <th>Works Number   </th>
+                    <td>@listItem("worksPayrollNumber").value.get</td>
+                </tr>
+                }
+                @if((listItem("dateOfBirth").value.isDefined)) {
+                <tr>
+                    <th>@Messages("Service.field.dob")</th>
+                    <td id="dob">@DateUtils.NPSDateConversionFormat(listItem("dateOfBirth").value.get)</td>
+                </tr>
+                }
+            </table>
+
+            </fieldset>
+            }
+
+        <div style="clear:both"></div>
+
+        <div class="important-notice">
+            The value of this benefit will be removed from this employee's tax code.
+        </div>
+
+        <p>
+                <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+        </p>
+        }
+            <p>
+                <a id ="link-back" href='@routes.ExclusionListController.performPageLoad(year,iabdType)'>@Messages("Service.back.excluded")</a></p>
+
+    </section>
+}

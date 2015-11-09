@@ -1,0 +1,105 @@
+@(
+    title: String,
+    headerNav: Option[views.helpers.HeaderNav] = None,
+    sidebarLinks: Option[Html] = None,
+    sidebarClass: Option[String] = None,
+    userLoggedIn: Boolean = false,
+    supportLinkEnabled: Boolean = true,
+    serviceInfoContent: Option[Html] = None,
+    contentHeader: Option[Html] = None,
+    footerLinks: Option[Html] = Some(uk.gov.hmrc.play.views.html.layouts.footer_links()),
+    showFeedbackLinkInBetaBanner: Boolean = true,
+    linkElement: Option[Html] = None,
+    headScripts: Option[Html] = None,
+    scriptElement: Option[Html] = None,
+    bodyClasses: Option[String] = None,
+    mainConfig: MainConfig = MainConfig(),
+    articleClasses: Option[String] = None,
+    includeGridWrapper: Boolean = false,
+    actingAttorney: Option[uk.gov.hmrc.play.frontend.auth.ActingAsAttorneyFor] = None,
+    gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_])
+
+@import config.PbikAppConfig.assetsPrefix
+@import play.api.Play.current
+@import play.api.Play
+@import layouts.govuk_template
+@import uk.gov.hmrc.play.views.html.layouts
+@import config.PbikAppConfig._
+
+@head = {
+    @layouts.head(assetsPrefix, linkElement, headScripts)
+}
+
+@insideHeader = {
+    @if(headerNav) {
+        @layouts.header_nav(headerNav.get.title,headerNav.get.titleLink, headerNav.get.showBetaLink, headerNav.get.links)
+    }
+}
+
+@afterHeader = {
+}
+
+@actingAttorneyBanner = {
+
+}
+
+@betaBanner = {
+    @layouts.betaBanner(userLoggedIn,
+    config.PbikAppConfig.betaFeedbackUrl,
+    config.PbikAppConfig.betaFeedbackUnauthenticatedUrl,
+        showFeedbackLinkInBetaBanner)
+}
+
+@serviceInfo = {
+    @layouts.serviceInfo(betaBanner,
+        includeGridWrapper,
+        serviceInfoContent)
+}
+
+@getHelpForm = {
+    @connectors.CachedStaticHtmlPartial.get(config.PbikAppConfig.reportAProblemPartialUrl)
+}
+
+@sidebar = {
+    @if(sidebarLinks.isDefined) {
+        @layouts.sidebar(sidebarLinks.get, sidebarClass)
+    }
+}
+
+@article = {
+
+    @layouts.article(mainContent, includeGridWrapper, articleClasses)
+
+}
+
+@mainContentHeader = {
+    @if( contentHeader.isDefined ) {
+        @layouts.main_content_header(contentHeader.get)
+    }
+}
+
+@content = {
+    @layouts.main_content(article,
+        mainConfig.maybeMainClass,
+        mainConfig.maybeMainDataAttributes,
+        mainContentHeader,
+        serviceInfo,
+        actingAttorneyBanner,
+        sidebar,
+        getHelpForm)
+}
+
+@footerTop = {
+}
+
+@bodyEnd = {
+
+    @layouts.footer(analyticsToken = Play.configuration.getString("google-analytics.token"),
+        analyticsHost = Play.configuration.getString("google-analytics.host").getOrElse("service.gov.uk"),
+        assetsPrefix = config.PbikAppConfig.assetsPrefix,
+        ssoUrl = Play.configuration.getString("portal.ssoUrl"),
+        scriptElem = scriptElement,
+        gaCalls = gaCalls)
+}
+
+@govuk_template(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, footerLinks, headerNav.isDefined)(content)

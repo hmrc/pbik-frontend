@@ -1,0 +1,38 @@
+# microservice specific routes
+
+GET         /public/*file                           controllers.AssetsController.at(path="/public", file)
+GET         /assets/*file                           controllers.AssetsController.at(path="/public", file)
+
+GET         /not-authorised                         controllers.auth.AuthController.notAuthorised
+
+GET         /signout                                controllers.HomePageController.signoutRedirectToDone
+
+GET         /payrolled-benefits-expenses            controllers.HomePageController.onPageLoad
+
+# Add remove Registrations
+GET         /cy1/choose-benefit-expense             controllers.registration.ManageRegistrationController.nextTaxYearAddOnPageLoad
+POST        /cy1/add-benefit-expense                controllers.registration.ManageRegistrationController.confirmAddNextTaxYear
+GET         /cy/choose-benefit-expense              controllers.registration.ManageRegistrationController.currentTaxYearOnPageLoad
+POST        /cy/add-benefit-expense                 controllers.registration.ManageRegistrationController.confirmAddCurrentTaxYear
+
+POST        /update-registrations                   controllers.registration.ManageRegistrationController.updateRegisteredBenefitTypes
+
+POST        /cy1/add-benefit-expense-confirmed      controllers.registration.ManageRegistrationController.addNextYearRegisteredBenefitTypes
+
+GET         /:iabdType/remove-benefit-expense       controllers.registration.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdType: String)
+POST        /cy1/remove-benefit-expense             controllers.registration.ManageRegistrationController.confirmRemoveNextTaxYear
+POST        /cy1/remove-benefit-expense-next        controllers.registration.ManageRegistrationController.removeNextYearRegisteredBenefitTypes
+
+# manage exclusion list
+GET         /:year/:iabdType/excluded-employees      controllers.ExclusionListController.performPageLoad(year:String,iabdType:String)
+
+GET         /:year/:iabdType/exclude-employee-search            controllers.ExclusionListController.withOrWithoutNinoOnPageLoad(year:String, iabdType:String)
+POST        /:year/:iabdType/exclude-employee-search       controllers.ExclusionListController.withOrWithoutNinoDecision(year:String, iabdType: String)
+POST        /:year/:iabdType/:formType/exclude-employee-results  controllers.ExclusionListController.searchResults(year:String, iabdType: String, formType: String)
+POST        /:year/:iabdType/exclude-match                       controllers.ExclusionListController.updateExclusions(year: String, iabdType: String)
+POST        /:year/:iabdType/exclude-selected          controllers.ExclusionListController.updateMultipleExclusions(year: String, iabdType: String)
+
+POST        /:year/:iabdType/exclude-employee-remove                         controllers.ExclusionListController.remove(year:String, iabdType:String)
+POST        /:iabdType/remove-commit                  controllers.ExclusionListController.removeExclusionsCommit(iabdType:String)
+GET         /:year/:iabdType/:name/exclude-employee-confirmed                controllers.ExclusionListController.showExclusionWhatNext(year:String, iabdType:String, name: String)
+GET         /:year/:iabdType/:name/exclude-employee-remove         controllers.ExclusionListController.showRescindWhatNext(year:String, iabdType:String, name:String)

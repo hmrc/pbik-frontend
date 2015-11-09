@@ -1,0 +1,27 @@
+@(formItem:Form[_], dateFieldName: String, dayFieldName: String, monthFieldName: String, yearFieldName: String, label: Html, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+
+
+@import play.api.i18n._
+@import uk.gov.hmrc.play.views.html.helpers
+
+@argsMap = @{args.toMap}
+@dateErrors = @{formItem(dateFieldName).errors}
+@allFieldsEmpty = @{dateErrors.exists{error => error.message.equals("error.required")}}
+@invalidDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate")}}
+
+
+<fieldset class="@argsMap.get('_groupClass) @if(dateErrors.length>0) {form-field--error}">
+
+    @if(allFieldsEmpty){<span class="error-notification">@Messages("error.required")</span>}
+    @if(invalidDate && !allFieldsEmpty){<span class="error-notification">@Messages("error.invaliddate")</span>}
+
+    <legend class="form-label" >@label</legend>
+    <div class="date-of-birth">
+    @if(argsMap.get('_hintText).isDefined) {
+    <p class="form-hint">@argsMap.get('_hintText)</p>
+    }
+    @dateFieldsNumberInputsInline(formItem, label, args : _*)
+    </div>
+</fieldset>
+
+

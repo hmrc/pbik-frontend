@@ -1,0 +1,35 @@
+@(bikForm:Form[RegistrationList], taxYearRange:TaxYearRange)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+@import uk.gov.hmrc.play.views.html.helpers
+
+@parentTemplate(pageTitle = Messages("AddBenefits.Confirm.Title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+    <a class="button-link" id="link-back-top"  href='@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad'>
+        @Messages("Service.back")</a>
+        <h1 id="title">
+            <span class="font-medium step-indicator">
+                @Messages("Service.stepindicator", "2", "3")
+            </span>
+            @if(bikForm("actives").indexes.size > 1 ) {
+                @Messages("AddBenefits.Confirm.Multiple.Title")
+            }else{
+                @Messages("AddBenefits.Confirm.Single.Title")
+            }
+        </h1>
+
+    <p> @Messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)</p>
+
+    <div class="data">
+        @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
+            <ul  id="list-of-confirmation-benefits" class="list-bullet text">
+                @helper.repeat(bikForm("actives"), min=0) { activeField =>
+                @helper.inputText(activeField("uid"), '_label -> null, 'style -> "display: none" )
+                @helper.inputText(activeField("pbik_seq"), '_label -> null, 'style -> "display: none" )
+                @helper.inputText(activeField("active"), '_label -> null, 'style -> "display: none" )
+                <li id='confirmation-row-confirmation-@activeField("uid").value.get'>@Messages("BenefitInKind.label." + activeField("uid").value.get )</li>
+                }
+            </ul>
+            <input type="submit" class="button" id="button-confirm" value="@Messages("Service.addbenefitsexpenses")">
+        }
+        <p><a class="button-link" id="link-back"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.overview")</a></p>
+    </div>
+}

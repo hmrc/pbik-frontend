@@ -1,0 +1,42 @@
+@(taxYearRange:TaxYearRange, year:String, iabdType:String, name:String)(implicit request:Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation._
+
+@parentTemplate(pageTitle = Messages("whatNext.exclude.heading"), None,  Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+
+    <h1 id="title">
+        <span class="font-medium step-indicator">
+            @Messages("Service.stepindicator", "4", "4")
+        </span>
+        <div id="title">@Messages("whatNext.exclude.heading")</div>
+    </h1>
+
+    <section id="what-next-exclusion">
+        <p class="text lede">
+            @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType).toLowerCase, taxYearRange.cy + "")
+        </p>
+
+        <h2>
+            @Messages("whatNext.subHeading")
+        </h2>
+
+        <p class="text">
+            @Messages("whatNext.exclude.p1")
+        </p>
+
+        <p class="text">
+            <a href="@routes.ExclusionListController.performPageLoad(year,iabdValueURLMapper(iabdType))" id="link-back">
+                @Messages("Service.finish.excluded")
+            </a>
+        </p>
+
+        <p class="text">
+            <a href="@routes.HomePageController.signoutRedirectToDone" id="link-feedback">
+                @Messages("Service.feedback.link")
+            </a>
+            @Messages("Service.feedback.desc")
+        </p>
+    </section>
+
+}

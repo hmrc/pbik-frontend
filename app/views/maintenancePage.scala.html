@@ -1,0 +1,24 @@
+@(pageHeading:String =Messages("ServiceMessage.0.h1"), backLink:String= "payrolled-benefits-expenses")(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+@import utils.FormMappingsConstants._
+
+    @active(ac: uk.gov.hmrc.play.frontend.auth.AuthContext) = @{
+        if (ac.principal.accounts.epaye.isDefined)
+        Some( ac.principal.accounts.epaye.get.empRef.toString )
+        else
+        Some("")
+    }
+
+    @parentTemplate(pageTitle = Messages("Service.title"), None, active(ac) ) {
+
+        <h1 id="title">@Messages("ServiceMessage.0.h1")</h1>
+        <p class="lede text">
+            @Html(Messages("ErrorPage.connectionProblem"))
+        </p>
+        <p>
+           @Html(Messages("ErrorPage.connectionAction"))
+        </p>
+        <p>
+            @Html(Messages("ErrorPage.connectionStatus"))
+        </p>
+    }

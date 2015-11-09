@@ -1,0 +1,92 @@
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation._
+
+@(taxYearRange:TaxYearRange, isCurrentTaxYear:String, iabdType:String, current:List[EiLPerson])(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+@parentTemplate(pageTitle = Messages("ExclusionOverview.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
+
+    @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
+
+        <h1 id="title" class="heading-with-border">@Messages("ExclusionOverview.title")</h1>
+
+        <section id="exclusion-overview">
+            @if(current.isEmpty) {
+                <p class="lede text">
+                        @Messages("ExclusionOverview.instruction.empty", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)
+                </p>
+
+            }else{
+                <p class="lede text">
+                    @if(isCurrentTaxYear=="cy") {
+                        @Messages("ExclusionOverview.instruction.cy.notempty", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)
+                    }else{
+                        @Messages("ExclusionOverview.instruction.notempty", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)
+                    }
+                </p>
+            }
+
+            @if(!current.isEmpty) {
+                    <table>
+
+                        <thead>
+                        <tr>
+                            <th>@Messages("Service.field.name")</th>
+                            <th>@Messages("Service.field.nino")</th>
+                            <th>@Messages("Service.field.worksnumber")</th>
+                            <th></th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        @for( (c, index) <- current.zipWithIndex ) {
+
+                         @helpers.form(action=routes.ExclusionListController.remove(isCurrentTaxYear, iabdValueURLMapper(iabdType))){
+                            <tr>
+                              <td width="30%" id='name-@c.nino'>@c.firstForename @c.surname</td>
+                              <td class="nino" id = 'nino-@c.nino'>
+                                  @c.nino
+                                  <p>(Last&nbsp;letter&nbsp;not&nbsp;shown)</p>
+                              </td>
+                              <td id = 'dob-@c.nino'>@c.worksPayrollNumber</td>
+                              @if(isCurrentTaxYear!="cy"){
+                                    <td class="nino-remove"><input class=" button--link-style" type="submit" name="submit" id='@c.nino-remove' value="@Messages("Service.removeexclusion")"></td>
+                              }
+
+                            </tr>
+
+
+                        <input type="hidden" name="individuals[0].nino" value="@c.nino" />
+                        <input type="hidden" name="individuals[0].firstName" value="@c.firstForename" />
+                        <input type="hidden" name="individuals[0].secondName" value="@c.secondForename" />
+                        <input type="hidden" name="individuals[0].surname"    value="@c.surname" />
+                        <input type="hidden" name="individuals[0].worksPayrollNumber" value ="@c.worksPayrollNumber" />
+                        <input type="hidden" name="individuals[0].dateOfBirth" value="@c.dateOfBirth" />
+                        <input type="hidden" name="individuals[0].gender" value="@c.gender" />
+                        <input type="hidden" name="individuals[0].perOptLock" value="@c.perOptLock" />
+                        <input type="hidden" name="individuals[0].status" value="30" />
+                            }
+                        }
+                        </tbody>
+                    </table>
+            }
+
+            <div style="clear:both"></div>
+
+            <div class="important-notice">
+                You should only exclude employees who receive this benefit and will be taxed on
+                it via a P11D rather than through your payroll.
+            </div>
+
+            <div style="margin-top: 10px;">
+                @defining( if(current.isEmpty){"Service.excludeanemployee"}else{"Service.excludeanotheremployee"}) { buttonlabel =>
+                    <a class="button" id="button-exclude"  href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdValueURLMapper(iabdType))'>
+                    @Messages(buttonlabel)</a>
+                }
+
+                <p class="text"><a href="@routes.HomePageController.onPageLoad" id="link-back">@Messages("Service.back.overview.whatNext")</a></p>
+            </div>
+        </section>
+    }
+
+}

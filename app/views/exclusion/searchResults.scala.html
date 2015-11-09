@@ -1,0 +1,168 @@
+@(taxYearRange: TaxYearRange, year: String, iabdType: String, listOfMatchesForm: Form[(String,EiLPersonList)], formType: String)(implicit request: Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation._
+
+
+@parentTemplate( pageTitle=Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
+
+    @defining( if(year=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
+        @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, iabdValueURLMapper(iabdType))) {
+            <input type="hidden" id="button-nino"  name="confirmation" value="@formType">
+            <button type="submit" class="button--link-style" id="link-back-top">
+                @Messages("Service.back")</button>
+        }
+
+        <h1 id="title">
+            <span class="font-medium step-indicator">
+                @Messages("Service.stepindicator", "3", "4")
+            </span>
+            @Messages("ExclusionSearch.title")
+        </h1>
+
+        <section id="search-results">
+
+         @if(listOfMatchesForm("individuals").indexes.length > 1) {
+
+                <p class="text lede">
+                    @if(year=="cy"){
+                        @Messages("ExclusionSearch.intro", Messages("BenefitInKind.label." + iabdType).toLowerCase, ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
+                    }else{
+                        @Messages("ExclusionSearch.intro", Messages("BenefitInKind.label." + iabdType).toLowerCase,""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+                    }
+               </p>
+               <p>
+                   @Messages("ExclusionSearch.multiple.info")
+               </p>
+                <div>
+                  @helpers.form(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdValueURLMapper(iabdType))) {
+                  <table class="employee-table">
+                    <thead>
+                      <tr>
+                        <th>&nbsp;</th>
+                        <th>@Messages("Service.field.name")</th>
+                        <th>@Messages("Service.field.nino")</th>
+                        <th>@Messages("Service.field.worksnumber")</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @repeatWithIndex(listOfMatchesForm("individuals"), min=1) { (listItem,index) =>
+                      <fieldset>
+                              <tr>
+                                <td>
+                                   @if(listItem("nino").value.get.equals(listOfMatchesForm("individualSelection").value.getOrElse(""))){
+                                        <input id ='@listItem("nino").value.get-radio' type="radio" name="individualSelection" value='@listItem("nino").value.get' checked>
+                                    }else{<input id ='@listItem("nino").value.get-radio' type="radio" name="individualSelection" value='@listItem("nino").value.get'>
+
+                                    }
+                                </td>
+                                   <input type="hidden" id='individuals_@{index}_nino' name='individuals[@index].nino' value='@listItem("nino").value.getOrElse("")' />
+                                   <input type="hidden" id='individuals_@{index}_firstName' name='individuals[@index].firstName' value='@listItem("firstName").value.get' />
+                                   @if(listItem("secondName").value.isDefined) { <input type="hidden" id='individuals_@{index}_secondName' name='individuals[@index].secondName' value='@listItem("secondName").value.get' /> }
+                                   <input type="hidden" id='individuals_@{index}_surname' name='individuals[@index].surname' value='@listItem("surname").value.get' />
+                                   @if(listItem("worksPayrollNumber").value.isDefined) { <input type="hidden" id='individuals_@{index}_worksPayrollNumber' name='individuals[@index].worksPayrollNumber' value='@listItem("worksPayrollNumber").value.get' /> }
+                                   @if(listItem("dateOfBirth").value.isDefined) { <input type="hidden" id='individuals_@{index}_dateOfBirth' name='individuals[@index].dateOfBirth' value='@listItem("dateOfBirth").value.get' /> }
+                                   @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
+                                   <input type="hidden" id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
+                                   <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
+                                    <td id='table-row-name-@listItem("nino").value.get' >
+                                      @listItem("firstName").value.get @listItem("surname").value.get
+                                    </td>
+                                    <td id='table-row-nino-@listItem("nino").value.get'>
+                                      @listItem("nino").value.get
+                                    </td>
+                                    <td id='table-row-dob-@listItem("nino").value.get'>
+                                      @listItem("worksPayrollNumber").value.getOrElse("")
+                                    </td>
+
+                             </tr>
+                      </fieldset>
+                      }
+                      <tbody>
+                    </table>
+                    </div>
+                     <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+            }
+
+            <p><a class="button-link" id="multi-exlusion-back"   href="@routes.ExclusionListController.performPageLoad(year, iabdValueURLMapper(iabdType))">
+                @Messages("Service.back.excluded")</a></p>
+
+         } else {
+           @if(listOfMatchesForm("individuals").indexes.length == 1) {
+
+                 <p class="lede text">
+                  @if(year=="cy"){
+                    @Messages("ExclusionSearch.intro", Messages("BenefitInKind.label." + iabdType).toLowerCase, ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
+                  }else{
+                    @Messages("ExclusionSearch.intro",Messages("BenefitInKind.label." + iabdType).toLowerCase, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+                  }
+                 </p>
+
+                    @helpers.form(action = routes.ExclusionListController.updateExclusions(year, iabdValueURLMapper(iabdType))) {
+                     @repeatWithIndex(listOfMatchesForm("individuals"), min=1) { (listItem,index) =>
+                         <fieldset class="form-group">
+                             <!--<legend>@Messages("ExclusionSearch.employee.legend")</legend>-->
+                             <input type="hidden" id='individuals_@{index}_nino' name='individuals[@index].nino' value='@listItem("nino").value.get' />
+                             <input type="hidden" id='individuals_@{index}_firstName' name='individuals[@index].firstName' value='@listItem("firstName").value.get' />
+                             @if(listItem("secondName").value.isDefined) { <input type="hidden" id='individuals_@{index}_secondName' name='individuals[@index].secondName' value='@listItem("secondName").value.get' /> }
+                             <input type="hidden" id='individuals_@{index}_surname' name='individuals[@index].surname' value='@listItem("surname").value.get' />
+                             @if(listItem("worksPayrollNumber").value.isDefined) { <input type="hidden" id='individuals_@{index}_worksPayrollNumber' name='individuals[@index].worksPayrollNumber' value='@listItem("worksPayrollNumber").value.get' /> }
+                             @if(listItem("dateOfBirth").value.isDefined) { <input type="hidden" id='individuals_@{index}_dateOfBirth' name='individuals[@index].dateOfBirth' value='@listItem("dateOfBirth").value.get' /> }
+                             @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
+                             <input type="hidden"  id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
+                             <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <th>@Messages("Service.field.name")</th>
+                                  <td id="table-row-name">
+                                    @listItem("firstName").value.get
+                                    @listItem("surname").value.get
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <th>@Html(Messages("Service.field.nino.2lines"))</th>
+                                  <td id="table-row-nino">@listItem("nino").value.get
+                                      <p>(Last letter not shown)</p></td>
+                                </tr>
+                                @if(listItem("gender").value.isDefined) {
+                                <tr>
+                                  <th>@Messages("Service.field.worksnumber")</th>
+                                  <td id="table-row-dob">@listItem("worksPayrollNumber").value.getOrElse("")</td>
+                                </tr>
+                                }
+                              </tbody>
+                            </table>
+                         </fieldset>
+
+                      }
+
+                <div style="clear:both"></div>
+                <div class="important-notice">
+                    @Messages("ExclusionImportant.ExcludeEmployee")
+                </div>
+
+                <p>
+                    <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+                    <p><a class="button-link" id="link-exlusion-back"   href="@routes.ExclusionListController.performPageLoad(year,iabdValueURLMapper(iabdType))">
+                        @Messages("Service.back.excluded")</a></p>
+                </p>
+                }
+
+           } else {
+                @if(listOfMatchesForm("individuals").indexes.length < 1) {
+
+                        @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, iabdValueURLMapper(iabdType))) {
+                            <input type="hidden" id="button-nino"  name="confirmation" value="@formType">
+                            <p class="text">@Html(Messages("ExclusionSearch.Fail.P", "#"))</p>
+                        }
+                        <p><a class="button-link" id="link-back" href="@routes.HomePageController.onPageLoad">@Messages("Service.back")</a></p>
+
+                }
+            }
+
+        }
+        </section>
+    }
+}
+

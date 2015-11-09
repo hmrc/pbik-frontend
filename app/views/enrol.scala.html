@@ -1,0 +1,27 @@
+@()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+@import utils.FormMappingsConstants._
+
+@active(ac: uk.gov.hmrc.play.frontend.auth.AuthContext) = @{
+    if (ac.principal.accounts.epaye.isDefined)
+        Some( ac.principal.accounts.epaye.get.empRef.toString )
+    else
+        Some("")
+}
+
+@parentTemplate(pageTitle = Messages("Service.notEnrolled.title"), None, active(ac) ) {
+    <h1 id="title">@Messages("Service.notEnrolled.title")</h1>
+
+    <p class="lede">@Messages("Service.notEnrolled.text1")</p>
+
+    <p>@Messages("Service.notEnrolled.text2")</p>
+
+    <ul class="list-bullet">
+        <li>@Messages("Service.enrollmentLoop.list1")</li>
+        <li>@Messages("Service.enrollmentLoop.list2")</li>
+    </ul>
+
+    <p>
+        <a href='https://www.gov.uk/paye-online/enrol' class="button">@Messages("Service.notEnrolled.button")</a>
+    </p>
+}

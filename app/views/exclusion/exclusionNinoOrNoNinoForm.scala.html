@@ -1,0 +1,61 @@
+@(taxYearRange: TaxYearRange, isCurrentTaxYear: String, iabdType: String, previousSelection: String = "")(implicit request: Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation._
+
+@parentTemplate(pageTitle = Messages("ExclusionNinoDecision.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
+
+    @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
+
+        <h1 id="title">
+            <span class="font-medium step-indicator">
+            @Messages("Service.stepindicator", "1", "4")
+            </span>
+            @Messages("ExclusionNinoDecision.title")
+        </h1>
+
+        <section id="exclusion-decision">
+            @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(isCurrentTaxYear, iabdValueURLMapper(iabdType))) {
+              <div class="form-group">
+                <fieldset class="inline">
+                    <p class="lede text">@Messages("ExclusionNinoDecision.question", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)</p>
+
+                      @if(previousSelection=="nino") {
+                     <label for="button-nino" class="block-label add-focus selected">
+                     <input id="button-nino" type="radio" name="confirmation" value="nino" checked >
+                         @Messages("Service.yes")
+                     </label>
+                      } else {
+                     <label for="button-nino" class="block-label">
+                     <input id="button-nino" type="radio" name="confirmation" value="nino" >
+                         @Messages("Service.yes")
+                     </label>
+                     }
+
+
+
+                    @if(previousSelection=="no-nino") {
+                    <label for="button-no-nino" class="block-label add-focus selected" >
+                    <input id="button-no-nino" type="radio" name="confirmation" value="no-nino" checked >
+                        @Messages("Service.no")
+                    </label>
+                    } else {
+                    <label for="button-no-nino" class="block-label">
+                     <input id="button-no-nino" type="radio" name="confirmation" value="no-nino">
+                        @Messages("Service.no")
+                      </label>
+
+                     }
+                </fieldset>
+              </div>
+
+
+              <input type="submit" class="button" id="button-continue" value="@Messages("Service.continue")">
+               }
+
+              <p><a class="button-link" id="link-exlusion-back"   href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">@Messages("Service.back.excluded")</a></p>
+
+        </section>
+    }
+
+}
