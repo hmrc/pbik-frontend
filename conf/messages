@@ -17,11 +17,13 @@ Service.finish= Finish
 Service.home= Home
 Service.tryagain= Try again
 
-Service.notEnrolled.title=Enrol to use the service
-Service.notEnrolled.text1=You are signed in to HMRC Online services but you must enrol to use the service.
-Service.notEnrolled.text2=To enrol you''ll need your:
+Service.notEnrolled.title=Enrol to use this service
+Service.notEnrolled.text1=You are signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue.
+Service.notEnrolled.text2=To enrol you''ll need:
 Service.enrollmentLoop.list1=employer PAYE reference
 Service.enrollmentLoop.list2=Accounts office reference
+Service.notEnrolled.text3=You will then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment.
+Service.notEnrolled.text4=You will then be able to use Payrolling Benefits in Kind.
 Service.notEnrolled.button=Enrol
 
 
