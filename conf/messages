@@ -18,7 +18,7 @@ Service.home= Home
 Service.tryagain= Try again
 
 Service.notEnrolled.title=Enrol to use this service
-Service.notEnrolled.text1=You are signed in to HMRC Online Services but your employer must enrol for Employer Pay as You Earn before you can continue.
+Service.notEnrolled.text1=You are signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue.
 Service.notEnrolled.text2=To enrol you''ll need:
 Service.enrollmentLoop.list1=employer PAYE reference
 Service.enrollmentLoop.list2=Accounts office reference
