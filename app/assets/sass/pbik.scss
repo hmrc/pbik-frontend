@@ -1,4 +1,4 @@
-@import './node_modules/govuk_frontend_toolkit/govuk_frontend_toolkit/stylesheets/_grid_layout.scss', './elements/forms/_form-date-of-birth.scss';
+@import '../js/node_modules/govuk_frontend_toolkit/govuk_frontend_toolkit/stylesheets/_grid_layout.scss', './elements/forms/_form-date-of-birth.scss';
 
 
 .grid-row {
@@ -15,7 +15,7 @@
         margin-top: 30px;
     }
 }
-
+ 
 @media (max-width:640px){
     fieldset legend {
         float: none;
