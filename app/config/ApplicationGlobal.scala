@@ -28,7 +28,6 @@ import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.filters._
 import play.api.Mode.Mode
 import java.io.File
-import uk.gov.hmrc.play.frontend.auth.controllers.AuthParamsConfigurationValidator
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
 
@@ -65,11 +64,6 @@ abstract class FrontendGlobal
       SecurityHeadersFilter(sameOriginConfig)
     }
     Filters(super.doFilter(a), Seq(securityFilter):_*)
-  }
-
-  override def onLoadConfig(config: Configuration, path: File, classloader: ClassLoader, mode: Mode): Configuration = {
-    AuthParamsConfigurationValidator.validate(config)
-    super.onLoadConfig(config, path, classloader, mode)
   }
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig("microservice.metrics")

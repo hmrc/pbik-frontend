@@ -16,21 +16,25 @@
 
 package connectors
 
+import connectors.WSHttp
+import uk.gov.hmrc.play.audit.http.HttpAuditing
 import uk.gov.hmrc.play.config._
 
 import uk.gov.hmrc.play.audit.http.config.LoadAuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
+import uk.gov.hmrc.play.http.ws._
 import uk.gov.hmrc.play.partials.CachedStaticHtmlPartial
 
 object FrontendAuditConnector extends AuditConnector with AppName with RunMode {
   override lazy val auditingConfig = LoadAuditingConfig("auditing")
 }
 
-object WSHttp extends WSGet with WSPut with WSPost with WSDelete with AppName with RunMode {
+object WSHttp extends WSGet with WSPut with WSPost with WSDelete with WSPatch with AppName with RunMode with HttpAuditing {
+  override val hooks = Seq(AuditingHook)
   override val auditConnector = FrontendAuditConnector
 }
+
 
 object CachedStaticHtmlPartial extends CachedStaticHtmlPartial {
   override val httpGet = WSHttp

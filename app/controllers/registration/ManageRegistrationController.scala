@@ -35,7 +35,7 @@ import utils._
 import uk.gov.hmrc.play.http.{SessionKeys, HttpResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 
 object ManageRegistrationController extends ManageRegistrationController with TierConnector with AuthenticationConnector {

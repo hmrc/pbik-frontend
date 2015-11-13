@@ -38,20 +38,20 @@ object FrontendBuild extends Build with MicroService {
 private object AppDependencies {
   import play.core.PlayVersion
 
-  private val cachingClientVersion = "5.0.0"
-  private val frontendBootstrapVersion = "2.0.0"
+  // private val cachingClientVersion = "5.2.0"
+  private val frontendBootstrapVersion = "3.0.0"
   private val govukTemplateVersion =  "4.0.0"
-  private val httpVerbsVersion = "1.6.0"
-  private val playAuthorisedFrontendVersion = "3.3.0"
+  private val httpVerbsVersion = "3.0.0"
+  private val playAuthorisedFrontendVersion = "4.0.0"
   private val playConfigVersion = "2.0.1"
   private val playHealthVersion = "1.1.0"
   private val playJsonLogger = "2.1.1"
-  private val playPartials = "2.1.0"
+  private val playPartials = "4.0.0"
   private val playUIVersion = "4.2.0"
   private val urlBuilderVersion = "0.8.0"
 
   val compile = Seq(
-    "uk.gov.hmrc" %% "http-caching-client" % cachingClientVersion,
+
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion, // includes the global object and error handling, as well as the FrontendController classes
     "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
     "uk.gov.hmrc" %% "http-verbs" % httpVerbsVersion,

@@ -28,7 +28,7 @@ import play.api.test.Helpers._
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import services.BikListService
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.http.logging.SessionId

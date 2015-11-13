@@ -24,7 +24,7 @@ import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import support.TestAuthUser
 import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditResult}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import org.scalatest.mock.MockitoSugar

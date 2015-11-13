@@ -28,7 +28,7 @@ import play.api.test.FakeApplication
 import play.api.test.Helpers._
 import services.EiLListService
 import support.TestAuthUser
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.{WithFakeApplication, UnitSpec}

@@ -25,7 +25,7 @@ import play.api.mvc.{Result, _}
 import services.{EiLListService, BikListService}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import utils._
 import scala.concurrent.Future
 import play.api.Play.configuration
@@ -44,7 +44,7 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
   this: TierConnector =>
   def bikListService: BikListService
 
-  def notAuthorised:Action[AnyContent] = AuthenticatedBy(PBIKGovernmentGateway).async {
+  def notAuthorised:Action[AnyContent] = AuthenticatedBy(PBIKGovernmentGateway, pageVisibility = GGConfidence).async {
     implicit ac => implicit request =>
       Future.successful(Ok(views.html.errorPage(AUTHORISATION_ERROR, TaxDateUtils.getTaxYearRange())))
   }

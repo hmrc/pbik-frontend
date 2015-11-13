@@ -26,7 +26,7 @@ import play.api.test.{FakeApplication, FakeRequest}
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import connectors.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.{Principal, LoggedInUser, AuthContext}

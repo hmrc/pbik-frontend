@@ -25,7 +25,7 @@ import models.{Bik, RegistrationItem, RegistrationList}
 import play.api.data.Form
 import play.api.mvc.{Result, AnyContent, Request}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
