@@ -30,8 +30,7 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import connectors.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.{Principal, LoggedInUser, AuthContext}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{LevelOfAssurance, Authority, Accounts, EpayeAccount}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.LevelOfAssurance._
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.{Authority, Accounts, EpayeAccount}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 
