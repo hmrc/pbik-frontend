@@ -35,7 +35,6 @@ import play.filters.csrf.CSRF.UnsignedTokenProvider
 import play.twirl.api.{Html, HtmlFormat}
 import services.{RegistrationService, BikListService}
 import support.TestAuthUser
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
@@ -77,6 +76,8 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
     }
 
     when(pbikAppConfig.cyEnabled).thenReturn(true)
+
+    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
       anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
@@ -270,6 +271,8 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
     val dateRange = TaxDateUtils.getTaxYearRange()
 
     when(pbikAppConfig.cyEnabled).thenReturn(true)
+
+    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
       anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],

@@ -95,6 +95,7 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
 
   class MockHomePageControllerCYEnabled extends MockHomePageController {
     when(pbikAppConfig.cyEnabled).thenReturn(true)
+    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
   }
 
   class SetUp extends FakeApplication {

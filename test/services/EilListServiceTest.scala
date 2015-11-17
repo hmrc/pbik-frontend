@@ -39,6 +39,8 @@ with TestAuthUser with ControllersReferenceData with WithFakeApplication{
 
   override lazy val pbikAppConfig = mock[AppConfig]
 
+  when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
+
   val MockEiLListService = running(fakeApplication) {
     new EiLListService {
       def pbikAppConfig = pbikAppConfig

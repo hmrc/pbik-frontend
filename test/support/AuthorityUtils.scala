@@ -19,14 +19,18 @@ package support
 import uk.gov.hmrc.domain.{CtUtr, Nino, EmpRef, SaUtr}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 
+
 object AuthorityUtils {
 
   def epayeAuthority(id: String, empRef: String): Authority =
-    Authority(s"/auth/oid/$id", Accounts(epaye = Some(EpayeAccount(s"/epaye/$empRef", EmpRef.fromIdentifiers(empRef)))), None, None)
+    Authority(s"/auth/oid/$id", Accounts(epaye = Some(EpayeAccount(s"/epaye/$empRef", EmpRef.fromIdentifiers(empRef)))), None, None,
+      confidenceLevel = ConfidenceLevel.L50)
 
   def payeAuthority(id: String, nino: String) =
-    Authority(s"/auth/oid/$id", Accounts(paye = Some(PayeAccount(s"/paye/$nino", Nino(nino)))), None, None)
+    Authority(s"/auth/oid/$id", Accounts(paye = Some(PayeAccount(s"/paye/$nino", Nino(nino)))), None, None,
+      confidenceLevel = ConfidenceLevel.L50)
 
   def ctAuthority(id: String, utr: String): Authority =
-    Authority(s"/auth/oid/$id", Accounts(ct = Some(CtAccount(s"/ct/$utr", CtUtr(utr)))), None, None)
+    Authority(s"/auth/oid/$id", Accounts(ct = Some(CtAccount(s"/ct/$utr", CtUtr(utr)))), None, None,
+      confidenceLevel = ConfidenceLevel.L50)
 }
