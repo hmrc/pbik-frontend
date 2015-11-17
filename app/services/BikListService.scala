@@ -20,7 +20,7 @@ import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import models.Bik
 import play.api.mvc.Request
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils.{ControllersReferenceData, URIInformation}
 import scala.concurrent.ExecutionContext.Implicits.global

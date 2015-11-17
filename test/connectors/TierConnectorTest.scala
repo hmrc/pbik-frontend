@@ -22,9 +22,10 @@ import org.scalatest.Matchers
 import play.api.mvc.Results
 import play.api.test.Helpers._
 import support.TestAuthUser
+import uk.gov.hmrc.play.audit.http.HttpAuditing
 import uk.gov.hmrc.play.config.{RunMode, AppName}
 import uk.gov.hmrc.play.http.HttpResponse
-import uk.gov.hmrc.play.http.ws.{WSDelete, WSPost, WSPut, WSGet}
+import uk.gov.hmrc.play.http.ws._
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.Exceptions.GenericServerErrorException
 
@@ -71,9 +72,10 @@ class TierConnectorTest  extends UnitSpec with FakePBIKApplication
 
 
   class MockHmrcTierConnector extends HmrcTierConnector {
-    object WSHttp extends WSGet with WSPut with WSPost with WSDelete with AppName with RunMode {
+    object WSHttp extends WSGet with WSPut with WSPost with WSDelete with WSPatch with AppName with RunMode with HttpAuditing {
+      override val hooks = Seq(AuditingHook)
       override val auditConnector = FrontendAuditConnector
-      override def doGet(url : scala.Predef.String)(implicit hc : uk.gov.hmrc.play.audit.http.HeaderCarrier) :
+      override def doGet(url : scala.Predef.String)(implicit hc : uk.gov.hmrc.play.http.HeaderCarrier) :
                 scala.concurrent.Future[uk.gov.hmrc.play.http.HttpResponse] = Future.successful(new FakeResponse)
     }
   }

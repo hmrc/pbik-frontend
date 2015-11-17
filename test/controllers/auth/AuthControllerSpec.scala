@@ -26,21 +26,21 @@ import play.api.test.{FakeApplication, FakeRequest}
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import connectors.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.{Principal, LoggedInUser, AuthContext}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{LevelOfAssurance, Authority, Accounts, EpayeAccount}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.LevelOfAssurance._
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.{ConfidenceLevel, Authority, Accounts, EpayeAccount}
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
+import org.mockito.Mockito._
 
 object UserBuilder {
 
   val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
   val accounts = Accounts(epaye = epayeAccount)
-  val authority = new Authority("", accounts,None,None)
-  val user = LoggedInUser(userId = "testUserId", None, None, None, LevelOfAssurance(2))
+  val authority = new Authority("", accounts,None,None,ConfidenceLevel.L50)
+  val user = LoggedInUser(userId = "testUserId", None, None, None, ConfidenceLevel.L50)
   val principal = Principal(name = Some("TEST_USER"), accounts)
 
   def apply() = {
@@ -64,9 +64,9 @@ class AuthControllerSpec extends UnitSpec with Mockito with FakePBIKApplication 
 
   class TestController extends  AuthController {
     override lazy val pbikAppConfig = mock[AppConfig]
+    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
     override protected implicit def authConnector = FrontendAuthConnector
   }
-
 
   "When an invalid user logs in, notAuthorised" should {
     "redirect to the authenticaiton page " in new SetUp {

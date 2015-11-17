@@ -22,8 +22,7 @@ import support.AuthorityUtils._
 import support.TestAuthUser
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.play.frontend.auth.{Principal, LoggedInUser, AuthContext}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{LevelOfAssurance, Authority, Accounts, EpayeAccount}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.LevelOfAssurance._
+import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.test.UnitSpec
 
 class TestEPayeUser extends EpayeUser
@@ -34,7 +33,7 @@ class EpayeUserSpec extends UnitSpec with FakePBIKApplication with TestAuthUser 
     val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "123", taxOfficeReference ="45678" ), link =""))
     val accounts = Accounts(epaye = epayeAccount)
     val authority = epayeAuthority("testUserId", "123/45678")
-    val user = LoggedInUser(userId = "testUserId", None, None, None, LevelOfAssurance(2))
+    val user = LoggedInUser(userId = "testUserId", None, None, None, ConfidenceLevel.L50)
     val principal = Principal(name = Some("TEST_USER"), accounts)
     new AuthContext(user, principal, None)
 
@@ -44,7 +43,7 @@ class EpayeUserSpec extends UnitSpec with FakePBIKApplication with TestAuthUser 
     val epayeAccount = None
     val accounts = Accounts(epaye = epayeAccount)
     val authority = ctAuthority("testUserId", "UTREF")
-    val user = LoggedInUser(userId = "testUserId", None, None, None, LevelOfAssurance(2))
+    val user = LoggedInUser(userId = "testUserId", None, None, None, ConfidenceLevel.L50)
     val principal = Principal(name = Some("TEST_USER"), accounts)
     new AuthContext(user, principal, None)
 

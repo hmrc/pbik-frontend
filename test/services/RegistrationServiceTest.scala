@@ -27,7 +27,7 @@ import play.api.libs.json
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import support.TestAuthUser
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.{AuditEvent, DataEvent}
 import uk.gov.hmrc.play.frontend.auth.AuthContext

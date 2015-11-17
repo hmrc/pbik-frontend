@@ -17,17 +17,16 @@
 package support
 
 import uk.gov.hmrc.domain.{CtUtr, EmpRef}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.frontend.auth.{Attorney, Principal, LoggedInUser, AuthContext}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.LevelOfAssurance._
+import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 
 trait TestAuthUser {
 
   def createDummyUser(userId : String) : AuthContext = {
     val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
     val accounts = Accounts(epaye = epayeAccount)
-    val authority = new Authority("", accounts,None,None)
-    val user = LoggedInUser(userId = userId, None, None, None, LevelOfAssurance(2))
+    val authority = new Authority("", accounts,None,None, ConfidenceLevel.L50)
+    val user = LoggedInUser(userId = userId, None, None, None, ConfidenceLevel.L50)
     val principal = Principal(name = Some("EPaye User"), accounts)
     new AuthContext(user, principal, None)
   }
@@ -35,9 +34,9 @@ trait TestAuthUser {
   def createDummyNonEpayeUser(userId : String) : AuthContext = {
     val ctAccount = Some(CtAccount(utr = CtUtr(utr = ""), link = ""))
     val accounts = Accounts(ct = ctAccount)
-    val authority = new Authority("", accounts, None, None)
+    val authority = new Authority("", accounts, None, None, ConfidenceLevel.L50)
 
-    val user = LoggedInUser(userId = userId, None, None, None, LevelOfAssurance(2))
+    val user = LoggedInUser(userId = userId, None, None, None, ConfidenceLevel.L50)
     val principal = Principal(name = Some("CT User"), accounts)
     new AuthContext(user, principal, None)
   }
@@ -45,9 +44,9 @@ trait TestAuthUser {
   def createDummyNonGatewayUser(userId : String) : AuthContext = {
     val ctAccount = Some(CtAccount(utr = CtUtr(utr=""), link =""))
     val accounts = Accounts(ct = ctAccount)
-    val authority = new Authority("", accounts,None,None)
+    val authority = new Authority("", accounts,None,None, ConfidenceLevel.L50)
 
-    val user = LoggedInUser(userId = userId, None, None, None, LevelOfAssurance(2))
+    val user = LoggedInUser(userId = userId, None, None, None, ConfidenceLevel.L50)
     val principal = Principal(name = None, accounts)
     new AuthContext(user, principal, None)
   }

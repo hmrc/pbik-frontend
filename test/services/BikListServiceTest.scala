@@ -24,7 +24,7 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.{when, verify, reset}
 import org.specs2.mock.Mockito
 import support.TestAuthUser
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.{WithFakeApplication, UnitSpec}
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, FakeApplication}

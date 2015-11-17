@@ -48,7 +48,7 @@ trait PbikActions extends Actions {
 
   private type AsyncPlayUserRequest = AuthContext => (Request[AnyContent] => Future[Result])
 
-  def AuthorisedForPbik(body: AsyncPlayUserRequest): Action[AnyContent] = AuthorisedFor(getAuthorisedForPolicy).async {
+  def AuthorisedForPbik(body: AsyncPlayUserRequest): Action[AnyContent] = AuthorisedFor(getAuthorisedForPolicy, pageVisibility = GGConfidence).async {
     implicit ac => implicit request =>
         noSessionCheck(body)
   }

@@ -26,7 +26,6 @@ import models._
 import org.scalatest.concurrent.Futures
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, JsValue}
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
@@ -38,7 +37,7 @@ import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import services.{BikListService, EiLListService}
 import support.TestAuthUser
-import uk.gov.hmrc.play.audit.http.HeaderCarrier
+import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.http.{HttpResponse}
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec

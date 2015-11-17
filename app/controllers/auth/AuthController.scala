@@ -30,7 +30,7 @@ object AuthController extends AuthController with AuthenticationConnector {
 
 trait AuthController extends FrontendController with Actions with ControllersReferenceData {
 
-  def notAuthorised:Action[AnyContent] = AuthenticatedBy(PBIKGovernmentGateway).async {
+  def notAuthorised:Action[AnyContent] = AuthenticatedBy(PBIKGovernmentGateway, pageVisibility = GGConfidence).async {
     implicit ac => implicit request =>
       notAuthorisedResult
   }
