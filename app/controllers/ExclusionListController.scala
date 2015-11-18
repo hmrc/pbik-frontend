@@ -235,6 +235,7 @@ trait ExclusionListController extends FrontendController with URIInformation
         val iabdTypeValue = iabdValueURLDeMapper(iabdType)
         Future.successful(Ok(views.html.exclusion.whatNextExclusion(
             TaxDateUtils.getTaxYearRange(), year, iabdTypeValue, name))
+            .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
             .addingToSession(bikListService.pbikHeaders.toSeq: _*))
   }
 
@@ -243,6 +244,7 @@ trait ExclusionListController extends FrontendController with URIInformation
       implicit request =>
         Future.successful(Ok(views.html.exclusion.whatNextRescind(
             TaxDateUtils.getTaxYearRange(), year, iabdType, name))
+            .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
             .addingToSession(bikListService.pbikHeaders.toSeq: _*))
   }
 
