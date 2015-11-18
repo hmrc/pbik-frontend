@@ -109,7 +109,8 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
       val resultFuture = {
         generateConfirmationScreenView(YEAR_RANGE.cyminus1, "add", views.html.registration.
           confirmAddCurrentTaxYear(_, YEAR_RANGE), (formWithErrors =>
-          Ok(views.html.registration.currentTaxYear(formWithErrors, YEAR_RANGE)).withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))))
+          Ok(views.html.registration.currentTaxYear(formWithErrors, YEAR_RANGE))
+            .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))))
       }
       responseCheckCYEnabled(resultFuture)
   }

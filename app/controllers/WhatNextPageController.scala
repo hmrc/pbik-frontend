@@ -16,6 +16,8 @@
 
 package controllers
 
+import java.util.UUID
+
 import _root_.models._
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
@@ -23,6 +25,7 @@ import controllers.auth._
 import play.api.data.Form
 import play.api.mvc.{Result, _}
 import services.BikListService
+import uk.gov.hmrc.play.http.SessionKeys
 import utils._
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.play.frontend.controller.FrontendController
@@ -57,12 +60,14 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
     val yearCalculated = calculateTaxYear(TaxDateUtils.isCurrentTaxYear(year))
     Ok(views.html.registration.whatNextAddRemove.render(
       TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, true, formRegisteredList, request, ac))
+      .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 
   def loadWhatNextRemovedBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: Request[_], ac: AuthContext):Result = {
     val yearCalculated = calculateTaxYear(TaxDateUtils.isCurrentTaxYear(year))
     Ok(views.html.registration.whatNextAddRemove.render(
       TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, false, formRegisteredList, request, ac))
+      .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 
 }
