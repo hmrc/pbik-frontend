@@ -2,6 +2,8 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
+@import play.api.Play
+@import play.api.Play.current
 
 @benefitLabel = @{Messages("BenefitInKind.label." + iabdValueURLDeMapper(bikForm("actives[0].uid").value.get )).toLowerCase}
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
@@ -51,7 +53,8 @@
                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)</li>
                         }
                     </ul>
-                    <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+                    <input onclick='gaEvent("@Play.configuration.getString(s"google-analytics.token")", "action", "Benefit(s) Added")'
+                           type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
                 }
                 <p><a class="button-link" id="link-back"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
             } else {
