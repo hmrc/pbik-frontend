@@ -18,3 +18,10 @@ function scrollToElement(selector, time) {
        scrollTop: $offsetTop
     }, $time);
 }
+
+function gaEvent(trackingId, event, description) {
+    ga('create', trackingId, 'auto', event, {
+      type: description
+    });
+    ga('send', event);
+}
