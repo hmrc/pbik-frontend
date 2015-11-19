@@ -11,11 +11,6 @@
 @parentTemplate(pageTitle = if(additive) {Messages("whatNext.add.heading")}else{Messages("whatNext.remove.heading")},
                 None, Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
-    <script>
-        //Starts a new GA session
-        ga('send', 'pageview', {'sessionControl': 'end'});
-    </script>
-
     <h1 id="title">
         <span class="font-medium step-indicator">
             @if(additive) {
@@ -89,13 +84,14 @@
     }
 
     <p class="text">
-        <a href="@routes.HomePageController.onPageLoad" id="link-back">
+        <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">
             @Messages("Service.back.overview.whatNext")
         </a>
     </p>
 
     <p class="text">
-        <a href="@routes.HomePageController.signoutRedirectToDone" id="link-feedback">
+        <a  onclick="gaEvent('Click feedback link','From: Add/ Remove What next page')"
+            href="@routes.HomePageController.signoutRedirectToDone" id="link-feedback">
             @Messages("Service.feedback.link")
         </a>
         @Messages("Service.feedback.desc")

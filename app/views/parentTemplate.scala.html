@@ -6,7 +6,8 @@
 @logout = @{ new Call("GET", ExternalUrls.signOut) }
 
 @genericLinks = {
-    <a id="logOutNavHref" href="@controllers.routes.HomePageController.signoutRedirectToDone">Sign out</a>
+    <a id="logOutNavHref" onclick="gaEvent('Click Sign-out link', 'Redirect to exit survey feedback')"
+       href="@controllers.routes.HomePageController.signoutRedirectToDone">Sign out</a>
 }
 
 @myLinkElement = {

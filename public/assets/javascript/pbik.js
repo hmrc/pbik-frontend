@@ -19,9 +19,14 @@ function scrollToElement(selector, time) {
     }, $time);
 }
 
-function gaEvent(trackingId, event, description) {
-    ga('create', trackingId, 'auto', event, {
-      type: description
-    });
-    ga('send', event);
+function gaEvent(description, benefits) {
+    ga('send', 'event', description, benefits);
+}
+
+function gaEventLinkSteps() {
+    ga('send', 'event', "Click 'back' steps link", "");
+}
+
+function gaEventLinkOverview() {
+    ga('send', 'event', "Click back to overview", "");
 }

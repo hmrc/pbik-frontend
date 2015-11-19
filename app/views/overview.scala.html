@@ -7,6 +7,11 @@
 
 @parentTemplate(pageTitle = Messages("Overview.heading"), None, Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
+<script>
+    //Starts a new GA session
+    ga('send', 'pageview', {'sessionControl': 'end'});
+</script>
+
 <h1 id="title">@Messages("Overview.heading")</h1>
 
 <section id="what-to-do">

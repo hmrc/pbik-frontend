@@ -6,7 +6,9 @@
 @prioritisedBiks = @{Messages("Prioritised.Benefits")}
 @parentTemplate(pageTitle = Messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
-    <a class="button-link" id="link-back-top"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back")</a>
+    <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
+       href='@routes.HomePageController.onPageLoad'>@Messages("Service.back")</a>
+
     <h1 id="title">
         <span class="font-medium step-indicator">
             @Messages("Service.stepindicator", "1", "3")
@@ -126,9 +128,11 @@
 
 
     @if(bikForm("actives").indexes.length==Messages("BenefitCount").toInt){
-        <a class="button-link" id="link-back"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.overview")</a>
+        <a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
+           href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.overview")</a>
     } else {
-        <a class="button-link" id="link-back"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.overview")</a>
+        <a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
+           href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.overview")</a>
     }
 
 }
