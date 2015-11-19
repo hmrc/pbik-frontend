@@ -40,7 +40,7 @@
         @Messages("AddBenefits.CY.Caution.p12.3", "" + taxYearRange.cy)
     </p>
 
-    <a class="button" id="button-cancel" href="@routes.HomePageController.onPageLoad">@Messages("Service.cancel")</a>
+    <a class="button" id="button-cancel" onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad">@Messages("Service.cancel")</a>
     <div style="clear:both"></div>
 
     <a href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad" id="link-cy">@Messages("Service.proceed")</a>

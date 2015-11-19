@@ -5,7 +5,8 @@
 
 @parentTemplate(pageTitle = Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
-    <a class="button-link" id="link-back-top"  href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))'>
+    <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
+        href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))'>
         @Messages("Service.back")</a>
 
     <h1 id="title">
@@ -48,12 +49,13 @@
         <div class="form-group">
             <input type="submit" class="button" id="button-search" value="@Messages("Service.continue")">
 
-            <p><a class="button-link" id="link-exlusion-back"   href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">
+            <p><a class="button-link" id="link-exlusion-back"  onclick="gaEvent('Click back to exclusion overview','From: No-nino search form')"
+                  href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">
                 @Messages("Service.back.excluded")</a></p>
 
         </div>
 
         }
     </section>
-<!---routes.ExclusionListController.submitExclusionSearch--->
+
 }

@@ -7,7 +7,8 @@
 @parentTemplate( pageTitle=Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
     @defining( if(year=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
-        @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, iabdValueURLMapper(iabdType))) {
+        @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, iabdValueURLMapper(iabdType)),
+            'onsubmit -> "gaEventLinkSteps()") {
             <input type="hidden" id="button-nino"  name="confirmation" value="@formType">
             <button type="submit" class="button--link-style" id="link-back-top">
                 @Messages("Service.back")</button>
@@ -35,7 +36,8 @@
                    @Messages("ExclusionSearch.multiple.info")
                </p>
                 <div>
-                  @helpers.form(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdValueURLMapper(iabdType))) {
+                  @helpers.form(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdValueURLMapper(iabdType)),
+                    'onsubmit -> "gaEventConfirmExcludeMulti()") {
                   <table class="employee-table">
                     <thead>
                       <tr>
@@ -84,7 +86,8 @@
                      <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
             }
 
-            <p><a class="button-link" id="multi-exlusion-back"   href="@routes.ExclusionListController.performPageLoad(year, iabdValueURLMapper(iabdType))">
+            <p><a class="button-link" id="multi-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
+                  href="@routes.ExclusionListController.performPageLoad(year, iabdValueURLMapper(iabdType))">
                 @Messages("Service.back.excluded")</a></p>
 
          } else {
@@ -98,7 +101,8 @@
                   }
                  </p>
 
-                    @helpers.form(action = routes.ExclusionListController.updateExclusions(year, iabdValueURLMapper(iabdType))) {
+                    @helpers.form(action = routes.ExclusionListController.updateExclusions(year, iabdValueURLMapper(iabdType)),
+                    'onsubmit -> "gaEventConfirmExclude()") {
                      @repeatWithIndex(listOfMatchesForm("individuals"), min=1) { (listItem,index) =>
                          <fieldset class="form-group">
                              <!--<legend>@Messages("ExclusionSearch.employee.legend")</legend>-->
@@ -144,7 +148,8 @@
 
                 <p>
                     <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
-                    <p><a class="button-link" id="link-exlusion-back"   href="@routes.ExclusionListController.performPageLoad(year,iabdValueURLMapper(iabdType))">
+                    <p><a class="button-link" id="link-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
+                          href="@routes.ExclusionListController.performPageLoad(year,iabdValueURLMapper(iabdType))">
                         @Messages("Service.back.excluded")</a></p>
                 </p>
                 }
@@ -156,13 +161,24 @@
                             <input type="hidden" id="button-nino"  name="confirmation" value="@formType">
                             <p class="text">@Html(Messages("ExclusionSearch.Fail.P", "#"))</p>
                         }
-                        <p><a class="button-link" id="link-back" href="@routes.HomePageController.onPageLoad">@Messages("Service.back")</a></p>
+                        <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
+                              href="@routes.HomePageController.onPageLoad">@Messages("Service.back")</a></p>
 
                 }
             }
 
         }
         </section>
+
+        <script>
+        function gaEventConfirmExcludeMulti() {
+          gaEvent("Exclusion for @yearvalue", "On search results screen multi, @Messages("BenefitInKind.label." + iabdType)");
+        }
+        function gaEventConfirmExclude() {
+          gaEvent("Exclusion for @yearvalue", "Employee excluded, @Messages("BenefitInKind.label." + iabdType)");
+        }
+
+        </script>
     }
 }
 

@@ -7,11 +7,16 @@
 
 @benefitLabel = @{Messages("BenefitInKind.label." + iabdValueURLDeMapper(bikForm("actives[0].uid").value.get )).toLowerCase}
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
+@gaEventBiks = @{helper.repeat(bikForm("actives"), min=0) { activeField => Html(Messages("BenefitInKind.label." + activeField("uid").value.get) + " ,")} }
+@gaEventRemoveBiks = @{helper.repeat(bikForm("actives"), min=0) { activeField => Html(Messages("BenefitInKind.label." + iabdValueURLDeMapper(activeField("uid").value.get)) + " ,")} }
+
 @title = @{if(additive && singleBik) {Messages("AddBenefits.Confirm.Single.Title")}else if(additive && !singleBik){Messages("AddBenefits.Confirm.Multiple.Title")}else {Messages("RemoveBenefits.Confirm.Title")}}
 
 @parentTemplate(pageTitle = title, Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+
         @if(additive) {
-            <a class="button-link" id="link-back-top"  href='@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad'>
+            <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
+                href='@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad'>
                 @Messages("Service.back")</a>
             <h1 id="title">
                 <span class="font-medium step-indicator">
@@ -43,7 +48,8 @@
 
         <div class="data">
             @if(additive) {
-                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes()) {
+                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes(),
+                'onsubmit -> "gaEventConfirmAddBenefits()") {
                     <ul  id="list-of-confirmation-benefits" class="list-bullet text">
                         @helper.repeat(bikForm("actives"), min=0) { activeField =>
                             @helper.inputText(activeField("uid"), '_label -> null, 'style -> "display: none" )
@@ -53,13 +59,15 @@
                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)</li>
                         }
                     </ul>
-                    <input onclick='gaEvent("@Play.configuration.getString(s"google-analytics.token")", "action", "Benefit(s) Added")'
+                    <input
                            type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
                 }
-                <p><a class="button-link" id="link-back"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
+                <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
+                      href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
             } else {
 
-                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes()) {
+                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(),
+                'onsubmit -> "gaEventConfirmRemoveBenefits()") {
                     <ul  id="list-of-confirmation-benefits" class="list-bullet text" style="display:none">
                         @helper.repeat(bikForm("actives"), min=0) { activeField =>
                             @helper.inputText(activeField("uid").copy(value=Some(iabdValueURLDeMapper(activeField("uid").value.get))), '_label -> null, 'style -> "display: none")
@@ -71,8 +79,18 @@
                     </ul>
                     <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
                 }
-                <p><a class="button-link" id="link-back"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
+                <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
+                      href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
         }
 
         </div>
+
+        <script>
+        function gaEventConfirmAddBenefits() {
+          gaEvent("Benefit(s) Added for Next Year", "@gaEventBiks");
+        }
+        function gaEventConfirmRemoveBenefits() {
+          gaEvent("Benefit Removed for Next Year", "@gaEventRemoveBiks");
+        }
+        </script>
 }

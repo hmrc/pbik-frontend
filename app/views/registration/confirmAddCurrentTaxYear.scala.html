@@ -3,7 +3,8 @@
 @import uk.gov.hmrc.play.views.html.helpers
 
 @parentTemplate(pageTitle = Messages("AddBenefits.Confirm.Title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
-    <a class="button-link" id="link-back-top"  href='@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad'>
+    <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
+        href='@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad'>
         @Messages("Service.back")</a>
         <h1 id="title">
             <span class="font-medium step-indicator">
@@ -30,6 +31,7 @@
             </ul>
             <input type="submit" class="button" id="button-confirm" value="@Messages("Service.addbenefitsexpenses")">
         }
-        <p><a class="button-link" id="link-back"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.overview")</a></p>
+        <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
+              href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.overview")</a></p>
     </div>
 }

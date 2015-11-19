@@ -179,9 +179,11 @@
     }
 
     @if(bikForm("actives").indexes.length==Messages("BenefitCount").toInt && additive){
-        <a class="button-link" id="link-back"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a>
+        <a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
+           href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a>
     } else {
-       <a class="button-link" id="link-back"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a>
+       <a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
+           href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a>
     }
 
 }

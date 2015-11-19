@@ -5,6 +5,11 @@
 
 @parentTemplate(pageTitle = Messages("ExclusionOverview.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
+    <script>
+        //Starts a new GA session
+        ga('send', 'pageview', {'sessionControl': 'end'});
+    </script>
+
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
 
         <h1 id="title" class="heading-with-border">@Messages("ExclusionOverview.title")</h1>
@@ -84,7 +89,8 @@
                     @Messages(buttonlabel)</a>
                 }
 
-                <p class="text"><a href="@routes.HomePageController.onPageLoad" id="link-back">@Messages("Service.back.overview.whatNext")</a></p>
+                <p class="text"><a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad"
+                                   id="link-back">@Messages("Service.back.overview.whatNext")</a></p>
             </div>
         </section>
     }

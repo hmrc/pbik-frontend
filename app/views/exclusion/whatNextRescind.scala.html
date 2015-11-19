@@ -39,13 +39,15 @@
         </p>
 
         <p class="text">
-            <a href="@routes.ExclusionListController.performPageLoad(year,iabdType)" id="link-back">
+            <a  onclick="gaEvent('Click back to exclusion overview','From: Employee removed What next page')"
+                href="@routes.ExclusionListController.performPageLoad(year,iabdType)" id="link-back">
                 @Messages("Service.finish.excluded")
             </a>
         </p>
 
         <p class="text">
-            <a href="@routes.HomePageController.signoutRedirectToDone" id="link-feedback">
+            <a  onclick="gaEvent('Click feedback link','From: Employee removed What next page')"
+                href="@routes.HomePageController.signoutRedirectToDone" id="link-feedback">
                 @Messages("Service.feedback.link")
             </a>
             @Messages("Service.feedback.desc")
