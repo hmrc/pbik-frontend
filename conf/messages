@@ -122,6 +122,7 @@ ExclusionOverview.instruction.empty=You are not excluding any employees from {0}
 ExclusionOverview.instruction.notempty=You will be excluding the following employee(s) from having {0} benefit from 6 April {1}.
 ExclusionOverview.instruction.cy.notempty=You are excluding the following employee(s) from having {0} benefit from 6 April {1}.
 
+ExclusionDecision.noselection.error =Please choose an option
 ExclusionNinoDecision.title = Exclude an employee
 ExclusionNinoDecision.question =Do you know the National Insurance number of the employee you want to exclude from {0} starting 6 April {1}?
 
