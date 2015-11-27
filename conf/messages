@@ -1,3 +1,5 @@
+common.feedback.get.help=Contact us for support using this service
+
 Service.title=Payrolling Benefits in Kind- GOV.UK
 Service.yes = Yes
 Service.no = No
@@ -110,6 +112,9 @@ AddBenefits.Confirm.Single.Title=Add a benefit or expense
 AddBenefits.Confirm.Multiple.Title=Add benefits and expenses
 RemoveBenefits.Confirm.Title=Remove a benefit or expense
 AddBenefits.Confirm.Desc=You will be adding the following to your payroll from 6 April {0}.
+AddBenefits.Confirm.help.desc=You can only exclude employees after benefit(s) have been added.
+AddBenefits.Confirm.help.reveal.link=What is an excluded employee?
+AddBenefits.Confirm.help.reveal.p1=Excluded employees are those who receive a benefit but are not taxed on it through their payroll. Tax on the value of the benefit should be taken through the employee''s tax code and you will need to submit a P11D for each excluded employee. You should not exclude employees who do not receive the benefit.
 RemoveBenefits.Confirm.Desc=You will be removing {0} from your payroll on 6 April {1}.
 
 RemoveBenefits.Heading =Remove benefits or expenses from the tax year starting 6 April {0}

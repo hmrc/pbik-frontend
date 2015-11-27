@@ -59,8 +59,24 @@
                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)</li>
                         }
                     </ul>
-                    <input
-                           type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+
+                    <p class="important-notice">
+                        @Messages("AddBenefits.Confirm.help.desc")
+                    </p>
+
+                    <details id="important-excluded-employee-desc">
+                        <summary role="button" aria-controls="details-content-0" tabindex="0" aria-expanded="false"
+                            onclick='gaEvent("Click reveal", "@Messages("AddBenefits.Confirm.help.reveal.link")")'>
+                            <span class="summary">@Messages("AddBenefits.Confirm.help.reveal.link")</span>
+                        </summary>
+                        <div class="panel-indent-2 panel-indent">
+                            <p>
+                                @Messages("AddBenefits.Confirm.help.reveal.p1")
+                            </p>
+                        </div>
+                    </details>
+
+                    <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
                 }
                 <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
                       href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
