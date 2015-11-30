@@ -77,7 +77,9 @@ fieldset .button {
 table td, table th{
 	font-size: 19px;
 }
-.employee-table tbody tr:hover {
+
+.employee-table tbody tr:hover,
+.benefits-table tbody tr:hover {
 	background-color: #dee0e2;
 }
 
