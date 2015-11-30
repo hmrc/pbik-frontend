@@ -31,9 +31,25 @@ function gaEventLinkOverview() {
     ga('send', 'event', "Click back to overview", "Click overview");
 }
 
-window.addEventListener("load", function(){
-     document.getElementById("get-help-action").onclick = function(){
-            ga('send', 'event', "Click get help link", "Get help with this page");
+function gaEventLinkAtoZGuide() {
+    ga('send', 'event', "Click 'A to Z guide' link", "Click A to Z guide from choose benefits screen");
+}
 
-     };
-});
+function gaEventLinkGetHelp() {
+    ga('send', 'event', "Click get help link", "Get help with this page");
+}
+
+if (window.addEventListener) {
+    window.addEventListener("load", function(){
+        document.getElementById("get-help-action-pbik-custom").onclick = function(){
+            gaEventLinkGetHelp();
+        };
+    });
+}
+else {
+    window.attachEvent("load", function(){
+        document.getElementById("get-help-action-pbik-custom").onclick = function(){
+             gaEventLinkGetHelp();
+        };
+    });
+}
