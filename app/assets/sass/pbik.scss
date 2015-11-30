@@ -180,6 +180,14 @@ fieldset .h4-heading{
     display: block;
 }
 
+.less-space {
+    padding: 0;
+}
+
+.less-space label {
+    padding: 0.73684em 1.05263em 0.52632em 0;
+}
+
 /* Hide Get help with this page link, use custom */
 #get-help-action {
     display: none;
