@@ -10,7 +10,6 @@
     Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
     @if(additive) {
-        <!--<a class="button-link" id="link-back-top"  href='@routes.HomePageController.onPageLoad'>@Messages("Service.back")</a>-->
         <h1 id="title">
             <span class="font-medium step-indicator">
                 @Messages("Service.stepindicator", "1", "3")
@@ -43,7 +42,7 @@
                     }
 
                     <fieldset>
-                    <table class="employee-table">
+                    <table class="benefits-table">
                         <thead>
                         <tr>
                             <th id="table-heading-1">@Messages("AddBenefits.table.heading.input")</th>
@@ -188,17 +187,6 @@
 
 }
 
-<script language="javascript">
-    function toggle(elementId) {
-        var ele = document.getElementById(elementId);
-        if(ele.style.display == "block") {
-                ele.style.display = "none";
-        }
-        else {
-                ele.style.display = "block";
-        }
-    }
-</script>
 @if(bikForm("actives").hasErrors){
     <script>
         scrollToError("list-benefits");

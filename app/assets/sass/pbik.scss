@@ -77,7 +77,9 @@ fieldset .button {
 table td, table th{
 	font-size: 19px;
 }
-.employee-table tbody tr:hover {
+
+.employee-table tbody tr:hover,
+.benefits-table tbody tr:hover {
 	background-color: #dee0e2;
 }
 
@@ -172,6 +174,28 @@ fieldset .h4-heading{
 
 }
 
+.important-notice {
+    min-height: 2em;
+}
+
 .touchevents .date-of-birth {
     display: block;
+}
+
+.less-space {
+    padding: 0;
+}
+
+.less-space label {
+    padding: 0.73684em 1.05263em 0.52632em 0;
+}
+
+/* Hide Get help with this page link, use custom */
+#get-help-action {
+    display: none;
+}
+
+.report-error .report-error {
+    margin: 0 0 0 0;
+    width: 100%;
 }

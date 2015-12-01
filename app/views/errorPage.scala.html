@@ -52,7 +52,10 @@ pageHeading:String ="An error has occurred", backLink:String= "overview")(implic
             case _ if(code != 0 && code != 10001 && code != 65176 && code!=65355)=>{
                 <a id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>
                     @Messages("Service.back.overview")</a>}
-            case _ => {}
+            case _ => {
+                <a id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>
+                    @Messages("Service.back.overview")</a>
+            }
         }
     </p>
 

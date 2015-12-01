@@ -24,7 +24,6 @@ import models._
 import connectors.{HmrcTierConnector, TierConnector}
 import play.i18n.Messages
 import play.api.data.{FormError, Form}
-
 import play.api.{Play, Logger}
 import play.api.mvc._
 import services.{BikListService, EiLListService}
@@ -132,7 +131,7 @@ trait ExclusionListController extends FrontendController with URIInformation
         val taxYearRange = YEAR_RANGE
         val resultFuture = binaryRadioButton.bindFromRequest().fold(
           formWithErrors => Future(Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
-            isCurrentTaxYear, iabdType)))
+            isCurrentTaxYear, iabdType)).flashing("error" -> Messages.get("ExclusionDecision.noselection.error")))
           ,
           values => {
             val selectedValue = values.selectionValue
@@ -145,7 +144,7 @@ trait ExclusionListController extends FrontendController with URIInformation
                   case FORM_TYPE_NONINO => Ok(views.html.exclusion.noNinoExclusionSearchForm(taxYearRange,
                     isCurrentTaxYear, iabdTypeValue, exclusionSearchFormWithoutNino))
                 case "" => Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
-                  isCurrentTaxYear, iabdTypeValue))
+                  isCurrentTaxYear, iabdTypeValue)).flashing("error" -> Messages.get("ExclusionDecision.noselection.error"))
               }
             }
           }

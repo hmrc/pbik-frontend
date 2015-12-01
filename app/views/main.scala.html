@@ -57,7 +57,8 @@
 }
 
 @getHelpForm = {
-    @connectors.CachedStaticHtmlPartial.get(config.PbikAppConfig.reportAProblemPartialUrl)
+    @views.html.contactFormPartialPbik(config.PbikAppConfig.reportAProblemPartialUrl, None, None)
+
 }
 
 @sidebar = {

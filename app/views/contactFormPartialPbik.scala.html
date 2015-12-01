@@ -1,0 +1,8 @@
+@(actionUrl: String, csrfToken: Option[String], service: Option[String])(implicit request : Request[_])
+@import uk.gov.hmrc.play.views.html._
+
+<div class="report-error">
+    <a class="report-error__toggle js-visible" id="get-help-action-pbik-custom" href="#">@Messages("common.feedback.get.help")</a>
+
+    @connectors.CachedStaticHtmlPartial.get(config.PbikAppConfig.reportAProblemPartialUrl)
+</div>

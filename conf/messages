@@ -1,3 +1,5 @@
+common.feedback.get.help=Contact us for support using this service
+
 Service.title=Payrolling Benefits in Kind- GOV.UK
 Service.yes = Yes
 Service.no = No
@@ -102,7 +104,7 @@ AddBenefits.CY.Caution.p12.2=next tax year
 AddBenefits.CY.Caution.p12.3=(starting 6 April {0})
 
 AddBenefits.ChooseBenefitsLabel.1 =Choose which benefit and expense(s) you will be taxing through your payroll from 6 April {0}.
-AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee a benefit or expense and you are unsure whether it is taxable or not, please see <a rel="external" id="guidance-a-to-z" target="_blank" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
+AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee a benefit or expense and you are unsure whether it is taxable or not, please see <a rel="external" id="guidance-a-to-z" target="_blank" onclick="gaEventLinkAtoZGuide()" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
 AddBenefits.SelectAllLabel = Select all that apply
 AddBenefits.noselection.error = Choose at least 1 benefit or expense
 
@@ -110,6 +112,9 @@ AddBenefits.Confirm.Single.Title=Add a benefit or expense
 AddBenefits.Confirm.Multiple.Title=Add benefits and expenses
 RemoveBenefits.Confirm.Title=Remove a benefit or expense
 AddBenefits.Confirm.Desc=You will be adding the following to your payroll from 6 April {0}.
+AddBenefits.Confirm.help.desc=You can only exclude employees after benefit(s) have been added.
+AddBenefits.Confirm.help.reveal.link=What is an excluded employee?
+AddBenefits.Confirm.help.reveal.p1=Excluded employees are those who receive a benefit but are not taxed on it through their payroll. Tax on the value of the benefit should be taken through the employee''s tax code and you will need to submit a P11D for each excluded employee. You should not exclude employees who do not receive the benefit.
 RemoveBenefits.Confirm.Desc=You will be removing {0} from your payroll on 6 April {1}.
 
 RemoveBenefits.Heading =Remove benefits or expenses from the tax year starting 6 April {0}
@@ -122,6 +127,7 @@ ExclusionOverview.instruction.empty=You are not excluding any employees from {0}
 ExclusionOverview.instruction.notempty=You will be excluding the following employee(s) from having {0} benefit from 6 April {1}.
 ExclusionOverview.instruction.cy.notempty=You are excluding the following employee(s) from having {0} benefit from 6 April {1}.
 
+ExclusionDecision.noselection.error =Please choose an option
 ExclusionNinoDecision.title = Exclude an employee
 ExclusionNinoDecision.question =Do you know the National Insurance number of the employee you want to exclude from {0} starting 6 April {1}?
 
