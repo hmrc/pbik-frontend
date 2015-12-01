@@ -92,7 +92,7 @@ trait SplunkLogger extends AuthenticationConnector {
    * By creating the fixed format, we can ustilise Splunk's query and daashboards to give the product owner some
    * easily accessible metrics.
    *
-   * @param tier - either the FRONTEND MicroService or the Right side GATEWAY Microservice response
+   * @param tier - either the FRONTEND MicroService or the GATEWAY Microservice response
    * @param action - LOGIN, LIST, ADD or REMOVE
    * @param target - BIK, EIL
    * @param period - CY, CYP1, BOTH ( actions such as overview screen apply to both CY & CYP1 )
@@ -122,7 +122,7 @@ trait SplunkLogger extends AuthenticationConnector {
    * Method creates a PBIK Specific Error which will be sent to splunk so product owners
    * can get granularity on the actions a user cannot undertake.
    *
-   * @param tier - either the FRONTEND MicroService or the Right side GATEWAY Microservice response
+   * @param tier - either the FRONTEND MicroService or GATEWAY Microservice response
    * @param msg - free text message. Note - ensure no personal or sensitive details are included )
    * @param ac
    * @return A DataEvent with the PBIK specific error payload which may be sent using the logSplunkEvent method.

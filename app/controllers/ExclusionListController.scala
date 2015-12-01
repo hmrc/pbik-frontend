@@ -330,7 +330,7 @@ trait ExclusionListController extends FrontendController with URIInformation
           case OK => {
             auditExclusion(true, yearInt,excludedIndividual.get.nino, iabdType)
             Ok(views.html.exclusion.whatNextExclusion.render(TaxDateUtils.getTaxYearRange(), year,
-              iabdType, "Exclusion commited", request, ac))
+              iabdType, excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname, request, ac))
 
           }
           case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")).
@@ -413,7 +413,7 @@ trait ExclusionListController extends FrontendController with URIInformation
           case OK => {
                 auditExclusion(false, year,extractListNino(removalsList),iabdType)
                 Ok(views.html.exclusion.whatNextRescind.render(TaxDateUtils.getTaxYearRange(), NEXT_TAX_YEAR,
-                iabdTypeValue, "Exclusion rescinded", request, ac)).
+                iabdTypeValue, individual.firstForename + " " + individual.surname, request, ac)).
                 withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
           }
           case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")).

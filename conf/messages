@@ -104,7 +104,7 @@ AddBenefits.CY.Caution.p12.2=next tax year
 AddBenefits.CY.Caution.p12.3=(starting 6 April {0})
 
 AddBenefits.ChooseBenefitsLabel.1 =Choose which benefit and expense(s) you will be taxing through your payroll from 6 April {0}.
-AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee a benefit and you are unsure whether it is taxable or not, please see <a rel="external" id="guidance-a-to-z" target="_blank" onclick="gaEventLinkAtoZGuide()" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
+AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee a benefit or expense and you are unsure whether it is taxable or not, please see <a rel="external" id="guidance-a-to-z" target="_blank" onclick="gaEventLinkAtoZGuide()" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
 AddBenefits.SelectAllLabel = Select all that apply
 AddBenefits.noselection.error = Choose at least 1 benefit or expense
 
@@ -364,8 +364,8 @@ Service.field.nino=National Insurance number
 Service.field.nino.2lines=National Insurance number
 Service.field.ninohint=For example, QQ123456A
 Service.field.dob=Date of birth
-Service.field.worksnumber=Works Number
-Service.field.dobhint=For example, 31 03 1980
+Service.field.worksnumber=Payroll ID / Works number
+Service.field.dobhint=For example, 31 3 1980
 Service.field.dob.day=Day
 Service.field.dob.month=Month
 Service.field.dob.year=Year
