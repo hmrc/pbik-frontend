@@ -16,6 +16,8 @@
 
 package utils.Exceptions
 
+import models.PbikError
+
 class InvalidYearURIException extends Exception {
 
 }

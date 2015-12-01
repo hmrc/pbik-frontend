@@ -140,13 +140,13 @@ trait ControllersReferenceData extends FormMappings {
       }
       case e3:Upstream5xxResponse => {
           Logger.warn("ResponseErrorHandler. An Upstream5xxResponse was handled :  " + e3.message)
-          Ok(views.html.maintenancePage())
+          Ok(e3.message)
       }
       case e4: GenericServerErrorException => {
         try {
           Logger.warn("ResponseErrorHandler. A GenericServerErrorException was handled :  " + e4.message)
-          val msgValue = Json.parse(e4.message).asOpt[JsValue].getOrElse(Json.toJson("")).\("appStatusMessage").toString().replaceAll("[^0-9]", "")
-          Ok(views.html.errorPage(Messages("ServiceMessage." + (msgValue.toInt)), YEAR_RANGE, "",msgValue.toInt))
+          val msgValue = e4.message
+          Ok(views.html.errorPage(Messages("ServiceMessage." + (msgValue)), YEAR_RANGE, "",msgValue.toInt))
         } catch {
           case e: Exception => {
             Logger.warn("Could not parse GenericServerError System Error number: " + e4.message + " .Showing default error page instead")
