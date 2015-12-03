@@ -190,6 +190,26 @@ fieldset .h4-heading{
     padding: 0.73684em 1.05263em 0.52632em 0;
 }
 
+.checkbox-indent {
+    visibility: hidden;
+    height: 4em;
+    float: left;
+    margin-right: 4px;
+}
+
+.other-desc-indent {
+    padding-left: 0.9em;
+}
+
+#link-feedback,
+#link-feedback-desc {
+    font-size: 16px;
+}
+
+.link-feedback-p {
+    margin-top: 1.4em !important;
+}
+
 /* Hide Get help with this page link, use custom */
 #get-help-action {
     display: none;

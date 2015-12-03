@@ -71,5 +71,24 @@ with TestAuthUser with ControllersReferenceData with WithFakeApplication{
         result.size shouldBe 0
       }
     }
+
+    "return a subset of List(EiL) search results - already excluded" in {
+      running(fakeApplication) {
+        val eilService =  MockEiLListService
+        implicit val ac: AuthContext = createDummyUser("VALID_ID")
+        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+        val eiL1 = new EiLPerson("QQ123456", "Humpty", None, "Dumpty", Some("123"), Some("01/01/1980"), None, None)
+        val eiL2 = new EiLPerson("QQ123457", "Humpty", None, "Dumpty", Some("789"), Some("01/01/1980"), None, None)
+        val searchResultsEiL = List(eiL1,eiL2)
+        val alreadyExcludedEiL = List(eiL1)
+
+        implicit val request = mockrequest
+        val result = eilService.searchResultsRemoveAlreadyExcluded(alreadyExcludedEiL, searchResultsEiL)
+        result.size shouldBe 1
+        result.head shouldBe eiL2
+      }
+    }
   }
+
+
 }

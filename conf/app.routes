@@ -6,6 +6,7 @@ GET         /assets/*file                           controllers.AssetsController
 GET         /not-authorised                         controllers.auth.AuthController.notAuthorised
 
 GET         /signout                                controllers.HomePageController.signoutRedirectToDone
+GET         /feedback                               controllers.HomePageController.redirectToDone
 
 GET         /payrolled-benefits-expenses            controllers.HomePageController.onPageLoad
 

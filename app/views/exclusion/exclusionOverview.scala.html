@@ -53,7 +53,7 @@
                                   @c.nino
                                   <p>(Last&nbsp;letter&nbsp;not&nbsp;shown)</p>
                               </td>
-                              <td id = 'dob-@c.nino'>@c.worksPayrollNumber</td>
+                              <td width="31%" id='dob-@c.nino'>@c.worksPayrollNumber</td>
                               @if(isCurrentTaxYear!="cy"){
                                     <td class="nino-remove"><input class=" button--link-style" type="submit" name="submit" id='@c.nino-remove' value="@Messages("Service.removeexclusion")"></td>
                               }
@@ -90,7 +90,7 @@
                 }
 
                 <p class="text"><a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad"
-                                   id="link-back">@Messages("Service.back.overview.whatNext")</a></p>
+                                   id="link-back">@Messages("Service.back.overview")</a></p>
             </div>
         </section>
     }

@@ -48,4 +48,8 @@ with SplunkLogger {
         resultList.distinct
     }
   }
+
+  def searchResultsRemoveAlreadyExcluded(existingEiL: List[EiLPerson], searchResultsEiL: List[EiLPerson]): List[EiLPerson] = {
+    (searchResultsEiL diff  existingEiL)
+  }
 }
