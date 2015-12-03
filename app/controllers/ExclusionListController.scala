@@ -172,8 +172,11 @@ trait ExclusionListController extends FrontendController with URIInformation
                 year <- validateRequest(isCurrentTaxYear, iabdType)
                 result <- tierConnector.genericPostCall(baseUrl, exclusionPostUpdatePath(iabdTypeValue),
                   ac.principal.accounts.epaye.get.empRef.toString, year, validModel)
+                resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
+
               } yield {
-                val listOfMatches: List[EiLPerson] = result.json.validate[List[EiLPerson]].asOpt.get
+                val listOfMatches: List[EiLPerson] = eiLListService.searchResultsRemoveAlreadyExcluded(resultAlreadyExcluded,
+                  result.json.validate[List[EiLPerson]].asOpt.get)
                 searchResultsHandleValidResult(listOfMatches, isCurrentTaxYear, formType,
                   iabdTypeValue, form, None)
               }

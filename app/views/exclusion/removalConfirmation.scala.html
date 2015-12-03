@@ -16,7 +16,7 @@
 
     <section id="removal-confirmation">
         <p class="lede text">
-            @Messages("ExclusionRemovalConfirmation.question", Messages("BenefitInKind.label."+iabdValueURLDeMapper(iabdType)).toLowerCase, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+            @Messages("ExclusionRemovalConfirmation.intro", Messages("BenefitInKind.label."+iabdValueURLDeMapper(iabdType)).toLowerCase, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
 
            @helpers.form(action=routes.ExclusionListController.removeExclusionsCommit(iabdType),
             'onsubmit -> "gaEventConfirmRemoveExclusion()") {

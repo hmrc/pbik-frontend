@@ -27,14 +27,12 @@
 
                 <p class="text lede">
                     @if(year=="cy"){
-                        @Messages("ExclusionSearch.intro", Messages("BenefitInKind.label." + iabdType).toLowerCase, ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
+                        @Messages("ExclusionSearch.intro.multi", Messages("BenefitInKind.label." + iabdType).toLowerCase, ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
                     }else{
-                        @Messages("ExclusionSearch.intro", Messages("BenefitInKind.label." + iabdType).toLowerCase,""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+                        @Messages("ExclusionSearch.intro.multi", Messages("BenefitInKind.label." + iabdType).toLowerCase,""+taxYearRange.cy, ""+taxYearRange.cyplus1)
                     }
                </p>
-               <p>
-                   @Messages("ExclusionSearch.multiple.info")
-               </p>
+
                 <div>
                   @helpers.form(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdValueURLMapper(iabdType)),
                     'onsubmit -> "gaEventConfirmExcludeMulti()") {

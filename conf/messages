@@ -53,10 +53,10 @@ StartPage.buttonStartLink.text = Start Now
 Overview.heading = Your payrolled benefits and expenses
 Overview.next.heading= Next tax year – starting 6 April {0}
 Overview.next.lead = You have told HMRC you will be adding the following benefits or expenses to your payroll.
-Overview.next.lead.empty = You haven''t yet told HMRC that you will be adding any benefits or expenses to your payroll from 6 April {0}.
+Overview.next.lead.empty = You have not yet told HMRC that you will be adding any benefits or expenses to your payroll from 6 April {0}.
 Overview.current.heading= Current tax year – started 6 April {0}
-Overview.current.lead = You''ve told HMRC that you''re currently payrolling the following benefits or expenses for this tax year.
-Overview.current.lead.empty = You haven''t yet told HMRC that you will be adding any benefits or expenses to your payroll from 6 April {0}.
+Overview.current.lead = You have told HMRC that you are currently payrolling the following benefits or expenses for this tax year.
+Overview.current.lead.empty = You have not yet told HMRC that you will be adding any benefits or expenses to your payroll from 6 April {0}.
 Overview.table.heading.1 = Benefit or expense
 Overview.table.exclude.link = Manage excluded employees
 Overview.table.exclude.none.link = Exclude an employee
@@ -104,7 +104,7 @@ AddBenefits.CY.Caution.p12.2=next tax year
 AddBenefits.CY.Caution.p12.3=(starting 6 April {0})
 
 AddBenefits.ChooseBenefitsLabel.1 =Choose which benefit and expense(s) you will be taxing through your payroll from 6 April {0}.
-AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee a benefit or expense and you are unsure whether it is taxable or not, please see <a rel="external" id="guidance-a-to-z" target="_blank" onclick="gaEventLinkAtoZGuide()" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
+AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee a benefit or expense and you are unsure if it is taxable or not, please see <a rel="external" id="guidance-a-to-z" target="_blank" onclick="gaEventLinkAtoZGuide()" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
 AddBenefits.SelectAllLabel = Select all that apply
 AddBenefits.noselection.error = Choose at least 1 benefit or expense
 
@@ -115,7 +115,7 @@ AddBenefits.Confirm.Desc=You will be adding the following to your payroll from 6
 AddBenefits.Confirm.help.desc=You can only exclude employees after benefit(s) have been added.
 AddBenefits.Confirm.help.reveal.link=What is an excluded employee?
 AddBenefits.Confirm.help.reveal.p1=Excluded employees are those who receive a benefit but are not taxed on it through their payroll. Tax on the value of the benefit should be taken through the employee''s tax code and you will need to submit a P11D for each excluded employee. You should not exclude employees who do not receive the benefit.
-RemoveBenefits.Confirm.Desc=You will be removing {0} from your payroll on 6 April {1}.
+RemoveBenefits.Confirm.Desc=You will be removing {0} from your payroll from 6 April {1}.
 
 RemoveBenefits.Heading =Remove benefits or expenses from the tax year starting 6 April {0}
 RemoveBenefits.ChooseBenefitsLabel  =Choose the benefit or expenses to be removed
@@ -134,15 +134,15 @@ ExclusionNinoDecision.question =Do you know the National Insurance number of the
 
 ExclusionSearch.title=Search results
 ExclusionSearch.form.title=Search for an employee
-ExclusionSearch.intro=Please check the details for the employee you want to exclude from having {0} taxed through your payroll from 6 April {1}.
-ExclusionSearch.multiple.info=Your search results have matched several employees, please select the correct employee.
+ExclusionSearch.intro=Exclude the following employee from having {0} taxed through your payroll from 6 April {1}.
+ExclusionSearch.intro.multi=Your search results have matched several employees, please choose which employee you are excluding from having {0} taxed through your payroll from 6 April {1}.
 
 ExclusionSearch.Fail.Headline=Employee not found.
 ExclusionSearch.Fail.P=Employee not found. Please check that the information you have provided is correct and try again.
 
 ExclusionImportant.ExcludeEmployee=For excluded employees you will need to submit a P11D to HMRC to report the benefit or expense they receive.
-ExclusionRemovalConfirmation.title = Add back to payroll
-ExclusionRemovalConfirmation.question =You will no longer be excluding the following employee from {0} benefit from 6 April {1}.
+ExclusionRemovalConfirmation.title =Add back to payroll
+ExclusionRemovalConfirmation.intro =The following employee will have {0} taxed through the payroll from 6 April {1}.
 ExclusionRemovalConfirmation.warning =This benefit will be removed from this employee''s tax code.
 
 

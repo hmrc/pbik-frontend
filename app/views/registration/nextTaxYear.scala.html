@@ -63,10 +63,12 @@
 
                                                 @if(!nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
                                                     <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" checked/>
+                                                }else {
+                                                    <input class="checkbox-indent" type="checkbox"/>
                                                 }
                                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)
                                                 @if(47 == activeField("uid").value.get.toInt) {
-                                                    <span class="form-hint">@Messages("BenefitInKind.hint.47")</span>
+                                                    <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
                                                 }
                                                 @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
                                                     <span class="form-hint">@Messages("BenefitInKind.label.unavailable")</span>
@@ -76,10 +78,12 @@
                                             <label id='label-@activeField("uid").value.get' class="" for='checkbox-@activeField("uid").value.get'>
                                                 @if(!nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
                                                     <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" />
+                                                }else {
+                                                    <input class="checkbox-indent" type="checkbox"/>
                                                 }
                                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)
                                                 @if(47 == activeField("uid").value.get.toInt) {
-                                                    <span class="form-hint">@Messages("BenefitInKind.hint.47")</span>
+                                                    <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
                                                 }
                                                 @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
                                                     <span class="form-hint">@Messages("BenefitInKind.label.unavailable")</span>
@@ -104,10 +108,12 @@
                                             <label id='label-@activeField("uid").value.get' class="selected" for='checkbox-@activeField("uid").value.get'>
                                                 @if(!nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
                                                     <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" checked/>
+                                                }else {
+                                                    <input class="checkbox-indent" type="checkbox"/>
                                                 }
                                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)
                                                 @if(47 == activeField("uid").value.get.toInt) {
-                                                    <span class="form-hint">@Messages("BenefitInKind.hint.47")</span>
+                                                    <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
                                                 }
                                                 @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
                                                     <span class="form-hint">@Messages("BenefitInKind.label.unavailable")</span>
@@ -116,11 +122,13 @@
                                             } else {
                                             <label id='label-@activeField("uid").value.get' class="" for='checkbox-@activeField("uid").value.get'>
                                                 @if(!nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
-                                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" />
+                                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true" />
+                                                }else {
+                                                    <input class="checkbox-indent" type="checkbox"/>
                                                 }
                                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)
                                                 @if(47 == activeField("uid").value.get.toInt) {
-                                                    <span class="form-hint">@Messages("BenefitInKind.hint.47")</span>
+                                                    <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
                                                 }
                                                 @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
                                                     <span class="form-hint">@Messages("BenefitInKind.label.unavailable")</span>

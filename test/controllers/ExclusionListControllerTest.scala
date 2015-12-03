@@ -86,6 +86,12 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
     }
   }
 
+  class StubEiLListServiceOneExclusion extends StubEiLListService {
+    override def currentYearEiL(iabdType: String, year: Int)(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]): Future[List[EiLPerson]] = {
+      Future.successful(List(ListOfPeople.head))
+    }
+  }
+
   class StubBikListService extends BikListService {
     override lazy val pbikAppConfig = mock[AppConfig]
 
@@ -529,7 +535,9 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val f = exclusionSearchFormWithoutNino.fill(ninoSearchPerson)
         implicit val formrequest = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
 
-        val mockExclusionController = new MockExclusionListController
+        val mockExclusionController = new MockExclusionListController {
+          override def eiLListService = new StubEiLListServiceOneExclusion
+        }
         def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.searchResults("cy","car", ExclusionListController.FORM_TYPE_NONINO).apply(formrequest))(timeout)
@@ -614,7 +622,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
           individualsForm.fill(EiLPersonList(ListOfPeople)),TEST_YEAR_CODE,TEST_IABD,YEAR_RANGE))(timeout)
         status(r) shouldBe 200
         bodyOf(r) should include(title)
-        bodyOf(r) should include(Messages("ExclusionRemovalConfirmation.question").substring(0,20))
+        bodyOf(r) should include(Messages("ExclusionRemovalConfirmation.intro").substring(0,31))
         bodyOf(r) should include("Humpty")
         bodyOf(r) should include("AB111111")
       }

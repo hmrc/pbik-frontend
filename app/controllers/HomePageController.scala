@@ -57,6 +57,11 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
         .discardingCookies(DiscardingCookie(SIGNEDOUT_MDTP_KEY))
   }
 
+  def redirectToDone = AuthorisedForPbik {
+    implicit ac =>
+      implicit request =>
+        Future.successful(Redirect(configuration.getString("pbik.survey.url").getOrElse("")))
+  }
 
   def loadCautionPageForCY:Action[AnyContent] = AuthorisedForPbik {
     implicit ac =>

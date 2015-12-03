@@ -41,9 +41,9 @@
 
 
         @if(additive) {
-            <p > @Messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+            <p class="lede text"> @Messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
         } else {
-            <p > @Messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+            <p class="lede text"> @Messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
         }
 
         <div class="data">
