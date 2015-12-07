@@ -19,7 +19,8 @@ package connectors
 import models.{PbikError, HeaderTags, Bik}
 import play.api.Logger
 import play.api.libs.json
-import play.api.libs.json.{JsError, JsSuccess}
+import play.api.libs.json.{Json, JsError, JsSuccess}
+import play.api.mvc.Results.Status
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.play.config.ServicesConfig
 import utils.{URIInformation}
@@ -67,12 +68,10 @@ class HmrcTierConnector extends URIInformation with TierClient  {
 
       pbikHeaders = headers
 
-      Logger.debug("**** RES JSON :: "+r.json)
       r.json.validate[PbikError] match {
         case s: JsSuccess[PbikError] => throw new GenericServerErrorException(s.value.errorCode)
         case e: JsError => r.json.as[T]
       }
-
 
     }
   }
@@ -98,19 +97,17 @@ class HmrcTierConnector extends URIInformation with TierClient  {
       }
   }
 
-  def processResponse(response:HttpResponse) = {
-    if (response.status >= 400) {
-      println("**** RES JSON :: "+response.json)
-      Logger.debug("**** RES JSON :: "+response.json)
-      throw new GenericServerErrorException(response.body)
-    } else {
-      println("**** RES JSON1 :: "+response.json)
-      Logger.debug("**** RES JSON1 :: "+response.json)
-      response
+  def processResponse(response:HttpResponse): HttpResponse = {
+    //Logger.debug("CONT: " + response.body)
+    response match {
+      case _ if(response.status >= 400) => throw new GenericServerErrorException(response.body)
+      case _ => {
+
+        response.json.validate[PbikError].asOpt match {
+          case Some(pe) => throw new GenericServerErrorException(pe.errorCode)
+          case None => response
+        }
+      }
     }
-    /*response.json.validate[PbikError] match {
-      case s: JsSuccess[PbikError] => throw new GenericServerErrorException(s.value)
-      case e: JsError => response
-    }*/
   }
 }

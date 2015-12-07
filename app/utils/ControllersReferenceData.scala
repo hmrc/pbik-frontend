@@ -140,7 +140,7 @@ trait ControllersReferenceData extends FormMappings {
       }
       case e3:Upstream5xxResponse => {
           Logger.warn("ResponseErrorHandler. An Upstream5xxResponse was handled :  " + e3.message)
-          Ok(e3.message)
+          Ok(views.html.maintenancePage())
       }
       case e4: GenericServerErrorException => {
         try {
