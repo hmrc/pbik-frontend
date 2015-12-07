@@ -18,6 +18,7 @@ package controllers
 
 import java.util.UUID
 
+import models.HeaderTags
 import org.specs2.mock.Mockito
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.test.WithFakeApplication
@@ -39,7 +40,9 @@ trait FakePBIKApplication extends WithFakeApplication with Mockito {
   def mockrequest = FakeRequest().withSession(
     SessionKeys.sessionId -> sessionId,
     SessionKeys.token -> "RANDOMTOKEN",
-    SessionKeys.userId -> userId)
+    SessionKeys.userId -> userId,
+    HeaderTags.ETAG -> "0",
+    HeaderTags.X_TXID -> "0")
 
   def noSessionIdRequest = FakeRequest().withSession(
     SessionKeys.userId -> userId)
