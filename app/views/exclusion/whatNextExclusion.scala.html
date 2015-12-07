@@ -14,7 +14,11 @@
 
     <section id="what-next-exclusion">
         <p class="text lede">
-            @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType).toLowerCase, taxYearRange.cy + "")
+            @if(year=="cy"){
+                @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType).toLowerCase, taxYearRange.cyminus1 + "")
+            }else {
+                @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType).toLowerCase, taxYearRange.cy + "")
+            }
         </p>
 
         <h2>
