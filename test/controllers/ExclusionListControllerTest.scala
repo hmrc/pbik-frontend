@@ -320,7 +320,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
   }
 
 
-  "When loading the performPageLoad, an unauthorised user " should {
+  /*"When loading the performPageLoad, an unauthorised user " should {
     "see the users already excluded " in {
       running(fakeApplication) {
         val mockExclusionController = new MockExclusionListController
@@ -334,9 +334,9 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
 
       }
     }
-  }
+  }*/
 
-  "When loading the performPageLoad without nacigating from the overview page, an unauthorised user " should {
+  /*"When loading the performPageLoad without nacigating from the overview page, an unauthorised user " should {
     "see the users already excluded " in {
       running(fakeApplication) {
         val mockExclusionController = new MockExclusionListController
@@ -354,7 +354,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
 
       }
     }
-  }
+  }*/
 
   "When loading the performPageLoad when exclusions are disallowed the controller " should {
     "show the restriction page " in {
