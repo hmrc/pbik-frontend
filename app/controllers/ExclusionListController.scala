@@ -91,11 +91,13 @@ trait ExclusionListController extends FrontendController with URIInformation
             val iabdTypeValue = iabdValueURLDeMapper(iabdType)
             val staticDataRequest = for {
               year <- validateRequest(isCurrentTaxYear, iabdType)
+              currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
               nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
               currentYearEIL: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
             } yield {
                   Ok(views.html.exclusion.exclusionOverview(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, currentYearEIL))
-                    .addingToSession(bikListService.pbikHeaders.toSeq: _*)
+                    .removingFromSession(HeaderTags.ETAG)
+                    .addingToSession(nextYearList._1.toSeq: _*)
             }
             responseErrorHandler(staticDataRequest)
 
@@ -173,15 +175,12 @@ trait ExclusionListController extends FrontendController with URIInformation
                 result <- tierConnector.genericPostCall(baseUrl, exclusionPostUpdatePath(iabdTypeValue),
                   ac.principal.accounts.epaye.get.empRef.toString, year, validModel)
                 resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
-                res <- isCurrentTaxYear match {
-                  case "cy" => bikListService.currentYearList
-                  case _ => bikListService.nextYearList
-                }
+
               } yield {
                 val listOfMatches: List[EiLPerson] = eiLListService.searchResultsRemoveAlreadyExcluded(resultAlreadyExcluded,
                   result.json.validate[List[EiLPerson]].asOpt.get)
                 searchResultsHandleValidResult(listOfMatches, isCurrentTaxYear, formType,
-                  iabdTypeValue, form, None).addingToSession(bikListService.pbikHeaders.toSeq: _*)
+                  iabdTypeValue, form, None)
               }
             }
          )
