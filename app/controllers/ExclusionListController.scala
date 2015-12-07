@@ -173,12 +173,15 @@ trait ExclusionListController extends FrontendController with URIInformation
                 result <- tierConnector.genericPostCall(baseUrl, exclusionPostUpdatePath(iabdTypeValue),
                   ac.principal.accounts.epaye.get.empRef.toString, year, validModel)
                 resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
-
+                res <- isCurrentTaxYear match {
+                  case "cy" => bikListService.currentYearList
+                  case _ => bikListService.nextYearList
+                }
               } yield {
                 val listOfMatches: List[EiLPerson] = eiLListService.searchResultsRemoveAlreadyExcluded(resultAlreadyExcluded,
                   result.json.validate[List[EiLPerson]].asOpt.get)
                 searchResultsHandleValidResult(listOfMatches, isCurrentTaxYear, formType,
-                  iabdTypeValue, form, None)
+                  iabdTypeValue, form, None).addingToSession(bikListService.pbikHeaders.toSeq: _*)
               }
             }
          )
@@ -229,25 +232,6 @@ trait ExclusionListController extends FrontendController with URIInformation
           iabdTypeValue, formWithErrors))
       }
     }
-  }
-
-  def showExclusionWhatNext(year: String, iabdType: String, name:String) = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        val iabdTypeValue = iabdValueURLDeMapper(iabdType)
-        Future.successful(Ok(views.html.exclusion.whatNextExclusion(
-            TaxDateUtils.getTaxYearRange(), year, iabdTypeValue, name))
-            .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
-            .addingToSession(bikListService.pbikHeaders.toSeq: _*))
-  }
-
-  def showRescindWhatNext(year: String, iabdType: String, name:String) = AuthorisedForPbik {
-    implicit user =>
-      implicit request =>
-        Future.successful(Ok(views.html.exclusion.whatNextRescind(
-            TaxDateUtils.getTaxYearRange(), year, iabdType, name))
-            .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
-            .addingToSession(bikListService.pbikHeaders.toSeq: _*))
   }
 
   def updateExclusions(year: String, iabdType: String):Action[AnyContent] = AuthorisedForPbik {
@@ -418,6 +402,7 @@ trait ExclusionListController extends FrontendController with URIInformation
                 Ok(views.html.exclusion.whatNextRescind.render(TaxDateUtils.getTaxYearRange(), NEXT_TAX_YEAR,
                 iabdTypeValue, individual.firstForename + " " + individual.surname, request, ac)).
                 withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+
           }
           case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")).
             withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
