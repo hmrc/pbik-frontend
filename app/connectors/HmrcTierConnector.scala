@@ -19,7 +19,7 @@ package connectors
 import models.{PbikError, HeaderTags, Bik}
 import play.api.Logger
 import play.api.libs.json
-import play.api.libs.json.{Json, JsError, JsSuccess}
+import play.api.libs.json.{JsResult, Json, JsError, JsSuccess}
 import play.api.mvc.Results.Status
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -98,13 +98,14 @@ class HmrcTierConnector extends URIInformation with TierClient  {
   }
 
   def processResponse(response:HttpResponse): HttpResponse = {
-    //Logger.debug("CONT: " + response.body)
     response match {
       case _ if(response.status >= 400) => throw new GenericServerErrorException(response.body)
       case _ => {
-
         response.json.validate[PbikError].asOpt match {
-          case Some(pe) => throw new GenericServerErrorException(pe.errorCode)
+          case Some(pe) => {
+            val error = pe.errorCode
+            throw new GenericServerErrorException(error)
+          }
           case None => response
         }
       }
