@@ -18,7 +18,9 @@ package connectors
 
 import connectors.FrontendAuditConnector
 import controllers.FakePBIKApplication
+import models.PbikError
 import org.scalatest.Matchers
+import play.api.libs.json.Json
 import play.api.mvc.Results
 import play.api.test.Helpers._
 import support.TestAuthUser
@@ -63,6 +65,14 @@ class TierConnectorTest  extends UnitSpec with FakePBIKApplication
 
   class FakeResponse extends HttpResponse {
     override def status = 200
+    override def body = ""
+  }
+
+  class FakeResponseWithError extends HttpResponse {
+    override def status = 200
+    val jsonValue = Json.toJson(new PbikError("64990"))
+    override def body = jsonValue.toString()
+    override def json = jsonValue
   }
 
   class FakeSevereResponse extends HttpResponse {
@@ -157,6 +167,18 @@ class TierConnectorTest  extends UnitSpec with FakePBIKApplication
         val tc = new MockHmrcTierConnector
         val resp = tc.processResponse(new FakeResponse)
         assert(resp.status == 200)
+      }
+    }
+  }
+
+  "When processing a response if there is a PBIK error code " should {
+    " throw a GenericServerErrorException " in {
+      running(fakeApplication) {
+        val tc = new MockHmrcTierConnector
+        intercept[GenericServerErrorException] {
+          tc.processResponse(new FakeResponseWithError)
+        }
+
       }
     }
   }

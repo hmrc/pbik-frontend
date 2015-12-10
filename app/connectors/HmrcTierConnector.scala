@@ -20,7 +20,7 @@ import models.{PbikError, HeaderTags, Bik}
 import play.api.Logger
 import play.api.libs.json
 import play.api.libs.json.{JsResult, Json, JsError, JsSuccess}
-import play.api.mvc.Results.Status
+import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.play.config.ServicesConfig
 import utils.{URIInformation}
@@ -100,13 +100,14 @@ class HmrcTierConnector extends URIInformation with TierClient  {
   def processResponse(response:HttpResponse): HttpResponse = {
     response match {
       case _ if(response.status >= 400) => throw new GenericServerErrorException(response.body)
+      case _ if(response.body.length <= 0) => response
       case _ => {
         response.json.validate[PbikError].asOpt match {
           case Some(pe) => {
             val error = pe.errorCode
             throw new GenericServerErrorException(error)
           }
-          case None => response
+          case _ => response
         }
       }
     }
