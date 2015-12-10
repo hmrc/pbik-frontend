@@ -16,9 +16,11 @@
 
 package connectors
 
-import models.{HeaderTags, Bik}
+import models.{PbikError, HeaderTags, Bik}
 import play.api.Logger
 import play.api.libs.json
+import play.api.libs.json.{JsResult, Json, JsError, JsSuccess}
+import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.play.config.ServicesConfig
 import utils.{URIInformation}
@@ -65,7 +67,12 @@ class HmrcTierConnector extends URIInformation with TierClient  {
       val headers:Map[String, String] = Map(HeaderTags.ETAG -> r.header(HeaderTags.ETAG).getOrElse("0"), HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1") )
 
       pbikHeaders = headers
-      r.json.as[T]
+
+      r.json.validate[PbikError] match {
+        case s: JsSuccess[PbikError] => throw new GenericServerErrorException(s.value.errorCode)
+        case e: JsError => r.json.as[T]
+      }
+
     }
   }
 
@@ -90,11 +97,19 @@ class HmrcTierConnector extends URIInformation with TierClient  {
       }
   }
 
-  def processResponse(response:HttpResponse) = {
-    if (response.status >= 400) {
-      throw new GenericServerErrorException(response.body)
-    } else {
-      response
+  def processResponse(response:HttpResponse): HttpResponse = {
+    response match {
+      case _ if(response.status >= 400) => throw new GenericServerErrorException(response.body)
+      case _ if(response.body.length <= 0) => response
+      case _ => {
+        response.json.validate[PbikError].asOpt match {
+          case Some(pe) => {
+            val error = pe.errorCode
+            throw new GenericServerErrorException(error)
+          }
+          case _ => response
+        }
+      }
     }
   }
 }

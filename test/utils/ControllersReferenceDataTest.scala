@@ -257,7 +257,7 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
         val mockController = MockControllersReferenceData
         implicit val user = createDummyUser("VALID_ID")
         val p = Promise[Result]()
-        p.failure( new GenericServerErrorException("""{ "name" : "wibble", "appStatusMessage" : 10003 } """) )
+        p.failure( new GenericServerErrorException("10003") )
         val result = await(mockController.responseErrorHandler(p.future)(mockrequest, user))
         status (result) shouldBe 200
         bodyOf (result) should include ( Messages("ServiceMessage.10003") )

@@ -16,6 +16,8 @@
 
 package models
 
+import play.api.libs.json._
+
 case class BiKsWithExclusions(iabdType: String, status: Int, numberOfExclusions: Int)
 
 case class RegistrationItem(id: String, active: Boolean, enabled: Boolean)
@@ -53,6 +55,10 @@ case class EiLPerson(nino: String, firstForename: String, secondForename: Option
 
 }
 
+case class PbikError(errorCode: String)
+object PbikError {
+  implicit val pbikErrorFormat = Json.format[PbikError]
+}
 
 object EiLPerson {
 
