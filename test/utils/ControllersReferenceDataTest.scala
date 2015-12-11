@@ -121,21 +121,6 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
     }
   }
 
-  "When a system message is not identified the controller " should {
-    "return a default " in {
-      running(fakeApplication) {
-        val test = new {
-          val name = "ExtractTest"
-        } with ControllersReferenceData {
-          override def pbikAppConfig: AppConfig = ???
-
-          assert( extractUpstreamError("TEST_NOT_VALID_ERROR_MSG") == DEFAULT_ERROR )
-
-        }
-      }
-    }
-  }
-
   "When parsing the response in the responseErrorHandler the controller " should {
     "show an error page when the Future completes with a NoSuchElementException " in {
       running(fakeApplication) {

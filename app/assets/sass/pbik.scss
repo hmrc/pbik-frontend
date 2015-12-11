@@ -14,7 +14,12 @@
         width: 66.66667%;
         margin-top: 30px;
     }
+
+    .highlight-message--content-body {
+        width: 95%;
+    }
 }
+
  
 @media (max-width:640px){
     fieldset legend {
@@ -190,6 +195,10 @@ fieldset .h4-heading{
     padding: 0.73684em 1.05263em 0.52632em 0;
 }
 
+.no-margin-top {
+    margin-top: 0 !important;
+}
+
 .checkbox-indent {
     visibility: hidden;
     height: 4em;
@@ -208,6 +217,17 @@ fieldset .h4-heading{
 
 .link-feedback-p {
     margin-top: 1.4em !important;
+}
+
+.arrow-back {
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid black;
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
 }
 
 /* Hide Get help with this page link, use custom */
