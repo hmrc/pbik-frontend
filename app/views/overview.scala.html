@@ -1,5 +1,5 @@
 @(cyAllowed: Boolean, taxYearRange:TaxYearRange, registeredBenefitsCurrentYear: List[Bik],
-    registeredBenefitsNextYear: List[Bik], serviceBiksCount: Int)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+    registeredBenefitsNextYear: List[Bik], serviceBiksCount: Int, fromYTA: String)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.BikListUtils._
@@ -11,10 +11,20 @@
     //Starts a new GA session
     ga('send', 'pageview', {'sessionControl': 'end'});
 </script>
-
+@if(fromYTA == "true") {
+    <p class="no-margin-top">
+        <span class="arrow-back"></span>
+        <a href="/account">@Messages("Service.back.yta")</a>
+    </p>
+}
 <h1 id="title">@Messages("Overview.heading")</h1>
 
 <section id="what-to-do">
+
+    <div id="latest-updates-message" class="highlight-message highlight-message--content-body">
+        <span>@Messages("Service.news.banner.message")</span>
+    </div>
+
     <h2 id="heading-cy1">
         @Messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")</h2>
 

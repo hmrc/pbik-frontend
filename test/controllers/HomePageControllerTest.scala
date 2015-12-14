@@ -105,6 +105,40 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
   }
 
 
+
+  "When checking if from YTA referer ends /account " in {
+    running(fakeApplication) {
+      val homePageController = HomePageController
+      implicit val request = FakeRequest().withHeaders(
+        "referer" -> "tax.service.gov.uk/account"
+      )
+      val r = homePageController.isFromYTA
+      r shouldBe true
+    }
+  }
+
+  "When checking if from YTA referer ends /business-account " in {
+    running(fakeApplication) {
+      val homePageController = HomePageController
+      implicit val request = FakeRequest().withHeaders(
+        "referer" -> "tax.service.gov.uk/business-account"
+      )
+      val r = homePageController.isFromYTA
+      r shouldBe true
+    }
+  }
+
+  "When checking if from YTA referer ends /someother " in {
+    running(fakeApplication) {
+      val homePageController = HomePageController
+      implicit val request = FakeRequest().withHeaders(
+        "referer" -> "tax.service.gov.uk/someother"
+      )
+      val r = homePageController.isFromYTA
+      r shouldBe false
+    }
+  }
+
   "When instantiating the HomePageController " in {
     running(fakeApplication) {
       val homePageController = HomePageController

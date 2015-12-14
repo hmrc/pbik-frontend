@@ -31,6 +31,8 @@ import scala.concurrent.Future
 import play.api.Play.configuration
 import play.api.Play.current
 
+import scala.util.{Success, Try}
+
 object HomePageController extends HomePageController with TierConnector
 with AuthenticationConnector {
   def pbikAppConfig = PbikAppConfig
@@ -77,12 +79,29 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
           val pageLoadFuture = for {
             currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
             nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
+
           } yield {
+            val fromYTA = if(request.session.get("fromYTA").isDefined) {
+              request.session.get("fromYTA").get
+            }
+            else {
+              isFromYTA
+            }
             auditHomePageView
-            Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2, pbikAppConfig.biksCount))
-              .addingToSession(nextYearList._1.toSeq: _*)
+            Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2, pbikAppConfig.biksCount, fromYTA.toString))
+              .addingToSession(nextYearList._1.toSeq: _*).addingToSession("fromYTA" -> fromYTA.toString)
           }
           responseErrorHandler(pageLoadFuture)
+  }
+
+  def isFromYTA(implicit request: Request[_]): Boolean = {
+    val refererUrl = Try(request.headers("referer"))
+    refererUrl match {
+      case Success(url) if(url.endsWith("/business-account"))=> true
+      case Success(url) if(url.endsWith("/account"))=> true
+      case _ => false
+    }
+
   }
 
 

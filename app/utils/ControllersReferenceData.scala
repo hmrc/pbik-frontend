@@ -56,7 +56,6 @@ trait ControllersReferenceData extends FormMappings {
   val FORM_TYPE_NINO = "nino"
   val FORM_TYPE_NONINO = "no-nino"
   val NEXT_TAX_YEAR = FormMappingsConstants.CYP1
-  private val appStatusMessageRegex = "[0-9]+"
 
 
   val EXCLUSION_TRACE_AND_MATCH_LIST_OF_PEOPLE = "trace-and-match-list-of-people"
@@ -98,23 +97,6 @@ trait ControllersReferenceData extends FormMappings {
     persistentBiks
   }
 
-  protected def extractUpstreamError(message:String):String = {
-    val startindex:Int = message.indexOf("appStatusMessage")
-    val endindex:Int = message.indexOf(",", startindex)
-    if ( startindex >= 0 && endindex > startindex ) {
-      val appStatusMessageSegment = message.substring(startindex, endindex)
-      Logger.info("An NPS error code has been detected " + appStatusMessageSegment)
-      val errorCode = "ServiceMessage." + appStatusMessageRegex.r.findAllIn(appStatusMessageSegment).mkString
-      if (Messages.isDefinedAt(errorCode) ) {
-        errorCode
-      } else {
-        DEFAULT_ERROR
-      }
-    } else {
-      DEFAULT_ERROR
-    }
-  }
-
   def responseCheckCYEnabled(staticDataRequest: Future[Result])(implicit request: Request[AnyContent], ac: AuthContext): Future[Result] = {
     if(pbikAppConfig.cyEnabled) {
       responseErrorHandler(staticDataRequest)
@@ -146,7 +128,8 @@ trait ControllersReferenceData extends FormMappings {
         try {
           Logger.warn("ResponseErrorHandler. A GenericServerErrorException was handled :  " + e4.message)
           val msgValue = e4.message
-          Ok(views.html.errorPage(Messages("ServiceMessage." + (msgValue)), YEAR_RANGE, "",msgValue.toInt))
+          if((Messages("ServiceMessage." + (msgValue))) == ("ServiceMessage." + (msgValue))) throw new Exception(msgValue)
+          else Ok(views.html.errorPage(Messages("ServiceMessage." + (msgValue)), YEAR_RANGE, "",msgValue.toInt))
         } catch {
           case e: Exception => {
             Logger.warn("Could not parse GenericServerError System Error number: " + e4.message + " .Showing default error page instead")
