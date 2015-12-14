@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.{Principal, LoggedInUser, AuthContext}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{ConfidenceLevel, Authority, Accounts, EpayeAccount}
+import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.test.{UnitSpec}
 import scala.concurrent.Future
 
@@ -69,7 +69,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
       val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
       val accounts = Accounts(epaye = epayeAccount)
       val authority = epayeAuthority("testUserId", "emp/ref")
-      val user = LoggedInUser(userId = "testUserId", None, None, None, ConfidenceLevel.L50)
+      val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
       val principal = Principal(name = Some("TEST_USER"), accounts)
 
       implicit def fakeAuthContext = new AuthContext(user, principal, None)
@@ -121,7 +121,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
         val epayeAccount = None
         val accounts = Accounts(epaye = epayeAccount)
         val authority = ctAuthority("nonpayeId", "ctref")
-        val user = LoggedInUser(userId = "nonpayeId", None, None, None, ConfidenceLevel.L50)
+        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
         val principal = Principal(name = Some("TEST_USER"), accounts)
 
         implicit def nonPayeUser = new AuthContext(user, principal, None)
@@ -208,7 +208,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
         val epayeAccount = None
         val accounts = Accounts(epaye = epayeAccount)
         val authority = ctAuthority("nonpayeId", "ctref")
-        val user = LoggedInUser(userId = "nonpayeId", None, None, None, ConfidenceLevel.L50)
+        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
         val principal = Principal(name = Some("TEST_USER"), accounts)
 
         implicit def nonPayeUser = new AuthContext(user, principal, None)

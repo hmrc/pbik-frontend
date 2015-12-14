@@ -25,8 +25,8 @@ trait TestAuthUser {
   def createDummyUser(userId : String) : AuthContext = {
     val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
     val accounts = Accounts(epaye = epayeAccount)
-    val authority = new Authority("", accounts,None,None, ConfidenceLevel.L50)
-    val user = LoggedInUser(userId = userId, None, None, None, ConfidenceLevel.L50)
+    val authority = new Authority("", accounts,None,None, CredentialStrength.None, ConfidenceLevel.L50)
+    val user = LoggedInUser(userId = userId, None, None, None, CredentialStrength.None,  ConfidenceLevel.L50)
     val principal = Principal(name = Some("EPaye User"), accounts)
     new AuthContext(user, principal, None)
   }
@@ -34,9 +34,9 @@ trait TestAuthUser {
   def createDummyNonEpayeUser(userId : String) : AuthContext = {
     val ctAccount = Some(CtAccount(utr = CtUtr(utr = ""), link = ""))
     val accounts = Accounts(ct = ctAccount)
-    val authority = new Authority("", accounts, None, None, ConfidenceLevel.L50)
+    val authority = new Authority("", accounts, None, None, CredentialStrength.None, ConfidenceLevel.L50)
 
-    val user = LoggedInUser(userId = userId, None, None, None, ConfidenceLevel.L50)
+    val user = LoggedInUser(userId = userId, None, None, None, CredentialStrength.None,  ConfidenceLevel.L50)
     val principal = Principal(name = Some("CT User"), accounts)
     new AuthContext(user, principal, None)
   }
@@ -44,9 +44,9 @@ trait TestAuthUser {
   def createDummyNonGatewayUser(userId : String) : AuthContext = {
     val ctAccount = Some(CtAccount(utr = CtUtr(utr=""), link =""))
     val accounts = Accounts(ct = ctAccount)
-    val authority = new Authority("", accounts,None,None, ConfidenceLevel.L50)
+    val authority = new Authority("", accounts,None,None, CredentialStrength.None, ConfidenceLevel.L50)
 
-    val user = LoggedInUser(userId = userId, None, None, None, ConfidenceLevel.L50)
+    val user = LoggedInUser(userId = userId, None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
     val principal = Principal(name = None, accounts)
     new AuthContext(user, principal, None)
   }
