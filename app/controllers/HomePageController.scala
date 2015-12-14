@@ -23,6 +23,7 @@ import controllers.auth._
 import play.api.Logger
 import play.api.mvc.{Result, _}
 import services.{EiLListService, BikListService}
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -51,15 +52,13 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
       Future.successful(Ok(views.html.errorPage(AUTHORISATION_ERROR, TaxDateUtils.getTaxYearRange())))
   }
 
-  val SIGNEDOUT_MDTP_KEY = "mdtpsout"
-
-  def signoutRedirectToDone = UnauthorisedAction {
+  def signoutRedirectToDone:Action[AnyContent] = UnauthorisedAction {
     implicit request =>
       Redirect(configuration.getString("pbik.survey.url").getOrElse("")).withNewSession
-        .discardingCookies(DiscardingCookie(SIGNEDOUT_MDTP_KEY))
+
   }
 
-  def redirectToDone = AuthorisedForPbik {
+  def redirectToDone:Action[AnyContent] = AuthorisedForPbik {
     implicit ac =>
       implicit request =>
         Future.successful(Redirect(configuration.getString("pbik.survey.url").getOrElse("")))
@@ -81,15 +80,15 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
             nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
 
           } yield {
-            val fromYTA = if(request.session.get("fromYTA").isDefined) {
-              request.session.get("fromYTA").get
+            val fromYTA = if(request.session.get(SESSION_FROM_YTA).isDefined) {
+              request.session.get(SESSION_FROM_YTA).get
             }
             else {
               isFromYTA
             }
             auditHomePageView
             Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2, pbikAppConfig.biksCount, fromYTA.toString))
-              .addingToSession(nextYearList._1.toSeq: _*).addingToSession("fromYTA" -> fromYTA.toString)
+              .addingToSession(nextYearList._1.toSeq: _*).addingToSession(SESSION_FROM_YTA -> fromYTA.toString)
           }
           responseErrorHandler(pageLoadFuture)
   }
@@ -101,11 +100,9 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
       case Success(url) if(url.endsWith("/account"))=> true
       case _ => false
     }
-
   }
 
-
-  def auditHomePageView(implicit hc:HeaderCarrier, ac: AuthContext) = {
+  def auditHomePageView(implicit hc:HeaderCarrier, ac: AuthContext): Future[AuditResult] = {
       logSplunkEvent(createDataEvent(
         tier=spTier.FRONTEND,
         action=spAction.VIEW,

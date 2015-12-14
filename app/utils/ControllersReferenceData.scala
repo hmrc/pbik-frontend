@@ -56,6 +56,7 @@ trait ControllersReferenceData extends FormMappings {
   val FORM_TYPE_NINO = "nino"
   val FORM_TYPE_NONINO = "no-nino"
   val NEXT_TAX_YEAR = FormMappingsConstants.CYP1
+  val SESSION_FROM_YTA = "fromYTA"
 
 
   val EXCLUSION_TRACE_AND_MATCH_LIST_OF_PEOPLE = "trace-and-match-list-of-people"
