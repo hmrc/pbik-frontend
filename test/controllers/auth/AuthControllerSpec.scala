@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import connectors.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.{Principal, LoggedInUser, AuthContext}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.{ConfidenceLevel, Authority, Accounts, EpayeAccount}
+import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 import org.mockito.Mockito._
@@ -39,8 +39,8 @@ object UserBuilder {
 
   val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
   val accounts = Accounts(epaye = epayeAccount)
-  val authority = new Authority("", accounts,None,None,ConfidenceLevel.L50)
-  val user = LoggedInUser(userId = "testUserId", None, None, None, ConfidenceLevel.L50)
+  val authority = new Authority("", accounts,None,None, CredentialStrength.None,ConfidenceLevel.L50)
+  val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
   val principal = Principal(name = Some("TEST_USER"), accounts)
 
   def apply() = {

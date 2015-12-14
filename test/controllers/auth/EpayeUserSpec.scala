@@ -33,7 +33,7 @@ class EpayeUserSpec extends UnitSpec with FakePBIKApplication with TestAuthUser 
     val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "123", taxOfficeReference ="45678" ), link =""))
     val accounts = Accounts(epaye = epayeAccount)
     val authority = epayeAuthority("testUserId", "123/45678")
-    val user = LoggedInUser(userId = "testUserId", None, None, None, ConfidenceLevel.L50)
+    val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
     val principal = Principal(name = Some("TEST_USER"), accounts)
     new AuthContext(user, principal, None)
 
@@ -43,7 +43,7 @@ class EpayeUserSpec extends UnitSpec with FakePBIKApplication with TestAuthUser 
     val epayeAccount = None
     val accounts = Accounts(epaye = epayeAccount)
     val authority = ctAuthority("testUserId", "UTREF")
-    val user = LoggedInUser(userId = "testUserId", None, None, None, ConfidenceLevel.L50)
+    val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
     val principal = Principal(name = Some("TEST_USER"), accounts)
     new AuthContext(user, principal, None)
 
