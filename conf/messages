@@ -12,6 +12,8 @@ Service.back.excluded= Cancel - back to your excluded employees
 Service.back.yta=Back to Your Tax Account
 Service.feedback.link= What did you think of this service?
 Service.feedback.desc= (takes 30 seconds)
+Service.paye.label=Employer PAYE reference:
+Service.nino.lastletter=(Last&nbsp;letter&nbsp;not&nbsp;shown)
 
 Service.continue= Continue
 Service.confirm= Confirm
@@ -128,6 +130,7 @@ ExclusionOverview.title=Excluded Employees
 ExclusionOverview.instruction.empty=You are not excluding any employees from {0} from 6 April {1}.
 ExclusionOverview.instruction.notempty=You will be excluding the following employee(s) from having {0} benefit from 6 April {1}.
 ExclusionOverview.instruction.cy.notempty=You are excluding the following employee(s) from having {0} benefit from 6 April {1}.
+ExclusionOverview.warning=You should only exclude employees who receive this benefit and will be taxed on it via a P11D rather than through your payroll.
 
 ExclusionDecision.noselection.error =Please choose an option
 ExclusionNinoDecision.title = Exclude an employee
@@ -145,7 +148,8 @@ ExclusionSearch.Fail.P=Employee not found. Please check that the information you
 ExclusionImportant.ExcludeEmployee=For excluded employees you will need to submit a P11D to HMRC to report the benefit or expense they receive.
 ExclusionRemovalConfirmation.title =Add back to payroll
 ExclusionRemovalConfirmation.intro =The following employee will have {0} taxed through the payroll from 6 April {1}.
-ExclusionRemovalConfirmation.warning =This benefit will be removed from this employee''s tax code.
+ExclusionRemovalConfirmation.warning =The value of this benefit will be removed from this employee''s tax code.
+
 
 
 ExclusionRemoval.WhatNext.lede = You have told HMRC that {0} will be having {1} taxed through your payroll from 6 April {2}.

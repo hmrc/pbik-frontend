@@ -51,7 +51,7 @@
                               <td width="30%" id='name-@c.nino'>@c.firstForename @c.surname</td>
                               <td class="nino" id = 'nino-@c.nino'>
                                   @c.nino
-                                  <p>(Last&nbsp;letter&nbsp;not&nbsp;shown)</p>
+                                  <p>@Html(Messages("Service.nino.lastletter"))</p>
                               </td>
                               <td width="31%" id='dob-@c.nino'>@c.worksPayrollNumber</td>
                               @if(isCurrentTaxYear!="cy"){
@@ -79,8 +79,7 @@
             <div style="clear:both"></div>
 
             <div class="important-notice">
-                You should only exclude employees who receive this benefit and will be taxed on
-                it via a P11D rather than through your payroll.
+                @Messages("ExclusionOverview.warning")
             </div>
 
             <div style="margin-top: 10px;">
