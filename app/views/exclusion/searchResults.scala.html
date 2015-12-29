@@ -70,7 +70,7 @@
                                     </td>
                                     <td id='table-row-nino-@listItem("nino").value.get'>
                                       @listItem("nino").value.get
-                                        <p>(Last letter not shown)</p>
+                                        <p>@Html(Messages("Service.nino.lastletter"))</p>
                                     </td>
                                     <td id='table-row-dob-@listItem("nino").value.get'>
                                       @listItem("worksPayrollNumber").value.getOrElse("")
@@ -131,7 +131,7 @@
                                 <tr>
                                   <th>@Html(Messages("Service.field.nino.2lines"))</th>
                                   <td id="table-row-nino">@listItem("nino").value.get
-                                      <p>(Last letter not shown)</p></td>
+                                      <p>@Html(Messages("Service.nino.lastletter"))</p></td>
                                 </tr>
                                 @if(listItem("gender").value.isDefined) {
                                 <tr>

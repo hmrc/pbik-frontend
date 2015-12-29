@@ -48,7 +48,7 @@
 
                     <td id="nino">
                         @listItem("nino").value.get
-                        <p>(Last letter not shown)</p>
+                        <p>@Html(Messages("Service.nino.lastletter"))</p>
                     </td>
 
                 </tr>
@@ -72,7 +72,7 @@
         <div style="clear:both"></div>
 
         <div class="important-notice">
-            The value of this benefit will be removed from this employee's tax code.
+            @Messages("ExclusionRemovalConfirmation.warning")
         </div>
 
         <p>
