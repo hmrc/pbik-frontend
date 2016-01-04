@@ -14,6 +14,21 @@
  * limitations under the License.
  */
 
-package controllers;
+package controllers
 
-object AssetsController extends controllers.AssetsBuilder
+import controllers.auth.{EpayeUser, PbikActions}
+import play.api.mvc._
+
+object RedirectController extends Controller{
+
+  def redirectIfFromStart() = Action { implicit request =>
+    Redirect(routes.HomePageController.onPageLoad)
+  }
+  def redirectIfFromOldOverview() = Action { implicit request =>
+    Redirect(routes.HomePageController.onPageLoad)
+  }
+  def redirectIfFromRoot() = Action { implicit request =>
+    Redirect(routes.HomePageController.onPageLoad)
+  }
+
+}
