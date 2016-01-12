@@ -358,7 +358,7 @@ ServiceMessage.65355.h1=An error has occurred
 ServiceMessage.65355=We can''t find an active Employer for the specified PAYE Reference. Please check their details and try again or use the "Get help with this page" link for help.
 
 ServiceMessage.63092.h1=Please try again later
-ServiceMessage.63092=We''re having technical difficulties and the service is temporarily unavailable. We''re working to fix the problems and we should be back soon.
+ServiceMessage.63092=We''re having technical difficulties. We''re working to fix the problems and we should be back soon.
 
 ######################
 ###################### 
