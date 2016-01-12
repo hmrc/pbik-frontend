@@ -67,6 +67,7 @@ class HmrcTierConnector extends URIInformation with TierClient  {
       val headers:Map[String, String] = Map(HeaderTags.ETAG -> r.header(HeaderTags.ETAG).getOrElse("0"), HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1") )
 
       pbikHeaders = headers
+      Logger.info("GET etag/xtxid headers: " + pbikHeaders)
 
       r.json.validate[PbikError] match {
         case s: JsSuccess[PbikError] => throw new GenericServerErrorException(s.value.errorCode)
@@ -90,7 +91,7 @@ class HmrcTierConnector extends URIInformation with TierClient  {
       val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")
       val optMapped = Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession)
 
-      Logger.info("etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession)
+      Logger.info("POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession)
 
       WSHttp.POST( createPostUrl(baseUrl, URIExtension,orgIdentifier, year), data, optMapped.toSeq).map { response:HttpResponse =>
         processResponse(response)
