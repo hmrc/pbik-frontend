@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 HM Revenue & Customs
+ * Copyright 2016 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -235,7 +235,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         val result = await(mockWhatNextPageController.loadWhatNextRemovedBIK(formRegistrationList, 2015))
         status(result) shouldBe 200
         contentAsString(result) should include("Benefit removed")
-        contentAsString(result) should include("If you are still providing this benefit or expense to any of your employees, you will need to complete a P11D at the end of the tax year.")
+        contentAsString(result) should include("If you&#x27;re still providing this benefit or expense to any of your employees, you will need to complete a P11D at the end of the tax year.")
       }
     }
 

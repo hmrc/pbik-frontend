@@ -195,19 +195,27 @@ fieldset .h4-heading{
     padding: 0.73684em 1.05263em 0.52632em 0;
 }
 
+.benefits-table input[type=checkbox] {
+    margin-right: 10px;
+}
+
+.benefits-table .no-checkbox {
+    margin-left: 30px;
+}
+
+
 .no-margin-top {
     margin-top: 0 !important;
 }
 
 .checkbox-indent {
-    visibility: hidden;
-    height: 4em;
-    float: left;
-    margin-right: 4px;
+        float: left;
+        min-height: 30px;
+        min-width: 30px;
 }
 
 .other-desc-indent {
-    padding-left: 0.9em;
+    margin-left: 30px;
 }
 
 #link-feedback,
@@ -238,4 +246,16 @@ fieldset .h4-heading{
 .report-error .report-error {
     margin: 0 0 0 0;
     width: 100%;
+}
+
+#exclusion-overview .important-notice {
+    margin-bottom: 30px;
+}
+
+#search-results .form-group {
+    margin-bottom: 0;
+}
+
+#search-results .important-notice {
+    margin-bottom: 30px;
 }
