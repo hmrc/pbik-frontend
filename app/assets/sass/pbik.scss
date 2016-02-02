@@ -117,6 +117,7 @@ input#nino {
 .error fieldset, .error .error-notification {
     margin-left: 15px;
     font-size: 19px;
+    font-weight: bold;
 }
 
 .error-notification{
@@ -258,4 +259,49 @@ fieldset .h4-heading{
 
 #search-results .important-notice {
     margin-bottom: 30px;
+}
+
+.error-summary-pbik {
+  border: 4px solid #b10e1e;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 15px 10px;
+}
+
+@media (min-width: 641px) {
+  .error-summary-pbik {
+    border: 5px solid #b10e1e;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 20px 15px 15px 15px;
+    width: 100%;
+  }
+}
+
+.error-summary-pbik:focus {
+  outline: 3px solid #ffbf47;
+}
+
+.error-summary-pbik .error-summary-pbik-heading {
+  margin-top: 0;
+}
+
+.error-summary-pbik p {
+  margin-bottom: 10px;
+}
+
+.error-summary-pbik .error-summary-pbik-list {
+  padding-left: 0;
+}
+
+@media (min-width: 641px) {
+  .error-summary-pbik .error-summary-pbik-list li {
+    margin-bottom: 5px;
+  }
+}
+
+.error-summary-pbik .error-summary-pbik-list a {
+  color: #b10e1e;
+  font-weight: bold;
+  text-decoration: underline;
 }
