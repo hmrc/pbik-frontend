@@ -48,6 +48,7 @@ trait FormMappings extends PayrollBikDefaults {
 
   private val nameValidationRegex = "([a-zA-Z-'\\s])*"
   private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
+  //private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])(\\s|)[0-9][0-9](\\s|)[0-9][0-9](\\s|)[0-9][0-9](\\s|)([a-zA-Z]?)"
   private val ninoTrimmedRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
   private val yearRegEx = generateYearString(YEAR_LENGTH_VALUE)
   //  private val dateRegex: String = "([0-9])|([0-9][0-9])"
@@ -131,15 +132,16 @@ trait FormMappings extends PayrollBikDefaults {
 
   def exclusionSearchFormWithNino:Form[EiLPerson] = Form(
     mapping(
-      "firstname" -> nonEmptyText.verifying("Please enter a valid first name", firstname =>
-                                                            firstname.matches(nameValidationRegex)),
+      "firstname" -> nonEmptyText.verifying("Enter a first name that does not contain any numbers or special characters", firstname =>
+                                                            true || firstname.matches(nameValidationRegex)),
       "surname" -> nonEmptyText.verifying("Please enter a valid last name",
                                                             lastname => lastname.matches(nameValidationRegex)),
-      "nino" -> nonEmptyText.verifying("Please enter a valid National Insurance number",
-                                                            nino => nino.isEmpty || nino.matches(ninoValidationRegex)),
+      "nino" -> nonEmptyText.verifying("Enter a National Insurance number in the same format as the example shown",
+        nino => nino.isEmpty || nino.replaceAll(" ", "").matches(ninoValidationRegex)),
+
       "status" -> optional(number),
       "perOptLock" -> default(number, 0)
-    )((firstname, surname, nino, status, perOptLock) => EiLPerson(stripTrailingNinoCharacterForNPS(nino.toUpperCase),
+    )((firstname, surname, nino, status, perOptLock) => EiLPerson(stripTrailingNinoCharacterForNPS(nino.replaceAll(" ", "").toUpperCase),
                                                                   firstname.trim, EiLPerson.defaultSecondName,
                                                                   surname.trim, EiLPerson.defaultWorksPayrollNumber,
                                                                   EiLPerson.defaultDateOfBirth, EiLPerson.defaultGender,

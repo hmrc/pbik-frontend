@@ -132,7 +132,7 @@ ExclusionOverview.instruction.notempty=You''ll be excluding the following employ
 ExclusionOverview.instruction.cy.notempty=You''re excluding the following employees from having {0} benefit from 6 April {1}.
 ExclusionOverview.warning=You should only exclude employees who receive this benefit and will be taxed on it via a P11D rather than through your payroll.
 
-ExclusionDecision.noselection.error =Please choose an option
+ExclusionDecision.noselection.error =You need to choose an option
 ExclusionNinoDecision.title = Exclude an employee
 ExclusionNinoDecision.question =Do you know the National Insurance number of the employee you want to exclude from {0} starting 6 April {1}?
 
