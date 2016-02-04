@@ -16,7 +16,7 @@
     @if(invalidDate && !allFieldsEmpty){<span class="error-notification">@Messages("error.invaliddate")</span>}
 
     <legend class="form-label" >@label</legend>
-    <div class="date-of-birth">
+    <div class="date-of-birth" id="dob">
     @if(argsMap.get('_hintText).isDefined) {
     <p class="form-hint">@argsMap.get('_hintText)</p>
     }

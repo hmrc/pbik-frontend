@@ -21,6 +21,7 @@ import org.joda.time.DateTimeConstants._
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
 import utils.BikListUtils.MandatoryRadioButton
 
 object FormMappingsConstants {
@@ -132,12 +133,21 @@ trait FormMappings extends PayrollBikDefaults {
 
   def exclusionSearchFormWithNino:Form[EiLPerson] = Form(
     mapping(
-      "firstname" -> nonEmptyText.verifying("Enter a first name that does not contain any numbers or special characters", firstname =>
-                                                            true || firstname.matches(nameValidationRegex)),
-      "surname" -> nonEmptyText.verifying("Please enter a valid last name",
-                                                            lastname => lastname.matches(nameValidationRegex)),
-      "nino" -> nonEmptyText.verifying("Enter a National Insurance number in the same format as the example shown",
-        nino => nino.isEmpty || nino.replaceAll(" ", "").matches(ninoValidationRegex)),
+      "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
+          firstname.trim.length != 0)
+        .verifying(Messages("error.incorrect.firstname"), firstname =>
+          firstname.matches(nameValidationRegex)),
+
+      "surname" -> text.verifying(Messages("error.empty.lastname"),
+          lastname => lastname.trim.length != 0)
+        .verifying(Messages("error.incorrect.lastname"),
+          lastname => lastname.matches(nameValidationRegex)),
+
+      "nino" -> text.verifying(Messages("error.empty.nino"),
+          nino => nino.trim.length != 0)
+        .verifying(Messages("error.incorrect.nino"),
+          nino => (nino.trim.length == 0 || nino.replaceAll(" ", "").matches(ninoValidationRegex)))
+      ,
 
       "status" -> optional(number),
       "perOptLock" -> default(number, 0)
@@ -161,10 +171,16 @@ trait FormMappings extends PayrollBikDefaults {
     val invalidDateError = "error.invaliddate"
     Form(
       mapping(
-        "firstname" -> nonEmptyText.verifying("Please enter a valid first name", firstname =>
-                                                              firstname.matches(nameValidationRegex)),
-        "surname" -> nonEmptyText.verifying("Please enter a valid last name",
-                                                              lastname => lastname.matches(nameValidationRegex)),
+        "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
+          firstname.trim.length != 0)
+          .verifying(Messages("error.incorrect.firstname"), firstname =>
+            firstname.matches(nameValidationRegex)),
+
+        "surname" -> text.verifying(Messages("error.empty.lastname"),
+          lastname => lastname.trim.length != 0)
+          .verifying(Messages("error.incorrect.lastname"),
+            lastname => lastname.matches(nameValidationRegex)),
+
         "dob" -> mapping(
           "day" -> text,
           "month" -> text,

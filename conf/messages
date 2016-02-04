@@ -57,10 +57,10 @@ StartPage.buttonStartLink.text = Start Now
 Overview.heading = Your payrolled benefits and expenses
 Overview.next.heading= Next tax year – starting 6 April {0}
 Overview.next.lead = You''ve told HM Revenue and Customs that you''ll be adding the following benefits or expenses to your payroll.
-Overview.next.lead.empty = You haven''t yet told HM Revenue and Customs that you''ll be adding any benefits or expenses to your payroll from 6 April {0}.
+Overview.next.lead.empty = You haven''t told HM Revenue and Customs that you''re adding benefits or expenses to your payroll from 6 April {0}.
 Overview.current.heading= Current tax year – started 6 April {0}
 Overview.current.lead = You''ve told HM Revenue and Customs that you''re currently payrolling the following benefits or expenses for this tax year.
-Overview.current.lead.empty = You haven''t yet told HM Revenue and Customs that you''ll be adding any benefits or expenses to your payroll from 6 April {0}.
+Overview.current.lead.empty = You haven''t told HM Revenue and Customs that you''re adding benefits or expenses to your payroll from 6 April {0}.
 Overview.table.heading.1 = Benefit or expense
 Overview.table.exclude.link = Manage excluded employees
 Overview.table.exclude.none.link = Exclude an employee
@@ -108,7 +108,7 @@ AddBenefits.CY.Caution.p12.2=next tax year
 AddBenefits.CY.Caution.p12.3=(starting 6 April {0})
 
 AddBenefits.ChooseBenefitsLabel.1 =Choose which benefits and expenses you''ll be taxing through your payroll from 6 April {0}.
-AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee a benefit or expense and you''re unsure it''s taxable or not, please see <a rel="external" id="guidance-a-to-z" target="_blank" onclick="gaEventLinkAtoZGuide()" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
+AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee with a benefit or expense and you''re unsure it''s taxable or not, see <a rel="external" id="guidance-a-to-z" target="_blank" onclick="gaEventLinkAtoZGuide()" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
 AddBenefits.SelectAllLabel = Select all that apply
 AddBenefits.noselection.error = You need to select at least 1 benefit or expense before you can continue
 
@@ -118,7 +118,7 @@ RemoveBenefits.Confirm.Title=Remove a benefit or expense
 AddBenefits.Confirm.Desc=You''re registering to payroll the following from 6 April {0}.
 AddBenefits.Confirm.help.desc=You can only exclude employees after registering a benefit
 AddBenefits.Confirm.help.reveal.link=What is an excluded employee?
-AddBenefits.Confirm.help.reveal.p1=Excluded employees are those who receive a benefit but aren''t taxed on it through their payroll. Tax on the value of the benefit should be taken through the employee''s tax code and you''ll need to submit a P11D for each excluded employee. You shouldn''t exclude employees who do not receive the benefit.
+AddBenefits.Confirm.help.reveal.p1=Excluded employees are those who receive a benefit but aren''t taxed on it through their payroll. Tax on the value of the benefit should be taken through the employee''s tax code and you''ll need to submit a P11D for each excluded employee. You shouldn''t exclude employees who don''t receive the benefit.
 RemoveBenefits.Confirm.Desc=You''ll be removing {0} from your payroll from 6 April {1}.
 
 RemoveBenefits.Heading =Remove benefits or expenses from the tax year starting 6 April {0}
@@ -413,6 +413,14 @@ ErrorPage.backButtonNoCache = You haven''t performed a search yet. Please go bac
 
 error.required=This field is required
 error.invaliddate=Please enter a valid date
+
+error.empty.nino=Enter a National Insurance number
+error.empty.firstname=Enter a first name
+error.empty.lastname=Enter a last name
+error.incorrect.nino=Enter a National Insurance number in the same format as the example shown
+error.incorrect.firstname=Enter a first name that does not contain any numbers or special characters
+error.incorrect.lastname=Enter a last name that does not contain any numbers or special characters
+
 
 ######################
 ######################

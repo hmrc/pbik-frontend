@@ -205,7 +205,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         val formRegistrationList: Form[RegistrationList] = objSelectedForm
         val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2015))
         status(result) shouldBe 200
-        contentAsString(result) should include("Benefit(s) added")
+        contentAsString(result) should include("Benefits registered")
         contentAsString(result) should include("")
       }
     }
@@ -219,7 +219,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         val formRegistrationList: Form[RegistrationList] = objSelectedForm
         val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016))
         status(result) shouldBe 200
-        contentAsString(result) should include("Benefit(s) added")
+        contentAsString(result) should include("Benefits registered")
         contentAsString(result) should include("You still need to report Class 1A National Insurance contributions on a P11D(b).")
       }
     }
@@ -235,12 +235,9 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         val result = await(mockWhatNextPageController.loadWhatNextRemovedBIK(formRegistrationList, 2015))
         status(result) shouldBe 200
         contentAsString(result) should include("Benefit removed")
-        contentAsString(result) should include("If you&#x27;re still providing this benefit or expense to any of your employees, you will need to complete a P11D at the end of the tax year.")
+        contentAsString(result) should include("If you&#x27;re still providing this benefit or expense to any of your employees, you&#x27;ll need to complete a P11D at the end of the tax year.")
       }
     }
-
-
-
 
   }
 

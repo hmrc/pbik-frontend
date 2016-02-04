@@ -26,14 +26,37 @@
                     @searchForm.error("status").get.message
                 </span>
             }
+
+            @if(searchForm("nino").hasErrors || searchForm("firstname").hasErrors || searchForm("lastname").hasErrors) {
+                <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+                    <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
+                        There is a problem
+                    </h1>
+
+                    <ul class="error-summary-pbik-list">
+                        @if(searchForm("nino").hasErrors) {
+                            <li><a href="#nino">@searchForm.error("nino").get.message</a></li>
+                        }
+                        @if(searchForm("firstname").hasErrors) {
+                            <li><a href="#firstname">@searchForm.error("firstname").get.message</a></li>
+                        }
+                        @if(searchForm("surname").hasErrors) {
+                            <li><a href="#lastname">@searchForm.error("surname").get.message</a></li>
+                        }
+                    </ul>
+
+                </div>
+            }
+
             <fieldset>
-                <div class='form-group'>
+                <div class='form-group' id="nino">
                     @localhelpers.input(searchForm("nino"), '_label -> "National Insurance number", '_inputClass -> "form-control", '_inputHint ->  Messages("Service.field.ninohint"))
                 </div>
-                <div class='form-group'>
-                    @localhelpers.input(searchForm("firstname"), '_label -> "First name", '_inputClass -> "form-control")
+                <div class='form-group' id="firstname">
+                    @helpers.input(searchForm("firstname"), '_label -> "First name", '_inputClass -> "form-control")
                 </div>
-                <div class='form-group'>
+                <div class='form-group' id="lastname">
                     @helpers.input(searchForm("surname"), '_label -> "Last name", '_inputClass -> "form-control")
                 </div>
             </fieldset>

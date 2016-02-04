@@ -103,8 +103,8 @@ class AuthControllerSpec extends UnitSpec with Mockito with FakePBIKApplication 
       assert(bodyText.contains("To enrol you&#x27;ll need:"))
       assert(bodyText.contains("employer PAYE reference"))
       assert(bodyText.contains("Accounts office reference"))
-      assert(bodyText.contains("you&#x27;ll then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment."))
-      assert(bodyText.contains("you&#x27;ll then be able to use Payrolling Benefits in Kind."))
+      assert(bodyText.contains("You&#x27;ll then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment."))
+      assert(bodyText.contains("You&#x27;ll then be able to use Payrolling Benefits in Kind."))
     }
   }
 
