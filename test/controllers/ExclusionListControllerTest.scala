@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 HM Revenue & Customs
+ * Copyright 2016 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -602,7 +602,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val r = await(mockExclusionController.processExclusionForm(individualsForm.fill(EiLPersonList(ListOfPeople)),TEST_YEAR_CODE, TEST_IABD_VALUE,YEAR_RANGE))(timeout)
         status(r) shouldBe 200
         bodyOf(r) should include(title)
-        bodyOf(r) should include(excludedText)
+        bodyOf(r) should include("You&#x27;ll need to submit a P11D to HMRC to report the value of the benefit or expense they receive.")
       }
     }
   }
@@ -848,7 +848,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val r = await(mockExclusionController.processIndividualExclusionForm(individualsFormWithRadio.fill("", EiLPersonList(ListOfPeople)),TEST_YEAR_CODE, TEST_IABD_VALUE,YEAR_RANGE))(timeout)
         status(r) shouldBe 200
         bodyOf(r) should include(title)
-        bodyOf(r) should include(excludedText)
+        bodyOf(r) should include("You&#x27;ll need to submit a P11D to HMRC to report the value of the benefit or expense they receive.")
       }
     }
   }

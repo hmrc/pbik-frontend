@@ -24,12 +24,12 @@ Service.home= Home
 Service.tryagain= Try again
 
 Service.notEnrolled.title=Enrol to use this service
-Service.notEnrolled.text1=You are signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue.
+Service.notEnrolled.text1=You''re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue.
 Service.notEnrolled.text2=To enrol you''ll need:
 Service.enrollmentLoop.list1=employer PAYE reference
 Service.enrollmentLoop.list2=Accounts office reference
-Service.notEnrolled.text3=You will then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment.
-Service.notEnrolled.text4=You will then be able to use Payrolling Benefits in Kind.
+Service.notEnrolled.text3=You''ll then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment.
+Service.notEnrolled.text4=You''ll then be able to use Payrolling Benefits in Kind.
 Service.notEnrolled.button=Enrol
 
 
@@ -56,11 +56,11 @@ StartPage.buttonStartLink.text = Start Now
 ######################
 Overview.heading = Your payrolled benefits and expenses
 Overview.next.heading= Next tax year – starting 6 April {0}
-Overview.next.lead = You have told HMRC you will be adding the following benefits or expenses to your payroll.
-Overview.next.lead.empty = You have not yet told HMRC that you will be adding any benefits or expenses to your payroll from 6 April {0}.
+Overview.next.lead = You''ve told HM Revenue and Customs that you''ll be adding the following benefits or expenses to your payroll.
+Overview.next.lead.empty = You haven''t told HM Revenue and Customs that you''re adding benefits or expenses to your payroll from 6 April {0}.
 Overview.current.heading= Current tax year – started 6 April {0}
-Overview.current.lead = You have told HMRC that you are currently payrolling the following benefits or expenses for this tax year.
-Overview.current.lead.empty = You have not yet told HMRC that you will be adding any benefits or expenses to your payroll from 6 April {0}.
+Overview.current.lead = You''ve told HM Revenue and Customs that you''re currently payrolling the following benefits or expenses for this tax year.
+Overview.current.lead.empty = You haven''t told HM Revenue and Customs that you''re adding benefits or expenses to your payroll from 6 April {0}.
 Overview.table.heading.1 = Benefit or expense
 Overview.table.exclude.link = Manage excluded employees
 Overview.table.exclude.none.link = Exclude an employee
@@ -80,9 +80,9 @@ ManageRegistrationYear.section.next.label = How would you like to update your pa
 ManageRegistrationYear.section.current.label = How would you like to update your payrolled benefits and expenses for the tax year 6 April {0} to 5 April {1}?
 
 ManagingRegistration.add.hint = Show the benefits I am currently payrolling
-ManagingRegistration.cant.hint = The following benefits have not yet been included in this service.
+ManagingRegistration.cant.hint = The following benefits haven''t yet been included in this service.
 ManagingRegistration.add.help.1 = If your employees receive any of them, do not add the value to your payroll and use a P11D to report them instead.
-ManagingRegistration.add.exhausted = You have already added all of the benefits or expenses that are available in this category.
+ManagingRegistration.add.exhausted = You''ve already added all of the benefits or expenses that are available in this category.
 
 ######################
 ######################
@@ -92,7 +92,7 @@ AddBenefits.table.heading.input = Benefit or expense
 AddBenefits.table.heading.section = P11D section
 
 AddBenefits.CY.Caution.Title=IMPORTANT - Please read the information below
-AddBenefits.CY.Caution.p1=CAUTION - You are about to register benefits or expenses for the current tax year ( started 6 April {0} )
+AddBenefits.CY.Caution.p1=CAUTION - You''re about to register benefits or expenses for the current tax year ( started 6 April {0} )
 AddBenefits.CY.Caution.p2=Most organisations register for the next tax year, starting {0}.
 AddBenefits.CY.Caution.p3=Please ensure you understand the following, before you continue:
 AddBenefits.CY.Caution.p4=this service is Live!
@@ -103,36 +103,36 @@ AddBenefits.CY.Caution.p8=you must already be payrolling for the current tax yea
 AddBenefits.CY.Caution.p9=registrations will apply to the current tax year
 AddBenefits.CY.Caution.p10=registrations may change your employees tax code
 AddBenefits.CY.Caution.p11=employees may receive new notices that their tax code has changed
-AddBenefits.CY.Caution.p12.1=If you are new to payrolling, HMRC strongly recommends you use this service to register to payroll benefits and expenses from the
+AddBenefits.CY.Caution.p12.1=If you''re new to payrolling, HMRC strongly recommends you use this service to register to payroll benefits and expenses from the
 AddBenefits.CY.Caution.p12.2=next tax year
 AddBenefits.CY.Caution.p12.3=(starting 6 April {0})
 
-AddBenefits.ChooseBenefitsLabel.1 =Choose which benefit and expense(s) you will be taxing through your payroll from 6 April {0}.
-AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee a benefit or expense and you are unsure if it is taxable or not, please see <a rel="external" id="guidance-a-to-z" target="_blank" onclick="gaEventLinkAtoZGuide()" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
+AddBenefits.ChooseBenefitsLabel.1 =Choose which benefits and expenses you''ll be taxing through your payroll from 6 April {0}.
+AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee with a benefit or expense and you''re unsure it''s taxable or not, see <a rel="external" id="guidance-a-to-z" target="_blank" onclick="gaEventLinkAtoZGuide()" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
 AddBenefits.SelectAllLabel = Select all that apply
-AddBenefits.noselection.error = Choose at least 1 benefit or expense
+AddBenefits.noselection.error = You need to select at least 1 benefit or expense before you can continue
 
 AddBenefits.Confirm.Single.Title=Add a benefit or expense
 AddBenefits.Confirm.Multiple.Title=Add benefits and expenses
 RemoveBenefits.Confirm.Title=Remove a benefit or expense
-AddBenefits.Confirm.Desc=You will be adding the following to your payroll from 6 April {0}.
-AddBenefits.Confirm.help.desc=You can only exclude employees after benefit(s) have been added.
+AddBenefits.Confirm.Desc=You''re registering to payroll the following from 6 April {0}.
+AddBenefits.Confirm.help.desc=You can only exclude employees after registering a benefit
 AddBenefits.Confirm.help.reveal.link=What is an excluded employee?
-AddBenefits.Confirm.help.reveal.p1=Excluded employees are those who receive a benefit but are not taxed on it through their payroll. Tax on the value of the benefit should be taken through the employee''s tax code and you will need to submit a P11D for each excluded employee. You should not exclude employees who do not receive the benefit.
-RemoveBenefits.Confirm.Desc=You will be removing {0} from your payroll from 6 April {1}.
+AddBenefits.Confirm.help.reveal.p1=Excluded employees are those who receive a benefit but aren''t taxed on it through their payroll. Tax on the value of the benefit should be taken through the employee''s tax code and you''ll need to submit a P11D for each excluded employee. You shouldn''t exclude employees who don''t receive the benefit.
+RemoveBenefits.Confirm.Desc=You''ll be removing {0} from your payroll from 6 April {1}.
 
 RemoveBenefits.Heading =Remove benefits or expenses from the tax year starting 6 April {0}
 RemoveBenefits.ChooseBenefitsLabel  =Choose the benefit or expenses to be removed
 
-NoMoreToAdd.Desc=You have already added all of the benefits or expenses that are available for the tax year {0} to {1}. If you have made a mistake and have not been payrolling those benefits since 6 April {0} then please use the "Get help with this page" link for help.
+NoMoreToAdd.Desc=You''ve already added all of the benefits or expenses that are available for the tax year {0} to {1}. If you''ve made a mistake and haven''t been payrolling those benefits since 6 April {0} then please use the "Get help with this page" link for help.
 
-ExclusionOverview.title=Excluded Employees
-ExclusionOverview.instruction.empty=You are not excluding any employees from {0} from 6 April {1}.
-ExclusionOverview.instruction.notempty=You will be excluding the following employee(s) from having {0} benefit from 6 April {1}.
-ExclusionOverview.instruction.cy.notempty=You are excluding the following employee(s) from having {0} benefit from 6 April {1}.
+ExclusionOverview.title=Excluded employees
+ExclusionOverview.instruction.empty=You''re not currently excluding any employees from {0} from 6 April {1}.
+ExclusionOverview.instruction.notempty=You''ll be excluding the following employees from having {0} benefit from 6 April {1}.
+ExclusionOverview.instruction.cy.notempty=You''re excluding the following employees from having {0} benefit from 6 April {1}.
 ExclusionOverview.warning=You should only exclude employees who receive this benefit and will be taxed on it via a P11D rather than through your payroll.
 
-ExclusionDecision.noselection.error =Please choose an option
+ExclusionDecision.noselection.error =You need to choose an option
 ExclusionNinoDecision.title = Exclude an employee
 ExclusionNinoDecision.question =Do you know the National Insurance number of the employee you want to exclude from {0} starting 6 April {1}?
 
@@ -140,23 +140,23 @@ ExclusionNinoDecision.question =Do you know the National Insurance number of the
 ExclusionSearch.title=Search results
 ExclusionSearch.form.title=Search for an employee
 ExclusionSearch.intro=Exclude the following employee from having {0} taxed through your payroll from 6 April {1}.
-ExclusionSearch.intro.multi=Your search results have matched several employees, please choose which employee you are excluding from having {0} taxed through your payroll from 6 April {1}.
+ExclusionSearch.intro.multi=Your search results have matched several employees, choose which employee you''re excluding from having {0} taxed through your payroll from 6 April {1}.
 
 ExclusionSearch.Fail.Headline=Employee not found.
-ExclusionSearch.Fail.P=Employee not found. Please check that the information you have provided is correct and try again.
+ExclusionSearch.Fail.P=Employee not found. Please check that the information you''ve provided is correct and try again.
 
-ExclusionImportant.ExcludeEmployee=For excluded employees you will need to submit a P11D to HMRC to report the benefit or expense they receive.
+ExclusionImportant.ExcludeEmployee=For excluded employees you''ll need to submit a P11D to HMRC to report the benefit or expense they receive.
 ExclusionRemovalConfirmation.title =Add back to payroll
 ExclusionRemovalConfirmation.intro =The following employee will have {0} taxed through the payroll from 6 April {1}.
 ExclusionRemovalConfirmation.warning =The value of this benefit will be removed from this employee''s tax code.
 
 
 
-ExclusionRemoval.WhatNext.lede = You have told HMRC that {0} will be having {1} taxed through your payroll from 6 April {2}.
+ExclusionRemoval.WhatNext.lede = You''ve told HMRC that {0} will be having {1} taxed through your payroll from 6 April {2}.
 
 ExclusionRemoval.WhatNext.p1 = Set up your payroll to include the benefit or expense in your employee''s pay.
 ExclusionRemoval.WhatNext.p2 = Tell your employee that their tax code will change accordingly.
-ExclusionRemoval.WhatNext.p3 = For tax year {0} to {1} onwards you will no longer need to submit a P11D for a benefit and expense you have told HMRC you are payrolling.
+ExclusionRemoval.WhatNext.p3 = For tax year {0} to {1} onwards you''ll no longer need to submit a P11D for a benefit and expense you''ve told HMRC you''re payrolling.
 ExclusionRemoval.WhatNext.p4 = You still need to report Class 1A National Insurance contributions on a P11D(b).
 
 ExclusionRadioButtonSelectionConfirmation.title = Check employee details
@@ -257,7 +257,7 @@ BenefitInKind.url.42=<a target="_blank" href="https://www.gov.uk/paying-your-emp
 BenefitInKind.p11d.42.ref=Section N
 
 BenefitInKind.label.43=General expenses allowance for business travel
-BenefitInKind.desc.43=Any round sum allowance provided to an employee that is not exclusively for entertaining.
+BenefitInKind.desc.43=Any round sum allowance provided to an employee that isn''t exclusively for entertaining.
 BenefitInKind.url.43=<a target="_blank" href="https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#entertainment">more</a> (Opens new window)
 BenefitInKind.p11d.43.ref=Section N
 
@@ -271,7 +271,8 @@ BenefitInKind.desc.45=Relocation costs you’ve paid on behalf of your employee.
 BenefitInKind.url.45=<a target="_blank" href="https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#non-qualifying">more</a> (Opens new window)
 BenefitInKind.p11d.45.ref=Section N
 
-BenefitInKind.label.unavailable=This benefit is not currently available to register online. Please use a P11D to report it instead.
+BenefitInKind.label.unavailable=This benefit isn''t currently available to register online.
+BenefitInKind.label.unavailable.desc=For benefits that aren''t currently available to register online, use a P11D to report it instead.
 
 Prioritised.Benefits = 30,31
 
@@ -303,13 +304,13 @@ ServiceMessage.63082=Please check you have the correct details and search again.
 
 ServiceMessage.63088.h1=Benefit no longer exists
 ServiceMessage.63088.1=This benefit no longer exists as a stand alone benefit that needs to be reported.
-ServiceMessage.63088.2=What to do next - please check if the value of the benefit or expense you are providing to employees is still taxable. If it is please go <a id="link-back-choose" href="javascript: window.history.go(-1)">back</a> and select an appropriate category.
+ServiceMessage.63088.2=What to do next - please check if the value of the benefit or expense you''re providing to employees is still taxable. If it is please go <a id="link-back-choose" href="javascript: window.history.go(-1)">back</a> and select an appropriate category.
 
 ServiceMessage.64988.h1=Please try again later
 ServiceMessage.64988=We found more than one PAYE record. Please <a href="javascript: contactHMRC()">contact HMRC</a>
 
 ServiceMessage.63089.h1=An error has occurred
-ServiceMessage.63089=You have already registered this benefit.
+ServiceMessage.63089=You''ve already registered this benefit.
 
 ServiceMessage.63081.h1=Employee can''t be found
 ServiceMessage.63081=Please check you have the correct details and search again or <a href="javascript: contactHMRC()">contact HMRC</a>
@@ -321,14 +322,14 @@ ServiceMessage.63090.h1=Employee already excluded
 ServiceMessage.63090=This person is already excluded from having this benefit taxed through their payroll.
 
 ServiceMessage.63091.h1=Employee can''t be found
-ServiceMessage.63091=Due to technical reasons, searching with an employee''s date of birth is not possible at the moment. Either try again later or search using the employee''s National Insurance number.
+ServiceMessage.63091=Due to technical reasons, searching with an employee''s date of birth isn''t possible at the moment. Either try again later or search using the employee''s National Insurance number.
 
 ServiceMessage.63086.h1=There is a problem
 ServiceMessage.63086=We can''t complete this task. Please <a href="javascript: contactHMRC()">contact HMRC</a>
 
 ServiceMessage.64989.h1=Benefit no longer exists
 ServiceMessage.64989.1=This benefit no longer exists as a stand alone benefit that needs to be reported.
-ServiceMessage.64989.2=What to do next - please check if the value of the benefit or expense you are providing to employees is still taxable. If it is please go <a id="link-back-choose" href="javascript: window.history.go(-1)">back</a> and select an appropriate category.
+ServiceMessage.64989.2=What to do next - please check if the value of the benefit or expense you''re providing to employees is still taxable. If it is please go <a id="link-back-choose" href="javascript: window.history.go(-1)">back</a> and select an appropriate category.
 
 ServiceMessage.64986.h1=Incorrect tax year
 ServiceMessage.64986=Please use a start date in either the current tax year or the following tax year.
@@ -370,7 +371,7 @@ Service.field.nino=National Insurance number
 Service.field.nino.2lines=National Insurance number
 Service.field.ninohint=For example, QQ123456A
 Service.field.dob=Date of birth
-Service.field.worksnumber=Payroll ID / Works number
+Service.field.worksnumber=Payroll ID or Works number
 Service.field.dobhint=For example, 31 3 1980
 Service.field.dob.day=Day
 Service.field.dob.month=Month
@@ -383,7 +384,7 @@ Service.field.gender.female=Female
 ######################
 
 ErrorPage.authorisationTitle= Authorisation Error
-ErrorPage.authorisationError= We are sorry, it appears you are not authorised to use the Payrolling Benefits in Kind service. Please ensure your organisation has enrolled for the HMRC's Employer Pay as you Earn (epaye) Service.
+ErrorPage.authorisationError= We are sorry, it appears you aren''t authorised to use the Payrolling Benefits in Kind service. Please ensure your organisation has enrolled for the HMRC''s Employer Pay as you Earn (epaye) Service.
 
 
 ######################
@@ -392,20 +393,20 @@ ErrorPage.heading.invalidYear= Invalid Year Specified
 
 ErrorPage.validationError= We are sorry a technical error has occurred. Please try again later.
 ErrorPage.connectionProblem= The Payrolling Benefits in Kind service is available between 8am - 8pm (BST) Monday to Friday.
-ErrorPage.connectionAction= If you are accessing the service outside of these hours, please try again later.
-ErrorPage.connectionStatus= If you are accessing the service within these hours, please check for scheduled maintenance information at the <a href="https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">HMRC service availability site</a>
+ErrorPage.connectionAction= If you''re accessing the service outside of these hours, please try again later.
+ErrorPage.connectionStatus= If you''re accessing the service within these hours, please check for scheduled maintenance information at the <a href="https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">HMRC service availability site</a>
 ErrorPage.serviceNotLaunched=You cannot register Biks for this year as the service is yet to launch
-ErrorPage.noBenefitsToAddcy=You have already added all of the benefits or expenses that are available with this service. If you are payrolling any others, please tell HMRC with a P11D.
-ErrorPage.noBenefitsToAddcyp1=You have already added all of the benefits or expenses that are available with this service. If you are payrolling any others, please tell HMRC with a P11D.
-ErrorPage.noCY1BenefitsToRemovecyp1= You have not added any benefits or expenses that are available for the next tax year {0} to {1}. If you would like to register any for tax year {0} to {1}, please return to the <a href="/payrollbik/overview">home</a> screen and add them.
-ErrorPage.noCY1BenefitsToRemovecy= You have not added any benefits or expenses that are available for the current tax year {0} to {1}. If you would like to register any for tax year {0} to {1}, please return to the <a href="/payrollbik/overview">home</a> screen and add them.
+ErrorPage.noBenefitsToAddcy=You''ve already added all of the benefits or expenses that are available with this service. If you''re payrolling any others, please tell HMRC with a P11D.
+ErrorPage.noBenefitsToAddcyp1=You''ve already added all of the benefits or expenses that are available with this service. If you''re payrolling any others, please tell HMRC with a P11D.
+ErrorPage.noCY1BenefitsToRemovecyp1= You haven''t added any benefits or expenses that are available for the next tax year {0} to {1}. If you would like to register any for tax year {0} to {1}, please return to the <a href="/payrollbik/overview">home</a> screen and add them.
+ErrorPage.noCY1BenefitsToRemovecy= You haven''t added any benefits or expenses that are available for the current tax year {0} to {1}. If you would like to register any for tax year {0} to {1}, please return to the <a href="/payrollbik/overview">home</a> screen and add them.
 ErrorPage.invalidForm=There was a problem when the server attempted to process your form. Please attempt to fill in the form again.
-ErrorPage.invalidYear=You have specified an invalid year in your URI please go back to the home screen and select one of the available options.
-ErrorPage.invalidBikType=You have specified an invalid bik type in your URI please go back to the home screen and select one of the available options.
-ErrorPage.noBenefitsRegistered= You have not registered any benefits for this tax year, please return to the <a href="/payrollbik/payrolled-benefits-expenses">home</a> screen and register benefits before trying to add exclusions.
+ErrorPage.invalidYear=You''ve specified an invalid year in your URI please go back to the home screen and select one of the available options.
+ErrorPage.invalidBikType=You''ve specified an invalid bik type in your URI please go back to the home screen and select one of the available options.
+ErrorPage.noBenefitsRegistered= You haven''t registered any benefits for this tax year, please return to the <a href="/payrollbik/payrolled-benefits-expenses">home</a> screen and register benefits before trying to add exclusions.
 ErrorPage.noBenefitsRegisteredViewcy= You don''t currently have any benefits or expenses registered for payrolling. If you would like to register any for tax year {0} to {1}, please return to the <a href="/payrollbik/payrolled-benefits-expenses">home</a> screen and add them.
 ErrorPage.noBenefitsRegisteredViewcyp1= You don''t currently have any benefits or expenses registered for payrolling. If you would like to register any for tax year {0} to {1}, please return to the <a href="/payrollbik/payrolled-benefits-expenses">home</a> screen and add them.
-ErrorPage.backButtonNoCache = You have not performed a search yet. Please go back to the home page and repeat the user journey.
+ErrorPage.backButtonNoCache = You haven''t performed a search yet. Please go back to the home page and repeat the user journey.
 
 #############
 #############
@@ -413,29 +414,37 @@ ErrorPage.backButtonNoCache = You have not performed a search yet. Please go bac
 error.required=This field is required
 error.invaliddate=Please enter a valid date
 
+error.empty.nino=Enter a National Insurance number
+error.empty.firstname=Enter a first name
+error.empty.lastname=Enter a last name
+error.incorrect.nino=Enter a National Insurance number in the same format as the example shown
+error.incorrect.firstname=Enter a first name that does not contain any numbers or special characters
+error.incorrect.lastname=Enter a last name that does not contain any numbers or special characters
+
+
 ######################
 ######################
 
-whatNext.add.heading=Benefit(s) added
+whatNext.add.heading=Benefits registered
 whatNext.remove.heading=Benefit removed
-whatNext.add.info=You will need to submit a P11D to HMRC to report the benefit or expense they receive.
-whatNext.cy.add.p1=You have successfully told HMRC that you will be payrolling the following benefits or expenses
-whatNext.cy1.add.lede=You have told HMRC you will be taxing the following benefit or expense(s) through your payroll from 6 April {0}.
-whatNext.cy1.add.p1=Set up your payroll to include the benefit or expense(s) in your employees'' pay.
+whatNext.add.info=You''ll need to submit a P11D to HMRC to report the benefit or expense they receive.
+whatNext.cy.add.p1=You''ve successfully told HMRC that you''ll be payrolling the following benefits or expenses
+whatNext.cy1.add.lede=You''ve told HMRC you''ll be taxing the following benefits or expenses through your payroll from 6 April {0}.
+whatNext.cy1.add.p1=Set up your payroll to include the benefits or expenses in your employees'' pay.
 whatNext.cy1.add.p2=Tell your employees that their tax codes will change accordingly.
-whatNext.cy1.add.p3=For tax year {0} to {1} onwards you will no longer need to submit a P11D for benefits and expenses you have told HMRC you are payrolling.
+whatNext.cy1.add.p3=For tax year {0} to {1} onwards you''ll no longer need to submit a P11D for benefits and expenses you''ve told HMRC you''re payrolling.
 whatNext.cy1.add.p4=You still need to report Class 1A National Insurance contributions on a P11D(b).
 whatNext.subHeading=Next steps
-whatNext.remove.lede=You have told HMRC you will not be taxing <span id="cy1-{3}">{0}</span> through your payroll from 6 April {1}.
-whatNext.remove.p1=If you are still providing this benefit or expense to any of your employees, you will need to complete a P11D at the end of the tax year.
+whatNext.remove.lede=You''ve told HMRC you won''t be taxing <span id="cy1-{3}">{0}</span> through your payroll from 6 April {1}.
+whatNext.remove.p1=If you''re still providing this benefit or expense to any of your employees, you''ll need to complete a P11D at the end of the tax year.
 
 whatNext.exclude.heading=Employee excluded
 whatNext.rescind.heading=Employee payrolled
-whatNext.exclude.lede=You have told HMRC that {0} will be excluded from having {1} taxed via your company payroll from 6 April {2}.
-whatNext.exclude.p1= You will need to submit a P11D to HMRC to report the value of the benefit or expense received.
+whatNext.exclude.lede=You''ve told HMRC that {0} will be excluded from having {1} taxed via your company payroll from 6 April {2}.
+whatNext.exclude.p1= You''ll need to submit a P11D to HMRC to report the value of the benefit or expense they receive.
 whatNext.cy.exclude.p2=Will no longer have the following benefits and expenses payrolled
 whatNext.cy1.exclude.p2=Will no longer have the following benefits and expenses payrolled on {0}
-whatNext.exclude.p3=Set up your payroll correctly so that the employee(s) do not have their benefits and expenses taxed in their pay.
-whatNext.exclude.p4=You will need to submit a P11D for those employees you have excluded, informing us of the value of the benefits and expenses they receive so we can include it in their tax code.
+whatNext.exclude.p3=Set up your payroll correctly so that the employees don''t have their benefits and expenses taxed in their pay.
+whatNext.exclude.p4=You''ll need to submit a P11D for those employees you''ve excluded, informing us of the value of the benefits and expenses they receive so we can include it in their tax code.
 whatNext.exclude.p5=You must also report Class 1A National Insurance Contributions on form P11D(b).
 whatNext.exclude.p6=If you would like to start payrolling the excluded employees chosen benefits, please remove them from the exclusion list.

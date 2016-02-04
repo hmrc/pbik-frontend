@@ -21,6 +21,7 @@ import org.joda.time.DateTimeConstants._
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
 import utils.BikListUtils.MandatoryRadioButton
 
 object FormMappingsConstants {
@@ -48,6 +49,7 @@ trait FormMappings extends PayrollBikDefaults {
 
   private val nameValidationRegex = "([a-zA-Z-'\\s])*"
   private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
+  //private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])(\\s|)[0-9][0-9](\\s|)[0-9][0-9](\\s|)[0-9][0-9](\\s|)([a-zA-Z]?)"
   private val ninoTrimmedRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
   private val yearRegEx = generateYearString(YEAR_LENGTH_VALUE)
   //  private val dateRegex: String = "([0-9])|([0-9][0-9])"
@@ -131,15 +133,25 @@ trait FormMappings extends PayrollBikDefaults {
 
   def exclusionSearchFormWithNino:Form[EiLPerson] = Form(
     mapping(
-      "firstname" -> nonEmptyText.verifying("Please enter a valid first name", firstname =>
-                                                            firstname.matches(nameValidationRegex)),
-      "surname" -> nonEmptyText.verifying("Please enter a valid last name",
-                                                            lastname => lastname.matches(nameValidationRegex)),
-      "nino" -> nonEmptyText.verifying("Please enter a valid National Insurance number",
-                                                            nino => nino.isEmpty || nino.matches(ninoValidationRegex)),
+      "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
+          firstname.trim.length != 0)
+        .verifying(Messages("error.incorrect.firstname"), firstname =>
+          firstname.matches(nameValidationRegex)),
+
+      "surname" -> text.verifying(Messages("error.empty.lastname"),
+          lastname => lastname.trim.length != 0)
+        .verifying(Messages("error.incorrect.lastname"),
+          lastname => lastname.matches(nameValidationRegex)),
+
+      "nino" -> text.verifying(Messages("error.empty.nino"),
+          nino => nino.trim.length != 0)
+        .verifying(Messages("error.incorrect.nino"),
+          nino => (nino.trim.length == 0 || nino.replaceAll(" ", "").matches(ninoValidationRegex)))
+      ,
+
       "status" -> optional(number),
       "perOptLock" -> default(number, 0)
-    )((firstname, surname, nino, status, perOptLock) => EiLPerson(stripTrailingNinoCharacterForNPS(nino.toUpperCase),
+    )((firstname, surname, nino, status, perOptLock) => EiLPerson(stripTrailingNinoCharacterForNPS(nino.replaceAll(" ", "").toUpperCase),
                                                                   firstname.trim, EiLPerson.defaultSecondName,
                                                                   surname.trim, EiLPerson.defaultWorksPayrollNumber,
                                                                   EiLPerson.defaultDateOfBirth, EiLPerson.defaultGender,
@@ -159,10 +171,16 @@ trait FormMappings extends PayrollBikDefaults {
     val invalidDateError = "error.invaliddate"
     Form(
       mapping(
-        "firstname" -> nonEmptyText.verifying("Please enter a valid first name", firstname =>
-                                                              firstname.matches(nameValidationRegex)),
-        "surname" -> nonEmptyText.verifying("Please enter a valid last name",
-                                                              lastname => lastname.matches(nameValidationRegex)),
+        "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
+          firstname.trim.length != 0)
+          .verifying(Messages("error.incorrect.firstname"), firstname =>
+            firstname.matches(nameValidationRegex)),
+
+        "surname" -> text.verifying(Messages("error.empty.lastname"),
+          lastname => lastname.trim.length != 0)
+          .verifying(Messages("error.incorrect.lastname"),
+            lastname => lastname.matches(nameValidationRegex)),
+
         "dob" -> mapping(
           "day" -> text,
           "month" -> text,
