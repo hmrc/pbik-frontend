@@ -312,3 +312,13 @@ fieldset .h4-heading{
   font-weight: bold;
   text-decoration: underline;
 }
+
+.fieldset-legend-error {
+    float: left;
+    margin-bottom: .5em;
+    width: 100%;
+}
+
+.error fieldset fieldset{
+    margin-left:0;
+}

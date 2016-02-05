@@ -25,6 +25,21 @@
 
          @if(listOfMatchesForm("individuals").indexes.length > 1) {
 
+                <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+                    <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
+                        There is a problem
+                    </h1>
+
+                    <ul class="error-summary-pbik-list">
+                    @if(listOfMatchesForm("individualSelection").hasErrors) {
+                        @if(listOfMatchesForm.error("individualSelection").get.message.equals("error.required")){
+                            <li><a href="#selection">@Messages("error.exclusion.multi.selection")</a></li>
+                        }
+
+                    }
+                    </ul>
+                </div>
                 <p class="text lede">
                     @if(year=="cy"){
                         @Messages("ExclusionSearch.intro.multi", Messages("BenefitInKind.label." + iabdType).toLowerCase, ""+taxYearRange.cyminus1, ""+taxYearRange.cy)

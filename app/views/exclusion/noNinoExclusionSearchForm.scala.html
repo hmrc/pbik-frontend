@@ -26,7 +26,7 @@
                 </span>
             }
 
-            @if(searchForm("firstname").hasErrors || searchForm("lastname").hasErrors || searchForm("dob").hasErrors || searchForm("gender").hasErrors) {
+            @if(searchForm("firstname").hasErrors || searchForm("surname").hasErrors || searchForm("dob").hasErrors || searchForm("gender").hasErrors) {
                 <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
                     <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
@@ -42,9 +42,31 @@
                         }
                         @if(searchForm("dob").hasErrors) {
 
+                            @if(searchForm.error("dob").get.message.equals("error.empty.dob")){
+                                <li><a href="#dob">@Messages("error.empty.dob")</a></li>
+                            }
+                            @if(searchForm.error("dob").get.message.equals("error.invaliddate")){
+                                <li><a href="#dob">@Messages("error.invaliddate")</a></li>
+                            }
+                            @if(searchForm.error("dob").get.message.equals("error.invaliddate.day")){
+                                <li><a href="#dob">@Messages("error.invaliddate.day")</a></li>
+                            }
+                            @if(searchForm.error("dob").get.message.equals("error.invaliddate.month")){
+                                <li><a href="#dob">@Messages("error.invaliddate.month")</a></li>
+                            }
+                            @if(searchForm.error("dob").get.message.equals("error.invaliddate.year")){
+                                <li><a href="#dob">@Messages("error.invaliddate.year")</a></li>
+                            }
+                            @if(searchForm.error("dob").get.message.equals("error.invaliddate.future.year")){
+                                <li><a href="#dob">@Messages("error.invaliddate.future.year")</a></li>
+                            }
+                            @if(searchForm.error("dob").get.message.equals("error.invaliddate.past.year")){
+                                <li><a href="#dob">@Messages("error.invaliddate.past.year")</a></li>
+                            }
+
                         }
                         @if(searchForm("gender").hasErrors) {
-
+                        <li><a href="#gender">@Messages("error.required")</a></li>
                         }
                     </ul>
 
@@ -63,7 +85,7 @@
                 @localhelpers.dateFieldsNumberInputs(searchForm, "dob","dob-day", "dob-month", "dob-year", new Html(Messages("Service.field.dob")), '_hintText->Messages("Service.field.dobhint"), '_groupClass -> "form-group")
                 <div style="clear: both"></div>
                 <div class="form-group inline" id="gender">
-                    @helpers.inputRadioGroup(searchForm("gender"), Seq(("male",Messages("Service.field.gender.male")),("female", Messages("Service.field.gender.female"))), '_labelClass -> "block-label", '_legend -> Messages("Service.field.gender"), '_legendClass -> "form-label")
+                    @helpers.inputRadioGroup(searchForm("gender"), Seq(("male",Messages("Service.field.gender.male")),("female", Messages("Service.field.gender.female"))), '_labelClass -> "block-label", '_legend -> Messages("Service.field.gender"), '_legendClass -> "form-label fieldset-legend-error")
                 </div>
             </fieldset>
         </div>
