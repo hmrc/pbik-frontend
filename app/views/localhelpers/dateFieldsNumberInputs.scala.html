@@ -6,16 +6,26 @@
 
 @argsMap = @{args.toMap}
 @dateErrors = @{formItem(dateFieldName).errors}
-@allFieldsEmpty = @{dateErrors.exists{error => error.message.equals("error.required")}}
+@allFieldsEmpty = @{dateErrors.exists{error => error.message.equals("error.empty.dob")}}
 @invalidDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate")}}
+@invalidDayDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.day")}}
+@invalidMonthDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.month")}}
+@invalidYearDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.year")}}
+@invalidYearFutureDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.future.year")}}
+@invalidYearPastDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.past.year")}}
 
 
 <fieldset class="@argsMap.get('_groupClass) @if(dateErrors.length>0) {form-field--error}">
 
-    @if(allFieldsEmpty){<span class="error-notification">@Messages("error.required")</span>}
+    @if(allFieldsEmpty){<span class="error-notification">@Messages("error.empty.dob")</span>}
     @if(invalidDate && !allFieldsEmpty){<span class="error-notification">@Messages("error.invaliddate")</span>}
+    @if(invalidDayDate && !allFieldsEmpty){<span class="error-notification">@Messages("error.invaliddate.day")</span>}
+    @if(invalidMonthDate && !allFieldsEmpty){<span class="error-notification">@Messages("error.invaliddate.month")</span>}
+    @if(invalidYearDate && !allFieldsEmpty){<span class="error-notification">@Messages("error.invaliddate.year")</span>}
+    @if(invalidYearFutureDate && !allFieldsEmpty){<span class="error-notification">@Messages("error.invaliddate.future.year")</span>}
+    @if(invalidYearPastDate && !allFieldsEmpty){<span class="error-notification">@Messages("error.invaliddate.past.year")</span>}
 
-    <legend class="form-label" >@label</legend>
+    <legend class="form-label fieldset-legend-error">@label</legend>
     <div class="date-of-birth" id="dob">
     @if(argsMap.get('_hintText).isDefined) {
     <p class="form-hint">@argsMap.get('_hintText)</p>

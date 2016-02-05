@@ -411,8 +411,8 @@ ErrorPage.backButtonNoCache = You haven''t performed a search yet. Please go bac
 #############
 #############
 
-error.required=This field is required
-error.invaliddate=Please enter a valid date
+error.required=Choose a gender
+error.invaliddate=Enter a valid date
 
 error.empty.nino=Enter a National Insurance number
 error.empty.firstname=Enter a first name
@@ -421,6 +421,14 @@ error.incorrect.nino=Enter a National Insurance number in the same format as the
 error.incorrect.firstname=Enter a first name that does not contain any numbers or special characters
 error.incorrect.lastname=Enter a last name that does not contain any numbers or special characters
 
+error.empty.dob=Enter a date of birth
+error.invaliddate.day=Enter a valid day
+error.invaliddate.month=Enter a valid month
+error.invaliddate.year=Enter a valid year
+error.invaliddate.future.year=Year of date of birth can''t be in the future
+error.invaliddate.past.year=Year of date of birth must be in the last 130 years
+
+error.exclusion.multi.selection=You need to choose which employee you want to exclude before you can continue
 
 ######################
 ######################
