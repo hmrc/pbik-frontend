@@ -23,6 +23,7 @@ import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.auth._
 import play.api.data.Form
+import play.api.i18n.Lang
 import play.api.mvc.{Result, _}
 import services.BikListService
 import uk.gov.hmrc.play.http.SessionKeys
@@ -56,17 +57,17 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
   }
 
 
-  def loadWhatNextRegisteredBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: Request[_], ac: AuthContext):Result = {
+  def loadWhatNextRegisteredBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: Request[_], ac: AuthContext, lang: Lang):Result = {
     val yearCalculated = calculateTaxYear(TaxDateUtils.isCurrentTaxYear(year))
     Ok(views.html.registration.whatNextAddRemove.render(
-      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, true, formRegisteredList, request, ac))
+      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, true, formRegisteredList, request, ac, lang))
       .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 
-  def loadWhatNextRemovedBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: Request[_], ac: AuthContext):Result = {
+  def loadWhatNextRemovedBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: Request[_], ac: AuthContext, lang: Lang):Result = {
     val yearCalculated = calculateTaxYear(TaxDateUtils.isCurrentTaxYear(year))
     Ok(views.html.registration.whatNextAddRemove.render(
-      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, false, formRegisteredList, request, ac))
+      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, false, formRegisteredList, request, ac, lang))
       .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 

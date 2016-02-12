@@ -83,10 +83,9 @@ ManagingRegistration.add.hint = Show the benefits I am currently payrolling
 ManagingRegistration.cant.hint = The following benefits have not yet been included in this service.
 ManagingRegistration.add.help.1 = If your employees receive any of them, do not add the value to your payroll and use a P11D to report them instead.
 ManagingRegistration.add.exhausted = You have already added all of the benefits or expenses that are available in this category.
+######################
+######################
 
-######################
-######################
- 
 AddBenefits.Heading = Choose benefits and expenses
 AddBenefits.table.heading.input = Benefit or expense
 AddBenefits.table.heading.section = P11D section

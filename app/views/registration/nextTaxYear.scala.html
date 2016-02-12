@@ -1,4 +1,4 @@
-@(bikForm:Form[RegistrationList], additive: Boolean, taxYearRange:TaxYearRange, previouslySelectedBenefits: List[RegistrationItem]= List.empty[RegistrationItem], registeredBiks:List[Bik] = List.empty[Bik], nonLegislationBiks:List[Int]=config.PbikAppConfig.biksNotSupported)(implicit request:Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+@(bikForm:Form[RegistrationList], additive: Boolean, taxYearRange:TaxYearRange, previouslySelectedBenefits: List[RegistrationItem]= List.empty[RegistrationItem], registeredBiks:List[Bik] = List.empty[Bik], nonLegislationBiks:List[Int]=config.PbikAppConfig.biksNotSupported)(implicit request:Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import play.api.Play.current
@@ -22,6 +22,8 @@
         </h1>
     }
 
+<h1>@lang.country</h1>
+<h1>@lang.language</h1>
 
     @if(additive) {
         @helpers.form(action = controllers.registration.routes.ManageRegistrationController.confirmAddNextTaxYear()) {

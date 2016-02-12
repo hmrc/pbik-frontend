@@ -25,6 +25,7 @@ import controllers.WhatNextPageController
 import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
 import play.api.Logger
 import play.api.data.Form
+import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.HtmlFormat
 import services.{RegistrationService, BikListService}
@@ -136,13 +137,13 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
       responseErrorHandler(resultFuture)
   }
 
-  def confirmRemoveNextTaxYearNoForm(iabdType: String):Action[AnyContent] = AuthorisedForPbik {
+  def confirmRemoveNextTaxYearNoForm(iabdType: String)(implicit lang:Lang):Action[AnyContent] = AuthorisedForPbik {
     implicit ac => implicit request =>
       val registrationList = RegistrationList(None, List(RegistrationItem(iabdType, true, false)))
       val form: Form[RegistrationList] = objSelectedForm.fill(registrationList)
 
       val resultFuture = Future.successful(
-        Ok(views.html.registration.confirmUpdateNextTaxYear(objSelectedForm.fill(form.get), false, YEAR_RANGE)(request, ac)))
+        Ok(views.html.registration.confirmUpdateNextTaxYear(objSelectedForm.fill(form.get), false, YEAR_RANGE)(request, ac, lang)))
       responseErrorHandler(resultFuture)
   }
 
@@ -194,7 +195,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
   }
 
   def updateBiksFutureAction(year: Int, persistentBiks: List[Bik], additive: Boolean)
-                            (implicit request: Request[AnyContent], ac: AuthContext): Future[Result] = {
+                            (implicit request: Request[AnyContent], ac: AuthContext, lang: Lang): Future[Result] = {
     tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
       ac.principal.accounts.epaye.get.empRef.toString, year).flatMap {
       registeredResponse =>
@@ -209,11 +210,11 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
             additive match {
               case true => {
                 auditBikUpdate(true, year, persistentBiks)
-                loadWhatNextRegisteredBIK(form, year)(request, ac)
+                loadWhatNextRegisteredBIK(form, year)(request, ac, lang)
               }
               case false => {
                 auditBikUpdate(false, year, persistentBiks)
-                loadWhatNextRemovedBIK(form, year)(request, ac)
+                loadWhatNextRemovedBIK(form, year)(request, ac, lang)
               }
             }
 

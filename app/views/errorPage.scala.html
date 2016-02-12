@@ -1,5 +1,5 @@
 @(errorMessage:String, taxYearRange:TaxYearRange, isCurrentTaxYear:String= "", code:Int = 0,
-pageHeading:String ="An error has occurred", backLink:String= "overview")(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+pageHeading:String ="An error has occurred", backLink:String= "overview")(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext , lang: Lang)
 
 @import utils.FormMappingsConstants._
 
