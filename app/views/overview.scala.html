@@ -123,7 +123,7 @@
 
         @if(cyAllowed) {
             @if(registeredBenefitsCurrentYear.size < serviceBiksCount) {
-                <a class="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
+                <a class="button" role="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
                     @if(registeredBenefitsCurrentYear.size > 0) {
                     @Messages("Overview.table.add.link.more")
                     }else {

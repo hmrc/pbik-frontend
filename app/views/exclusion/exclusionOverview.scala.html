@@ -84,7 +84,7 @@
 
             <div style="margin-top: 10px;">
                 @defining( if(current.isEmpty){"Service.excludeanemployee"}else{"Service.excludeanotheremployee"}) { buttonlabel =>
-                    <a class="button" id="button-exclude"  href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdValueURLMapper(iabdType))'>
+                    <a class="button" role="button" id="button-exclude"  href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdValueURLMapper(iabdType))'>
                     @Messages(buttonlabel)</a>
                 }
 
