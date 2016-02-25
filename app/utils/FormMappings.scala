@@ -24,7 +24,7 @@ import models._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
-import utils.BikListUtils.MandatoryRadioButton
+import utils.BikListUtils.{MandatoryRadioButton}
 
 import scala.util.Try
 
@@ -146,10 +146,13 @@ trait FormMappings extends PayrollBikDefaults {
           "active" -> boolean,
           "enabled" -> boolean
         )(RegistrationItem.apply)(RegistrationItem.unapply)).verifying("Error message goes here",
-                      selectionList => !selectionList.filter(listItem => listItem.active).isEmpty))
-      (RegistrationList.apply)(RegistrationList.unapply)
+        selectionList => !selectionList.filter(listItem => listItem.active).isEmpty),
+        "reason" -> optional(mapping(
+          "selectionValue" -> text,
+          "info" -> optional(text)
+        )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply)))
+    (RegistrationList.apply)(RegistrationList.unapply)
   )
-
 
   def exclusionSearchFormWithNino:Form[EiLPerson] = Form(
     mapping(

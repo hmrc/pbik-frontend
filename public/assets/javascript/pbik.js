@@ -2,6 +2,25 @@ function scrollToError(id) {
     window.location.hash = '#' + id;
 }
 
+function RemoveBenefitRadioButtonValue() {
+    var selector = document.getElementById("form-remove").elements["reason.selectionValue"].value;
+    return selector;
+}
+
+function capitalise(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+function RemoveBenefitRadioButton() {
+    var selector = RemoveBenefitRadioButtonValue();
+    var otherDescTextBx = document.getElementById("other-desc")
+    if(selector=="other") {
+        otherDescTextBx.style.display = "block";
+    }else {
+        otherDescTextBx.style.display = "none";
+    }
+}
+
 function contactHMRC() {
     var $errorContent = $('.report-error__content');
     $errorContent.removeClass('hidden');

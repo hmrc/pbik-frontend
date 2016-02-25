@@ -45,6 +45,7 @@ object SplunkLogger {
   val key_period = "period"
   val key_iabd = "iabd"
   val key_message = "message"
+  val key_remove_reason = "removeReason"
   val key_error = "error"
 
 }
@@ -100,7 +101,7 @@ trait SplunkLogger extends AuthenticationConnector {
    * @param ac - the implicit Auth Context involved in the audit action
    * @return - a properly formed PBIK DataEvent which may be sent using the logSplunkEvent method.
    */
-  def createDataEvent(tier:spTier, action:spAction, target:spTarget, period:spPeriod, msg:String, nino:Option[String]=None, iabd:Option[String]=None)
+  def createDataEvent(tier:spTier, action:spAction, target:spTarget, period:spPeriod, msg:String, nino:Option[String]=None, iabd:Option[String]=None, removeReason:Option[String]=None)
                  (implicit ac: AuthContext) = {
 
     val entities = Seq(key_event_name -> pbik_event_name,
@@ -112,7 +113,8 @@ trait SplunkLogger extends AuthenticationConnector {
       key_period -> period.toString,
       key_message -> msg
 
-    ) ++ (if(iabd.isDefined) Seq((key_iabd -> iabd.get)) else Nil) ++ (if(nino.isDefined) Seq((key_nino -> nino.get)) else Nil)
+    ) ++ (if(iabd.isDefined) Seq((key_iabd -> iabd.get)) else Nil) ++ (if(nino.isDefined) Seq((key_nino -> nino.get)) else Nil) ++ (if(removeReason.isDefined) Seq((key_remove_reason -> removeReason.get)) else Nil)
+
 
     DataEvent(auditSource=pbik_audit_source, auditType=pbik_audit_type,detail=Map(entities:_*))
   }

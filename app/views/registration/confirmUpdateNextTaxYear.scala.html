@@ -1,6 +1,7 @@
-@(bikForm:Form[RegistrationList], additive: Boolean, taxYearRange:TaxYearRange)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+@(bikForm:Form[RegistrationList], additive: Boolean, taxYearRange:TaxYearRange)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, flash: Flash)
 
 @import uk.gov.hmrc.play.views.html.helpers
+@import uk.gov.hmrc.play.views.html.helpers.inputRadioGroup
 @import utils.URIInformation._
 @import play.api.Play
 @import play.api.Play.current
@@ -43,6 +44,20 @@
         @if(additive) {
             <p class="lede text"> @Messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
         } else {
+            @if(flash.get("error")){
+                <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+                    <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
+                        @Messages("Service.errorSummary.heading")
+                    </h1>
+
+                    <ul class="error-summary-pbik-list">
+                        <li><a href="#error-list-1">@flash.get("error")</a></li>
+                    </ul>
+
+                </div>
+            }
+
             <p class="lede text"> @Messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
         }
 
@@ -83,7 +98,7 @@
             } else {
 
                 @helpers.form(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(),
-                'onsubmit -> "gaEventConfirmRemoveBenefits()") {
+                'onsubmit -> "gaEventConfirmRemoveBenefits()", 'id -> "form-remove") {
                     <ul  id="list-of-confirmation-benefits" class="list-bullet text" style="display:none">
                         @helper.repeat(bikForm("actives"), min=0) { activeField =>
                             @helper.inputText(activeField("uid").copy(value=Some(iabdValueURLDeMapper(activeField("uid").value.get))), '_label -> null, 'style -> "display: none")
@@ -93,7 +108,59 @@
                                 @Messages("BenefitInKind.label." + iabdValueURLDeMapper(activeField("uid").value.get) )</li>
                         }
                     </ul>
+
+                    <div class='form-group @if(flash.get("error")) {error}'>
+
+                        <fieldset class="inline">
+                            <legend style="font-weight: bold">@Messages("RemoveBenefits.reason.desc")</legend>
+
+                            @if(flash.get("error")) {
+                                <span id="error-list-1" class="error-notification" style="display:block; margin-left: 0">
+                                @flash.get("error")
+                                </span>
+                            }
+
+                            <label for="radio-software" class="block-label" onclick="RemoveBenefitRadioButton()">
+                                <input id="radio-software" type="radio" name="reason.selectionValue" value="software" >
+                                @Messages("RemoveBenefits.reason.software")
+                            </label>
+
+                            <label for="radio-guidance" class="block-label" onclick="RemoveBenefitRadioButton()">
+                                <input id="radio-guidance" type="radio" name="reason.selectionValue" value="guidance" >
+                                @Messages("RemoveBenefits.reason.guidance")
+                            </label>
+
+                            <label for="radio-not-clear" class="block-label" onclick="RemoveBenefitRadioButton()">
+                                <input id="radio-not-clear" type="radio" name="reason.selectionValue" value="not-clear" >
+                                @Messages("RemoveBenefits.reason.not-clear")
+                            </label>
+
+                            <label for="radio-not-offering" class="block-label" onclick="RemoveBenefitRadioButton()">
+                                <input id="radio-not-offering" type="radio" name="reason.selectionValue" value="not-offering" >
+                                @Messages("RemoveBenefits.reason.not-offering")
+                            </label>
+
+                            <label for="radio-other" class="block-label" onclick="RemoveBenefitRadioButton()">
+                                <input id="radio-other" type="radio" name="reason.selectionValue" value="other" >
+                                @Messages("RemoveBenefits.reason.other")
+                            </label>
+
+                            <div style="clear:both"></div>
+                            <div id="other-desc" class="other-desc" style="display:none">
+                                <label for="radio-other-desc">@Messages("RemoveBenefits.reason.other.label")</label>
+                                <textarea id="radio-other-desc" cols="50" rows="4" name="reason.info"></textarea>
+                            </div>
+
+                        </fieldset>
+                    </div>
+
                     <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+
+                    <noscript>
+                        <style type="text/css">
+                            .other-desc {display:block !important;}
+                        </style>
+                    </noscript>
                 }
                 <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
                       href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
@@ -107,6 +174,10 @@
         }
         function gaEventConfirmRemoveBenefits() {
           gaEvent("Benefit Removed for Next Year", "@gaEventRemoveBiks");
+          var reason = capitalise(RemoveBenefitRadioButtonValue().split('-').join(' '));
+          gaEvent("Benefit Removed for Next Year (Reason)", (reason + " (" + document.getElementById("form-remove").elements["other-desc"].value + ")"));
         }
         </script>
+
+
 }
