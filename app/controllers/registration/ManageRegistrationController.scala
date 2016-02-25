@@ -200,7 +200,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
       ac.principal.accounts.epaye.get.empRef.toString, year).flatMap {
       registeredResponse =>
         val form = objSelectedForm.bindFromRequest()
-      
+
         form.fold(
           formWithErrors => Future.successful(
             Ok(views.html.registration.confirmUpdateNextTaxYear(formWithErrors, additive, YEAR_RANGE)))
