@@ -261,7 +261,8 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
         msg= derivedMsg + " : " + bik.iabdType,
         nino=None,
         iabd=Some(bik.iabdType),
-        removeReason=if(additive) None else Some("Benefit removed reason: " + removeReason.get._1 + " " + removeReason.get._2.getOrElse("")))
+        removeReason=if(additive) None else Some(removeReason.get._1),
+        removeReasonDesc=if(additive) None else Some(removeReason.get._2.getOrElse("")))
       )
     }
   }
