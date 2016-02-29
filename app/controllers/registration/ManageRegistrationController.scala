@@ -267,4 +267,3 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
     }
   }
 }
- 

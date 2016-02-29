@@ -108,7 +108,7 @@ trait SplunkLogger extends AuthenticationConnector {
     val entityIABD = if(iabd.isDefined) Seq((key_iabd -> iabd.get)) else Nil
     val entityNINO = if(nino.isDefined) Seq((key_nino -> nino.get)) else Nil
     val entityRemoveReason = if(removeReason.isDefined) Seq((key_remove_reason -> removeReason.get)) else Nil
-    val entityRemoveReasonDesc = if(removeReasonDesc.isDefined && removeReasonDesc.size > 1) Seq((key_remove_reason_desc -> removeReasonDesc.get)) else Nil
+    val entityRemoveReasonDesc = if(removeReasonDesc.isDefined) Seq((key_remove_reason_desc -> removeReasonDesc.get)) else Nil
 
     val entities = Seq(key_event_name -> pbik_event_name,
       key_gateway_user -> ac.principal.name.getOrElse(pbik_no_ref),
@@ -120,6 +120,8 @@ trait SplunkLogger extends AuthenticationConnector {
       key_message -> msg
 
     ) ++ entityIABD ++ entityNINO ++ entityRemoveReason ++ entityRemoveReasonDesc
+
+    println("**** " + entities)
 
     DataEvent(auditSource=pbik_audit_source, auditType=pbik_audit_type,detail=Map(entities:_*))
   }
