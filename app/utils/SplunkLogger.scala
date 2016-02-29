@@ -120,9 +120,7 @@ trait SplunkLogger extends AuthenticationConnector {
       key_message -> msg
 
     ) ++ entityIABD ++ entityNINO ++ entityRemoveReason ++ entityRemoveReasonDesc
-
-    println("**** " + entities)
-
+    
     DataEvent(auditSource=pbik_audit_source, auditType=pbik_audit_type,detail=Map(entities:_*))
   }
 
