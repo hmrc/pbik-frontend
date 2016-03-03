@@ -85,7 +85,7 @@
                 @localhelpers.dateFieldsNumberInputs(searchForm, "dob","dob-day", "dob-month", "dob-year", new Html(Messages("Service.field.dob")), '_hintText->Messages("Service.field.dobhint"), '_groupClass -> "form-group")
                 <div style="clear: both"></div>
                 <div class="form-group inline" id="gender">
-                    @helpers.inputRadioGroup(searchForm("gender"), Seq(("male",Messages("Service.field.gender.male")),("female", Messages("Service.field.gender.female"))), '_labelClass -> "block-label", '_legend -> Messages("Service.field.gender"), '_legendClass -> "form-label fieldset-legend-error")
+                    @helpers.inputRadioGroup(searchForm("gender"), Seq(("female", Messages("Service.field.gender.female")), ("male",Messages("Service.field.gender.male"))), '_labelClass -> "block-label", '_legend -> Messages("Service.field.gender"), '_legendClass -> "form-label fieldset-legend-error")
                 </div>
             </fieldset>
         </div>
@@ -95,7 +95,7 @@
             <input type="hidden" name="perOptLock" id="perOptLock" />
         </fieldset>
         <div class="form-group">
-            <input type="submit" class="button" id="button-search" value="@Messages("Service.continue")">
+            <input type="submit" class="button" role="button" id="button-search" value="@Messages("Service.continue")">
 
             <p><a class="button-link" id="link-exlusion-back"  onclick="gaEvent('Click back to exclusion overview','From: No-nino search form')"
                   href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">

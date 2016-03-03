@@ -50,11 +50,15 @@
                             <a id="cy1-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", iabdValueURLMapper(n.iabdType))'>
                             @if(n.eilCount == 0) {@Messages("Overview.table.exclude.none.link")} else {@Messages("Overview.table.exclude.link")}
                             @if(n.eilCount > 0) {(@n.eilCount)}
+                            <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
                             </a>
                         </td>
                         <td role="gridcell" width="20%">
                             <a id="cy1-remove-@n.iabdType" href="@controllers.registration.routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(n.iabdType))">
-                            @Messages("Overview.table.remove.link")</a></td>
+                            @Messages("Overview.table.remove.link")
+                            <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
+                            </a>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -66,7 +70,7 @@
     }
 
     @if(registeredBenefitsNextYear.size < serviceBiksCount) {
-        <a class="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
+        <a class="button" role="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
             @if(registeredBenefitsNextYear.size > 0) {
                 @Messages("Overview.table.add.link.more")
             }else {
@@ -112,6 +116,7 @@
                             <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", iabdValueURLMapper(n.iabdType))'>
                             @if(n.eilCount == 0) {@Messages("Overview.table.exclude.none.link")} else {@Messages("Overview.table.exclude.link")}
                             @if(n.eilCount > 0) {(@n.eilCount)}
+                            <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
                         </a>
                         </td>
                         <td role="gridcell" width="20%"></td>
@@ -137,6 +142,5 @@
     <div style="display:none" id="is-service-launched-indicator">@cyAllowed</div>
 
 </section>
-
 
 }
