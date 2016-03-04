@@ -25,7 +25,7 @@ import org.scalatest.{Matchers}
 import org.scalatest.concurrent.ScalaFutures._
 import org.mockito.Matchers.{eq => mockEq}
 import play.api.data.Form
-import play.api.i18n.Messages
+import play.api.i18n.{Lang, Messages}
 import play.api.libs.json
 import play.api.libs.json.{JsValue}
 import play.api.mvc.{Action, AnyContent, Result, Request}
@@ -218,7 +218,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
 
     override def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                                 generateViewBasedOnFormItems: (Form[RegistrationList],
-                                                  List[RegistrationItem], List[Bik], List[Int]) => HtmlFormat.Appendable)
+                                                  List[RegistrationItem], List[Bik], List[Int], List[Int]) => HtmlFormat.Appendable)
                                                (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext):
     Future[Result] = {
       year match {
@@ -372,14 +372,14 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
-        val title = Messages("whatNext.subHeading")
+        //val title = Messages("whatNext.subHeading")
         val additions = CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) > 15) }
         val testac = createDummyUser("testid")
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
-        val r = await(mockRegistrationController.updateBiksFutureAction(2020, additions, true)(mockrequest, testac))(timeout)
+        implicit val lang:Lang = new Lang("en")
+        val r = await(mockRegistrationController.updateBiksFutureAction(2020, additions, true)(mockrequest, testac, lang ))(timeout)
         status(r) shouldBe 200
-        bodyOf(r) should include(title)
-
+        bodyOf(r) should include(Messages("whatNext.subHeading"))
       }
     }
   }

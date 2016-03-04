@@ -13,6 +13,8 @@ GET         /not-authorised                         controllers.auth.AuthControl
 GET         /signout                                controllers.HomePageController.signoutRedirectToDone
 GET         /feedback                               controllers.HomePageController.redirectToDone
 
+GET         /setLanguage                            controllers.HomePageController.setLanguage
+
 GET         /payrolled-benefits-expenses            controllers.HomePageController.onPageLoad
 
 ## Add remove Registrations

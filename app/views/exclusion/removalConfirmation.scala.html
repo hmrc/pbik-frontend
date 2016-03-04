@@ -2,7 +2,7 @@
 @import utils._
 @import utils.URIInformation._
 
-@(taxYearRange: TaxYearRange, year: String, iabdType:String, individualsToRemove: Form[EiLPersonList])(implicit request: Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+@(taxYearRange: TaxYearRange, year: String, iabdType:String, individualsToRemove: Form[EiLPersonList])(implicit request: Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
 
 
 @parentTemplate(pageTitle = Messages("ExclusionRemovalConfirmation.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {

@@ -1,8 +1,12 @@
-@(actionUrl: String, csrfToken: Option[String], service: Option[String])(implicit request : Request[_])
+@(actionUrl: String, csrfToken: Option[String], service: Option[String])(implicit request : Request[_], lang: Lang)
 @import uk.gov.hmrc.play.views.html._
 
 <div class="report-error">
-    <a class="report-error__toggle js-visible" id="get-help-action-pbik-custom" href="#">@Messages("common.feedback.get.help")</a>
-
-    @connectors.CachedStaticHtmlPartial.get(config.PbikAppConfig.reportAProblemPartialUrl)
+    <script type="text/javascript">var reportProblemAjaxUrl = "/contact/problem_reports_ajax?service=PayrollBIK";</script>
+    <a class="report-error__toggle js-visible" id="get-help-action" href="form-label">@Messages("common.feedback.get.help")</a>
+    <a class="report-error__toggle js-hidden" href="/contact/problem_reports_nonjs?service=PayrollBIK">@Messages("common.feedback.get.help")</a>
+    <div id="report-error-partial-form" class="report-error__content hidden">
+        <div class="report-error__loading"></div>
+    </div>
 </div>
+
