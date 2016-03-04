@@ -25,13 +25,13 @@ object TaxDateUtils extends PayrollBikDefaults {
 
   //lazy val TAX_YEAR_RANGE = generateTaxYearRange(getCurrentTaxYear())
 
-  def getTaxYearRange(year:Int = getCurrentTaxYear()):TaxYearRange = generateTaxYearRange(year)
+  def getTaxYearRange(year:Int = getCurrentTaxYear(new LocalDate(2016,4,6))):TaxYearRange = generateTaxYearRange(year)
 
   def getCurrentTaxYear(dateToCheck:LocalDate = new LocalDate):Int = {
       TaxYearResolver.taxYearFor(dateToCheck)
   }
 
-  def isCurrentTaxYear(yearToCheck:Int = new DateTime().getYear, dateToCheck:LocalDate = new LocalDate):Boolean = {
+  def isCurrentTaxYear(yearToCheck:Int = new DateTime().getYear+1, dateToCheck:LocalDate = new LocalDate):Boolean = {
     yearToCheck == TaxYearResolver.taxYearFor(dateToCheck)
   }
 
