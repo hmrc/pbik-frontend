@@ -27,11 +27,11 @@ object TaxDateUtils extends PayrollBikDefaults {
 
   def getTaxYearRange(year:Int = getCurrentTaxYear(new LocalDate(2016,4,6))):TaxYearRange = generateTaxYearRange(year)
 
-  def getCurrentTaxYear(dateToCheck:LocalDate = new LocalDate):Int = {
+  def getCurrentTaxYear(dateToCheck:LocalDate = new LocalDate(2016,4,6)):Int = {
       TaxYearResolver.taxYearFor(dateToCheck)
   }
 
-  def isCurrentTaxYear(yearToCheck:Int = new DateTime().getYear+1, dateToCheck:LocalDate = new LocalDate):Boolean = {
+  def isCurrentTaxYear(yearToCheck:Int = new DateTime().getYear+1, dateToCheck:LocalDate = new LocalDate(2016,4,6)):Boolean = {
     yearToCheck == TaxYearResolver.taxYearFor(dateToCheck)
   }
 
