@@ -274,6 +274,8 @@ BenefitInKind.p11d.45.ref=Section N
 BenefitInKind.label.unavailable=This benefit isn''t currently available to register online.
 BenefitInKind.label.unavailable.desc=For benefits that aren''t currently available to register online, use a P11D to report it instead.
 
+BenefitInKind.label.decommissioned=Expenses payments are either exempt from tax and NICs or should be treated as part of the employee''s salary and paid after tax and NICs are deducted.
+
 Prioritised.Benefits = 30,31
 
 #NB

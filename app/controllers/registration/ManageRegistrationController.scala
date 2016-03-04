@@ -44,7 +44,6 @@ object ManageRegistrationController extends ManageRegistrationController with Ti
   def registrationService = RegistrationService
   def bikListService = BikListService
   val tierConnector = new HmrcTierConnector
- // val NON_LEGISLATION_BIKS = List[Int](37,38,54)
 
 }
 
@@ -61,7 +60,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
     implicit ac =>
       implicit request =>
         val staticDataRequest = registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cy,
-          "add", views.html.registration.nextTaxYear(_, true, YEAR_RANGE, _, _, _))
+          "add", views.html.registration.nextTaxYear(_, true, YEAR_RANGE, _, _, _, _))
           responseErrorHandler(staticDataRequest)
   }
 
@@ -77,7 +76,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
       implicit request =>
         val resultFuture = {
           registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cyminus1,
-            "add", views.html.registration.currentTaxYear(_, YEAR_RANGE,  _, _, _))
+            "add", views.html.registration.currentTaxYear(_, YEAR_RANGE,  _, _, _, _))
         }
         responseCheckCYEnabled(resultFuture)
   }
@@ -137,14 +136,23 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
       responseErrorHandler(resultFuture)
   }
 
-  def confirmRemoveNextTaxYearNoForm(iabdType: String)(implicit lang:Lang):Action[AnyContent] = AuthorisedForPbik {
-    implicit ac => implicit request =>
+  def confirmRemoveNextTaxYearNoForm(iabdType: String):Action[AnyContent] = AuthorisedForPbik {
+    implicit ac =>
+      implicit request =>
       val registrationList = RegistrationList(None, List(RegistrationItem(iabdType, true, false)))
       val form: Form[RegistrationList] = objSelectedForm.fill(registrationList)
-
       val resultFuture = Future.successful(
-        Ok(views.html.registration.confirmUpdateNextTaxYear(objSelectedForm.fill(form.get), false, YEAR_RANGE)(request, ac, lang)))
+        Ok(views.html.registration.confirmUpdateNextTaxYear(objSelectedForm.fill(form.get), false, YEAR_RANGE)))
       responseErrorHandler(resultFuture)
+  }
+
+
+  def removeNextYearRegisteredBenefitTypes:Action[AnyContent] = AuthorisedForPbik {
+    implicit ac =>
+      implicit request =>
+        val persistentBiks: List[Bik] = generateListOfBiksBasedOnForm(BIK_REMOVE_STATUS)
+        val registeredFuture = updateBiksFutureAction(YEAR_RANGE.cy, persistentBiks, false)
+        responseErrorHandler(registeredFuture)
   }
 
   def generateConfirmationScreenView(year: Int, cachingSuffix: String,
@@ -183,15 +191,6 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
         val persistentBiks: List[Bik] = generateListOfBiksBasedOnForm(BIK_ADD_STATUS)
         val actionFuture = updateBiksFutureAction(YEAR_RANGE.cy, persistentBiks, true)
         responseErrorHandler(actionFuture)
-  }
-
-
-  def removeNextYearRegisteredBenefitTypes:Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        val persistentBiks: List[Bik] = generateListOfBiksBasedOnForm(BIK_REMOVE_STATUS)
-        val registeredFuture = updateBiksFutureAction(YEAR_RANGE.cy, persistentBiks, false)
-        responseErrorHandler(registeredFuture)
   }
 
   def updateBiksFutureAction(year: Int, persistentBiks: List[Bik], additive: Boolean)

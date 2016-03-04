@@ -96,7 +96,7 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
 
     override def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                                 generateViewBasedOnFormItems: (Form[RegistrationList],
-                                                  List[RegistrationItem], List[Bik], List[Int]) => HtmlFormat.Appendable)
+                                                  List[RegistrationItem], List[Bik], List[Int], List[Int]) => HtmlFormat.Appendable)
                                                (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext):
     Future[Result] = {
       year match {

@@ -51,13 +51,13 @@
 
             <fieldset>
                 <div class='form-group' id="nino">
-                    @localhelpers.input(searchForm("nino"), '_label -> "National Insurance number", '_inputClass -> "form-control", '_inputHint ->  Messages("Service.field.ninohint"))
+                    @localhelpers.input(searchForm("nino"), '_label -> Messages("Service.field.nino"), '_inputClass -> "form-control", '_inputHint ->  Messages("Service.field.ninohint"))
                 </div>
                 <div class='form-group' id="firstname">
-                    @helpers.input(searchForm("firstname"), '_label -> "First name", '_inputClass -> "form-control")
+                    @helpers.input(searchForm("firstname"), '_label -> Messages("Service.field.firstname"), '_inputClass -> "form-control")
                 </div>
                 <div class='form-group' id="lastname">
-                    @helpers.input(searchForm("surname"), '_label -> "Last name", '_inputClass -> "form-control")
+                    @helpers.input(searchForm("surname"), '_label -> Messages("Service.field.surname"), '_inputClass -> "form-control")
                 </div>
             </fieldset>
         </div>
