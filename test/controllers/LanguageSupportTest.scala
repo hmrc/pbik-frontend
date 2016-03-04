@@ -27,7 +27,7 @@ import org.scalatest.concurrent.ScalaFutures._
 import play.api.data.Form
 import play.api.i18n.{Lang, Messages}
 import play.api.libs.json
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.filters.csrf.CSRF
@@ -38,7 +38,7 @@ import support.TestAuthUser
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.http.{SessionKeys, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils._
@@ -56,144 +56,24 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
   val timeoutValue = 15 seconds
 
   def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
-  class StubBikListService extends BikListService  {
+  class StubBikListService extends BikListService {
+
     override lazy val pbikAppConfig = mock[AppConfig]
     override val tierConnector = mock[HmrcTierConnector]
-    lazy val CYCache = List.tabulate(21)(n => new Bik("" + (n + 1), 10))
+    lazy val CYCache = List.range(3, 32).map(n => new Bik("" + n, 10))/*(n => new Bik("" + (n + 1), 10))*/
+    pbikHeaders = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
 
     override def currentYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]):
-        Future[(Map[String, String], List[Bik])] = {
+    Future[(Map[String, String], List[Bik])] = {
 
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) <= 10) }))
+      Future.successful((Map(HeaderTags.ETAG -> "1"),CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) == 31) }))
     }
 
     override def nextYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]):
-        Future[(Map[String, String], List[Bik])] = {
+    Future[(Map[String, String], List[Bik])] = {
 
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) > 10) }))
+      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) == 31) }))
     }
-
-    when(pbikAppConfig.cyEnabled).thenReturn(true)
-
-    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      anyString, mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      anyString, mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
-      anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      anyString, mockEq(2020))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 5)
-    }))
-
-    when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
-      anyString, anyInt, any)(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getRegisteredPath),
-      anyString, anyInt)(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) >= 15)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      anyString, mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      anyString, mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
-      anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      anyString, mockEq(2020))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 5)
-    }))
-
-    when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
-      anyString, anyInt, any)(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getRegisteredPath),
-      anyString, anyInt)(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) >= 15)
-    }))
 
   }
 
@@ -354,8 +234,8 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
     }
   }
 
-  "The Hompage Controller " should {
-    "set the request language and redirect to the hopepage" in {
+  "The Homepage Controller " should {
+    "set the request language and redirect to the homepage" in {
       running(fakeApplication) {
         val mockController = new MockHomePageController
         def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
@@ -371,7 +251,25 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
     }
   }
 
+  "HomePageController" should {
 
+    "display the navigation page " in {
+      running(fakeApplication) {
+        val homePageController = new MockHomePageController
+        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        implicit val request = FakeRequest().withSession(
+          SessionKeys.sessionId -> sessionId,
+          SessionKeys.token -> "RANDOMTOKEN",
+          SessionKeys.userId -> userId).withCookies(Cookie("PLAY_LANG", "cy"))
+        implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
+        implicit val lang : Lang = new Lang("cy")
+        val r = await(homePageController.onPageLoad.apply(request))(timeout)
+        status(r) shouldBe 200
+        bodyOf(r) should include("Cyfeirnod TWE y Cyflogwr")
+      }
+    }
+
+  }
 
 
 }
