@@ -649,7 +649,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
   }
 
     "When validating a year the controller " should {
-      /*"should return the current tax year if the validation passes for cy  " in {
+      "should return the current tax year if the validation passes for cy  " in {
         running(fakeApplication) {
           implicit val request = mockrequest
           val mockExclusionController = new MockExclusionListController
@@ -659,7 +659,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
           val r = await(mockExclusionController.validateRequest("cy", "car"))(timeout)
           r shouldBe utils.TaxDateUtils.getCurrentTaxYear()
         }
-      }*/
+      }
 
       "it should throw a if the Bik is not registered valid " in {
         running(fakeApplication) {
