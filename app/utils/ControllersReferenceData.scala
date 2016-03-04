@@ -57,6 +57,7 @@ trait ControllersReferenceData extends FormMappings {
   val FORM_TYPE_NONINO = "no-nino"
   val NEXT_TAX_YEAR = FormMappingsConstants.CYP1
   val SESSION_FROM_YTA = "fromYTA"
+  val SESSION_LANG = "session_lang"
   val BIK_REMOVE_REASON_LIST = List("software", "guidance", "not-clear", "not-offering", "other")
 
 

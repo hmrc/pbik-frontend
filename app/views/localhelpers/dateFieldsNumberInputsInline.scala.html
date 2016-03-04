@@ -8,7 +8,7 @@
 @dayElem = @{"dob.day"}
 @helpers.input(
 Field(formItem,formItem(dayElem).name, formItem(dayElem).constraints, formItem(dayElem).format, Seq(), formItem(dayElem).value),
-'_label -> Messages("date.fields.day"),
+'_label -> Messages("Service.field.dob.day"),
 '_inputClass -> "form-control",
 '_type -> "text",
 '_dataAttributes -> "pattern=[0-9]* ",
@@ -20,7 +20,7 @@ Field(formItem,formItem(dayElem).name, formItem(dayElem).constraints, formItem(d
 @monthElem = @{"dob.month"}
 @helpers.input(
 Field(formItem, formItem(monthElem).name, formItem(monthElem).constraints, formItem(monthElem).format, Seq(), formItem(monthElem).value),
-'_label -> Messages("date.fields.month"),
+'_label -> Messages("Service.field.dob.month"),
 '_inputClass -> "form-control",
 '_type -> "text",
 '_dataAttributes -> "pattern=[0-9]* ",
@@ -32,7 +32,7 @@ Field(formItem, formItem(monthElem).name, formItem(monthElem).constraints, formI
 @yearElem = @{"dob.year"}
 @helpers.input(
 Field(formItem, formItem(yearElem).name, formItem(yearElem).constraints, formItem(yearElem).format, Seq(), formItem(yearElem).value),
-'_label -> Messages("date.fields.year"),
+'_label -> Messages("Service.field.dob.year"),
 '_inputClass -> "form-control",
 '_type -> "text",
 '_dataAttributes -> "pattern=[0-9]* ",

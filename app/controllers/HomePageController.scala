@@ -22,7 +22,7 @@ import connectors.{HmrcTierConnector, TierConnector}
 import controllers.auth._
 import play.api.Logger
 import play.api.mvc.{Result, _}
-import services.{EiLListService, BikListService}
+import services.{BikListService}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
@@ -31,6 +31,7 @@ import utils._
 import scala.concurrent.Future
 import play.api.Play.configuration
 import play.api.Play.current
+import play.api.i18n.Lang
 
 import scala.util.{Success, Try}
 
@@ -42,7 +43,7 @@ with AuthenticationConnector {
 }
 
 trait HomePageController extends FrontendController with URIInformation
-with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger {
+with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger  {
 
   this: TierConnector =>
   def bikListService: BikListService
@@ -64,6 +65,16 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
         Future.successful(Redirect(configuration.getString("pbik.survey.url").getOrElse("")))
   }
 
+  def setLanguage:Action[AnyContent] = AuthorisedForPbik {
+    implicit ac =>
+      implicit request =>
+        val lang = request.getQueryString("lang").getOrElse("en")
+        Logger.info("Language from request query is " + lang)
+        implicit val newLang = Lang(lang)
+        Logger.info("New language set to " + newLang.code)
+        Future.successful(Redirect(routes.HomePageController.onPageLoad).withLang(newLang))
+  }
+
   def loadCautionPageForCY:Action[AnyContent] = AuthorisedForPbik {
     implicit ac =>
       implicit request =>
@@ -71,26 +82,33 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
         responseCheckCYEnabled(staticDataRequest)
   }
 
+//  def setLanguage(body: Request): Action[AnyContent] = AuthorisedFor(getAuthorisedForPolicy, pageVisibility = GGConfidence).async {
+//    implicit ac => implicit request =>
+//     request.add
+//  }
+
   def onPageLoad:Action[AnyContent] = AuthorisedForPbik {
     implicit ac =>
       implicit request =>
+
           val taxYearRange = TaxDateUtils.getTaxYearRange()
           val pageLoadFuture = for {
             currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
             nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
 
           } yield {
-            val fromYTA = if(request.session.get(SESSION_FROM_YTA).isDefined) {
-              request.session.get(SESSION_FROM_YTA).get
+              val fromYTA = if (request.session.get(SESSION_FROM_YTA).isDefined) {
+                request.session.get(SESSION_FROM_YTA).get
+              }
+              else {
+                isFromYTA
+              }
+              auditHomePageView
+              Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2, pbikAppConfig.biksCount, fromYTA.toString))
+                .addingToSession(nextYearList._1.toSeq: _*).addingToSession(SESSION_FROM_YTA -> fromYTA.toString)
             }
-            else {
-              isFromYTA
-            }
-            auditHomePageView
-            Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2, pbikAppConfig.biksCount, fromYTA.toString))
-              .addingToSession(nextYearList._1.toSeq: _*).addingToSession(SESSION_FROM_YTA -> fromYTA.toString)
-          }
           responseErrorHandler(pageLoadFuture)
+
   }
 
   def isFromYTA(implicit request: Request[_]): Boolean = {

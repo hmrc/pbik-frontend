@@ -1,4 +1,4 @@
-@(bikForm:Form[RegistrationList], additive: Boolean, taxYearRange:TaxYearRange)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, flash: Flash)
+@(bikForm:Form[RegistrationList], additive: Boolean, taxYearRange:TaxYearRange)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang, flash: Flash)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import uk.gov.hmrc.play.views.html.helpers.inputRadioGroup
@@ -178,6 +178,4 @@
           gaEvent("Benefit Removed for Next Year (Reason)", (reason + " (" + document.getElementById("form-remove").elements["other-desc"].value + ")"));
         }
         </script>
-
-
 }

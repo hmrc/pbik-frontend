@@ -1,4 +1,4 @@
-@(taxYearRange: TaxYearRange, year: String, iabdType: String, listOfMatchesForm: Form[(String,EiLPersonList)], formType: String)(implicit request: Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+@(taxYearRange: TaxYearRange, year: String, iabdType: String, listOfMatchesForm: Form[(String,EiLPersonList)], formType: String)(implicit request: Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
@@ -117,7 +117,7 @@
                     @Messages("ExclusionImportant.ExcludeEmployee")
                 </p>
 
-                     <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+                     <input type="submit" class="button" role="button" id="button-confirm" value="@Messages("Service.confirm")">
             }
 
             <p><a class="button-link" id="multi-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
@@ -183,7 +183,7 @@
                 </p>
 
                 <p>
-                    <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+                    <input type="submit" class="button" role="button" id="button-confirm" value="@Messages("Service.confirm")">
                     <p><a class="button-link" id="link-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
                           href="@routes.ExclusionListController.performPageLoad(year,iabdValueURLMapper(iabdType))">
                         @Messages("Service.back.excluded")</a></p>
