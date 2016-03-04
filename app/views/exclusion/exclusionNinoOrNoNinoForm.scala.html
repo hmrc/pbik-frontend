@@ -15,12 +15,25 @@
         </h1>
 
         <section id="exclusion-decision">
+            @if(flash.get("error")){
+                <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+                    <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
+                        There is a problem
+                    </h1>
+
+                    <ul class="error-summary-pbik-list">
+                        <li><a href="#error-list-no-selection">@Messages("ExclusionDecision.noselection.error")</a></li>
+                    </ul>
+
+                </div>
+            }
             @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(isCurrentTaxYear, iabdValueURLMapper(iabdType))) {
                 <p class="lede text">@Messages("ExclusionNinoDecision.question", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)</p>
 
                 <div class='form-group @if(flash.get("error")) {error}'>
                     @if(flash.get("error")) {
-                        <span class="error-notification" style="display:block">
+                        <span id="error-list-no-selection" class="error-notification" style="display:block">
                         @Messages("ExclusionDecision.noselection.error")
                         </span>
                     }
@@ -51,7 +64,7 @@
 
                 </fieldset>
                 </div>
-                <input type="submit" class="button" id="button-continue" value="@Messages("Service.continue")">
+                <input type="submit" class="button" role="button" id="button-continue" value="@Messages("Service.continue")">
             }
 
             <p><a class="button-link" id="link-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Nino/No-nino form')"

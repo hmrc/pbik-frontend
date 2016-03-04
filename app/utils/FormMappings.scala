@@ -16,12 +16,17 @@
 
 package utils
 
+import java.util.Calendar
+
 import org.joda.time.DateTimeConstants._
 
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
 import utils.BikListUtils.MandatoryRadioButton
+
+import scala.util.Try
 
 object FormMappingsConstants {
 
@@ -48,6 +53,7 @@ trait FormMappings extends PayrollBikDefaults {
 
   private val nameValidationRegex = "([a-zA-Z-'\\s])*"
   private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
+  //private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])(\\s|)[0-9][0-9](\\s|)[0-9][0-9](\\s|)[0-9][0-9](\\s|)([a-zA-Z]?)"
   private val ninoTrimmedRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
   private val yearRegEx = generateYearString(YEAR_LENGTH_VALUE)
   //  private val dateRegex: String = "([0-9])|([0-9][0-9])"
@@ -103,6 +109,22 @@ trait FormMappings extends PayrollBikDefaults {
     }
   }
 
+  def isDateYearInFuture(dob: (String, String, String)): Boolean = {
+    val currentYear=Calendar.getInstance().get(Calendar.YEAR)
+    val dobYear = Try(dob._3.toInt).getOrElse(0)
+
+    if(dobYear < currentYear) true
+    else false
+  }
+
+  def isDateYearInPastValid(dob: (String, String, String)): Boolean = {
+    val currentYear=Calendar.getInstance().get(Calendar.YEAR)
+    val dobYear = Try(dob._3.toInt).getOrElse(0)
+
+    if((dobYear + 130) < currentYear) false
+    else true
+  }
+
   val binaryRadioButton:Form[MandatoryRadioButton] = Form(
     mapping(
       "confirmation" -> nonEmptyText(1) //  must contain minimum characters for supported biks 1-99
@@ -131,15 +153,25 @@ trait FormMappings extends PayrollBikDefaults {
 
   def exclusionSearchFormWithNino:Form[EiLPerson] = Form(
     mapping(
-      "firstname" -> nonEmptyText.verifying("Please enter a valid first name", firstname =>
-                                                            firstname.matches(nameValidationRegex)),
-      "surname" -> nonEmptyText.verifying("Please enter a valid last name",
-                                                            lastname => lastname.matches(nameValidationRegex)),
-      "nino" -> nonEmptyText.verifying("Please enter a valid National Insurance number",
-                                                            nino => nino.isEmpty || nino.matches(ninoValidationRegex)),
+      "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
+          firstname.trim.length != 0)
+        .verifying(Messages("error.incorrect.firstname"), firstname =>
+          firstname.matches(nameValidationRegex)),
+
+      "surname" -> text.verifying(Messages("error.empty.lastname"),
+          lastname => lastname.trim.length != 0)
+        .verifying(Messages("error.incorrect.lastname"),
+          lastname => lastname.matches(nameValidationRegex)),
+
+      "nino" -> text.verifying(Messages("error.empty.nino"),
+          nino => nino.trim.length != 0)
+        .verifying(Messages("error.incorrect.nino"),
+          nino => (nino.trim.length == 0 || nino.replaceAll(" ", "").matches(ninoValidationRegex)))
+      ,
+
       "status" -> optional(number),
       "perOptLock" -> default(number, 0)
-    )((firstname, surname, nino, status, perOptLock) => EiLPerson(stripTrailingNinoCharacterForNPS(nino.toUpperCase),
+    )((firstname, surname, nino, status, perOptLock) => EiLPerson(stripTrailingNinoCharacterForNPS(nino.replaceAll(" ", "").toUpperCase),
                                                                   firstname.trim, EiLPerson.defaultSecondName,
                                                                   surname.trim, EiLPerson.defaultWorksPayrollNumber,
                                                                   EiLPerson.defaultDateOfBirth, EiLPerson.defaultGender,
@@ -155,27 +187,49 @@ trait FormMappings extends PayrollBikDefaults {
 
   def exclusionSearchFormWithoutNino: Form[EiLPerson] = {
     val dateRegex: String = "([0-9])|([0-9][0-9])"
+    val dateDayRegex: String = "([0-9])"
+    val dateMonthRegex: String = "([0-9])"
+    val dateYearRegex: String = "([0-9]){4}"
     val fieldRequiredErrorMessage = "error.required"
+    val emptyDateError = "error.empty.dob"
     val invalidDateError = "error.invaliddate"
+    val invalidDayDateError = "error.invaliddate.day"
+    val invalidMonthDateError = "error.invaliddate.month"
+    val invalidYearDateError = "error.invaliddate.year"
+    val invalidYearFutureDateError = "error.invaliddate.future.year"
+    val invalidYearPastDateError = "error.invaliddate.past.year"
+
     Form(
       mapping(
-        "firstname" -> nonEmptyText.verifying("Please enter a valid first name", firstname =>
-                                                              firstname.matches(nameValidationRegex)),
-        "surname" -> nonEmptyText.verifying("Please enter a valid last name",
-                                                              lastname => lastname.matches(nameValidationRegex)),
+        "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
+          firstname.trim.length != 0)
+          .verifying(Messages("error.incorrect.firstname"), firstname =>
+            firstname.matches(nameValidationRegex)),
+
+        "surname" -> text.verifying(Messages("error.empty.lastname"),
+          lastname => lastname.trim.length != 0)
+          .verifying(Messages("error.incorrect.lastname"),
+            lastname => lastname.matches(nameValidationRegex)),
+
         "dob" -> mapping(
           "day" -> text,
           "month" -> text,
           "year" -> text
         )((day, month, year) => (day, month, year))((dob: (String, String, String)) =>
                                                               Some((dob._1, dob._2, dob._3))).
-                                                              verifying(fieldRequiredErrorMessage, dob =>
-                                                              !(dob._1.isEmpty && dob._2.isEmpty && dob._3.isEmpty)).
-                                                              verifying(invalidDateError, dob => isValidDate(dob)).
-                                                              verifying(invalidDateError, dob =>
-                                                              (dob._1.isEmpty || dob._1.matches(dateRegex)) &&
-                                                              (dob._2.isEmpty || dob._2.matches(dateRegex)) &&
-                                                              dob._3.isEmpty || dob._3.matches(yearRegEx)),
+                                                              verifying(emptyDateError, dob =>
+                                                              !(dob._1.isEmpty && dob._2.isEmpty && dob._3.isEmpty))
+        .verifying(invalidYearFutureDateError, dob => isDateYearInFuture(dob))
+        .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
+        .verifying(invalidDayDateError, dob =>
+        !(dob._1.matches(dateDayRegex)) )
+        .verifying(invalidMonthDateError, dob =>
+          !(dob._2.matches(dateMonthRegex)) )
+        .verifying(invalidYearDateError, dob =>
+          (dob._3.matches(dateYearRegex)) )
+
+        .verifying(invalidDateError, dob => isValidDate(dob)),
+
         "gender" -> text.verifying("Error message goes here", gender => !gender.isEmpty),
         "status" -> optional(number),
         "perOptLock" -> default(number, 0)
