@@ -176,7 +176,7 @@
         function gaEventConfirmRemoveBenefits() {
           gaEvent("Benefit Removed for Next Year", "@gaEventRemoveBiks");
           var reason = capitalise(RemoveBenefitRadioButtonValue().split('-').join(' '));
-          gaEvent("Benefit Removed for Next Year (Reason)", (reason + " (" + document.getElementById("form-remove").elements["other-desc"].value + ")"));
+          gaEvent("Benefit Removed for Next Year (Reason)", (reason + " (" + document.getElementById("form-remove").elements["reason.info"].value + ")"));
         }
         </script>
 }
