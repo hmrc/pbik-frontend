@@ -196,7 +196,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
   }
 
   def updateBiksFutureAction(year: Int, persistentBiks: List[Bik], additive: Boolean)
-                            (implicit request: Request[AnyContent], ac: AuthContext, lang: Lang): Future[Result] = {
+                            (implicit request: Request[AnyContent], ac: AuthContext): Future[Result] = {
     tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
       ac.principal.accounts.epaye.get.empRef.toString, year).flatMap {
       registeredResponse =>
@@ -215,7 +215,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
                 additive match {
                   case true => {
                     auditBikUpdate(true, year, persistentBiks)
-                    loadWhatNextRegisteredBIK(form, year)(request, ac, lang)
+                    loadWhatNextRegisteredBIK(form, year)
                   }
                   case false => removeBenefitReasonValidation(values, form, year, persistentBiks)
                 }
@@ -236,11 +236,11 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
           }
           case Some(info)=> {
             auditBikUpdate(false, year, persistentBiks, Some(reasonValue.selectionValue.toUpperCase, Some(info)))
-            loadWhatNextRemovedBIK(form, year)(request, ac)
+            loadWhatNextRemovedBIK(form, year)
           }
           case _ => {
             auditBikUpdate(false, year, persistentBiks, Some(reasonValue.selectionValue.toUpperCase, None))
-            loadWhatNextRemovedBIK(form, year)(request, ac)
+            loadWhatNextRemovedBIK(form, year)
           }
         }
       }

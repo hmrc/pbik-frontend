@@ -122,6 +122,17 @@ RemoveBenefits.Confirm.Desc=Byddwch yn dileu {0} o''ch cyflogres o 6 Ebrill {1} 
 RemoveBenefits.Heading =Dileu buddiannau neu dreuliau o''r flwyddyn dreth sy''n dechrau ar 6 Ebrill {0}
 RemoveBenefits.ChooseBenefitsLabel  =Dewiswch y buddiannau neu''r treuliau i''w dileu
 
+RemoveBenefits.reason.no.selection=Mae''n rhaid i chi ddewis un rheswm dros ddileu''r buddiant hwn neu''r draul hon
+RemoveBenefits.reason.other.required=Mae''n rhaid i chi esbonio pam eich bod wedi dewis arall
+RemoveBenefits.reason.desc=Rhowch wybod i ni pam eich bod yn dileu''r buddiant hwn neu''r draul hon
+RemoveBenefits.reason.software=Nid yw eich darparwr meddalwedd yn cynnal talu buddiannau a threuliau drwy''r gyflogres ar hyn o bryd
+RemoveBenefits.reason.guidance=Nid oedd yr arweiniad ar gyfer y gwasanaeth hwn yn glir
+RemoveBenefits.reason.not-clear=Nid oedd diben y gwasanaeth hwn yn glir
+RemoveBenefits.reason.not-offering=Nid ydych yn cynnig y buddiant hwn i''ch cyflogeion mwyach
+RemoveBenefits.reason.other=Arall
+RemoveBenefits.reason.other.label=Esboniwch pam
+
+
 NoMoreToAdd.Desc=Rydych eisoes wedi ychwanegu''r holl fuddiannau neu dreuliau sydd ar gael ar gyfer y flwyddyn dreth {0} hyd at {1}. Os ydych wedi gwneud camgymeriad, ac nad ydych wedi bod yn talu''r buddiannau hynny drwy''r gyflogres er 6 Ebrill {0}, yna dylech ddefnyddio''r cysylltiad "Help gyda''r dudalen hon" i gael cymorth.
 
 ExclusionOverview.title=Cyflogeion sydd wedi''u heithrio
@@ -408,6 +419,22 @@ ErrorPage.backButtonNoCache = Nid ydych wedi chwilio eto. Ewch yn ôl i''r hafan
 
 error.required=Mae angen llenwi’r blwch hwn
 error.invaliddate=Nodwch ddyddiad dilys
+
+error.empty.nino=Rhowch rif Yswiriant Gwladol
+error.empty.firstname=Rhowch enw cyntaf
+error.empty.lastname=Rhowch enw olaf
+error.incorrect.nino=Rhowch rif Yswiriant Gwladol yn yr un fformat &#226;''r enghraifft a ddangosir
+error.incorrect.firstname=Rhowch enw cyntaf nad yw''n cynnwys rhifau na chymeriadau arbennig
+error.incorrect.lastname=Rhowch enw olaf nad yw'n cynnwys rhifau na chymeriadau arbennig
+error.empty.dob=Rhowch ddyddiad geni
+error.invaliddate.day=Rhowch ddiwrnod dilys
+error.invaliddate.month=Rhowch fis dilys
+error.invaliddate.year=Rhowch flwyddyn ddilys
+error.invaliddate.future.year=Ni all blwyddyn y dyddiad geni fod yn y dyfodol
+error.invaliddate.past.year=Mae''n rhaid bod blwyddyn y dyddiad geni o fewn y 130 mlynedd diwethaf
+
+error.exclusion.multi.selection=Mae''n rhaid i chi ddewis pa gyflogai rydych eisiau ei eithrio cyn y gallwch barhau
+
 
 ######################
 ######################

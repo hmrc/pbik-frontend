@@ -9,7 +9,7 @@ Service.back.overview= Back to your payrolled benefits and expenses
 Service.back.overview.whatNext= View your payrolled benefits and expenses
 Service.back.cancel= Cancel - back to your payrolled benefits and expenses
 Service.back.excluded= Cancel - back to your excluded employees
-Service.back.yta=Back to Your Tax Account
+Service.back.yta=Your Tax Account
 Service.feedback.link= What did you think of this service?
 Service.feedback.desc= (takes 30 seconds)
 Service.paye.label=Employer PAYE reference:
@@ -134,7 +134,7 @@ RemoveBenefits.reason.guidance=The guidance for this service was not clear
 RemoveBenefits.reason.not-clear=The purpose of the service was not clear
 RemoveBenefits.reason.not-offering=You''re no longer offering this benefit to your employees
 RemoveBenefits.reason.other=Other
-RemoveBenefits.reason.other.label=If other, explain why
+RemoveBenefits.reason.other.label=Explain why
 
 NoMoreToAdd.Desc=You''ve already added all of the benefits or expenses that are available for the tax year {0} to {1}. If you''ve made a mistake and haven''t been payrolling those benefits since 6 April {0} then please use the "Get help with this page" link for help.
 
