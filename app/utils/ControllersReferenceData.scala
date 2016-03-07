@@ -58,6 +58,7 @@ trait ControllersReferenceData extends FormMappings {
   val NEXT_TAX_YEAR = FormMappingsConstants.CYP1
   val SESSION_FROM_YTA = "fromYTA"
   val SESSION_LANG = "session_lang"
+  val BIK_REMOVE_REASON_LIST = List("software", "guidance", "not-clear", "not-offering", "other")
 
 
   val EXCLUSION_TRACE_AND_MATCH_LIST_OF_PEOPLE = "trace-and-match-list-of-people"

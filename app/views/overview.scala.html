@@ -6,18 +6,13 @@
 @import utils.BikListUtils._
 @import utils.URIInformation._
 
-@parentTemplate(pageTitle = Messages("Overview.heading"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), true) {
+@parentTemplate(pageTitle = Messages("Overview.heading"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), true, showYTAlink = true) {
 
 <script>
     //Starts a new GA session
     ga('send', 'pageview', {'sessionControl': 'end'});
 </script>
-@if(fromYTA == "true") {
-    <p class="no-margin-top">
-        <span class="arrow-back"></span>
-        <a href="/account">@Messages("Service.back.yta")</a>
-    </p>
-}
+
 <h1 id="title">@Messages("Overview.heading")</h1>
 
 <section id="what-to-do">

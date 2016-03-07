@@ -22,11 +22,12 @@ case class BiKsWithExclusions(iabdType: String, status: Int, numberOfExclusions:
 
 case class RegistrationItem(id: String, active: Boolean, enabled: Boolean)
 
-case class RegistrationList(selectAll: Option[String] = None, active: List[RegistrationItem])
+case class RegistrationList(selectAll: Option[String] = None, active: List[RegistrationItem], reason: Option[BinaryRadioButtonWithDesc] = None)
 
 case class EiLPersonList(active: List[EiLPerson])
 
 case class BinaryRadioButton(selectionValue: Option[String])
+case class BinaryRadioButtonWithDesc(selectionValue: String, info: Option[String])
 
 case class TaxYearRange(cyminus1: Int, cy: Int, cyplus1: Int)
 

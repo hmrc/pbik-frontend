@@ -18,6 +18,11 @@
     .highlight-message--content-body {
         width: 95%;
     }
+
+    .service-info .service-info__help p {
+        margin: 0;
+        padding-top: 8px;
+    }
 }
 
  
@@ -210,8 +215,9 @@ fieldset .h4-heading{
 }
 
 
-.no-margin-top {
-    margin-top: 0 !important;
+.yta-link {
+    width: 40%;
+    float: left;
 }
 
 .checkbox-indent {
@@ -330,4 +336,13 @@ fieldset .h4-heading{
     position: absolute !important;
     clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
     clip: rect(1px, 1px, 1px, 1px);
+}
+
+.pbik-banner-links {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.form-control {
+    width: inherit;
 }

@@ -21,10 +21,12 @@ import java.util.UUID
 import _root_.models._
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
-import controllers.WhatNextPageController
+import controllers.{routes, WhatNextPageController}
 import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
 import play.api.Logger
 import play.api.data.Form
+import play.api.i18n.Messages
+import play.api.mvc._
 import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.HtmlFormat
@@ -139,7 +141,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
   def confirmRemoveNextTaxYearNoForm(iabdType: String):Action[AnyContent] = AuthorisedForPbik {
     implicit ac =>
       implicit request =>
-      val registrationList = RegistrationList(None, List(RegistrationItem(iabdType, true, false)))
+      val registrationList = RegistrationList(None, List(RegistrationItem(iabdType, true, false)), None)
       val form: Form[RegistrationList] = objSelectedForm.fill(registrationList)
       val resultFuture = Future.successful(
         Ok(views.html.registration.confirmUpdateNextTaxYear(objSelectedForm.fill(form.get), false, YEAR_RANGE)))
@@ -168,7 +170,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
 
           val items: List[RegistrationItem] = values.active.filter(x => x.active)
           Future.successful(
-            Ok(generateViewBasedOnFormItems(objSelectedForm.fill(RegistrationList(None, items)))))
+            Ok(generateViewBasedOnFormItems(objSelectedForm.fill(RegistrationList(None, items, None)))))
 
       }
     )
@@ -194,34 +196,62 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
   }
 
   def updateBiksFutureAction(year: Int, persistentBiks: List[Bik], additive: Boolean)
-                            (implicit request: Request[AnyContent], ac: AuthContext, lang: Lang): Future[Result] = {
+                            (implicit request: Request[AnyContent], ac: AuthContext): Future[Result] = {
     tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
       ac.principal.accounts.epaye.get.empRef.toString, year).flatMap {
       registeredResponse =>
-
         val form = objSelectedForm.bindFromRequest()
 
-        val changes = BikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
-        val saveFuture = tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
-          ac.principal.accounts.epaye.get.empRef.toString, year, changes)
-        saveFuture.map {
-          saveResponse: HttpResponse =>
-            additive match {
-              case true => {
-                auditBikUpdate(true, year, persistentBiks)
-                loadWhatNextRegisteredBIK(form, year)(request, ac, lang)
-              }
-              case false => {
-                auditBikUpdate(false, year, persistentBiks)
-                loadWhatNextRemovedBIK(form, year)(request, ac, lang)
-              }
+        form.fold(
+          formWithErrors => Future.successful(
+            Ok(views.html.registration.confirmUpdateNextTaxYear(formWithErrors, additive, YEAR_RANGE)))
+          ,
+          values => {
+            val changes = BikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
+            val saveFuture = tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
+              ac.principal.accounts.epaye.get.empRef.toString, year, changes)
+            saveFuture.map {
+              saveResponse: HttpResponse =>
+                additive match {
+                  case true => {
+                    auditBikUpdate(true, year, persistentBiks)
+                    loadWhatNextRegisteredBIK(form, year)
+                  }
+                  case false => removeBenefitReasonValidation(values, form, year, persistentBiks)
+                }
             }
-
-        }
+          }
+        )
     }
   }
 
-  private def auditBikUpdate(additive: Boolean, year:Int, persistentBiks: List[Bik]) (implicit hc:HeaderCarrier, ac: AuthContext) = {
+  private def removeBenefitReasonValidation(registrationList: RegistrationList, form: Form[RegistrationList], year: Int, persistentBiks: List[Bik])
+                                           (implicit request: Request[AnyContent], ac: AuthContext) = {
+    registrationList.reason match {
+      case Some(reasonValue) if(BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue)) => {
+        reasonValue.info match {
+          case _ if(reasonValue.selectionValue.equals("other") && reasonValue.info.getOrElse("").trim.isEmpty) => {
+            Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(persistentBiks.head.iabdType)
+            )).flashing("error" -> Messages("RemoveBenefits.reason.other.required"))
+          }
+          case Some(info)=> {
+            auditBikUpdate(false, year, persistentBiks, Some(reasonValue.selectionValue.toUpperCase, Some(info)))
+            loadWhatNextRemovedBIK(form, year)
+          }
+          case _ => {
+            auditBikUpdate(false, year, persistentBiks, Some(reasonValue.selectionValue.toUpperCase, None))
+            loadWhatNextRemovedBIK(form, year)
+          }
+        }
+      }
+      case _ => Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(persistentBiks.head.iabdType)
+        )).flashing("error" -> Messages("RemoveBenefits.reason.no.selection"))
+
+    }
+  }
+
+  private def auditBikUpdate(additive: Boolean, year:Int, persistentBiks: List[Bik], removeReason: Option[(String, Option[String])] = None)
+                            (implicit hc:HeaderCarrier, ac: AuthContext) = {
     val derivedMsg = if(additive) "Benefit added to " + taxYearToSpPeriod(year) else "Benefit removed from " + taxYearToSpPeriod(year)
     for (bik <- persistentBiks ) {
       logSplunkEvent(createDataEvent(
@@ -231,7 +261,10 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
         period=taxYearToSpPeriod(year),
         msg= derivedMsg + " : " + bik.iabdType,
         nino=None,
-        iabd=Some(bik.iabdType)))
+        iabd=Some(bik.iabdType),
+        removeReason=if(additive) None else Some(removeReason.get._1),
+        removeReasonDesc=if(additive) None else Some(removeReason.get._2.getOrElse("")))
+      )
     }
   }
 }
