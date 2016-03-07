@@ -41,15 +41,15 @@
         @if(showYTAlink) {
             <div class="yta-link">
                 <span class="arrow-back"></span>
-                <a href="/account">@Messages("Service.back.yta")</a>
+                <a href="/account" onclick="gaEvent('Click back to YTA link')">@Messages("Service.back.yta")</a>
             </div>
         }
         <div class="toggle-lang">
             @if(showLanguage) {
                 @if(lang.language.toLowerCase == "cy") {
-                    <a href="@routes.HomePageController.setLanguage?lang=en">English</a><span> | Cymraeg</span>
+                    <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
                 } else {
-                    <span>English | </span><a href="@routes.HomePageController.setLanguage?lang=cy">Cymraeg</a>
+                    <span>English | </span><a href="@routes.HomePageController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>
                 }
             }
         </div>
