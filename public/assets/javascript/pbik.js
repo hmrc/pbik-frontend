@@ -15,7 +15,7 @@ function capitalise(string) {
 function RemoveBenefitRadioButton(sel) {
     var selector = sel;
     globalRemoveReason = sel;
-    var otherDescTextBx = document.getElementById("other-desc")
+    var otherDescTextBx = document.getElementById("other-desc");
     if(selector=="other") {
         otherDescTextBx.style.display = "block";
     }else {
