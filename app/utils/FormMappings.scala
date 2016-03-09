@@ -225,9 +225,9 @@ trait FormMappings extends PayrollBikDefaults {
         .verifying(invalidYearFutureDateError, dob => isDateYearInFuture(dob))
         .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
         .verifying(invalidDayDateError, dob =>
-        !(dob._1.matches(dateDayRegex)) )
+          !(addZeroIfNeeded(dob._1).matches(dateDayRegex)) )
         .verifying(invalidMonthDateError, dob =>
-          !(dob._2.matches(dateMonthRegex)) )
+          !(addZeroIfNeeded(dob._2).matches(dateMonthRegex)) )
         .verifying(invalidYearDateError, dob =>
           (dob._3.matches(dateYearRegex)) )
 

@@ -60,14 +60,14 @@ function gaEventLinkGetHelp() {
 
 if (window.addEventListener) {
     window.addEventListener("load", function(){
-        document.getElementById("get-help-action-pbik-custom").onclick = function(){
+        document.getElementById("get-help-action").onclick = function(){
             gaEventLinkGetHelp();
         };
     });
 }
 else {
     window.attachEvent("load", function(){
-        document.getElementById("get-help-action-pbik-custom").onclick = function(){
+        document.getElementById("get-help-action").onclick = function(){
              gaEventLinkGetHelp();
         };
     });
