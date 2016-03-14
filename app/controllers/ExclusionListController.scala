@@ -22,6 +22,7 @@ import config.PbikAppConfig
 import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
 import models._
 import connectors.{HmrcTierConnector, TierConnector}
+import play.api.i18n.Lang
 import play.i18n.Messages
 import play.api.data.{FormError, Form}
 import play.api.{Play, Logger}
@@ -95,7 +96,7 @@ with SplunkLogger with ExclusionListConfiguration {
             nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
             currentYearEIL: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
           } yield {
-              Ok(views.html.exclusion.exclusionOverview(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, currentYearEIL))
+              Ok(views.html.exclusion.exclusionOverview(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, currentYearEIL.sortWith(_.surname < _.surname)))
                 .removingFromSession(HeaderTags.ETAG)
                 .addingToSession(nextYearList._1.toSeq: _*)
             }
@@ -305,7 +306,7 @@ with SplunkLogger with ExclusionListConfiguration {
   }
 
   def commitExclusion(year:String, iabdType:String, taxYearRange:TaxYearRange, excludedIndividual:Option[EiLPerson])
-                     (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext) : Future[Result] = {
+                     (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext, lang: Lang) : Future[Result] = {
     val yearInt = if (year.equals(utils.FormMappingsConstants.CY)) taxYearRange.cyminus1 else taxYearRange.cy
     val spYear = if (TaxDateUtils.isCurrentTaxYear(yearInt)) spPeriod.CY else spPeriod.CYP1
     val registrationList: RegistrationList = new RegistrationList(None, List(new RegistrationItem(iabdType, false, false)))
@@ -317,10 +318,10 @@ with SplunkLogger with ExclusionListConfiguration {
           case OK => {
             auditExclusion(true, yearInt,excludedIndividual.get.nino, iabdType)
             Ok(views.html.exclusion.whatNextExclusion.render(TaxDateUtils.getTaxYearRange(), year,
-              iabdType, excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname, request, ac))
+              iabdType, excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname, request, ac, lang))
 
           }
-          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")).
+          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")(request,ac,lang)).
             withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
         }
     }
@@ -380,7 +381,7 @@ with SplunkLogger with ExclusionListConfiguration {
 
   def processRemovalCommit(form: Form[(EiLPersonList)],
                            iabdType: String, taxYearRange:TaxYearRange)
-                          (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext) : Future[Result] = {
+                          (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext, lang: Lang) : Future[Result] = {
     val year = taxYearRange.cy
     val removalsList = form.fold(
       formWithErrors => List.empty[EiLPerson],
@@ -400,11 +401,11 @@ with SplunkLogger with ExclusionListConfiguration {
           case OK => {
             auditExclusion(false, year,extractListNino(removalsList),iabdType)
             Ok(views.html.exclusion.whatNextRescind.render(TaxDateUtils.getTaxYearRange(), NEXT_TAX_YEAR,
-              iabdTypeValue, individual.firstForename + " " + individual.surname, request, ac)).
+              iabdTypeValue, individual.firstForename + " " + individual.surname, request, ac, lang)).
               withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
 
           }
-          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")).
+          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")(request,ac,lang)).
             withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
         }
     }

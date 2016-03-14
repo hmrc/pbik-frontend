@@ -18,6 +18,11 @@
     .highlight-message--content-body {
         width: 95%;
     }
+
+    .service-info .service-info__help p {
+        margin: 0;
+        padding-top: 8px;
+    }
 }
 
  
@@ -210,8 +215,9 @@ fieldset .h4-heading{
 }
 
 
-.no-margin-top {
-    margin-top: 0 !important;
+.yta-link {
+    width: 40%;
+    float: left;
 }
 
 .checkbox-indent {
@@ -244,9 +250,8 @@ fieldset .h4-heading{
     vertical-align: middle;
 }
 
-/* Hide Get help with this page link, use custom */
-#get-help-action {
-    display: none;
+.toggle-lang {
+  float: right;
 }
 
 .report-error .report-error {
@@ -325,4 +330,19 @@ fieldset .h4-heading{
 
 .error .employee-table {
     margin-left:15px;
+}
+
+.hidden-screen-reader {
+    position: absolute !important;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+}
+
+.pbik-banner-links {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.other-desc .form-control {
+    width: inherit;
 }

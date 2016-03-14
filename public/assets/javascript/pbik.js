@@ -1,19 +1,21 @@
+var globalRemoveReason = "";
+
 function scrollToError(id) {
     window.location.hash = '#' + id;
 }
 
 function RemoveBenefitRadioButtonValue() {
-    var selector = document.getElementById("form-remove").elements["reason.selectionValue"].value;
-    return selector;
+    return globalRemoveReason;
 }
 
 function capitalise(string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
 
-function RemoveBenefitRadioButton() {
-    var selector = RemoveBenefitRadioButtonValue();
-    var otherDescTextBx = document.getElementById("other-desc")
+function RemoveBenefitRadioButton(sel) {
+    var selector = sel;
+    globalRemoveReason = sel;
+    var otherDescTextBx = document.getElementById("other-desc");
     if(selector=="other") {
         otherDescTextBx.style.display = "block";
     }else {
@@ -60,14 +62,14 @@ function gaEventLinkGetHelp() {
 
 if (window.addEventListener) {
     window.addEventListener("load", function(){
-        document.getElementById("get-help-action-pbik-custom").onclick = function(){
+        document.getElementById("get-help-action").onclick = function(){
             gaEventLinkGetHelp();
         };
     });
 }
 else {
     window.attachEvent("load", function(){
-        document.getElementById("get-help-action-pbik-custom").onclick = function(){
+        document.getElementById("get-help-action").onclick = function(){
              gaEventLinkGetHelp();
         };
     });

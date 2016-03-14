@@ -1,4 +1,4 @@
-@()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext)
+@()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
 
 @import utils.FormMappingsConstants._
 
@@ -26,6 +26,6 @@
     <p>@Messages("Service.notEnrolled.text4")</p>
 
     <p>
-        <a href='https://www.gov.uk/paye-online/enrol' class="button">@Messages("Service.notEnrolled.button")</a>
+        <a href='https://www.gov.uk/paye-online/enrol' class="button" role="button">@Messages("Service.notEnrolled.button")</a>
     </p>
 }

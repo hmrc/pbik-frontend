@@ -17,7 +17,7 @@
     articleClasses: Option[String] = None,
     includeGridWrapper: Boolean = false,
     actingAttorney: Option[uk.gov.hmrc.play.frontend.auth.ActingAsAttorneyFor] = None,
-    gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_])
+    gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_], lang:Lang)
 
 @import config.PbikAppConfig.assetsPrefix
 @import play.api.Play.current
@@ -58,7 +58,6 @@
 
 @getHelpForm = {
     @views.html.contactFormPartialPbik(config.PbikAppConfig.reportAProblemPartialUrl, None, None)
-
 }
 
 @sidebar = {

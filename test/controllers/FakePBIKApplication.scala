@@ -44,6 +44,13 @@ trait FakePBIKApplication extends WithFakeApplication with Mockito {
     HeaderTags.ETAG -> "0",
     HeaderTags.X_TXID -> "0")
 
+  def mockWelshrequest = FakeRequest("GET", "?lang=cy").withSession(
+    SessionKeys.sessionId -> sessionId,
+    SessionKeys.token -> "RANDOMTOKEN",
+    SessionKeys.userId -> userId,
+    HeaderTags.ETAG -> "0",
+    HeaderTags.X_TXID -> "0")
+
   def noSessionIdRequest = FakeRequest().withSession(
     SessionKeys.userId -> userId)
 

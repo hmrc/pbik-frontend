@@ -46,12 +46,13 @@ trait RegistrationService extends FrontendController with URIInformation
 
   def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                               generateViewBasedOnFormItems: (Form[RegistrationList],
-                                                List[RegistrationItem], List[Bik], List[Int]) => HtmlFormat.Appendable)
+                                                List[RegistrationItem], List[Bik], List[Int], List[Int]) => HtmlFormat.Appendable)
                                              (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext):
 
   Future[Result] = {
 
     val nonLegislationBiks:List[Int] = PbikAppConfig.biksNotSupported
+    val decommissionedBikIds:List[Int] = PbikAppConfig.biksDecommissioned
 
     val isCurrentYear:String = TaxDateUtils.isCurrentTaxYear(year) match {
       case true => FormMappingsConstants.CY
@@ -64,7 +65,12 @@ trait RegistrationService extends FrontendController with URIInformation
         ac.principal.accounts.epaye.get.empRef.toString, year)
       val nonLegislationList = nonLegislationBiks.map { x =>
         Bik(""+x, 30, 0)}
-      val hybridList = biksListOption ::: (nonLegislationList)
+          decommissionedBikList = decommissionedBikIds.map { x =>
+        Bik(""+x, 30, 0)}
+      // During transition, we have to ensure we handle the existing decommissioned IABDs (e.g 47 ) being sent by the server
+      // and after the NPS R38 config release, when it wont be. Therefore, aas this is a list, we remove the
+      // decommissioned values ( if they exist ) and then add them back in
+      val hybridList = biksListOption.filterNot(y => decommissionedBikIds.contains(y.iabdType.toInt)) ::: nonLegislationList ::: decommissionedBikList
 
     } yield {
       val pbikHeaders = bikListService.pbikHeaders
@@ -72,13 +78,14 @@ trait RegistrationService extends FrontendController with URIInformation
 
       val mergedData: RegistrationList = utils.BikListUtils.removeMatches(hybridList, registeredListOption)
       val sortedMegedData: RegistrationList =  utils.BikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
+
       if (sortedMegedData.active.size == 0) {
         Ok(views.html.errorPage(NO_MORE_BENEFITS_TO_ADD, YEAR_RANGE,
           isCurrentYear, -1, NO_MORE_BENEFITS_TO_ADD_HEADING))
       }
       else {
         Ok(generateViewBasedOnFormItems(objSelectedForm.fill(sortedMegedData),
-          fetchFromCacheMapBiksValue, registeredListOption, PbikAppConfig.biksNotSupported))
+          fetchFromCacheMapBiksValue, registeredListOption, PbikAppConfig.biksNotSupported, PbikAppConfig.biksDecommissioned))
       }
 
     }

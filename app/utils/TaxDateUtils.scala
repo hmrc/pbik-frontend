@@ -18,23 +18,28 @@ package utils
 
 import models.TaxYearRange
 import org.joda.time.{LocalDate, DateTime}
-import play.api.Logger
+import play.api.{Play, Logger}
 import uk.gov.hmrc.time.TaxYearResolver
+import play.api.Play.current
 
 object TaxDateUtils extends PayrollBikDefaults {
 
-  //lazy val TAX_YEAR_RANGE = generateTaxYearRange(getCurrentTaxYear())
+  val overridedDateFromConfig = Play.configuration.getIntList("pbik.date.override")
 
-  def getTaxYearRange(year:Int = getCurrentTaxYear()):TaxYearRange = generateTaxYearRange(year)
+  val localDate = if(overridedDateFromConfig.isDefined) {
+    new LocalDate(overridedDateFromConfig.get.get(0), overridedDateFromConfig.get.get(1), overridedDateFromConfig.get.get(2))} else new LocalDate()
 
-  def getCurrentTaxYear(dateToCheck:LocalDate = new LocalDate):Int = {
+  val year = if(overridedDateFromConfig.isDefined) new DateTime().getYear + 1 else new DateTime().getYear
+
+  def getTaxYearRange(year:Int = getCurrentTaxYear(localDate)):TaxYearRange = generateTaxYearRange(year)
+
+  def getCurrentTaxYear(dateToCheck:LocalDate = localDate):Int = {
       TaxYearResolver.taxYearFor(dateToCheck)
   }
 
-  def isCurrentTaxYear(yearToCheck:Int = new DateTime().getYear, dateToCheck:LocalDate = new LocalDate):Boolean = {
+  def isCurrentTaxYear(yearToCheck:Int = year, dateToCheck:LocalDate = localDate):Boolean = {
     yearToCheck == TaxYearResolver.taxYearFor(dateToCheck)
   }
-
 
   def isServiceLaunched(year:Int = getCurrentTaxYear()):Boolean = {
       val launched = (year >= TAX_YEAR_OF_LAUNCH)
