@@ -852,4 +852,28 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
       }
     }
   }
+
+  // Tests below to check input validation
+  "When updating exclusions, " should {
+    "an invalid input on first name " in {
+      running(fakeApplication) {
+        val TEST_EIL_PERSON: List[EiLPerson] = List(EiLPerson("AA111111"," ", Some("Stones"),"Smith",Some("123"),Some("01/01/1980"),Some("male"), Some(10),0))
+        val TEST_YEAR_CODE = "cy"
+        val TEST_IABD_VALUE = "31"
+        val FROM_OVERVIEW = "false"
+        implicit val request = mockrequest
+        val title = Messages("whatNext.exclude.heading")
+        val excludedText = Messages("whatNext.exclude.p1")
+        val mockExclusionController = new MockExclusionListController
+        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+        implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
+        val r = await(mockExclusionController.processExclusionForm(individualsForm.fill(EiLPersonList(TEST_EIL_PERSON)),TEST_YEAR_CODE, TEST_IABD_VALUE,YEAR_RANGE))(timeout)
+        status(r) shouldBe 200
+        bodyOf(r) should include(title)
+        bodyOf(r) should include("You&#x27;ll need to submit a P11D to HMRC to report the value of the benefit or expense they receive.")
+      }
+    }
+  }
+
 }

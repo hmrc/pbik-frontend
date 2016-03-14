@@ -96,7 +96,7 @@ with SplunkLogger with ExclusionListConfiguration {
             nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
             currentYearEIL: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
           } yield {
-              Ok(views.html.exclusion.exclusionOverview(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, currentYearEIL))
+              Ok(views.html.exclusion.exclusionOverview(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, currentYearEIL.sortWith(_.surname < _.surname)))
                 .removingFromSession(HeaderTags.ETAG)
                 .addingToSession(nextYearList._1.toSeq: _*)
             }
