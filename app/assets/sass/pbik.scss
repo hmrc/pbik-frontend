@@ -48,6 +48,11 @@
         width: 100%;
     }
 
+    .sidebar-side-bar {
+        margin-top: 0;
+        margin-left: 0;
+    }
+
 }
 
 .line {
@@ -345,4 +350,42 @@ fieldset .h4-heading{
 
 .other-desc .form-control {
     width: inherit;
+}
+
+.govuk-box-highlight{
+    margin: 1em 0 1em 0;
+    padding: 2em 0 1em 0;
+    color: #fff;
+    background: #28a197;
+    text-align: center;
+}
+
+#confirmation #title {
+    color: #fff;
+}
+
+#confirmation-p {
+    margin: 0.75em 2em 0.75em 2em;
+}
+
+.sidebar-side-bar  {
+
+  margin-top: 95px;
+  margin-left: 40px;
+}
+
+.sidebar-heading{
+
+border-bottom: 5px solid #005ea5;
+}
+
+.sidebar-link {
+    border-bottom: 1px solid #BFC1C3;
+    padding-bottom: 10px;
+    padding-top: 5px;
+    margin-bottom: 0;
+}
+
+.pbik-help-section-content {
+    margin-bottom: 30px;
 }

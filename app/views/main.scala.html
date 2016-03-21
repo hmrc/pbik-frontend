@@ -20,6 +20,7 @@
     gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_], lang:Lang)
 
 @import config.PbikAppConfig.assetsPrefix
+@import config.PbikAppConfig.contactFormServiceIdentifier
 @import play.api.Play.current
 @import play.api.Play
 @import layouts.govuk_template
@@ -57,7 +58,7 @@
 }
 
 @getHelpForm = {
-    @views.html.contactFormPartialPbik(config.PbikAppConfig.reportAProblemPartialUrl, None, None)
+    @views.html.contactFormPartialPbik(config.PbikAppConfig.reportAProblemPartialUrl, None, contactFormServiceIdentifier, supportLinkEnabled)
 }
 
 @sidebar = {

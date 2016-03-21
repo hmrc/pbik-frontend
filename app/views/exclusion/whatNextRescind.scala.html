@@ -5,18 +5,16 @@
 
 @parentTemplate(pageTitle = Messages("whatNext.exclude.heading"), None,  Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
-    <h1 id="title">
-        <span class="font-medium step-indicator">
-            @Messages("Service.stepindicator", "2", "2")
-        </span>
-        <div id="title">@Messages("whatNext.rescind.heading")</div>
-    </h1>
-
     <section id="what-next-rescind">
 
-        <p class="text lede">
-            @Messages("ExclusionRemoval.WhatNext.lede", name, Messages("BenefitInKind.label." + iabdValueURLDeMapper(iabdType)).toLowerCase, taxYearRange.cy+"")
-        </p>
+        <div id="confirmation" class="govuk-box-highlight">
+            <h1 id="title" class="bold-large">
+                @Messages("whatNext.rescind.heading")
+            </h1>
+            <p id="confirmation-p">
+                @Messages("ExclusionRemoval.WhatNext.lede", name, Messages("BenefitInKind.label." + iabdValueURLDeMapper(iabdType)).toLowerCase, taxYearRange.cy+"")
+            </p>
+        </div>
 
         <h2>
             @Messages("whatNext.subHeading")

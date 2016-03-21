@@ -5,21 +5,20 @@
 
 @parentTemplate(pageTitle = Messages("whatNext.exclude.heading"), None,  Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
-    <h1 id="title">
-        <span class="font-medium step-indicator">
-            @Messages("Service.stepindicator", "4", "4")
-        </span>
-        <div id="title">@Messages("whatNext.exclude.heading")</div>
-    </h1>
-
     <section id="what-next-exclusion">
-        <p class="text lede">
-            @if(year=="cy"){
-                @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType).toLowerCase, taxYearRange.cyminus1 + "")
-            }else {
-                @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType).toLowerCase, taxYearRange.cy + "")
-            }
-        </p>
+
+        <div id="confirmation" class="govuk-box-highlight">
+            <h1 id="title" class="bold-large">
+                @Messages("whatNext.exclude.heading")
+            </h1>
+            <p id="confirmation-p">
+                @if(year=="cy"){
+                    @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType).toLowerCase, taxYearRange.cyminus1 + "")
+                }else {
+                    @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType).toLowerCase, taxYearRange.cy + "")
+                }
+            </p>
+        </div>
 
         <h2>
             @Messages("whatNext.subHeading")

@@ -16,13 +16,7 @@
 @parentTemplate(pageTitle = title, Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
         @if(additive) {
-            <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
-                href='@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad'>
-                @Messages("Service.back")</a>
             <h1 id="title">
-                <span class="font-medium step-indicator">
-                    @Messages("Service.stepindicator", "2", "3")
-                </span>
                 @if(!singleBik) {
                     @Messages("AddBenefits.Confirm.Multiple.Title")
                 }else{
@@ -30,12 +24,7 @@
                 }
             </h1>
         } else {
-            <!--<a class="button-link" id="link-back-top"  href='@routes.HomePageController.onPageLoad'>
-                @Messages("Service.back")</a>-->
             <h1 id="title">
-                <span class="font-medium step-indicator">
-                    @Messages("Service.stepindicator", "1", "2")
-                </span>
                 @Messages("RemoveBenefits.Confirm.Title")
             </h1>
         }
@@ -65,17 +54,43 @@
             @if(additive) {
                 @helpers.form(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes(),
                 'onsubmit -> "gaEventConfirmAddBenefits()") {
-                    <ul  id="list-of-confirmation-benefits" class="list-bullet text">
-                        @helper.repeat(bikForm("actives"), min=0) { activeField =>
-                            @helper.inputText(activeField("uid"), '_label -> null, 'style -> "display: none" )
-                            @helper.inputText(activeField("pbik_seq"), '_label -> null, 'style -> "display: none" )
-                            @helper.inputText(activeField("active"), '_label -> null, 'style -> "display: none" )
-                            <li id='confirmation-row-confirmation-@activeField("uid").value.get'>
-                                @Messages("BenefitInKind.label." + activeField("uid").value.get)</li>
-                        }
-                    </ul>
 
-                    <p class="important-notice">
+                    <table id="list-of-confirmation-benefits" role="benefits list">
+                        <thead>
+                            <tr role="row">
+                                <th role="columnheader">
+                                    @if(!singleBik) {
+                                        @Messages("AddBenefits.Confirm.Multiple.Table.Heading")
+                                    }else {
+                                        @Messages("AddBenefits.Confirm.Single.Table.Heading")
+                                    }
+                                </th>
+                                <th role="columnheader-link">
+                                    <a class="button-link" id="link-change" onclick=""
+                                       href='@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad'>
+                                        @Messages("AddBenefits.Confirm.Table.Change")</a>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
+                            @helper.repeat(bikForm("actives"), min=0) { activeField =>
+                                <tr role="row">
+                                    @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
+                                    @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
+                                    @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
+                                    <td role="gridcell" id='confirmation-row-confirmation-@activeField("uid").value.get'>
+                                        @Messages("BenefitInKind.label." + activeField("uid").value.get )</td>
+                                    <td role="gridcell-empty"></td>
+                                </tr>
+                            }
+                        }
+                        </tbody>
+
+                    </table>
+
+                    <p>
                         @Messages("AddBenefits.Confirm.help.desc")
                     </p>
 
