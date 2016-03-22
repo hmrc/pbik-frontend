@@ -196,7 +196,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
 
   // start tests
   "When loading the what next page " should {
-    "(Register a BIK current year)- state the status is ok and correct page is displayed" in {
+    "(Register a BIK current year) Single benefit- state the status is ok and correct page is displayed" in {
       running(fakeApplication) {
         val mockWhatNextPageController = new MockWhatNextPageController
         def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
@@ -205,12 +205,26 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         val formRegistrationList: Form[RegistrationList] = objSelectedForm
         val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2015))
         status(result) shouldBe 200
-        contentAsString(result) should include("Benefits registered")
+        contentAsString(result) should include("Benefit registered")
         contentAsString(result) should include("")
       }
     }
 
-    "(Register a BIK next year)- state the status is ok and correct page is displayed" in {
+    "(Register a BIK next year) Single benefit - state the status is ok and correct page is displayed" in {
+      running(fakeApplication) {
+        val mockWhatNextPageController = new MockWhatNextPageController
+        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        implicit val request = mockrequest
+        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+        val formRegistrationList: Form[RegistrationList] = objSelectedForm
+        val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016))
+        status(result) shouldBe 200
+        contentAsString(result) should include("Benefit registered")
+        contentAsString(result) should include("You still need to report Class 1A National Insurance contributions on a P11D(b).")
+      }
+    }
+
+    /*"(Register a BIK next year) Multiple benefits - state the status is ok and correct page is displayed" in {
       running(fakeApplication) {
         val mockWhatNextPageController = new MockWhatNextPageController
         def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
@@ -222,7 +236,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         contentAsString(result) should include("Benefits registered")
         contentAsString(result) should include("You still need to report Class 1A National Insurance contributions on a P11D(b).")
       }
-    }
+    }*/
 
     "(Remove a BIK)- state the status is ok and correct page is displayed" in {
       running(fakeApplication) {

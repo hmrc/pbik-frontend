@@ -7,6 +7,8 @@ GET         /assets/*file                           controllers.AssetsController
 GET         /                                       controllers.RedirectController.redirectIfFromRoot
 GET         /start                                  controllers.RedirectController.redirectIfFromStart
 GET         /overview                               controllers.RedirectController.redirectIfFromOldOverview
+GET         /help-and-contact                       controllers.HelpAndContactController.onPageLoad
+POST        /help-and-contact                       controllers.HelpAndContactController.submitContactHmrcForm
 
 GET         /not-authorised                         controllers.auth.AuthController.notAuthorised
 

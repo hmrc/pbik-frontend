@@ -8,9 +8,6 @@
 @parentTemplate(pageTitle = Messages("ExclusionRemovalConfirmation.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
     <h1 id="title">
-        <span class="font-medium step-indicator">
-            @Messages("Service.stepindicator", "1", "2")
-        </span>
         @Messages("ExclusionRemovalConfirmation.title")
     </h1>
 
@@ -71,7 +68,7 @@
 
         <div style="clear:both"></div>
 
-        <div class="important-notice">
+        <div class="panel-indent panel-border-wide">
             @Messages("ExclusionRemovalConfirmation.warning")
         </div>
 

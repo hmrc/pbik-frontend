@@ -4,101 +4,120 @@
 @import utils.URIInformation._
 
 @benefitLabel = @{Messages("BenefitInKind.label." + bikForm("actives[0].uid").value.get ).toLowerCase}
+@singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @cyplus1 = @{""+taxYearRange.cyplus1}
+@metaTitleAdditive = @{if(singleBik){Messages("whatNext.add.heading.singular")}else {Messages("whatNext.add.heading")}}
 
-@parentTemplate(pageTitle = if(additive) {Messages("whatNext.add.heading")}else{Messages("whatNext.remove.heading")},
+@parentTemplate(pageTitle = if(additive) {metaTitleAdditive}else{Messages("whatNext.remove.heading")},
                 None, Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
-    <h1 id="title">
-        <span class="font-medium step-indicator">
-            @if(additive) {
-                @Messages("Service.stepindicator", "3", "3")
-            }else {
-                @Messages("Service.stepindicator", "2", "2")
-            }
-        </span>
-        @if(additive) {
-            @Messages("whatNext.add.heading")
-        }else{
-            @Messages("whatNext.remove.heading")
-        }
-    </h1>
+    <section id="print-section">
+        <div id="printContainer"/>
+    </section>
 
     <section id="print-section">
         <div id="printContainer"/>
     </section>
 
     <section id="what-next-update-benefit">
-    @if(additive) {
-        <p class="text lede">
-            @Messages("whatNext.cy1.add.lede", cy)
-        </p>
-
-        <div class="data">
-            <ul  id="list-of-confirmation-benefits" class="list-bullet">
-                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
-                    @helper.repeat(bikForm("actives"), min=0) { activeField =>
-                        @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
-                        @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
-                        @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
-                        <li id='li-@activeField("uid").value.get'> @Messages("BenefitInKind.label." + activeField("uid").value.get )</li>
+        <div id="confirmation" class="govuk-box-highlight">
+            <h1 id="title" class="bold-large">
+                @if(additive) {
+                    @if(singleBik){
+                        @Messages("whatNext.add.heading.singular")
+                    }else {
+                        @Messages("whatNext.add.heading")
                     }
-                }
-            </ul>
+                } else {@Messages("whatNext.remove.heading")}
+            </h1>
+            <p id="confirmation-p">
+                @if(additive) {
+                    @if(singleBik){
+                        @Messages("whatNext.cy1.add.lede.singular", cy)
+                    }else {
+                        @Messages("whatNext.cy1.add.lede", cy)
+                    }
+                }else {
+                    @Html(Messages("whatNext.remove.lede", benefitLabel, cy, cyplus1, bikForm("actives[0].uid").value.get))}
+            </p>
         </div>
 
-        <h2>
-            @Messages("whatNext.subHeading")
-        </h2>
+        @if(additive) {
 
-        @if(isCurrentYear) {
-            <!-- CY content will go here when enabled-->
-        }else {
-            <p class="text">
-                @Messages("whatNext.cy1.add.p1", cy)
-            </p>
+            <div class="data">
+                <table id="list-of-confirmation-benefits" role="benefits list">
+                    <thead>
+                        <tr role="row">
+                            <th role="columnheader">@Messages("whatNext.cy1.add.table.header")</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
+                            @helper.repeat(bikForm("actives"), min=0) { activeField =>
+                                <tr role="row">
+                                @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
+                                @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
+                                @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
+                                <td role="gridcell" id='li-@activeField("uid").value.get'> @Messages("BenefitInKind.label." + activeField("uid").value.get )</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h2>
+                @Messages("whatNext.subHeading")
+            </h2>
+
+            @if(isCurrentYear) {
+                <!-- CY content will go here when enabled-->
+            }else {
+                <p class="text">
+                    @Messages("whatNext.cy1.add.p1", cy)
+                </p>
+
+                <p class="text">
+                    @Messages("whatNext.cy1.add.p2")
+                </p>
+
+                <p class="text">
+                    @Messages("whatNext.cy1.add.p3", cy, cyplus1)
+                </p>
+
+                <p class="text">
+                    @Messages("whatNext.cy1.add.p4")
+                </p>
+            }
+
+        } else {
+
+            <h2>
+                @Messages("whatNext.subHeading")
+            </h2>
 
             <p class="text">
-                @Messages("whatNext.cy1.add.p2")
-            </p>
-
-            <p class="text">
-                @Messages("whatNext.cy1.add.p3", cy, cyplus1)
-            </p>
-
-            <p class="text">
-                @Messages("whatNext.cy1.add.p4")
+                @Messages("whatNext.remove.p1")
             </p>
         }
 
-    } else {
-        <p class="text lede">
-            @Html(Messages("whatNext.remove.lede", benefitLabel, cy, cyplus1, bikForm("actives[0].uid").value.get))
-        </p>
-
-        <h2>
-            @Messages("whatNext.subHeading")
-        </h2>
-
         <p class="text">
-            @Messages("whatNext.remove.p1")
+            <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">
+                @Messages("Service.back.overview.whatNext")
+            </a>
         </p>
-    }
 
-    <p class="text">
-        <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">
-            @Messages("Service.back.overview.whatNext")
-        </a>
-    </p>
-
-    <p class="text link-feedback-p">
-        <a  onclick="gaEvent('Click feedback link','From: Add/ Remove What next page')"
-            href="@routes.HomePageController.redirectToDone" id="link-feedback" target="_blank">
-            @Messages("Service.feedback.link")
-        </a>
-        <span id="link-feedback-desc">@Messages("Service.feedback.desc")</span>
-    </p>
+        <p class="text link-feedback-p">
+            <a  onclick="gaEvent('Click feedback link','From: Add/ Remove What next page')"
+                href="@routes.HomePageController.redirectToDone" id="link-feedback" target="_blank">
+                @Messages("Service.feedback.link")
+            </a>
+            <span id="link-feedback-desc">@Messages("Service.feedback.desc")</span>
+        </p>
     </section>
 }

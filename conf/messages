@@ -11,7 +11,8 @@ Service.back.cancel= Cancel - back to your payrolled benefits and expenses
 Service.back.excluded= Cancel - back to your excluded employees
 Service.back.yta=Your Tax Account
 Service.feedback.link= What did you think of this service?
-Service.feedback.desc= (takes 30 seconds)
+Service.feedback.desc= (opens in a new window)
+Service.new-window= (opens in a new window)
 Service.paye.label=Employer PAYE reference:
 Service.nino.lastletter=(Last&nbsp;letter&nbsp;not&nbsp;shown)
 
@@ -71,6 +72,10 @@ Overview.table.add.link = Add a benefit or expense
 Overview.table.add.link.more = Add another benefit or expense
 Overview.current.no.add = You can''t add or remove a benefit or expense to this year''s payroll as it is already included in your employees'' tax code.
 
+Sidebar.link.guidance = Detailed guidance on payrolling
+Sidebar.link.webinar = Payrolling webinar
+Sidebar.link.help = Help and contact
+
 ManageRegistrationYear.heading = Update your payrolled benefits and expenses
 
 ManageRegistrationYear.next.choice.add = Add a benefit or expense
@@ -118,6 +123,9 @@ AddBenefits.Confirm.Single.Title=Add a benefit or expense
 AddBenefits.Confirm.Multiple.Title=Add benefits and expenses
 RemoveBenefits.Confirm.Title=Remove a benefit or expense
 AddBenefits.Confirm.Desc=You''re registering to payroll the following from 6 April {0}.
+AddBenefits.Confirm.Multiple.Table.Heading=Benefits and expenses to add
+AddBenefits.Confirm.Single.Table.Heading=Benefit or expense to add
+AddBenefits.Confirm.Table.Change=Change
 AddBenefits.Confirm.help.desc=You can only exclude employees after registering a benefit
 AddBenefits.Confirm.help.reveal.link=What is an excluded employee?
 AddBenefits.Confirm.help.reveal.p1=Excluded employees are those who receive a benefit but aren''t taxed on it through their payroll. Tax on the value of the benefit should be taken through the employee''s tax code and you''ll need to submit a P11D for each excluded employee. You shouldn''t exclude employees who don''t receive the benefit.
@@ -448,10 +456,13 @@ error.exclusion.multi.selection=You need to choose which employee you want to ex
 ######################
 
 whatNext.add.heading=Benefits registered
+whatNext.add.heading.singular=Benefit registered
 whatNext.remove.heading=Benefit removed
 whatNext.add.info=You''ll need to submit a P11D to HMRC to report the benefit or expense they receive.
 whatNext.cy.add.p1=You''ve successfully told HMRC that you''ll be payrolling the following benefits or expenses
-whatNext.cy1.add.lede=You''ve told HMRC you''ll be taxing the following benefits or expenses through your payroll from 6 April {0}.
+whatNext.cy1.add.lede=You''ve registered to tax these benefits and expenses through your payroll from 6 April {0}.
+whatNext.cy1.add.lede.singular=You''ve registered to tax this benefit and expense through your payroll from 6 April {0}.
+whatNext.cy1.add.table.header=Registered benefits and expenses
 whatNext.cy1.add.p1=Set up your payroll to include the benefits or expenses in your employees'' pay.
 whatNext.cy1.add.p2=Tell your employees that their tax codes will change accordingly.
 whatNext.cy1.add.p3=For tax year {0} to {1} onwards you''ll no longer need to submit a P11D for benefits and expenses you''ve told HMRC you''re payrolling.
@@ -470,3 +481,10 @@ whatNext.exclude.p3=Set up your payroll correctly so that the employees don''t h
 whatNext.exclude.p4=You''ll need to submit a P11D for those employees you''ve excluded, informing us of the value of the benefits and expenses they receive so we can include it in their tax code.
 whatNext.exclude.p5=You must also report Class 1A National Insurance Contributions on form P11D(b).
 whatNext.exclude.p6=If you would like to start payrolling the excluded employees chosen benefits, please remove them from the exclusion list.
+
+HelpAndContact.title=Help and contact
+HelpAndContact.p1=If you have a specific tax query, <a rel="external" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries">contact HMRC</a>.
+HelpAndContact.p2=If you need help using the payrolling benefits in kind service, fill in the form below.
+HelpAndContact.form.title=How can we help you?
+HelpAndContact.form.p1=Don''t include any personal or financial information. For example, your National Insurance or credit card numbers.
+HelpAndContact.form.p2=We''ll get back to you within 2 working days.

@@ -44,7 +44,7 @@ trait ExclusionListConfiguration extends RunMode {
 
   import play.api.Play.current
 
-  lazy val exclusionsAllowed = Play.configuration.getBoolean("eil.functionality.enabled").getOrElse(false)
+  lazy val exclusionsAllowed = Play.configuration.getBoolean("pbik.enabled.eil").getOrElse(false)
 
 }
 
