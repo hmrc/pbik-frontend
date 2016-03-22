@@ -19,17 +19,39 @@
         width: 95%;
     }
 
+    .service-info .service-info__help {
+        width: 66.66%;
+        text-align: right;
+    }
+
     .service-info .service-info__help p {
         margin: 0;
         padding-top: 8px;
     }
-}
+    .sidebar-side-bar  {
 
+      margin-top: 95px;
+      margin-left: 40px;
+    }
+
+    table td, table th{
+    	font-size: 19px;
+    }
+
+    .other-desc .form-control {
+        width: inherit;
+    }
+}
  
 @media (max-width:640px){
+    .pbik-banner-links {
+        margin-bottom: 45px;
+    }
+
     fieldset legend {
         float: none;
     }
+
     .nino p {
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -37,6 +59,7 @@
         display: block;
         overflow: hidden;
     }
+
     .nino-remove input {
         width: 45px;
         text-overflow: ellipsis;
@@ -46,11 +69,20 @@
 
     .service-info .service-info__help {
         width: 100%;
+        text-align: left;
     }
 
     .sidebar-side-bar {
         margin-top: 0;
         margin-left: 0;
+    }
+
+    table td, table th{
+    	font-size: 16px;
+    }
+
+    .other-desc .form-control {
+        width: 350px;
     }
 
 }
@@ -89,9 +121,7 @@ fieldset .button {
 .line {
 	margin: 40px 0;
 }
-table td, table th{
-	font-size: 19px;
-}
+
 
 .employee-table tbody tr:hover,
 .benefits-table tbody tr:hover {
@@ -144,12 +174,10 @@ fieldset .h4-heading{
 	font-weight: 700;
 }
 
-.service-info { 
+.service-info {
   .service-info__help {
     float: left;
-    width: 66.66%;
     color: #0B0C0C;
-    text-align: right;
   }
 }
 
@@ -216,7 +244,7 @@ fieldset .h4-heading{
 }
 
 .benefits-table .no-checkbox {
-    margin-left: 30px;
+    margin-left: 40px;
 }
 
 
@@ -226,13 +254,14 @@ fieldset .h4-heading{
 }
 
 .checkbox-indent {
-        float: left;
-        min-height: 30px;
-        min-width: 30px;
+    float: left;
+    min-height: 30px;
+    min-width: 30px;
+    margin-left: 10px;
 }
 
 .other-desc-indent {
-    margin-left: 30px;
+    margin-left: 40px;
 }
 
 #link-feedback,
@@ -348,10 +377,6 @@ fieldset .h4-heading{
     margin-top: 10px;
 }
 
-.other-desc .form-control {
-    width: inherit;
-}
-
 .govuk-box-highlight{
     margin: 1em 0 1em 0;
     padding: 2em 0 1em 0;
@@ -368,12 +393,6 @@ fieldset .h4-heading{
     margin: 0.75em 2em 0.75em 2em;
 }
 
-.sidebar-side-bar  {
-
-  margin-top: 95px;
-  margin-left: 40px;
-}
-
 .sidebar-heading{
 
 border-bottom: 5px solid #005ea5;
@@ -388,4 +407,24 @@ border-bottom: 5px solid #005ea5;
 
 .pbik-help-section-content {
     margin-bottom: 30px;
+}
+
+.panel-indent {
+    margin-bottom: 25px;
+}
+
+.panel-border-wide {
+    border-left-width: 10px;
+}
+
+.no-wrap {
+    white-space: nowrap;
+}
+
+#link-change {
+    float: right;
+}
+
+.error-summary-pbik-list li {
+    margin-left: 0;
 }

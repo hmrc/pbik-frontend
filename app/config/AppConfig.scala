@@ -31,6 +31,7 @@ trait AppConfig {
   val contactFrontendService: String
   val contactFormServiceIdentifier: String
   val cyEnabled:Boolean
+  val taxCodeOverviewWarning:Boolean
   val biksNotSupported: List[Int]
   val biksDecommissioned: List[Int]
   val biksCount: Int
@@ -53,6 +54,7 @@ object PbikAppConfig extends AppConfig with ServicesConfig {
   override lazy val analyticsHost: String = loadConfig("google-analytics.host")
 
   override lazy val cyEnabled = configuration.getBoolean("pbik.enabled.cy").getOrElse(false)
+  override lazy val taxCodeOverviewWarning = configuration.getBoolean("pbik.enabled.warning.overview").getOrElse(false)
   override lazy val biksNotSupported:List[Int] = (configuration.getIntList("pbik.unsupported.biks").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
   override lazy val biksDecommissioned:List[Int] = (configuration.getIntList("pbik.decommissioned.biks").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
   override lazy val biksCount:Int = configuration.getInt(s"pbik.supported.biks.count").getOrElse(0)

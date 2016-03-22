@@ -13,6 +13,10 @@
 @parentTemplate(pageTitle = if(additive) {metaTitleAdditive}else{Messages("whatNext.remove.heading")},
                 None, Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
+    <section id="print-section">
+        <div id="printContainer"/>
+    </section>
+
     <section id="what-next-update-benefit">
         <div id="confirmation" class="govuk-box-highlight">
             <h1 id="title" class="bold-large">

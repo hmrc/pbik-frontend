@@ -43,7 +43,11 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
       private def loadConfig(key: String) = configuration.getString(key).
                                                             getOrElse(throw new Exception(s"Missing key: $key"))
       private val citizenAuthHost = Try{baseUrl("citizen-auth")}.getOrElse("citizen-auth-not-found")
-      private val contactFrontendService =  Try{baseUrl("contact-frontend")}.getOrElse("contact-frontend-no-found")
+      override lazy val contactFrontendService =  Try{baseUrl("contact-frontend")}.getOrElse("contact-frontend-no-found")
+      override lazy val contactFormServiceIdentifier: String = ""
+
+      override lazy val taxCodeOverviewWarning: Boolean = false
+
       private val contactHost = configuration.getString("microservice.services.contact-frontend.host").
                                                         getOrElse("contact-frontend-host-not-found")
 
@@ -72,8 +76,9 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
   object TestCYEnabledConfig extends AppConfig {
     private def loadConfig(key: String) = ""
 
-    private val contactFrontendService = ""
-    private val contactHost = ""
+    override lazy val contactFrontendService =  ""
+    override lazy val contactFormServiceIdentifier: String = ""
+    override lazy val taxCodeOverviewWarning: Boolean = true
 
     override lazy val assetsPrefix = ""
     override lazy val reportAProblemPartialUrl = ""

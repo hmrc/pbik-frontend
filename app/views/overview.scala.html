@@ -5,6 +5,7 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.BikListUtils._
 @import utils.URIInformation._
+@import config.PbikAppConfig.taxCodeOverviewWarning
 
 @sidebarHelpAndContact = {
     <h2 id="sidebar-heading" class="sidebar-heading">Help with payrolling</h2>
@@ -18,7 +19,7 @@
         <p id="sidebar-link-webinar" class="sidebar-link text">
             <a href="https://www.gov.uk/government/news/webinars-emails-and-videos-on-employing-people#payrolling-benefits-in-kind---an-overview" target="_blank">
                 @Messages("Sidebar.link.webinar")
-            </a><br>@Messages("Service.new-window")
+            </a>@Messages("Service.new-window")
         </p>
         <p id="sidebar-link-help" class="sidebar-link text">
             <a href="@controllers.routes.HelpAndContactController.onPageLoad">
@@ -46,9 +47,11 @@
 
 <section id="what-to-do">
 
-    <div id="latest-updates-message" class="highlight-message highlight-message--content-body">
-        <span>@Messages("Service.news.banner.message")</span>
-    </div>
+    @if(taxCodeOverviewWarning) {
+        <div id="latest-updates-message" class="panel-indent panel-border-wide">
+            <span>@Messages("Service.news.banner.message")</span>
+        </div>
+    }
 
     <h2 id="heading-cy1">
         @Messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")</h2>

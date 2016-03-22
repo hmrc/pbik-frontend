@@ -29,6 +29,7 @@
 
     <!--[if IE 7]><link rel="stylesheet" type="text/css" href='@routes.AssetsController.at("assets/css/ie7.css")'/><![endif]-->
     <script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/pbik.js")'></script>
+    <script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/print.js")'></script>
 }
 
 @serviceInfo = {
@@ -39,23 +40,25 @@
 
     <div style="clear:both"></div>
 
-    <div class="pbik-banner-links">
-        @if(showYTAlink) {
-            <div class="yta-link">
-                <span class="arrow-back"></span>
-                <a href="/account" onclick="gaEvent('Click back to YTA link')">@Messages("Service.back.yta")</a>
-            </div>
-        }
-        <div class="toggle-lang">
-            @if(showLanguage) {
-                @if(lang.language.toLowerCase == "cy") {
-                    <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
-                } else {
-                    <span>English | </span><a href="@routes.HomePageController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>
-                }
+    @if(showYTAlink || showLanguage){
+        <div class="pbik-banner-links">
+            @if(showYTAlink) {
+                <div class="yta-link">
+                    <span class="arrow-back"></span>
+                    <a href="/account" onclick="gaEvent('Click back to YTA link')">@Messages("Service.back.yta")</a>
+                </div>
             }
+            <div class="toggle-lang">
+                @if(showLanguage) {
+                    @if(lang.language.toLowerCase == "cy") {
+                        <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
+                    } else {
+                        <span>English | </span><a href="@routes.HomePageController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>
+                    }
+                }
+            </div>
         </div>
-    </div>
+    }
 }
 
 @main(
