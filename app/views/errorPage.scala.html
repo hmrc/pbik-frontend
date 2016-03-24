@@ -19,7 +19,7 @@ pageHeading:String ="An error has occurred", backLink:String= "overview")(implic
         case _ => {<h1 id="title">@Messages(errorMessage + "", "", "")</h1>}
     }
 
-    <p class="lede text">
+    <p class="lede-para text">
      @isCurrentTaxYear match {
             case utils.FormMappingsConstants.CY => {@Html(Messages(errorMessage + isCurrentTaxYear , taxYearRange.cyminus1.toString, taxYearRange.cy.toString))}
             case utils.FormMappingsConstants.CYP1 => {@Html(Messages(errorMessage + isCurrentTaxYear , taxYearRange.cy.toString, taxYearRange.cyplus1.toString))}

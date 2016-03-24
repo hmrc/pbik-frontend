@@ -5,11 +5,15 @@
 
 @parentTemplate(pageTitle = Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
-    <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
-        href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))'>
-        @Messages("Service.back")</a>
+    <span class="link-back-top-wrap">
+        <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
+            href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))'>
 
-    <h1 id="title">
+                <div class="arrow-back"></div>
+                @Messages("Service.back")
+        </a>
+    </span>
+    <h1 id="title" class="h1-heading-margin">
         @Messages("ExclusionSearch.form.title")
     </h1>
 

@@ -42,7 +42,7 @@
                 </p>
             }else {
 
-                <p class="text lede">@Html(Messages("AddBenefits.ChooseBenefitsLabel.1", ""+taxYearRange.cy, ""+taxYearRange.cyplus1))</p>
+                <p class="lede-para text">@Html(Messages("AddBenefits.ChooseBenefitsLabel.1", ""+taxYearRange.cy, ""+taxYearRange.cyplus1))</p>
 
                 <div class='form-group @if(bikForm("actives").hasErrors) {error}' id="list-benefits">
                     @if(bikForm("actives").hasErrors && additive){
@@ -110,7 +110,7 @@
                                             </label>
                                         }
                                         </td>
-                                        <td class="no-wrap">
+                                        <td class="no-wrap" onclick=selectCheckBoxTable('checkbox-@activeField("uid").value.get')>
                                             @Messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
                                         </td>
                                     </tr>
@@ -165,7 +165,7 @@
                                             </label>
                                             }
                                         </td>
-                                        <td class="no-wrap">
+                                        <td class="no-wrap" onclick=selectCheckBoxTable('checkbox-@activeField("uid").value.get')>
                                             @Messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
                                         </td>
                                     </tr>

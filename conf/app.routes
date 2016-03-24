@@ -9,6 +9,7 @@ GET         /start                                  controllers.RedirectControll
 GET         /overview                               controllers.RedirectController.redirectIfFromOldOverview
 GET         /help-and-contact                       controllers.HelpAndContactController.onPageLoad
 POST        /help-and-contact                       controllers.HelpAndContactController.submitContactHmrcForm
+GET         /help-and-contact-confirmed             controllers.HelpAndContactController.confirmationContactHmrc
 
 GET         /not-authorised                         controllers.auth.AuthController.notAuthorised
 

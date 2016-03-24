@@ -16,12 +16,12 @@
 
         <section id="exclusion-overview">
             @if(current.isEmpty) {
-                <p class="lede text">
+                <p class="lede-para text">
                         @Messages("ExclusionOverview.instruction.empty", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)
                 </p>
 
             }else{
-                <p class="lede text">
+                <p class="lede-para text">
                     @if(isCurrentTaxYear=="cy") {
                         @Messages("ExclusionOverview.instruction.cy.notempty", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)
                     }else{

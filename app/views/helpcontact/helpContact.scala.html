@@ -1,7 +1,7 @@
 @(partialUrl: String, formBody: Option[Html])(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
 @import connectors.FormPartialProvider
 
-@parentTemplate(pageTitle = Messages("Overview.heading"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
+@parentTemplate(pageTitle = Messages("HelpAndContact.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
 
     <h1 id="title">
         @Messages("HelpAndContact.title")

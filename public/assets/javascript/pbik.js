@@ -4,6 +4,22 @@ function scrollToError(id) {
     window.location.hash = '#' + id;
 }
 
+function selectRadioButtonTable(id) {
+    document.getElementById(id).checked = true;
+}
+
+function selectCheckBoxTable(id) {
+    var isChecked = document.getElementById(id);
+    try {
+        if(isChecked.checked) {
+            isChecked.checked = false;
+        } else {
+            isChecked.checked = true;
+        }
+    }
+    catch(err) {}
+}
+
 function RemoveBenefitRadioButtonValue() {
     return globalRemoveReason;
 }
