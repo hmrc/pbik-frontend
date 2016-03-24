@@ -31,7 +31,7 @@
 
 
         @if(additive) {
-            <p class="lede text"> @Messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+            <p class="lede-para text"> @Messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
         } else {
             @if(flash.get("error")){
                 <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
@@ -47,7 +47,7 @@
                 </div>
             }
 
-            <p class="lede text"> @Messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+            <p class="lede-para text"> @Messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
         }
 
         <div class="data">

@@ -11,10 +11,13 @@
             'onsubmit -> "gaEventLinkSteps()") {
             <input type="hidden" id="button-nino"  name="confirmation" value="@formType">
             <button type="submit" class="button--link-style" id="link-back-top">
-                @Messages("Service.back")</button>
+
+                <div class="arrow-back"></div>
+                @Messages("Service.back")
+            </button>
         }
 
-        <h1 id="title">
+        <h1 id="title" class="h1-heading-margin">
             @Messages("ExclusionSearch.title")
         </h1>
 
@@ -39,7 +42,7 @@
                 </div>
                 }
 
-                <p class="text lede">
+                <p class="lede-para text">
                     @if(year=="cy"){
                         @Messages("ExclusionSearch.intro.multi", Messages("BenefitInKind.label." + iabdType).toLowerCase, ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
                     }else{
@@ -75,33 +78,34 @@
                     <tbody>
                       @repeatWithIndex(listOfMatchesForm("individuals"), min=1) { (listItem,index) =>
                       <fieldset>
-                              <tr>
+                              <tr onclick=selectRadioButtonTable('@listItem("nino").value.get-radio')>
+
                                 <td>
                                    @if(listItem("nino").value.get.equals(listOfMatchesForm("individualSelection").value.getOrElse(""))){
-                                        <input id ='@listItem("nino").value.get-radio' type="radio" name="individualSelection" value='@listItem("nino").value.get' checked>
-                                    }else{<input id ='@listItem("nino").value.get-radio' type="radio" name="individualSelection" value='@listItem("nino").value.get'>
-
+                                        <input class="radio-indent" id ='@listItem("nino").value.get-radio' type="radio" name="individualSelection" value='@listItem("nino").value.get' checked>
+                                    }else{
+                                        <input class="radio-indent" id ='@listItem("nino").value.get-radio' type="radio" name="individualSelection" value='@listItem("nino").value.get'>
                                     }
                                 </td>
-                                   <input type="hidden" id='individuals_@{index}_nino' name='individuals[@index].nino' value='@listItem("nino").value.getOrElse("")' />
-                                   <input type="hidden" id='individuals_@{index}_firstName' name='individuals[@index].firstName' value='@listItem("firstName").value.get' />
-                                   @if(listItem("secondName").value.isDefined) { <input type="hidden" id='individuals_@{index}_secondName' name='individuals[@index].secondName' value='@listItem("secondName").value.get' /> }
-                                   <input type="hidden" id='individuals_@{index}_surname' name='individuals[@index].surname' value='@listItem("surname").value.get' />
-                                   @if(listItem("worksPayrollNumber").value.isDefined) { <input type="hidden" id='individuals_@{index}_worksPayrollNumber' name='individuals[@index].worksPayrollNumber' value='@listItem("worksPayrollNumber").value.get' /> }
-                                   @if(listItem("dateOfBirth").value.isDefined) { <input type="hidden" id='individuals_@{index}_dateOfBirth' name='individuals[@index].dateOfBirth' value='@listItem("dateOfBirth").value.get' /> }
-                                   @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
-                                   <input type="hidden" id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
-                                   <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
-                                    <td id='table-row-name-@listItem("nino").value.get' >
-                                      @listItem("firstName").value.get @listItem("surname").value.get
-                                    </td>
-                                    <td id='table-row-nino-@listItem("nino").value.get'>
-                                      @listItem("nino").value.get
-                                        <p>@Html(Messages("Service.nino.lastletter"))</p>
-                                    </td>
-                                    <td id='table-row-dob-@listItem("nino").value.get'>
-                                      @listItem("worksPayrollNumber").value.getOrElse("")
-                                    </td>
+                                <input type="hidden" id='individuals_@{index}_nino' name='individuals[@index].nino' value='@listItem("nino").value.getOrElse("")' />
+                                <input type="hidden" id='individuals_@{index}_firstName' name='individuals[@index].firstName' value='@listItem("firstName").value.get' />
+                                @if(listItem("secondName").value.isDefined) { <input type="hidden" id='individuals_@{index}_secondName' name='individuals[@index].secondName' value='@listItem("secondName").value.get' /> }
+                                <input type="hidden" id='individuals_@{index}_surname' name='individuals[@index].surname' value='@listItem("surname").value.get' />
+                                @if(listItem("worksPayrollNumber").value.isDefined) { <input type="hidden" id='individuals_@{index}_worksPayrollNumber' name='individuals[@index].worksPayrollNumber' value='@listItem("worksPayrollNumber").value.get' /> }
+                                @if(listItem("dateOfBirth").value.isDefined) { <input type="hidden" id='individuals_@{index}_dateOfBirth' name='individuals[@index].dateOfBirth' value='@listItem("dateOfBirth").value.get' /> }
+                                @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
+                                <input type="hidden" id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
+                                <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
+                                <td id='table-row-name-@listItem("nino").value.get' >
+                                  @listItem("firstName").value.get @listItem("surname").value.get
+                                </td>
+                                <td id='table-row-nino-@listItem("nino").value.get'>
+                                  @listItem("nino").value.get
+                                    <p>@Html(Messages("Service.nino.lastletter"))</p>
+                                </td>
+                                <td id='table-row-dob-@listItem("nino").value.get'>
+                                  @listItem("worksPayrollNumber").value.getOrElse("")
+                                </td>
 
                              </tr>
                       </fieldset>
@@ -124,7 +128,7 @@
          } else {
            @if(listOfMatchesForm("individuals").indexes.length == 1) {
 
-                 <p class="lede text">
+                 <p class="lede-para text">
                   @if(year=="cy"){
                     @Messages("ExclusionSearch.intro", Messages("BenefitInKind.label." + iabdType).toLowerCase, ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
                   }else{

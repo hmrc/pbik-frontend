@@ -12,7 +12,7 @@
     </h1>
 
     <section id="removal-confirmation">
-        <p class="lede text">
+        <p class="lede-para text">
             @Messages("ExclusionRemovalConfirmation.intro", Messages("BenefitInKind.label."+iabdValueURLDeMapper(iabdType)).toLowerCase, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
 
            @helpers.form(action=routes.ExclusionListController.removeExclusionsCommit(iabdType),

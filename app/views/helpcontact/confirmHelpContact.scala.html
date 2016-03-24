@@ -1,0 +1,18 @@
+@()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
+
+@parentTemplate(pageTitle = Messages("ConfirmationHelpAndContact.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
+
+    <h1 id="title">
+        @Messages("ConfirmationHelpAndContact.title")
+    </h1>
+
+    <p class="text">
+        @Messages("ConfirmationHelpAndContact.p1")
+    </p>
+
+    <p class="text">
+        <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">
+            @Messages("Service.back.overview")
+        </a>
+    </p>
+}

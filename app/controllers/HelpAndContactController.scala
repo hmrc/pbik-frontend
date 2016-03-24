@@ -79,10 +79,15 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
       implicit request =>
 
         submitContactHmrc(contactHmrcSubmitPartialUrl,
-          routes.HelpAndContactController.onPageLoad(),
+          routes.HelpAndContactController.confirmationContactHmrc(),
           (body: Html) => views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, Some(body)))
   }
 
+  def confirmationContactHmrc:Action[AnyContent] = AuthorisedForPbik {
+    implicit ac =>
+      implicit request =>
+        Future.successful(Ok(views.html.helpcontact.confirmHelpContact()))
+  }
 
   private def submitContactHmrc(formUrl: String, successRedirect: Call, failedValidationResponseContent: (Html) => HtmlFormat.Appendable)
                                (implicit request: Request[AnyContent]) : Future[Result] = {

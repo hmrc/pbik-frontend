@@ -26,7 +26,7 @@
                 </div>
             }
             @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(isCurrentTaxYear, iabdValueURLMapper(iabdType))) {
-                <p class="lede text">@Messages("ExclusionNinoDecision.question", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)</p>
+                <p class="lede-para text">@Messages("ExclusionNinoDecision.question", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)</p>
 
                 <div class='form-group @if(flash.get("error")) {error}'>
                     @if(flash.get("error")) {

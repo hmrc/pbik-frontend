@@ -53,7 +53,6 @@ trait PbikActions extends Actions {
         noSessionCheck(body)
   }
 
-
   def noSessionCheck(body: AsyncPlayUserRequest)(implicit ac: AuthContext, request: Request[AnyContent]):Future[Result]  = {
 
     val sessionId = request.session.get(SessionKeys.sessionId )
