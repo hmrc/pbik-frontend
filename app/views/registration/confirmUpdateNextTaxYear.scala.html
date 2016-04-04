@@ -95,7 +95,7 @@
                     </p>
 
                     <details id="important-excluded-employee-desc">
-                        <summary role="button" aria-controls="details-content-0" tabindex="0" aria-expanded="false"
+                        <summary aria-controls="details-content-0" tabindex="0" aria-expanded="false"
                             onclick='gaEvent("Click reveal", "@Messages("AddBenefits.Confirm.help.reveal.link")")'>
                             <span class="summary">@Messages("AddBenefits.Confirm.help.reveal.link")</span>
                         </summary>
@@ -106,7 +106,7 @@
                         </div>
                     </details>
 
-                    <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+                    <input type="submit" role="button" class="button" id="button-confirm" value="@Messages("Service.confirm")">
                 }
                 <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
                       href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
@@ -170,7 +170,7 @@
                         </fieldset>
                     </div>
 
-                    <input type="submit" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+                    <input type="submit" role="button" class="button" id="button-confirm" value="@Messages("Service.confirm")">
 
                     <noscript>
                         <style type="text/css">

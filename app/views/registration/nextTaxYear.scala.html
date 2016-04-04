@@ -183,7 +183,7 @@
             <p id="help-unavailable" class="text">@Messages("BenefitInKind.label.unavailable.desc")</p>
             <p id="help" class="text">@Html(Messages("AddBenefits.ChooseBenefitsLabel.2", ""+taxYearRange.cy, ""+taxYearRange.cyplus1))</p>
 
-            <input type="submit" class="button" id="button-continue" value="@Messages("Service.continue")">
+            <input type="submit" role="button" class="button" id="button-continue" value="@Messages("Service.continue")">
         }
     } else {
         @helpers.form(action = controllers.registration.routes.ManageRegistrationController.confirmRemoveNextTaxYear()) {
@@ -209,7 +209,7 @@
 
         </fieldset>
 
-        <input type="submit" class="button" id="button-continue" value="@Messages("Service.continue")">
+        <input type="submit" role="button" class="button" id="button-continue" value="@Messages("Service.continue")">
 
         }
     }
