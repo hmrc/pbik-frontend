@@ -78,6 +78,9 @@ class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication wit
     when(httpPost.POSTForm[HttpResponse](anyString, any)(any, any))
       .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
 
+    when(httpPost.GET[HttpResponse](anyString)(any, any))
+      .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
+
   }
 
   "When using help/ contact hmrc, the HelpAndContactController " should {
@@ -110,10 +113,10 @@ class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication wit
           case Some(s: String) => s
           case _ => ""
         }
-
+        println("Next URL " + nextUrl)
         val newResult = route(FakeRequest(GET, nextUrl)).get
 
-        contentAsString(newResult) should include("")
+        contentAsString(newResult) should include("test")
       }
     }
   }

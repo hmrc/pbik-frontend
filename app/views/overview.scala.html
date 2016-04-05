@@ -61,19 +61,12 @@
             @Messages("Overview.next.lead")
         </p>
 
-        <table role="navigation">
-            <thead>
-            <tr role="row">
-                <th role="columnheader">@Messages("Overview.table.heading.1")</th>
-                <td role="columnheader"></td>
-                <td role="columnheader"></td>
-            </tr>
-            </thead>
-
+        <table role="presentation">
+            <caption class="caption-margin-top">@Messages("Overview.table.heading.1")</caption>
             <tbody>
                 @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsNextYear).zipWithIndex ) {
                     <tr role="row">
-                        <td role="gridcell" id="cy1-@n.iabdType" width="50%">@Messages("BenefitInKind.label." + n.iabdType)</td>
+                        <td role="gridcell" id="cy1-@n.iabdType" width="40%">@Messages("BenefitInKind.label." + n.iabdType)</td>
                         <td role="gridcell" width="28%">
                             <a id="cy1-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", iabdValueURLMapper(n.iabdType))'>
                             @if(n.eilCount == 0) {@Messages("Overview.table.exclude.none.link")} else {@Messages("Overview.table.exclude.link")}
@@ -81,7 +74,7 @@
                             <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
                             </a>
                         </td>
-                        <td role="gridcell" width="20%">
+                        <td role="gridcell" width="30%">
                             <a id="cy1-remove-@n.iabdType" href="@controllers.registration.routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(n.iabdType))">
                             @Messages("Overview.table.remove.link")
                             <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
@@ -98,7 +91,7 @@
     }
 
     @if(registeredBenefitsNextYear.size < serviceBiksCount) {
-        <a class="button" role="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
+        <a class="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
             @if(registeredBenefitsNextYear.size > 0) {
                 @Messages("Overview.table.add.link.more")
             }else {
@@ -127,19 +120,12 @@
             </p>
         }
         @if(!registeredBenefitsCurrentYear.isEmpty) {
-        <table role="navigation">
-            <thead>
-            <tr role="row">
-                <th role="columnheader">@Messages("Overview.table.heading.1")</th>
-                <td role="columnheader"></td>
-                <td role="columnheader"></td>
-            </tr>
-            </thead>
-
+        <table role="presentation">
+            <caption class="caption-margin-top">@Messages("Overview.table.heading.1")</caption>
             <tbody>
                 @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
                     <tr role="row">
-                        <td role="gridcell" id="cy-@n.iabdType" width="50%">@Messages("BenefitInKind.label." + n.iabdType)</td>
+                        <td role="gridcell" id="cy-@n.iabdType" width="40%">@Messages("BenefitInKind.label." + n.iabdType)</td>
                         <td role="gridcell" width="28%">
                             <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", iabdValueURLMapper(n.iabdType))'>
                             @if(n.eilCount == 0) {@Messages("Overview.table.exclude.none.link")} else {@Messages("Overview.table.exclude.link")}
@@ -147,7 +133,7 @@
                             <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
                         </a>
                         </td>
-                        <td role="gridcell" width="20%"></td>
+                        <td role="gridcell" width="30%"></td>
                     </tr>
                 }
             </tbody>
@@ -156,7 +142,7 @@
 
         @if(cyAllowed) {
             @if(registeredBenefitsCurrentYear.size < serviceBiksCount) {
-                <a class="button" role="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
+                <a class="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
                     @if(registeredBenefitsCurrentYear.size > 0) {
                     @Messages("Overview.table.add.link.more")
                     }else {

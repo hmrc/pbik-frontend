@@ -58,6 +58,11 @@
     .error-notification{
         font-size: 19px;
     }
+
+    aside {
+        width: 33.33333%;
+        float: right;
+    }
 }
  
 @media (max-width:640px){
@@ -95,6 +100,11 @@
 
     .other-desc .form-control {
         width: 350px;
+    }
+
+    aside {
+        width: auto;
+
     }
 
 }
@@ -458,3 +468,14 @@ border-bottom: 5px solid #005ea5;
 .h1-heading-margin {
     margin-top: 10px;
 }
+
+caption {
+    text-align: left;
+    padding-bottom: 0.52632em;
+    border-bottom: 1px solid #bfc1c3;
+}
+
+.caption-margin-top {
+    margin-top: 0.52632em;
+}
+

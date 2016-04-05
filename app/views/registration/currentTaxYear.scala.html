@@ -1,20 +1,31 @@
-@(bikForm:Form[RegistrationList], taxYearRange:TaxYearRange, previouslySelectedBenefits: List[RegistrationItem]= List.empty[RegistrationItem], registeredBiks:List[Bik] = List.empty[Bik], nonLegislationBiks:List[Int]=config.PbikAppConfig.biksNotSupported, decommmissionedBiks:List[Int]=config.PbikAppConfig.biksDecommissioned)(implicit request:Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
+@(bikForm:Form[RegistrationList], taxYearRange:TaxYearRange, previouslySelectedBenefits: List[RegistrationItem]= List.empty[RegistrationItem], registeredBiks:List[Bik] = List.empty[Bik], nonLegislationBiks:List[Int]=config.PbikAppConfig.biksNotSupported, decommissionedBiks:List[Int]=config.PbikAppConfig.biksDecommissioned)(implicit request:Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import play.api.Play.current
 
 @prioritisedBiks = @{Messages("Prioritised.Benefits")}
-@parentTemplate(pageTitle = Messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
-    <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
-       href='@routes.HomePageController.onPageLoad'>@Messages("Service.back")</a>
+@parentTemplate(pageTitle =
+Messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy),
+Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
     <h1 id="title">
-        <span class="font-medium step-indicator">
-            @Messages("Service.stepindicator", "1", "3")
-        </span>
         @Messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
     </h1>
+
+    @if(bikForm("actives").hasErrors){
+        <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+            <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
+                @Messages("Service.errorSummary.heading")
+            </h1>
+
+            <ul class="error-summary-pbik-list">
+                <li><a href="#error-list-no-selection">@Messages("AddBenefits.noselection.error")</a></li>
+            </ul>
+
+        </div>
+    }
 
     @helpers.form(action = controllers.registration.routes.ManageRegistrationController.confirmAddCurrentTaxYear()) {
 
@@ -22,117 +33,154 @@
             <p class="panel-indent text">
                 @Messages("ManagingRegistration.add.exhausted")
             </p>
-        }else{
-            <p class="lede-para text">@Html(Messages("AddBenefits.ChooseBenefitsLabel.1", ""+taxYearRange.cyminus1, ""+taxYearRange.cy))</p>
+        }else {
 
-            @if(nonLegislationBiks.size > 0 ) {
-                <p class="text">
-                    @Messages("ManagingRegistration.cant.hint")
-                </p>
-                <p class="text">
-                <ul class="list-bullet">
-                    @for(n<- nonLegislationBiks) {
-                        <li>@Html(Messages("BenefitInKind.label." + n) + " - " + Messages("BenefitInKind.p11d." + n + ".ref"))</li>
-                    }
-                </ul>
-                </p>
-                <p class="text">
-                    @Messages("ManagingRegistration.add.help.1")
-                </p>
+        <p class="lede-para text">@Html(Messages("AddBenefits.ChooseBenefitsLabel.1", ""+taxYearRange.cyminus1, ""+taxYearRange.cy))</p>
+
+        <div class='form-group @if(bikForm("actives").hasErrors) {error}' id="list-benefits">
+            @if(bikForm("actives").hasErrors){
+                <span id="error-list-no-selection" class="error-notification">
+                    @Messages("AddBenefits.noselection.error")
+                </span>
             }
 
+            <fieldset>
+                <table class="benefits-table">
+                    <thead>
+                    <tr>
+                        <th id="table-heading-1">@Messages("AddBenefits.table.heading.input")</th>
+                        <th id="table-heading-2">@Messages("AddBenefits.table.heading.section")</th>
+                    </tr>
+                    </thead>
 
-            <div class='form-group @if(bikForm("actives").hasErrors) {error}' id="list-benefits">
-
-                @if(bikForm("actives").hasErrors){
-                    <span class="error-notification">
-                        @Messages("AddBenefits.noselection.error")
-                    </span>
-                }
-
-                <fieldset>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>@Messages("AddBenefits.table.heading.input")</th>
-                            <th>@Messages("AddBenefits.table.heading.section")</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        @if(bikForm("actives").indexes.exists(i=> prioritisedBiks.contains(bikForm("actives")("[" + i + "]")("uid").value.get))){
+                    <tbody>
+                    @if(bikForm("actives").indexes.exists(i=> prioritisedBiks.contains(bikForm("actives")("[" + i + "]")("uid").value.get))){
                         @repeatWithIndex(bikForm("actives"), min=0) { (activeField, index) =>
+                            @if(prioritisedBiks.contains(activeField("uid").value.get)) {
+                            <tr>
+                                <td class="less-space">
+                                    <input type="hidden" id='actives_@{index}_uid' name='actives[@index].uid' value='@activeField("uid").value.get'  />
+                                    @if(previouslySelectedBenefits.filter(x => x.id == activeField("uid").value.get && x.active).length==1) {
+                                    <label id='label-@activeField("uid").value.get' class="selected" for='checkbox-@activeField("uid").value.get'>
+                                        <span class="checkbox-indent">
+                                            @if( nonLegislationBiks.contains(activeField("uid").value.get.toInt) | decommissionedBiks.contains(activeField("uid").value.get.toInt ) ) {
 
-                        @if(prioritisedBiks.contains(activeField("uid").value.get)) {
-                        <tr>
-                            <td>
-                                <input type="hidden" id='actives_@{index}_uid' name='actives[@index].uid' value='@activeField("uid").value.get'  />
-                                @if(previouslySelectedBenefits.filter(x => x.id == activeField("uid").value.get && x.active).length==1) {
-                                <label id='label-@activeField("uid").value.get' class="block-label selected" for='checkbox-@activeField("uid").value.get'>
-                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" checked/>
-                                    @Messages("BenefitInKind.label." + activeField("uid").value.get)
-                                </label>
-                                } else {
-                                <label id='label-@activeField("uid").value.get' class="block-label" for='checkbox-@activeField("uid").value.get'>
-                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" />
-                                    @Messages("BenefitInKind.label." + activeField("uid").value.get)
-                                </label>
-                                }
-                            </td>
-                            <td>
-                                @Messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
-                            </td>
-                        </tr>
+                                            }else {
+                                                <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" checked/>
+                                            }
+                                        </span>
+                                        @Messages("BenefitInKind.label." + activeField("uid").value.get)
+                                        @if(47 == activeField("uid").value.get.toInt) {
+                                        <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
+                                        }
+                                        @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
+                                        <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.unavailable")</span>
+                                        }
+                                        @if(decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
+                                        <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.decommissioned")</span>
+                                        }
+                                    </label>
+                                    } else {
+                                    <label id='label-@activeField("uid").value.get' class="" for='checkbox-@activeField("uid").value.get'>
+                                        <span class="checkbox-indent">
+                                        @if( nonLegislationBiks.contains(activeField("uid").value.get.toInt) | decommissionedBiks.contains(activeField("uid").value.get.toInt ) ) {
+
+                                        }else {
+                                            <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" />
+                                        }
+                                        </span>
+                                        @Messages("BenefitInKind.label." + activeField("uid").value.get)
+                                        @if(47 == activeField("uid").value.get.toInt) {
+                                        <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
+                                        }
+                                        @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
+                                        <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.unavailable")</span>
+                                        }
+                                        @if(decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
+                                        <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.decommissioned")</span>
+                                        }
+                                    </label>
+                                    }
+                                </td>
+                                <td class="no-wrap" onclick=selectCheckBoxTable('checkbox-@activeField("uid").value.get')>
+                                    @Messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
+                                </td>
+                            </tr>
+                            }
                         }
-                        }
-                        }
-                        @if(bikForm("actives").indexes.exists(i=> !prioritisedBiks.contains(bikForm("actives")("[" + i + "]")("uid").value.get))){
+                    }
+                    @if(bikForm("actives").indexes.exists(i=> !prioritisedBiks.contains(bikForm("actives")("[" + i + "]")("uid").value.get))){
                         @repeatWithIndex(bikForm("actives"), min=0) { (activeField, index) =>
-                        @if(!prioritisedBiks.contains(activeField("uid").value.get)) {
-                        <tr>
-                            <td>
-                                <input type="hidden" id='actives_@{index}_uid' name='actives[@index].uid' value='@activeField("uid").value.get'  />
-                                @if(previouslySelectedBenefits.filter(x => x.id == activeField("uid").value.get && x.active).length==1) {
-                                <label id='label-@activeField("uid").value.get' class="block-label selected" for='checkbox-@activeField("uid").value.get'>
-                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" checked/>
-                                    @Messages("BenefitInKind.label." + activeField("uid").value.get)
-                                </label>
-                                } else {
-                                <label id='label-@activeField("uid").value.get' class="block-label" for='checkbox-@activeField("uid").value.get'>
-                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" />
-                                    @Messages("BenefitInKind.label." + activeField("uid").value.get)
-                                </label>
-                                }
-                            </td>
-                            <td>
-                                @Messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
-                            </td>
-                        </tr>
-                        }
-                        }
+                            @if(!prioritisedBiks.contains(activeField("uid").value.get)) {
+                            <tr>
+                                <td class="less-space">
+                                    <input type="hidden" id='actives_@{index}_uid' name='actives[@index].uid' value='@activeField("uid").value.get'  />
+                                    @if(previouslySelectedBenefits.filter(x => x.id == activeField("uid").value.get && x.active).length==1) {
+                                    <label id='label-@activeField("uid").value.get' class="selected" for='checkbox-@activeField("uid").value.get'>
+                                        <span class="checkbox-indent">
+                                        @if( nonLegislationBiks.contains(activeField("uid").value.get.toInt) | decommissionedBiks.contains(activeField("uid").value.get.toInt ) ) {
 
+                                        }else {
+                                            <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" checked/>
+                                        }
+                                        </span>
+                                        @Messages("BenefitInKind.label." + activeField("uid").value.get)
+                                        @if(47 == activeField("uid").value.get.toInt) {
+                                        <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
+                                        }
+                                        @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
+                                        <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.unavailable")</span>
+                                        }
+                                        @if(decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
+                                        <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.decommissioned")</span>
+                                        }
+                                    </label>
+                                    } else {
+                                    <label id='label-@activeField("uid").value.get' class="" for='checkbox-@activeField("uid").value.get'>
+                                        <span class="checkbox-indent">
+                                        @if( nonLegislationBiks.contains(activeField("uid").value.get.toInt) | decommissionedBiks.contains(activeField("uid").value.get.toInt ) ) {
 
+                                        }else {
+                                            <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true" />
+                                        }
+                                        </span>
+                                        @Messages("BenefitInKind.label." + activeField("uid").value.get)
+                                        @if(47 == activeField("uid").value.get.toInt) {
+                                        <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
+                                        }
+                                        @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
+                                        <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.unavailable")</span>
+                                        }
+                                        @if(decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
+                                        <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.decommissioned")</span>
+                                        }
+                                    </label>
+                                    }
+                                </td>
+                                <td class="no-wrap" onclick=selectCheckBoxTable('checkbox-@activeField("uid").value.get')>
+                                    @Messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
+                                </td>
+                            </tr>
+                            }
                         }
-                        </tbody>
-                    </table>
+                    }
+                    </tbody>
+                </table>
 
-                </fieldset>
-            </div>
+            </fieldset>
+        </div>
         }
 
-            <p class="text">@Html(Messages("AddBenefits.ChooseBenefitsLabel.2", ""+taxYearRange.cy, ""+taxYearRange.cyplus1))</p>
+        <p id="help-unavailable" class="text">@Messages("BenefitInKind.label.unavailable.desc")</p>
+        <p id="help" class="text">@Html(Messages("AddBenefits.ChooseBenefitsLabel.2", ""+taxYearRange.cyminus1, ""+taxYearRange.cy))</p>
 
-            <input type="submit" class="button" id="button-continue" value="@Messages("Service.continue")">
+        <input type="submit" role="button" class="button" id="button-continue" value="@Messages("Service.continue")">
     }
 
 
     @if(bikForm("actives").indexes.length==Messages("BenefitCount").toInt){
-        <a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
-           href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.overview")</a>
-    } else {
-        <a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
-           href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.overview")</a>
+    <a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
+       href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a>
     }
 
 }
-

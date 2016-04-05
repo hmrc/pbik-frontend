@@ -90,3 +90,14 @@ else {
         };
     });
 }
+
+function screenReaderHidden(defaultText, changedText) {
+    var element = document.getElementById("important-excluded-employee-sr");
+
+    if(defaultText == element.innerText){
+        element.innerText = changedText;
+
+    }else {
+        element.innerText = defaultText;
+    }
+}
