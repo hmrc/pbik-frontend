@@ -35,7 +35,7 @@ Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
             </p>
         }else {
 
-        <p class="lede-para text">@Html(Messages("AddBenefits.ChooseBenefitsLabel.1", ""+taxYearRange.cyminus1, ""+taxYearRange.cy))</p>
+        <p class="lede-para text">@Html(Messages("AddBenefits.ChooseBenefitsLabel.1.CY", ""+taxYearRange.cyminus1, ""+taxYearRange.cy))</p>
 
         <div class='form-group @if(bikForm("actives").hasErrors) {error}' id="list-benefits">
             @if(bikForm("actives").hasErrors){

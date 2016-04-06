@@ -1,4 +1,6 @@
-@import '../js/node_modules/govuk_frontend_toolkit/govuk_frontend_toolkit/stylesheets/_grid_layout.scss', './elements/forms/_form-date-of-birth.scss';
+@import '../js/node_modules/govuk_frontend_toolkit/govuk_frontend_toolkit/stylesheets/_grid_layout.scss',
+'./elements/forms/_form-date-of-birth.scss',
+'../js/node_modules/govuk_frontend_toolkit/govuk_frontend_toolkit/stylesheets/_typography.scss';
 
 
 .grid-row {
@@ -28,14 +30,14 @@
         margin: 0;
         padding-top: 8px;
     }
-    .sidebar-side-bar  {
 
+    .sidebar-side-bar  {
       margin-top: 95px;
       margin-left: 40px;
     }
 
     table td, table th{
-    	font-size: 19px;
+    	@include core-19;
     }
 
     .nino p {
@@ -48,15 +50,15 @@
     }
 
     .error fieldset, .error .error-notification {
-        font-size: 19px;
+        @include core-19;
     }
 
     .form-field--error .error-notification {
-        font-size: 19px;
+        @include core-19;
     }
 
     .error-notification{
-        font-size: 19px;
+        @include core-19;
     }
 
     aside {
@@ -95,7 +97,7 @@
     }
 
     table td, table th{
-    	font-size: 16px;
+    	@include core-16;
     }
 
     .other-desc .form-control {
@@ -291,7 +293,7 @@ fieldset .h4-heading{
 
 #link-feedback,
 #link-feedback-desc {
-    font-size: 16px;
+    @include core-16;
 }
 
 .link-feedback-p {
@@ -448,7 +450,7 @@ border-bottom: 5px solid #005ea5;
     max-width: 52px;
     margin-bottom: 0;
     color: black;
-    font-size: 16px;
+    @include core-16;
     display: inline;
     text-decoration: none;
 }

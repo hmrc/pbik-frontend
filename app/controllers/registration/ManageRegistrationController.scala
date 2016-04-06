@@ -76,6 +76,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
   def currentTaxYearOnPageLoad:Action[AnyContent] = AuthorisedForPbik {
     implicit ac =>
       implicit request =>
+        val listBiks = bikListService.currentYearList
         val resultFuture = {
           registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cyminus1,
             "add", views.html.registration.currentTaxYear(_, YEAR_RANGE,  _, _, _, _))
