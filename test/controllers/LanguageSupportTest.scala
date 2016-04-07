@@ -96,18 +96,20 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
 
     override def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                                 generateViewBasedOnFormItems: (Form[RegistrationList],
-                                                  List[RegistrationItem], List[Bik], List[Int], List[Int]) => HtmlFormat.Appendable)
+                                                  List[RegistrationItem], List[Bik], List[Int], List[Int], Option[Int]) => HtmlFormat.Appendable)
                                                (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext):
     Future[Result] = {
       year match {
         case dateRange.cyminus1 => {
           Future.successful(Ok(
-            views.html.registration.currentTaxYear(mockFormRegistrationList,dateRange,mockRegistrationItemList,allRegisteredListOption,PbikAppConfig.biksNotSupported)
+            views.html.registration.currentTaxYear(
+              mockFormRegistrationList,dateRange,mockRegistrationItemList,allRegisteredListOption,PbikAppConfig.biksNotSupported, biksAvailableCount=Some(17))
           ))
         }
         case _ => {
           Future.successful(Ok(
-            views.html.registration.nextTaxYear(mockFormRegistrationList,true,dateRange,mockRegistrationItemList,registeredListOption,PbikAppConfig.biksNotSupported)
+            views.html.registration.nextTaxYear(
+              mockFormRegistrationList,true,dateRange,mockRegistrationItemList,registeredListOption,PbikAppConfig.biksNotSupported, biksAvailableCount=Some(17))
           ))
         }
       }
@@ -174,6 +176,11 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
 
     when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
 
+    /*when(bikListService.registeredBenefitsList(any, any)(any)).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      (Integer.parseInt(x.iabdType) <= 10)
+    }))*/
+
+
     when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
       anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -212,6 +219,12 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
       anyString, anyInt)(any[HeaderCarrier], any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       (Integer.parseInt(x.iabdType) >= 15)
+    }))
+
+    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+      mockEq(""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      (Integer.parseInt(x.iabdType) <= 10)
     }))
   }
 

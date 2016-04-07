@@ -62,10 +62,13 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
       override lazy val biksNotSupported:List[Int] = (configuration.getIntList("pbik.unsupported.biks").
                                                         getOrElse(Collections.emptyList[Integer]())).
                                                           toArray(new Array[Integer](0)).toList.map(_.intValue())
+      override lazy val biksNotSupportedCY:List[Int] = (configuration.getIntList("pbik.unsupported.biks.cy").
+                                                        getOrElse(Collections.emptyList[Integer]())).
+                                                          toArray(new Array[Integer](0)).toList.map(_.intValue())
       override lazy val biksDecommissioned:List[Int] = (configuration.getIntList("pbik.decommissioned.biks").
                                                         getOrElse(Collections.emptyList[Integer]())).
                                                           toArray(new Array[Integer](0)).toList.map(_.intValue())
-      override lazy val biksCount: Int = 17
+
 
   }
 
@@ -88,8 +91,9 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
     override lazy val analyticsHost: String = ""
     override lazy val cyEnabled = true
     override lazy val biksNotSupported:List[Int] = List.empty[Int]
+    override lazy val biksNotSupportedCY:List[Int] = List.empty[Int]
     override lazy val biksDecommissioned:List[Int] = List.empty[Int]
-    override lazy val biksCount:Int = 17
+
   }
 
   object MockCYEnabledControllersReferenceData extends ControllersReferenceData {

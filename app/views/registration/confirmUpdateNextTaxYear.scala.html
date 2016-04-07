@@ -98,29 +98,13 @@
 
                     </table>
 
-                    <p>
+                    <div class="panel-indent panel-border-wide">
                         @if(singleBik){
                             @Messages("AddBenefits.Confirm.help.desc.Single")
                         }else{
                             @Messages("AddBenefits.Confirm.help.desc")
                         }
-                    </p>
-
-                    <details id="important-excluded-employee-desc">
-                        <summary aria-controls="details-content-0" tabindex="0" aria-expanded="false"
-                            onclick='screenReaderHidden("@screenReaderExclusionOpen", "@screenReaderExclusionClosed");
-                            gaEvent("Click reveal", "@Messages("AddBenefits.Confirm.help.reveal.link")")'>
-
-                            <span class="summary">@Messages("AddBenefits.Confirm.help.reveal.link")</span>
-                            <span id="important-excluded-employee-sr" class="visuallyhidden">
-                                @screenReaderExclusionOpen</span>
-                        </summary>
-                        <div class="panel-indent-2 panel-indent">
-                            <p>
-                                @Messages("AddBenefits.Confirm.help.reveal.p1")
-                            </p>
-                        </div>
-                    </details>
+                    </div>
 
                     @if(singleBik) {
                     <input type="submit" role="button" class="button" id="button-confirm" value="@Messages("Service.register.single")">
@@ -147,7 +131,7 @@
                     <div class='form-group @if(flash.get("error")) {error}'>
 
                         <fieldset class="inline">
-                            <legend style="font-weight: bold">@Messages("RemoveBenefits.reason.desc")</legend>
+                            <legend>@Messages("RemoveBenefits.reason.desc")</legend>
 
                             @if(flash.get("error")) {
                                 <span id="error-list-1" class="error-notification" style="display:block; margin-left: 0">

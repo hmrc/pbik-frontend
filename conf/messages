@@ -74,6 +74,7 @@ Overview.table.add.link = Register a benefit or expense
 Overview.table.add.link.more = Register another benefit or expense
 Overview.current.no.add = You can''t add or remove a benefit or expense to this year''s payroll as it is already included in your employees'' tax code.
 
+siderbar.h2.contact.help = Help with payrolling
 Sidebar.link.guidance = Detailed guidance on payrolling
 Sidebar.link.webinar = Payrolling webinar
 Sidebar.link.help = Help and contact
@@ -95,6 +96,10 @@ ManagingRegistration.add.exhausted = You''ve already added all of the benefits o
 
 ######################
 ######################
+
+sidebar.h2.expenses.help= Help with expenses
+sidebar.expenses.help.1= For benefits you''ve previously reported on a <a rel="external" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> (opens in a new window), make sure you register them under the same category. You have to payroll everything included within that P11D category.
+sidebar.link.a-z= Expenses and benefits: A to Z guide
 
 AddBenefits.Heading = Choose benefits and expenses
 AddBenefits.table.heading.input = Benefit or expense
@@ -118,7 +123,6 @@ AddBenefits.CY.Caution.p12.3=(starting 6 April {0})
 
 AddBenefits.ChooseBenefitsLabel.1 =Choose which benefits and expenses you''ll be taxing through your payroll from 6 April {0}.
 AddBenefits.ChooseBenefitsLabel.1.CY =Choose which benefits and expenses you''ve been taxing through your payroll since 6 April {0}.
-AddBenefits.ChooseBenefitsLabel.2 =If you supply an employee with a benefit or expense and you''re unsure it''s taxable or not, see <a rel="external" id="guidance-a-to-z" target="_blank" onclick="gaEventLinkAtoZGuide()" href="https://www.gov.uk/expenses-and-benefits-a-to-z">expenses and benefits: A to Z guide</a>.
 AddBenefits.SelectAllLabel = Select all that apply
 AddBenefits.noselection.error = You need to select at least 1 benefit or expense before you can continue
 
@@ -130,20 +134,20 @@ AddBenefits.Confirm.Desc.Single=You''re registering to tax this benefit or expen
 AddBenefits.Confirm.Multiple.Table.Heading=Benefits and expenses to register
 AddBenefits.Confirm.Single.Table.Heading=Benefit or expense to register
 AddBenefits.Confirm.Table.Change=Change
-AddBenefits.Confirm.help.desc.Single=You can exclude individual employees from having this benefit payrolled and submit P11Ds for them instead once you have registered the benefit.
-AddBenefits.Confirm.help.desc=You can exclude individual employees from having these benefits payrolled and submit P11Ds for them instead once you have registered the benefits.
+AddBenefits.Confirm.help.desc.Single=You can exclude individual employees from having this benefit payrolled and submit P11Ds for them instead after you''ve registered the benefit. Don''t exclude employees who don''t receive the benefit.
+AddBenefits.Confirm.help.desc=You can exclude individual employees from having these benefits payrolled and submit P11Ds for them instead after you''ve registered the benefits. Don''t exclude employees who don''t receive the benefits.
 AddBenefits.Confirm.help.reveal.link.sr.open=click to expand
 AddBenefits.Confirm.help.reveal.link.sr.closed=click to close
 AddBenefits.Confirm.help.reveal.link=What is an excluded employee?
 AddBenefits.Confirm.help.reveal.p1=Excluded employees are those who receive a benefit but aren''t taxed on it through their payroll. Tax on the value of the benefit should be taken through the employee''s tax code and you''ll need to submit a P11D for each excluded employee. You shouldn''t exclude employees who don''t receive the benefit.
-RemoveBenefits.Confirm.Desc=You''ll be removing {0} from your payroll from 6 April {1}.
+RemoveBenefits.Confirm.Desc=You''ll stop taxing {0} through your payroll from 6 April {1}.
 
 RemoveBenefits.Heading =Remove benefits or expenses from the tax year starting 6 April {0}
 RemoveBenefits.ChooseBenefitsLabel  =Choose the benefit or expenses to be removed
 
 RemoveBenefits.reason.no.selection=You need to select one reason for removing this benefit or expense
 RemoveBenefits.reason.other.required=You need to explain why you''ve selected other
-RemoveBenefits.reason.desc=Tell us why you''re removing this benefit or expense
+RemoveBenefits.reason.desc=Tell us why
 RemoveBenefits.reason.software=Your software provider doesn''t support payrolling benefits and expenses yet
 RemoveBenefits.reason.guidance=The guidance for this service was not clear
 RemoveBenefits.reason.not-clear=The purpose of the service was not clear
@@ -299,7 +303,7 @@ BenefitInKind.url.45=<a target="_blank" href="https://www.gov.uk/paying-your-emp
 BenefitInKind.p11d.45.ref=Section N
 
 BenefitInKind.label.unavailable=This benefit isn''t currently available to register online.
-BenefitInKind.label.unavailable.desc=For benefits that aren''t currently available to register online, use a P11D to report it instead.
+BenefitInKind.label.unavailable.desc=For benefits that aren''t currently available to register online, use a <a rel="external" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D to report them instead</a> (opens in a new window).
 
 BenefitInKind.label.decommissioned=Expenses payments are either exempt from tax and NICs or should be treated as part of the employee''s salary and paid after tax and NICs are deducted.
 
@@ -462,21 +466,21 @@ error.exclusion.multi.selection=You need to choose which employee you want to ex
 ######################
 ######################
 
-whatNext.add.heading=Benefits registered
-whatNext.add.heading.singular=Benefit registered
+whatNext.add.heading=Registration complete
+whatNext.add.heading.singular=Registration complete
 whatNext.remove.heading=Benefit removed
 whatNext.add.info=You''ll need to submit a P11D to HMRC to report the benefit or expense they receive.
 whatNext.cy.add.p1=You''ve successfully told HMRC that you''ll be payrolling the following benefits or expenses
-whatNext.cy1.add.lede=You''ve registered to tax these benefits and expenses through your payroll from 6 April {0}.
-whatNext.cy1.add.lede.singular=You''ve registered to tax this benefit and expense through your payroll from 6 April {0}.
+whatNext.cy1.add.lede=Now tax the following benefits and expenses through your payroll from 6 April {0}.
+whatNext.cy1.add.lede.singular=Now tax {0} through your payroll from 6 April {1}.
 whatNext.cy1.add.table.header=Registered benefits and expenses
-whatNext.cy1.add.p1=Set up your payroll to include the benefits or expenses in your employees'' pay.
-whatNext.cy1.add.p2=Tell your employees that their tax codes will change accordingly.
-whatNext.cy1.add.p3=For tax year {0} to {1} onwards you''ll no longer need to submit a P11D for benefits and expenses you''ve told HMRC you''re payrolling.
-whatNext.cy1.add.p4=You still need to report Class 1A National Insurance contributions on a P11D(b).
+whatNext.add.p1=Tell your employees that their tax codes will change and we will send them a new tax code. Example letters can be found in the <a target="blank" href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">Payrolling benefits and expenses guidance</a> (opens in a new window).
+whatNext.add.p2=From 6 April add the cash equivalent of the benefits and expenses to your employees'' pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
+whatNext.add.p3=Stop sending us <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11Ds</a> for the employees'' who have benefits and expenses payrolled.
+whatNext.add.p4=Continue sending a <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db">P11D(b)</a> to report Class 1A National Insurance contributions.
 whatNext.subHeading=Next steps
-whatNext.remove.lede=You''ve told HMRC you won''t be taxing <span id="cy1-{3}">{0}</span> through your payroll from 6 April {1}.
-whatNext.remove.p1=If you''re still providing this benefit or expense to any of your employees, you''ll need to complete a P11D at the end of the tax year.
+whatNext.remove.lede=You''ve told us you won''t be taxing <span id="cy1-{3}">{0}</span> through your payroll from 6 April {1}.
+whatNext.remove.p1=If you''re still providing this benefit or expense to any of your employees, you''ll need to complete a <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> at the end of the tax year.
 
 whatNext.exclude.heading=Employee excluded
 whatNext.rescind.heading=Employee payrolled
@@ -490,7 +494,7 @@ whatNext.exclude.p5=You must also report Class 1A National Insurance Contributio
 whatNext.exclude.p6=If you would like to start payrolling the excluded employees chosen benefits, please remove them from the exclusion list.
 
 HelpAndContact.title=Help and contact
-HelpAndContact.p1=If you have a specific tax query, <a rel="external" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries">contact HMRC</a>.
+HelpAndContact.p1=If you have a specific tax query, <a rel="external" onclick="gaEvent(''Help: Telephone'')" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries">contact HMRC</a>.
 HelpAndContact.p2=If you need help using the payrolling benefits in kind service, fill in the form below.
 HelpAndContact.form.title=How can we help you?
 HelpAndContact.form.p1=Don''t include any personal or financial information. For example, your National Insurance or credit card numbers.

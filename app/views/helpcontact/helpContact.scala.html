@@ -3,7 +3,16 @@
 
 @parentTemplate(pageTitle = Messages("HelpAndContact.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
 
-    <h1 id="title">
+    <span class="link-back-top-wrap">
+        <a class="button-link" id="link-back-top"
+           href='@routes.HomePageController.onPageLoad'>
+
+            <div class="arrow-back"></div>
+            @Messages("Service.back")
+        </a>
+    </span>
+
+    <h1 id="title" class="h1-heading-margin">
         @Messages("HelpAndContact.title")
     </h1>
 

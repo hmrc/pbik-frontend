@@ -37,7 +37,7 @@
     }
 
     table td, table th{
-    	@include core-19;
+    	font-size: 19px;
     }
 
     .nino p {
@@ -133,13 +133,18 @@ form label[for="checkbox-select-all"] {
 }
 .button {
 	padding: .5em .5em .15em;	
-	margin-bottom: 15px;
+	margin-bottom: 45px;
 }
+
 fieldset .button {
 	margin-bottom: 0;
 }
 .list-bullet{
 	margin-bottom: 30px;
+}
+
+.list-bullet li{
+	margin-bottom: 20px;
 }
 
 .line {
@@ -180,7 +185,6 @@ input#nino {
 }
 
 .error fieldset, .error .error-notification {
-    margin-left: 15px;
     font-weight: bold;
 }
 
@@ -335,8 +339,7 @@ fieldset .h4-heading{
     border: 5px solid #b10e1e;
     margin-top: 30px;
     margin-bottom: 30px;
-    padding: 20px 15px 15px 15px;
-    width: 100%;
+    padding: 20px 15px 15px 1em;
   }
 }
 
@@ -380,6 +383,10 @@ fieldset .h4-heading{
 
 .error .employee-table {
     margin-left:15px;
+}
+
+.error, .form-field-group--error {
+    margin-left: 0;
 }
 
 .hidden-screen-reader {

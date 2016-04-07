@@ -17,10 +17,6 @@
         <div id="printContainer"/>
     </section>
 
-    <section id="print-section">
-        <div id="printContainer"/>
-    </section>
-
     <section id="what-next-update-benefit">
         <div id="confirmation" class="govuk-box-highlight">
             <h1 id="title" class="bold-large">
@@ -33,43 +29,52 @@
                 } else {@Messages("whatNext.remove.heading")}
             </h1>
             <p id="confirmation-p">
-                @if(additive) {
-                    @if(singleBik){
-                        @Messages("whatNext.cy1.add.lede.singular", cy)
+                @if(!isCurrentYear) {
+                    @if(additive) {
+                        @if(singleBik){
+                            @Messages("whatNext.cy1.add.lede.singular", benefitLabel, cy)
+                        }else {
+                            @Messages("whatNext.cy1.add.lede", cy)
+                        }
                     }else {
-                        @Messages("whatNext.cy1.add.lede", cy)
-                    }
+                        @Html(Messages("whatNext.remove.lede", benefitLabel, cy, cyplus1, bikForm("actives[0].uid").value.get))}
                 }else {
-                    @Html(Messages("whatNext.remove.lede", benefitLabel, cy, cyplus1, bikForm("actives[0].uid").value.get))}
+                    @if(singleBik){
+                        @Messages("whatNext.cy1.add.lede.singular", benefitLabel, cyminus1)
+                    }else {
+                        @Messages("whatNext.cy1.add.lede", cyminus1)
+                    }
+                }
             </p>
         </div>
 
         @if(additive) {
+            @if(!singleBik){
+                <div class="data">
+                    <table id="list-of-confirmation-benefits" role="benefits list">
+                        <thead>
+                            <tr role="row">
+                                <th role="columnheader">@Messages("whatNext.cy1.add.table.header")</th>
+                            </tr>
+                        </thead>
 
-            <div class="data">
-                <table id="list-of-confirmation-benefits" role="benefits list">
-                    <thead>
-                        <tr role="row">
-                            <th role="columnheader">@Messages("whatNext.cy1.add.table.header")</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
-                            @helper.repeat(bikForm("actives"), min=0) { activeField =>
-                                <tr role="row">
-                                @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
-                                @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
-                                @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
-                                <td role="gridcell" id='li-@activeField("uid").value.get'> @Messages("BenefitInKind.label." + activeField("uid").value.get )</td>
-                                </tr>
+                        <tbody>
+                            @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
+                                @helper.repeat(bikForm("actives"), min=0) { activeField =>
+                                    <tr role="row">
+                                    @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
+                                    @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
+                                    @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
+                                    <td role="gridcell" id='li-@activeField("uid").value.get'> @Messages("BenefitInKind.label." + activeField("uid").value.get )</td>
+                                    </tr>
+                                }
                             }
-                        }
-                    </tbody>
+                        </tbody>
 
-                </table>
+                    </table>
 
-            </div>
+                </div>
+            }
 
             <h2>
                 @Messages("whatNext.subHeading")
@@ -77,22 +82,19 @@
 
             @if(isCurrentYear) {
                 <!-- CY content will go here when enabled-->
+                <ul class="list-bullet" id="next-steps">
+                    <li>@Html(Messages("whatNext.add.p1", cyminus1))</li>
+                    <li>@Html(Messages("whatNext.add.p2"))</li>
+                    <li>@Html(Messages("whatNext.add.p3", cyminus1, cy))</li>
+                    <li>@Html(Messages("whatNext.add.p4"))</li>
+                </ul>
             }else {
-                <p class="text">
-                    @Messages("whatNext.cy1.add.p1", cy)
-                </p>
-
-                <p class="text">
-                    @Messages("whatNext.cy1.add.p2")
-                </p>
-
-                <p class="text">
-                    @Messages("whatNext.cy1.add.p3", cy, cyplus1)
-                </p>
-
-                <p class="text">
-                    @Messages("whatNext.cy1.add.p4")
-                </p>
+                <ul class="list-bullet" id="next-steps">
+                    <li>@Html(Messages("whatNext.add.p1", cy))</li>
+                    <li>@Html(Messages("whatNext.add.p2"))</li>
+                    <li>@Html(Messages("whatNext.add.p3", cy, cyplus1))</li>
+                    <li>@Html(Messages("whatNext.add.p4"))</li>
+                </ul>
             }
 
         } else {
@@ -102,7 +104,7 @@
             </h2>
 
             <p class="text">
-                @Messages("whatNext.remove.p1")
+                @Html(Messages("whatNext.remove.p1"))
             </p>
         }
 

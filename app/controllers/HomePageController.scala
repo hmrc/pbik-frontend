@@ -91,23 +91,27 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
     implicit ac =>
       implicit request =>
 
-          val taxYearRange = TaxDateUtils.getTaxYearRange()
-          val pageLoadFuture = for {
-            currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
-            nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
+        val taxYearRange = TaxDateUtils.getTaxYearRange()
+        val pageLoadFuture = for {
+          // Get the available count of biks available for each tax year
+          biksListOptionCY:List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cyminus1, "")(getBenefitTypesPath)
+          biksListOptionCYP1:List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cy, "")(getBenefitTypesPath)
+          currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
+          nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
 
-          } yield {
-              val fromYTA = if (request.session.get(SESSION_FROM_YTA).isDefined) {
-                request.session.get(SESSION_FROM_YTA).get
-              }
-              else {
-                isFromYTA
-              }
-              auditHomePageView
-              Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2, pbikAppConfig.biksCount, fromYTA.toString))
-                .addingToSession(nextYearList._1.toSeq: _*).addingToSession(SESSION_FROM_YTA -> fromYTA.toString)
-            }
-          responseErrorHandler(pageLoadFuture)
+        } yield {
+          val fromYTA = if (request.session.get(SESSION_FROM_YTA).isDefined) {
+            request.session.get(SESSION_FROM_YTA).get
+          }
+          else {
+            isFromYTA
+          }
+          auditHomePageView
+          Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2,
+            biksListOptionCY.size, biksListOptionCYP1.size, fromYTA.toString))
+            .addingToSession(nextYearList._1.toSeq: _*).addingToSession(SESSION_FROM_YTA -> fromYTA.toString)
+        }
+        responseErrorHandler(pageLoadFuture)
 
   }
 

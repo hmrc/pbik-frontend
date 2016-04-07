@@ -1,5 +1,5 @@
-@(cyAllowed: Boolean, taxYearRange:TaxYearRange, registeredBenefitsCurrentYear: List[Bik],
-    registeredBenefitsNextYear: List[Bik], serviceBiksCount: Int, fromYTA: String)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
+@(cyAllowed: Boolean, taxYearRange:TaxYearRange, registeredBenefitsCurrentYear: List[Bik], registeredBenefitsNextYear: List[Bik],
+    serviceBiksCountCY: Int, serviceBiksCountCYP1: Int, fromYTA: String)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
 
 
 @import uk.gov.hmrc.play.views.html.helpers
@@ -7,31 +7,11 @@
 @import utils.URIInformation._
 @import config.PbikAppConfig.taxCodeOverviewWarning
 
-@sidebarHelpAndContact = {
-    <h2 id="sidebar-heading" class="sidebar-heading">Help with payrolling</h2>
-    <div id="sidebar-help-contact">
-
-        <p id="sidebar-link-guidance" class="sidebar-link text">
-            <a href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind" target="_blank">
-                @Messages("Sidebar.link.guidance")
-            </a>@Messages("Service.new-window")
-        </p>
-        <p id="sidebar-link-webinar" class="sidebar-link text">
-            <a href="https://www.gov.uk/government/news/webinars-emails-and-videos-on-employing-people#payrolling-benefits-in-kind---an-overview" target="_blank">
-                @Messages("Sidebar.link.webinar")
-            </a>@Messages("Service.new-window")
-        </p>
-        <p id="sidebar-link-help" class="sidebar-link text">
-            <a href="@controllers.routes.HelpAndContactController.onPageLoad">
-                @Messages("Sidebar.link.help")
-            </a>
-        </p>
-    </div>
-}
+@import config.PbikAppConfig.biksDecommissioned
 
 @sidebarLinks={
     <div class="sidebar-side-bar">
-        @sidebarHelpAndContact
+        @sidebar.helpAndContact()
     </div>
 }
 
@@ -90,8 +70,8 @@
         </p>
     }
 
-    @if(registeredBenefitsNextYear.size < serviceBiksCount) {
-        <a class="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
+    @if(registeredBenefitsNextYear.size < (serviceBiksCountCYP1 - biksDecommissioned.size)) {
+        <a class="button" role="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
             @if(registeredBenefitsNextYear.size > 0) {
                 @Messages("Overview.table.add.link.more")
             }else {
@@ -141,8 +121,8 @@
         }
 
         @if(cyAllowed) {
-            @if(registeredBenefitsCurrentYear.size < serviceBiksCount) {
-                <a class="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
+            @if(registeredBenefitsCurrentYear.size < (serviceBiksCountCY-biksDecommissioned.size)) {
+                <a class="button" role="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
                     @if(registeredBenefitsCurrentYear.size > 0) {
                     @Messages("Overview.table.add.link.more")
                     }else {

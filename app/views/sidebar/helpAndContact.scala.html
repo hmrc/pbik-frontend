@@ -1,0 +1,26 @@
+@()(implicit lang: play.api.i18n.Lang)
+
+@import play.api.i18n._
+@import views.html.helper._
+
+<h2 id="sidebar-heading" class="sidebar-heading">@Messages("siderbar.h2.contact.help")</h2>
+<div id="sidebar-help-contact">
+
+    <p id="sidebar-link-guidance" class="sidebar-link text">
+        <a href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind"
+           target="_blank" onclick="gaEvent('Sidebar link: Guidance')">
+            @Messages("Sidebar.link.guidance")
+        </a>@Messages("Service.new-window")
+    </p>
+    <p id="sidebar-link-webinar" class="sidebar-link text">
+        <a href="https://www.gov.uk/government/news/webinars-emails-and-videos-on-employing-people#payrolling-benefits-in-kind---an-overview"
+           target="_blank" onclick="gaEvent('Sidebar link: Webinar')">
+            @Messages("Sidebar.link.webinar")
+        </a>@Messages("Service.new-window")
+    </p>
+    <p id="sidebar-link-help" class="sidebar-link text">
+        <a href="@controllers.routes.HelpAndContactController.onPageLoad" onclick="gaEvent('Sidebar link: Help & contact')">
+            @Messages("Sidebar.link.help")
+        </a>
+    </p>
+</div>
