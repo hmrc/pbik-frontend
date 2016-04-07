@@ -602,7 +602,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val r = await(mockExclusionController.processExclusionForm(individualsForm.fill(EiLPersonList(ListOfPeople)),TEST_YEAR_CODE, TEST_IABD_VALUE,YEAR_RANGE))(timeout)
         status(r) shouldBe 200
         bodyOf(r) should include(title)
-        bodyOf(r) should include("You&#x27;ll need to submit a P11D to HMRC to report the value of the benefit or expense they receive.")
+        bodyOf(r) should include("You’ll need to report the value of this benefit on a <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> instead.")
       }
     }
   }
@@ -848,7 +848,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val r = await(mockExclusionController.processIndividualExclusionForm(individualsFormWithRadio.fill("", EiLPersonList(ListOfPeople)),TEST_YEAR_CODE, TEST_IABD_VALUE,YEAR_RANGE))(timeout)
         status(r) shouldBe 200
         bodyOf(r) should include(title)
-        bodyOf(r) should include("You&#x27;ll need to submit a P11D to HMRC to report the value of the benefit or expense they receive.")
+        bodyOf(r) should include("You’ll need to report the value of this benefit on a <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> instead.")
       }
     }
   }
@@ -871,7 +871,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val r = await(mockExclusionController.processExclusionForm(individualsForm.fill(EiLPersonList(TEST_EIL_PERSON)),TEST_YEAR_CODE, TEST_IABD_VALUE,YEAR_RANGE))(timeout)
         status(r) shouldBe 200
         bodyOf(r) should include(title)
-        bodyOf(r) should include("You&#x27;ll need to submit a P11D to HMRC to report the value of the benefit or expense they receive.")
+        bodyOf(r) should include("You’ll need to report the value of this benefit on a <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> instead.")
       }
     }
   }

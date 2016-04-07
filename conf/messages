@@ -5,10 +5,10 @@ Service.news.banner.message=Any changes you make will affect your employees'' ta
 Service.yes = Yes
 Service.no = No
 Service.back= Back
-Service.back.overview= Back to your payrolled benefits and expenses
+Service.back.overview= Back to your summary
 Service.back.overview.whatNext= View your summary
 Service.back.cancel= Back to your summary
-Service.back.excluded= Cancel - back to your excluded employees
+Service.back.excluded= Back to your excluded employees
 Service.back.yta=Your Tax Account
 Service.feedback.link= What did you think of this service?
 Service.feedback.desc= (opens in a new window)
@@ -39,7 +39,9 @@ Service.notEnrolled.button=Enrol
 Service.addbenefitsexpenses=Add benefits or expenses
 Service.addbenefitexpense=Add a benefit or expense
 Service.removeexclusion=Add back to payroll
-Service.finish.excluded=View excluded employees
+Service.finish.excluded=View excluded employees and add more
+Service.finish.rescinded=View excluded employees
+
 
 Service.manageexcludeemployee=Exclude an employee from payrolling from 6 April {0}
 Service.excludeanemployee=Exclude an employee
@@ -154,37 +156,39 @@ RemoveBenefits.reason.other.label=Explain why
 NoMoreToAdd.Desc=You''ve already added all of the benefits or expenses that are available for the tax year {0} to {1}. If you''ve made a mistake and haven''t been payrolling those benefits since 6 April {0} then please use the "Get help with this page" link for help.
 
 ExclusionOverview.title=Excluded employees
-ExclusionOverview.instruction.empty=You''re not currently excluding any employees from {0} from 6 April {1}.
-ExclusionOverview.instruction.notempty=You''ll be excluding the following employees from having {0} benefit from 6 April {1}.
-ExclusionOverview.instruction.cy.notempty=You''re excluding the following employees from having {0} benefit from 6 April {1}.
-ExclusionOverview.warning=You should only exclude employees who receive this benefit and will be taxed on it via a P11D rather than through your payroll.
+ExclusionOverview.instruction.empty= All of your employees who receive {0} benefit are having it taxed through your payroll.
+ExclusionOverview.instruction.notempty= You''ll be excluding the following employees from having {0} benefit from 6 April {1}.
+ExclusionOverview.instruction.cy.notempty= You''re excluding the following employees from {0} benefit.
+ExclusionOverview.warning=Only exclude employees who get this benefit. You must fill in a P11D form for them.
 
 ExclusionDecision.noselection.error =You need to choose an option
 ExclusionNinoDecision.title = Exclude an employee
-ExclusionNinoDecision.question =Do you know the National Insurance number of the employee you want to exclude from {0} starting 6 April {1}?
+ExclusionNinoDecision.question =Do you know the National Insurance number of the employee you want to exclude?
 
 
 ExclusionSearch.title=Search results
 ExclusionSearch.form.title=Search for an employee
 ExclusionSearch.intro=Exclude the following employee from having {0} taxed through your payroll from 6 April {1}.
-ExclusionSearch.intro.multi=Your search results have matched several employees, choose which employee you''re excluding from having {0} taxed through your payroll from 6 April {1}.
+ExclusionSearch.intro.multi=Choose which employee you want to exclude from having car and car fuel benefit taxed through your payroll from 6 April {1}.
 
 ExclusionSearch.Fail.Headline=Employee not found.
 ExclusionSearch.Fail.P=Employee not found. Please check that the information you''ve provided is correct and try again.
 
 ExclusionImportant.ExcludeEmployee=For excluded employees you''ll need to submit a P11D to HMRC to report the benefit or expense they receive.
 ExclusionRemovalConfirmation.title =Add back to payroll
-ExclusionRemovalConfirmation.intro =The following employee will have {0} taxed through the payroll from 6 April {1}.
+ExclusionRemovalConfirmation.intro =The following employee will have {0} taxed through the payroll from 6 April {1}. The value of this benefit will be removed from the employee's tax code.
 ExclusionRemovalConfirmation.warning =The value of this benefit will be removed from this employee''s tax code.
 
 
 
-ExclusionRemoval.WhatNext.lede = You''ve told HMRC that {0} will be having {1} taxed through your payroll from 6 April {2}.
+ExclusionRemoval.WhatNext.lede = You''ve told us that {0} will be having {1} taxed through your payroll from 6 April {2}.
 
-ExclusionRemoval.WhatNext.p1 = Set up your payroll to include the benefit or expense in your employee''s pay.
-ExclusionRemoval.WhatNext.p2 = Tell your employee that their tax code will change accordingly.
-ExclusionRemoval.WhatNext.p3 = For tax year {0} to {1} onwards you''ll no longer need to submit a P11D for a benefit and expense you''ve told HMRC you''re payrolling.
-ExclusionRemoval.WhatNext.p4 = You still need to report Class 1A National Insurance contributions on a P11D(b).
+ExclusionRemoval.WhatNext.p1 = You’'ll need to report the value of this benefit on a P11D instead.
+
+ExclusionRescind.WhatNext.p1 = Tell your employee that their tax code will change and we will send them a new tax code. Example letters can be found in the <a target="_blank" href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">Payrolling Benefits in Kind guidance</a> (opens in a new window).
+ExclusionRescind.WhatNext.p2 = From 6 April add the cash equivalent of the benefit and expense to your employee''s pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
+ExclusionRescind.WhatNext.p3 = Stop sending us a <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> for the employee who has the benefit and expense payrolled.
+ExclusionRescind.WhatNext.p4 = Continue sending a <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D(b)</a> to report Class 1A National Insurance contributions.
 
 ExclusionRadioButtonSelectionConfirmation.title = Check employee details
 
@@ -213,7 +217,7 @@ BenefitInKind.url.38=<a target="_blank" href="https://www.gov.uk/paying-your-emp
 BenefitInKind.p11d.38.ref=Section D
 
 BenefitInKind.label.44=Mileage allowance and passenger payments
-BenefitInKind.desc.44=This is the amount of car and mileage allowances paid to an employee for business travel in the employee’s own vehicle, and passenger payments, in excess of the maximum approved amounts. (see <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d-guide" target=_blank>P11D Guide</a> for the exempt rates).
+BenefitInKind.desc.44=This is the amount of car and mileage allowances paid to an employee for business travel in the employee’s own vehicle, and passenger payments, in excess of the maximum approved amounts. (see <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d-guide">P11D Guide</a> for the exempt rates).
 BenefitInKind.url.44=<a target="_blank" href="https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#mileage">more</a> (Opens new window)
 BenefitInKind.p11d.44.ref=Section E
 
@@ -229,7 +233,7 @@ BenefitInKind.p11d.29.ref=Section F
 
 BenefitInKind.label.35=Vans
 BenefitInKind.desc.35=The cost of vans used privately by employees.
-BenefitInKind.url.35=<a target="_blank" href="<a target="_blank" href="https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#vans">more</a> (Opens new window)
+BenefitInKind.url.35=<a target="_blank" href="https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#vans">more</a> (Opens new window)
 BenefitInKind.p11d.35.ref=Section G
 
 BenefitInKind.label.36=Van fuel
@@ -478,10 +482,10 @@ whatNext.subHeading=Next steps
 whatNext.remove.lede=You''ve told HMRC you won''t be taxing <span id="cy1-{3}">{0}</span> through your payroll from 6 April {1}.
 whatNext.remove.p1=If you''re still providing this benefit or expense to any of your employees, you''ll need to complete a P11D at the end of the tax year.
 
-whatNext.exclude.heading=Employee excluded
-whatNext.rescind.heading=Employee payrolled
-whatNext.exclude.lede=You''ve told HMRC that {0} will be excluded from having {1} taxed via your company payroll from 6 April {2}.
-whatNext.exclude.p1= You''ll need to submit a P11D to HMRC to report the value of the benefit or expense they receive.
+whatNext.exclude.heading=Exclusion complete
+whatNext.rescind.heading=Registration complete
+whatNext.exclude.lede=You''ve told us that {0} will not be having {1} taxed through your payroll from 6 April {2}.
+whatNext.exclude.p1= You’ll need to report the value of this benefit on a <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> instead.
 whatNext.cy.exclude.p2=Will no longer have the following benefits and expenses payrolled
 whatNext.cy1.exclude.p2=Will no longer have the following benefits and expenses payrolled on {0}
 whatNext.exclude.p3=Set up your payroll correctly so that the employees don''t have their benefits and expenses taxed in their pay.

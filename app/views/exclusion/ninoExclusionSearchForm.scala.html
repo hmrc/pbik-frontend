@@ -13,10 +13,11 @@
                 @Messages("Service.back")
         </a>
     </span>
-    <h1 id="title" class="h1-heading-margin">
-        @Messages("ExclusionSearch.form.title")
-    </h1>
-
+    <header class="page-header">
+        <h1 id="title" class="h1-heading-margin">
+            @Messages("ExclusionSearch.form.title")
+        </h1>
+    </header>
     <section id="nino-exclusion-form">
 
         @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdValueURLMapper(iabdType), "nino"), 'autocomplete -> "off") {
