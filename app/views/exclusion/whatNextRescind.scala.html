@@ -24,30 +24,31 @@
             </p>
         </div>
 
-        <h2>
+        <h2 class="heading-24">
             @Messages("whatNext.subHeading")
         </h2>
-
-        <p class="text">
-            @Messages("ExclusionRemoval.WhatNext.p1")
-        </p>
-
-        <p class="text">
-            @Messages("ExclusionRemoval.WhatNext.p2")
-        </p>
-
-        <p class="text">
-            @Messages("ExclusionRemoval.WhatNext.p3", taxYearRange.cy+"", taxYearRange.cyplus1+"")
-        </p>
-
-        <p class="text">
-            @Messages("ExclusionRemoval.WhatNext.p4")
-        </p>
+        <ul class="list-bullet">
+        <li>
+            @Html(Messages("ExclusionRescind.WhatNext.p1"))
+        </li>
+            <br>
+        <li>
+            @Html(Messages("ExclusionRescind.WhatNext.p2"))
+        </li>
+            <br>
+        <li>
+            @Html(Messages("ExclusionRescind.WhatNext.p3", taxYearRange.cy+"", taxYearRange.cyplus1+""))
+        </li>
+            <br>
+        <li>
+            @Html(Messages("ExclusionRescind.WhatNext.p4"))
+        </li>
+        </ul>
 
         <p class="text">
             <a  onclick="gaEvent('Click back to exclusion overview','From: Employee removed What next page')"
                 href="@routes.ExclusionListController.performPageLoad(year,iabdType)" id="link-back-excluded">
-                @Messages("Service.finish.excluded")
+                @Messages("Service.finish.rescinded")
             </a>
         </p>
         <p class="text">

@@ -26,18 +26,22 @@ object TaxDateUtils extends PayrollBikDefaults {
 
   val overridedDateFromConfig = Play.configuration.getIntList("pbik.date.override")
 
-  val localDate = if(overridedDateFromConfig.isDefined) {
-    new LocalDate(overridedDateFromConfig.get.get(0), overridedDateFromConfig.get.get(1), overridedDateFromConfig.get.get(2))} else new LocalDate()
+  def getDefaultDate = {
+    if(overridedDateFromConfig.isDefined) {
+      new LocalDate(overridedDateFromConfig.get.get(0), overridedDateFromConfig.get.get(1), overridedDateFromConfig.get.get(2))} else new LocalDate()
+  }
 
-  val year = if(overridedDateFromConfig.isDefined) new DateTime().getYear + 1 else new DateTime().getYear
+  def getDefaultYear = {
+    if(overridedDateFromConfig.isDefined) new DateTime().getYear + 1 else new DateTime().getYear
+  }
 
-  def getTaxYearRange(year:Int = getCurrentTaxYear(localDate)):TaxYearRange = generateTaxYearRange(year)
+  def getTaxYearRange(year:Int = getCurrentTaxYear(getDefaultDate)):TaxYearRange = generateTaxYearRange(year)
 
-  def getCurrentTaxYear(dateToCheck:LocalDate = localDate):Int = {
+  def getCurrentTaxYear(dateToCheck:LocalDate = getDefaultDate):Int = {
       TaxYearResolver.taxYearFor(dateToCheck)
   }
 
-  def isCurrentTaxYear(yearToCheck:Int = year, dateToCheck:LocalDate = localDate):Boolean = {
+  def isCurrentTaxYear(yearToCheck:Int = getDefaultYear, dateToCheck:LocalDate = getDefaultDate):Boolean = {
     yearToCheck == TaxYearResolver.taxYearFor(dateToCheck)
   }
 

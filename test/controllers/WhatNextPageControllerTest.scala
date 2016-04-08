@@ -220,7 +220,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016))
         status(result) shouldBe 200
         contentAsString(result) should include("Benefit registered")
-        contentAsString(result) should include("You still need to report Class 1A National Insurance contributions on a P11D(b).")
+        contentAsString(result) should include("You&#x27;ve registered to tax this benefit and expense through your payroll from 6 April 2017.")
       }
     }
 

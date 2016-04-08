@@ -17,9 +17,11 @@
             </button>
         }
 
-        <h1 id="title" class="h1-heading-margin">
-            @Messages("ExclusionSearch.title")
-        </h1>
+        <header class="page-header">
+            <h1 id="title" class="h1-heading-margin">
+                @Messages("ExclusionSearch.title")
+            </h1>
+        </header>
 
         <section id="search-results">
 
@@ -71,7 +73,10 @@
                       <tr>
                         <th>&nbsp;</th>
                         <th>@Messages("Service.field.name")</th>
-                        <th>@Messages("Service.field.nino")</th>
+                        <th>@Messages("Service.field.nino")
+                            <br>
+                            <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
+                        </th>
                         <th>@Messages("Service.field.worksnumber")</th>
                       </tr>
                     </thead>
@@ -96,12 +101,11 @@
                                 @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
                                 <input type="hidden" id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
                                 <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
-                                <td id='table-row-name-@listItem("nino").value.get' >
-                                  @listItem("firstName").value.get @listItem("surname").value.get
+                                <td width="30%" id='table-row-name-@listItem("nino").value.get' >
+                                    @listItem("surname").value.get, @listItem("firstName").value.get
                                 </td>
                                 <td id='table-row-nino-@listItem("nino").value.get'>
                                   @listItem("nino").value.get
-                                    <p>@Html(Messages("Service.nino.lastletter"))</p>
                                 </td>
                                 <td id='table-row-dob-@listItem("nino").value.get'>
                                   @listItem("worksPayrollNumber").value.getOrElse("")
@@ -160,9 +164,11 @@
                                   </td>
                                 </tr>
                                 <tr>
-                                  <th>@Html(Messages("Service.field.nino.2lines"))</th>
+                                  <th>@Html(Messages("Service.field.nino.2lines"))
+                                      <br>
+                                      <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
+                                  </th>
                                   <td id="table-row-nino">@listItem("nino").value.get
-                                      <p>@Html(Messages("Service.nino.lastletter"))</p></td>
                                 </tr>
                                 @if(listItem("gender").value.isDefined) {
                                 <tr>
@@ -179,9 +185,9 @@
                       }
 
                 <div style="clear:both"></div>
-                <p class="panel-indent panel-border-wide">
-                    @Messages("ExclusionImportant.ExcludeEmployee")
-                </p>
+                <div class="panel-indent panel-border-wide">
+                    <p>@Messages("ExclusionImportant.ExcludeEmployee")</p>
+                </div>
 
                 <p>
                     <input type="submit" class="button" role="button" id="button-confirm" value="@Messages("Service.confirm")">

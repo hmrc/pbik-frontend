@@ -66,7 +66,7 @@ class TaxDateUtilsSpec extends UnitSpec  {
   "The application " should {
     "state the service has  launched if the current tax year is after the year of launch" in {
       val dateAfterTaxYear = new LocalDate(TaxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, 7)
-      assert(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear) == TaxDateUtils.getTaxYearRange().cyminus1)
+      assert(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear) < TaxDateUtils.getTaxYearRange().cyminus1)
       assert(TaxDateUtils.isServiceLaunched(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear)) == true)
     }
   }
@@ -75,7 +75,7 @@ class TaxDateUtilsSpec extends UnitSpec  {
     "return the correct range for the current year" in {
 
       val dateAfterTaxYear = new LocalDate(TaxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, 7)
-      assert(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear) == TaxDateUtils.getTaxYearRange().cyminus1)
+      assert(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear)< TaxDateUtils.getTaxYearRange().cyminus1)
       assert(TaxDateUtils.isServiceLaunched(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear)) == true)
     }
   }
