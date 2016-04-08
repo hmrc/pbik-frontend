@@ -219,18 +219,20 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
 
     override def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                                 generateViewBasedOnFormItems: (Form[RegistrationList],
-                                                  List[RegistrationItem], List[Bik], List[Int], List[Int]) => HtmlFormat.Appendable)
+                                                  List[RegistrationItem], List[Bik], List[Int], List[Int], Option[Int]) => HtmlFormat.Appendable)
                                                (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext):
     Future[Result] = {
       year match {
         case dateRange.cyminus1 => {
           Future.successful(Ok(
-            views.html.registration.currentTaxYear(mockFormRegistrationList,dateRange,mockRegistrationItemList,allRegisteredListOption,PbikAppConfig.biksNotSupported)
+            views.html.registration.currentTaxYear(
+              mockFormRegistrationList,dateRange,mockRegistrationItemList,allRegisteredListOption,PbikAppConfig.biksNotSupported,biksAvailableCount=Some(17))
           ))
         }
         case _ => {
           Future.successful(Ok(
-            views.html.registration.nextTaxYear(mockFormRegistrationList,true,dateRange,mockRegistrationItemList,registeredListOption,PbikAppConfig.biksNotSupported)
+            views.html.registration.nextTaxYear(
+              mockFormRegistrationList,true,dateRange,mockRegistrationItemList,registeredListOption,PbikAppConfig.biksNotSupported,biksAvailableCount=Some(17))
           ))
         }
       }

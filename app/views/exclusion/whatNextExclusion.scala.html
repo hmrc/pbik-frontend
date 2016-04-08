@@ -32,8 +32,9 @@
         </h2>
 
         <p class="text">
-            @Messages("whatNext.exclude.p1")
+            @Html(Messages("whatNext.exclude.p1"))
         </p>
+        <br>
 
         <p class="text">
             <a  onclick="gaEvent('Click back to exclusion overview','From: Employee excluded What next page')"
@@ -45,7 +46,7 @@
             <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">@Messages("Service.back.overview.whatNext")</a>
         </p>
 
-        <p class="text link-feedback-p">
+        <p id="feedback" class="text link-feedback-p">
             <a  onclick="gaEvent('Click feedback link','From: Employee excluded What next page')"
                 href="@routes.HomePageController.redirectToDone" id="link-feedback" target="_blank">
                 @Messages("Service.feedback.link")

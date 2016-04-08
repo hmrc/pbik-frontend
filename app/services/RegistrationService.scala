@@ -46,18 +46,24 @@ trait RegistrationService extends FrontendController with URIInformation
 
   def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                               generateViewBasedOnFormItems: (Form[RegistrationList],
-                                                List[RegistrationItem], List[Bik], List[Int], List[Int]) => HtmlFormat.Appendable)
+                                                List[RegistrationItem], List[Bik], List[Int], List[Int], Option[Int]) => HtmlFormat.Appendable)
                                              (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext):
 
   Future[Result] = {
 
-    val nonLegislationBiks:List[Int] = PbikAppConfig.biksNotSupported
     val decommissionedBikIds:List[Int] = PbikAppConfig.biksDecommissioned
+    val nonLegislationBiks:List[Int] = if(TaxDateUtils.isCurrentTaxYear(year)) {
+      PbikAppConfig.biksNotSupportedCY
+    } else {
+      PbikAppConfig.biksNotSupported
+    }
 
     val isCurrentYear:String = TaxDateUtils.isCurrentTaxYear(year) match {
       case true => FormMappingsConstants.CY
       case false => FormMappingsConstants.CYP1
     }
+
+
 
     for {
       biksListOption:List[Bik] <- bikListService.registeredBenefitsList(year, "")(getBenefitTypesPath)
@@ -85,7 +91,7 @@ trait RegistrationService extends FrontendController with URIInformation
       }
       else {
         Ok(generateViewBasedOnFormItems(objSelectedForm.fill(sortedMegedData),
-          fetchFromCacheMapBiksValue, registeredListOption, PbikAppConfig.biksNotSupported, PbikAppConfig.biksDecommissioned))
+          fetchFromCacheMapBiksValue, registeredListOption, nonLegislationBiks, PbikAppConfig.biksDecommissioned, Some(biksListOption.size)))
       }
 
     }

@@ -62,7 +62,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
     implicit ac =>
       implicit request =>
         val staticDataRequest = registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cy,
-          "add", views.html.registration.nextTaxYear(_, true, YEAR_RANGE, _, _, _, _))
+          "add", views.html.registration.nextTaxYear(_, true, YEAR_RANGE, _, _, _, _, _))
           responseErrorHandler(staticDataRequest)
   }
 
@@ -76,10 +76,14 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
   def currentTaxYearOnPageLoad:Action[AnyContent] = AuthorisedForPbik {
     implicit ac =>
       implicit request =>
-        val resultFuture = {
-          registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cyminus1,
-            "add", views.html.registration.currentTaxYear(_, YEAR_RANGE,  _, _, _, _))
+
+        val resultFuture = for {
+          result <- registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cyminus1,
+            "add", views.html.registration.currentTaxYear(_, YEAR_RANGE,  _, _, _, _, _))
+        } yield {
+          result
         }
+
         responseCheckCYEnabled(resultFuture)
   }
 
@@ -96,11 +100,12 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
         RegistrationItem(x.iabdType, false, true)})
       val sortedData = BikListUtils.sortRegistrationsAlphabeticallyByLabels(initialData)
       if (sortedData.active.size == 0) {
-        Ok(views.html.errorPage(NO_MORE_BENEFITS_TO_REMOVE_CY1, taxYearRange, FormMappingsConstants.CYP1, -1, "Registered benefits for tax year starting 6 April " + YEAR_RANGE.cy, "manage-registrations"))
+        Ok(views.html.errorPage(NO_MORE_BENEFITS_TO_REMOVE_CY1, taxYearRange, FormMappingsConstants.CYP1, -1,
+          "Registered benefits for tax year starting 6 April " + YEAR_RANGE.cy, "manage-registrations"))
       }
       else {
         Ok(views.html.registration.nextTaxYear(objSelectedForm.fill(sortedData),
-          false, taxYearRange, fetchFromCacheMapBiksValue, List.empty[Bik], List.empty[Int]))
+          false, taxYearRange, fetchFromCacheMapBiksValue, List.empty[Bik], List.empty[Int], List.empty[Int], None))
       }
     }
     responseErrorHandler(loadResultFuture)
@@ -108,33 +113,42 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
 
   def confirmAddCurrentTaxYear:Action[AnyContent] = AuthorisedForPbik {
     implicit ac => implicit request =>
-      val resultFuture = {
-        generateConfirmationScreenView(YEAR_RANGE.cyminus1, "add", views.html.registration.
+      val resultFuture = for {
+        biksListOption:List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cyminus1, "")(getBenefitTypesPath)
+        result <- generateConfirmationScreenView(YEAR_RANGE.cyminus1, "add", views.html.registration.
           confirmAddCurrentTaxYear(_, YEAR_RANGE), (formWithErrors =>
-          Ok(views.html.registration.currentTaxYear(formWithErrors, YEAR_RANGE))
+          Ok(views.html.registration.currentTaxYear(formWithErrors, YEAR_RANGE, biksAvailableCount=Some(biksListOption.size)))
             .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))))
+      } yield {
+        result
       }
+
       responseCheckCYEnabled(resultFuture)
   }
 
 
   def confirmAddNextTaxYear:Action[AnyContent] = AuthorisedForPbik {
     implicit ac => implicit request =>
-      val resultFuture = {
-        generateConfirmationScreenView(YEAR_RANGE.cy, "add", views.html.registration.
+      val resultFuture = for {
+        biksListOption:List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cy, "")(getBenefitTypesPath)
+        result <- generateConfirmationScreenView(YEAR_RANGE.cy, "add", views.html.registration.
           confirmUpdateNextTaxYear(_, true, YEAR_RANGE), (formWithErrors =>
-          Ok(views.html.registration.nextTaxYear(formWithErrors, true, YEAR_RANGE))))
+          Ok(views.html.registration.nextTaxYear(formWithErrors, true, YEAR_RANGE, biksAvailableCount=Some(biksListOption.size)))))
+      } yield {
+        result
       }
       responseErrorHandler(resultFuture)
   }
 
   def confirmRemoveNextTaxYear:Action[AnyContent] = AuthorisedForPbik {
     implicit ac => implicit request =>
-      val resultFuture = {
-        generateConfirmationScreenView(YEAR_RANGE.cy, "remove", views.html.registration.
+      val resultFuture = for {
+        result <- generateConfirmationScreenView(YEAR_RANGE.cy, "remove", views.html.registration.
           confirmUpdateNextTaxYear(_, false, YEAR_RANGE), (formWithErrors =>
-          Ok(views.html.registration.nextTaxYear(formWithErrors, false, YEAR_RANGE))))
-      }
+          Ok(views.html.registration.nextTaxYear(formWithErrors, false, YEAR_RANGE, biksAvailableCount=None))))
+      } yield {
+          result
+        }
       responseErrorHandler(resultFuture)
   }
 

@@ -1,0 +1,18 @@
+@()(implicit lang: play.api.i18n.Lang)
+
+@import play.api.i18n._
+@import views.html.helper._
+
+<h2 id="sidebar-heading" class="sidebar-heading">@Messages("sidebar.h2.expenses.help")</h2>
+<div id="sidebar-help-expenses">
+
+    <p id="sidebar-link-help" class="sidebar-link text">
+        @Html(Messages("sidebar.expenses.help.1"))
+    </p>
+    <p id="sidebar-link-az" class="sidebar-link text">
+        <a rel="external" href="https://www.gov.uk/expenses-and-benefits-a-to-z" target="_blank">
+            @Messages("sidebar.link.a-z")
+        </a> @Messages("Service.new-window")
+    </p>
+
+</div>

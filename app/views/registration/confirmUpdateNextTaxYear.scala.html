@@ -11,12 +11,24 @@
 @gaEventBiks = @{helper.repeat(bikForm("actives"), min=0) { activeField => Html(Messages("BenefitInKind.label." + activeField("uid").value.get) + " ,")} }
 @gaEventRemoveBiks = @{if(!additive){helper.repeat(bikForm("actives"), min=0) { activeField => Html(Messages("BenefitInKind.label." + iabdValueURLDeMapper(activeField("uid").value.get)) + " ,")} } }
 
+@screenReaderExclusionOpen = @{Messages("AddBenefits.Confirm.help.reveal.link.sr.open")}
+@screenReaderExclusionClosed = @{Messages("AddBenefits.Confirm.help.reveal.link.sr.closed")}
+
 @title = @{if(additive && singleBik) {Messages("AddBenefits.Confirm.Single.Title")}else if(additive && !singleBik){Messages("AddBenefits.Confirm.Multiple.Title")}else {Messages("RemoveBenefits.Confirm.Title")}}
 
 @parentTemplate(pageTitle = title, Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
         @if(additive) {
-            <h1 id="title">
+
+            <span class="link-back-top-wrap">
+                <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
+                   href='@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad'>
+
+                    <div class="arrow-back"></div>
+                    @Messages("Service.back")
+                </a>
+            </span>
+            <h1 id="title" class="h1-heading-margin">
                 @if(!singleBik) {
                     @Messages("AddBenefits.Confirm.Multiple.Title")
                 }else{
@@ -31,7 +43,13 @@
 
 
         @if(additive) {
-            <p class="lede-para text"> @Messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+            <p class="lede-para text">
+                @if(singleBik){
+                    @Messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+                }else{
+                    @Messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+                }
+            </p>
         } else {
             @if(flash.get("error")){
                 <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
@@ -55,23 +73,14 @@
                 @helpers.form(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes(),
                 'onsubmit -> "gaEventConfirmAddBenefits()") {
 
-                    <table id="list-of-confirmation-benefits" role="benefits list">
-                        <thead>
-                            <tr role="row">
-                                <th role="columnheader">
-                                    @if(!singleBik) {
-                                        @Messages("AddBenefits.Confirm.Multiple.Table.Heading")
-                                    }else {
-                                        @Messages("AddBenefits.Confirm.Single.Table.Heading")
-                                    }
-                                </th>
-                                <th role="columnheader-link">
-                                    <a class="button-link" id="link-change" onclick=""
-                                       href='@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad'>
-                                        @Messages("AddBenefits.Confirm.Table.Change")</a>
-                                </th>
-                            </tr>
-                        </thead>
+                    <table id="list-of-confirmation-benefits" role="presentation">
+                        <caption>
+                            @if(!singleBik) {
+                            @Messages("AddBenefits.Confirm.Multiple.Table.Heading")
+                            }else {
+                            @Messages("AddBenefits.Confirm.Single.Table.Heading")
+                            }
+                        </caption>
 
                         <tbody>
                         @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
@@ -82,7 +91,6 @@
                                     @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
                                     <td role="gridcell" id='confirmation-row-confirmation-@activeField("uid").value.get'>
                                         @Messages("BenefitInKind.label." + activeField("uid").value.get )</td>
-                                    <td role="gridcell-empty"></td>
                                 </tr>
                             }
                         }
@@ -90,23 +98,19 @@
 
                     </table>
 
-                    <p>
-                        @Messages("AddBenefits.Confirm.help.desc")
-                    </p>
+                    <div class="panel-indent panel-border-wide">
+                        @if(singleBik){
+                            @Messages("AddBenefits.Confirm.help.desc.Single")
+                        }else{
+                            @Messages("AddBenefits.Confirm.help.desc")
+                        }
+                    </div>
 
-                    <details id="important-excluded-employee-desc">
-                        <summary aria-controls="details-content-0" tabindex="0" aria-expanded="false"
-                            onclick='gaEvent("Click reveal", "@Messages("AddBenefits.Confirm.help.reveal.link")")'>
-                            <span class="summary">@Messages("AddBenefits.Confirm.help.reveal.link")</span>
-                        </summary>
-                        <div class="panel-indent-2 panel-indent">
-                            <p>
-                                @Messages("AddBenefits.Confirm.help.reveal.p1")
-                            </p>
-                        </div>
-                    </details>
-
-                    <input type="submit" role="button" class="button" id="button-confirm" value="@Messages("Service.confirm")">
+                    @if(singleBik) {
+                    <input type="submit" role="button" class="button" id="button-confirm" value="@Messages("Service.register.single")">
+                    }else {
+                    <input type="submit" role="button" class="button" id="button-confirm" value="@Messages("Service.register.multiple")">
+                    }
                 }
                 <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
                       href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
@@ -127,7 +131,7 @@
                     <div class='form-group @if(flash.get("error")) {error}'>
 
                         <fieldset class="inline">
-                            <legend style="font-weight: bold">@Messages("RemoveBenefits.reason.desc")</legend>
+                            <legend>@Messages("RemoveBenefits.reason.desc")</legend>
 
                             @if(flash.get("error")) {
                                 <span id="error-list-1" class="error-notification" style="display:block; margin-left: 0">

@@ -203,10 +203,11 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         val formRegistrationList: Form[RegistrationList] = objSelectedForm
-        val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2015))
+        val formFilled = formRegistrationList.fill(registrationList)
+        val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2016))
         status(result) shouldBe 200
-        contentAsString(result) should include("Benefit registered")
-        contentAsString(result) should include("")
+        contentAsString(result) should include("Registration complete")
+        contentAsString(result) should include("Now tax private medical treatment or insurance through your payroll from 6 April 2016.")
       }
     }
 
@@ -217,10 +218,12 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         val formRegistrationList: Form[RegistrationList] = objSelectedForm
-        val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016))
+        val formFilled = formRegistrationList.fill(registrationList)
+        formRegistrationList.fill(registrationList)
+        val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017))
         status(result) shouldBe 200
-        contentAsString(result) should include("Benefit registered")
-        contentAsString(result) should include("You still need to report Class 1A National Insurance contributions on a P11D(b).")
+        contentAsString(result) should include("Registration complete")
+        contentAsString(result) should include("Now tax private medical treatment or insurance through your payroll from 6 April 2017.")
       }
     }
 
@@ -249,7 +252,10 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         val result = await(mockWhatNextPageController.loadWhatNextRemovedBIK(formRegistrationList, 2015))
         status(result) shouldBe 200
         contentAsString(result) should include("Benefit removed")
-        contentAsString(result) should include("If you&#x27;re still providing this benefit or expense to any of your employees, you&#x27;ll need to complete a P11D at the end of the tax year.")
+        contentAsString(result) should include(
+          "If you're still providing this benefit or expense to any of your employees, you'll need to complete a " +
+            "<a href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> at the end of the tax year."
+        )
       }
     }
 

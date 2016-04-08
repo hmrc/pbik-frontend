@@ -1,4 +1,6 @@
-@import '../js/node_modules/govuk_frontend_toolkit/govuk_frontend_toolkit/stylesheets/_grid_layout.scss', './elements/forms/_form-date-of-birth.scss';
+@import '../js/node_modules/govuk_frontend_toolkit/govuk_frontend_toolkit/stylesheets/_grid_layout.scss',
+'./elements/forms/_form-date-of-birth.scss',
+'../js/node_modules/govuk_frontend_toolkit/govuk_frontend_toolkit/stylesheets/_typography.scss';
 
 
 .grid-row {
@@ -28,14 +30,19 @@
         margin: 0;
         padding-top: 8px;
     }
-    .sidebar-side-bar  {
 
+    .sidebar-side-bar  {
       margin-top: 95px;
       margin-left: 40px;
     }
 
-    table td, table th{
-    	font-size: 19px;
+    table td {
+    	@include core-19;
+    }
+
+    table th {
+        @include core-19;
+        font-weight: 700;
     }
 
     .nino p {
@@ -48,15 +55,20 @@
     }
 
     .error fieldset, .error .error-notification {
-        font-size: 19px;
+        @include core-19;
     }
 
     .form-field--error .error-notification {
-        font-size: 19px;
+        @include core-19;
     }
 
     .error-notification{
-        font-size: 19px;
+        @include core-19;
+    }
+
+    aside {
+        width: 33.33333%;
+        float: right;
     }
 }
  
@@ -90,11 +102,16 @@
     }
 
     table td, table th{
-    	font-size: 16px;
+    	@include core-16;
     }
 
     .other-desc .form-control {
         width: 350px;
+    }
+
+    aside {
+        width: auto;
+
     }
 
 }
@@ -121,13 +138,18 @@ form label[for="checkbox-select-all"] {
 }
 .button {
 	padding: .5em .5em .15em;	
-	margin-bottom: 15px;
+	margin-bottom: 45px;
 }
+
 fieldset .button {
 	margin-bottom: 0;
 }
 .list-bullet{
 	margin-bottom: 30px;
+}
+
+.list-bullet li{
+	margin-bottom: 20px;
 }
 
 .line {
@@ -168,7 +190,6 @@ input#nino {
 }
 
 .error fieldset, .error .error-notification {
-    margin-left: 15px;
     font-weight: bold;
 }
 
@@ -281,11 +302,13 @@ fieldset .h4-heading{
 
 #link-feedback,
 #link-feedback-desc {
-    font-size: 16px;
+    @include core-16;
+    margin-top: 20px;
 }
 
 .link-feedback-p {
-    margin-top: 1.4em !important;
+    margin-top: 2.4em !important;
+
 }
 
 .toggle-lang {
@@ -309,6 +332,9 @@ fieldset .h4-heading{
     margin-bottom: 30px;
 }
 
+#multi-exclusion-back {
+    margin-top: 2.4em !important;
+}
 
 
 .error-summary-pbik {
@@ -323,8 +349,7 @@ fieldset .h4-heading{
     border: 5px solid #b10e1e;
     margin-top: 30px;
     margin-bottom: 30px;
-    padding: 20px 15px 15px 15px;
-    width: 100%;
+    padding: 20px 15px 15px 1em;
   }
 }
 
@@ -368,6 +393,10 @@ fieldset .h4-heading{
 
 .error .employee-table {
     margin-left:15px;
+}
+
+.error, .form-field-group--error {
+    margin-left: 0;
 }
 
 .hidden-screen-reader {
@@ -418,7 +447,16 @@ border-bottom: 5px solid #005ea5;
 }
 
 .panel-border-wide {
-    border-left-width: 10px;
+  border-left-width: 10px;
+  border-left-color: #bfc1c3;
+  padding: 15px;
+  margin: 0;
+  margin-bottom: 30px;
+}
+
+.nino-span {
+  font-size: 16px;
+  font-weight: 300;
 }
 
 .no-wrap {
@@ -438,7 +476,7 @@ border-bottom: 5px solid #005ea5;
     max-width: 52px;
     margin-bottom: 0;
     color: black;
-    font-size: 16px;
+    @include core-16;
     display: inline;
     text-decoration: none;
 }
@@ -458,3 +496,14 @@ border-bottom: 5px solid #005ea5;
 .h1-heading-margin {
     margin-top: 10px;
 }
+
+caption {
+    text-align: left;
+    padding-bottom: 0.52632em;
+    border-bottom: 1px solid #bfc1c3;
+}
+
+.caption-margin-top {
+    margin-top: 0.52632em;
+}
+

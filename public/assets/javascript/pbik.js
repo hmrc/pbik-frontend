@@ -77,11 +77,14 @@ function gaEventLinkGetHelp() {
 }
 
 if (window.addEventListener) {
-    window.addEventListener("load", function(){
-        document.getElementById("get-help-action").onclick = function(){
-            gaEventLinkGetHelp();
-        };
-    });
+    var el = document.getElementById("get-help-action");
+    if(el != null){
+        window.addEventListener("load", function(){
+            document.getElementById("get-help-action").onclick = function(){
+                gaEventLinkGetHelp();
+            };
+        });
+   }
 }
 else {
     window.attachEvent("load", function(){
@@ -89,4 +92,15 @@ else {
              gaEventLinkGetHelp();
         };
     });
+}
+
+function screenReaderHidden(defaultText, changedText) {
+    var element = document.getElementById("important-excluded-employee-sr");
+
+    if(defaultText == element.innerText){
+        element.innerText = changedText;
+
+    }else {
+        element.innerText = defaultText;
+    }
 }

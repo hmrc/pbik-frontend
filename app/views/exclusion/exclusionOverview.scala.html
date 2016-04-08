@@ -11,9 +11,9 @@
     </script>
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
-
-        <h1 id="title" class="heading-with-border">@Messages("ExclusionOverview.title")</h1>
-
+        <header class="page-header">
+            <h1 id="title" class="heading-with-border">@Messages("ExclusionOverview.title")</h1>
+        </header>
         <section id="exclusion-overview">
             @if(current.isEmpty) {
                 <p class="lede-para text">
@@ -23,7 +23,7 @@
             }else{
                 <p class="lede-para text">
                     @if(isCurrentTaxYear=="cy") {
-                        @Messages("ExclusionOverview.instruction.cy.notempty", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)
+                        @Messages("ExclusionOverview.instruction.cy.notempty", Messages("BenefitInKind.label." + iabdType).toLowerCase)
                     }else{
                         @Messages("ExclusionOverview.instruction.notempty", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)
                     }
@@ -36,7 +36,9 @@
                         <thead>
                         <tr>
                             <th>@Messages("Service.field.name")</th>
-                            <th>@Messages("Service.field.nino")</th>
+                            <th>@Messages("Service.field.nino")<br>
+                                <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
+                            </th>
                             <th>@Messages("Service.field.worksnumber")</th>
                             <th></th>
 
@@ -48,14 +50,13 @@
 
                          @helpers.form(action=routes.ExclusionListController.remove(isCurrentTaxYear, iabdValueURLMapper(iabdType))){
                             <tr>
-                              <td width="30%" id='name-@c.nino'>@c.firstForename @c.surname</td>
-                              <td class="nino" id = 'nino-@c.nino'>
+                              <td width="25%" id='name-@c.nino'>@c.surname, @c.firstForename </td>
+                              <td width="40%" class="nino" id = 'nino-@c.nino'>
                                   @c.nino
-                                  <p>@Html(Messages("Service.nino.lastletter"))</p>
                               </td>
-                              <td width="31%" id='dob-@c.nino'>@c.worksPayrollNumber</td>
+                              <td width="25%" id='dob-@c.nino'>@c.worksPayrollNumber</td>
                               @if(isCurrentTaxYear!="cy"){
-                                    <td class="nino-remove"><input class=" button--link-style" type="submit" name="submit" id='@c.nino-remove' value="@Messages("Service.removeexclusion")"></td>
+                                    <td><input class="button--link-style" type="submit" name="submit" id='@c.nino-remove' value="@Messages("Service.removeexclusion")"></td>
                               }
 
                             </tr>

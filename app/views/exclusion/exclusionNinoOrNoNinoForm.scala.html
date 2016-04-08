@@ -7,9 +7,11 @@
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
 
-        <h1 id="title">
-            @Messages("ExclusionNinoDecision.title")
-        </h1>
+        <header class="page-header">
+            <h1 id="title">
+                @Messages("ExclusionNinoDecision.title")
+            </h1>
+        </header>
 
         <section id="exclusion-decision">
             @if(flash.get("error")){

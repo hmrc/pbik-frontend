@@ -33,8 +33,8 @@ trait AppConfig {
   val cyEnabled:Boolean
   val taxCodeOverviewWarning:Boolean
   val biksNotSupported: List[Int]
+  val biksNotSupportedCY: List[Int]
   val biksDecommissioned: List[Int]
-  val biksCount: Int
 }
 
 object PbikAppConfig extends AppConfig with ServicesConfig {
@@ -55,7 +55,7 @@ object PbikAppConfig extends AppConfig with ServicesConfig {
 
   override lazy val cyEnabled = configuration.getBoolean("pbik.enabled.cy").getOrElse(false)
   override lazy val taxCodeOverviewWarning = configuration.getBoolean("pbik.enabled.warning.overview").getOrElse(false)
-  override lazy val biksNotSupported:List[Int] = (configuration.getIntList("pbik.unsupported.biks").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
+  override lazy val biksNotSupported:List[Int] = (configuration.getIntList("pbik.unsupported.biks.cy1").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
+  override lazy val biksNotSupportedCY:List[Int] = (configuration.getIntList("pbik.unsupported.biks.cy").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
   override lazy val biksDecommissioned:List[Int] = (configuration.getIntList("pbik.decommissioned.biks").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
-  override lazy val biksCount:Int = configuration.getInt(s"pbik.supported.biks.count").getOrElse(0)
 }

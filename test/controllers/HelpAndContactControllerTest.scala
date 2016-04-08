@@ -37,7 +37,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{FormMappings, TaxDateUtils}
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
 class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication with Matchers
@@ -78,6 +78,9 @@ class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication wit
     when(httpPost.POSTForm[HttpResponse](anyString, any)(any, any))
       .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
 
+    when(httpPost.GET[HttpResponse](anyString)(any, any))
+      .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
+
   }
 
   "When using help/ contact hmrc, the HelpAndContactController " should {
@@ -110,7 +113,7 @@ class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication wit
           case Some(s: String) => s
           case _ => ""
         }
-
+        println("Next URL " + nextUrl)
         val newResult = route(FakeRequest(GET, nextUrl)).get
 
         contentAsString(newResult) should include("")

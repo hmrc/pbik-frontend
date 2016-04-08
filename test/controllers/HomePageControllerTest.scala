@@ -69,6 +69,11 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
       Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) == 31) }))
     }
 
+    override def registeredBenefitsList(year: Int, orgIdentifier: String)(path: String)
+                                       (implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]) :  Future[List[Bik]] = {
+      CYCache
+    }
+
   }
 
   class MockHomePageController extends HomePageController with TierConnector {
