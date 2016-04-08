@@ -37,7 +37,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{FormMappings, TaxDateUtils}
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
 class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication with Matchers

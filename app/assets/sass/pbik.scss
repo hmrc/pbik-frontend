@@ -36,8 +36,13 @@
       margin-left: 40px;
     }
 
-    table td, table th{
-    	font-size: 19px;
+    table td {
+    	@include core-19;
+    }
+
+    table th {
+        @include core-19;
+        font-weight: 700;
     }
 
     .nino p {
@@ -298,10 +303,12 @@ fieldset .h4-heading{
 #link-feedback,
 #link-feedback-desc {
     @include core-16;
+    margin-top: 20px;
 }
 
 .link-feedback-p {
-    margin-top: 1.4em !important;
+    margin-top: 2.4em !important;
+
 }
 
 .toggle-lang {
@@ -325,6 +332,9 @@ fieldset .h4-heading{
     margin-bottom: 30px;
 }
 
+#multi-exclusion-back {
+    margin-top: 2.4em !important;
+}
 
 
 .error-summary-pbik {
@@ -437,7 +447,16 @@ border-bottom: 5px solid #005ea5;
 }
 
 .panel-border-wide {
-    border-left-width: 10px;
+  border-left-width: 10px;
+  border-left-color: #bfc1c3;
+  padding: 15px;
+  margin: 0;
+  margin-bottom: 30px;
+}
+
+.nino-span {
+  font-size: 16px;
+  font-weight: 300;
 }
 
 .no-wrap {
