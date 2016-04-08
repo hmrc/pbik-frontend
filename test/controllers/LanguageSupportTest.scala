@@ -75,6 +75,11 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
       Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) == 31) }))
     }
 
+    override def registeredBenefitsList(year: Int, orgIdentifier: String)(path: String)
+                                       (implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]) :  Future[List[Bik]] = {
+      CYCache
+    }
+
   }
 
   class FakeResponse extends HttpResponse {
@@ -175,11 +180,6 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
     when(pbikAppConfig.cyEnabled).thenReturn(true)
 
     when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
-
-    /*when(bikListService.registeredBenefitsList(any, any)(any)).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
-    }))*/
-
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
       anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],

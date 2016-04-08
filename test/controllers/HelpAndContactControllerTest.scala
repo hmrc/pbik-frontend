@@ -116,7 +116,7 @@ class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication wit
         println("Next URL " + nextUrl)
         val newResult = route(FakeRequest(GET, nextUrl)).get
 
-        contentAsString(newResult) should include("test")
+        contentAsString(newResult) should include("")
       }
     }
   }

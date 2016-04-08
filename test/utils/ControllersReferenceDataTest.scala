@@ -72,10 +72,6 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
 
   }
 
-  object MockControllersReferenceData extends ControllersReferenceData {
-    override def pbikAppConfig = PbikAppConfig
-  }
-
   object TestCYEnabledConfig extends AppConfig {
     private def loadConfig(key: String) = ""
 
@@ -96,8 +92,36 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
 
   }
 
+  object TestCYDisabledConfig extends AppConfig{
+    private def loadConfig(key: String) = ""
+
+    override lazy val contactFrontendService =  ""
+    override lazy val contactFormServiceIdentifier: String = ""
+    override lazy val taxCodeOverviewWarning: Boolean = true
+
+    override lazy val assetsPrefix = ""
+    override lazy val reportAProblemPartialUrl = ""
+    override lazy val betaFeedbackUrl =""
+    override lazy val betaFeedbackUnauthenticatedUrl = ""
+    override lazy val analyticsToken: String = ""
+    override lazy val analyticsHost: String = ""
+    override lazy val cyEnabled = false
+    override lazy val biksNotSupported:List[Int] = List.empty[Int]
+    override lazy val biksNotSupportedCY:List[Int] = List.empty[Int]
+    override lazy val biksDecommissioned:List[Int] = List.empty[Int]
+
+  }
+
   object MockCYEnabledControllersReferenceData extends ControllersReferenceData {
     override def pbikAppConfig = TestCYEnabledConfig
+  }
+
+  object MockCYDisabledControllersReferenceData extends ControllersReferenceData {
+    override def pbikAppConfig = TestCYDisabledConfig
+  }
+
+  object MockControllersReferenceData extends ControllersReferenceData {
+    override def pbikAppConfig = PbikAppConfig
   }
 
   "When instantiating the ControllersReferenceData it " should {
@@ -109,11 +133,10 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
     }
   }
 
-
   "When CY mode is disabled the controller " should {
     "display the result passsed to it " in {
       running(fakeApplication) {
-        val mockController = MockControllersReferenceData
+        val mockController = MockCYDisabledControllersReferenceData
         implicit val user = createDummyUser("VALID_ID")
         val result = await(mockController.responseCheckCYEnabled( Ok("Passed Test") )(mockrequest, user))
         status (result) shouldBe 200
