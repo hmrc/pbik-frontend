@@ -81,8 +81,9 @@
               href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
 
     </div>
-
-    function gaEventConfirmAddBenefits() {
-        gaEvent("Benefit(s) Added for Current Year", "@gaEventBiks");
-    }
+    <script>
+        function gaEventConfirmAddBenefits() {
+            gaEvent("Benefit(s) Added for Current Year", "@gaEventBiks");
+        }
+    </script>
 }

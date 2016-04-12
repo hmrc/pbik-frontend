@@ -105,7 +105,7 @@ trait ControllersReferenceData extends FormMappings {
       responseErrorHandler(staticDataRequest)
     } else {
       Logger.info("Cy is disabled")
-      Future(Ok(views.html.errorPage(CY_RESTRICTED, YEAR_RANGE, "")))
+      Future(Ok(views.html.errorPage(CY_RESTRICTED, YEAR_RANGE, "", 10003)))
     }
   }
 

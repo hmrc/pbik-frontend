@@ -15,7 +15,7 @@
 
     <section id="removal-confirmation">
         <p class="lede-para text">
-            @Messages("ExclusionRemovalConfirmation.intro", Messages("BenefitInKind.label."+iabdValueURLDeMapper(iabdType)).toLowerCase, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+            @Messages("ExclusionRemovalConfirmation.intro", Messages("BenefitInKind.label."+iabdValueURLDeMapper(iabdType)), ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
 
            @helpers.form(action=routes.ExclusionListController.removeExclusionsCommit(iabdType),
             'onsubmit -> "gaEventConfirmRemoveExclusion()") {
@@ -72,7 +72,7 @@
         <div style="clear:both"></div>
 
         <p>
-            <input type="submit" class="button" role="button" id="button-confirm" value="@Messages("Service.confirm")">
+            <input type="submit" class="button" role="button" id="button-confirm" value="@Messages("Service.exclusion.add")">
         </p>
         }
             <p>

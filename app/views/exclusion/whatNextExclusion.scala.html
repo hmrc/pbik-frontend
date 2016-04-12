@@ -20,9 +20,9 @@
             </h1>
             <p id="confirmation-p">
                 @if(year=="cy"){
-                    @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType).toLowerCase, taxYearRange.cyminus1 + "")
+                    @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType), taxYearRange.cyminus1 + "")
                 }else {
-                    @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType).toLowerCase, taxYearRange.cy + "")
+                    @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType), taxYearRange.cy + "")
                 }
             </p>
         </div>

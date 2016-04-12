@@ -140,7 +140,8 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
         implicit val user = createDummyUser("VALID_ID")
         val result = await(mockController.responseCheckCYEnabled( Ok("Passed Test") )(mockrequest, user))
         status (result) shouldBe 200
-        bodyOf (result) should include ( Messages("ServiceMessage.10003"))
+        bodyOf(result) should include(Messages("ServiceMessage.10003.1"))
+        bodyOf(result) should include(Messages("ServiceMessage.10003.2"))
       }
     }
   }
@@ -281,7 +282,7 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
         p.failure( new GenericServerErrorException("10003") )
         val result = await(mockController.responseErrorHandler(p.future)(mockrequest, user))
         status (result) shouldBe 200
-        bodyOf (result) should include ( Messages("ServiceMessage.10003") )
+        bodyOf (result) should include ( Messages("ServiceMessage.10003.h1") )
       }
     }
   }

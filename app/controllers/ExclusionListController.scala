@@ -40,6 +40,7 @@ import scala.concurrent.Future
 import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 
+
 trait ExclusionListConfiguration extends RunMode {
 
   import play.api.Play.current
@@ -180,7 +181,7 @@ with SplunkLogger with ExclusionListConfiguration {
               } yield {
                 val listOfMatches: List[EiLPerson] = eiLListService.searchResultsRemoveAlreadyExcluded(resultAlreadyExcluded,
                   result.json.validate[List[EiLPerson]].asOpt.get)
-                searchResultsHandleValidResult(listOfMatches, isCurrentTaxYear, formType,
+                searchResultsHandleValidResult(listOfMatches, resultAlreadyExcluded, isCurrentTaxYear, formType,
                   iabdTypeValue, form, None)
               }
             }
@@ -195,17 +196,20 @@ with SplunkLogger with ExclusionListConfiguration {
   * Handles valid List[EiLPerson] on search results page
   * If list is 0 size will return employee not found message
   */
-  def searchResultsHandleValidResult(listOfMatches: List[EiLPerson], isCurrentTaxYear: String, formType: String,
+  def searchResultsHandleValidResult(listOfMatches: List[EiLPerson], resultAlreadyExcluded: List[EiLPerson], isCurrentTaxYear: String, formType: String,
                                      iabdTypeValue: String, form: Form[EiLPerson], individualSelectionOption: Option[String])
                                     (implicit request: Request[_], ac: AuthContext): Result = {
     listOfMatches.size match {
       case 0 =>
         Logger.error("Matches are zero size")
+        val existsAlready = resultAlreadyExcluded.contains(form.bindFromRequest().get)
+        val message = if(existsAlready) Messages.get("ExclusionSearch.Fail.Exists.P") else Messages.get("ExclusionSearch.Fail.P")
+
         formType match {
           case FORM_TYPE_NINO => Ok(views.html.exclusion.ninoExclusionSearchForm(YEAR_RANGE, isCurrentTaxYear,
-            iabdTypeValue, form.bindFromRequest().withError("status", Messages.get("ExclusionSearch.Fail.P"))))
+            iabdTypeValue, form.bindFromRequest().withError("status", message), existsAlready))
           case _ => Ok(views.html.exclusion.noNinoExclusionSearchForm(YEAR_RANGE, isCurrentTaxYear,
-            iabdTypeValue, form.bindFromRequest().withError("status", Messages.get("ExclusionSearch.Fail.P"))))
+            iabdTypeValue, form.bindFromRequest().withError("status", message), existsAlready))
         }
 
       case _ =>

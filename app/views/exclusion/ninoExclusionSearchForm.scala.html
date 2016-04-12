@@ -1,7 +1,8 @@
-@(taxYearRange:TaxYearRange, isCurrentTaxYear:String, iabdType:String, searchForm: Form[EiLPerson])(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
+@(taxYearRange:TaxYearRange, isCurrentTaxYear:String, iabdType:String, searchForm: Form[EiLPerson], alreadyExists: Boolean = false)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
+@excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">}
 
 @parentTemplate(pageTitle = Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
@@ -20,11 +21,29 @@
     </header>
     <section id="nino-exclusion-form">
 
+        @if(searchForm("status").hasErrors){
+            <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+                <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
+                    @Messages("Service.errorSummary.heading")
+                </h1>
+
+                @if(alreadyExists) {
+                    @Html(Messages("ExclusionSearch.Fail.Exists.Desc", iabdValueURLMapper(iabdType), excludedEmployeesLink , "</a>"))
+                }else { @Html(Messages("ExclusionSearch.Fail.Desc"))}
+
+                <ul class="error-summary-pbik-list">
+                    <li><a href="#error-list-1">@searchForm.error("status").get.message</a></li>
+                </ul>
+
+            </div>
+        }
+
         @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdValueURLMapper(iabdType), "nino"), 'autocomplete -> "off") {
 
         <div class='form-group @if(searchForm("status").hasErrors) {error}' id="search-form">
             @if(searchForm("status").hasErrors){
-                <span class="error-notification">
+                <span class="error-notification" id="error-list-1">
                     @searchForm.error("status").get.message
                 </span>
             }

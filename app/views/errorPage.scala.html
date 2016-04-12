@@ -2,6 +2,7 @@
 pageHeading:String ="An error has occurred", backLink:String= "overview")(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext , lang: Lang)
 
 @import utils.FormMappingsConstants._
+@import uk.gov.hmrc.play.views.html.helpers
 
 @active(ac: uk.gov.hmrc.play.frontend.auth.AuthContext) = @{
     if (ac.principal.accounts.epaye.isDefined)
@@ -23,7 +24,13 @@ pageHeading:String ="An error has occurred", backLink:String= "overview")(implic
      @isCurrentTaxYear match {
             case utils.FormMappingsConstants.CY => {@Html(Messages(errorMessage + isCurrentTaxYear , taxYearRange.cyminus1.toString, taxYearRange.cy.toString))}
             case utils.FormMappingsConstants.CYP1 => {@Html(Messages(errorMessage + isCurrentTaxYear , taxYearRange.cy.toString, taxYearRange.cyplus1.toString))}
-            case _ if(code == 63088 || code == 64989) => {
+            case _ if(code == 63091) => {
+
+                @Html(Messages("ServiceMessage." + (code)))
+
+            }
+            case _ if(code == 63088 || code == 64989 || code == 10003)  => {
+
                 @Html(Messages("ServiceMessage." + (code) + ".1"))
 
             }
@@ -32,7 +39,7 @@ pageHeading:String ="An error has occurred", backLink:String= "overview")(implic
     </p>
 
     <p class="text">
-        @if(code == 63088 || code == 64989) {
+        @if(code == 63088 || code == 64989 || code == 10003) {
 
             @Html(Messages("ServiceMessage." + (code) + ".2"))
         }

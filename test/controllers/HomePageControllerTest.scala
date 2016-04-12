@@ -177,7 +177,8 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
         val r = await(homePageController.loadCautionPageForCY.apply(request))
         status(r) shouldBe 200
-        bodyOf(r) should include(Messages("ServiceMessage.10003"))
+        bodyOf(r) should include(Messages("ServiceMessage.10003.1"))
+        bodyOf(r) should include(Messages("ServiceMessage.10003.2"))
       }
     }
   }

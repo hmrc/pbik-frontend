@@ -20,7 +20,7 @@
                 @Messages("whatNext.rescind.heading")
             </h1>
             <p id="confirmation-p">
-                @Messages("ExclusionRemoval.WhatNext.lede", name, Messages("BenefitInKind.label." + iabdValueURLDeMapper(iabdType)).toLowerCase, taxYearRange.cy+"")
+                @Messages("ExclusionRemoval.WhatNext.lede", name, Messages("BenefitInKind.label." + iabdValueURLDeMapper(iabdType)), taxYearRange.cy+"")
             </p>
         </div>
 
@@ -28,21 +28,21 @@
             @Messages("whatNext.subHeading")
         </h2>
         <ul class="list-bullet">
-        <li>
-            @Html(Messages("ExclusionRescind.WhatNext.p1"))
-        </li>
-            <br>
-        <li>
-            @Html(Messages("ExclusionRescind.WhatNext.p2"))
-        </li>
-            <br>
-        <li>
-            @Html(Messages("ExclusionRescind.WhatNext.p3", taxYearRange.cy+"", taxYearRange.cyplus1+""))
-        </li>
-            <br>
-        <li>
-            @Html(Messages("ExclusionRescind.WhatNext.p4"))
-        </li>
+            <li>
+                @Html(Messages("ExclusionRescind.WhatNext.p1"))
+            </li>
+
+            <li>
+                @Html(Messages("ExclusionRescind.WhatNext.p2"))
+            </li>
+
+            <li>
+                @Html(Messages("ExclusionRescind.WhatNext.p3", taxYearRange.cy+"", taxYearRange.cyplus1+""))
+            </li>
+
+            <li>
+                @Html(Messages("ExclusionRescind.WhatNext.p4"))
+            </li>
         </ul>
 
         <p class="text">

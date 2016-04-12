@@ -25,6 +25,7 @@ Service.cancel= Cancel
 Service.finish= Finish
 Service.home= Home
 Service.tryagain= Try again
+Service.exclusion.add= Add to payroll
 
 Service.notEnrolled.title=Enrol to use this service
 Service.notEnrolled.text1=You''re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue.
@@ -161,9 +162,9 @@ NoMoreToAdd.Desc=You''ve already added all of the benefits or expenses that are 
 
 ExclusionOverview.title=Excluded employees
 ExclusionOverview.instruction.empty= All of your employees who receive {0} benefit are having it taxed through your payroll.
-ExclusionOverview.instruction.notempty= You''ll be excluding the following employees from having {0} benefit from 6 April {1}.
-ExclusionOverview.instruction.cy.notempty= You''re excluding the following employees from {0} benefit.
-ExclusionOverview.warning=Only exclude employees who get this benefit. You must fill in a P11D form for them.
+ExclusionOverview.instruction.notempty= These employees receive {0} and from 6 April {1} will be excluded from having it taxed through your payroll.
+ExclusionOverview.instruction.cy.notempty= These employees receive {0} and from 6 April {1} have been excluded from having it taxed through your payroll.
+ExclusionOverview.warning=Only exclude employees who get this benefit. You must fill in a P11D for them.
 
 ExclusionDecision.noselection.error =You need to choose an option
 ExclusionNinoDecision.title = Exclude an employee
@@ -176,22 +177,25 @@ ExclusionSearch.intro=Exclude the following employee from having {0} taxed throu
 ExclusionSearch.intro.multi=Choose which employee you want to exclude from having car and car fuel benefit taxed through your payroll from 6 April {1}.
 
 ExclusionSearch.Fail.Headline=Employee not found.
-ExclusionSearch.Fail.P=Employee not found. Please check that the information you''ve provided is correct and try again.
+ExclusionSearch.Fail.Desc=This employee can''t be found.
+ExclusionSearch.Fail.P=Check the information is correct and try again.
+ExclusionSearch.Fail.Exists.Desc=This employee has already been excluded for {0}. You can see them in your {1}excluded employee list{2}.
+ExclusionSearch.Fail.Exists.P=Search again for a different employee.
 
 ExclusionImportant.ExcludeEmployee=For excluded employees you''ll need to submit a P11D to HMRC to report the benefit or expense they receive.
 ExclusionRemovalConfirmation.title =Add back to payroll
-ExclusionRemovalConfirmation.intro =The following employee will have {0} taxed through the payroll from 6 April {1}. The value of this benefit will be removed from the employee's tax code.
+ExclusionRemovalConfirmation.intro =The following employee will have {0} taxed through your payroll from 6 April {1}. The value of this benefit will be removed from the employee''s tax code.
 ExclusionRemovalConfirmation.warning =The value of this benefit will be removed from this employee''s tax code.
 
 
 
 ExclusionRemoval.WhatNext.lede = You''ve told us that {0} will be having {1} taxed through your payroll from 6 April {2}.
 
-ExclusionRemoval.WhatNext.p1 = You’'ll need to report the value of this benefit on a P11D instead.
+ExclusionRemoval.WhatNext.p1 = You''ll need to report the value of this benefit on a P11D instead.
 
-ExclusionRescind.WhatNext.p1 = Tell your employee that their tax code will change and we will send them a new tax code. Example letters can be found in the <a target="_blank" href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">Payrolling Benefits in Kind guidance</a> (opens in a new window).
-ExclusionRescind.WhatNext.p2 = From 6 April add the cash equivalent of the benefit and expense to your employee''s pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
-ExclusionRescind.WhatNext.p3 = Stop sending us a <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> for the employee who has the benefit and expense payrolled.
+ExclusionRescind.WhatNext.p1 = Tell your employee that their tax code will change and we will send them a new tax code. Example letters can be found in the <a target="_blank" href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">Payrolling benefits and expenses guidance</a> (opens in a new window).
+ExclusionRescind.WhatNext.p2 = From 6 April add the cash equivalent of the benefit or expense to your employee''s pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
+ExclusionRescind.WhatNext.p3 = Stop sending us a <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> for the employee who has the benefit or expense payrolled.
 ExclusionRescind.WhatNext.p4 = Continue sending a <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D(b)</a> to report Class 1A National Insurance contributions.
 
 ExclusionRadioButtonSelectionConfirmation.title = Check employee details
@@ -330,8 +334,9 @@ ServiceMessage.10001=We''re having technical difficulties and the service is tem
 ServiceMessage.10002.h1=Please try again later
 ServiceMessage.10002=We are sorry. This functionality is currently disabled. Please try the service later.
 
-ServiceMessage.10003.h1=Incorrect tax year
-ServiceMessage.10003=You cannot register to payroll a benefit in the current tax year.
+ServiceMessage.10003.h1=Please try again later
+ServiceMessage.10003.1=You can''t register any benefits or expenses to tax through your payroll in the current tax year.
+ServiceMessage.10003.2=Please go back to your <a href="/payrollbik">payrolling summary</a> and make changes to your registered benefits in the next tax year.
 
 ServiceMessage.64990.h1=An error has occurred
 ServiceMessage.64990=You can''t cancel payrolling for a benefit in the current tax year.
@@ -359,7 +364,7 @@ ServiceMessage.63090.h1=Employee already excluded
 ServiceMessage.63090=This person is already excluded from having this benefit taxed through their payroll.
 
 ServiceMessage.63091.h1=Employee can''t be found
-ServiceMessage.63091=Due to technical reasons, searching with an employee''s date of birth isn''t possible at the moment. Either try again later or search using the employee''s National Insurance number.
+ServiceMessage.63091=Due to technical reasons, searching with an employee''s date of birth isn''t possible at the moment. Either try again later or search using the <a href="javascript: window.history.go(-1)">employee''s National Insurance number</a>.
 
 ServiceMessage.63086.h1=There is a problem
 ServiceMessage.63086=We can''t complete this task. Please <a href="javascript: contactHMRC()">contact HMRC</a>
@@ -438,8 +443,8 @@ ErrorPage.noBenefitsToAddcyp1=You''ve already added all of the benefits or expen
 ErrorPage.noCY1BenefitsToRemovecyp1= You haven''t added any benefits or expenses that are available for the next tax year {0} to {1}. If you would like to register any for tax year {0} to {1}, please return to the <a href="/payrollbik/overview">home</a> screen and add them.
 ErrorPage.noCY1BenefitsToRemovecy= You haven''t added any benefits or expenses that are available for the current tax year {0} to {1}. If you would like to register any for tax year {0} to {1}, please return to the <a href="/payrollbik/overview">home</a> screen and add them.
 ErrorPage.invalidForm=There was a problem when the server attempted to process your form. Please attempt to fill in the form again.
-ErrorPage.invalidYear=You''ve specified an invalid year in your URI please go back to the home screen and select one of the available options.
-ErrorPage.invalidBikType=You''ve specified an invalid bik type in your URI please go back to the home screen and select one of the available options.
+ErrorPage.invalidYear=<p>We think you are trying to register a benefit or expense to tax through your payroll for an incorrect tax year.</p><p>Please go to the list of benefits and expenses that can be taxed through your payroll using this service.</p>
+ErrorPage.invalidBikType=<p>We think you are trying to register a benefit or expense to tax through your payroll that either does not exist or can''t be payrolled.</p><p>Please go to the list of benefits and expenses that can be taxed through your payroll using this service.</p>
 ErrorPage.noBenefitsRegistered= You haven''t registered any benefits for this tax year, please return to the <a href="/payrollbik/payrolled-benefits-expenses">home</a> screen and register benefits before trying to add exclusions.
 ErrorPage.noBenefitsRegisteredViewcy= You don''t currently have any benefits or expenses registered for payrolling. If you would like to register any for tax year {0} to {1}, please return to the <a href="/payrollbik/payrolled-benefits-expenses">home</a> screen and add them.
 ErrorPage.noBenefitsRegisteredViewcyp1= You don''t currently have any benefits or expenses registered for payrolling. If you would like to register any for tax year {0} to {1}, please return to the <a href="/payrollbik/payrolled-benefits-expenses">home</a> screen and add them.
@@ -482,6 +487,9 @@ whatNext.add.p1=Tell your employees that their tax codes will change and we will
 whatNext.add.p2=From 6 April add the cash equivalent of the benefits and expenses to your employees'' pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
 whatNext.add.p3=Stop sending us <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11Ds</a> for the employees'' who have benefits and expenses payrolled.
 whatNext.add.p4=Continue sending a <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db">P11D(b)</a> to report Class 1A National Insurance contributions.
+whatNext.add.p2.singular=From 6 April add the cash equivalent of the benefit or expense to your employees'' pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
+whatNext.add.p3.singular=Stop sending us <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11Ds</a> for the employees'' who have the benefit or expense payrolled.
+
 whatNext.subHeading=Next steps
 whatNext.remove.lede=You''ve told us you won''t be taxing <span id="cy1-{3}">{0}</span> through your payroll from 6 April {1}.
 whatNext.remove.p1=If you''re still providing this benefit or expense to any of your employees, you''ll need to complete a <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> at the end of the tax year.
@@ -489,7 +497,7 @@ whatNext.remove.p1=If you''re still providing this benefit or expense to any of 
 whatNext.exclude.heading=Exclusion complete
 whatNext.rescind.heading=Registration complete
 whatNext.exclude.lede=You''ve told us that {0} will not be having {1} taxed through your payroll from 6 April {2}.
-whatNext.exclude.p1= You’ll need to report the value of this benefit on a <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> instead.
+whatNext.exclude.p1= You''ll need to report the value of this benefit on a <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> instead.
 whatNext.cy.exclude.p2=Will no longer have the following benefits and expenses payrolled
 whatNext.cy1.exclude.p2=Will no longer have the following benefits and expenses payrolled on {0}
 whatNext.exclude.p3=Set up your payroll correctly so that the employees don''t have their benefits and expenses taxed in their pay.

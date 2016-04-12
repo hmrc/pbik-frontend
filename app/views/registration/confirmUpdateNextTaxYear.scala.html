@@ -6,7 +6,7 @@
 @import play.api.Play
 @import play.api.Play.current
 
-@benefitLabel = @{Messages("BenefitInKind.label." + iabdValueURLDeMapper(bikForm("actives[0].uid").value.get )).toLowerCase}
+@benefitLabel = @{Messages("BenefitInKind.label." + iabdValueURLDeMapper(bikForm("actives[0].uid").value.get ))}
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
 @gaEventBiks = @{helper.repeat(bikForm("actives"), min=0) { activeField => Html(Messages("BenefitInKind.label." + activeField("uid").value.get) + " ,")} }
 @gaEventRemoveBiks = @{if(!additive){helper.repeat(bikForm("actives"), min=0) { activeField => Html(Messages("BenefitInKind.label." + iabdValueURLDeMapper(activeField("uid").value.get)) + " ,")} } }

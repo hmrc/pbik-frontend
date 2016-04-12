@@ -17,15 +17,15 @@
         <section id="exclusion-overview">
             @if(current.isEmpty) {
                 <p class="lede-para text">
-                        @Messages("ExclusionOverview.instruction.empty", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)
+                        @Messages("ExclusionOverview.instruction.empty", Messages("BenefitInKind.label." + iabdType), yearvalue)
                 </p>
 
             }else{
                 <p class="lede-para text">
                     @if(isCurrentTaxYear=="cy") {
-                        @Messages("ExclusionOverview.instruction.cy.notempty", Messages("BenefitInKind.label." + iabdType).toLowerCase)
+                        @Messages("ExclusionOverview.instruction.cy.notempty", Messages("BenefitInKind.label." + iabdType))
                     }else{
-                        @Messages("ExclusionOverview.instruction.notempty", Messages("BenefitInKind.label." + iabdType).toLowerCase, yearvalue)
+                        @Messages("ExclusionOverview.instruction.notempty", Messages("BenefitInKind.label." + iabdType), yearvalue)
                     }
                 </p>
             }

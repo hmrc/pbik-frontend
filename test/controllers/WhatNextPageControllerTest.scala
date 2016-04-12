@@ -207,7 +207,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2016))
         status(result) shouldBe 200
         contentAsString(result) should include("Registration complete")
-        contentAsString(result) should include("Now tax private medical treatment or insurance through your payroll from 6 April 2016.")
+        contentAsString(result) should include("Now tax Private medical treatment or insurance through your payroll from 6 April 2016.")
       }
     }
 
@@ -223,7 +223,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017))
         status(result) shouldBe 200
         contentAsString(result) should include("Registration complete")
-        contentAsString(result) should include("Now tax private medical treatment or insurance through your payroll from 6 April 2017.")
+        contentAsString(result) should include("Now tax Private medical treatment or insurance through your payroll from 6 April 2017.")
       }
     }
 
