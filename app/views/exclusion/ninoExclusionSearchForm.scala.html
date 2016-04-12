@@ -29,7 +29,7 @@
                 </h1>
 
                 @if(alreadyExists) {
-                    @Html(Messages("ExclusionSearch.Fail.Exists.Desc", iabdValueURLMapper(iabdType), excludedEmployeesLink , "</a>"))
+                    @Html(Messages("ExclusionSearch.Fail.Exists.Desc", Messages("BenefitInKind.label." + iabdType), excludedEmployeesLink , "</a>"))
                 }else { @Html(Messages("ExclusionSearch.Fail.Desc"))}
 
                 <ul class="error-summary-pbik-list">
