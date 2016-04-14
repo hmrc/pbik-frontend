@@ -492,7 +492,7 @@ whatNext.add.p3.singular=Stop sending us <a href="https://www.gov.uk/government/
 
 whatNext.subHeading=Next steps
 whatNext.remove.lede=You''ve told us you won''t be taxing <span id="cy1-{3}">{0}</span> through your payroll from 6 April {1}.
-whatNext.remove.p1=If you''re still providing this benefit or expense to any of your employees, you''ll need to complete a <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> at the end of the tax year.
+whatNext.remove.p1=If you''re still providing this benefit or expense to any of your employees, you''ll need to complete a <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> for them at the end of the tax year.
 
 whatNext.exclude.heading=Exclusion complete
 whatNext.rescind.heading=Registration complete

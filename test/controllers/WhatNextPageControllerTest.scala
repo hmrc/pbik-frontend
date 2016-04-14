@@ -62,6 +62,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
 
   lazy val listOfPeopleForm: Form[EiLPersonList] = individualsForm.fill(new EiLPersonList(listOfPeople))
   lazy val registrationList = RegistrationList(None, List(RegistrationItem("30", true, true)))
+  lazy val registrationListMultiple = RegistrationList(None, List(RegistrationItem("30", true, true), RegistrationItem("8", true, true)))
   lazy val CYCache = List.tabulate(21)(n => new Bik("" + (n + 1), 10))
   def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
 
@@ -227,19 +228,20 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
       }
     }
 
-    /*"(Register a BIK next year) Multiple benefits - state the status is ok and correct page is displayed" in {
+    "(Register a BIK next year) Multiple benefits - state the status is ok and correct page is displayed" in {
       running(fakeApplication) {
         val mockWhatNextPageController = new MockWhatNextPageController
         def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
-        val formRegistrationList: Form[RegistrationList] = objSelectedForm
+        val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationListMultiple)
         val result = await(mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016))
         status(result) shouldBe 200
-        contentAsString(result) should include("Benefits registered")
-        contentAsString(result) should include("You still need to report Class 1A National Insurance contributions on a P11D(b).")
+        contentAsString(result) should include("Registration complete")
+        contentAsString(result) should include("Private medical treatment or insurance")
+        contentAsString(result) should include("Services supplied")
       }
-    }*/
+    }
 
     "(Remove a BIK)- state the status is ok and correct page is displayed" in {
       running(fakeApplication) {
@@ -254,7 +256,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
         contentAsString(result) should include("Benefit removed")
         contentAsString(result) should include(
           "If you're still providing this benefit or expense to any of your employees, you'll need to complete a " +
-            "<a href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> at the end of the tax year."
+            "<a href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> for them at the end of the tax year."
         )
       }
     }
