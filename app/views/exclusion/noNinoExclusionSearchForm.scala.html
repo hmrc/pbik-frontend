@@ -44,7 +44,7 @@
         <div class='form-group @if(searchForm("status").hasErrors) {error}' id="search-form">
             @if(searchForm("status").hasErrors){
                 <span class="error-notification">
-                    @searchForm.error("status").get.message
+                    @searchForm.error("status").get.message.
                 </span>
             }
 
@@ -57,38 +57,38 @@
 
                     <ul class="error-summary-pbik-list">
                         @if(searchForm("firstname").hasErrors) {
-                        <li><a href="#firstname">@searchForm.error("firstname").get.message</a></li>
+                            <li><a href="#firstname">@searchForm.error("firstname").get.message.dropRight(1)</a></li>
                         }
                         @if(searchForm("surname").hasErrors) {
-                        <li><a href="#lastname">@searchForm.error("surname").get.message</a></li>
+                            <li><a href="#lastname">@searchForm.error("surname").get.message.dropRight(1)</a></li>
                         }
                         @if(searchForm("dob").hasErrors) {
 
                             @if(searchForm.error("dob").get.message.equals("error.empty.dob")){
-                                <li><a href="#dob">@Messages("error.empty.dob")</a></li>
+                                <li><a href="#dob">@Messages("error.empty.dob").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate")){
-                                <li><a href="#dob">@Messages("error.invaliddate")</a></li>
+                                <li><a href="#dob">@Messages("error.invaliddate").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate.day")){
-                                <li><a href="#dob">@Messages("error.invaliddate.day")</a></li>
+                                <li><a href="#dob">@Messages("error.invaliddate.day").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate.month")){
-                                <li><a href="#dob">@Messages("error.invaliddate.month")</a></li>
+                                <li><a href="#dob">@Messages("error.invaliddate.month").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate.year")){
-                                <li><a href="#dob">@Messages("error.invaliddate.year")</a></li>
+                                <li><a href="#dob">@Messages("error.invaliddate.year").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate.future.year")){
-                                <li><a href="#dob">@Messages("error.invaliddate.future.year")</a></li>
+                                <li><a href="#dob">@Messages("error.invaliddate.future.year").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate.past.year")){
-                                <li><a href="#dob">@Messages("error.invaliddate.past.year")</a></li>
+                                <li><a href="#dob">@Messages("error.invaliddate.past.year").dropRight(1)</a></li>
                             }
 
                         }
                         @if(searchForm("gender").hasErrors) {
-                        <li><a href="#gender">@Messages("error.required")</a></li>
+                        <li><a href="#gender">@Messages("error.required").dropRight(1)</a></li>
                         }
                     </ul>
 
