@@ -1,6 +1,6 @@
 common.feedback.get.help=Contact us for support using this service
 
-Service.title=Payrolling Benefits in Kind- GOV.UK
+Service.title=Payrolling benefits and expenses
 Service.news.banner.message=Any changes you make will affect your employees'' tax codes for the next tax year and may result in them receiving more than one coding notice.
 Service.yes = Yes
 Service.no = No
@@ -33,7 +33,7 @@ Service.notEnrolled.text2=To enrol you''ll need:
 Service.enrollmentLoop.list1=employer PAYE reference
 Service.enrollmentLoop.list2=Accounts office reference
 Service.notEnrolled.text3=You''ll then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment.
-Service.notEnrolled.text4=You''ll then be able to use Payrolling Benefits in Kind.
+Service.notEnrolled.text4=You''ll then be able to use Payrolling benefits and expenses.
 Service.notEnrolled.button=Enrol
 
 
@@ -79,7 +79,7 @@ Overview.current.no.add = You can''t add or remove a benefit or expense to this 
 
 siderbar.h2.contact.help = Help with payrolling
 Sidebar.link.guidance = Detailed guidance on payrolling
-Sidebar.link.webinar = Payrolling webinar
+Sidebar.link.webinar = How to payroll video
 Sidebar.link.help = Help and contact
 
 ManageRegistrationYear.heading = Update your payrolled benefits and expenses
@@ -137,8 +137,8 @@ AddBenefits.Confirm.Desc.Single=You''re registering to tax this benefit or expen
 AddBenefits.Confirm.Multiple.Table.Heading=Benefits and expenses to register
 AddBenefits.Confirm.Single.Table.Heading=Benefit or expense to register
 AddBenefits.Confirm.Table.Change=Change
-AddBenefits.Confirm.help.desc.Single=You can exclude individual employees from having this benefit payrolled and submit P11Ds for them instead after you''ve registered the benefit. Don''t exclude employees who don''t receive the benefit.
-AddBenefits.Confirm.help.desc=You can exclude individual employees from having these benefits payrolled and submit P11Ds for them instead after you''ve registered the benefits. Don''t exclude employees who don''t receive the benefits.
+AddBenefits.Confirm.help.desc.Single=You can exclude individual employees from having this benefit payrolled if you prefer to send a P11D in. Do this after you register the benefit. If an employee doesn''t receive the benefit, you don''t have to exclude them as there is no tax due.
+AddBenefits.Confirm.help.desc=You can exclude individual employees from having these benefits payrolled if you prefer to send a P11D in for them. Do this after you register the benefits. If an employee doesn''t receive the benefit, you don''t have to exclude them as there is no tax due.
 AddBenefits.Confirm.help.reveal.link.sr.open=click to expand
 AddBenefits.Confirm.help.reveal.link.sr.closed=click to close
 AddBenefits.Confirm.help.reveal.link=What is an excluded employee?
@@ -178,9 +178,9 @@ ExclusionSearch.intro.multi=Choose which employee you want to exclude from havin
 
 ExclusionSearch.Fail.Headline=Employee not found.
 ExclusionSearch.Fail.Desc=This employee can''t be found.
-ExclusionSearch.Fail.P=Check the information is correct and try again.
+ExclusionSearch.Fail.P=Check the information is correct and try again
 ExclusionSearch.Fail.Exists.Desc=This employee has already been excluded for {0}. You can see them in your {1}excluded employee list{2}.
-ExclusionSearch.Fail.Exists.P=Search again for a different employee.
+ExclusionSearch.Fail.Exists.P=Search again for a different employee
 
 ExclusionImportant.ExcludeEmployee=For excluded employees you''ll need to submit a P11D to HMRC to report the benefit or expense they receive.
 ExclusionRemovalConfirmation.title =Add back to payroll
@@ -317,13 +317,6 @@ BenefitInKind.label.decommissioned=Expenses payments are either exempt from tax 
 
 Prioritised.Benefits = 30,31
 
-#NB
-#The Add benefit button on overview page is dependant on the benefit count, button only displayed if less than 20
-#new benefits are addded/removed
-BenefitCount=20
-#
-#
-#NB
 
 ServiceMessage.0.h1=Please try again later
 ServiceMessage.0=We''re doing maintenance on this service and it is temporarily unavailable.  We''re working to fix the problems and we should be back soon.
@@ -426,7 +419,7 @@ Service.field.gender.female=Female
 ######################
 
 ErrorPage.authorisationTitle= Authorisation Error
-ErrorPage.authorisationError= We are sorry, it appears you aren''t authorised to use the Payrolling Benefits in Kind service. Please ensure your organisation has enrolled for the HMRC''s Employer Pay as you Earn (epaye) Service.
+ErrorPage.authorisationError= We are sorry, it appears you aren''t authorised to use the Payrolling benefits and expenses service. Please ensure your organisation has enrolled for the HMRC''s Employer Pay as you Earn (epaye) Service.
 
 
 ######################
@@ -434,7 +427,7 @@ ErrorPage.authorisationError= We are sorry, it appears you aren''t authorised to
 ErrorPage.heading.invalidYear= Invalid Year Specified
 
 ErrorPage.validationError= We are sorry a technical error has occurred. Please try again later.
-ErrorPage.connectionProblem= The Payrolling Benefits in Kind service is available between 8am - 8pm (BST) Monday to Friday.
+ErrorPage.connectionProblem= The Payrolling benefits and expenses service is available between 7am to 10pm, Monday to Friday and 8am to 8pm, Saturday and Sunday.
 ErrorPage.connectionAction= If you''re accessing the service outside of these hours, please try again later.
 ErrorPage.connectionStatus= If you''re accessing the service within these hours, please check for scheduled maintenance information at the <a href="https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">HMRC service availability site</a>
 ErrorPage.serviceNotLaunched=You cannot register Biks for this year as the service is yet to launch
@@ -453,22 +446,23 @@ ErrorPage.backButtonNoCache = You haven''t performed a search yet. Please go bac
 #############
 #############
 
-error.required=Choose a gender
-error.invaliddate=Enter a valid date
+error.required=Choose a gender.
+error.invaliddate=Enter a valid date.
 
-error.empty.nino=Enter a National Insurance number
-error.empty.firstname=Enter a first name
-error.empty.lastname=Enter a last name
-error.incorrect.nino=Enter a National Insurance number in the same format as the example shown
-error.incorrect.firstname=Enter a first name that does not contain any numbers or special characters
-error.incorrect.lastname=Enter a last name that does not contain any numbers or special characters
+error.empty.nino=Enter a National Insurance number.
+error.empty.firstname=Enter a first name.
+error.empty.lastname=Enter a last name.
 
-error.empty.dob=Enter a date of birth
-error.invaliddate.day=Enter a valid day
-error.invaliddate.month=Enter a valid month
-error.invaliddate.year=Enter a valid year
-error.invaliddate.future.year=Year of date of birth can''t be in the future
-error.invaliddate.past.year=Year of date of birth must be in the last 130 years
+error.incorrect.nino=Enter a National Insurance number in the same format as the example shown.
+error.incorrect.firstname=Enter a first name that does not contain any numbers or special characters.
+error.incorrect.lastname=Enter a last name that does not contain any numbers or special characters.
+
+error.empty.dob=Enter a date of birth.
+error.invaliddate.day=Enter a valid day.
+error.invaliddate.month=Enter a valid month.
+error.invaliddate.year=Enter a valid year.
+error.invaliddate.future.year=Year of date of birth can''t be in the future.
+error.invaliddate.past.year=Year of date of birth must be in the last 130 years.
 
 error.exclusion.multi.selection=You need to choose which employee you want to exclude before you can continue
 
@@ -507,7 +501,7 @@ whatNext.exclude.p6=If you would like to start payrolling the excluded employees
 
 HelpAndContact.title=Help and contact
 HelpAndContact.p1=If you have a specific tax query, <a rel="external" onclick="gaEvent(''Help: Telephone'')" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries">contact HMRC</a>.
-HelpAndContact.p2=If you need help using the payrolling benefits in kind service, fill in the form below.
+HelpAndContact.p2=If you need help using the payrolling benefits and expenses service, fill in the form below.
 HelpAndContact.form.title=How can we help you?
 HelpAndContact.form.p1=Don''t include any personal or financial information. For example, your National Insurance or credit card numbers.
 HelpAndContact.form.p2=We''ll get back to you within 2 working days.
