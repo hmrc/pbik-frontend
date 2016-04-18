@@ -131,13 +131,13 @@
                     <div class='form-group @if(flash.get("error")) {error}'>
 
                         <fieldset class="inline">
-                            <legend>@Messages("RemoveBenefits.reason.desc")</legend>
-
                             @if(flash.get("error")) {
                                 <span id="error-list-1" class="error-notification" style="display:block; margin-left: 0">
                                 @flash.get("error").
                                 </span>
                             }
+
+                            <legend>@Messages("RemoveBenefits.reason.desc")</legend>
 
                             <label for="radio-software" class="block-label" onclick="RemoveBenefitRadioButton('software')">
                                 <input id="radio-software" type="radio" name="reason.selectionValue" value="software" >

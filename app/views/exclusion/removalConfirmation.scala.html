@@ -32,6 +32,7 @@
             @if(listItem("perOptLock").value.isDefined) { <input type="hidden" name="individuals[@index].perOptLock" id="perOptLock" value='@listItem("perOptLock").value.get'/> }
 
             <table>
+                <caption>@Messages("ExclusionRemovalConfirmation.caption")</caption>
                 <tr>
                     <th>
                         @Messages("Service.field.name")

@@ -70,6 +70,11 @@
         width: 33.33333%;
         float: right;
     }
+
+    .nino-span {
+      font-size: 16px;
+      font-weight: 300;
+    }
 }
  
 @media (max-width:640px){
@@ -189,7 +194,7 @@ input#nino {
 	border-left: 5px solid #df3034;
 }
 
-.error fieldset, .error .error-notification {
+.error .error-notification, .error .error-notification {
     font-weight: bold;
 }
 
@@ -392,7 +397,7 @@ fieldset .h4-heading{
 }
 
 .error .employee-table {
-    margin-left:15px;
+
 }
 
 .error, .form-field-group--error {
@@ -454,11 +459,6 @@ border-bottom: 5px solid #005ea5;
   margin-bottom: 30px;
 }
 
-.nino-span {
-  font-size: 16px;
-  font-weight: 300;
-}
-
 .no-wrap {
     white-space: nowrap;
 }
@@ -495,6 +495,10 @@ border-bottom: 5px solid #005ea5;
 
 .h1-heading-margin {
     margin-top: 10px;
+}
+
+.benefits-table caption, #exclusion-overview caption, #search-results caption, #removal-confirmation caption {
+    border: none;
 }
 
 caption {

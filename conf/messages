@@ -161,6 +161,7 @@ RemoveBenefits.reason.other.label=Explain why
 NoMoreToAdd.Desc=You''ve already added all of the benefits or expenses that are available for the tax year {0} to {1}. If you''ve made a mistake and haven''t been payrolling those benefits since 6 April {0} then please use the "Get help with this page" link for help.
 
 ExclusionOverview.title=Excluded employees
+ExclusionOverview.caption=Employees excluded from payrolling
 ExclusionOverview.instruction.empty= All of your employees who receive {0} benefit are having it taxed through your payroll.
 ExclusionOverview.instruction.notempty= These employees receive {0} and from 6 April {1} will be excluded from having it taxed through your payroll.
 ExclusionOverview.instruction.cy.notempty= These employees receive {0} and from 6 April {1} have been excluded from having it taxed through your payroll.
@@ -175,6 +176,10 @@ ExclusionSearch.title=Search results
 ExclusionSearch.form.title=Search for an employee
 ExclusionSearch.intro=Exclude the following employee from having {0} taxed through your payroll from 6 April {1}.
 ExclusionSearch.intro.multi=Choose which employee you want to exclude from having car and car fuel benefit taxed through your payroll from 6 April {1}.
+ExclusionSearch.caption=Employee to be excluded
+ExclusionSearch.caption.multi=Choose employee to be excluded
+ExclusionSearch.nino.caption=Search for an employee to exclude
+ExclusionSearch.no-nino.caption=Search for an employee to exclude
 
 ExclusionSearch.Fail.Headline=Employee not found.
 ExclusionSearch.Fail.Desc=This employee can''t be found.
@@ -186,6 +191,7 @@ ExclusionImportant.ExcludeEmployee=For excluded employees you''ll need to submit
 ExclusionRemovalConfirmation.title =Add back to payroll
 ExclusionRemovalConfirmation.intro =The following employee will have {0} taxed through your payroll from 6 April {1}. The value of this benefit will be removed from the employee''s tax code.
 ExclusionRemovalConfirmation.warning =The value of this benefit will be removed from this employee''s tax code.
+ExclusionRemovalConfirmation.caption =Employee to be payrolled
 
 
 
@@ -414,6 +420,7 @@ Service.field.dob.year=Year
 Service.field.gender=Gender
 Service.field.gender.male=Male
 Service.field.gender.female=Female
+Service.action=Action
 
 ######################
 ######################

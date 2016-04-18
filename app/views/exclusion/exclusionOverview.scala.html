@@ -32,7 +32,7 @@
 
             @if(!current.isEmpty) {
                     <table>
-
+                        <caption>@Messages("ExclusionOverview.caption")</caption>
                         <thead>
                         <tr>
                             <th>@Messages("Service.field.name")</th>
@@ -40,7 +40,7 @@
                                 <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
                             </th>
                             <th>@Messages("Service.field.worksnumber")</th>
-                            <th></th>
+                            <th>@Messages("Service.action")</th>
 
                         </tr>
                         </thead>

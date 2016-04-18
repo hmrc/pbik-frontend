@@ -69,6 +69,7 @@
                   @helpers.form(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdValueURLMapper(iabdType)),
                     'onsubmit -> "gaEventConfirmExcludeMulti()") {
                   <table class="employee-table">
+                    <caption>@Messages("ExclusionSearch.caption.multi")</caption>
                     <thead>
                       <tr>
                         <th>&nbsp;</th>
@@ -82,7 +83,7 @@
                     </thead>
                     <tbody>
                       @repeatWithIndex(listOfMatchesForm("individuals"), min=1) { (listItem,index) =>
-                      <fieldset>
+
                               <tr onclick=selectRadioButtonTable('@listItem("nino").value.get-radio')>
 
                                 <td>
@@ -112,7 +113,7 @@
                                 </td>
 
                              </tr>
-                      </fieldset>
+
                       }
                       <tbody>
                     </table>
@@ -144,7 +145,7 @@
                     'onsubmit -> "gaEventConfirmExclude()") {
                      @repeatWithIndex(listOfMatchesForm("individuals"), min=1) { (listItem,index) =>
                          <fieldset class="form-group">
-                             <!--<legend>@Messages("ExclusionSearch.employee.legend")</legend>-->
+
                              <input type="hidden" id='individuals_@{index}_nino' name='individuals[@index].nino' value='@listItem("nino").value.get' />
                              <input type="hidden" id='individuals_@{index}_firstName' name='individuals[@index].firstName' value='@listItem("firstName").value.get' />
                              @if(listItem("secondName").value.isDefined) { <input type="hidden" id='individuals_@{index}_secondName' name='individuals[@index].secondName' value='@listItem("secondName").value.get' /> }
@@ -155,6 +156,7 @@
                              <input type="hidden"  id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
                              <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
                             <table>
+                              <caption>@Messages("ExclusionSearch.caption")</caption>
                               <tbody>
                                 <tr>
                                   <th>@Messages("Service.field.name")</th>

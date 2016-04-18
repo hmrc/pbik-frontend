@@ -45,7 +45,7 @@
             <caption class="caption-margin-top">@Messages("Overview.table.heading.1")</caption>
             <tbody>
                 @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsNextYear).zipWithIndex ) {
-                    <tr role="row">
+                    <tr>
                         <td role="gridcell" id="cy1-@n.iabdType" width="40%">@Messages("BenefitInKind.label." + n.iabdType)</td>
                         <td role="gridcell" width="28%">
                             <a id="cy1-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", iabdValueURLMapper(n.iabdType))'>
@@ -102,7 +102,7 @@
             <caption class="caption-margin-top">@Messages("Overview.table.heading.1")</caption>
             <tbody>
                 @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
-                    <tr role="row">
+                    <tr>
                         <td role="gridcell" id="cy-@n.iabdType" width="40%">@Messages("BenefitInKind.label." + n.iabdType)</td>
                         <td role="gridcell" width="28%">
                             <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", iabdValueURLMapper(n.iabdType))'>

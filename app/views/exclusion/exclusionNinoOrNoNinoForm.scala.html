@@ -28,7 +28,6 @@
                 </div>
             }
             @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(isCurrentTaxYear, iabdValueURLMapper(iabdType))) {
-                <p class="lede-para text">@Messages("ExclusionNinoDecision.question", Messages("BenefitInKind.label." + iabdType), yearvalue)</p>
 
                 <div class='form-group @if(flash.get("error")) {error}'>
                     @if(flash.get("error")) {
@@ -37,6 +36,7 @@
                         </span>
                     }
                     <fieldset class="inline">
+                        <legend class="text">@Messages("ExclusionNinoDecision.question", Messages("BenefitInKind.label." + iabdType), yearvalue)</legend>
                         @if(previousSelection=="nino") {
                             <label for="button-nino" class="block-label add-focus selected">
                             <input id="button-nino" type="radio" name="confirmation" value="nino" checked >
