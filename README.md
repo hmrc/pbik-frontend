@@ -29,6 +29,17 @@ Once authenticated the employer has access to the pbik-frontend functionality wh
 * The ability to exclude an individual for Current Year
 * The ability to exclude an individual for Next Year
 * The ability to rescind an exclusion for Next Current Year
+* 
+
+#####Configuration
+-----
+survey.url - Feedback page location when the user signs out of the service
+enabled.warning.overview - Overview page banner to be shown when annual tax coding is about to start (21 December)
+enabled.cy - Enable CY registrations (Caution when enabling, needs to be dicussed with DSM/ stakeholders)
+enabled.eil - Exclusion functionality enabled
+unsupported.biks.cy - Which benefits can't be registered in CY (Caution, may need NPS config change prior to changing here)
+unsupported.biks.cy1 - Which benefits can't be registered in CY+1 (Caution, may need NPS config change prior to changing here)
+decommissioned.biks - Which benefits no longer exist
 
 ###Navigation
 
