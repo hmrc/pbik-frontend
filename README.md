@@ -31,7 +31,7 @@ Once authenticated the employer has access to the pbik-frontend functionality wh
 * The ability to rescind an exclusion for Next Current Year
 * 
 
-#####Configuration
+###Configuration
 -----
 survey.url - Feedback page location when the user signs out of the service <br />
 enabled.warning.overview - Overview page banner to be shown when annual tax coding is about to start (21 December) <br />
