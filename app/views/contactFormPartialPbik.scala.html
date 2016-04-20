@@ -1,12 +1,11 @@
 @(actionUrl: String, csrfToken: Option[String], service: String, supportLinkEnabled: Boolean)(implicit request : Request[_], lang: Lang)
 @import uk.gov.hmrc.play.views.html._
-@import config.PbikAppConfig.contactFrontendService
 
 @if(supportLinkEnabled) {
     <div class="report-error">
-        <script type="text/javascript">var reportProblemAjaxUrl = "@contactFrontendService/contact/problem_reports_ajax?service=@service";</script>
+        <script type="text/javascript">var reportProblemAjaxUrl = "/contact/problem_reports_ajax?service=@service";</script>
         <a class="report-error__toggle js-visible" id="get-help-action" href="form-label">@Messages("common.feedback.get.help")</a>
-        <a class="report-error__toggle js-hidden" href="@contactFrontendService/contact/problem_reports_nonjs?service=@service">@Messages("common.feedback.get.help")</a>
+        <a class="report-error__toggle js-hidden" href="/contact/contact/problem_reports_nonjs?service=@service">@Messages("common.feedback.get.help")</a>
         <div id="report-error-partial-form" class="report-error__content hidden">
             <div class="report-error__loading"></div>
         </div>
