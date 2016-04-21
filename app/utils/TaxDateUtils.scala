@@ -16,6 +16,9 @@
 
 package utils
 
+import java.text.SimpleDateFormat
+import java.util.{Calendar, Date}
+
 import models.TaxYearRange
 import org.joda.time.{LocalDate, DateTime}
 import play.api.{Play, Logger}
@@ -25,6 +28,10 @@ import play.api.Play.current
 object TaxDateUtils extends PayrollBikDefaults {
 
   val overridedDateFromConfig = Play.configuration.getIntList("pbik.date.override")
+
+  val sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss")
+  val startDateBanner = sdf.parse(Play.configuration.getString("pbik.banner.date.start").getOrElse(""))
+  val endDateBanner = sdf.parse(Play.configuration.getString("pbik.banner.date.end").getOrElse(""))
 
   def getDefaultDate = {
     if(overridedDateFromConfig.isDefined) {
@@ -54,5 +61,9 @@ object TaxDateUtils extends PayrollBikDefaults {
       TaxYearRange(year, year + 1, year + 2)
   }
 
+  def dateWithinAnnualCodingRun(today:Date):Boolean = {
+
+    today.getTime() >= startDateBanner.getTime() && today.getTime() <= endDateBanner.getTime()
+  }
 
 }

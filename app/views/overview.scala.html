@@ -4,8 +4,9 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.BikListUtils._
+@import utils.TaxDateUtils._
 @import utils.URIInformation._
-@import config.PbikAppConfig.taxCodeOverviewWarning
+@import java.util.Calendar
 
 @import config.PbikAppConfig.biksDecommissioned
 
@@ -27,7 +28,7 @@
 
 <section id="what-to-do">
 
-    @if(taxCodeOverviewWarning) {
+    @if(dateWithinAnnualCodingRun(Calendar.getInstance.getTime)) {
         <div id="latest-updates-message" class="panel-indent panel-border-wide">
             <span>@Messages("Service.news.banner.message")</span>
         </div>
