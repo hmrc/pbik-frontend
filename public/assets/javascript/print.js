@@ -5,6 +5,7 @@ window.onload = function() {
             var newTag = document.createElement('a');
             newTag.setAttribute('href',"javascript:window.print();");
             newTag.setAttribute("class", "print-link");
+            newTag.setAttribute("id", "print");
             newTag.innerHTML = "Print this page";
             prtContainer.appendChild(newTag);
         }

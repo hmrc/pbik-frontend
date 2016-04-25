@@ -43,7 +43,7 @@
 
 
         @if(additive) {
-            <p class="lede-para text">
+            <p class="lede-para text" id="lede">
                 @if(singleBik){
                     @Messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
                 }else{
@@ -65,7 +65,7 @@
                 </div>
             }
 
-            <p class="lede-para text"> @Messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+            <p class="lede-para text" id="lede"> @Messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
         }
 
         <div class="data">
@@ -98,7 +98,7 @@
 
                     </table>
 
-                    <div class="panel-indent panel-border-wide">
+                    <div class="panel-indent panel-border-wide" id="exclude-info">
                         @if(singleBik){
                             @Messages("AddBenefits.Confirm.help.desc.Single")
                         }else{
