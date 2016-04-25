@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import java.util.Date
+
 import org.joda.time.LocalDate
 import org.joda.time.DateTimeConstants._
 import play.api.Logger
@@ -79,6 +81,7 @@ class TaxDateUtilsSpec extends UnitSpec  {
       assert(TaxDateUtils.isServiceLaunched(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear)) == true)
     }
   }
+
 
 //  "The tax year range for the current year " should {
 //    " be cy-1, cy and cy+1" in {
