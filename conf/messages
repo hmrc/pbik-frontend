@@ -165,7 +165,8 @@ ExclusionOverview.caption=Employees excluded from payrolling
 ExclusionOverview.instruction.empty= All of your employees who receive {0} benefit are having it taxed through your payroll.
 ExclusionOverview.instruction.notempty= These employees receive {0} and from 6 April {1} will be excluded from having it taxed through your payroll.
 ExclusionOverview.instruction.cy.notempty= These employees receive {0} and from 6 April {1} have been excluded from having it taxed through your payroll.
-ExclusionOverview.warning=Only exclude employees who get this benefit. You must fill in a P11D for them.
+ExclusionOverview.warning=Only exclude employees who get this benefit. You must fill in a P11D for them. You can''t exclude more than 300 employees.
+ExclusionOverview.excludecount.exceeded=You can''t exclude any more employees.
 
 ExclusionDecision.noselection.error =You need to choose an option
 ExclusionNinoDecision.title = Exclude an employee

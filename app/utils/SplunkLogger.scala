@@ -32,8 +32,8 @@ object SplunkLogger {
 
   val pbik_audit_source = "pbik-frontend"
   val pbik_benefit_type = "benefit-event"
-  val pbik_error_type = "error-event"
   val pbik_exclude_type = "exclusion-event"
+  val pbik_error_type = "error-event"
   val pbik_event_name ="PBIK"
   val pbik_no_ref = "Not available"
 
@@ -107,9 +107,9 @@ trait SplunkLogger extends AuthenticationConnector {
   def createDataEvent(tier:spTier, action:spAction, target:spTarget, period:spPeriod, msg:String, nino:Option[String]=None, iabd:Option[String]=None, removeReason:Option[String]=None, removeReasonDesc:Option[String]=None)
                  (implicit ac: AuthContext) = {
 
-    val auditType = target.id match {
-      case spTarget.BIK.id => pbik_benefit_type
-      case spTarget.EIL.id => pbik_exclude_type
+    val auditType = target match {
+      case spTarget.BIK => pbik_benefit_type
+      case spTarget.EIL => pbik_exclude_type
     }
 
     val entityIABD = if(iabd.isDefined) Seq((key_iabd -> iabd.get)) else Nil

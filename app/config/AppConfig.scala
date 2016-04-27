@@ -31,6 +31,7 @@ trait AppConfig {
   val contactFrontendService: String
   val contactFormServiceIdentifier: String
   val cyEnabled:Boolean
+  val maximumExclusions:Int
   val biksNotSupported: List[Int]
   val biksNotSupportedCY: List[Int]
   val biksDecommissioned: List[Int]
@@ -42,6 +43,7 @@ object PbikAppConfig extends AppConfig with ServicesConfig {
 
   override lazy val contactFrontendService = baseUrl("contact-frontend")
   override lazy val contactFormServiceIdentifier = "PayrollBIK"
+  override lazy val maximumExclusions:Int = configuration.getInt("pbik.exclusions.maximum").getOrElse(300)
 
   private lazy val contactHost = configuration.getString("contact-frontend.host").getOrElse("")
 
