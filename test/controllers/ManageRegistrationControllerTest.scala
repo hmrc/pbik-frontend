@@ -684,55 +684,91 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
   "When a user removes a benefit " should {
     "selecting no reason should redirect with error" in {
       running(fakeApplication) {
-        val mockRegistrationList = new RegistrationList(None, List(RegistrationItem("31", true, true)), None)
+        val mockRegistrationList = new RegistrationList(None, List(RegistrationItem("31", true, true), RegistrationItem("8", true, true)), None)
+        val bikList = List(Bik("8", 10))
         val form = objSelectedForm.fill(mockRegistrationList)
         val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+
         implicit val request = mockRequestForm
         val errorMsg = Messages("RemoveBenefits.reason.no.selection")
         val mockRegistrationController = new MockRegistrationController
         def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
-        val r = await(mockRegistrationController.removeNextYearRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
+        val result = await(mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac))
 
-        status(r) shouldBe 303
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/payrollbik/services/remove-benefit-expense")
+        header("Set-Cookie", result).getOrElse("").replace("+", " ").replace("%27", "'") shouldBe
+          "PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly"
 
+      }
+    }
+
+    "selecting 'other' reason but no explanation should redirect with error" in {
+      running(fakeApplication) {
+        val mockRegistrationList = new RegistrationList(None, List(RegistrationItem("31", true, true), RegistrationItem("8", true, true)),
+          Some(BinaryRadioButtonWithDesc("other", Some(""))))
+
+        val bikList = List(Bik("8", 10))
+        val form = objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+
+        implicit val request = mockRequestForm
+        val errorMsg = Messages("RemoveBenefits.reason.other.required")
+        val mockRegistrationController = new MockRegistrationController
+        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
+        val result = await(mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac))
+
+        status(result) shouldBe 303
+        redirectLocation(result) shouldBe Some("/payrollbik/services/remove-benefit-expense")
+        header("Set-Cookie", result).getOrElse("").replace("+", " ").replace("%27", "'") shouldBe
+          "PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly"
+
+      }
+    }
+
+    "selecting 'other' reason but and providing explanation should redirect to what-next" in {
+      running(fakeApplication) {
+        val mockRegistrationList = new RegistrationList(None, List(RegistrationItem("31", true, true), RegistrationItem("8", true, true)),
+          Some(BinaryRadioButtonWithDesc("other", Some("bla bla other reason text"))))
+
+        val bikList = List(Bik("8", 10))
+        val form = objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+
+        implicit val request = mockRequestForm
+        val mockRegistrationController = new MockRegistrationController
+        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
+        val result = await(mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac))
+
+        status(result) shouldBe 200
+        bodyOf(result) should include("Benefit removed")
+
+      }
+    }
+
+    "selecting 'software' reason should redirect to what-next" in {
+      running(fakeApplication) {
+        val mockRegistrationList = new RegistrationList(None, List(RegistrationItem("31", true, true), RegistrationItem("8", true, true)),
+          Some(BinaryRadioButtonWithDesc("software", None)))
+
+        val bikList = List(Bik("8", 10))
+        val form = objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+
+        implicit val request = mockRequestForm
+        val mockRegistrationController = new MockRegistrationController
+        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
+        val result = await(mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac))
+
+        status(result) shouldBe 200
+        bodyOf(result) should include("Benefit removed")
 
       }
     }
   }
-
-//  "When Adding benefits to next tax year the page " should {
-//    "contain a list of Biks we dont currently support " in {
-//      running(fakeApplication) {
-//        val mockRegistrationController = new MockRegistrationController
-//        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
-//        implicit val request = mockrequest
-//        implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
-//        val r = await(mockRegistrationController.nextTaxYearAddOnPageLoad.apply(request))(timeout)
-//        status(r) shouldBe 200
-//        for ( x <- PbikAppConfig.biksNotSupported ) {
-//          bodyOf(r) should include( Messages("BenefitInKind.label." + x) )
-//        }
-//      }
-//    }
-//  }
-
-
-
-//  "When navigating with a CYP1 option the controller " should {
-//    "redirect to the nextTaxYear page" in {
-//      running(fakeApplication) {
-//        val mockRegistrationController = new MockRegistrationController
-//        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
-//        implicit val request = mockrequest
-//        implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
-//        val formdata = navigationRadioButton.fill(BinaryRadioButton(Some("cyp1")))
-//        route(FakeRequest())
-//        val r = await(mockRegistrationController.manageRegistrationDecision.apply(request.withFormUrlEncodedBody("selectionValue" -> FormMappingsConstants.CYP1_ADD)))(timeout)
-//        status(r) shouldBe 200
-//        redirectLocation(r) shouldBe Some("/payrollbik/registration/next/add")
-//      }
-//    }
-//  }
 
 }

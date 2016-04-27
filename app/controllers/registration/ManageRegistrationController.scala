@@ -222,25 +222,31 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
           ,
           values => {
             val changes = BikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
-            val saveFuture = tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
-              ac.principal.accounts.epaye.get.empRef.toString, year, changes)
-            saveFuture.map {
-              saveResponse: HttpResponse =>
-                additive match {
-                  case true => {
-                    auditBikUpdate(true, year, persistentBiks)
-                    loadWhatNextRegisteredBIK(form, year)
-                  }
-                  case false => removeBenefitReasonValidation(values, form, year, persistentBiks)
+            additive match {
+              case true => {
+                // Process registration
+                val saveFuture = tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
+                  ac.principal.accounts.epaye.get.empRef.toString, year, changes)
+                saveFuture.map {
+                  saveResponse: HttpResponse =>
+                      auditBikUpdate(true, year, persistentBiks)
+                      loadWhatNextRegisteredBIK(form, year)
                 }
+              }
+              case _ => {
+                // Remove benefit - if there are no errors proceed
+                Future(removeBenefitReasonValidation(values, form, year, persistentBiks, changes))
+              }
             }
+
           }
         )
     }
   }
 
-  private def removeBenefitReasonValidation(registrationList: RegistrationList, form: Form[RegistrationList], year: Int, persistentBiks: List[Bik])
-                                           (implicit request: Request[AnyContent], ac: AuthContext) = {
+  def removeBenefitReasonValidation(registrationList: RegistrationList, form: Form[RegistrationList], year: Int,
+                                            persistentBiks: List[Bik], changes: List[Bik])
+                                           (implicit request: Request[AnyContent], ac: AuthContext): Result = {
     registrationList.reason match {
       case Some(reasonValue) if(BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue)) => {
         reasonValue.info match {
@@ -249,10 +255,14 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
             )).flashing("error" -> Messages("RemoveBenefits.reason.other.required"))
           }
           case Some(info)=> {
+            tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
+              ac.principal.accounts.epaye.get.empRef.toString, year, changes)
             auditBikUpdate(false, year, persistentBiks, Some(reasonValue.selectionValue.toUpperCase, Some(info)))
             loadWhatNextRemovedBIK(form, year)
           }
           case _ => {
+            tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
+              ac.principal.accounts.epaye.get.empRef.toString, year, changes)
             auditBikUpdate(false, year, persistentBiks, Some(reasonValue.selectionValue.toUpperCase, None))
             loadWhatNextRemovedBIK(form, year)
           }
@@ -260,7 +270,6 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
       }
       case _ => Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(persistentBiks.head.iabdType)
         )).flashing("error" -> Messages("RemoveBenefits.reason.no.selection"))
-
     }
   }
 
