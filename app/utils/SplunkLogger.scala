@@ -107,7 +107,7 @@ trait SplunkLogger extends AuthenticationConnector {
   def createDataEvent(tier:spTier, action:spAction, target:spTarget, period:spPeriod, msg:String, nino:Option[String]=None, iabd:Option[String]=None, removeReason:Option[String]=None, removeReasonDesc:Option[String]=None)
                  (implicit ac: AuthContext) = {
 
-    val auditType = target match {
+    val derivedAuditType = target match {
       case spTarget.BIK => pbik_benefit_type
       case spTarget.EIL => pbik_exclude_type
     }
@@ -128,7 +128,7 @@ trait SplunkLogger extends AuthenticationConnector {
 
     ) ++ entityIABD ++ entityNINO ++ entityRemoveReason ++ entityRemoveReasonDesc
     
-    DataEvent(auditSource=pbik_audit_source, auditType=auditType,detail=Map(entities:_*))
+    DataEvent(auditSource=pbik_audit_source, auditType=derivedAuditType,detail=Map(entities:_*))
   }
 
   /**
