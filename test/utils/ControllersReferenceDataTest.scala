@@ -66,7 +66,7 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
       override lazy val biksDecommissioned:List[Int] = (configuration.getIntList("pbik.decommissioned.biks").
                                                         getOrElse(Collections.emptyList[Integer]())).
                                                           toArray(new Array[Integer](0)).toList.map(_.intValue())
-
+      override lazy val maximumExclusions:Int = 300
 
   }
 
@@ -86,6 +86,7 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
     override lazy val biksNotSupported:List[Int] = List.empty[Int]
     override lazy val biksNotSupportedCY:List[Int] = List.empty[Int]
     override lazy val biksDecommissioned:List[Int] = List.empty[Int]
+    override lazy val maximumExclusions:Int = 300
 
   }
 
@@ -105,6 +106,7 @@ class ControllersReferenceDataTest extends UnitSpec with FakePBIKApplication
     override lazy val biksNotSupported:List[Int] = List.empty[Int]
     override lazy val biksNotSupportedCY:List[Int] = List.empty[Int]
     override lazy val biksDecommissioned:List[Int] = List.empty[Int]
+    override lazy val maximumExclusions:Int = 300
 
   }
 

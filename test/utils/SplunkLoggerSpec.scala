@@ -79,7 +79,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
       def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
       def fakeRequest = FakeRequest().withSession(csrfToken)
       def fakeAuthenticatedRequest = FakeRequest().withSession(csrfToken).withHeaders()
-      val pbikDataEvent = DataEvent(auditSource = SplunkLogger.pbik_audit_source, auditType = SplunkLogger.pbik_audit_type, detail = Map(
+      val pbikDataEvent = DataEvent(auditSource = SplunkLogger.pbik_audit_source, auditType = SplunkLogger.pbik_benefit_type, detail = Map(
         SplunkLogger.key_event_name -> SplunkLogger.pbik_event_name,
         SplunkLogger.key_gateway_user -> fakeAuthContext.principal.accounts.epaye.get.empRef.toString,
         SplunkLogger.key_tier -> controller.spTier.FRONTEND.toString,
@@ -100,7 +100,6 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
                                                   "Employer Added Bik to CY Plus 1")(fakeAuthContext)
 
         assert(d.auditSource == SplunkLogger.pbik_audit_source)
-        assert(d.auditType == SplunkLogger.pbik_audit_type)
         assert(d.detail.size > 0)
         assert(d.detail.contains(SplunkLogger.key_event_name))
         assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
@@ -134,7 +133,6 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
           "Employer Added Bik to CY Plus 1")(nonPayeUser)
 
         assert(d.auditSource == SplunkLogger.pbik_audit_source)
-        assert(d.auditType == SplunkLogger.pbik_audit_type)
         assert(d.detail.size > 0)
         assert(d.detail.contains(SplunkLogger.key_event_name))
         assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
@@ -190,7 +188,6 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
           "No PAYE Scheme found for user")(fakeAuthContext)
 
         assert(d.auditSource == SplunkLogger.pbik_audit_source)
-        assert(d.auditType == SplunkLogger.pbik_audit_type)
         assert(d.detail.size > 0)
         assert(d.detail.contains(SplunkLogger.key_event_name))
         assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
@@ -218,7 +215,6 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
           "No Empref")(nonPayeUser)
 
         assert(d.auditSource == SplunkLogger.pbik_audit_source)
-        assert(d.auditType == SplunkLogger.pbik_audit_type)
         assert(d.detail.size > 0)
         assert(d.detail.contains(SplunkLogger.key_event_name))
         assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
