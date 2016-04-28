@@ -140,6 +140,7 @@ ExclusionOverview.instruction.empty=Nid ydych yn eithrio cyflogeion o gael {0} o
 ExclusionOverview.instruction.notempty=Byddwch yn eithrio''r cyflogai/cyflogeion canlynol o gael buddiant {0} o 6 Ebrill {1} ymlaen.
 ExclusionOverview.instruction.cy.notempty=Rydych yn eithrio''r cyflogai/cyflogeion canlynol o gael buddiant {0} o 6 Ebrill {1} ymlaen.
 ExclusionOverview.warning=Dim ond drwy ffurflen P11D yn hytrach na thrwy eich cyflogres y dylecheithrio cyflogeion sy''n cael y buddiant hwn ac a fydd yn cael eu trethu arno.
+ExclusionOverview.excludecount.exceeded=Ni allwch eithrio unrhyw mwy o weithwyr.
 
 ExclusionDecision.noselection.error =Dewiswch opsiwn
 ExclusionNinoDecision.title = Eithrio cyflogai

@@ -31,7 +31,9 @@ import scala.concurrent.Future
 object SplunkLogger {
 
   val pbik_audit_source = "pbik-frontend"
-  val pbik_audit_type = "OutboundCall"
+  val pbik_benefit_type = "benefit-event"
+  val pbik_exclude_type = "exclusion-event"
+  val pbik_error_type = "error-event"
   val pbik_event_name ="PBIK"
   val pbik_no_ref = "Not available"
 
@@ -105,6 +107,11 @@ trait SplunkLogger extends AuthenticationConnector {
   def createDataEvent(tier:spTier, action:spAction, target:spTarget, period:spPeriod, msg:String, nino:Option[String]=None, iabd:Option[String]=None, removeReason:Option[String]=None, removeReasonDesc:Option[String]=None)
                  (implicit ac: AuthContext) = {
 
+    val derivedAuditType = target match {
+      case spTarget.BIK => pbik_benefit_type
+      case spTarget.EIL => pbik_exclude_type
+    }
+
     val entityIABD = if(iabd.isDefined) Seq((key_iabd -> iabd.get)) else Nil
     val entityNINO = if(nino.isDefined) Seq((key_nino -> nino.get)) else Nil
     val entityRemoveReason = if(removeReason.isDefined) Seq((key_remove_reason -> removeReason.get)) else Nil
@@ -121,7 +128,7 @@ trait SplunkLogger extends AuthenticationConnector {
 
     ) ++ entityIABD ++ entityNINO ++ entityRemoveReason ++ entityRemoveReasonDesc
     
-    DataEvent(auditSource=pbik_audit_source, auditType=pbik_audit_type,detail=Map(entities:_*))
+    DataEvent(auditSource=pbik_audit_source, auditType=derivedAuditType,detail=Map(entities:_*))
   }
 
   /**
@@ -136,7 +143,8 @@ trait SplunkLogger extends AuthenticationConnector {
    */
   def createErrorEvent(tier:spTier, error:spError, msg:String)
                      (implicit ac: AuthContext) = {
-    DataEvent(auditSource=pbik_audit_source, auditType=pbik_audit_type,
+
+    DataEvent(auditSource=pbik_audit_source, auditType=pbik_error_type,
       detail=Map(
       key_event_name -> pbik_event_name,
       key_gateway_user -> ac.principal.name.getOrElse(pbik_no_ref),
