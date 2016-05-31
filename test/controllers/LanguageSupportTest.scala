@@ -278,7 +278,7 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
         implicit val lang : Lang = new Lang("cy")
         val r = await(homePageController.onPageLoad.apply(request))(timeout)
         status(r) shouldBe 200
-        bodyOf(r) should include("Cyfeirnod TWE y Cyflogwr")
+        bodyOf(r) should include("Cyfeirnod TWE y cyflogwr")
       }
     }
 
