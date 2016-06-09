@@ -175,8 +175,9 @@ ExclusionNinoDecision.question =A ydych yn gwybod beth yw rhif Yswiriant Gwladol
 
 ExclusionSearch.title=Canlyniadau chwilio
 ExclusionSearch.form.title=Chwilio am gyflogai
-ExclusionSearch.intro=Eithrio'r cyflogai canlynol o gael {0} wedi'i drethu/threthu drwy eich cyflogres o 6 Ebrill {1} ymlaen.
-ExclusionSearch.intro.multi=O ran cael buddiant car a buddiant tanwydd car wedi'i drethu drwy eich cyflogres o 6 Ebrill {1} ymlaen, dewiswch pa gyflogai yr ydych am ei eithrio.
+ExclusionSearch.intro = Eithrio'r cyflogai canlynol o gael {0} wedi'i drethu/threthu drwy eich cyflogres o 6 Ebrill {1} ymlaen.
+ExclusionSearch.intro.multi = Dewiswch pa gyflogai yr ydych am ei eithrio o gael y buddiant {0} wedi'i drethu drwy eich cyflogres o 6 Ebrill {1} ymlaen.
+
 ExclusionSearch.caption=Cyflogai i'w eithrio
 ExclusionSearch.caption.multi=Dewis cyflogai i'w eithrio
 ExclusionSearch.nino.caption=Chwilio am gyflogai i'w eithrio
