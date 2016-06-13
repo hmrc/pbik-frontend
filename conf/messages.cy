@@ -286,7 +286,7 @@ BenefitInKind.url.47=<a target="_blank" href="https://www.gov.uk/expenses-benefi
 BenefitInKind.p11d.47.ref=Adran M
 BenefitInKind.hint.47=Mae’n rhaid i chi dalu, drwy’r gyflogres, yr holl eitemau yr ydych yn rhoi gwybod amdanynt yn yr adran hon, neu dim ohonynt, heblaw am dreth incwm sydd wedi’i thalu ond na chafodd ei didynnu o gydnabyddiaeth cyfarwyddwr, sy’n fuddiant ar ei ben ei hun.
 
-BenefitInKind.label.52=Treth Incwm a dalwyd ond na chafodd ei didynnu o gydnabyddiaeth cyfarwyddwr.
+BenefitInKind.label.52=Treth Incwm a dalwyd ond na chafodd ei didynnu o gydnabyddiaeth cyfarwyddwr
 BenefitInKind.desc.52=Os ydych yn talu cyfarwyddwr cwmni heb ddidynnu treth o dan TWE, ac mae CThEM yn adennill y dreth sydd heb ei thalu oddi wrthych, mae hyn yn cyfrif fel buddiant.
 BenefitInKind.url.52=<a target="_blank" href="https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#income-tax">rhagor</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.52.ref=Adran M
