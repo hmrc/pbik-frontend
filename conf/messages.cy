@@ -167,7 +167,7 @@ ExclusionOverview.instruction.notempty= Mae’r cyflogeion hyn yn cael {0}, ac o
 ExclusionOverview.instruction.cy.notempty= Mae’r cyflogeion hyn yn cael {0}, ac o 6 Ebrill {1} ymlaen, byddant wedi’u heithrio rhag ei gael/chael wedi’i drethu/threthu drwy eich cyflogres.
 ExclusionOverview.warning=Dim ond cyflogeion sy’n cael y buddiant hwn a ddylai gael eu heithrio. Mae’n rhaid i chi lenwi ffurflen P11D ar eu cyfer.
 
-ExclusionDecision.noselection.error =Mae’n rhaid i chi ddewis un o’r opsiynau.
+ExclusionDecision.noselection.error =Mae’n rhaid i chi ddewis un o’r opsiynau
 ExclusionNinoDecision.title = Eithrio cyflogai
 ExclusionNinoDecision.question =A ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai yr ydych am ei eithrio?
 
