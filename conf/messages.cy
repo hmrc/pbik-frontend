@@ -167,7 +167,7 @@ ExclusionOverview.instruction.notempty= Mae’r cyflogeion hyn yn cael {0}, ac o
 ExclusionOverview.instruction.cy.notempty= Mae’r cyflogeion hyn yn cael {0}, ac o 6 Ebrill {1} ymlaen, byddant wedi’u heithrio rhag ei gael/chael wedi’i drethu/threthu drwy eich cyflogres.
 ExclusionOverview.warning=Dim ond cyflogeion sy’n cael y buddiant hwn a ddylai gael eu heithrio. Mae’n rhaid i chi lenwi ffurflen P11D ar eu cyfer.
 
-ExclusionDecision.noselection.error =Mae’n rhaid i chi ddewis un o’r opsiynau.
+ExclusionDecision.noselection.error =Mae’n rhaid i chi ddewis un o’r opsiynau
 ExclusionNinoDecision.title = Eithrio cyflogai
 ExclusionNinoDecision.question =A ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai yr ydych am ei eithrio?
 
@@ -183,7 +183,7 @@ ExclusionSearch.no-nino.caption=Chwilio am gyflogai i’w eithrio
 
 ExclusionSearch.Fail.Headline=Nid ydym wedi dod o hyd i’r cyflogai.
 ExclusionSearch.Fail.Desc=Nid oedd modd dod o hyd i’r cyflogai hwn
-ExclusionSearch.Fail.P=Dylech wirio bod yr wybodaeth yn gywir a rhoi cynnig arall arni.
+ExclusionSearch.Fail.P=Dylech wirio bod yr wybodaeth yn gywir a rhoi cynnig arall arni
 ExclusionSearch.Fail.Exists.Desc=Mae’r cyflogai hwn eisoes wedi’i eithrio ar gyfer {0}. Gallwch ei weld yn eich {1}rhestr o gyflogeion sydd wedi’u heithrio{2}.
 ExclusionSearch.Fail.Exists.P=Chwilio eto am gyflogai gwahanol
 
@@ -456,7 +456,7 @@ ErrorPage.backButtonNoCache = Nid ydych wedi chwilio hyd yn hyn. Ewch yn ôl i�
 error.required=Dewiswch y rhyw.
 error.invaliddate=Nodwch ddyddiad dilys.
 
-error.empty.nino=Nodwch Rif Yswiriant Gwladol.
+error.empty.nino=Nodwch rif Yswiriant Gwladol.
 error.empty.firstname=Nodwch enw cyntaf.
 error.empty.lastname=Nodwch enw olaf.
 

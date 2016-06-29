@@ -17,13 +17,11 @@
 package utils
 
 import java.util.Calendar
-
 import org.joda.time.DateTimeConstants._
-
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.Messages
+import play.api.i18n.{Lang, Messages}
 import utils.BikListUtils.{MandatoryRadioButton}
 
 import scala.util.Try
@@ -154,7 +152,7 @@ trait FormMappings extends PayrollBikDefaults {
     (RegistrationList.apply)(RegistrationList.unapply)
   )
 
-  def exclusionSearchFormWithNino:Form[EiLPerson] = Form(
+  def exclusionSearchFormWithNino(implicit lang: Lang):Form[EiLPerson] = Form(
     mapping(
       "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
           firstname.trim.length != 0)
@@ -188,7 +186,7 @@ trait FormMappings extends PayrollBikDefaults {
     ninoTrimmedRegex.r.findFirstIn(nino).getOrElse("").mkString
   }
 
-  def exclusionSearchFormWithoutNino: Form[EiLPerson] = {
+  def exclusionSearchFormWithoutNino(implicit lang: Lang): Form[EiLPerson] = {
     val dateRegex: String = "([0-9])|([0-9][0-9])"
     val dateDayRegex: String = "([0-9])"
     val dateMonthRegex: String = "([0-9])"
