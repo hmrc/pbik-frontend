@@ -97,7 +97,7 @@
 
             <fieldset>
                 <legend>@Messages("ExclusionSearch.no-nino.caption")</legend>
-                @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdValueURLMapper(iabdType), "no-nino"), 'autocomplete -> "off") {
+                @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdValueURLMapper(iabdType), "no-nino"), 'autocomplete -> "off", 'novalidate -> "true") {
                 <div class="form-group" id="firstname">
                 @helpers.input(searchForm("firstname"), '_label -> Messages("Service.field.firstname"), '_inputClass -> "form-control")
                 </div>
