@@ -101,7 +101,7 @@ ManagingRegistration.add.exhausted = Rydych eisoes wedi ychwanegu’r holl fuddi
 ######################
 
 sidebar.h2.expenses.help= Help gyda threuliau
-sidebar.expenses.help.1= Ar gyfer buddiannau yr ydych wedi rhoi gwybod amdanynt yn flaenorol ar <a rel="external" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflen P11D</a> (yn agor mewn ffenestr newydd), gwnewch yn siŵr eich bod yn eu cofrestru o dan yr un categori. Mae’n rhaid i bopeth sydd wedi’i gynnwys yn y categori P11D hwnnw gael ei dalu drwy’r gyflogres.
+sidebar.expenses.help.1 = Ar gyfer buddiannau yr ydych wedi rhoi gwybod amdanynt yn flaenorol ar <a rel="external" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflen P11D</a> (yn agor mewn ffenestr newydd), sicrhewch eich bod yn eu cofrestru o dan yr un categori. Mae’n rhaid i chi dalu popeth sydd wedi’u cynnwys o fewn y categori P11D hwnnw drwy’r gyflogres.
 sidebar.link.a-z= Expenses and benefits: A to Z guide
 
 AddBenefits.Heading = Dewis buddiannau a threuliau
