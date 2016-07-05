@@ -149,7 +149,7 @@ RemoveBenefits.Heading =Dileu buddiannau neu dreuliau o’r flwyddyn dreth sy’
 RemoveBenefits.ChooseBenefitsLabel =Dewiswch y buddiannau neu’r treuliau i’w dileu
 
 RemoveBenefits.reason.no.selection=Mae’n rhaid i chi ddewis un rheswm dros ddileu’r buddiant hwn neu’r draul hon
-RemoveBenefits.reason.other.required=Mae’n rhaid i chi egluro pam eich bod wedi dewis ’arall’
+RemoveBenefits.reason.other.required=Mae’n rhaid i chi egluro pam eich bod wedi dewis ‘arall’
 RemoveBenefits.reason.desc=Rhowch wybod i ni pam.
 RemoveBenefits.reason.software=Nid yw eich darparwr meddalwedd yn cynnal buddiannau a threuliau drwy’r gyflogres hyd yn hyn
 RemoveBenefits.reason.guidance=Nid oedd yr arweiniad ar gyfer y gwasanaeth hwn yn eglur
@@ -162,12 +162,12 @@ NoMoreToAdd.Desc=Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau s
 
 ExclusionOverview.title=Cyflogeion sydd wedi’u heithrio
 ExclusionOverview.caption=Talu trwy’r gyflogres – cyflogeion sydd wedi’u heithrio
-ExclusionOverview.instruction.empty= Mae’ch holl gyflogeion sy’n cael buddiant {0} yn ei gael wedi’i drethu drwy eich cyflogres.
+ExclusionOverview.instruction.empty= Mae’ch holl gyflogeion sy’n cael buddiant ‘{0}’ yn ei gael wedi’i drethu drwy eich cyflogres.
 ExclusionOverview.instruction.notempty= Mae’r cyflogeion hyn yn cael {0}, ac o 6 Ebrill {1} ymlaen, byddant wedi’u heithrio o’i gael/chael wedi’i drethu/threthu drwy eich cyflogres.
 ExclusionOverview.instruction.cy.notempty= Mae’r cyflogeion hyn yn cael {0}, ac o 6 Ebrill {1} ymlaen, byddant wedi’u heithrio rhag ei gael/chael wedi’i drethu/threthu drwy eich cyflogres.
 ExclusionOverview.warning=Dim ond cyflogeion sy’n cael y buddiant hwn a ddylai gael eu heithrio. Mae’n rhaid i chi lenwi ffurflen P11D ar eu cyfer.
 
-ExclusionDecision.noselection.error =Mae’n rhaid i chi ddewis un o’r opsiynau.
+ExclusionDecision.noselection.error =Mae’n rhaid i chi ddewis un o’r opsiynau
 ExclusionNinoDecision.title = Eithrio cyflogai
 ExclusionNinoDecision.question =A ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai yr ydych am ei eithrio?
 
@@ -183,7 +183,7 @@ ExclusionSearch.no-nino.caption=Chwilio am gyflogai i’w eithrio
 
 ExclusionSearch.Fail.Headline=Nid ydym wedi dod o hyd i’r cyflogai.
 ExclusionSearch.Fail.Desc=Nid oedd modd dod o hyd i’r cyflogai hwn
-ExclusionSearch.Fail.P=Dylech wirio bod yr wybodaeth yn gywir a rhoi cynnig arall arni.
+ExclusionSearch.Fail.P=Dylech wirio bod yr wybodaeth yn gywir a rhoi cynnig arall arni
 ExclusionSearch.Fail.Exists.Desc=Mae’r cyflogai hwn eisoes wedi’i eithrio ar gyfer {0}. Gallwch ei weld yn eich {1}rhestr o gyflogeion sydd wedi’u heithrio{2}.
 ExclusionSearch.Fail.Exists.P=Chwilio eto am gyflogai gwahanol
 
@@ -199,7 +199,7 @@ ExclusionRemoval.WhatNext.lede = Rydych wedi rhoi gwybod i ni y bydd {0} yn cael
 
 ExclusionRemoval.WhatNext.p1 = Bydd yn rhaid i chi roi gwybod am werth y buddiant hwn ar ffurflen P11D yn lle hynny.
 
-ExclusionRescind.WhatNext.p1 = Rhowch wybod i’ch cyflogai y bydd ei god treth yn newid ac y byddwn yn anfon cod treth newydd ato. Ceir llythyrau enghreifftiol yn yr <a target="_blank" href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">arweiniad ’Talu buddiannau a threuliau drwy’r gyflogres’</a> (yn agor mewn ffenestr newydd).
+ExclusionRescind.WhatNext.p1 = Rhowch wybod i’ch cyflogai y bydd ei god treth yn newid ac y byddwn yn anfon cod treth newydd ato. Ceir llythyrau enghreifftiol yn yr <a target="_blank" href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">arweiniad ‘Talu buddiannau a threuliau drwy’r gyflogres’</a> (yn agor mewn ffenestr newydd).
 ExclusionRescind.WhatNext.p2 = O 6 Ebrill ymlaen, ychwanegwch gyfwerth mewn arian y buddiant neu’r draul i gyflog eich cyflogai – dylech ei drethu drwy eich cyflogres. Mae’n bosibl y bydd yn rhaid i chi ail-lunio eich meddalwedd y gyflogres i wneud hyn.
 ExclusionRescind.WhatNext.p3 = Dylech beidio â chyflwyno <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d.cy">ffurflen P11D</a> ar gyfer y cyflogai sydd â’r buddiant neu’r draul wedi’i dalu drwy’r gyflogres.
 ExclusionRescind.WhatNext.p4 = Dylech barhau i gyflwyno <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db.cy">ffurflen P11D(b)</a> er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A.
@@ -275,7 +275,7 @@ BenefitInKind.desc.8=Costau gwasanaethau a gyflenwir i chi.
 BenefitInKind.url.8=<a target="_blank" href="https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#services">rhagor</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.8.ref=Adran K
 
-BenefitInKind.label.39=’Asedion at wasanaeth y cyflogai’
+BenefitInKind.label.39=Asedion at wasanaeth y cyflogai
 BenefitInKind.desc.39=Asedion y cwmni, er enghraiffft, cwch hwylio a ddefnyddir gan gyflogai at ddibenion preifat.
 BenefitInKind.url.39=<a target="_blank" href="https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#assets-placed">rhagor</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.39.ref=Adran L
@@ -456,7 +456,7 @@ ErrorPage.backButtonNoCache = Nid ydych wedi chwilio hyd yn hyn. Ewch yn ôl i�
 error.required=Dewiswch y rhyw.
 error.invaliddate=Nodwch ddyddiad dilys.
 
-error.empty.nino=Nodwch Rif Yswiriant Gwladol.
+error.empty.nino=Nodwch rif Yswiriant Gwladol.
 error.empty.firstname=Nodwch enw cyntaf.
 error.empty.lastname=Nodwch enw olaf.
 
@@ -484,7 +484,7 @@ whatNext.cy.add.p1=Rydych wedi bod yn llwyddiannus wrth roi gwybod i CThEM y byd
 whatNext.cy1.add.lede=Dylech drethu’r buddiannau a’r treuliau canlynol drwy eich cyflogres o 6 Ebrill {0} ymlaen.
 whatNext.cy1.add.lede.singular=Dylech drethu {0} drwy eich cyflogres o 6 Ebrill {1} ymlaen.
 whatNext.cy1.add.table.header=Buddiannau a threuliau cofrestredig
-whatNext.add.p1=Rhowch wybod i’ch cyflogeion y bydd eu codau treth yn newid a byddwn yn anfon cod treth newydd atynt. Ceir llythyrau enghreifftiol yn yr <a target="_blank" href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">arweiniad Talu buddiannau a threuliau drwy’r gyflogres</a> (yn agor mewn ffenestr newydd).
+whatNext.add.p1=Rhowch wybod i’ch cyflogeion y bydd eu codau treth yn newid a byddwn yn anfon cod treth newydd atynt. Ceir llythyrau enghreifftiol yn yr <a target="_blank" href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">arweiniad ‘Talu buddiannau a threuliau drwy’r gyflogres’</a> (yn agor mewn ffenestr newydd).
 whatNext.add.p2=O 6 Ebrill ymlaen, ychwanegwch gyfwerth mewn arian y buddiannau neu’r treuliau i gyflog eich cyflogeion a’u trethu drwy eich cyflogres. Mae’n bosibl y bydd yn rhaid i chi ail-lunio eich meddalwedd y gyflogres i wneud hyn.
 whatNext.add.p3=Dylech beidio â chyflwyno <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d.cy">ffurflen P11D</a> ar gyfer y cyflogeion sydd â’r buddiannau neu’r treuliau wedi’u talu drwy’r gyflogres.
 whatNext.add.p4=Dylech barhau i gyflwyno <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db.cy">ffurflen P11D(b)</a> i roi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A.
@@ -492,7 +492,7 @@ whatNext.add.p2.singular=O 6 Ebrill ymlaen, ychwanegwch gyfwerth mewn arian y bu
 whatNext.add.p3.singular=Dylech beidio â chyflwyno <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflenni P11D</a> ar gyfer y cyflogeion sydd â’r buddiant neu’r draul wedi’i dalu/thalu drwy’r gyflogres.
 
 whatNext.subHeading=Camau nesaf
-whatNext.remove.lede=Rydych wedi rhoi gwybod i ni na fyddwch yn trethu <span id="cy1-{3}">{0}</span> drwy eich cyflogres o 6 Ebrill {1} ymlaen.
+whatNext.remove.lede=Rydych wedi rhoi gwybod i ni na fyddwch yn trethu <span id="cy1-{3}">‘{0}’</span> drwy eich cyflogres o 6 Ebrill {1} ymlaen.
 whatNext.remove.p1=Os ydych yn dal i roi’r buddiant hwn neu’r draul hon i’ch cyflogeion, bydd yn rhaid i chi lenwi <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d.cy">ffurflen P11D</a> ar eu cyfer ar ddiwedd y flwyddyn dreth.
 
 whatNext.exclude.heading=Eithriad wedi’i gyflawni

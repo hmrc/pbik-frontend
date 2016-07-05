@@ -17,24 +17,20 @@
 package controllers
 
 import java.util.UUID
-
 import config.PbikAppConfig
 import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
 import models._
 import connectors.{HmrcTierConnector, TierConnector}
-import play.api.i18n.Lang
-import play.i18n.Messages
-import play.api.data.{FormError, Form}
+import play.api.i18n.{Lang, Messages}
+import play.api.data.Form
 import play.api.{Play, Logger}
 import play.api.mvc._
 import services.{BikListService, EiLListService}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{HttpResponse, SessionKeys}
-import utils.BikListUtils.MandatoryRadioButton
+import uk.gov.hmrc.play.http.SessionKeys
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import uk.gov.hmrc.play.config.RunMode
@@ -135,7 +131,7 @@ with SplunkLogger with ExclusionListConfiguration {
           val taxYearRange = YEAR_RANGE
           val resultFuture = binaryRadioButton.bindFromRequest().fold(
             formWithErrors => Future(Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
-              isCurrentTaxYear, iabdType)).flashing("error" -> Messages.get("ExclusionDecision.noselection.error")))
+              isCurrentTaxYear, iabdType)).flashing("error" -> Messages("ExclusionDecision.noselection.error")))
             ,
             values => {
               val selectedValue = values.selectionValue
@@ -148,7 +144,7 @@ with SplunkLogger with ExclusionListConfiguration {
                   case FORM_TYPE_NONINO => Ok(views.html.exclusion.noNinoExclusionSearchForm(taxYearRange,
                     isCurrentTaxYear, iabdTypeValue, exclusionSearchFormWithoutNino))
                   case "" => Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
-                    isCurrentTaxYear, iabdTypeValue)).flashing("error" -> Messages.get("ExclusionDecision.noselection.error"))
+                    isCurrentTaxYear, iabdTypeValue)).flashing("error" -> Messages("ExclusionDecision.noselection.error"))
                 }
               }
             }
@@ -203,7 +199,7 @@ with SplunkLogger with ExclusionListConfiguration {
       case 0 =>
         Logger.error("Matches are zero size")
         val existsAlready = resultAlreadyExcluded.contains(form.bindFromRequest().get)
-        val message = if(existsAlready) Messages.get("ExclusionSearch.Fail.Exists.P") else Messages.get("ExclusionSearch.Fail.P")
+        val message = if(existsAlready) Messages("ExclusionSearch.Fail.Exists.P") else Messages("ExclusionSearch.Fail.P")
 
         formType match {
           case FORM_TYPE_NINO => Ok(views.html.exclusion.ninoExclusionSearchForm(YEAR_RANGE, isCurrentTaxYear,
