@@ -17,15 +17,20 @@
 package controllers
 
 import play.api.Play
+import play.api.Play.current
 import uk.gov.hmrc.play.config.RunMode
 
 object ExternalUrls extends RunMode {
 
-  val loginCallback   = Play.current.configuration.getString("microservice.auth.login-callback.url").getOrElse(routes.HomePageController.onPageLoad().url)
-  val companyAuthHost = Play.current.configuration.getString("microservice.auth.company-auth.host").getOrElse("")
+  val loginCallback   = Play.configuration.getString("microservice.auth.login-callback.url").getOrElse(routes.HomePageController.onPageLoad().url)
+  val companyAuthHost = Play.configuration.getString("microservice.auth.company-auth.host").getOrElse("")
+  val signOutCallback = Play.configuration.getString("pbik.survey.url").getOrElse("")
+  val loginLocalPath = Play.configuration.getString("microservice.auth.login_local_path").getOrElse("")
+  val loginPath = Play.configuration.getString("microservice.auth.login_path").getOrElse("")
+  val signOutPath = Play.configuration.getString("microservice.auth.signout_path").getOrElse("")
 
-  val signIn                      = s"$companyAuthHost/payrollbik/sign-in?continue=$loginCallback"
-  val signInLocal                 = s"$companyAuthHost/payrollbik/sign-in-local?continue=$loginCallback"
-  val signOut                     = s"$companyAuthHost/payrollbik/sign-out"
+  val signIn          = s"$companyAuthHost/gg/$loginPath?continue=$loginCallback"
+  val signInLocal     = s"$companyAuthHost/gg/$loginLocalPath?continue=$loginCallback"
+  val signOut         = s"$companyAuthHost/gg/$signOutPath?continue=$signOutCallback"
 
 }
