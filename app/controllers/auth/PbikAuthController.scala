@@ -28,7 +28,8 @@ import java.util.UUID
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, Actions, TaxRegime, GovernmentGateway}
 
 object PBIKGovernmentGateway extends GovernmentGateway {
-  override val login = ExternalUrls.signIn
+  override val loginURL = ExternalUrls.signIn
+  override val continueURL = ExternalUrls.continue
 }
 
 object PBIKEpayeRegime extends TaxRegime {
