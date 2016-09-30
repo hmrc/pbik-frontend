@@ -39,13 +39,13 @@ object UserBuilder {
 
   val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
   val accounts = Accounts(epaye = epayeAccount)
-  val authority = new Authority("", accounts,None,None, CredentialStrength.None,ConfidenceLevel.L50)
+  val authority = new Authority("", accounts,None,None, CredentialStrength.None,ConfidenceLevel.L50, None, None, None)
   val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
   val principal = Principal(name = Some("TEST_USER"), accounts)
 
   def apply() = {
     //User(userId = "testUserId", userAuthority = epayeAuthority("testUserId", "emp/ref"), nameFromGovernmentGateway = Some("TEST_USER"), decryptedToken = None)
-    new AuthContext(user, principal, None)
+    new AuthContext(user, principal, None, None, None)
   }
 
 }
