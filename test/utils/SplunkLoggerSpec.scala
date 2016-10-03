@@ -72,7 +72,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
       val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
       val principal = Principal(name = Some("TEST_USER"), accounts)
 
-      implicit def fakeAuthContext = new AuthContext(user, principal, None)
+      implicit def fakeAuthContext = new AuthContext(user, principal, None, None, None)
 
       val controller = new TestSplunkLogger
       val msg = "Hello"
@@ -123,7 +123,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
         val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
         val principal = Principal(name = Some("TEST_USER"), accounts)
 
-        implicit def nonPayeUser = new AuthContext(user, principal, None)
+        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None)
         //implicit def nonPayeUser = User(userId = "nonpayeId", userAuthority = ctAuthority("nonpayeId", "ctref"), nameFromGovernmentGateway = Some("TEST_USER"), decryptedToken = None)
 
         val d: DataEvent = controller.createDataEvent(controller.spTier.FRONTEND,
@@ -208,7 +208,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
         val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
         val principal = Principal(name = Some("TEST_USER"), accounts)
 
-        implicit def nonPayeUser = new AuthContext(user, principal, None)
+        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None)
 
         val d: DataEvent = controller.createErrorEvent(controller.spTier.FRONTEND,
           controller.spError.EXCEPTION,

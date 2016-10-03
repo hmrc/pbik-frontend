@@ -29,8 +29,9 @@ object ExternalUrls extends RunMode {
   val loginPath = Play.configuration.getString("microservice.auth.login_path").getOrElse("")
   val signOutPath = Play.configuration.getString("microservice.auth.signout_path").getOrElse("")
 
-  val signIn          = s"$companyAuthHost/gg/$loginPath?continue=$loginCallback"
-  val signInLocal     = s"$companyAuthHost/gg/$loginLocalPath?continue=$loginCallback"
+  val continue        = loginCallback
+  val signIn          = s"$companyAuthHost/gg/$loginPath"
+  val signInLocal     = s"$companyAuthHost/gg/$loginLocalPath"
   val signOut         = s"$companyAuthHost/gg/$signOutPath?continue=$signOutCallback"
 
 }

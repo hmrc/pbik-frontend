@@ -38,16 +38,16 @@ object FrontendBuild extends Build with MicroService {
 private object AppDependencies {
   import play.core.PlayVersion
 
-  private val frontendBootstrapVersion = "6.4.0"
+  private val frontendBootstrapVersion = "6.7.0"
   private val govukTemplateVersion =  "4.0.0"
-  private val httpVerbsVersion = "3.3.0"
-  private val playAuthorisedFrontendVersion = "4.5.0"
-  private val playConfigVersion = "2.0.1"
+  private val httpVerbsVersion = "5.0.0"
+  private val playAuthorisedFrontendVersion = "5.7.0"
+  private val playConfigVersion = "2.1.0"
   private val playHealthVersion = "1.1.0"
   private val playJsonLogger = "2.1.1"
-  private val playPartials = "4.2.0"
-  private val playUIVersion = "4.4.0"
-  private val urlBuilderVersion = "1.0.0"
+  private val playPartials = "4.6.0"
+  private val playUIVersion = "4.16.0"
+  private val urlBuilderVersion = "1.1.0"
 
 
   val compile = Seq(
@@ -75,8 +75,8 @@ private object AppDependencies {
   object Test {
     def apply() = new TestDependencies {
       override lazy val test = Seq(
-        "org.scalatest" %% "scalatest" % "2.2.0" % scope,
-        "uk.gov.hmrc" %% "hmrctest" % "1.4.0" % scope,
+        "org.scalatest" %% "scalatest" % "2.2.6" % scope,
+        "uk.gov.hmrc" %% "hmrctest" % "1.8.0" % scope,
         "org.pegdown" % "pegdown" % "1.4.2" % scope,
         "org.mockito" % "mockito-all" % "1.10.19" % "test",
         "org.jsoup" % "jsoup" % "1.7.3" % scope,
