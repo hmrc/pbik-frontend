@@ -74,7 +74,8 @@ class AuthControllerSpec extends UnitSpec with Mockito with FakePBIKApplication 
       val result: Future[Result] = await(controller.notAuthorised().apply(fakeRequest))
       status(result) shouldBe 303
       redirectLocation(result).get shouldBe
-        "http://localhost:9025/gg/sign-in?continue=http://localhost:9233/payrollbik/payrolled-benefits-expenses"
+        "http://localhost:9025/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fpayrolled-benefits-expenses&origin=pbik-frontend"
+        //"http://localhost:9025/gg/sign-in?continue=http://localhost:9233/payrollbik/payrolled-benefits-expenses"
       val bodyText: String = contentAsString(result)
       //assert(bodyText.contains("Sign in with your Government Gateway account"))
     }
