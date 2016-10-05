@@ -82,11 +82,6 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
         responseCheckCYEnabled(staticDataRequest)
   }
 
-//  def setLanguage(body: Request): Action[AnyContent] = AuthorisedFor(getAuthorisedForPolicy, pageVisibility = GGConfidence).async {
-//    implicit ac => implicit request =>
-//     request.add
-//  }
-
   def onPageLoad:Action[AnyContent] = AuthorisedForPbik {
     implicit ac =>
       implicit request =>
