@@ -56,7 +56,7 @@ Service.errorSummary.heading=There is a problem
 
 ######################
 ######################
-
+Service.signout= Sign out
 StartPage.buttonStartLink.text = Start Now
 
 ######################
