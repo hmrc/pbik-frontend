@@ -56,7 +56,7 @@ Service.errorSummary.heading=Mae problem wedi codi
 
 ######################
 ######################
-
+Service.signout= Allgofnodi
 StartPage.buttonStartLink.text = Dechreuwch nawr
 
 ######################
