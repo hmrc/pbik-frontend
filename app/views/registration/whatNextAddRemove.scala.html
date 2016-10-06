@@ -1,4 +1,9 @@
-@(isCurrentYear: Boolean, taxYearRange:TaxYearRange, additive: Boolean, bikForm:Form[RegistrationList])(implicit request:Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext , lang: Lang)
+@(isCurrentYear: Boolean,
+  taxYearRange:TaxYearRange,
+  additive: Boolean,
+  bikForm:Form[RegistrationList])(implicit request:Request[_],
+                                  ac: uk.gov.hmrc.play.frontend.auth.AuthContext ,
+                                  lang: Lang, context: config.PbikContext)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._

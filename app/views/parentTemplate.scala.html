@@ -1,6 +1,13 @@
-@(pageTitle: String, taxYearRange:Option[models.TaxYearRange] = None, empref:Option[String], showLanguage:Boolean = false,
-    showYTAlink:Boolean = false, hNav: Option[views.helpers.HeaderNav] = Some(views.helpers.HeaderNav(title = Some(Messages("Service.title")),
-    showBetaLink = true)), sidebarLinks: Option[Html] = None, contactSupportLinkEnabled: Boolean = true)(mainContent: Html)(implicit request : Request[_], lang: Lang)
+@(pageTitle: String,
+  taxYearRange:Option[models.TaxYearRange] = None,
+  empref:Option[String],
+  showLanguage:Boolean = false,
+  showYTAlink:Boolean = false,
+  hNav: Option[views.helpers.HeaderNav] = Some(views.helpers.HeaderNav(title = Some(Messages("Service.title")),showBetaLink = true)),
+  sidebarLinks: Option[Html] = None,
+  contactSupportLinkEnabled: Boolean = true)(mainContent: Html)(implicit request : Request[_],
+                                                                lang: Lang, context: config.PbikContext)
+
 @import play.api.Play
 @import play.api.Play.current
 @import uk.gov.hmrc.play.http.SessionKeys
@@ -64,7 +71,6 @@
 
 @main(
     title = pageTitle,
-    articleClasses = Some(""),
     headerNav = Some(views.helpers.HeaderNav(
     title = Some(Messages("Service.title")),
     titleLink = None,

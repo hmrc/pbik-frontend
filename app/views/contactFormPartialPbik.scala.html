@@ -1,4 +1,8 @@
-@(actionUrl: String, csrfToken: Option[String], service: String, supportLinkEnabled: Boolean)(implicit request : Request[_], lang: Lang)
+@(actionUrl: String,
+ csrfToken: Option[String],
+ service: String,
+ supportLinkEnabled: Boolean)(implicit request : Request[_],
+                              lang: Lang, context: config.PbikContext)
 @import uk.gov.hmrc.play.views.html._
 
 @if(supportLinkEnabled) {

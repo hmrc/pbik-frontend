@@ -1,4 +1,8 @@
-@(bikForm:Form[RegistrationList], additive: Boolean, taxYearRange:TaxYearRange)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang, flash: Flash)
+@(bikForm:Form[RegistrationList],
+  additive: Boolean,
+  taxYearRange:TaxYearRange)(implicit request:Request[_],
+                             ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+                             lang: Lang, flash: Flash, context: config.PbikContext)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import uk.gov.hmrc.play.views.html.helpers.inputRadioGroup

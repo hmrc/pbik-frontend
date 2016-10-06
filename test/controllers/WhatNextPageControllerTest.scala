@@ -17,12 +17,9 @@
 package controllers
 
 import java.util.UUID
-
-import config.AppConfig
+import config._
 import play.api.data.Form
-
 import scala.concurrent.Future
-
 import connectors.{HmrcTierConnector, TierConnector}
 import models._
 import org.mockito.Matchers.{eq => mockEq}
@@ -50,9 +47,11 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
                                               with FormMappings with TestAuthUser {
 
   // TODO The following needs refactoring as it similar to registrationcontrollertest, consider moving to utils
-//  val sessionId = s"session-${UUID.randomUUID}"
-//  val userId = s"user-${UUID.randomUUID}"
+  // val sessionId = s"session-${UUID.randomUUID}"
+  // val userId = s"user-${UUID.randomUUID}"
   implicit val user = createDummyUser("testid")
+  implicit val context: PbikContext = PbikContextImpl
+
   lazy val listOfPeople: List[EiLPerson] = List(EiLPerson("AA111111","John", Some("Stones") ,"Smith",Some("123"),Some("01/01/1980"),Some("male"), Some(10),0),
     EiLPerson("AB111111","Adam", None ,"Smith",None, Some("01/01/1980"),Some("male"), None, 0),
     EiLPerson("AC111111", "Humpty", Some("Alexander"),"Dumpty", Some("123"), Some("01/01/1980"),Some("male"), Some(10), 0),

@@ -17,12 +17,13 @@
 package controllers.auth
 
 import config.PbikAppConfig
-import play.api.mvc.{Request, AnyContent, Action}
+import play.api.mvc.{Action, AnyContent, Request}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+
 import scala.concurrent.Future
 import utils.{ControllersReferenceData, TaxDateUtils}
 import play.i18n.Messages
-import uk.gov.hmrc.play.frontend.auth.{AuthContext, Actions}
+import uk.gov.hmrc.play.frontend.auth.{Actions, AuthContext}
 
 object AuthController extends AuthController with AuthenticationConnector {
   def pbikAppConfig = PbikAppConfig
