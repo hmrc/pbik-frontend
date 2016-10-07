@@ -48,7 +48,14 @@ private object AppDependencies {
   private val playPartials = "4.6.0"
   private val playUIVersion = "4.16.0"
   private val urlBuilderVersion = "1.1.0"
-
+  private val scalaTestPlusVersion = "1.2.0"
+  private val scalaTestVersion = "2.2.6"
+  private val hmrcTestVersion = "1.8.0"
+  private val mockitoVersion = "1.10.19"
+  private val pegDownVersion = "1.6.0"
+  private val jSoupVersion = "1.9.2"
+  private val metricsGraphiteVersion = "3.0.2"
+  private val metricsPlayVersion = "0.2.1"
 
   val compile = Seq(
 
@@ -62,24 +69,24 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-partials" % playPartials, // includes code for retrieving partials, e.g. the Help with this page form
     "uk.gov.hmrc" %% "play-ui" % playUIVersion,
     "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion,
-
-    "com.codahale.metrics" % "metrics-graphite" % "3.0.2",
-    "com.kenshoo" %% "metrics-play" % "2.3.0_0.1.8"
+    "com.codahale.metrics" % "metrics-graphite" % metricsGraphiteVersion,
+    "com.kenshoo" %% "metrics-play" % metricsPlayVersion
   )
 
   trait TestDependencies {
     lazy val scope: String = "test"
-    lazy val test : Seq[ModuleID] = ???
+    lazy val test : Seq[ModuleID] = Seq()
   }
 
   object Test {
     def apply() = new TestDependencies {
       override lazy val test = Seq(
-        "org.scalatest" %% "scalatest" % "2.2.6" % scope,
-        "uk.gov.hmrc" %% "hmrctest" % "1.8.0" % scope,
-        "org.pegdown" % "pegdown" % "1.4.2" % scope,
-        "org.mockito" % "mockito-all" % "1.10.19" % "test",
-        "org.jsoup" % "jsoup" % "1.7.3" % scope,
+        "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
+        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
+        "org.scalatestplus" %% "play" % scalaTestPlusVersion % scope,
+        "org.pegdown" % "pegdown" % pegDownVersion % scope,
+        "org.mockito" % "mockito-all" % mockitoVersion % "test",
+        "org.jsoup" % "jsoup" % jSoupVersion % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
       )
     }.test

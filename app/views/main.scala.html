@@ -1,23 +1,21 @@
-@(
-    title: String,
-    headerNav: Option[views.helpers.HeaderNav] = None,
-    sidebarLinks: Option[Html] = None,
-    sidebarClass: Option[String] = None,
-    userLoggedIn: Boolean = false,
-    supportLinkEnabled: Boolean = true,
-    serviceInfoContent: Option[Html] = None,
-    contentHeader: Option[Html] = None,
-    footerLinks: Option[Html] = Some(uk.gov.hmrc.play.views.html.layouts.footer_links()),
-    showFeedbackLinkInBetaBanner: Boolean = true,
-    linkElement: Option[Html] = None,
-    headScripts: Option[Html] = None,
-    scriptElement: Option[Html] = None,
-    bodyClasses: Option[String] = None,
-    mainConfig: MainConfig = MainConfig(),
-    articleClasses: Option[String] = None,
-    includeGridWrapper: Boolean = false,
-    actingAttorney: Option[uk.gov.hmrc.play.frontend.auth.ActingAsAttorneyFor] = None,
-    gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_], lang:Lang)
+@(title: String,
+  headerNav: Option[views.helpers.HeaderNav] = None,
+  sidebarLinks: Option[Html] = None,
+  sidebarClass: Option[String] = None,
+  userLoggedIn: Boolean = false,
+  supportLinkEnabled: Boolean = true,
+  serviceInfoContent: Option[Html] = None,
+  contentHeader: Option[Html] = None,
+  footerLinks: Option[Html] = Some(uk.gov.hmrc.play.views.html.layouts.footer_links()),
+  showFeedbackLinkInBetaBanner: Boolean = true,
+  linkElement: Option[Html] = None,
+  headScripts: Option[Html] = None,
+  scriptElement: Option[Html] = None,
+  bodyClasses: Option[String] = None,
+  mainConfig: MainConfig = MainConfig(),
+  includeGridWrapper: Boolean = false,
+  actingAttorney: Option[uk.gov.hmrc.play.frontend.auth.ActingAsAttorneyFor] = None,
+  gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_], lang:Lang, context: config.PbikContext)
 
 @import config.PbikAppConfig.assetsPrefix
 @import config.PbikAppConfig.contactFormServiceIdentifier
@@ -25,6 +23,7 @@
 @import play.api.Play
 @import layouts.govuk_template
 @import uk.gov.hmrc.play.views.html.layouts
+@import config._
 @import config.PbikAppConfig._
 
 @head = {
@@ -55,7 +54,7 @@
 }
 
 @getHelpForm = {
-    @views.html.contactFormPartialPbik(config.PbikAppConfig.reportAProblemPartialUrl, None, contactFormServiceIdentifier, supportLinkEnabled)
+    @includes.report_problem(supportLinkEnabled)
 }
 
 @sidebar = {
@@ -66,7 +65,7 @@
 
 @article = {
 
-    @layouts.article(mainContent, includeGridWrapper, articleClasses)
+    @layouts.article(mainContent, includeGridWrapper, Some(""))
 
 }
 

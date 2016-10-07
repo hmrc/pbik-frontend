@@ -1,4 +1,7 @@
-@(bikForm:Form[RegistrationList], taxYearRange:TaxYearRange)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
+@(bikForm:Form[RegistrationList],
+  taxYearRange:TaxYearRange)(implicit request:Request[_],
+                             ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+                             lang: Lang, context: config.PbikContext)
 
 @import uk.gov.hmrc.play.views.html.helpers
 

@@ -1,6 +1,12 @@
-@(cyAllowed: Boolean, taxYearRange:TaxYearRange, registeredBenefitsCurrentYear: List[Bik], registeredBenefitsNextYear: List[Bik],
-    serviceBiksCountCY: Int, serviceBiksCountCYP1: Int, fromYTA: String)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
-
+@(cyAllowed: Boolean,
+  taxYearRange:TaxYearRange,
+  registeredBenefitsCurrentYear: List[Bik],
+  registeredBenefitsNextYear: List[Bik],
+  serviceBiksCountCY: Int,
+  serviceBiksCountCYP1: Int,
+  fromYTA: String)(implicit request:Request[_],
+                   ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+                   lang: Lang, context: config.PbikContext)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.BikListUtils._

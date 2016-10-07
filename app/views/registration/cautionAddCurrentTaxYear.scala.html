@@ -1,4 +1,6 @@
-@(taxYearRange:TaxYearRange)(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
+@(taxYearRange:TaxYearRange)(implicit request:Request[_],
+                             ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+                             lang: Lang, context: config.PbikContext)
 
 @import uk.gov.hmrc.play.views.html.helpers
 

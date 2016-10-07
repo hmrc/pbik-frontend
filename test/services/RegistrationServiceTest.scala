@@ -16,7 +16,7 @@
 
 package services
 
-import config.AppConfig
+import config._
 import connectors.{TierConnector, HmrcTierConnector}
 import controllers.FakePBIKApplication
 import models.{HeaderTags, RegistrationItem, Bik}
@@ -91,6 +91,7 @@ class RegistrationServiceTest extends UnitSpec with TestAuthUser  with Mockito w
   "When generating a page which allows registrations, the service " should {
     " return the selection page " in {
       running(fakeApplication) {
+        implicit val context: PbikContext = PbikContextImpl
         implicit val request = mockrequest
         implicit val ac: AuthContext = createDummyUser("VALID_ID")
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))

@@ -1,6 +1,13 @@
-@(bikForm:Form[RegistrationList], additive: Boolean, taxYearRange:TaxYearRange, previouslySelectedBenefits: List[RegistrationItem]= List.empty[RegistrationItem],
-    registeredBiks:List[Bik] = List.empty[Bik], nonLegislationBiks:List[Int]=config.PbikAppConfig.biksNotSupported,
-    decommissionedBiks:List[Int]=config.PbikAppConfig.biksDecommissioned, biksAvailableCount: Option[Int])(implicit request:Request[_], ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang)
+@(bikForm:Form[RegistrationList],
+  additive: Boolean,
+  taxYearRange:TaxYearRange,
+  previouslySelectedBenefits: List[RegistrationItem]= List.empty[RegistrationItem],
+  registeredBiks:List[Bik] = List.empty[Bik],
+  nonLegislationBiks:List[Int]=config.PbikAppConfig.biksNotSupported,
+  decommissionedBiks:List[Int]=config.PbikAppConfig.biksDecommissioned,
+  biksAvailableCount: Option[Int])(implicit request:Request[_],
+                                   ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+                                   lang: Lang, context: config.PbikContext)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import play.api.Play.current

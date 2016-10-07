@@ -1,5 +1,10 @@
-@(errorMessage:String, taxYearRange:TaxYearRange, isCurrentTaxYear:String= "", code:Int = 0,
-pageHeading:String ="An error has occurred", backLink:String= "overview")(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext , lang: Lang)
+@(errorMessage:String,
+ taxYearRange:TaxYearRange,
+ isCurrentTaxYear:String= "", code:Int = 0,
+ pageHeading:String ="An error has occurred",
+ backLink:String= "overview")(implicit request:Request[_],
+                              ac: uk.gov.hmrc.play.frontend.auth.AuthContext ,
+                              lang: Lang, context: config.PbikContext)
 
 @import utils.FormMappingsConstants._
 @import uk.gov.hmrc.play.views.html.helpers

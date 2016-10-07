@@ -17,11 +17,10 @@
 package controllers.registration
 
 import java.util.UUID
-
 import _root_.models._
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
-import controllers.{routes, WhatNextPageController}
+import controllers.{WhatNextPageController, routes}
 import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
 import play.api.Logger
 import play.api.data.Form
@@ -30,12 +29,12 @@ import play.api.mvc._
 import play.api.i18n.Lang
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.HtmlFormat
-import services.{RegistrationService, BikListService}
+import services.{BikListService, RegistrationService}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.BikListUtils.MandatoryRadioButton
 import utils.FormMappingsConstants._
 import utils._
-import uk.gov.hmrc.play.http.{SessionKeys, HttpResponse}
+import uk.gov.hmrc.play.http.{HttpResponse, SessionKeys}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import uk.gov.hmrc.play.http.HeaderCarrier
