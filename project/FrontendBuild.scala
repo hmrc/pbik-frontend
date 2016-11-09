@@ -23,11 +23,11 @@ object FrontendBuild extends Build with MicroService {
   )
 
   override lazy val playSettings : Seq[Setting[_]] = Seq(
-    routesImport ++= Seq("uk.gov.hmrc.domain._"),
+    // routesImport ++= Seq("uk.gov.hmrc.domain._"),
     // Turn off play's internal less compiler
-    lessEntryPoints := Nil,
+    // lessEntryPoints := Nil,
     // Turn off play's internal javascript compiler
-    javascriptEntryPoints := Nil,
+    // javascriptEntryPoints := Nil,
     // Add the views to the dist
     unmanagedResourceDirectories in Assets += baseDirectory.value / "app" / "assets",
     // Dont include the source assets in the dist package (public folder)
@@ -71,7 +71,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % playUIVersion,
     "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion,
     "com.codahale.metrics" % "metrics-graphite" % metricsGraphiteVersion,
-    "com.kenshoo" %% "metrics-play" % metricsPlayVersion
+    "de.threedimensions" %% "metrics-play" % "2.5.13"
+    //"com.kenshoo" %% "metrics-play" % metricsPlayVersion
   )
 
   trait TestDependencies {

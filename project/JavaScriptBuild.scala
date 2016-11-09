@@ -32,19 +32,19 @@ object JavaScriptBuild {
     gruntBuild <<= gruntBuild dependsOn npmInstall,
 
     // runs grunt before staging the application
-    dist <<= dist dependsOn gruntBuild,
+    dist <<= dist dependsOn gruntBuild
 
     // (test in Test) <<= (test in Test) dependsOn gruntTest,
 
     // Turn off play's internal less compiler
-    lessEntryPoints := Nil,
+    // lessEntryPoints := Nil,
 
     // Turn off play's internal JavaScript and CoffeeScript compiler
-    javascriptEntryPoints := Nil,
-    coffeescriptEntryPoints := Nil,
+    // javascriptEntryPoints := Nil,
+    // coffeescriptEntryPoints := Nil,
 
     // integrate JavaScript build into play build
-    playRunHooks <+= uiDirectory.map(ui => Grunt(ui))
+    // playRunHooks <+= uiDirectory.map(ui => Grunt(ui))
   )
 
   def npmCommand(base: File) = Command.args("npm", "<npm-command>") { (state, args) =>
