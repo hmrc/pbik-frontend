@@ -1,14 +1,15 @@
-import play.PlayImport.PlayKeys._
-import sbt._
-import sbt.Keys._
-import com.typesafe.sbt.web.SbtWeb.autoImport._
+
 import com.typesafe.sbt.web.SbtWeb
 import scoverage.ScoverageSbtPlugin
-
 import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
-
+import play.sbt.routes.RoutesKeys.routesGenerator
+import play.sbt.routes.RoutesKeys._
+//import play.sbt.PlayImport.PlayKeys._
+import com.typesafe.sbt.web.SbtWeb.autoImport._
+import sbt.Keys._
+import sbt._
 
 object FrontendBuild extends Build with MicroService {
 
@@ -18,7 +19,7 @@ object FrontendBuild extends Build with MicroService {
 
   override lazy val plugins : Seq[Plugins] = Seq(
     SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin,
-    play.PlayScala, SbtWeb
+    play.sbt.PlayScala, SbtWeb
   )
 
   override lazy val playSettings : Seq[Setting[_]] = Seq(
@@ -38,19 +39,19 @@ object FrontendBuild extends Build with MicroService {
 private object AppDependencies {
   import play.core.PlayVersion
 
-  private val frontendBootstrapVersion = "6.7.0"
-  private val govukTemplateVersion =  "4.0.0"
-  private val httpVerbsVersion = "5.0.0"
-  private val playAuthorisedFrontendVersion = "5.7.0"
-  private val playConfigVersion = "2.1.0"
-  private val playHealthVersion = "1.1.0"
-  private val playJsonLogger = "2.1.1"
-  private val playPartials = "4.6.0"
-  private val playUIVersion = "4.16.0"
+  private val frontendBootstrapVersion = "7.9.0"
+  private val govukTemplateVersion =  "5.0.0"
+  private val httpVerbsVersion = "6.2.0"
+  private val playAuthorisedFrontendVersion = "6.2.0"
+  private val playConfigVersion = "3.0.0"
+  private val playHealthVersion = "2.0.0"
+  private val playJsonLogger = "3.0.0"
+  private val playPartials = "5.2.0"
+  private val playUIVersion = "5.1.0"
   private val urlBuilderVersion = "1.1.0"
   private val scalaTestPlusVersion = "1.2.0"
   private val scalaTestVersion = "2.2.6"
-  private val hmrcTestVersion = "1.8.0"
+  private val hmrcTestVersion = "2.1.0"
   private val mockitoVersion = "1.10.19"
   private val pegDownVersion = "1.6.0"
   private val jSoupVersion = "1.9.2"

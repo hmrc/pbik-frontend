@@ -7,7 +7,6 @@
   serviceInfoContent: Option[Html] = None,
   contentHeader: Option[Html] = None,
   footerLinks: Option[Html] = Some(uk.gov.hmrc.play.views.html.layouts.footer_links()),
-  showFeedbackLinkInBetaBanner: Boolean = true,
   linkElement: Option[Html] = None,
   headScripts: Option[Html] = None,
   scriptElement: Option[Html] = None,
@@ -15,7 +14,7 @@
   mainConfig: MainConfig = MainConfig(),
   includeGridWrapper: Boolean = false,
   actingAttorney: Option[uk.gov.hmrc.play.frontend.auth.ActingAsAttorneyFor] = None,
-  gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_], lang:Lang, context: config.PbikContext)
+  gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_], lang:Lang, context: config.PbikContext, messages: Messages)
 
 @import config.PbikAppConfig.assetsPrefix
 @import config.PbikAppConfig.contactFormServiceIdentifier

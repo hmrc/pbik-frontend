@@ -1,19 +1,16 @@
 import sbt._
 import sbt.Keys._
 import com.typesafe.sbt.packager.Keys._
-
 /**
  * Build of UI in JavaScript
  */
 object JavaScriptBuild {
 
-  import play.PlayImport.PlayKeys._
-
   val uiDirectory = SettingKey[File]("ui-directory")
 
   val gruntBuild = TaskKey[Int]("grunt-build")
   val gruntWatch = TaskKey[Int]("grunt-watch")
-//  val gruntTest = TaskKey[Int]("grunt-test")
+  // val gruntTest = TaskKey[Int]("grunt-test")
   val npmInstall = TaskKey[Int]("npm-install")
 
 
@@ -29,15 +26,15 @@ object JavaScriptBuild {
     gruntBuild := Grunt.gruntProcess(uiDirectory.value, "sass").run().exitValue(),
 
     gruntWatch := Grunt.gruntProcess(uiDirectory.value, "watch").run().exitValue(),
-//    gruntTest := Grunt.gruntProcess(uiDirectory.value, "test").run().exitValue(),
+    // gruntTest := Grunt.gruntProcess(uiDirectory.value, "test").run().exitValue(),
 
-//    gruntTest <<= gruntTest dependsOn npmInstall,
+    // gruntTest <<= gruntTest dependsOn npmInstall,
     gruntBuild <<= gruntBuild dependsOn npmInstall,
 
     // runs grunt before staging the application
     dist <<= dist dependsOn gruntBuild,
 
-//    (test in Test) <<= (test in Test) dependsOn gruntTest,
+    // (test in Test) <<= (test in Test) dependsOn gruntTest,
 
     // Turn off play's internal less compiler
     lessEntryPoints := Nil,
