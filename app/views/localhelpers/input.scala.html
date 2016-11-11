@@ -1,12 +1,12 @@
-@(field: play.api.data.Field, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+@(field: play.api.data.Field, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang, messages: Messages)
 
 @import play.api.i18n._
 @import views.html.helper._
 
-@elements = @{ new FieldElements(field.id, field, null, args.toMap, lang) }
+@elements = @{ new FieldElements(field.id, field, null, args.toMap, messages) }
 @parentField = @{args.toMap.get('parentField).asInstanceOf[Option[Field]]}
 
-@parentElements = @{parentField.map(pf => new FieldElements(pf.id, pf, null, Map(), lang) )}
+@parentElements = @{parentField.map(pf => new FieldElements(pf.id, pf, null, Map(), messages) )}
 
 @value = @{ field.value match { case Some(x) => x case None => "" case x => x }}
 

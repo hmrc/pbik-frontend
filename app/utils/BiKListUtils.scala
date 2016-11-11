@@ -24,6 +24,8 @@ import play.api.Play.current
 
 object BikListUtils {
 
+  import ControllersReferenceData._
+
   val STATUS_ADD = 30
   val STATUS_REMOVE = 40
 

@@ -48,6 +48,7 @@ object FormMappingsConstants {
 trait FormMappings extends PayrollBikDefaults {
 
   import FormMappingsConstants._
+  import ControllersReferenceData._
 
   private val nameValidationRegex = "([a-zA-Z-'\\s])*"
   private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"

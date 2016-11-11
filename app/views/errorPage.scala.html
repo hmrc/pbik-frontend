@@ -4,7 +4,7 @@
  pageHeading:String ="An error has occurred",
  backLink:String= "overview")(implicit request:Request[_],
                               ac: uk.gov.hmrc.play.frontend.auth.AuthContext ,
-                              lang: Lang, context: config.PbikContext)
+                              lang: Lang, context: config.PbikContext, messages: Messages)
 
 @import utils.FormMappingsConstants._
 @import uk.gov.hmrc.play.views.html.helpers

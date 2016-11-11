@@ -318,10 +318,10 @@ with SplunkLogger with ExclusionListConfiguration {
           case OK => {
             auditExclusion(true, yearInt,excludedIndividual.get.nino, iabdType)
             Ok(views.html.exclusion.whatNextExclusion.render(TaxDateUtils.getTaxYearRange(), year,
-              iabdType, excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname, request, ac, lang,context))
+              iabdType, excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname, request, ac, lang,context,messages))
 
           }
-          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")(request,ac,lang,context)).
+          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")(request,ac,lang,context,messages)).
             withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
         }
     }
@@ -401,11 +401,11 @@ with SplunkLogger with ExclusionListConfiguration {
           case OK => {
             auditExclusion(false, year,extractListNino(removalsList),iabdType)
             Ok(views.html.exclusion.whatNextRescind.render(TaxDateUtils.getTaxYearRange(), NEXT_TAX_YEAR,
-              iabdTypeValue, individual.firstForename + " " + individual.surname, request, ac, lang, context)).
+              iabdTypeValue, individual.firstForename + " " + individual.surname, request, ac, lang, context,messages)).
               withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
 
           }
-          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")(request,ac,lang, context)).
+          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")(request,ac,lang, context,messages)).
             withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
         }
     }

@@ -39,6 +39,7 @@ object ControllersReferenceData extends ControllersReferenceData {
 trait ControllersReferenceData extends FormMappings {
 
   implicit val context: PbikContext = PbikContextImpl
+  implicit val messages: play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
 
   implicit val bikFormats = Json.format[Bik]
   implicit val eilFormats = Json.format[EiLPerson]

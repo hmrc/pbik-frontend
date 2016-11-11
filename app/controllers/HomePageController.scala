@@ -72,7 +72,7 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
         Logger.info("Language from request query is " + lang)
         implicit val newLang = Lang(lang)
         Logger.info("New language set to " + newLang.code)
-        Future.successful(Redirect(routes.HomePageController.onPageLoad).withLang(newLang))
+        Future.successful(Redirect(routes.HomePageController.onPageLoad))
   }
 
   def loadCautionPageForCY:Action[AnyContent] = AuthorisedForPbik {

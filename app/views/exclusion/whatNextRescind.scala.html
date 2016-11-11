@@ -2,7 +2,7 @@
   year:String, iabdType:String,
   name:String)(implicit request:Request[_],
                ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
-               lang: Lang, context: config.PbikContext)
+               lang: Lang, context: config.PbikContext, messages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._

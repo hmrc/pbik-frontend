@@ -59,7 +59,7 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
     val yearCalculated = calculateTaxYear(TaxDateUtils.isCurrentTaxYear(year))
 
     Ok(views.html.registration.whatNextAddRemove.render(
-      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, true, formRegisteredList, request, ac, lang, context))
+      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, true, formRegisteredList, request, ac, lang, context,messages))
       .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 
@@ -67,7 +67,7 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
     val yearCalculated = calculateTaxYear(TaxDateUtils.isCurrentTaxYear(year))
 
     Ok(views.html.registration.whatNextAddRemove.render(
-      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, false, formRegisteredList, request, ac, lang, context))
+      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, false, formRegisteredList, request, ac, lang, context,messages))
       .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 

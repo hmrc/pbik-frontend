@@ -1,7 +1,7 @@
 @(partialUrl: String,
   formBody: Option[Html])(implicit request:Request[_],
                           ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
-                          lang: Lang, context: config.PbikContext)
+                          lang: Lang, context: config.PbikContext, messages: Messages)
 @import connectors.FormPartialProvider
 
 @parentTemplate(pageTitle = Messages("HelpAndContact.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
