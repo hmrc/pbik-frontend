@@ -18,12 +18,16 @@ package controllers
 
 import java.util.UUID
 
+import akka.stream.Materializer
 import models.HeaderTags
 import org.specs2.mock.Mockito
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.test.WithFakeApplication
 import org.scalatest.Suite
-import play.api.test.{FakeRequest, FakeApplication}
+import play.api.Play
+import play.api.test.{FakeApplication, FakeRequest}
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 trait FakePBIKApplication extends WithFakeApplication with Mockito {
   this: Suite =>
@@ -54,5 +58,6 @@ trait FakePBIKApplication extends WithFakeApplication with Mockito {
   def noSessionIdRequest = FakeRequest().withSession(
     SessionKeys.userId -> userId)
 
+  implicit lazy val materializer = Play.current.injector.instanceOf[Materializer]
   override lazy val fakeApplication = FakeApplication(additionalConfiguration = config)
 }

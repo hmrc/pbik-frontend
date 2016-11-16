@@ -2,7 +2,7 @@
   additive: Boolean,
   taxYearRange:TaxYearRange)(implicit request:Request[_],
                              ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
-                             lang: Lang, flash: Flash, context: config.PbikContext, messages: Messages)
+                             flash: Flash, context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import uk.gov.hmrc.play.views.html.helpers.inputRadioGroup

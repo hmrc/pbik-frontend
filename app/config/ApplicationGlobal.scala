@@ -35,10 +35,11 @@ import play.api.mvc.Request
 import play.twirl.api.Html
 import play.api.{Application, Configuration}
 import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 object ApplicationGlobal extends FrontendGlobal {
 
-  import utils.ControllersReferenceData._
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
     views.html.error_template(pageTitle, heading, message)
 
@@ -56,7 +57,7 @@ abstract class FrontendGlobal
     super.onStart(app)
     ApplicationCrypto.verifyConfiguration()
   }
-
+// TODO: Rambabu Posa, update the filter
 /*  override def doFilter(a: EssentialAction): EssentialAction = {
     val securityFilter = {
       val configuration = play.api.Play.current.configuration

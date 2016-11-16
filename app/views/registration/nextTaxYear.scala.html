@@ -7,7 +7,7 @@
   decommissionedBiks:List[Int]=config.PbikAppConfig.biksDecommissioned,
   biksAvailableCount: Option[Int])(implicit request:Request[_],
                                    ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
-                                   lang: Lang, context: config.PbikContext, messages: Messages)
+                                   context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import play.api.Play.current

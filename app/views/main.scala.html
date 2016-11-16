@@ -1,4 +1,5 @@
-@import utils.ControllersReferenceData._
+@import play.api.i18n.Messages.Implicits._
+@import play.api.Play.current
 
 @(title: String,
   headerNav: Option[views.helpers.HeaderNav] = None,
@@ -16,7 +17,9 @@
   mainConfig: MainConfig = MainConfig(),
   includeGridWrapper: Boolean = false,
   actingAttorney: Option[uk.gov.hmrc.play.frontend.auth.ActingAsAttorneyFor] = None,
-  gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_], lang:Lang, context: config.PbikContext, messages: Messages)
+  gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_],
+                                                                               context: config.PbikContext,
+                                                                               applicationMessages: Messages)
 
 @import config.PbikAppConfig.assetsPrefix
 @import config.PbikAppConfig.contactFormServiceIdentifier

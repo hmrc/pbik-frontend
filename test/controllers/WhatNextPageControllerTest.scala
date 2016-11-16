@@ -17,15 +17,17 @@
 package controllers
 
 import java.util.UUID
+
 import config._
 import play.api.data.Form
+
 import scala.concurrent.Future
 import connectors.{HmrcTierConnector, TierConnector}
 import models._
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
 import org.scalatest.Matchers
-import play.api.libs.json
+import play.api.libs.{Crypto, json}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
@@ -42,6 +44,8 @@ import uk.gov.hmrc.play.http.HttpResponse
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{ControllersReferenceData, FormMappings, TaxDateUtils}
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with Matchers
                                               with FormMappings with TestAuthUser {
@@ -199,7 +203,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
     "(Register a BIK current year) Single benefit- state the status is ok and correct page is displayed" in {
       running(fakeApplication) {
         val mockWhatNextPageController = new MockWhatNextPageController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         val formRegistrationList: Form[RegistrationList] = objSelectedForm
@@ -214,7 +218,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
     "(Register a BIK next year) Single benefit - state the status is ok and correct page is displayed" in {
       running(fakeApplication) {
         val mockWhatNextPageController = new MockWhatNextPageController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         val formRegistrationList: Form[RegistrationList] = objSelectedForm
@@ -230,7 +234,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
     "(Register a BIK next year) Multiple benefits - state the status is ok and correct page is displayed" in {
       running(fakeApplication) {
         val mockWhatNextPageController = new MockWhatNextPageController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationListMultiple)
@@ -245,7 +249,7 @@ class WhatNextPageControllerTest extends UnitSpec with FakePBIKApplication with 
     "(Remove a BIK)- state the status is ok and correct page is displayed" in {
       running(fakeApplication) {
         val mockWhatNextPageController = new MockWhatNextPageController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
 

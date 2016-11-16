@@ -1,4 +1,4 @@
-@()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang, context: config.PbikContext, messages: Messages)
+@()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, context: config.PbikContext, applicationMessages: Messages)
 
 @parentTemplate(pageTitle = Messages("ConfirmationHelpAndContact.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
 

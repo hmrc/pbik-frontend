@@ -17,9 +17,9 @@
 package services
 
 import config._
-import connectors.{TierConnector, HmrcTierConnector}
+import connectors.{HmrcTierConnector, TierConnector}
 import controllers.FakePBIKApplication
-import models.{HeaderTags, RegistrationItem, Bik}
+import models.{Bik, HeaderTags, RegistrationItem}
 import org.mockito.Matchers.{eq => mockEq}
 import org.specs2.mock.Mockito
 import play.api.i18n.Messages
@@ -32,10 +32,11 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.{AuditEvent, DataEvent}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.logging.SessionId
-import uk.gov.hmrc.play.test.{WithFakeApplication, UnitSpec}
+import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import utils.TaxDateUtils
 import org.mockito.Mockito._
-
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import scala.concurrent.Future
 
 class RegistrationServiceTest extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication {

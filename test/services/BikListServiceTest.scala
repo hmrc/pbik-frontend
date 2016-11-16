@@ -21,7 +21,7 @@ import connectors.{HmrcTierConnector, TierConnector}
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Matchers.{eq => Meq, _}
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{when, verify, reset}
+import org.mockito.Mockito.{reset, verify, when, mock}
 import org.specs2.mock.Mockito
 import support.TestAuthUser
 import uk.gov.hmrc.play.http.HeaderCarrier

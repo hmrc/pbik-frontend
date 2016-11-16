@@ -1,4 +1,7 @@
-@()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, lang: Lang, context: config.PbikContext, messages: Messages)
+@import play.api.i18n.Messages.Implicits._
+@import play.api.Play.current
+
+@()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, context: config.PbikContext, applicationMessages: Messages)
 
 @import utils.FormMappingsConstants._
 

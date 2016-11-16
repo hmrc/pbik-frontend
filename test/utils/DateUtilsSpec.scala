@@ -21,7 +21,6 @@ import play.api.test.FakeApplication
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.DateUtils._
-import utils.DateUtils
 
 class DateUtilsSpec extends UnitSpec {
 

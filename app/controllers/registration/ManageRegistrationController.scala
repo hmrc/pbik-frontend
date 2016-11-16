@@ -39,6 +39,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 object ManageRegistrationController extends ManageRegistrationController with TierConnector with AuthenticationConnector {
   def pbikAppConfig = PbikAppConfig

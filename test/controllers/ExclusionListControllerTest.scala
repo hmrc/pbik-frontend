@@ -33,8 +33,9 @@ import org.scalatest.Matchers
 import play.api.libs.json
 import play.api.mvc.{Action, Result, AnyContent, Request}
 import play.api.test.Helpers._
-import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
+import play.api.libs.Crypto
+import play.filters.csrf.CSRF
 import services.{BikListService, EiLListService}
 import support.TestAuthUser
 import uk.gov.hmrc.play.http.HeaderCarrier
@@ -43,9 +44,10 @@ import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.TaxDateUtils
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
-
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt}
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with Matchers
                                                     with TestAuthUser with ControllersReferenceData {
@@ -254,7 +256,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
     " be the first year in the CY pair (e.g CY in range 15/16-16/17 would be 15 ) " in {
       running(fakeApplication) {
         val mockExclusionListController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken
+        //UnsignedTokenProvider.generateToken
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         val result = await(mockExclusionListController.mapYearStringToInt("cy"))
         result shouldBe dateRange.cyminus1 // TODO confusing as it relates to the first year of the CY range which is
@@ -267,7 +270,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
     " be the first year in the CYP1 pair (e.g CYP1 in range 15/16-16/17 would be 16 )  " in {
       running(fakeApplication) {
         val mockExclusionListController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         val result = await(mockExclusionListController.mapYearStringToInt("cyp1"))
         result shouldBe dateRange.cy
@@ -279,7 +283,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
     " throw an InvalidYearURIException " in {
       running(fakeApplication) {
         val mockExclusionListController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         intercept[InvalidYearURIException] {
           await(mockExclusionListController.mapYearStringToInt("ceeewhyploosWon"))
@@ -292,7 +297,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
     " return the start year of the CY pair, when the IABD value is valid " in {
       running(fakeApplication) {
         val mockExclusionListController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         val testac = createDummyUser("testid")
         assert(testac.principal.accounts.epaye.get.empRef.toString == "taxOfficeNumber/taxOfficeReference")
@@ -307,7 +313,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
     " throw a InvalidBikTypeURIException " in {
       running(fakeApplication) {
         val mockExclusionListController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         val testac = createDummyUser("testid")
         assert(testac.principal.accounts.epaye.get.empRef.toString == "taxOfficeNumber/taxOfficeReference")
@@ -324,7 +331,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
     "see the users already excluded " in {
       running(fakeApplication) {
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 10 seconds
         val r = await(mockExclusionController.performPageLoad("cy","car").apply(mockrequest))(timeout)
           status(r) shouldBe 200
@@ -340,7 +347,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
     "see the users already excluded " in {
       running(fakeApplication) {
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 10 seconds
         val r = await(mockExclusionController.performPageLoad("cy","car").apply(mockrequest))(timeout)
         status(r) shouldBe 200
@@ -360,7 +367,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
     "show the restriction page " in {
       running(fakeApplication) {
         val mockExclusionController = new MockExclusionsDisallowedController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 10 seconds
         val r = await(mockExclusionController.performPageLoad("cy","car").apply(mockrequest))(timeout)
         status(r) shouldBe 200
@@ -374,7 +382,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
       running(fakeApplication) {
         val title = Messages("ExclusionNinoDecision.title").substring(0, 10)
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 10 seconds
         val r = await(mockExclusionController.withOrWithoutNinoOnPageLoad("cy","car").apply(mockrequest))(timeout)
         status(r) shouldBe 200
@@ -391,7 +400,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
       running(fakeApplication) {
         val title = Messages("ServiceMessage.10002")
         val mockExclusionController = new MockExclusionsDisallowedController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 10 seconds
         val r = await(mockExclusionController.withOrWithoutNinoOnPageLoad("cy","car").apply(mockrequest))(timeout)
         status(r) shouldBe 200
@@ -405,7 +415,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
       running(fakeApplication) {
         val title = Messages("ExclusionNinoDecision.title").substring(0, 10)
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val result = await(mockExclusionController.withOrWithoutNinoDecision("cy","car").apply(mockrequest))(timeout)
         /*status(result) shouldBe 200
@@ -425,7 +436,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
       running(fakeApplication) {
         val title = Messages("ServiceMessage.10002")
         val mockExclusionController = new MockExclusionsDisallowedController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.withOrWithoutNinoDecision("cy","car").apply(mockrequest))(timeout)
         status(r) shouldBe 200
@@ -439,7 +451,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
       running(fakeApplication) {
         val title = Messages("ExclusionSearch.title")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
 
         implicit val formrequest = mockrequest.withFormUrlEncodedBody(
@@ -459,7 +472,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
       running(fakeApplication) {
         val title = Messages("ExclusionSearch.title")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
 
         implicit val formrequest = mockrequest.withFormUrlEncodedBody(
@@ -479,7 +493,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
       running(fakeApplication) {
         val title = Messages("ExclusionSearch.title")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 10 seconds
         val r = await(mockExclusionController.searchResults("cy","car", ExclusionListController.FORM_TYPE_NINO).apply(mockrequest))(timeout)
         status(r) shouldBe 200
@@ -496,7 +511,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
       running(fakeApplication) {
         val title = Messages("ExclusionSearch.title")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.searchResults("cy","car", ExclusionListController.FORM_TYPE_NONINO).apply(mockrequest))(timeout)
         status(r) shouldBe 200
@@ -517,7 +533,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         implicit val formrequest = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
 
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.searchResults("cy","car", ExclusionListController.FORM_TYPE_NINO).apply(formrequest))(timeout)
         status(r) shouldBe 200
@@ -538,7 +555,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val mockExclusionController = new MockExclusionListController {
           override def eiLListService = new StubEiLListServiceOneExclusion
         }
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.searchResults("cy","car", ExclusionListController.FORM_TYPE_NONINO).apply(formrequest))(timeout)
         status(r) shouldBe 200
@@ -559,7 +577,7 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
 //
 //        val title = Messages("ExclusionRadioButtonSelectionConfirmation.title")
 //        val mockExclusionController = new MockExclusionListController
-//        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+//        def csrfToken = "csrfToken"Name -> UnsignedTokenProvider.generateToken
 //        implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
 //        val r = await(mockExclusionController.searchResults("cy","15", ExclusionListController.FORM_TYPE_NINO).apply(formrequest))(timeout)
 //        status(r) shouldBe 200
@@ -576,7 +594,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
       running(fakeApplication) {
         val title = Messages("ServiceMessage.10002")
         val mockExclusionController = new MockExclusionsDisallowedController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.searchResults("cy","car", ExclusionListController.FORM_TYPE_NONINO).apply(mockrequest))(timeout)
         status(r) shouldBe 200
@@ -596,7 +615,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val title = Messages("whatNext.exclude.heading")
         val excludedText = Messages("whatNext.exclude.p1")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+        //UnsignedTokenProvider.generateToken
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.processExclusionForm(individualsForm.fill(EiLPersonList(ListOfPeople)),TEST_YEAR_CODE, TEST_IABD_VALUE,YEAR_RANGE))(timeout)
@@ -615,7 +635,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val TEST_YEAR_CODE = "cy"
         val title = Messages("ExclusionRemovalConfirmation.title")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.processRemoval(
@@ -637,7 +658,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         implicit val request = mockrequest
         val title = Messages("whatNext.rescind.heading")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.processRemovalCommit(
@@ -653,7 +675,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         running(fakeApplication) {
           implicit val request = mockrequest
           val mockExclusionController = new MockExclusionListController
-          def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+          def csrfToken = "csrfToken" -> Crypto.generateToken
+            //UnsignedTokenProvider.generateToken
           implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
           implicit val timeout: scala.concurrent.duration.Duration = 10 seconds
           val r = await(mockExclusionController.validateRequest("cy", "car"))(timeout)
@@ -665,7 +688,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         running(fakeApplication) {
           implicit val request = mockrequest
           val mockExclusionController = new MockExclusionListController
-          def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+          def csrfToken = "csrfToken" -> Crypto.generateToken
+            //UnsignedTokenProvider.generateToken
           implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
           intercept[InvalidBikTypeURIException] {
             await(mockExclusionController.validateRequest("cy", "1"))
@@ -696,7 +720,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
           implicit val formrequest = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
           val title = Messages("whatNext.rescind.heading")
           val mockExclusionController = new MockExclusionListController
-          def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+          def csrfToken = "csrfToken" -> Crypto.generateToken
+            //UnsignedTokenProvider.generateToken
           implicit val timeout: scala.concurrent.duration.Duration = 5 seconds
           val r = await(mockExclusionController.removeExclusionsCommit(TEST_IABD)(formrequest))(timeout)
           status(r) shouldBe 200
@@ -713,7 +738,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
           implicit val formrequest = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
           val title = Messages("ServiceMessage.10002")
           val mockExclusionController = new MockExclusionsDisallowedController
-          def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+          def csrfToken = "csrfToken" -> Crypto.generateToken
+            //UnsignedTokenProvider.generateToken
           implicit val timeout: scala.concurrent.duration.Duration = 5 seconds
           val r = await(mockExclusionController.removeExclusionsCommit(TEST_IABD).apply(formrequest))(timeout)
           status(r) shouldBe 200
@@ -732,7 +758,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
           implicit val formrequest = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
           val title = Messages("ExclusionRemovalConfirmation.title")
           val mockExclusionController = new MockExclusionListController
-          def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+          def csrfToken = "csrfToken" -> Crypto.generateToken
+            //UnsignedTokenProvider.generateToken
           implicit val timeout: scala.concurrent.duration.Duration = 5 seconds
           val r = await(mockExclusionController.remove(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
           status(r) shouldBe 200
@@ -750,7 +777,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
           implicit val formrequest = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
           val title = Messages("ServiceMessage.10002")
           val mockExclusionController = new MockExclusionsDisallowedController
-          def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+          def csrfToken = "csrfToken" -> Crypto.generateToken
+            //UnsignedTokenProvider.generateToken
           implicit val timeout: scala.concurrent.duration.Duration = 5 seconds
           val r = await(mockExclusionController.remove(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
           status(r) shouldBe 200
@@ -768,7 +796,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         implicit val formrequest = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
         val title = Messages("whatNext.exclude.heading")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+        //UnsignedTokenProvider.generateToken
         implicit val timeout: scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.updateExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
         status(r) shouldBe 200
@@ -786,7 +815,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         implicit val formrequest = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
         val title = Messages("ServiceMessage.10002")
         val mockExclusionController = new MockExclusionsDisallowedController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout: scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.updateExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
         status(r) shouldBe 200
@@ -804,7 +834,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         implicit val formrequest = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
         val title = Messages("ExclusionSearch.title")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout: scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.updateMultipleExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
         status(r) shouldBe 200
@@ -822,7 +853,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         implicit val formrequest = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
         val title = Messages("ServiceMessage.10002")
         val mockExclusionController = new MockExclusionsDisallowedController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val timeout: scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.updateMultipleExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
         status(r) shouldBe 200
@@ -842,7 +874,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val title = Messages("whatNext.exclude.heading")
         val excludedText = Messages("whatNext.exclude.p1")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
         val r = await(mockExclusionController.processIndividualExclusionForm(individualsFormWithRadio.fill("", EiLPersonList(ListOfPeople)),TEST_YEAR_CODE, TEST_IABD_VALUE,YEAR_RANGE))(timeout)
@@ -865,7 +898,8 @@ class ExclusionListControllerTest extends UnitSpec with FakePBIKApplication with
         val title = Messages("whatNext.exclude.heading")
         val excludedText = Messages("whatNext.exclude.p1")
         val mockExclusionController = new MockExclusionListController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" -> Crypto.generateToken
+          //UnsignedTokenProvider.generateToken
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         implicit val timeout : scala.concurrent.duration.Duration = 5 seconds
 

@@ -1,4 +1,7 @@
-@(pageTitle: String, heading: String, message: String)(implicit messages: Messages)
+@import play.api.i18n.Messages.Implicits._
+@import play.api.Play.current
+
+@(pageTitle: String, heading: String, message: String)(implicit applicationMessages: Messages)
 
 @import play.api.Play.current
 @import play.api.Play

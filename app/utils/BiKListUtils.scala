@@ -19,12 +19,10 @@ package utils
 import models.{RegistrationItem, RegistrationList, Bik}
 import play.api.{Play, Logger}
 import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
-
 object BikListUtils {
-
-  import ControllersReferenceData._
 
   val STATUS_ADD = 30
   val STATUS_REMOVE = 40

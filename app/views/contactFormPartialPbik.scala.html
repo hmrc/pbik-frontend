@@ -2,7 +2,7 @@
  csrfToken: Option[String],
  service: String,
  supportLinkEnabled: Boolean)(implicit request : Request[_],
-                              lang: Lang, context: config.PbikContext, messages: Messages)
+                              context: config.PbikContext, applicationMessages: Messages)
 @import uk.gov.hmrc.play.views.html._
 
 @if(supportLinkEnabled) {

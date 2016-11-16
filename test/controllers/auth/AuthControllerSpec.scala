@@ -29,23 +29,24 @@ import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import connectors.FrontendAuthConnector
-import uk.gov.hmrc.play.frontend.auth.{Principal, LoggedInUser, AuthContext}
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.test.UnitSpec
 import scala.concurrent.Future
 import org.mockito.Mockito._
+import play.api.libs.Crypto
 
 object UserBuilder {
 
   val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
   val accounts = Accounts(epaye = epayeAccount)
-  val authority = new Authority("", accounts,None,None, CredentialStrength.None,ConfidenceLevel.L50, None, None, None)
-  val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
+  val authority = new Authority("", accounts,None,None, CredentialStrength.None,ConfidenceLevel.L50, None, None, None, legacyOid = "testOId")
+  val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
   val principal = Principal(name = Some("TEST_USER"), accounts)
 
   def apply() = {
     //User(userId = "testUserId", userAuthority = epayeAuthority("testUserId", "emp/ref"), nameFromGovernmentGateway = Some("TEST_USER"), decryptedToken = None)
-    new AuthContext(user, principal, None, None, None)
+    new AuthContext(user, principal, None, None, None, None)
   }
 
 }
@@ -56,7 +57,7 @@ class AuthControllerSpec extends UnitSpec with Mockito with FakePBIKApplication 
     implicit val hc = HeaderCarrier()
     implicit def user = UserBuilder()
 
-    def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+    def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
     def fakeRequest = FakeRequest().withSession(csrfToken)
     def fakeAuthenticatedRequest = FakeRequest().withSession(csrfToken).withHeaders()
 

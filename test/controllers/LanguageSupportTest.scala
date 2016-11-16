@@ -26,7 +26,7 @@ import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures._
 import play.api.data.Form
 import play.api.i18n.{Lang, Messages}
-import play.api.libs.json
+import play.api.libs.{Crypto, json}
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,10 +38,12 @@ import support.TestAuthUser
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.{SessionKeys, HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, SessionKeys}
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils._
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
@@ -233,7 +235,7 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
     "show the welsh language homepage when the language is welsh " in {
       running(fakeApplication) {
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
         val additions = CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) > 15) }
@@ -251,7 +253,7 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
     "set the request language and redirect to the homepage" in {
       running(fakeApplication) {
         val mockController = new MockHomePageController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = mockWelshrequest
         implicit val ac: AuthContext = createDummyUser("VALID_ID")
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
@@ -269,7 +271,7 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
     "display the navigation page " in {
       running(fakeApplication) {
         val homePageController = new MockHomePageController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = FakeRequest().withSession(
           SessionKeys.sessionId -> sessionId,
           SessionKeys.token -> "RANDOMTOKEN",

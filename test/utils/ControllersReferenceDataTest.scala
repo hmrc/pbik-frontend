@@ -30,7 +30,8 @@ import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.Upstream5xxResponse
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
-
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import scala.concurrent.Promise
 import scala.util.Try
 

@@ -25,15 +25,15 @@ object AuthorityUtils {
   def epayeAuthority(id: String, empRef: String): Authority =
     Authority(s"/auth/oid/$id", Accounts(epaye = Some(EpayeAccount(s"/epaye/$empRef", EmpRef.fromIdentifiers(empRef)))), None, None,
       credentialStrength = CredentialStrength.None,
-      confidenceLevel = ConfidenceLevel.L50, None, None, None)
+      confidenceLevel = ConfidenceLevel.L50, None, None, None,  legacyOid = "testOId")
 
   def payeAuthority(id: String, nino: String) =
     Authority(s"/auth/oid/$id", Accounts(paye = Some(PayeAccount(s"/paye/$nino", Nino(nino)))), None, None,
       credentialStrength = CredentialStrength.None,
-      confidenceLevel = ConfidenceLevel.L50, None, None, None)
+      confidenceLevel = ConfidenceLevel.L50, None, None, None,  legacyOid = "testOId")
 
   def ctAuthority(id: String, utr: String): Authority =
     Authority(s"/auth/oid/$id", Accounts(ct = Some(CtAccount(s"/ct/$utr", CtUtr(utr)))), None, None,
       credentialStrength = CredentialStrength.None,
-      confidenceLevel = ConfidenceLevel.L50, None, None, None)
+      confidenceLevel = ConfidenceLevel.L50, None, None, None,  legacyOid = "testOId")
 }

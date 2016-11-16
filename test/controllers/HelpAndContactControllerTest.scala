@@ -36,6 +36,9 @@ import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{FormMappings, TaxDateUtils}
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
+import play.api.libs.Crypto
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
@@ -87,7 +90,7 @@ class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication wit
     "get 500 response when there is an empty form" in {
       running(fakeApplication) {
         val mockHelpController = new MockHelpAndContactController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         val result = await(mockHelpController.submitContactHmrcForm().apply(request)/*(ac, mockrequest, hc)*/)
@@ -101,7 +104,7 @@ class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication wit
     "be able to submit the contact form successfully " in {
       running(fakeApplication) {
         val mockHelpController = new MockHelpAndContactController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         val helpFormFilled = helpForm.fill("John", "john@gmail.com", "test comment")

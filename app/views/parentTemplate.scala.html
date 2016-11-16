@@ -1,4 +1,5 @@
-@import utils.ControllersReferenceData._
+@import play.api.i18n.Messages.Implicits._
+@import play.api.Play.current
 
 @(pageTitle: String,
   taxYearRange:Option[models.TaxYearRange] = None,
@@ -8,12 +9,11 @@
   hNav: Option[views.helpers.HeaderNav] = Some(views.helpers.HeaderNav(title = Some(Messages("Service.title")),showBetaLink = true)),
   sidebarLinks: Option[Html] = None,
   contactSupportLinkEnabled: Boolean = true)(mainContent: Html)(implicit request : Request[_],
-                                                                lang: Lang, context: config.PbikContext, messages: Messages)
+                                                                context: config.PbikContext, applicationMessages: Messages)
 
 @import play.api.Play
 @import play.api.Play.current
 @import uk.gov.hmrc.play.http.SessionKeys
-@import play.api.i18n.Lang
 
 @logout = @{ new Call("GET", ExternalUrls.signOut) }
 
@@ -60,7 +60,7 @@
             }
             <div class="toggle-lang">
                 @if(showLanguage) {
-                    @if(lang.language.toLowerCase == "cy") {
+                    @if(applicationMessages.lang.language.toLowerCase == "cy") {
                         <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
                     } else {
                         <span>English | </span><a href="@routes.HomePageController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>

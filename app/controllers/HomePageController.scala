@@ -30,8 +30,9 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import utils._
 import scala.concurrent.Future
 import play.api.Play.configuration
-import play.api.Play.current
 import play.api.i18n.Lang
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 import scala.util.{Success, Try}
 

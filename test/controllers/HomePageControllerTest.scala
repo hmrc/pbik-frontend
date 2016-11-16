@@ -16,7 +16,7 @@
 
 package controllers
 
-import models.{HeaderTags, TaxYearRange, BinaryRadioButton, Bik}
+import models.{Bik, BinaryRadioButton, HeaderTags, TaxYearRange}
 import config.AppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import org.mockito.Mockito._
@@ -36,10 +36,14 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.BikListUtils.MandatoryRadioButton
-import utils.{TaxDateUtils, FormMappings}
+import utils.{FormMappings, TaxDateUtils}
 import utils.FormMappingsConstants._
 import support.TestAuthUser
+
 import scala.concurrent.duration._
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
+import play.api.libs.Crypto
 
 import scala.concurrent.Future
 
@@ -157,7 +161,7 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
     "show Unauthorised if the session is not authenticated" in new SetUp {
       running(fakeApplication) {
         val homePageController = new MockHomePageController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = FakeRequest().withSession(
           SessionKeys.sessionId -> "hackmeister",
           SessionKeys.token -> "RANDOMTOKEN",
@@ -320,7 +324,7 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
       "display the navigation page " in new SetUp {
         running(fakeApplication) {
           val homePageController = new MockHomePageController
-          def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+          def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
           implicit val request = FakeRequest().withSession(
             SessionKeys.sessionId -> sessionId,
             SessionKeys.token -> "RANDOMTOKEN",

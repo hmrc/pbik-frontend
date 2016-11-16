@@ -53,6 +53,7 @@ private object AppDependencies {
   private val scalaTestVersion = "2.2.6"
   private val hmrcTestVersion = "2.1.0"
   private val mockitoVersion = "1.10.19"
+  private val specs2Version = "2.3.13"
   private val pegDownVersion = "1.6.0"
   private val jSoupVersion = "1.9.2"
   private val metricsGraphiteVersion = "3.0.2"
@@ -71,7 +72,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-ui" % playUIVersion,
     "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion,
     "com.codahale.metrics" % "metrics-graphite" % metricsGraphiteVersion,
-    "de.threedimensions" %% "metrics-play" % "2.5.13"
+    "de.threedimensions" %% "metrics-play" % "2.5.13",
+    "com.typesafe.play" %% "play-ws" % "2.5.8"
     //"com.kenshoo" %% "metrics-play" % metricsPlayVersion
   )
 
@@ -88,6 +90,7 @@ private object AppDependencies {
         "org.scalatestplus" %% "play" % scalaTestPlusVersion % scope,
         "org.pegdown" % "pegdown" % pegDownVersion % scope,
         "org.mockito" % "mockito-all" % mockitoVersion % "test",
+        "org.specs2" % "specs2_2.10" % specs2Version,
         "org.jsoup" % "jsoup" % jSoupVersion % scope,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
       )

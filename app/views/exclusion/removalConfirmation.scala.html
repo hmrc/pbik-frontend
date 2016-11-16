@@ -6,7 +6,7 @@
   year: String, iabdType:String,
   individualsToRemove: Form[EiLPersonList])(implicit request: Request[_],
                                             ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
-                                            lang: Lang, context: config.PbikContext, messages: Messages)
+                                            context: config.PbikContext, applicationMessages: Messages)
 
 
 @parentTemplate(pageTitle = Messages("ExclusionRemovalConfirmation.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {

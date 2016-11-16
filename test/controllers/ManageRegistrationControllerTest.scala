@@ -31,6 +31,7 @@ import play.api.libs.json.{JsValue}
 import play.api.mvc.{Action, AnyContent, Result, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.libs.Crypto
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import play.twirl.api.{Html, HtmlFormat}
@@ -48,6 +49,8 @@ import utils.FormMappingsConstants._
 import utils._
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt}
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormMappings with TestAuthUser
    with FakePBIKApplication {
@@ -323,7 +326,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
       "state the status is ok " in {
         running(fakeApplication) {
           val mockRegistrationController = new MockRegistrationController
-          def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+          def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
           implicit val request = mockrequest
           implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
           implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
@@ -337,7 +340,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
     "display the correct Biks on the removal screen " in {
       running(fakeApplication) {
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = mockrequest
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         val title = Messages("RemoveBenefits.Heading").substring(0,44)
@@ -376,7 +379,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
 
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = mockRequestForm
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         //val title = Messages("whatNext.subHeading")
@@ -398,7 +401,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockrequest
         val title = Messages("AddBenefits.Heading")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.currentTaxYearOnPageLoad.apply(mockrequest))(timeout)
 
@@ -418,7 +421,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockrequest
         val title = Messages("AddBenefits.Heading")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.nextTaxYearAddOnPageLoad.apply(mockrequest))(timeout)
 
@@ -438,7 +441,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockrequest
         val title = Messages("RemoveBenefits.Heading").substring(0, 10)
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken ="csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
 
@@ -458,7 +461,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockrequest
         val title = Messages("RemoveBenefits.Heading").substring(0, 10)
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
 
@@ -476,7 +479,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockrequest
         val title = Messages("RemoveBenefits.Heading").substring(0, 10)
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
 
@@ -497,7 +500,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockrequest
         val title = Messages("RemoveBenefits.Heading").substring(0, 10)
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.confirmRemoveNextTaxYear.apply(mockrequest))(timeout)
         status(r) shouldBe 200
@@ -517,7 +520,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockRequestForm
         val title = Messages("whatNext.subHeading")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
 
@@ -534,7 +537,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockrequest
         val title = Messages("whatNext.add.heading")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.addNextYearRegisteredBenefitTypes.apply(noSessionIdRequest))(timeout)
 
@@ -551,7 +554,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockrequest
         val title = Messages("whatNext.add.heading")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.removeNextYearRegisteredBenefitTypes.apply(noSessionIdRequest))(timeout)
 
@@ -571,7 +574,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockRequestForm
         val title = Messages("whatNext.subHeading")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
 
@@ -591,7 +594,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockRequestForm
         val title = Messages("whatNext.subHeading")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
 
@@ -611,7 +614,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockRequestForm
         val title = Messages("whatNext.subHeading")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken // "csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
 
@@ -631,7 +634,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockRequestForm
         val title = Messages("whatNext.subHeading")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
 
@@ -651,7 +654,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockRequestForm
         val title = Messages("whatNext.subHeading")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
 
@@ -671,7 +674,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockRequestForm
         val errorMsg = Messages("RemoveBenefits.reason.other.required")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val r = await(mockRegistrationController.removeNextYearRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
 
@@ -692,7 +695,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockRequestForm
         val errorMsg = Messages("RemoveBenefits.reason.no.selection")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val result = await(mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac))
 
@@ -716,7 +719,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
         implicit val request = mockRequestForm
         val errorMsg = Messages("RemoveBenefits.reason.other.required")
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val result = await(mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac))
 
@@ -739,7 +742,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
 
         implicit val request = mockRequestForm
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val result = await(mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac))
 
@@ -760,7 +763,7 @@ class ManageRegistrationControllerTest extends UnitSpec with Matchers with FormM
 
         implicit val request = mockRequestForm
         val mockRegistrationController = new MockRegistrationController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
         val result = await(mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac))
 

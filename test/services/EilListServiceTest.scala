@@ -26,7 +26,6 @@ import play.api.libs.json
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeApplication
 import play.api.test.Helpers._
-import services.EiLListService
 import support.TestAuthUser
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext

@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{EiLPersonList, EiLPerson}
+import models.{EiLPerson, EiLPersonList}
 import support.AuthorityUtils._
 import play.api.test.Helpers._
 import play.api.test.{FakeApplication, FakeRequest}
@@ -25,13 +25,15 @@ import play.filters.csrf.CSRF.UnsignedTokenProvider
 import support.TestAuthUser
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.{AuditResult}
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import org.scalatest.mock.MockitoSugar
+import play.api.libs.Crypto
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.frontend.auth.{Principal, LoggedInUser, AuthContext}
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
-import uk.gov.hmrc.play.test.{UnitSpec}
+import uk.gov.hmrc.play.test.UnitSpec
+
 import scala.concurrent.Future
 
 class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
@@ -61,7 +63,6 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
     override def logSplunkEvent(dataEvent:DataEvent)(implicit hc:HeaderCarrier, ac: AuthContext):Future[AuditResult] = {
       Future.successful(AuditResult.Success)
     }
-
   }
 
     class SetUp {
@@ -69,14 +70,14 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
       val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
       val accounts = Accounts(epaye = epayeAccount)
       val authority = epayeAuthority("testUserId", "emp/ref")
-      val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
+      val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
       val principal = Principal(name = Some("TEST_USER"), accounts)
 
-      implicit def fakeAuthContext = new AuthContext(user, principal, None, None, None)
+      implicit def fakeAuthContext = new AuthContext(user, principal, None, None, None, None)
 
       val controller = new TestSplunkLogger
       val msg = "Hello"
-      def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
       def fakeRequest = FakeRequest().withSession(csrfToken)
       def fakeAuthenticatedRequest = FakeRequest().withSession(csrfToken).withHeaders()
       val pbikDataEvent = DataEvent(auditSource = SplunkLogger.pbik_audit_source, auditType = SplunkLogger.pbik_benefit_type, detail = Map(
@@ -120,10 +121,10 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
         val epayeAccount = None
         val accounts = Accounts(epaye = epayeAccount)
         val authority = ctAuthority("nonpayeId", "ctref")
-        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
+        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
         val principal = Principal(name = Some("TEST_USER"), accounts)
 
-        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None)
+        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None, None)
         //implicit def nonPayeUser = User(userId = "nonpayeId", userAuthority = ctAuthority("nonpayeId", "ctref"), nameFromGovernmentGateway = Some("TEST_USER"), decryptedToken = None)
 
         val d: DataEvent = controller.createDataEvent(controller.spTier.FRONTEND,
@@ -205,10 +206,10 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
         val epayeAccount = None
         val accounts = Accounts(epaye = epayeAccount)
         val authority = ctAuthority("nonpayeId", "ctref")
-        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
+        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
         val principal = Principal(name = Some("TEST_USER"), accounts)
 
-        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None)
+        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None, None)
 
         val d: DataEvent = controller.createErrorEvent(controller.spTier.FRONTEND,
           controller.spError.EXCEPTION,
