@@ -16,39 +16,41 @@
 
 package controllers
 
-import config.{PbikAppConfig, AppConfig}
+import akka.stream.Materializer
+import config.{AppConfig, PbikAppConfig}
 import controllers.registration.ManageRegistrationController
 import models._
 import connectors.{HmrcTierConnector, TierConnector}
 import org.mockito.Mockito._
-import org.scalatest.{Matchers}
+import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures._
 import org.mockito.Matchers.{eq => mockEq}
 import play.api.data.Form
 import play.api.i18n.{Lang, Messages}
 import play.api.libs.json
-import play.api.libs.json.{JsValue}
-import play.api.mvc.{Action, AnyContent, Result, Request}
+import play.api.libs.json.JsValue
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.libs.Crypto
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import play.twirl.api.{Html, HtmlFormat}
-import services.{RegistrationService, BikListService}
+import services.{BikListService, RegistrationService}
 import support.TestAuthUser
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.{SessionKeys, HttpResponse}
+import uk.gov.hmrc.play.http.{HttpResponse, SessionKeys}
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.BikListUtils.MandatoryRadioButton
 import utils.FormMappingsConstants._
 import utils._
+
 import scala.concurrent.Future
-import scala.concurrent.duration.{DurationInt}
+import scala.concurrent.duration.DurationInt
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 

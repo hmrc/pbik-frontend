@@ -23,7 +23,7 @@ import org.mockito.Mockito._
 import org.scalatest.Matchers
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.api.test.{FakeApplication, FakeRequest}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
@@ -107,14 +107,6 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
     when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
   }
 
-  class SetUp extends FakeApplication {
-    implicit val hc = HeaderCarrier()
-    implicit val user = createDummyUser("testId")
-
-  }
-
-
-
   "When checking if from YTA referer ends /account " in {
     running(fakeApplication) {
       val homePageController = HomePageController
@@ -158,7 +150,7 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
   }
 
   "HomePageController" should {
-    "show Unauthorised if the session is not authenticated" in new SetUp {
+    "show Unauthorised if the session is not authenticated" in {
       running(fakeApplication) {
         val homePageController = new MockHomePageController
         def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
@@ -173,7 +165,7 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
   }
 
   "When a valid user loads the CY warning but CY is disabled the HomePageController" should {
-    "show the CY disabled error page" in new SetUp {
+    "show the CY disabled error page" in {
       running(fakeApplication) {
         val homePageController = new MockHomePageController
         implicit val request = mockrequest
@@ -188,7 +180,7 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
   }
 
   "When a valid user loads the CY warning page and CY mode is enabled the HomePageController" should {
-    "show the page" in new SetUp {
+    "show the page" in {
       running(fakeApplication) {
         val homePageController = new MockHomePageControllerCYEnabled
         implicit val request = mockrequest
@@ -321,7 +313,7 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
 */
   "HomePageController" should {
 
-      "display the navigation page " in new SetUp {
+      "display the navigation page " in {
         running(fakeApplication) {
           val homePageController = new MockHomePageController
           def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken

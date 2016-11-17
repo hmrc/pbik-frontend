@@ -28,9 +28,10 @@ import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 
 import scala.concurrent.Future
 
-class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with MockitoSugar with BeforeAndAfterEach with ServicesConfig {
+class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with MockitoSugar
+  with BeforeAndAfterEach with ServicesConfig {
 
-  implicit override lazy val app: FakeApplication = FakeApplication()
+  //implicit override lazy val app: FakeApplication = FakeApplication()
   implicit val headerCarrier = HeaderCarrier()
 
   object TestConnector extends ContactFrontendConnector {

@@ -24,17 +24,16 @@ import org.scalatest.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json
 import play.api.mvc.{AnyContent, Request}
-import play.api.test.FakeApplication
 import play.api.test.Helpers._
 import support.TestAuthUser
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.logging.SessionId
-import uk.gov.hmrc.play.test.{WithFakeApplication, UnitSpec}
+import uk.gov.hmrc.play.test.UnitSpec
 import utils.ControllersReferenceData
 
 class EilListServiceTest extends UnitSpec with FakePBIKApplication with Matchers
-with TestAuthUser with ControllersReferenceData with WithFakeApplication{
+with TestAuthUser with ControllersReferenceData {
 
   override lazy val pbikAppConfig = mock[AppConfig]
 

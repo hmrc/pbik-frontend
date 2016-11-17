@@ -34,7 +34,7 @@ object BikListService extends BikListService {
 }
 
 trait BikListService extends TierConnector with URIInformation with ControllersReferenceData {
-  var pbikHeaders: Map[String, String] = Map()
+  var pbikHeaders = Map[String, String]()
 
   def currentYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]): Future[(Map[String, String], List[Bik])] = {
     val response = tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,

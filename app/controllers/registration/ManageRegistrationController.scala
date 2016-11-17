@@ -20,7 +20,7 @@ import java.util.UUID
 import _root_.models._
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
-import controllers.{WhatNextPageController, routes}
+import controllers.WhatNextPageController
 import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
 import play.api.Logger
 import play.api.data.Form

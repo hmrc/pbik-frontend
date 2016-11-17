@@ -41,7 +41,7 @@ object HmrcTierConnector extends HmrcTierConnector with ServicesConfig {
 }
 
 class HmrcTierConnector extends URIInformation with TierClient  {
-  var pbikHeaders:Map[String, String] = Map()
+  var pbikHeaders = Map[String, String]()
 
   def encode(value:String):String = URLEncoder.encode(value, "UTF-8")
 

@@ -22,7 +22,7 @@ import org.specs2.mock.Mockito
 import support.AuthorityUtils._
 import play.api.test.Helpers._
 import play.api.mvc._
-import play.api.test.{FakeApplication, FakeRequest}
+import play.api.test.FakeRequest
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import uk.gov.hmrc.domain.EmpRef

@@ -24,12 +24,12 @@ import org.specs2.mock.Mockito
 import uk.gov.hmrc.play.http.SessionKeys
 import uk.gov.hmrc.play.test.WithFakeApplication
 import org.scalatest.Suite
-import play.api.Play
+import play.api.{Application, Play}
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.{FakeApplication, FakeRequest}
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
+import play.test.WithApplication
 
-trait FakePBIKApplication extends WithFakeApplication with Mockito {
+trait FakePBIKApplication extends WithApplication with Mockito {
   this: Suite =>
   val config = Map("application.secret" -> "Its secret",
                     "csrf.sign.tokens" -> false,
@@ -58,6 +58,6 @@ trait FakePBIKApplication extends WithFakeApplication with Mockito {
   def noSessionIdRequest = FakeRequest().withSession(
     SessionKeys.userId -> userId)
 
-  implicit lazy val materializer = Play.current.injector.instanceOf[Materializer]
-  override lazy val fakeApplication = FakeApplication(additionalConfiguration = config)
+  override lazy val fakeApplication: Application = new GuiceApplicationBuilder().configure(config).build()
+  implicit val mat: Materializer = fakeApplication.materializer
 }

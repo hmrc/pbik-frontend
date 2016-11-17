@@ -70,14 +70,14 @@ trait RegistrationService extends FrontendController with URIInformation
       biksListOption:List[Bik] <- bikListService.registeredBenefitsList(year, "")(getBenefitTypesPath)
       registeredListOption <- tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
         ac.principal.accounts.epaye.get.empRef.toString, year)
-      val nonLegislationList = nonLegislationBiks.map { x =>
+      nonLegislationList = nonLegislationBiks.map { x =>
         Bik(""+x, 30, 0)}
           decommissionedBikList = decommissionedBikIds.map { x =>
         Bik(""+x, 30, 0)}
       // During transition, we have to ensure we handle the existing decommissioned IABDs (e.g 47 ) being sent by the server
       // and after the NPS R38 config release, when it wont be. Therefore, aas this is a list, we remove the
       // decommissioned values ( if they exist ) and then add them back in
-      val hybridList = biksListOption.filterNot(y => decommissionedBikIds.contains(y.iabdType.toInt)) ::: nonLegislationList ::: decommissionedBikList
+      hybridList = biksListOption.filterNot(y => decommissionedBikIds.contains(y.iabdType.toInt)) ::: nonLegislationList ::: decommissionedBikList
 
     } yield {
       val pbikHeaders = bikListService.pbikHeaders
