@@ -17,10 +17,7 @@
 }
 
 @head = {
-@uiLayouts.head(
-assetsPrefix = PbikAppConfig.assetsPrefix,
-linkElem = None,
-headScripts = None)
+@uiLayouts.head(linkElem = None,headScripts = None)
 <meta name="format-detection" content="telephone=no" />
 }
 
@@ -51,7 +48,6 @@ mainContentHeader = contentHeader)
 @uiLayouts.footer(
 analyticsToken = Some(PbikAppConfig.analyticsToken),
 analyticsHost = PbikAppConfig.analyticsHost,
-assetsPrefix =  PbikAppConfig.assetsPrefix,
 ssoUrl =  None,
 scriptElem = None,
 gaCalls = None)
