@@ -57,8 +57,9 @@ abstract class FrontendGlobal
     super.onStart(app)
     ApplicationCrypto.verifyConfiguration()
   }
-// TODO: Rambabu Posa, update the filter
-/*  override def doFilter(a: EssentialAction): EssentialAction = {
+  // TODO: Check this and update the doFilter
+  /*
+  override def doFilter(a: EssentialAction): EssentialAction = {
     val securityFilter = {
       val configuration = play.api.Play.current.configuration
       val securityHeadersConfig:SecurityHeadersConfig = new SecurityHeadersParser().parse(configuration).asInstanceOf[SecurityHeadersConfig]
@@ -67,6 +68,9 @@ abstract class FrontendGlobal
     }
     Filters(super.doFilter(a), Seq(securityFilter):_*)
   }*/
+  override def doFilter(a: EssentialAction): EssentialAction = {
+    Filters(super.doFilter(a), Seq(securityFilter):_*)
+  }
 
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig("microservice.metrics")
 }
