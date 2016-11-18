@@ -17,7 +17,6 @@
   actingAttorney: Option[uk.gov.hmrc.play.frontend.auth.ActingAsAttorneyFor] = None,
   gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_], lang:Lang, context: config.PbikContext)
 
-@import config.PbikAppConfig.assetsPrefix
 @import config.PbikAppConfig.contactFormServiceIdentifier
 @import play.api.Play.current
 @import play.api.Play
@@ -27,7 +26,7 @@
 @import config.PbikAppConfig._
 
 @head = {
-    @layouts.head(assetsPrefix, linkElement, headScripts)
+    @layouts.head(linkElement, headScripts)
 }
 
 @insideHeader = {
@@ -93,7 +92,6 @@
 
     @layouts.footer(analyticsToken = Play.configuration.getString("google-analytics.token"),
         analyticsHost = Play.configuration.getString("google-analytics.host").getOrElse("service.gov.uk"),
-        assetsPrefix = config.PbikAppConfig.assetsPrefix,
         ssoUrl = Play.configuration.getString("portal.ssoUrl"),
         scriptElem = scriptElement,
         gaCalls = gaCalls)
