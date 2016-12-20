@@ -200,7 +200,7 @@ ExclusionRemoval.WhatNext.lede = You''ve told us that {0} will be having {1} tax
 
 ExclusionRemoval.WhatNext.p1 = You''ll need to report the value of this benefit on a P11D instead.
 
-ExclusionRescind.WhatNext.p1 = Tell your employee that their tax code will change and we will send them a new tax code. Example letters can be found in the <a target="_blank" href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">Payrolling benefits and expenses guidance</a> (opens in a new window).
+ExclusionRescind.WhatNext.p1 = Tell your employee’s that their tax codes will change and we will send them a new tax code. You must also provide your employee’s with a letter straight away explaining that you are payrolling certain benefits and what it means for them.
 ExclusionRescind.WhatNext.p2 = From 6 April add the cash equivalent of the benefit or expense to your employee''s pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
 ExclusionRescind.WhatNext.p3 = Stop sending us a <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> for the employee who has the benefit or expense payrolled.
 ExclusionRescind.WhatNext.p4 = Continue sending a <a target="_blank" href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D(b)</a> to report Class 1A National Insurance contributions.
@@ -485,7 +485,7 @@ whatNext.cy.add.p1=You''ve successfully told HMRC that you''ll be payrolling the
 whatNext.cy1.add.lede=Now tax the following benefits and expenses through your payroll from 6 April {0}.
 whatNext.cy1.add.lede.singular=Now tax {0} through your payroll from 6 April {1}.
 whatNext.cy1.add.table.header=Registered benefits and expenses
-whatNext.add.p1=Tell your employees that their tax codes will change and we will send them a new tax code. Example letters can be found in the <a target="blank" href="https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">Payrolling benefits and expenses guidance</a> (opens in a new window).
+whatNext.add.p1=Tell your employee’s that their tax codes will change and we will send them a new tax code. You must also provide your employee’s with a letter straight away explaining that you are payrolling certain benefits and what it means for them.
 whatNext.add.p2=From 6 April add the cash equivalent of the benefits and expenses to your employees'' pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
 whatNext.add.p3=Stop sending us <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11Ds</a> for the employees'' who have benefits and expenses payrolled.
 whatNext.add.p4=Continue sending a <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db">P11D(b)</a> to report Class 1A National Insurance contributions.
