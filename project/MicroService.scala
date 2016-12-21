@@ -25,7 +25,7 @@ trait MicroService {
       ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;views.*;config.*;models.*;" +
         ".*(AuthService|BuildInfo|Routes).*",
       ScoverageKeys.coverageMinimum := 75,
-      ScoverageKeys.coverageFailOnMinimum := true,
+      ScoverageKeys.coverageFailOnMinimum := false,
       ScoverageKeys.coverageHighlighting := true
     )
 
