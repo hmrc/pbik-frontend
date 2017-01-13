@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
     override lazy val pbikAppConfig = mock[AppConfig]
     override val tierConnector = mock[HmrcTierConnector]
     lazy val CYCache = List.range(3, 32).map(n => new Bik("" + n, 10))/*(n => new Bik("" + (n + 1), 10))*/
-    pbikHeaders = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
+    override lazy val pbikHeaders:Map[String,String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
 
     override def currentYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]):
         Future[(Map[String, String], List[Bik])] = {

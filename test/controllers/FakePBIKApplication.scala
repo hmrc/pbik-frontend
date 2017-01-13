@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,11 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.{FakeApplication, FakeRequest}
 import play.test.WithApplication
 
-trait FakePBIKApplication extends WithFakeApplication with Mockito with BeforeAndAfterAll {
+trait FakePBIKApplication extends WithFakeApplication
+  with Mockito {
   this: Suite =>
 
-  override def bindModules = Seq(new PlayModule)
+  //override def bindModules = Seq(new PlayModule)
 
   val config = Map("application.secret" -> "Its secret",
                     "csrf.sign.tokens" -> false,
@@ -66,7 +67,7 @@ trait FakePBIKApplication extends WithFakeApplication with Mockito with BeforeAn
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
     .build()
-  //implicit val mat: Materializer = fakeApplication.materializer
+
   implicit lazy val materializer = fakeApplication.materializer //Play.current.injector.instanceOf[Materializer]
 
   //implicit val messages: play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages

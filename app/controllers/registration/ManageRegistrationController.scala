@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -258,13 +258,13 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
           case Some(info)=> {
             tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
               ac.principal.accounts.epaye.get.empRef.toString, year, changes)
-            auditBikUpdate(false, year, persistentBiks, Some(reasonValue.selectionValue.toUpperCase, Some(info)))
+            auditBikUpdate(false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, Some(info))))
             loadWhatNextRemovedBIK(form, year)
           }
           case _ => {
             tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
               ac.principal.accounts.epaye.get.empRef.toString, year, changes)
-            auditBikUpdate(false, year, persistentBiks, Some(reasonValue.selectionValue.toUpperCase, None))
+            auditBikUpdate(false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, None)))
             loadWhatNextRemovedBIK(form, year)
           }
         }

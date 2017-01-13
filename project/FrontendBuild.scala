@@ -41,11 +41,11 @@ private object AppDependencies {
 
   private val frontendBootstrapVersion = "7.10.0"
   private val govukTemplateVersion =  "5.0.0"
-  private val httpVerbsVersion = "6.2.0"
+  //private val httpVerbsVersion = "6.2.0"
   private val playAuthorisedFrontendVersion = "6.2.0"
   private val playConfigVersion = "3.0.0"
   private val playHealthVersion = "2.0.0"
-  private val playJsonLogger = "3.0.0"
+  //private val playJsonLogger = "3.0.0"
   private val playPartials = "5.2.0"
   private val playUIVersion = "5.1.0"
   private val urlBuilderVersion = "1.1.0"
@@ -56,8 +56,9 @@ private object AppDependencies {
   private val specs2Version = "2.3.13"
   private val pegDownVersion = "1.6.0"
   private val jSoupVersion = "1.9.2"
-  private val metricsGraphiteVersion = "3.0.2"
-  private val metricsPlayVersion = "0.2.1"
+  //private val metricsGraphiteVersion = "3.0.2"
+  //private val metricsPlayVersion = "0.2.1"
+  private val playGraphiteVersion = "3.1.0"
 
   val compile = Seq(
 
@@ -72,8 +73,9 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-partials" % playPartials, // includes code for retrieving partials, e.g. the Help with this page form
     "uk.gov.hmrc" %% "play-ui" % playUIVersion,
     "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion,
-    "com.codahale.metrics" % "metrics-graphite" % metricsGraphiteVersion,
-    "de.threedimensions" %% "metrics-play" % "2.5.13"
+    "uk.gov.hmrc" %% "play-graphite" % playGraphiteVersion
+    //"com.codahale.metrics" % "metrics-graphite" % metricsGraphiteVersion,
+    //"de.threedimensions" %% "metrics-play" % "2.5.13"
     //"com.typesafe.play" %% "play-ws" % "2.5.8"
     //"com.kenshoo" %% "metrics-play" % metricsPlayVersion
   )

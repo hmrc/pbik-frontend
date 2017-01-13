@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ object BikListService extends BikListService {
 }
 
 trait BikListService extends TierConnector with URIInformation with ControllersReferenceData {
-  var pbikHeaders = Map[String, String]()
+  def pbikHeaders = Map[String, String]()
 
   def currentYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]): Future[(Map[String, String], List[Bik])] = {
     val response = tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
