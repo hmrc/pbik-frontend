@@ -1,0 +1,28 @@
+@()(implicit request:Request[_], lang: Lang, context: config.PbikContext)
+
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@questionnaireTemplate(pageTitle = Messages("questionnaire.thanksFeedback"), false) {
+  <div class="grid row logged-out-page">
+
+    <div class="column-two-thirds">
+
+      <h1 class="heading-xlarge" id="thank-you-h1">@Messages("questionnaire.thanksFeedback")</h1>
+
+      <p class="medium margin-bottom" id="thank-you-p1">
+
+        <a href="@controllers.routes.RedirectController.redirectIfFromStart">@Messages("questionnaire.signIn")</a>
+
+      </p>
+
+      <p class="medium margin-bottom" id="thank-you-p2">
+
+        <a href="http://www.gov.uk">@Messages("questionnaire.exploreGov")</a>
+
+      </p>
+
+    </div>
+
+  </div>
+}

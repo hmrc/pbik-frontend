@@ -515,3 +515,21 @@ HelpAndContact.form.p2=Byddwn yn cysylltu â chi cyn pen 2 diwrnod gwaith.
 
 ConfirmationHelpAndContact.title=Diolch
 ConfirmationHelpAndContact.p1=Bydd rhywun yn cysylltu â chi cyn pen 2 diwrnod gwaith.
+
+# Exit Questionnaire
+questionnaire.signedOut=You have signed out
+questionnaire.signInAgain=You can <a href="{0}">sign in again</a> if you need to.
+questionnaire.beforeYouGo=Before you go, please answer some questions to help us improve your experience.
+questionnaire.howDoYouFeel=Overall, how do you feel after using this service?
+questionnaire.verySatisfied=Very satisfied
+questionnaire.satisfied=Satisfied
+questionnaire.neither=Neither satisfied nor dissatisfied
+questionnaire.dissatisfied=Dissatisfied
+questionnaire.veryDissatisfied=Very dissatisfied
+questionnaire.howCanWeImprove=Tell us how we can improve this service
+questionnaire.noPersonalInfo=Please do not include any personal or financial information, for example your National Insurance or credit card numbers.
+questionnaire.characterLimit=1200 character limit
+questionnaire.sendFeedback=Send feedback
+questionnaire.thanksFeedback=Thanks for your feedback
+questionnaire.signIn=Sign in again
+questionnaire.exploreGov=Explore GOV.UK
