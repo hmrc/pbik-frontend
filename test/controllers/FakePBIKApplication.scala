@@ -17,24 +17,17 @@
 package controllers
 
 import java.util.UUID
-
-import akka.stream.Materializer
-import com.kenshoo.play.metrics.PlayModule
 import models.HeaderTags
 import org.specs2.mock.Mockito
 import uk.gov.hmrc.play.http.SessionKeys
-import uk.gov.hmrc.play.test.WithFakeApplication
-import org.scalatest.{BeforeAndAfterAll, Suite}
+import org.scalatest.Suite
 import play.api.{Application, Play}
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.{FakeApplication, FakeRequest}
-import play.test.WithApplication
+import play.api.test.FakeRequest
 
-trait FakePBIKApplication extends WithFakeApplication
-  with Mockito {
+trait FakePBIKApplication extends Mockito {
+
   this: Suite =>
-
-  //override def bindModules = Seq(new PlayModule)
 
   val config = Map("application.secret" -> "Its secret",
                     "csrf.sign.tokens" -> false,
@@ -60,23 +53,13 @@ trait FakePBIKApplication extends WithFakeApplication
     HeaderTags.ETAG -> "0",
     HeaderTags.X_TXID -> "0")
 
-  def noSessionIdRequest = FakeRequest().withSession(
-    SessionKeys.userId -> userId)
+  def noSessionIdRequest = FakeRequest().withSession(SessionKeys.userId -> userId)
 
-  override lazy val fakeApplication = GuiceApplicationBuilder(
+  lazy val fakeApplication = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
     .build()
 
-  implicit lazy val materializer = fakeApplication.materializer //Play.current.injector.instanceOf[Materializer]
+  implicit lazy val materializer = fakeApplication.materializer
 
-  //implicit val messages: play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
-
-  override def beforeAll {
-    Play.start(fakeApplication)
-  }
-
-  override def afterAll {
-    Play.stop(fakeApplication)
-  }
 }

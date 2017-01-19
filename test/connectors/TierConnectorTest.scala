@@ -34,7 +34,7 @@ import utils.Exceptions.GenericServerErrorException
 import scala.concurrent.Future
 
 class TierConnectorTest  extends UnitSpec with FakePBIKApplication
-                                                with Matchers with TestAuthUser with Results {
+                                          with Matchers with TestAuthUser with Results {
 
   "When instantiating the TierConnector it " should {
     "not have a null tierConnector reference " in {

@@ -22,8 +22,8 @@ import controllers.registration.ManageRegistrationController
 import models._
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
-import org.scalatest.Matchers
 import org.scalatest.concurrent.ScalaFutures._
+import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.data.Form
 import play.api.i18n.{Lang, Messages}
 import play.api.libs.{Crypto, json}
@@ -40,17 +40,16 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, SessionKeys}
 import uk.gov.hmrc.play.http.logging.SessionId
-import uk.gov.hmrc.play.test.UnitSpec
 import utils._
 import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
+import akka.util.Timeout
+import play.api.http.HttpEntity.Strict
 
-class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with TestAuthUser
+class LanguageSupportTest extends PlaySpec with OneAppPerSuite with FormMappings with TestAuthUser
    with FakePBIKApplication {
-
 
   implicit val ac = createDummyUser("testid")
   lazy val CYCache = List.tabulate(21)(n => new Bik("" + (n + 1), 10))
@@ -79,7 +78,7 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
 
     override def registeredBenefitsList(year: Int, orgIdentifier: String)(path: String)
                                        (implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]) :  Future[List[Bik]] = {
-      CYCache
+      Future(CYCache)(scala.concurrent.ExecutionContext.Implicits.global)
     }
 
   }
@@ -95,8 +94,8 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
     override val tierConnector = mock[HmrcTierConnector]
     val dateRange = TaxDateUtils.getTaxYearRange()
 
-    val registeredListOption = Future.successful(List.empty[Bik])
-    val allRegisteredListOption = Future.successful(CYCache)
+    val registeredListOption =List.empty[Bik]
+    val allRegisteredListOption = CYCache
     val mockRegistrationItemList = List.empty[RegistrationItem]
     val mockFormRegistrationList: Form[RegistrationList] = objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
 
@@ -109,14 +108,12 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
       year match {
         case dateRange.cyminus1 => {
           Future.successful(Ok(
-            views.html.registration.currentTaxYear(
-              mockFormRegistrationList,dateRange,mockRegistrationItemList,allRegisteredListOption,PbikAppConfig.biksNotSupported, biksAvailableCount=Some(17))
+            views.html.registration.currentTaxYear(mockFormRegistrationList,dateRange,mockRegistrationItemList,allRegisteredListOption,PbikAppConfig.biksNotSupported, biksAvailableCount=Some(17))
           ))
         }
         case _ => {
           Future.successful(Ok(
-            views.html.registration.nextTaxYear(
-              mockFormRegistrationList,true,dateRange,mockRegistrationItemList,registeredListOption,PbikAppConfig.biksNotSupported, biksAvailableCount=Some(17))
+            views.html.registration.nextTaxYear(mockFormRegistrationList,true,dateRange,mockRegistrationItemList,registeredListOption,PbikAppConfig.biksNotSupported, biksAvailableCount=Some(17))
           ))
         }
       }
@@ -251,40 +248,33 @@ class LanguageSupportTest extends UnitSpec with Matchers with FormMappings with 
 
   "The Homepage Controller " should {
     "set the request language and redirect to the homepage" in {
-      running(fakeApplication) {
-        val mockController = new MockHomePageController
-        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-        implicit val request = mockWelshrequest
-        implicit val ac: AuthContext = createDummyUser("VALID_ID")
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-        val additions = CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) > 15) }
-        implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
-        //implicit val lang:Lang = new Lang("cy")
-        val r = await( mockController.setLanguage.apply(request))(timeout)
-        status(r) shouldBe 303
-      }
+      val mockController = new MockHomePageController
+      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+      implicit val request = mockWelshrequest
+      implicit val ac: AuthContext = createDummyUser("VALID_ID")
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+      val additions = CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) > 15) }
+      implicit val timeout = timeoutValue
+      //implicit val lang:Lang = new Lang("cy")
+      val result = await( mockController.setLanguage.apply(request))(timeout)
+      result.header.status must be(SEE_OTHER) // 303
     }
   }
 
   "HomePageController" should {
-
     "display the navigation page " in {
-      running(fakeApplication) {
-        val homePageController = new MockHomePageController
-        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-        implicit val request = FakeRequest().withSession(
-          SessionKeys.sessionId -> sessionId,
-          SessionKeys.token -> "RANDOMTOKEN",
-          SessionKeys.userId -> userId).withCookies(Cookie("PLAY_LANG", "cy"))
-        implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
-        implicit val lang : Lang = new Lang("cy")
-        val r = await(homePageController.onPageLoad.apply(request))(timeout)
-        status(r) shouldBe 200
-        bodyOf(r) should include("Cyfeirnod TWE y cyflogwr")
-      }
+      val homePageController = new MockHomePageController
+      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+      implicit val request = FakeRequest().withSession(
+        SessionKeys.sessionId -> sessionId,
+        SessionKeys.token -> "RANDOMTOKEN",
+        SessionKeys.userId -> userId).withCookies(Cookie("PLAY_LANG", "cy"))
+      implicit val timeout = timeoutValue
+      implicit val lang : Lang = new Lang("cy")
+      val result = await(homePageController.onPageLoad.apply(request))(timeout)
+      result.header.status must be(OK) // 200
+      result.body.asInstanceOf[Strict].data.utf8String must include("Cyfeirnod TWE y cyflogwr")
     }
-
   }
-
 
 }

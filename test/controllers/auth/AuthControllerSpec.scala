@@ -32,8 +32,10 @@ import connectors.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.test.UnitSpec
+
 import scala.concurrent.Future
 import org.mockito.Mockito._
+import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.libs.Crypto
 
 object UserBuilder {
@@ -51,7 +53,7 @@ object UserBuilder {
 
 }
 
-class AuthControllerSpec extends UnitSpec with Mockito with FakePBIKApplication {
+class AuthControllerSpec extends PlaySpec with OneAppPerSuite with Mockito with FakePBIKApplication {
 
   class SetUp {
     implicit val hc = HeaderCarrier()
@@ -70,15 +72,14 @@ class AuthControllerSpec extends UnitSpec with Mockito with FakePBIKApplication 
   }
 
   "When an invalid user logs in, notAuthorised" should {
-    "redirect to the authenticaiton page " in new SetUp {
+    "redirect to the authenticaiton page " in new SetUp  {
       val controller = new TestController()
-      val result: Future[Result] = await(controller.notAuthorised().apply(fakeRequest))
-      status(result) shouldBe 303
-      redirectLocation(result).get shouldBe
-        "http://localhost:9025/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fpayrolled-benefits-expenses&origin=pbik-frontend"
-        //"http://localhost:9025/gg/sign-in?continue=http://localhost:9233/payrollbik/payrolled-benefits-expenses"
+      val result: Future[Result] = await(Future{controller.notAuthorised().apply(fakeRequest)}(scala.concurrent.ExecutionContext.Implicits.global))
+      status(result) must be(SEE_OTHER) //303
+      redirectLocation(result).get must include(
+        "http://localhost:9025/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fpayrolled-benefits-expenses&origin=pbik-frontend")
       val bodyText: String = contentAsString(result)
-      //assert(bodyText.contains("Sign in with your Government Gateway account"))
+      assert(bodyText.contains(""))
     }
   }
 
@@ -87,7 +88,8 @@ class AuthControllerSpec extends UnitSpec with Mockito with FakePBIKApplication 
       val controller = new TestController()
       implicit val testac = user
       implicit val testRequest = fakeRequest
-      val result: Future[Result] = await(controller.notAuthorisedResult)
+      val result: Future[Result] = await(Future{controller.notAuthorisedResult}(scala.concurrent.ExecutionContext.Implicits.global))
+      status(result) must be(OK) // 200
       val bodyText: String = contentAsString(result)
       assert(bodyText.contains("Enrol to use this service"))
     }
@@ -98,7 +100,7 @@ class AuthControllerSpec extends UnitSpec with Mockito with FakePBIKApplication 
       val controller = new TestController()
       implicit val testac = user
       implicit val testRequest = fakeRequest
-      val result: Future[Result] = await(controller.notAuthorisedResult)
+      val result: Future[Result] = await(Future{controller.notAuthorisedResult}(scala.concurrent.ExecutionContext.Implicits.global))
       val bodyText: String = contentAsString(result)
       assert(bodyText.contains("Enrol to use this service"))
       assert(bodyText.contains("You&#x27;re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue."))

@@ -17,17 +17,14 @@
 package controllers
 
 import java.util.UUID
-
 import config._
 import play.api.data.Form
-
 import scala.concurrent.Future
 import connectors.{HmrcTierConnector, TierConnector}
 import models._
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
-import org.scalatest.{BeforeAndAfterAll, Matchers}
-import org.scalatestplus.play.{OneAppPerSuite, OneServerPerSuite, PlaySpec}
+import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Application
 import play.api.http.HttpEntity.Strict
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -48,10 +45,9 @@ import uk.gov.hmrc.play.http.HttpResponse
 import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{ControllersReferenceData, FormMappings, TaxDateUtils}
-//import play.api.i18n.Messages.Implicits._
-//import play.api.Play.current
 
-class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication// with Matchers
+
+class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
                                               with FormMappings with TestAuthUser{
 
 
@@ -206,97 +202,69 @@ class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakeP
   // start tests
   "When loading the what next page " must {
        "(Register a BIK current year) Single benefit- state the status is ok and correct page is displayed" in {
-        // running(fakeApplication) {
-           import play.api.libs.concurrent.Execution.Implicits._
+         import play.api.libs.concurrent.Execution.Implicits._
 
-           val mockWhatNextPageController = new MockWhatNextPageController
-           def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-           implicit val request = mockrequest
-           implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
-           val formRegistrationList: Form[RegistrationList] = objSelectedForm
-           val formFilled = formRegistrationList.fill(registrationList)
-           val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2016)})
-           result.header.status must be(OK)
-           result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
-           result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April 2016.")
-
-           //status(result) shouldBe 200
-           //contentAsString(result) should include("Registration complete")
-           //contentAsString(result) should include("Now tax Private medical treatment or insurance through your payroll from 6 April 2016.")
-         //}
+         val mockWhatNextPageController = new MockWhatNextPageController
+         def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+         implicit val request = mockrequest
+         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+         val formRegistrationList: Form[RegistrationList] = objSelectedForm
+         val formFilled = formRegistrationList.fill(registrationList)
+         val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2016)})
+         result.header.status must be(OK)
+         result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
+         result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April 2016.")
        }
 
-        "(Register a BIK next year) Single benefit - state the status is ok and correct page is displayed" in {
-          //running(fakeApplication) {
-            import play.api.libs.concurrent.Execution.Implicits._
+      "(Register a BIK next year) Single benefit - state the status is ok and correct page is displayed" in {
+        import play.api.libs.concurrent.Execution.Implicits._
 
-            val mockWhatNextPageController = new MockWhatNextPageController
-            def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-            implicit val request = mockrequest
-            implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
-            val formRegistrationList: Form[RegistrationList] = objSelectedForm
-            val formFilled = formRegistrationList.fill(registrationList)
-            formRegistrationList.fill(registrationList)
-            val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017)})
-            result.header.status must be(OK)
-            result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
-            result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April 2017.")
+        val mockWhatNextPageController = new MockWhatNextPageController
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+        implicit val request = mockrequest
+        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+        val formRegistrationList: Form[RegistrationList] = objSelectedForm
+        val formFilled = formRegistrationList.fill(registrationList)
+        formRegistrationList.fill(registrationList)
+        val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017)})
+        result.header.status must be(OK)
+        result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April 2017.")
+      }
 
-            //status(result) shouldBe 200
-            //contentAsString(result) should include("Registration complete")
-            //contentAsString(result) should include("Now tax Private medical treatment or insurance through your payroll from 6 April 2017.")
-         // }
-        }
+      "(Register a BIK next year) Multiple benefits - state the status is ok and correct page is displayed" in {
+        import play.api.libs.concurrent.Execution.Implicits._
 
-          "(Register a BIK next year) Multiple benefits - state the status is ok and correct page is displayed" in {
-            //running(fakeApplication) {
-              import play.api.libs.concurrent.Execution.Implicits._
+        val mockWhatNextPageController = new MockWhatNextPageController
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+        implicit val request = mockrequest
+        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+        val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationListMultiple)
+        val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016)})
+        result.header.status must be(OK)
+        result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Private medical treatment or insurance")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Services supplied")
+      }
 
-              val mockWhatNextPageController = new MockWhatNextPageController
-              def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-              implicit val request = mockrequest
-              implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
-              val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationListMultiple)
-              val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016)})
-              result.header.status must be(OK)
-              result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
-              result.body.asInstanceOf[Strict].data.utf8String must include("Private medical treatment or insurance")
-              result.body.asInstanceOf[Strict].data.utf8String must include("Services supplied")
+     "(Remove a BIK)- state the status is ok and correct page is displayed" in {
+         import play.api.libs.concurrent.Execution.Implicits._
 
-              //status(result) shouldBe 200
-              //contentAsString(result) should include("Registration complete")
-              //contentAsString(result) should include("Private medical treatment or insurance")
-              //contentAsString(result) should include("Services supplied")
-            //}
-          }
+         val mockWhatNextPageController = new MockWhatNextPageController
+         def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+         implicit val request = mockrequest
+         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
 
-             "(Remove a BIK)- state the status is ok and correct page is displayed" in {
-               //running(fakeApplication) {
-                 import play.api.libs.concurrent.Execution.Implicits._
-
-                 val mockWhatNextPageController = new MockWhatNextPageController
-                 def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-                 implicit val request = mockrequest
-                 implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
-
-                 val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationList)
-                 val result = await(Future{mockWhatNextPageController.loadWhatNextRemovedBIK(formRegistrationList, 2015)})
-                 result.header.status must be(OK)
-                 result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
-                 result.body.asInstanceOf[Strict].data.utf8String must include(
-                   "If you're still providing this benefit or expense to any of your employees, you'll need to complete a " +
-                     "<a href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> for them at the end of the tax year."
-                 )
-                 //status(result) shouldBe 200
-                 //contentAsString(result) should include("Benefit removed")
-                 //contentAsString(result) should include(
-                 //  "If you're still providing this benefit or expense to any of your employees, you'll need to complete a " +
-                 //    "<a href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> for them at the end of the tax year."
-                 //)
-              // }
-             }
+         val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationList)
+         val result = await(Future{mockWhatNextPageController.loadWhatNextRemovedBIK(formRegistrationList, 2015)})
+         result.header.status must be(OK)
+         result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
+         result.body.asInstanceOf[Strict].data.utf8String must include(
+           "If you're still providing this benefit or expense to any of your employees, you'll need to complete a " +
+             "<a href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> for them at the end of the tax year."
+         )
+     }
 
   }
-
 
 }
