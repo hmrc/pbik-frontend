@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ object ExternalUrls extends RunMode {
 
   val loginCallback   = Play.configuration.getString("microservice.auth.login-callback.url").getOrElse(routes.HomePageController.onPageLoad().url)
   val companyAuthHost = Play.configuration.getString("microservice.auth.company-auth.host").getOrElse("")
-  val signOutCallback = Play.configuration.getString("pbik.survey.url").getOrElse("")
   val loginLocalPath = Play.configuration.getString("microservice.auth.login_local_path").getOrElse("")
   val loginPath = Play.configuration.getString("microservice.auth.login_path").getOrElse("")
   val signOutPath = Play.configuration.getString("microservice.auth.signout_path").getOrElse("")
@@ -32,6 +31,6 @@ object ExternalUrls extends RunMode {
   val continue        = loginCallback
   val signIn          = s"$companyAuthHost/gg/$loginPath"
   val signInLocal     = s"$companyAuthHost/gg/$loginLocalPath"
-  val signOut         = s"$companyAuthHost/gg/$signOutPath?continue=$signOutCallback"
+  val signOut         = s"$companyAuthHost/gg/$signOutPath"
 
 }
