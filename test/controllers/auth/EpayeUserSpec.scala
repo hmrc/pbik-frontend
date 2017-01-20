@@ -17,17 +17,16 @@
 package controllers.auth
 
 import controllers.FakePBIKApplication
-import play.api.test.Helpers._
+import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import support.AuthorityUtils._
 import support.TestAuthUser
 import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.play.frontend.auth.{Principal, LoggedInUser, AuthContext}
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
-import uk.gov.hmrc.play.test.UnitSpec
 
 class TestEPayeUser extends EpayeUser
 
-class EpayeUserSpec extends UnitSpec with FakePBIKApplication with TestAuthUser {
+class EpayeUserSpec extends PlaySpec with OneAppPerSuite with FakePBIKApplication with TestAuthUser {
 
   def v() = {
     val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "123", taxOfficeReference ="45678" ), link =""))
@@ -36,7 +35,6 @@ class EpayeUserSpec extends UnitSpec with FakePBIKApplication with TestAuthUser 
     val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
     val principal = Principal(name = Some("TEST_USER"), accounts)
     new AuthContext(user, principal, None, None, None, None)
-
   }
 
   def i() = {
@@ -46,46 +44,35 @@ class EpayeUserSpec extends UnitSpec with FakePBIKApplication with TestAuthUser 
     val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
     val principal = Principal(name = Some("TEST_USER"), accounts)
     new AuthContext(user, principal, None, None, None, None)
-
   }
 
   "When accessing the PBIKEpayeRegime the unauthorisedLandingPage " should {
     "  be set correctly " in {
-      running(fakeApplication) {
-        val ob = PBIKEpayeRegime
-        assert(ob.unauthorisedLandingPage == Some("/payrollbik/not-authorised"))
-      }
+      val ob = PBIKEpayeRegime
+      assert(ob.unauthorisedLandingPage == Some("/payrollbik/not-authorised"))
     }
   }
 
   "When accessing the PBIKEpayeRegime the authenticationType " should {
     " should not be null " in {
-      running(fakeApplication) {
-        val ob = PBIKEpayeRegime
-        assert(ob.authenticationType != null)
-      }
+      val ob = PBIKEpayeRegime
+      assert(ob.authenticationType != null)
     }
   }
 
   "When accessing the PBIKEpayeRegime a valid account  " should {
     " return true " in {
-      running(fakeApplication) {
-        val ob = PBIKEpayeRegime
-        assert(ob.isAuthorised(createDummyUser("VALID").principal.accounts))
-      }
+      val ob = PBIKEpayeRegime
+      assert(ob.isAuthorised(createDummyUser("VALID").principal.accounts))
     }
   }
 
   "When accessing the PBIKEpayeRegime a no EPaye account  " should {
     " return false " in {
-      running(fakeApplication) {
-        val ob = PBIKEpayeRegime
-        assert(ob.isAuthorised(createDummyNonEpayeUser("INVALID").principal.accounts) == false)
-      }
+      val ob = PBIKEpayeRegime
+      assert(ob.isAuthorised(createDummyNonEpayeUser("INVALID").principal.accounts) == false)
     }
   }
-
-
 
   "When an EpayeUser is created a valid EmpRef " should {
     " be available " in {

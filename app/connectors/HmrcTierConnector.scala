@@ -46,7 +46,7 @@ class HmrcTierConnector extends URIInformation with TierClient  {
   def encode(value:String):String = URLEncoder.encode(value, "UTF-8")
 
   def createGetUrl(baseUrl: String,URIExtension: String,orgIdentifier:String, year:Int):String = {
-    if ( orgIdentifier ==  null ) {
+    if (orgIdentifier.trim.isEmpty) {
       s"$baseUrl/$year/$URIExtension"
     } else {
       val orgIdentifierEncoded = encode(orgIdentifier)
@@ -56,7 +56,6 @@ class HmrcTierConnector extends URIInformation with TierClient  {
       }
     }
   }
-
 
   def genericGetCall[T](baseUrl: String,URIExtension: String,orgIdentifier:String, year:Int)
                        (implicit hc:HeaderCarrier,request:Request[_],
