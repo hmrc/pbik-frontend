@@ -46,7 +46,8 @@ class HmrcTierConnector extends URIInformation with TierClient  {
   def encode(value:String):String = URLEncoder.encode(value, "UTF-8")
 
   def createGetUrl(baseUrl: String,URIExtension: String,orgIdentifier:String, year:Int):String = {
-    if (orgIdentifier.trim.isEmpty) {
+    // TODO: Why can't we use this: if (orgIdentifier.trim.isEmpty)
+    if ( orgIdentifier ==  null ) {
       s"$baseUrl/$year/$URIExtension"
     } else {
       val orgIdentifierEncoded = encode(orgIdentifier)
