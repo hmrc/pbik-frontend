@@ -1,3 +1,5 @@
+// The CSS in this file is duplicated from the pbik.scss file for compatibility with Firefox.
+
 .logged-out-page .survey-heading {
   font-size: 30px;
   font-weight: bold;
