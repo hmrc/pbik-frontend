@@ -1,0 +1,69 @@
+@(pageTitle: String, showLanguage:Boolean = false)(mainContent: Html)(implicit request:Request[_], lang: Lang, context: config.PbikContext)
+
+@import play.api.Play
+@import play.api.Play.current
+@import uk.gov.hmrc.play.http.SessionKeys
+@import play.api.i18n.Lang
+
+@myLinkElement = {
+    <link rel='stylesheet' href='@routes.AssetsController.at("assets/css/pbik.css")'/>
+}
+
+@scriptElement = {
+    <!-- Google Analytics -->
+
+    <script>
+            window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+            ga('create', '@Play.configuration.getString(s"google-analytics.token")', 'auto');
+            ga('send', 'pageview', '@pageTitle + @request.session.get(SessionKeys.sessionId)');
+    </script>
+
+    <script async src='//www.google-analytics.com/analytics.js'></script>
+
+    <!-- End Google Analytics -->
+
+    <!--[if IE 7]>
+
+    <link rel="stylesheet" type="text/css" href='@routes.AssetsController.at("assets/css/ie7.css")'/>
+
+    <![endif]-->
+
+    <script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/pbik.js")'></script>
+
+    <script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/print.js")'></script>
+}
+
+@serviceInfo = {
+    @if(showLanguage) {
+        <div class="pbik-banner-links">
+
+            <div class="toggle-lang">
+                @if(showLanguage) {
+                    @if(lang.language.toLowerCase == "cy") {
+                        <a href="@routes.QuestionnaireController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
+                    } else {
+                        <span>English | </span><a href="@routes.QuestionnaireController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>
+                    }
+                }
+            </div>
+
+        </div>
+    }
+}
+
+@main(
+    title = pageTitle,
+    headerNav = Some(views.helpers.HeaderNav(
+    title = Some(Messages("Service.title")),
+    titleLink = None,
+    links = None,
+    showBetaLink = false)),
+    showFeedbackLinkInBetaBanner = true,
+    supportLinkEnabled = true,
+    linkElement = Some(myLinkElement),
+    serviceInfoContent = Some(serviceInfo),
+    headScripts = Some(scriptElement),
+    sidebarLinks = None
+) {
+@mainContent
+}

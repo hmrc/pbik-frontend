@@ -13,7 +13,7 @@ GET         /help-and-contact-confirmed             controllers.HelpAndContactCo
 
 GET         /not-authorised                         controllers.auth.AuthController.notAuthorised
 
-GET         /signout                                controllers.HomePageController.signoutRedirectToDone
+GET         /signout                                controllers.HomePageController.signout
 GET         /feedback                               controllers.HomePageController.redirectToDone
 
 GET         /setLanguage                            controllers.HomePageController.setLanguage
@@ -45,3 +45,11 @@ POST        /:year/:iabdType/exclude-selected          controllers.ExclusionList
 
 POST        /:year/:iabdType/exclude-employee-remove                         controllers.ExclusionListController.remove(year:String, iabdType:String)
 POST        /:iabdType/remove-commit                  controllers.ExclusionListController.removeExclusionsCommit(iabdType:String)
+
+# Exit Questionnaire
+GET         /signed-out                             controllers.QuestionnaireController.showQuestionnaire
+POST        /signed-out                             controllers.QuestionnaireController.submitQuestionnaire
+
+GET         /feedbackThankYou                       controllers.QuestionnaireController.feedbackThankYou
+
+GET         /setLanguageQuestionnaire               controllers.QuestionnaireController.setLanguage

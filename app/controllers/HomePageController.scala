@@ -53,10 +53,9 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
       Future.successful(Ok(views.html.errorPage(AUTHORISATION_ERROR, TaxDateUtils.getTaxYearRange())))
   }
 
-  def signoutRedirectToDone:Action[AnyContent] = UnauthorisedAction {
+  def signout: Action[AnyContent] = UnauthorisedAction {
     implicit request =>
-      Redirect(configuration.getString("pbik.survey.url").getOrElse("")).withNewSession
-
+      Redirect(controllers.routes.QuestionnaireController.showQuestionnaire).withNewSession
   }
 
   def redirectToDone:Action[AnyContent] = AuthorisedForPbik {

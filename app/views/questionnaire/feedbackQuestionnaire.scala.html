@@ -1,0 +1,57 @@
+@(questionnaireForm: Form[models.Questionnaire])(implicit request:Request[_], lang: Lang, context: config.PbikContext)
+
+@import uk.gov.hmrc.play.views.html._
+@import uk.gov.hmrc.play.views.html.helpers._
+
+@questionnaireTemplate(pageTitle = Messages("questionnaire.signedOut"), true) {
+  <div class="logged-out-page">
+
+    <div class="column-two-thirds">
+
+      <h1 class="heading-xlarge" id="questionnaire-h1">@Messages("questionnaire.signedOut")</h1>
+
+      <p class="medium margin-bottom" id="questionnaire-p1">@Html(Messages("questionnaire.signInAgain", "/payrollbik"))</p>
+
+      <p class="margin-bottom survey-heading" id="questionnaire-p2">@Messages("questionnaire.beforeYouGo")</p>
+
+      @helpers.form(action = controllers.routes.QuestionnaireController.submitQuestionnaire, 'class -> "satisfaction-survey-form") {
+        @inputRadioGroup(
+          questionnaireForm("satisfactionLevel"),
+          Seq(
+            "4" -> Messages("questionnaire.verySatisfied"),
+            "3" -> Messages("questionnaire.satisfied"),
+            "2" -> Messages("questionnaire.neither"),
+            "1" -> Messages("questionnaire.dissatisfied"),
+            "0" -> Messages("questionnaire.veryDissatisfied")
+          ),
+          '_legend -> Messages("questionnaire.howDoYouFeel"),
+          '_legendClass -> "radio-legend",
+          '_labelAfter -> true,
+          '_labelClass -> "block-label horizontal-radio-button"
+        )
+      <fieldset>
+
+        <legend id="questionnaire-legend">@Messages("questionnaire.howCanWeImprove")</legend>
+
+        <p id="questionnaire-p3">@Messages("questionnaire.noPersonalInfo")</p>
+
+        <div class="char-counter" data-char-counter>
+
+          <textarea data-char-field cols="50" rows="6" maxLength="1200" name="howCanWeImprove"></textarea>
+
+          <p class="char-counter-text flush js-hidden" id="questionnaire-p4">@Messages("questionnaire.characterLimit")</p>
+
+        </div>
+
+      </fieldset>
+
+      <div>
+
+        <button type="submit" class="button" id="questionnaire-button">@Messages("questionnaire.sendFeedback")</button>
+
+      </div>
+    }
+  </div>
+
+</div>
+}
