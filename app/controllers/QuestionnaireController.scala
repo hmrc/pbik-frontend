@@ -22,15 +22,16 @@ import connectors.{HmrcTierConnector, TierConnector}
 import controllers.auth.AuthenticationConnector
 import models.Questionnaire
 import play.api.Logger
-import play.api.Play.current
 import play.api.i18n.Lang
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, LegacyI18nSupport}
 import services.BikListService
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.ControllersReferenceData
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 object QuestionnaireController extends QuestionnaireController with TierConnector
   with AuthenticationConnector {
@@ -42,7 +43,7 @@ object QuestionnaireController extends QuestionnaireController with TierConnecto
   val appName: String = AppName.appName
 }
 
-trait QuestionnaireController extends FrontendController with Auditable with ControllersReferenceData {
+trait QuestionnaireController extends FrontendController with Auditable with ControllersReferenceData with LegacyI18nSupport {
 
   def showQuestionnaire: Action[AnyContent] = UnauthorisedAction {
     implicit request =>
