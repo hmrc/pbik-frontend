@@ -46,7 +46,7 @@ app/assets/stylesheets/*
 node_modules
 **/npm-debug.log
 bower_components
-public/assets/css/ie7.css
+public/assets/css/
 /bin
 app/assets/stylesheets
 
