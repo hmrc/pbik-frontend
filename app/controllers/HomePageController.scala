@@ -58,12 +58,6 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
       Redirect(controllers.routes.QuestionnaireController.showQuestionnaire).withNewSession
   }
 
-  def redirectToDone:Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        Future.successful(Redirect(configuration.getString("pbik.survey.url").getOrElse("")))
-  }
-
   def setLanguage:Action[AnyContent] = AuthorisedForPbik {
     implicit ac =>
       implicit request =>
