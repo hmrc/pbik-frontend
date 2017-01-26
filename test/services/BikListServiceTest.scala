@@ -18,34 +18,33 @@ package services
 
 import config.AppConfig
 import connectors.{HmrcTierConnector, TierConnector}
+import controllers.FakePBIKApplication
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Matchers.{eq => Meq, _}
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{when, verify, reset}
+import org.mockito.Mockito.{mock, reset, verify, when}
 import org.specs2.mock.Mockito
 import support.TestAuthUser
 import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.test.{WithFakeApplication, UnitSpec}
+import uk.gov.hmrc.play.test.UnitSpec
 import play.api.test.Helpers._
-import play.api.test.{FakeRequest, FakeApplication}
-import models.{HeaderTags, Bik}
+import play.api.test.FakeRequest
+import models.{Bik, HeaderTags}
 import scala.concurrent.duration._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-
-
 import scala.concurrent.Await
 
-class BikListServiceTest extends UnitSpec with TestAuthUser  with Mockito with WithFakeApplication{
+class BikListServiceTest extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication {
 
   "The BIK service " should {
     val mockTierConnector = mock[HmrcTierConnector]
     val headers = Map(HeaderTags.ETAG -> "1", HeaderTags.X_TXID -> "1")
 
-    val bikListService = running(FakeApplication()) {
+    val bikListService = running(fakeApplication) {
        new BikListService {
          override lazy val pbikAppConfig = mock[AppConfig]
-         pbikHeaders = headers
+         override lazy val pbikHeaders:Map[String,String] = headers
          override val tierConnector: HmrcTierConnector = mockTierConnector
       }
     }

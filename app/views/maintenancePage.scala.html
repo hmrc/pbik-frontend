@@ -1,7 +1,10 @@
+@import play.api.i18n.Messages.Implicits._
+@import play.api.Play.current
+
 @(pageHeading:String =Messages("ServiceMessage.0.h1"),
   backLink:String= "payrolled-benefits-expenses")(implicit request:Request[_],
                                                   ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
-                                                  lang: Lang, context: config.PbikContext)
+                                                  context: config.PbikContext, applicationMessages: Messages)
 
 @import utils.FormMappingsConstants._
 

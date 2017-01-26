@@ -1,4 +1,6 @@
-@(pageTitle: String, showLanguage:Boolean = false)(mainContent: Html)(implicit request:Request[_], lang: Lang, context: config.PbikContext)
+@import play.api.i18n.Messages.Implicits._
+@import play.api.Play.current
+@(pageTitle: String, showLanguage:Boolean = false)(mainContent: Html)(implicit request:Request[_], context: config.PbikContext)
 
 @import play.api.Play
 @import play.api.Play.current
@@ -39,7 +41,7 @@
 
             <div class="toggle-lang">
                 @if(showLanguage) {
-                    @if(lang.language.toLowerCase == "cy") {
+                    @if(applicationMessages.lang.language.toLowerCase == "cy") {
                         <a href="@routes.QuestionnaireController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
                     } else {
                         <span>English | </span><a href="@routes.QuestionnaireController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>
@@ -58,12 +60,10 @@
     titleLink = None,
     links = None,
     showBetaLink = false)),
-    showFeedbackLinkInBetaBanner = true,
     supportLinkEnabled = true,
     linkElement = Some(myLinkElement),
     serviceInfoContent = Some(serviceInfo),
-    headScripts = Some(scriptElement),
-    sidebarLinks = None
+    headScripts = Some(scriptElement)
 ) {
 @mainContent
 }

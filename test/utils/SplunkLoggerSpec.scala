@@ -16,25 +16,27 @@
 
 package utils
 
-import models.{EiLPersonList, EiLPerson}
+import models.{EiLPerson, EiLPersonList}
 import support.AuthorityUtils._
 import play.api.test.Helpers._
-import play.api.test.{FakeApplication, FakeRequest}
+import play.api.test.FakeRequest
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import support.TestAuthUser
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.connector.{AuditResult}
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import org.scalatest.mock.MockitoSugar
+import play.api.libs.Crypto
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.frontend.auth.{Principal, LoggedInUser, AuthContext}
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
-import uk.gov.hmrc.play.test.{UnitSpec}
+import uk.gov.hmrc.play.test.UnitSpec
+import controllers.FakePBIKApplication
 import scala.concurrent.Future
 
-class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
+class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with MockitoSugar with TestAuthUser {
 
   val testList = List[EiLPerson](new EiLPerson("AB111111","Adam", None ,"Smith",None, Some("01/01/1980"),Some("male"), None, 0))
   val testPersonList = EiLPersonList(testList)
@@ -61,7 +63,6 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
     override def logSplunkEvent(dataEvent:DataEvent)(implicit hc:HeaderCarrier, ac: AuthContext):Future[AuditResult] = {
       Future.successful(AuditResult.Success)
     }
-
   }
 
     class SetUp {
@@ -69,14 +70,14 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
       val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
       val accounts = Accounts(epaye = epayeAccount)
       val authority = epayeAuthority("testUserId", "emp/ref")
-      val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
+      val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
       val principal = Principal(name = Some("TEST_USER"), accounts)
 
-      implicit def fakeAuthContext = new AuthContext(user, principal, None, None, None)
+      implicit def fakeAuthContext = new AuthContext(user, principal, None, None, None, None)
 
       val controller = new TestSplunkLogger
       val msg = "Hello"
-      def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
+      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
       def fakeRequest = FakeRequest().withSession(csrfToken)
       def fakeAuthenticatedRequest = FakeRequest().withSession(csrfToken).withHeaders()
       val pbikDataEvent = DataEvent(auditSource = SplunkLogger.pbik_audit_source, auditType = SplunkLogger.pbik_benefit_type, detail = Map(
@@ -92,7 +93,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When logging events, the SplunkLogger " should {
     "return a properly formatted DataEvent for Pbik events " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         val d: DataEvent = controller.createDataEvent(controller.spTier.FRONTEND,
                                                   controller.spAction.ADD,
                                                   controller.spTarget.BIK,
@@ -116,14 +117,14 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When logging events, the SplunkLogger without a ePaye account " should {
     "return a properly formatted DataEvent with a empref default for Pbik events " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         val epayeAccount = None
         val accounts = Accounts(epaye = epayeAccount)
         val authority = ctAuthority("nonpayeId", "ctref")
-        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
+        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
         val principal = Principal(name = Some("TEST_USER"), accounts)
 
-        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None)
+        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None, None)
         //implicit def nonPayeUser = User(userId = "nonpayeId", userAuthority = ctAuthority("nonpayeId", "ctref"), nameFromGovernmentGateway = Some("TEST_USER"), decryptedToken = None)
 
         val d: DataEvent = controller.createDataEvent(controller.spTier.FRONTEND,
@@ -152,7 +153,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
   "When logging events, the SplunkLogger " should {
 
     "complete successfully when sending a PBIK DataEvent " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
 
         val r: AuditResult = await(controller.logSplunkEvent(pbikDataEvent))
         assert(r == Success)
@@ -162,7 +163,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When logging events, the SplunkLogger " should {
     "complete successfully when sending a general DataEvent " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
 
         val nonPbikEvent = DataEvent(auditSource = "TEST", auditType = "TEST-AUDIT-TYPE", detail = Map(
           "event" -> "APPLY-THE-TEST",
@@ -182,7 +183,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
   "When logging events, the SplunkLogger " should {
 
     "return a properly formatted DataEvent for Pbik errors " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         val d: DataEvent = controller.createErrorEvent(controller.spTier.FRONTEND,
           controller.spError.EXCEPTION,
           "No PAYE Scheme found for user")(fakeAuthContext)
@@ -201,14 +202,14 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When logging events, the SplunkLogger " should {
     "mark the empref with a default if one is not present " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         val epayeAccount = None
         val accounts = Accounts(epaye = epayeAccount)
         val authority = ctAuthority("nonpayeId", "ctref")
-        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50)
+        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
         val principal = Principal(name = Some("TEST_USER"), accounts)
 
-        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None)
+        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None, None)
 
         val d: DataEvent = controller.createErrorEvent(controller.spTier.FRONTEND,
           controller.spError.EXCEPTION,
@@ -228,7 +229,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When logging events, the SplunkLogger " should {
     "return the correct splunk field names " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
@@ -249,7 +250,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When extracting a Nino from an empty list the conroller " should {
     "return a not found label " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
@@ -261,7 +262,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When extracting a Nino from a list the conroller " should {
     "return a not found label " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
@@ -273,7 +274,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When extracting a Nino from a Person list the conroller " should {
     "return a not found label " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
@@ -285,7 +286,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When extracting a Nino from an empty Person List the conroller " should {
     "return a not found label " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
@@ -297,7 +298,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When extracting the Government Gateway Id from a valid user the controller " should {
     "return the Government Gateway name " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
@@ -309,7 +310,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When extracting the Government Gateway Id from an invalid user the controller " should {
     "return the default " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
@@ -322,7 +323,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When extracting the Empref Id from a valid user the controller " should {
     "return the Empref " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
@@ -334,7 +335,7 @@ class SplunkLoggerSpec extends UnitSpec with MockitoSugar with TestAuthUser {
 
   "When extracting the Empref Id from an invalid user the controller " should {
     "return the default " in new SetUp {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {

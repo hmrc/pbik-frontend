@@ -23,7 +23,8 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{Lang, Messages}
 import utils.BikListUtils.{MandatoryRadioButton}
-
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import scala.util.Try
 
 object FormMappingsConstants {
@@ -48,6 +49,7 @@ object FormMappingsConstants {
 trait FormMappings extends PayrollBikDefaults {
 
   import FormMappingsConstants._
+  import ControllersReferenceData._
 
   private val nameValidationRegex = "([a-zA-Z-'\\s])*"
   private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"

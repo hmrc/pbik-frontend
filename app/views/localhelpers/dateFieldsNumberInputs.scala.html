@@ -1,4 +1,9 @@
-@(formItem:Form[_], dateFieldName: String, dayFieldName: String, monthFieldName: String, yearFieldName: String, label: Html, args: (Symbol,Any)*)(implicit lang: play.api.i18n.Lang)
+@(formItem:Form[_],
+  dateFieldName: String,
+  dayFieldName: String,
+  monthFieldName: String,
+  yearFieldName: String,
+  label: Html, args: (Symbol,Any)*)(implicit applicationMessages: Messages)
 
 
 @import play.api.i18n._

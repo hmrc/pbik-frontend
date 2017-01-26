@@ -20,7 +20,7 @@ import java.util.UUID
 import _root_.models._
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
-import controllers.{WhatNextPageController, routes}
+import controllers.WhatNextPageController
 import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
 import play.api.Logger
 import play.api.data.Form
@@ -39,6 +39,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 object ManageRegistrationController extends ManageRegistrationController with TierConnector with AuthenticationConnector {
   def pbikAppConfig = PbikAppConfig
@@ -256,13 +258,13 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
           case Some(info)=> {
             tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
               ac.principal.accounts.epaye.get.empRef.toString, year, changes)
-            auditBikUpdate(false, year, persistentBiks, Some(reasonValue.selectionValue.toUpperCase, Some(info)))
+            auditBikUpdate(false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, Some(info))))
             loadWhatNextRemovedBIK(form, year)
           }
           case _ => {
             tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
               ac.principal.accounts.epaye.get.empRef.toString, year, changes)
-            auditBikUpdate(false, year, persistentBiks, Some(reasonValue.selectionValue.toUpperCase, None))
+            auditBikUpdate(false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, None)))
             loadWhatNextRemovedBIK(form, year)
           }
         }

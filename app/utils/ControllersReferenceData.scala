@@ -25,11 +25,11 @@ import play.api.mvc.{AnyContent, Request, Result}
 import utils.BikListUtils.MandatoryRadioButton
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 import uk.gov.hmrc.play.http._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import play.api.{Logger, Play}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
+import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
 object ControllersReferenceData extends ControllersReferenceData {

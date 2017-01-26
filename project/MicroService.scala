@@ -4,6 +4,8 @@ import sbt._
 import scoverage.ScoverageSbtPlugin
 import wartremover._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
+import play.routes.compiler.StaticRoutesGenerator
+import play.sbt.routes.RoutesKeys.routesGenerator
 
 trait MicroService {
 
@@ -14,8 +16,8 @@ trait MicroService {
 
   val appName: String
 
-  lazy val appDependencies : Seq[ModuleID] = ???
-  lazy val plugins : Seq[Plugins] = Seq(play.PlayScala)
+  lazy val appDependencies : Seq[ModuleID] = Seq.empty
+  lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala)
   lazy val playSettings : Seq[Setting[_]] = Seq.empty
 
   lazy val scoverageSettings = {
@@ -53,7 +55,8 @@ trait MicroService {
                                                                 Wart.DefaultArguments,
                                                                 Wart.NoNeedForMonad),
       wartremoverErrors in (Compile, compile) ++= Seq.empty,
-      wartremoverExcluded ++= wartRemovedExcludedClasses
+      wartremoverExcluded ++= wartRemovedExcludedClasses,
+      routesGenerator := StaticRoutesGenerator
     )
     .settings(inConfig(TemplateTest)(Defaults.testSettings): _*)
     .configs(IntegrationTest)
@@ -67,7 +70,8 @@ trait MicroService {
     .settings(
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
-        Resolver.typesafeRepo("releases")
+        Resolver.typesafeRepo("releases"),
+        Resolver.jcenterRepo
       )
     )
 

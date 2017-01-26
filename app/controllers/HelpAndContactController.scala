@@ -29,7 +29,8 @@ import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
 import uk.gov.hmrc.play.http.{HeaderCarrier, _}
-
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import scala.concurrent.Future
 
 object HelpAndContactController extends HelpAndContactController with TierConnector

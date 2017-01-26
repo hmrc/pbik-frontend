@@ -21,7 +21,7 @@ import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.auth._
 import play.api.Logger
-import play.api.mvc.{Result, _}
+import play.api.mvc.{Result,LegacyI18nSupport, _}
 import services.{BikListService}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.frontend.auth.AuthContext
@@ -30,9 +30,9 @@ import uk.gov.hmrc.play.http.HeaderCarrier
 import utils._
 import scala.concurrent.Future
 import play.api.Play.configuration
-import play.api.Play.current
 import play.api.i18n.Lang
-
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 import scala.util.{Success, Try}
 
 object HomePageController extends HomePageController with TierConnector
@@ -43,7 +43,7 @@ with AuthenticationConnector {
 }
 
 trait HomePageController extends FrontendController with URIInformation
-with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger  {
+with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger with LegacyI18nSupport {
 
   this: TierConnector =>
   def bikListService: BikListService

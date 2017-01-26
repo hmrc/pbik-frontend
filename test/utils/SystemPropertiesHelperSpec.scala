@@ -21,6 +21,7 @@ import org.scalatest.Matchers
 import org.scalatest.mock.MockitoSugar
 import uk.gov.hmrc.play.test.UnitSpec
 import org.mockito.Mockito._
+import org.specs2.mock.Mockito
 import scala.sys.SystemProperties
 
 class SystemPropertiesHelperSpec extends UnitSpec with FakePBIKApplication with Matchers  {

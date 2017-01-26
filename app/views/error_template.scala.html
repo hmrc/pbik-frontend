@@ -1,4 +1,7 @@
-@(pageTitle: String, heading: String, message: String)
+@import play.api.i18n.Messages.Implicits._
+@import play.api.Play.current
+
+@(pageTitle: String, heading: String, message: String)(implicit applicationMessages: Messages)
 
 @import play.api.Play.current
 @import play.api.Play
@@ -17,7 +20,10 @@
 }
 
 @head = {
-@uiLayouts.head(linkElem = None,headScripts = None)
+@uiLayouts.head(
+assetsPrefix = PbikAppConfig.assetsPrefix,
+linkElem = None,
+headScripts = None)
 <meta name="format-detection" content="telephone=no" />
 }
 
@@ -48,6 +54,7 @@ mainContentHeader = contentHeader)
 @uiLayouts.footer(
 analyticsToken = Some(PbikAppConfig.analyticsToken),
 analyticsHost = PbikAppConfig.analyticsHost,
+assetsPrefix =  PbikAppConfig.assetsPrefix,
 ssoUrl =  None,
 scriptElem = None,
 gaCalls = None)

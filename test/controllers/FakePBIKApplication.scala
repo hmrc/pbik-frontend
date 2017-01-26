@@ -17,16 +17,17 @@
 package controllers
 
 import java.util.UUID
-
 import models.HeaderTags
 import org.specs2.mock.Mockito
 import uk.gov.hmrc.play.http.SessionKeys
-import uk.gov.hmrc.play.test.WithFakeApplication
 import org.scalatest.Suite
-import play.api.test.{FakeRequest, FakeApplication}
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.FakeRequest
 
-trait FakePBIKApplication extends WithFakeApplication with Mockito {
+trait FakePBIKApplication extends Mockito {
+
   this: Suite =>
+
   val config = Map("application.secret" -> "Its secret",
                     "csrf.sign.tokens" -> false,
                     "microservice.services.contact-frontend.host" -> "localhost",
@@ -51,8 +52,13 @@ trait FakePBIKApplication extends WithFakeApplication with Mockito {
     HeaderTags.ETAG -> "0",
     HeaderTags.X_TXID -> "0")
 
-  def noSessionIdRequest = FakeRequest().withSession(
-    SessionKeys.userId -> userId)
+  def noSessionIdRequest = FakeRequest().withSession(SessionKeys.userId -> userId)
 
-  override lazy val fakeApplication = FakeApplication(additionalConfiguration = config)
+  lazy val fakeApplication = GuiceApplicationBuilder(
+    disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
+  ).configure(config)
+    .build()
+
+  implicit lazy val materializer = fakeApplication.materializer
+
 }

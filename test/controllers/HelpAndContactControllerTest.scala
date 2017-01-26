@@ -21,8 +21,10 @@ import connectors.{HmrcTierConnector, TierConnector}
 import models.TaxYearRange
 import org.mockito.Mockito._
 import org.scalatest.Matchers
+import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.http.HttpEntity.Strict
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,11 +38,13 @@ import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{FormMappings, TaxDateUtils}
+import play.api.i18n.Messages.Implicits._
+import play.api.libs.Crypto
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
 
-class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication with Matchers
+class HelpAndContactControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
                                               with TestAuthUser with FormMappings{
 
   implicit val ac = createDummyUser("testid")
@@ -85,39 +89,34 @@ class HelpAndContactControllerTest extends UnitSpec with FakePBIKApplication wit
 
   "When using help/ contact hmrc, the HelpAndContactController " should {
     "get 500 response when there is an empty form" in {
-      running(fakeApplication) {
-        val mockHelpController = new MockHelpAndContactController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
-        implicit val request = mockrequest
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
-        val result = await(mockHelpController.submitContactHmrcForm().apply(request)/*(ac, mockrequest, hc)*/)
-        status(result) shouldBe 500
-        bodyOf(result) should include("")
-      }
+      val mockHelpController = new MockHelpAndContactController
+      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+      implicit val request = mockrequest
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+      val result = await(mockHelpController.submitContactHmrcForm().apply(request)/*(ac, mockrequest, hc)*/)
+      result.header.status must be(INTERNAL_SERVER_ERROR) // 500
+      result.body.asInstanceOf[Strict].data.utf8String must include("")
     }
   }
 
   "When using help/ contact hmrc, the HelpAndContactController " should {
     "be able to submit the contact form successfully " in {
-      running(fakeApplication) {
-        val mockHelpController = new MockHelpAndContactController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
-        implicit val request = mockrequest
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
-        val helpFormFilled = helpForm.fill("John", "john@gmail.com", "test comment")
-        val mockRequestForm = mockrequest.withFormUrlEncodedBody(helpForm.data.toSeq: _*)
-        val result = await(mockHelpController.submitContactHmrcForm().apply(mockRequestForm)/*(ac, mockrequest, hc)*/)
-        status(result) shouldBe 303
+      val mockHelpController = new MockHelpAndContactController
+      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+      implicit val request = mockrequest
+      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+      val helpFormFilled = helpForm.fill("John", "john@gmail.com", "test comment")
+      val mockRequestForm = mockrequest.withFormUrlEncodedBody(helpForm.data.toSeq: _*)
+      val result = await(mockHelpController.submitContactHmrcForm().apply(mockRequestForm))
+      result.header.status must be(SEE_OTHER) // 303
 
-        val nextUrl = redirectLocation(result) match {
-          case Some(s: String) => s
-          case _ => ""
-        }
-        println("Next URL " + nextUrl)
-        val newResult = route(FakeRequest(GET, nextUrl)).get
-
-        contentAsString(newResult) should include("")
+      val nextUrl = redirectLocation(Future(result)(scala.concurrent.ExecutionContext.Implicits.global)) match {
+        case Some(s: String) => s
+        case _ => ""
       }
+      println("Next URL " + nextUrl)
+      val newResult = route(FakeRequest(GET, nextUrl)).get
+      contentAsString(newResult) must include("")
     }
   }
 

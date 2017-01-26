@@ -34,26 +34,24 @@ case class TaxYearRange(cyminus1: Int, cy: Int, cyplus1: Int)
 case class PbikCredentials(payeSchemeType: Int, employerNumber: Int, payeSequenceNumber: Int, aoReference: String, payeSchemeOperatorName: String)
 
 case class Bik(iabdType: String, status: Int, eilCount: Int = 0) {
-  override def equals(obj: Any) = {
-    obj.isInstanceOf[Bik] && this.iabdType == obj.asInstanceOf[Bik].iabdType
+  override def equals(obj: Any):Boolean = obj match {
+    case Bik(iabdType,_,_) => this.iabdType == iabdType
+    case _                => false
   }
 
-  override def hashCode = iabdType.hashCode
+  override def hashCode:Int = iabdType.hashCode
 }
 
 
 case class EiLPerson(nino: String, firstForename: String, secondForename: Option[String], surname: String, worksPayrollNumber: Option[String],
                      dateOfBirth: Option[String], gender: Option[String], status: Option[Int], perOptLock: Int = 0) {
 
-  override def equals(obj: Any) = {
-
-
-    val other = obj.asInstanceOf[EiLPerson]
-    obj.isInstanceOf[EiLPerson] && (this.nino == other.nino)
+  override def equals(obj: Any):Boolean = obj match {
+    case EiLPerson(nino,_,_,_,_,_,_,_,_) => this.nino == nino
+    case _                               => false
   }
 
-  override def hashCode = nino.hashCode
-
+  override def hashCode:Int = nino.hashCode
 }
 
 case class PbikError(errorCode: String)
@@ -88,7 +86,6 @@ object EiLPerson {
 }
 
 case class Person(nino: String, worksPayrollNumber: String, firstForename: String, surname: String, dateOfBirth: String)
-
 
 /**
  * The Header Tags are used between the PBIK gateway and NPS to control the optimistic locks.

@@ -1,4 +1,6 @@
-@()(implicit request:Request[_], lang: Lang, context: config.PbikContext)
+@import play.api.i18n.Messages.Implicits._
+@import play.api.Play.current
+@()(implicit request:Request[_], context: config.PbikContext)
 
 @import uk.gov.hmrc.play.views.html._
 @import uk.gov.hmrc.play.views.html.helpers._

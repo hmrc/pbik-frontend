@@ -17,8 +17,8 @@
 package config
 
 import connectors.FrontendAuditConnector
-import play.api.mvc.{Filters, EssentialAction, Request}
-import play.filters.headers.{SecurityHeadersParser, SecurityHeadersConfig, DefaultSecurityHeadersConfig, SecurityHeadersFilter}
+import play.api.mvc.{EssentialAction, Filters, Request}
+//import play.filters.headers.{SecurityHeadersConfig, SecurityHeadersFilter, SecurityHeadersParser}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.audit.filters.FrontendAuditFilter
 import uk.gov.hmrc.play.config._
@@ -30,11 +30,13 @@ import play.api.Mode.Mode
 import java.io.File
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
-
+import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import play.api.mvc.Request
 import play.twirl.api.Html
 import play.api.{Application, Configuration}
 import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 object ApplicationGlobal extends FrontendGlobal {
 
@@ -55,14 +57,18 @@ abstract class FrontendGlobal
     super.onStart(app)
     ApplicationCrypto.verifyConfiguration()
   }
-
+  // TODO: Check this and update the doFilter
+  /*
   override def doFilter(a: EssentialAction): EssentialAction = {
     val securityFilter = {
       val configuration = play.api.Play.current.configuration
-      val securityHeadersConfig:DefaultSecurityHeadersConfig = new SecurityHeadersParser().parse(configuration).asInstanceOf[DefaultSecurityHeadersConfig]
+      val securityHeadersConfig:SecurityHeadersConfig = new SecurityHeadersParser().parse(configuration).asInstanceOf[SecurityHeadersConfig]
       val sameOriginConfig:SecurityHeadersConfig = securityHeadersConfig.copy(frameOptions = Some("SAMEORIGIN"),None,None,None,None)
       SecurityHeadersFilter(sameOriginConfig)
     }
+    Filters(super.doFilter(a), Seq(securityFilter):_*)
+  }*/
+  override def doFilter(a: EssentialAction): EssentialAction = {
     Filters(super.doFilter(a), Seq(securityFilter):_*)
   }
 
@@ -74,11 +80,11 @@ object ControllerConfiguration extends ControllerConfig {
   lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
 }
 
-object LoggingFilter extends FrontendLoggingFilter {
+object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSupport {
   override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging
 }
 
-object PbikAuditFilter extends FrontendAuditFilter with RunMode with AppName {
+object PbikAuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport {
 
   import play.api.Play.current
 

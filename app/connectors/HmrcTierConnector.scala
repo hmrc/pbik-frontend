@@ -41,11 +41,12 @@ object HmrcTierConnector extends HmrcTierConnector with ServicesConfig {
 }
 
 class HmrcTierConnector extends URIInformation with TierClient  {
-  var pbikHeaders:Map[String, String] = Map()
+  var pbikHeaders = Map[String, String]()
 
   def encode(value:String):String = URLEncoder.encode(value, "UTF-8")
 
   def createGetUrl(baseUrl: String,URIExtension: String,orgIdentifier:String, year:Int):String = {
+    // TODO: Why can't we use this: if (orgIdentifier.trim.isEmpty)
     if ( orgIdentifier ==  null ) {
       s"$baseUrl/$year/$URIExtension"
     } else {
@@ -56,7 +57,6 @@ class HmrcTierConnector extends URIInformation with TierClient  {
       }
     }
   }
-
 
   def genericGetCall[T](baseUrl: String,URIExtension: String,orgIdentifier:String, year:Int)
                        (implicit hc:HeaderCarrier,request:Request[_],

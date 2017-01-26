@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
+package utils
+
 import java.util.Date
 
+import controllers.FakePBIKApplication
 import org.joda.time.LocalDate
 import org.joda.time.DateTimeConstants._
 import play.api.Logger
 import utils.TaxDateUtils
 import uk.gov.hmrc.play.test.UnitSpec
-import play.api.test.FakeApplication
 import org.scalatest._
 import play.api.test._
 import play.api.test.Helpers._
 
-class TaxDateUtilsSpec extends UnitSpec  {
+class TaxDateUtilsSpec extends UnitSpec with FakePBIKApplication {
 
   "The current tax year" should {
     " be the same as current year, if the current date is before 6th April in the current year" in {
-      running(new FakeApplication()) {
+      running(fakeApplication) {
         val dateBeforeTaxYearButSameYearAsTaxYear = new LocalDate(2014, APRIL, 1)
         assert(TaxDateUtils.getCurrentTaxYear(dateBeforeTaxYearButSameYearAsTaxYear) == 2013)
       }

@@ -30,6 +30,8 @@ import utils._
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.frontend.auth.AuthContext
+import play.api.i18n.Messages.Implicits._
+import play.api.Play.current
 
 object WhatNextPageController extends WhatNextPageController with TierConnector
 with AuthenticationConnector {
@@ -55,19 +57,19 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
     }
   }
 
-  def loadWhatNextRegisteredBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: Request[_], ac: AuthContext, lang: Lang, context: PbikContext):Result = {
+  def loadWhatNextRegisteredBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: Request[_], ac: AuthContext, context: PbikContext):Result = {
     val yearCalculated = calculateTaxYear(TaxDateUtils.isCurrentTaxYear(year))
 
     Ok(views.html.registration.whatNextAddRemove.render(
-      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, true, formRegisteredList, request, ac, lang, context))
+      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, true, formRegisteredList, request, ac, context, applicationMessages))
       .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 
-  def loadWhatNextRemovedBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: Request[_], ac: AuthContext, lang: Lang, context: PbikContext):Result = {
+  def loadWhatNextRemovedBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: Request[_], ac: AuthContext, context: PbikContext):Result = {
     val yearCalculated = calculateTaxYear(TaxDateUtils.isCurrentTaxYear(year))
 
     Ok(views.html.registration.whatNextAddRemove.render(
-      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, false, formRegisteredList, request, ac, lang, context))
+      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, false, formRegisteredList, request, ac, context, applicationMessages))
       .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 

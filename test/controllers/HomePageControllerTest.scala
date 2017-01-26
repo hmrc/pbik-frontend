@@ -16,14 +16,14 @@
 
 package controllers
 
-import models.{HeaderTags, TaxYearRange, BinaryRadioButton, Bik}
+import models.{Bik, BinaryRadioButton, HeaderTags, TaxYearRange}
 import config.AppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import org.mockito.Mockito._
-import org.scalatest.Matchers
+import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.api.test.{FakeApplication, FakeRequest}
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
@@ -36,14 +36,16 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.BikListUtils.MandatoryRadioButton
-import utils.{TaxDateUtils, FormMappings}
+import utils.{FormMappings, TaxDateUtils}
 import utils.FormMappingsConstants._
 import support.TestAuthUser
 import scala.concurrent.duration._
-
+import play.api.i18n.Messages.Implicits._
+import play.api.http.HttpEntity.Strict
+import play.api.libs.Crypto
 import scala.concurrent.Future
 
-class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matchers
+class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
                                               with TestAuthUser with FormMappings{
 
   implicit val user = createDummyUser("testid")
@@ -55,7 +57,7 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
     override lazy val pbikAppConfig = mock[AppConfig]
     override val tierConnector = mock[HmrcTierConnector]
     lazy val CYCache = List.range(3, 32).map(n => new Bik("" + n, 10))/*(n => new Bik("" + (n + 1), 10))*/
-    pbikHeaders = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
+    override lazy val pbikHeaders:Map[String,String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
 
     override def currentYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]):
         Future[(Map[String, String], List[Bik])] = {
@@ -71,7 +73,7 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
 
     override def registeredBenefitsList(year: Int, orgIdentifier: String)(path: String)
                                        (implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]) :  Future[List[Bik]] = {
-      CYCache
+      Future(CYCache)(scala.concurrent.ExecutionContext.Implicits.global)
     }
 
   }
@@ -103,99 +105,77 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
     when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
   }
 
-  class SetUp extends FakeApplication {
-    implicit val hc = HeaderCarrier()
-    implicit val user = createDummyUser("testId")
-
-  }
-
-
-
   "When checking if from YTA referer ends /account " in {
-    running(fakeApplication) {
-      val homePageController = HomePageController
-      implicit val request = FakeRequest().withHeaders(
-        "referer" -> "tax.service.gov.uk/account"
-      )
-      val r = homePageController.isFromYTA
-      r shouldBe true
-    }
+    val homePageController = HomePageController
+    implicit val request = FakeRequest().withHeaders(
+      "referer" -> "tax.service.gov.uk/account"
+    )
+    val result = homePageController.isFromYTA
+    result must be(true)
   }
 
   "When checking if from YTA referer ends /business-account " in {
-    running(fakeApplication) {
-      val homePageController = HomePageController
-      implicit val request = FakeRequest().withHeaders(
-        "referer" -> "tax.service.gov.uk/business-account"
-      )
-      val r = homePageController.isFromYTA
-      r shouldBe true
-    }
+    val homePageController = HomePageController
+    implicit val request = FakeRequest().withHeaders(
+      "referer" -> "tax.service.gov.uk/business-account"
+    )
+    val result = homePageController.isFromYTA
+    result must be(true)
   }
 
   "When checking if from YTA referer ends /someother " in {
-    running(fakeApplication) {
-      val homePageController = HomePageController
-      implicit val request = FakeRequest().withHeaders(
-        "referer" -> "tax.service.gov.uk/someother"
-      )
-      val r = homePageController.isFromYTA
-      r shouldBe false
-    }
+    val homePageController = HomePageController
+    implicit val request = FakeRequest().withHeaders(
+      "referer" -> "tax.service.gov.uk/someother"
+    )
+    val result = homePageController.isFromYTA
+    result must be(false)
   }
 
   "When instantiating the HomePageController " in {
-    running(fakeApplication) {
-      val homePageController = HomePageController
-      assert(homePageController.pbikAppConfig != null)
-      assert(homePageController.tierConnector != null)
-      assert(homePageController.bikListService != null)
-    }
+    val homePageController = HomePageController
+    assert(homePageController.pbikAppConfig != null)
+    assert(homePageController.tierConnector != null)
+    assert(homePageController.bikListService != null)
   }
 
   "HomePageController" should {
-    "show Unauthorised if the session is not authenticated" in new SetUp {
-      running(fakeApplication) {
-        val homePageController = new MockHomePageController
-        def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
-        implicit val request = FakeRequest().withSession(
-          SessionKeys.sessionId -> "hackmeister",
-          SessionKeys.token -> "RANDOMTOKEN",
-          SessionKeys.userId -> userId)
-        val r = homePageController.onPageLoad.apply(request)
-        status(r) shouldBe 401
-      }
+    "show Unauthorised if the session is not authenticated" in {
+      val homePageController = new MockHomePageController
+      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+      implicit val request = FakeRequest().withSession(
+        SessionKeys.sessionId -> "hackmeister",
+        SessionKeys.token -> "RANDOMTOKEN",
+        SessionKeys.userId -> userId)
+      val result = homePageController.onPageLoad.apply(request)
+      status(result) must be(UNAUTHORIZED) //401
     }
   }
 
-  "When a valid user loads the CY warning but CY is disabled the HomePageController" should {
-    "show the CY disabled error page" in new SetUp {
-      running(fakeApplication) {
+    "When a valid user loads the CY warning but CY is disabled the HomePageController" should {
+      "show the CY disabled error page" in {
         val homePageController = new MockHomePageController
         implicit val request = mockrequest
         implicit val ac: AuthContext = createDummyUser("VALID_ID")
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-        val r = await(homePageController.loadCautionPageForCY.apply(request))
-        status(r) shouldBe 200
-        bodyOf(r) should include(Messages("ServiceMessage.10003.1"))
-        bodyOf(r) should include(Messages("ServiceMessage.10003.2"))
+        val result = await(homePageController.loadCautionPageForCY.apply(request))
+        result.header.status must be(OK)
+        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.1"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.2"))
       }
     }
-  }
 
-  "When a valid user loads the CY warning page and CY mode is enabled the HomePageController" should {
-    "show the page" in new SetUp {
-      running(fakeApplication) {
+    "When a valid user loads the CY warning page and CY mode is enabled the HomePageController" should {
+      "show the page" in {
         val homePageController = new MockHomePageControllerCYEnabled
         implicit val request = mockrequest
         implicit val ac: AuthContext = createDummyUser("VALID_ID")
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-        val r = await(homePageController.loadCautionPageForCY.apply(request))
-        status(r) shouldBe 200
-        bodyOf(r) should include(Messages("AddBenefits.CY.Caution.Title"))
+        val result = await(homePageController.loadCautionPageForCY.apply(request))
+        result.header.status must be(OK)
+        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("AddBenefits.CY.Caution.Title"))
       }
     }
-  }
 
   /*"When a valid user submits an open decisions without a valid form the HomePageController" should {
     "show the page" in new SetUp {
@@ -316,25 +296,21 @@ class HomePageControllerTest extends UnitSpec with FakePBIKApplication with Matc
 
 */
   "HomePageController" should {
-
-      "display the navigation page " in new SetUp {
-        running(fakeApplication) {
-          val homePageController = new MockHomePageController
-          def csrfToken = CSRF.TokenName -> UnsignedTokenProvider.generateToken
-          implicit val request = FakeRequest().withSession(
-            SessionKeys.sessionId -> sessionId,
-            SessionKeys.token -> "RANDOMTOKEN",
-            SessionKeys.userId -> userId)
-          implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
-          val r = await(homePageController.onPageLoad.apply(request))(timeout)
-          bodyOf(r) should include(Messages("Overview.heading"))
-          bodyOf(r) should include(Messages("Overview.next.heading", ""+YEAR_RANGE.cy, ""+YEAR_RANGE.cyplus1))
-          bodyOf(r) should include(Messages("Overview.table.heading.1"))
-          bodyOf(r) should include(Messages("Overview.current.heading", ""+YEAR_RANGE.cyminus1, ""+YEAR_RANGE.cy))
-          status(r) shouldBe 200
-      }
+      "display the navigation page " in {
+        val homePageController = new MockHomePageController
+        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+        implicit val request = FakeRequest().withSession(
+          SessionKeys.sessionId -> sessionId,
+          SessionKeys.token -> "RANDOMTOKEN",
+          SessionKeys.userId -> userId)
+        implicit val timeout : akka.util.Timeout = timeoutValue
+        val result = await(homePageController.onPageLoad.apply(request))(timeout)
+        result.header.status must be(OK)
+        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.heading"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.next.heading", ""+YEAR_RANGE.cy, ""+YEAR_RANGE.cyplus1))
+        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.table.heading.1"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.current.heading", ""+YEAR_RANGE.cyminus1, ""+YEAR_RANGE.cy))
     }
-
   }
 
 }
