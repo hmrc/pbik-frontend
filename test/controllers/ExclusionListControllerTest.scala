@@ -83,7 +83,6 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
                      "perOptLock": 0
                  }
              ]""")
-
   }
 
   class StubEiLListService extends EiLListService {

@@ -21,7 +21,6 @@ import models.HeaderTags
 import org.specs2.mock.Mockito
 import uk.gov.hmrc.play.http.SessionKeys
 import org.scalatest.Suite
-import play.api.{Application, Play}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 

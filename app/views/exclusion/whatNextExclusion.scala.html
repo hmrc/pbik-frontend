@@ -46,14 +46,6 @@
         <p class="text">
             <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">@Messages("Service.back.overview.whatNext")</a>
         </p>
-
-        <p id="feedback" class="text link-feedback-p">
-            <a  onclick="gaEvent('Click feedback link','From: Employee excluded What next page')"
-                href="@routes.HomePageController.redirectToDone" id="link-feedback" target="_blank">
-                @Messages("Service.feedback.link")
-            </a>
-            <span id="link-feedback-desc">@Messages("Service.feedback.desc")</span>
-        </p>
     </section>
 
 }
