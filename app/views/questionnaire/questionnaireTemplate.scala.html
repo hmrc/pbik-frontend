@@ -1,11 +1,10 @@
 @import play.api.i18n.Messages.Implicits._
 @import play.api.Play.current
-@(pageTitle: String, showLanguage:Boolean = false)(mainContent: Html)(implicit request:Request[_], context: config.PbikContext)
+@(pageTitle: String, showLanguage:Boolean = false)(mainContent: Html)(implicit request:Request[_], context: config.PbikContext, applicationMessages: Messages)
 
 @import play.api.Play
 @import play.api.Play.current
 @import uk.gov.hmrc.play.http.SessionKeys
-@import play.api.i18n.Lang
 
 @myLinkElement = {
     <link rel='stylesheet' href='@routes.AssetsController.at("assets/css/pbik.css")'/>
