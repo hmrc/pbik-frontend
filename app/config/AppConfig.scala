@@ -19,7 +19,6 @@ package config
 import java.util.Collections
 import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
-import scala.util.Try
 
 trait AppConfig {
   val assetsPrefix: String
