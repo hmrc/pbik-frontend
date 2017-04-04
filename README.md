@@ -1,4 +1,4 @@
-#pbik-frontend
+# pbik-frontend
 =============
 
 [![Build Status](https://travis-ci.org/hmrc/pbik-frontend.svg?branch=master)](https://travis-ci.org/hmrc/pbik-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/pbik-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/pbik-frontend/_latestVersion)
@@ -7,16 +7,16 @@ This service provides the Play Framework http endpoint for employers requests. T
 
 Once authenticated the employer has access to the pbik-frontend functionality which allows
 
-###Overview
+### Overview
 =====
 
-#####Summmary Section
+##### Summmary Section
 -----
 * An overview of which benefits the employer has registered to payroll for current year ( CY )
 * An overview of which benefits the employer has registered to payroll for next year ( CY+1 )
 * Ability to add, remove, exclude individuals by selecting the relevant link
 
-#####Current Year Plus One (CY+1)
+##### Current Year Plus One (CY+1)
 -----
 * An overview of which benefits the employer has registered to payroll for next year (CY+1)
 * The ability to ADD benefits to Current Year Plus One
@@ -24,14 +24,14 @@ Once authenticated the employer has access to the pbik-frontend functionality wh
 * The ability to ADD individuals to an Exclusion List for registered benefits
 * The ability to REMOVE individuals from the Exclusion List for registered benefits
 
-#####Exclusions
+##### Exclusions
 -----
 * The ability to exclude an individual for Current Year
 * The ability to exclude an individual for Next Year
 * The ability to rescind an exclusion for Next Current Year
 * 
 
-###Configuration
+### Configuration
 -----
 survey.url - Feedback page location when the user signs out of the service <br />
 pbik.banner.start - Overview page banner start date to be shown when annual tax coding is about to start (21 December) <br />
@@ -42,7 +42,7 @@ unsupported.biks.cy - Which benefits can't be registered in CY (Caution, may nee
 unsupported.biks.cy1 - Which benefits can't be registered in CY+1 (Caution, may need NPS config change prior to changing here) <br />
 decommissioned.biks - Which benefits no longer exist <br />
 
-###Navigation
+### Navigation
 
         Summary -> 
           -> Choose benefits (CY+1) -> Confirm  -> Benefit(s) added
