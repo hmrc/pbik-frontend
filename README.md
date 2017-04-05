@@ -1,5 +1,4 @@
 # pbik-frontend
-=============
 
 [![Build Status](https://travis-ci.org/hmrc/pbik-frontend.svg?branch=master)](https://travis-ci.org/hmrc/pbik-frontend) [ ![Download](https://api.bintray.com/packages/hmrc/releases/pbik-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/pbik-frontend/_latestVersion)
 
@@ -8,10 +7,9 @@ This service provides the Play Framework http endpoint for employers requests. T
 Once authenticated the employer has access to the pbik-frontend functionality which allows
 
 ### Overview
-=====
 
 ##### Summmary Section
------
+
 * An overview of which benefits the employer has registered to payroll for current year ( CY )
 * An overview of which benefits the employer has registered to payroll for next year ( CY+1 )
 * Ability to add, remove, exclude individuals by selecting the relevant link
@@ -25,14 +23,14 @@ Once authenticated the employer has access to the pbik-frontend functionality wh
 * The ability to REMOVE individuals from the Exclusion List for registered benefits
 
 ##### Exclusions
------
+
 * The ability to exclude an individual for Current Year
 * The ability to exclude an individual for Next Year
 * The ability to rescind an exclusion for Next Current Year
 * 
 
 ### Configuration
------
+
 survey.url - Feedback page location when the user signs out of the service <br />
 pbik.banner.start - Overview page banner start date to be shown when annual tax coding is about to start (21 December) <br />
 pbik.banner.end - Overview page banner end date to be shown when annual tax coding is about to end <br />
