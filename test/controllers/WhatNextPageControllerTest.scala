@@ -17,11 +17,14 @@
 package controllers
 
 import java.util.UUID
+
 import config._
 import play.api.data.Form
+
 import scala.concurrent.Future
 import connectors.{HmrcTierConnector, TierConnector}
 import models._
+import org.joda.time.DateTime
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
@@ -210,10 +213,21 @@ class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakeP
          implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
          val formRegistrationList: Form[RegistrationList] = objSelectedForm
          val formFilled = formRegistrationList.fill(registrationList)
-         val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2016)})
+         //val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2016)})
+
+         val date = new DateTime()
+         val year = if(date.getMonthOfYear <= 4 && date.getDayOfMonth < 6){
+           date.getYear
+         } else {
+           date.getYear + 1
+         }
+         val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, year)})
+
          result.header.status must be(OK)
          result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
-         result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April 2016.")
+         //result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April 2016.")
+         result.body.asInstanceOf[Strict].data.utf8String must include(s"Now tax Private medical treatment or insurance through your payroll from 6 April ${year}.")
+
        }
 
       "(Register a BIK next year) Single benefit - state the status is ok and correct page is displayed" in {

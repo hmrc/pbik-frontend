@@ -16,50 +16,49 @@
 
 package controllers
 
+import akka.util.Timeout
 import config.AppConfig
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.model.DataEvent
-import utils.BikListUtils.MandatoryRadioButton
-import utils._
 import connectors.{HmrcTierConnector, TierConnector}
 import models._
-import org.scalatest.concurrent.Futures
-import play.api.i18n.Messages
-import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.play.frontend.auth.AuthContext
+import org.joda.time.LocalDate
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
-import org.scalatest.Matchers
-import org.scalatestplus.play.{OneAppPerSuite, OneAppPerTest, OneServerPerSuite, PlaySpec}
-import play.api.libs.json
+import org.scalatest.concurrent.Futures
+import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.http.HttpEntity.Strict
+import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.{Crypto, json}
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.test.Helpers._
-import play.filters.csrf.CSRF.UnsignedTokenProvider
-import play.api.libs.Crypto
-import play.filters.csrf.CSRF
 import services.{BikListService, EiLListService}
 import support.TestAuthUser
-import uk.gov.hmrc.play.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HttpResponse
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
+import uk.gov.hmrc.play.audit.model.DataEvent
+import uk.gov.hmrc.play.frontend.auth.AuthContext
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.http.logging.SessionId
-import uk.gov.hmrc.play.test.UnitSpec
-import utils.TaxDateUtils
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
-import akka.util.Timeout
-import org.joda.time.LocalDate
-import play.api.http.HttpEntity.Strict
+import utils.{TaxDateUtils, _}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
-import play.api.i18n.Messages.Implicits._
-import play.api.inject.guice.GuiceApplicationBuilder
 
 class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
                                                     with TestAuthUser with ControllersReferenceData {
+
+
   override lazy val pbikAppConfig = mock[AppConfig]
-  //val dateRange = TaxDateUtils.getTaxYearRange()
-  val date = new LocalDate();
-  val dateRange = models.TaxYearRange((date.getYear - 1) , date.getYear, (date.getYear + 1))
+  //val dateRange =  TaxDateUtils.getTaxYearRange()
+  val date = new LocalDate()
+  val dateRange = if(date.getMonthOfYear <= 4 && date.getDayOfMonth < 6){
+    models.TaxYearRange(date.getYear -1 , date.getYear, date.getYear + 1)
+  } else {
+    models.TaxYearRange(date.getYear , date.getYear + 1, date.getYear + 2)
+  }
+
   implicit val user = createDummyUser("testid")
   lazy val ListOfPeople: List[EiLPerson] = List(EiLPerson("AA111111","John", Some("Stones") ,"Smith",Some("123"),Some("01/01/1980"),Some("male"), Some(10),0),
     EiLPerson("AB111111","Adam", None ,"Smith",None, Some("01/01/1980"),Some("male"), None, 0),
