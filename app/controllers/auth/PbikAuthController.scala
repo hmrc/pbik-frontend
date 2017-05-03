@@ -16,16 +16,15 @@
 
 package controllers.auth
 
-import play.api.{Logger, Play}
-import play.api.mvc.{Action, Result, AnyContent, Request}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
-import uk.gov.hmrc.play.config.RunMode
-import utils.TaxDateUtils
-import scala.concurrent.Future
-import controllers.ExternalUrls
-import uk.gov.hmrc.play.http.SessionKeys
 import java.util.UUID
-import uk.gov.hmrc.play.frontend.auth.{AuthContext, Actions, TaxRegime, GovernmentGateway}
+
+import controllers.ExternalUrls
+import play.api.mvc.{Action, AnyContent, Request, Result}
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
+import uk.gov.hmrc.play.frontend.auth.{Actions, AuthContext, GovernmentGateway, TaxRegime}
+import uk.gov.hmrc.play.http.SessionKeys
+
+import scala.concurrent.Future
 
 object PBIKGovernmentGateway extends GovernmentGateway {
   override val loginURL = ExternalUrls.signIn
