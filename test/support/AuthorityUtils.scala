@@ -16,7 +16,7 @@
 
 package support
 
-import uk.gov.hmrc.domain.{CtUtr, Nino, EmpRef, SaUtr}
+import uk.gov.hmrc.domain.{CtUtr, EmpRef, Nino}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 
 
