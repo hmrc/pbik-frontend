@@ -81,7 +81,7 @@ AddBenefits.table.heading.section = Adran P11D
 
 AddBenefits.CY.Caution.Title = PWYSIG – Darllenwch yr wybodaeth isod
 AddBenefits.CY.Caution.p1 = RHYBUDD – Rydych ar fin cofrestru buddiannau neu dreuliau ar gyfer y flwyddyn dreth bresennol (a ddechreuodd ar 6 Ebrill {0} )
-AddBenefits.CY.Caution.p2 = Mae’r rhan fwyaf o sefydliadau yn cofrestru ar gyfer y flwyddyn dreth nesaf, sy’n dechrau ar {0}.
+AddBenefits.CY.Caution.p2 = Mae’r rhan fwyaf o sefydliadau yn cofrestru ar gyfer y flwyddyn dreth nesaf, sy’n dechrau ar 6 Ebrill {0}.
 AddBenefits.CY.Caution.p3 = Sicrhewch eich bod yn deall y canlynol cyn i chi barhau:
 AddBenefits.CY.Caution.p4 = Mae’r gwasanaeth hwn yn fyw!
 AddBenefits.CY.Caution.p5 = Daw’r newidiadau i rym ar unwaith

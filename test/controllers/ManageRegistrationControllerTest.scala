@@ -675,7 +675,7 @@ class ManageRegistrationControllerTest extends PlaySpec with OneAppPerSuite with
         val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac)}(scala.concurrent.ExecutionContext.Implicits.global))
         result.header.status must be(SEE_OTHER) // 303
         result.header.headers.getOrElse("Location","") must be("/payrollbik/services/remove-benefit-expense")
-        result.header.headers.getOrElse("Set-Cookie","").replace("+", " ").replace("%27", "'") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
+        result.header.headers.getOrElse("Set-Cookie","").replace("+", " ").replace("%E2%80%99", "’") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
     }
 
     "selecting 'other' reason but and providing explanation should redirect to what-next" in {
