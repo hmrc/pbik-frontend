@@ -30,6 +30,8 @@ import org.mockito.Mockito._
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Application
 import play.api.http.HttpEntity.Strict
+import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.{Crypto, json}
 import play.api.libs.json.JsValue
@@ -52,7 +54,6 @@ import utils.{ControllersReferenceData, FormMappings, TaxDateUtils}
 
 class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
                                               with FormMappings with TestAuthUser{
-
 
   // TODO The following needs refactoring as it similar to registrationcontrollertest, consider moving to utils
   // val sessionId = s"session-${UUID.randomUUID}"
@@ -267,6 +268,7 @@ class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakeP
          val mockWhatNextPageController = new MockWhatNextPageController
          def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
          implicit val request = mockrequest
+          val whatNextRemoveMsg = Messages("whatNext.remove.p1")
          implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
 
          val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationList)
@@ -274,8 +276,7 @@ class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakeP
          result.header.status must be(OK)
          result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
          result.body.asInstanceOf[Strict].data.utf8String must include(
-           "If you're still providing this benefit or expense to any of your employees, you'll need to complete a " +
-             "<a href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> for them at the end of the tax year."
+           whatNextRemoveMsg
          )
      }
 
