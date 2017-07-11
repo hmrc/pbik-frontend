@@ -802,15 +802,16 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
         implicit val request = mockrequest
         val title = Messages("whatNext.exclude.heading")
         val excludedText = Messages("whatNext.exclude.p1")
+        val benifitValue = Messages("whatNext.exclude.p1")
         val mockExclusionController = new MockExclusionListController
         def csrfToken = "csrfToken" -> Crypto.generateToken
         //UnsignedTokenProvider.generateToken
         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
         implicit val timeout : Timeout = 5 seconds
-        val result = await(mockExclusionController.processIndividualExclusionForm(individualsFormWithRadio.fill("", EiLPersonList(ListOfPeople)),TEST_YEAR_CODE, TEST_IABD_VALUE,YEAR_RANGE))(timeout)
+        val result = await(mockExclusionController.processIndiv")idualExclusionForm(individualsFormWithRadio.fill("", EiLPersonList(ListOfPeople)),TEST_YEAR_CODE, TEST_IABD_VALUE,YEAR_RANGE))(timeout)
         result.header.status must be(OK)
         result.body.asInstanceOf[Strict].data.utf8String must include(title)
-        result.body.asInstanceOf[Strict].data.utf8String must include("You'll need to report the value of this benefit on a <a target=\"_blank\" href=\"https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d\">P11D</a> instead.")
+        result.body.asInstanceOf[Strict].data.utf8String must include(benifitValue)
       }
     }
 
