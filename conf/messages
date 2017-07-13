@@ -1,8 +1,8 @@
 #*************************************************************
 # Service Messages
 #*************************************************************
-common.feedback.get.help = Contact us for support using this service
 
+common.feedback.get.help = Contact us for support using this service
 Service.title = Payrolling benefits and expenses
 Service.news.banner.message = Any changes you make will affect your employees’ tax codes for the next tax year and may result in them receiving more than one coding notice.
 Service.yes = Yes
@@ -16,6 +16,8 @@ Service.back.yta = Your Tax Account
 Service.new-window = (opens in a new window)
 Service.paye.label = Employer PAYE reference:
 Service.nino.lastletter = (Last letter not shown)
+service.lang.English = English
+service.lang.Cymraeg = Cymraeg
 
 Service.continue = Continue
 Service.confirm = Confirm
@@ -51,7 +53,7 @@ Service.errorSummary.heading = There is a problem
 Service.signout = Sign out
 
 #*************************************************************
-# I have registered to payroll
+# Overview
 #*************************************************************
 
 Overview.heading = Payrolling summary
@@ -425,15 +427,11 @@ ErrorPage.connectionAction = If you’re accessing the service outside of these 
 ErrorPage.connectionStatus = If you’re accessing the service within these hours, please check for scheduled maintenance information at the <a href = "https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">HMRC service availability site</a>
 ErrorPage.serviceNotLaunched = You cannot register Biks for this year as the service is yet to launch
 ErrorPage.noBenefitsToAddcy = You’ve already added all of the benefits or expenses that are available with this service. If you’re payrolling any others, please tell HMRC with a P11D.
-ErrorPage.noBenefitsToAddcyp1 = You’ve already added all of the benefits or expenses that are available with this service. If you’re payrolling any others, please tell HMRC with a P11D.
-ErrorPage.noCY1BenefitsToRemovecyp1 = You haven’t added any benefits or expenses that are available for the next tax year {0} to {1}. If you would like to register any for tax year {0} to {1}, please return to the <a href = "/payrollbik/overview">home</a> screen and add them.
 ErrorPage.noCY1BenefitsToRemovecy = You haven’t added any benefits or expenses that are available for the current tax year {0} to {1}. If you would like to register any for tax year {0} to {1}, please return to the <a href = "/payrollbik/overview">home</a> screen and add them.
 ErrorPage.invalidForm = There was a problem when the server attempted to process your form. Please attempt to fill in the form again.
 ErrorPage.invalidYear = <p>We think you are trying to register a benefit or expense to tax through your payroll for an incorrect tax year.</p><p>Please go to the list of benefits and expenses that can be taxed through your payroll using this service.</p>
 ErrorPage.invalidBikType = <p>We think you are trying to register a benefit or expense to tax through your payroll that either does not exist or can’t be payrolled.</p><p>Please go to the list of benefits and expenses that can be taxed through your payroll using this service.</p>
 ErrorPage.noBenefitsRegistered = You haven’t registered any benefits for this tax year, please return to the <a href = "/payrollbik/payrolled-benefits-expenses">home</a> screen and register benefits before trying to add exclusions.
-ErrorPage.noBenefitsRegisteredViewcy = You don’t currently have any benefits or expenses registered for payrolling. If you would like to register any for tax year {0} to {1}, please return to the <a href = "/payrollbik/payrolled-benefits-expenses">home</a> screen and add them.
-ErrorPage.noBenefitsRegisteredViewcyp1 = You don’t currently have any benefits or expenses registered for payrolling. If you would like to register any for tax year {0} to {1}, please return to the <a href = "/payrollbik/payrolled-benefits-expenses">home</a> screen and add them.
 ErrorPage.backButtonNoCache = You haven’t performed a search yet. Please go back to the home page and repeat the user journey.
 
 
@@ -470,7 +468,6 @@ whatNext.add.heading = Registration complete
 whatNext.add.heading.singular = Registration complete
 whatNext.remove.heading = Benefit removed
 whatNext.add.info = You’ll need to submit a P11D to HMRC to report the benefit or expense they receive.
-whatNext.cy.add.p1 = You’ve successfully told HMRC that you’ll be payrolling the following benefits or expenses
 whatNext.cy1.add.lede = Now tax the following benefits and expenses through your payroll from 6 April {0}.
 whatNext.cy1.add.lede.singular = Now tax {0} through your payroll from 6 April {1}.
 whatNext.cy1.add.table.header = Registered benefits and expenses
@@ -489,7 +486,6 @@ whatNext.exclude.heading = Exclusion complete
 whatNext.rescind.heading = Registration complete
 whatNext.exclude.lede = You’ve told us that {0} will not be having {1} taxed through your payroll from 6 April {2}.
 whatNext.exclude.p1 = You’ll need to report the value of this benefit on a <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> instead.
-whatNext.cy.exclude.p2 = Will no longer have the following benefits and expenses payrolled
 whatNext.cy1.exclude.p2 = Will no longer have the following benefits and expenses payrolled on {0}
 whatNext.exclude.p3 = Set up your payroll correctly so that the employees don’t have their benefits and expenses taxed in their pay.
 whatNext.exclude.p4 = You’ll need to submit a P11D for those employees you’ve excluded, informing us of the value of the benefits and expenses they receive so we can include it in their tax code.

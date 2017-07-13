@@ -1,5 +1,8 @@
-common.feedback.get.help = Cysylltwch â ni am gymorth gyda’r gwasanaeth hwn
+#*************************************************************
+# Service Messages
+#*************************************************************
 
+common.feedback.get.help = Cysylltwch â ni am gymorth gyda’r gwasanaeth hwn
 Service.title = Talu buddiannau a threuliau drwy’r gyflogres
 Service.news.banner.message = Bydd newidiadau a wnewch yn effeithio ar godau treth eich cyflogeion ar gyfer y flwyddyn dreth nesaf, a gallai hyn arwain at anfon mwy nag un hysbysiad o god iddynt.
 Service.yes = Iawn
@@ -13,6 +16,8 @@ Service.back.yta = Eich Cyfrif Treth
 Service.new-window = (yn agor mewn ffenestr newydd)
 Service.paye.label = Cyfeirnod TWE y cyflogwr:
 Service.nino.lastletter = (Nid yw’r llythyren olaf yn cael ei dangos)
+service.lang.English = English
+service.lang.Cymraeg = Cymraeg
 
 Service.continue = Mynd yn eich blaen
 Service.confirm = Cadarnhau
@@ -44,11 +49,13 @@ Service.errorSummary.heading = Mae problem wedi codi
 #*************************************************************
 # Allgofnodi
 #*************************************************************
+
 Service.signout = Allgofnodi
 
 #*************************************************************
 # Rwyf wedi cofrestru i dalu drwy’r gyflogres
 #*************************************************************
+
 Overview.heading = Crynodeb o dalu drwy’r gyflogres
 Overview.next.heading = Y flwyddyn dreth nesaf – yn dechrau ar 6 Ebrill {0}
 Overview.next.lead = Rydych wedi cofrestru’r buddiannau a’r treuliau canlynol i gael eu trethu drwy eich cyflogres.
@@ -71,9 +78,16 @@ Sidebar.link.help = Help a chysylltiadau
 ManagingRegistration.add.exhausted = Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau sydd ar gael yn y categori hwn.
 
 #*************************************************************
+# Sidebar
+#*************************************************************
+
 sidebar.h2.expenses.help = Help gyda threuliau
 sidebar.expenses.help.1 = Ar gyfer buddiannau yr ydych wedi rhoi gwybod amdanynt yn flaenorol ar <a rel = "external" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflen P11D</a> (yn agor mewn ffenestr newydd), sicrhewch eich bod yn eu cofrestru o dan yr un categori. Mae’n rhaid i chi dalu popeth sydd wedi’u cynnwys o fewn y categori P11D hwnnw drwy’r gyflogres.
 sidebar.link.a-z = Expenses and benefits: A to Z guide
+
+#*************************************************************
+# Add benefits
+#*************************************************************
 
 AddBenefits.Heading = Dewis buddiannau a threuliau
 AddBenefits.table.heading.input = Buddiant neu draul
@@ -111,6 +125,10 @@ AddBenefits.Confirm.help.desc = Ni allwch eithrio cyflogeion unigol o gael y bud
 AddBenefits.Confirm.help.reveal.link.sr.open = cliciwch i ehangu
 AddBenefits.Confirm.help.reveal.link.sr.closed = cliciwch i gau
 
+#*************************************************************
+# Remove benifits
+#*************************************************************
+
 RemoveBenefits.Confirm.Desc = Byddwch yn rhoi’r gorau i drethu {0} drwy eich cyflogres o 6 Ebrill {1} ymlaen.
 RemoveBenefits.Heading = Dileu buddiannau neu dreuliau o’r flwyddyn dreth sy’n dechrau ar 6 Ebrill {0}
 RemoveBenefits.ChooseBenefitsLabel = Dewiswch y buddiannau neu’r treuliau i’w dileu
@@ -124,6 +142,10 @@ RemoveBenefits.reason.not-clear = Nid oedd diben y gwasanaeth yn eglur
 RemoveBenefits.reason.not-offering = Nid ydych yn cynnig y buddiant hwn i’ch cyflogeion mwyach
 RemoveBenefits.reason.other = Arall
 RemoveBenefits.reason.other.label = Eglurwch pam
+
+#*************************************************************
+# Exclusion Overview
+#*************************************************************
 
 ExclusionOverview.title = Cyflogeion sydd wedi’u heithrio
 ExclusionOverview.caption = Talu trwy’r gyflogres – cyflogeion sydd wedi’u heithrio
@@ -163,6 +185,9 @@ ExclusionRescind.WhatNext.p3 = Dylech beidio â chyflwyno <a target = "_blank" h
 ExclusionRescind.WhatNext.p4 = Dylech barhau i gyflwyno <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db.cy">ffurflen P11D(b)</a> er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A.
 
 #*************************************************************
+# Benifits Messages
+#*************************************************************
+
 BenefitInKind.label.40 = Asedion sydd wedi’u trosglwyddo (ceir, eiddo, nwyddau neu asedion eraill)
 BenefitInKind.desc.40 = Asedion, er enghraifft, car sy’n eiddo i’r cwmni a roddwyd yn rhad ac am ddim i’r cyflogai, neu’n is na’i werth ar y farchnad.
 BenefitInKind.url.40 = <a target = "_blank" href = "https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#assets-transferred">rhagor</a> (Yn agor ffenestr newydd)
@@ -276,6 +301,9 @@ BenefitInKind.label.decommissioned = Mae taliadau treuliau naill ai yn rhydd o d
 
 Prioritised.Benefits = 30,31
 
+#*************************************************************
+# Service Messages
+#*************************************************************
 
 ServiceMessage.0.h1 = Rhowch gynnig arall arni nes ymlaen
 ServiceMessage.0 = Rydym yn gwneud gwaith cynnal a chadw ar y gwasanaeth hwn ac nid yw ar gael ar hyn o bryd. Rydym yn gweithio ar gywiro’r problemau a dylem fod yn ôl yn fuan.
@@ -356,6 +384,9 @@ ServiceMessage.63092.h1 = Rhowch gynnig arall arni nes ymlaen
 ServiceMessage.63092 = Mae problemau technegol yn effeithio ar y gwasanaeth. Rydym yn gweithio ar gywiro’r problemau a dylem fod yn ôl yn fuan.
 
 #*************************************************************
+# Service fields
+#*************************************************************
+
 Service.field.firstname = Enw cyntaf
 Service.field.surname = Enw olaf
 Service.field.name = Enw
@@ -374,10 +405,17 @@ Service.field.gender.female = Benyw
 Service.action = Gweithred
 
 #*************************************************************
+# Authorisation Error Messages
+#*************************************************************
+
 ErrorPage.authorisationTitle = Gwall Awdurdodi
 ErrorPage.authorisationError = Mae’n ddrwg gennym, ynddengys nad ydych wedi eich awdurdodi i ddefnyddio’r gwasanaeth Talu buddiannau a threuliau drwy’r gyflogres Sicrhewch fod eich sefydliad wedi ymrestru ar gyfer Gwasanaeth Talu Wrth Ennill y Cyflogwr CThEM.
 
+
 #*************************************************************
+# Error Messages
+#*************************************************************
+
 ErrorPage.heading.invalidYear = Blwyddyn annilys wedi’i dangos
 
 ErrorPage.validationError = Mae’n ddrwg gennym, mae gwall technegol wedi digwydd. Rhowch gynnig arall arni nes ymlaen.
@@ -386,18 +424,19 @@ ErrorPage.connectionAction = Os ydych yn defnyddio’r gwasanaeth y tu allan i�
 ErrorPage.connectionStatus = Os ydych yn defnyddio’r gwasanaeth yn ystod yr oriau hyn, edrychwch os oes gwybodaeth am waith cynnal sydd wedi’i drefnu yn <a href = "https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">safle argaeledd gwasanaethau CThEM</a>
 ErrorPage.serviceNotLaunched = Ni allwch gofrestru buddiannau ar gyfer y flwyddyn hon gan nad yw’r gwasanaeth wedi’i lansio hyd yn hyn.
 ErrorPage.noBenefitsToAddcy = Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau sydd ar gael gyda’r gwasanaeth hwn. Os ydych yn talu rhai eraill drwy’r gyflogres, rhowch wybod i CThEM gyda ffurflen P11D.
-ErrorPage.noBenefitsToAddcyp1 = Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau sydd ar gael gyda’r gwasanaeth hwn. Os ydych yn talu rhai eraill drwy’r gyflogres, rhowch wybod i CThEM gyda ffurflen P11D.
-ErrorPage.noCY1BenefitsToRemovecyp1 = Nid ydych wedi ychwanegu buddiannau neu dreuliau sydd ar gael ar gyfer y flwyddyn dreth nesaf, {0} i {1}. Os hoffech gofrestru un ar gyfer blwyddyn dreth {0} i {1}, ewch yn ôl i’r <a href = "/payrollbik/overview">hafan</a> a’u hychwanegu.
 ErrorPage.noCY1BenefitsToRemovecy = Nid ydych wedi ychwanegu buddiannau neu dreuliau sydd ar gael ar gyfer y flwyddyn dreth bresennol, {0} i {1}. Os hoffech gofrestru un ar gyfer blwyddyn dreth {0} i {1}, ewch yn ôl i’r <a href = "/payrollbik/overview">hafan</a> a’u hychwanegu.
 ErrorPage.invalidForm = Cafwyd problem pan geisiodd y gweinydd brosesu’ch ffurflen. Rhowch gynnig arall ar lenwi’r ffurflen.
 ErrorPage.invalidYear = <p>Rydym yn credu eich bod yn ceisio cofrestru buddiant neu draul i’w drethu/threthu drwy eich cyflogres ar gyfer blwyddyn dreth anghywir.</p><p>Ewch i’r rhestr o fuddiannau a threuliau all gael eu trethu drwy eich cyflogres gan ddefnyddio’r gwasanaeth hwn.</p>
 ErrorPage.invalidBikType = <p>Rydym yn credu eich bod yn ceisio cofrestru buddiant neu draul i’w drethu/threthu drwy eich cyflogres sydd naill ai ddim yn bodoli neu sy’n methu â chael ei dalu drwy eich cyflogres.</p><p>Ewch i’r rhestr o fuddiannau a threuliau all gael eu trethu drwy eich cyflogres gan ddefnyddio’r gwasanaeth hwn.</p>
 ErrorPage.noBenefitsRegistered = Nid ydych wedi cofrestru buddiannau ar gyfer y flwyddyn dreth hon – ewch yn ôl i’r <a href = "/payrollbik/payrolled-benefits-expenses">hafan</a> a chofrestru buddiannau cyn ceisio ychwanegu eithriadau.
-ErrorPage.noBenefitsRegisteredViewcy = Ar hyn o bryd, nid oes gennych fuddiannau neu dreuliau wedi’u cofrestru ar gyfer talu drwy’r gyflogres. Os hoffech gofrestru un ar gyfer blwyddyn dreth {0} i {1}, ewch yn ôl i’r <a href = "/payrollbik/payrolled-benefits-expenses">hafan</a> a’u hychwanegu.
-ErrorPage.noBenefitsRegisteredViewcyp1 = Ar hyn o bryd, nid oes gennych fuddiannau neu dreuliau wedi’u cofrestru i’w talu drwy’r gyflogres. Os hoffech gofrestru un ar gyfer blwyddyn dreth {0} i {1}, ewch yn ôl i’r <a href = "/payrollbik/payrolled-benefits-expenses">hafan</a> a’u hychwanegu.
 ErrorPage.backButtonNoCache = Nid ydych wedi chwilio hyd yn hyn. Ewch yn ôl i’r hafan ac ailadrodd taith y defnyddiwr.
 
+
 #*************************************************************
+# Error- validation Messages
+#*************************************************************
+
+
 error.required = Dewiswch y rhyw.
 error.invaliddate = Nodwch ddyddiad dilys.
 
@@ -418,12 +457,16 @@ error.invaliddate.past.year = Mae’n rhaid i flwyddyn y dyddiad geni fod yn yst
 
 error.exclusion.multi.selection = Mae’n rhaid i chi ddewis pa gyflogai yr ydych am ei eithrio cyn i chi allu mynd yn eich blaen
 
+
 #*************************************************************
+# What Next
+#*************************************************************
+
+
 whatNext.add.heading = Cofrestriad wedi’i gyflawni
 whatNext.add.heading.singular = Cofrestriad wedi’i gyflawni
 whatNext.remove.heading = Buddiant wedi’i ddileu
 whatNext.add.info = Bydd yn rhaid i chi gyflwyno ffurflen P11D i CThEM er mwyn rhoi gwybod am y buddiant neu draul y maent yn ei gael.
-whatNext.cy.add.p1 = Rydych wedi bod yn llwyddiannus wrth roi gwybod i CThEM y byddwch yn talu’r buddiannau neu dreuliau canlynol drwy’r gyflogres
 whatNext.cy1.add.lede = Dylech drethu’r buddiannau a’r treuliau canlynol drwy eich cyflogres o 6 Ebrill {0} ymlaen.
 whatNext.cy1.add.lede.singular = Dylech drethu {0} drwy eich cyflogres o 6 Ebrill {1} ymlaen.
 whatNext.cy1.add.table.header = Buddiannau a threuliau cofrestredig
@@ -442,12 +485,15 @@ whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.rescind.heading = Cofrestriad wedi’i gyflawni
 whatNext.exclude.lede = Rydych wedi rhoi gwybod i ni na fydd {0} yn cael {1} wedi’i drethu/threthu drwy eich cyflogres o 6 Ebrill {2} ymlaen.
 whatNext.exclude.p1 = Bydd yn rhaid i chi roi gwybod am werth y buddiant hwn ar <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflen P11D</a> yn lle hynny.
-whatNext.cy.exclude.p2 = Ni fydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’r gyflogres bellach
 whatNext.cy1.exclude.p2 = Ni fydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’r gyflogres bellach ar {0}
 whatNext.exclude.p3 = Dylech drefnu eich cyflogres yn gywir fel nad oes rhaid i’r cyflogeion gael eu buddiannau a’u treuliau wedi’u trethu yn eu cyflog.
 whatNext.exclude.p4 = Bydd yn rhaid i chi gyflwyno ffurflen P11D ar gyfer y cyflogeion hynny yr ydych wedi’u heithrio, gan roi gwybod i ni beth yw gwerth y buddiant neu’r draul y maent yn eu cael fel y gallwn ei gynnwys/chynnwys yn eu cod treth.
 whatNext.exclude.p5 = Mae’n rhaid i chi hefyd roi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A ar ffurflen P11D(b).
 whatNext.exclude.p6 = Os hoffech ddechrau talu buddiannau’r cyflogeion (sydd wedi’u heithrio) drwy’r gyflogres, dylech eu dileu o’r rhestr eithrio.
+
+#*************************************************************
+# Help and contact
+#*************************************************************
 
 HelpAndContact.title = Help a chysylltiadau
 HelpAndContact.p1 = Os oes gennych ymholiad treth penodol, <a rel = "external" onclick = "gaEvent(’’Help: Telephone’’)" href = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines">cysylltwch â CThEM</a>.
@@ -455,6 +501,10 @@ HelpAndContact.p2 = Os oes angen help arnoch gyda defnyddio’r gwasanaeth talu 
 HelpAndContact.form.title = Sut allwn ni eich helpu?
 HelpAndContact.form.p1 = Peidiwch â chynnwys gwybodaeth bersonol nac ariannol. Er enghraifft, eich rhif Yswiriant Gwladol neu rif eich cerdyn credyd.
 HelpAndContact.form.p2 = Byddwn yn cysylltu â chi cyn pen 2 diwrnod gwaith.
+
+#*************************************************************
+# Confirmation
+#*************************************************************
 
 ConfirmationHelpAndContact.title = Diolch
 ConfirmationHelpAndContact.p1 = Bydd rhywun yn cysylltu â chi cyn pen 2 diwrnod gwaith.
