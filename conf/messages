@@ -16,8 +16,8 @@ Service.back.yta = Your Tax Account
 Service.new-window = (opens in a new window)
 Service.paye.label = Employer PAYE reference:
 Service.nino.lastletter = (Last letter not shown)
-service.lang.English = English
-service.lang.Cymraeg = Cymraeg
+service.lang.english = English
+service.lang.cymraeg = Cymraeg
 
 Service.continue = Continue
 Service.confirm = Confirm

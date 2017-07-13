@@ -16,8 +16,8 @@ Service.back.yta = Eich Cyfrif Treth
 Service.new-window = (yn agor mewn ffenestr newydd)
 Service.paye.label = Cyfeirnod TWE y cyflogwr:
 Service.nino.lastletter = (Nid yw’r llythyren olaf yn cael ei dangos)
-service.lang.English = English
-service.lang.Cymraeg = Cymraeg
+service.lang.english = English
+service.lang.cymraeg = Cymraeg
 
 Service.continue = Mynd yn eich blaen
 Service.confirm = Cadarnhau
