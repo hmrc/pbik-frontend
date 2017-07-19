@@ -60,9 +60,9 @@
             <div class="toggle-lang">
                 @if(showLanguage) {
                     @if(applicationMessages.lang.language.toLowerCase == "cy") {
-                        <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
+                        <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">@Messages("service.lang.english")</a><span> | @Messages("service.lang.cymraeg")</span>
                     } else {
-                        <span>English | </span><a href="@routes.HomePageController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>
+                        <span>@Messages("service.lang.english") | </span><a href="@routes.HomePageController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">@Messages("service.lang.cymraeg")</a>
                     }
                 }
             </div>
