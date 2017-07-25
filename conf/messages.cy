@@ -3,8 +3,10 @@
 #*************************************************************
 
 common.feedback.get.help = Cysylltwch â ni am gymorth gyda’r gwasanaeth hwn
+
 Service.title = Talu buddiannau a threuliau drwy’r gyflogres
 Service.news.banner.message = Bydd newidiadau a wnewch yn effeithio ar godau treth eich cyflogeion ar gyfer y flwyddyn dreth nesaf, a gallai hyn arwain at anfon mwy nag un hysbysiad o god iddynt.
+
 Service.yes = Iawn
 Service.no = Na
 Service.back = Yn ôl
