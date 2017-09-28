@@ -514,19 +514,19 @@ ConfirmationHelpAndContact.p1 = Bydd rhywun yn cysylltu â chi cyn pen 2 diwrnod
 #*************************************************************
 # Exit questionnaire
 #*************************************************************
-questionnaire.signedOut = You have signed out
-questionnaire.signInAgain = You can <a href = "{0}">sign in again</a> if you need to.
-questionnaire.beforeYouGo = Before you go, please answer some questions to help us improve your experience.
-questionnaire.howDoYouFeel = Overall, how do you feel after using this service?
-questionnaire.verySatisfied = Very satisfied
-questionnaire.satisfied = Satisfied
-questionnaire.neither = Neither satisfied nor dissatisfied
-questionnaire.dissatisfied = Dissatisfied
-questionnaire.veryDissatisfied = Very dissatisfied
-questionnaire.howCanWeImprove = Tell us how we can improve this service
-questionnaire.noPersonalInfo = Please do not include any personal or financial information, for example your National Insurance or credit card numbers.
-questionnaire.characterLimit = 1200 character limit
-questionnaire.sendFeedback = Send feedback
-questionnaire.thanksFeedback = Thanks for your feedback
-questionnaire.signIn = Sign in again
-questionnaire.exploreGov = Explore GOV.UK
+questionnaire.signedOut = Rydych wedi allgofnodi
+questionnaire.signInAgain = Gallwch <a href = "{0}">fewngofnodi eto</a> os oes angen i chi wneud hynny.
+questionnaire.beforeYouGo = Cyn i chi fynd, a fyddwch cystal ag ateb rhai cwestiynau i’n helpu i wella’ch profiad o’r gwasanaeth.
+questionnaire.howDoYouFeel = Yn gyffredinol, sut oeddech yn teimlo ar ôl defnyddio’r gwasanaeth?
+questionnaire.verySatisfied = Bodlon iawn
+questionnaire.satisfied = Bodlon
+questionnaire.neither = Ddim yn fodlon nac yn anfodlon
+questionnaire.dissatisfied = Anfodlon
+questionnaire.veryDissatisfied = Anfodlon iawn
+questionnaire.howCanWeImprove = Rhowch wybod sut y gallwn wella’r gwasanaeth
+questionnaire.noPersonalInfo = Peidiwch â chynnwys unrhyw wybodaeth bersonol neu ariannol, er enghraifft, eich rhif Yswiriant Gwladol neu rifau cardiau credyd.
+questionnaire.characterLimit = Hyd at 1,200 o gymeriadau
+questionnaire.sendFeedback = Anfon adborth
+questionnaire.thanksFeedback = Diolch am eich adborth
+questionnaire.signIn = Mewngofnodwch eto
+questionnaire.exploreGov = Chwilio drwy GOV.UK
