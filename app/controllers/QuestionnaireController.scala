@@ -28,10 +28,10 @@ import services.BikListService
 import uk.gov.hmrc.play.audit.model.Audit
 import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils.ControllersReferenceData
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import uk.gov.hmrc.http.HeaderCarrier
 
 object QuestionnaireController extends QuestionnaireController with TierConnector
   with AuthenticationConnector {

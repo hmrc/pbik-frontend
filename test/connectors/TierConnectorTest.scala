@@ -25,10 +25,11 @@ import play.api.test.Helpers._
 import support.TestAuthUser
 import uk.gov.hmrc.play.audit.http.HttpAuditing
 import uk.gov.hmrc.play.config.{AppName, RunMode}
-import uk.gov.hmrc.play.http.HttpResponse
 import uk.gov.hmrc.play.http.ws._
 import utils.Exceptions.GenericServerErrorException
+
 import scala.concurrent.Future
+import uk.gov.hmrc.http._
 
 class TierConnectorTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
                                           with TestAuthUser with Results {
@@ -77,11 +78,11 @@ class TierConnectorTest extends PlaySpec with OneAppPerSuite with FakePBIKApplic
 
 
   class MockHmrcTierConnector extends HmrcTierConnector {
-    object WSHttp extends WSGet with WSPut with WSPost with WSDelete with WSPatch with AppName with RunMode with HttpAuditing {
+    object WSHttp extends WSGet with HttpGet with WSPut with HttpPut with WSPost with HttpPost with WSDelete with HttpDelete with WSPatch with HttpPatch with AppName with RunMode with HttpAuditing {
       override val hooks = Seq(AuditingHook)
       override val auditConnector = FrontendAuditConnector
-      override def doGet(url : scala.Predef.String)(implicit hc : uk.gov.hmrc.play.http.HeaderCarrier) :
-                scala.concurrent.Future[uk.gov.hmrc.play.http.HttpResponse] = Future.successful(new FakeResponse)
+      override def doGet(url : scala.Predef.String)(implicit hc : _root_.uk.gov.hmrc.http.HeaderCarrier) :
+                scala.concurrent.Future[_root_.uk.gov.hmrc.http.HttpResponse] = Future.successful(new FakeResponse)
     }
   }
 

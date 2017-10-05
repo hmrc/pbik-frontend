@@ -39,12 +39,9 @@ import play.filters.csrf.CSRF.UnsignedTokenProvider
 import play.twirl.api.{Html, HtmlFormat}
 import services.{BikListService, RegistrationService}
 import support.TestAuthUser
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.{HttpResponse, SessionKeys}
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.BikListUtils.MandatoryRadioButton
 import utils.FormMappingsConstants._
@@ -55,6 +52,8 @@ import play.api.http.HttpEntity.Strict
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 import play.api.i18n.Messages.Implicits._
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.logging.SessionId
 
 class ManageRegistrationControllerTest extends PlaySpec with OneAppPerSuite with FormMappings
   with TestAuthUser with FakePBIKApplication {

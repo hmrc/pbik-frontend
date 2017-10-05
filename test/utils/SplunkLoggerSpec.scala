@@ -24,7 +24,6 @@ import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import support.TestAuthUser
 import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import org.scalatest.mock.MockitoSugar
@@ -35,6 +34,7 @@ import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.test.UnitSpec
 import controllers.FakePBIKApplication
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with MockitoSugar with TestAuthUser {
 

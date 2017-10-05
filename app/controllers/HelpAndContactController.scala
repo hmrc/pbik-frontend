@@ -19,19 +19,20 @@ package controllers
 import java.net.URLEncoder
 
 import config.PbikAppConfig
-import connectors.{WSHttp, PBIKHeaderCarrierForPartialsConverter, HmrcTierConnector, TierConnector}
+import connectors.{HmrcTierConnector, PBIKHeaderCarrierForPartialsConverter, TierConnector, WSHttp}
 import controllers.auth._
 import play.api.Logger
 import play.api.mvc._
-import play.twirl.api.{HtmlFormat, Html}
+import play.twirl.api.{Html, HtmlFormat}
 import services.BikListService
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
-import uk.gov.hmrc.play.http.{HeaderCarrier, _}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{Request => _, _}
 
 object HelpAndContactController extends HelpAndContactController with TierConnector
 with AuthenticationConnector with Actions {
@@ -51,7 +52,7 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
   this: TierConnector =>
   def bikListService: BikListService
 
-  def httpPost: HttpPost
+  def httpPost: CorePost
   private val TICKET_ID = "ticketId"
 
   def contactFrontendPartialBaseUrl: String
@@ -93,7 +94,7 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
   private def submitContactHmrc(formUrl: String, successRedirect: Call, failedValidationResponseContent: (Html) => HtmlFormat.Appendable)
                                (implicit request: Request[AnyContent]) : Future[Result] = {
     request.body.asFormUrlEncoded.map { formData =>
-      httpPost.POSTForm[HttpResponse](formUrl, formData)(rds = PartialsFormReads.readPartialsForm, hc = partialsReadyHeaderCarrier).map {
+      httpPost.POSTForm[HttpResponse](formUrl, formData)(rds = PartialsFormReads.readPartialsForm, hc = partialsReadyHeaderCarrier, mdcExecutionContext).map {
         resp => resp.status match {
           case 200 => Redirect(successRedirect).withSession(request.session + (TICKET_ID -> resp.body))
           case 400 => BadRequest(failedValidationResponseContent(Html(resp.body)))
