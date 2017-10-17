@@ -40,9 +40,9 @@ private object AppDependencies {
 
   private val frontendBootstrapVersion = "8.8.0"
   private val playPartials = "6.1.0"
-  private val urlBuilderVersion = "1.1.0"
+  private val urlBuilderVersion = "2.1.0"
   private val scalaTestVersion = "2.2.6"
-  private val hmrcTestVersion = "2.4.0"
+  private val hmrcTestVersion = "3.0.0"
   private val mockitoVersion = "1.10.19"
   private val specs2Version = "2.3.13"
   private val pegDownVersion = "1.6.0"
