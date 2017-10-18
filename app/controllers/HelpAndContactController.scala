@@ -29,6 +29,7 @@ import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
 import play.api.i18n.Messages.Implicits._
+import uk.gov.hmrc.http.HeaderCarrier
 import play.api.Play.current
 
 import scala.concurrent.Future
