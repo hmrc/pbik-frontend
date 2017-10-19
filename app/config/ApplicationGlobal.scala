@@ -18,31 +18,28 @@ package config
 
 import connectors.FrontendAuditConnector
 import play.api.mvc.{EssentialAction, Filters, Request}
+import uk.gov.hmrc.play.frontend.filters.{FrontendAuditFilter, FrontendLoggingFilter}
 //import play.filters.headers.{SecurityHeadersConfig, SecurityHeadersFilter, SecurityHeadersParser}
 import play.twirl.api.Html
-import uk.gov.hmrc.play.audit.filters.FrontendAuditFilter
 import uk.gov.hmrc.play.config._
 import uk.gov.hmrc.play.frontend.bootstrap._
 import play.api._
 import uk.gov.hmrc.crypto.ApplicationCrypto
-import uk.gov.hmrc.play.filters._
 import play.api.Mode.Mode
 import java.io.File
 import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
-import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import play.api.mvc.Request
 import play.twirl.api.Html
 import play.api.{Application, Configuration}
-import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import uk.gov.hmrc.play.frontend.filters.MicroserviceFilterSupport
 
 object ApplicationGlobal extends FrontendGlobal {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit rh: Request[_]): Html =
     views.html.error_template(pageTitle, heading, message)
-
 }
 
 abstract class FrontendGlobal

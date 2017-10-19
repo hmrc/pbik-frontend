@@ -26,9 +26,7 @@ import play.api.data.Form
 import play.api.{Play, Logger}
 import play.api.mvc._
 import services.{BikListService, EiLListService}
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.SessionKeys
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,6 +35,7 @@ import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import uk.gov.hmrc.http.{ HeaderCarrier, SessionKeys }
 
 trait ExclusionListConfiguration extends RunMode {
 

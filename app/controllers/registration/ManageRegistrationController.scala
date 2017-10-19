@@ -34,13 +34,12 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.BikListUtils.MandatoryRadioButton
 import utils.FormMappingsConstants._
 import utils._
-import uk.gov.hmrc.play.http.{HttpResponse, SessionKeys}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse, SessionKeys }
 
 object ManageRegistrationController extends ManageRegistrationController with TierConnector with AuthenticationConnector {
   def pbikAppConfig = PbikAppConfig

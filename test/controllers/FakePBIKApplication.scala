@@ -19,10 +19,10 @@ package controllers
 import java.util.UUID
 import models.HeaderTags
 import org.specs2.mock.Mockito
-import uk.gov.hmrc.play.http.SessionKeys
 import org.scalatest.Suite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
+import uk.gov.hmrc.http.SessionKeys
 
 trait FakePBIKApplication extends Mockito {
 

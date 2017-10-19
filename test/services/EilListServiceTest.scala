@@ -26,11 +26,11 @@ import play.api.libs.json
 import play.api.mvc.{AnyContent, Request}
 import play.api.test.Helpers._
 import support.TestAuthUser
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.ControllersReferenceData
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.SessionId
 
 class EilListServiceTest extends UnitSpec with FakePBIKApplication with Matchers
 with TestAuthUser with ControllersReferenceData {

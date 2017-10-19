@@ -38,8 +38,6 @@ import support.TestAuthUser
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse, SessionKeys}
-import uk.gov.hmrc.play.http.logging.SessionId
 import utils._
 import play.api.i18n.Messages.Implicits._
 
@@ -47,6 +45,8 @@ import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 import akka.util.Timeout
 import play.api.http.HttpEntity.Strict
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse, SessionKeys }
+import uk.gov.hmrc.http.logging.SessionId
 
 class LanguageSupportTest extends PlaySpec with OneAppPerSuite with FormMappings with TestAuthUser
    with FakePBIKApplication {

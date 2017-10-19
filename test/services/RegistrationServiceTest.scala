@@ -27,17 +27,17 @@ import play.api.libs.json
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import support.TestAuthUser
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.model.{AuditEvent, DataEvent}
+import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.TaxDateUtils
 import org.mockito.Mockito._
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.SessionId
 
 class RegistrationServiceTest extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication {
 

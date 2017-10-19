@@ -38,13 +38,13 @@ import support.TestAuthUser
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.http.logging.SessionId
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils.{TaxDateUtils, _}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.logging.SessionId
 
 class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
                                                     with TestAuthUser with ControllersReferenceData {

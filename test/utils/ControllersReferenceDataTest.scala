@@ -27,12 +27,12 @@ import play.api.mvc.{Result, Results}
 import play.api.test.Helpers._
 import support.TestAuthUser
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.Upstream5xxResponse
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages.Implicits._
 import scala.concurrent.{Future, Promise}
 import scala.util.Try
+import uk.gov.hmrc.http.Upstream5xxResponse
 
 class ControllersReferenceDataTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
                                                     with TestAuthUser with Results {

@@ -38,36 +38,22 @@ object FrontendBuild extends Build with MicroService {
 private object AppDependencies {
   import play.core.PlayVersion
 
-  private val frontendBootstrapVersion = "7.22.0"
-  private val govukTemplateVersion =  "5.1.0"
-  private val playAuthorisedFrontendVersion = "6.3.0"
-  private val playConfigVersion = "4.3.0"
-  private val playHealthVersion = "2.1.0"
-  private val playPartials = "5.3.0"
-  private val playUIVersion = "7.2.1"
-  private val urlBuilderVersion = "1.1.0"
+  private val frontendBootstrapVersion = "8.8.0"
+  private val playPartials = "6.1.0"
+  private val urlBuilderVersion = "2.1.0"
   private val scalaTestVersion = "2.2.6"
-  private val hmrcTestVersion = "2.3.0"
+  private val hmrcTestVersion = "2.4.0"
   private val mockitoVersion = "1.10.19"
   private val specs2Version = "2.3.13"
   private val pegDownVersion = "1.6.0"
   private val jSoupVersion = "1.9.2"
-  private val playGraphiteVersion = "3.1.0"
-  private val logbackJsonLoggerVersion = "3.1.0"
   private val scalatestPlusPlayVersion = "1.5.1"
 
   val compile = Seq(
 
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
-    "uk.gov.hmrc" %% "govuk-template" % govukTemplateVersion,
-    "uk.gov.hmrc" %% "play-authorised-frontend" % playAuthorisedFrontendVersion,
-    "uk.gov.hmrc" %% "play-config" % playConfigVersion,
-    "uk.gov.hmrc" %% "play-health" % playHealthVersion,
-    "uk.gov.hmrc" %% "logback-json-logger" % logbackJsonLoggerVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartials,
-    "uk.gov.hmrc" %% "play-ui" % playUIVersion,
-    "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion,
-    "uk.gov.hmrc" %% "play-graphite" % playGraphiteVersion
+    "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion
   )
 
   trait TestDependencies {
