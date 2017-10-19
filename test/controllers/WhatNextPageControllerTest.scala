@@ -42,14 +42,13 @@ import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import services.BikListService
 import support.TestAuthUser
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.HttpResponse
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{ControllersReferenceData, FormMappings, TaxDateUtils}
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.logging.SessionId
 
 
 class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication

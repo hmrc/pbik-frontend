@@ -25,13 +25,13 @@ import models.{Bik, RegistrationItem, RegistrationList}
 import play.api.data.Form
 import play.api.mvc.{Result, AnyContent, Request}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 object RegistrationService extends RegistrationService with TierConnector with AuthenticationConnector {
   def pbikAppConfig = PbikAppConfig

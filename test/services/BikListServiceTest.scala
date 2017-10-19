@@ -25,7 +25,6 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.{mock, reset, verify, when}
 import org.specs2.mock.Mockito
 import support.TestAuthUser
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 import play.api.test.Helpers._
 import play.api.test.FakeRequest
@@ -34,6 +33,7 @@ import scala.concurrent.duration._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Await
+import uk.gov.hmrc.http.HeaderCarrier
 
 class BikListServiceTest extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication {
 

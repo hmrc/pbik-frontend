@@ -20,14 +20,10 @@ import models.{EiLPerson, EiLPersonList}
 import support.AuthorityUtils._
 import play.api.test.Helpers._
 import play.api.test.FakeRequest
-import play.filters.csrf.CSRF
-import play.filters.csrf.CSRF.UnsignedTokenProvider
 import support.TestAuthUser
 import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
-import org.scalatest.mock.MockitoSugar
 import play.api.libs.Crypto
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
@@ -35,8 +31,9 @@ import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.test.UnitSpec
 import controllers.FakePBIKApplication
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
-class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with MockitoSugar with TestAuthUser {
+class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUser {
 
   val testList = List[EiLPerson](new EiLPerson("AB111111","Adam", None ,"Smith",None, Some("01/01/1980"),Some("male"), None, 0))
   val testPersonList = EiLPersonList(testList)

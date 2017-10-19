@@ -25,13 +25,13 @@ import play.api.data.Form
 import play.api.i18n.Lang
 import play.api.mvc.{Result, _}
 import services.BikListService
-import uk.gov.hmrc.play.http.SessionKeys
 import utils._
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import uk.gov.hmrc.http.SessionKeys
 
 object WhatNextPageController extends WhatNextPageController with TierConnector
 with AuthenticationConnector {

@@ -26,7 +26,6 @@ import play.api.test.FakeRequest
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import connectors.FrontendAuthConnector
 import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
@@ -37,6 +36,7 @@ import scala.concurrent.Future
 import org.mockito.Mockito._
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.libs.Crypto
+import uk.gov.hmrc.http.HeaderCarrier
 
 object UserBuilder {
 

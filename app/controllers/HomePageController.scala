@@ -26,7 +26,6 @@ import services.{BikListService}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
-import uk.gov.hmrc.play.http.HeaderCarrier
 import utils._
 import scala.concurrent.Future
 import play.api.Play.configuration
@@ -34,6 +33,7 @@ import play.api.i18n.Lang
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import scala.util.{Success, Try}
+import uk.gov.hmrc.http.HeaderCarrier
 
 object HomePageController extends HomePageController with TierConnector
 with AuthenticationConnector {

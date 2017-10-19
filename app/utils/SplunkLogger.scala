@@ -18,7 +18,6 @@ package utils
 
 import controllers.auth.AuthenticationConnector
 import models.{EiLPersonList, EiLPerson}
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.EpayeAccount
@@ -27,6 +26,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Logger
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 object SplunkLogger {
 

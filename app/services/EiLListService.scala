@@ -22,13 +22,13 @@ import controllers.auth.{EpayeUser, PbikActions}
 import models.{EiLPerson, Bik}
 import play.api.Logger
 import play.api.mvc.Request
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils.{SplunkLogger, ControllersReferenceData, URIInformation}
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HeaderCarrier
 
 object EiLListService extends EiLListService {
   def pbikAppConfig = PbikAppConfig
