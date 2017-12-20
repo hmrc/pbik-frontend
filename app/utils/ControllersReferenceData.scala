@@ -31,6 +31,7 @@ import play.api.{Logger, Play}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import uk.gov.hmrc.http.Upstream5xxResponse
 
 object ControllersReferenceData extends ControllersReferenceData {
   def pbikAppConfig = PbikAppConfig

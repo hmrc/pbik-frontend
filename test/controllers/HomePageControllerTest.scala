@@ -28,10 +28,7 @@ import play.api.test.Helpers._
 import play.filters.csrf.CSRF
 import play.filters.csrf.CSRF.UnsignedTokenProvider
 import services.BikListService
-import uk.gov.hmrc.play.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.SessionKeys
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.test.UnitSpec
@@ -44,6 +41,8 @@ import play.api.i18n.Messages.Implicits._
 import play.api.http.HttpEntity.Strict
 import play.api.libs.Crypto
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ HeaderCarrier, SessionKeys }
+import uk.gov.hmrc.http.logging.SessionId
 
 class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
                                               with TestAuthUser with FormMappings{

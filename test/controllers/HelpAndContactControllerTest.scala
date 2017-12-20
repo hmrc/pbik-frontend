@@ -33,16 +33,17 @@ import play.filters.csrf.CSRF.UnsignedTokenProvider
 import services.BikListService
 import support.TestAuthUser
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.logging.SessionId
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{FormMappings, TaxDateUtils}
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.Crypto
+import play.mvc.Http
 
 import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.logging.SessionId
 
 class HelpAndContactControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
                                               with TestAuthUser with FormMappings{
@@ -79,10 +80,10 @@ class HelpAndContactControllerTest extends PlaySpec with OneAppPerSuite with Fak
       }
     }
 
-    when(httpPost.POSTForm[HttpResponse](anyString, any)(any, any))
+    when(httpPost.POSTForm[HttpResponse](anyString, any)(any, any, any))
       .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
 
-    when(httpPost.GET[HttpResponse](anyString)(any, any))
+    when(httpPost.GET[HttpResponse](anyString)(any, any, any))
       .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
 
   }
