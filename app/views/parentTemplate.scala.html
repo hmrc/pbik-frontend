@@ -73,7 +73,7 @@
                     <a href="/account" onclick="gaEvent('Click back to YTA link')">@Messages("Service.back.yta")</a>
                 </div>
             }
-            <div class="toggle-lang">
+            <div class="toggle-lang" style="text-align: right">
                 @if(showLanguage) {
                     @if(applicationMessages.lang.language.toLowerCase == "cy") {
                         <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">@Messages("service.lang.english")</a><span> | @Messages("service.lang.cymraeg")</span>
