@@ -1,7 +1,7 @@
 import sbt.Keys._
-import sbt.Tests.{SubProcess, Group}
+import sbt.Tests.{Group, SubProcess}
 import sbt._
-import scoverage.ScoverageSbtPlugin
+import scoverage.{ScoverageKeys, ScoverageSbtPlugin}
 import wartremover._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import play.routes.compiler.StaticRoutesGenerator
@@ -53,8 +53,8 @@ trait MicroService {
       fork in Test := false,
       retrieveManaged := true,
       wartremoverWarnings in (Compile, compile) ++= Warts.allBut(Wart.OptionPartial,
-                                                                Wart.DefaultArguments,
-                                                                Wart.NoNeedForMonad),
+        Wart.DefaultArguments,
+        Wart.NoNeedForMonad),
       wartremoverErrors in (Compile, compile) ++= Seq.empty,
       wartremoverExcluded ++= wartRemovedExcludedClasses,
       routesGenerator := StaticRoutesGenerator
