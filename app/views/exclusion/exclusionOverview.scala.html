@@ -1,5 +1,5 @@
 @*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,6 @@
                            context: config.PbikContext, applicationMessages: Messages)
 
 @parentTemplate(pageTitle = Messages("ExclusionOverview.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
-
-    <script>
-        //Starts a new GA session
-        ga('send', 'pageview', {'sessionControl': 'end'});
-    </script>
-
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
         <header class="page-header">
             <h1 id="title" class="heading-with-border">@Messages("ExclusionOverview.title")</h1>

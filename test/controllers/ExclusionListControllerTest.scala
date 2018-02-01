@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
   override lazy val pbikAppConfig = mock[AppConfig]
   //val dateRange =  TaxDateUtils.getTaxYearRange()
   val date = new LocalDate()
-  val dateRange = if(date.getMonthOfYear <= 4 && date.getDayOfMonth < 6){
+  val dateRange = if(date.getMonthOfYear < 4 || (date.getMonthOfYear == 4 && date.getDayOfMonth < 6)){
     models.TaxYearRange(date.getYear -1 , date.getYear, date.getYear + 1)
   } else {
     models.TaxYearRange(date.getYear , date.getYear + 1, date.getYear + 2)
@@ -258,7 +258,7 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
       def csrfToken = "csrfToken" ->  Crypto.generateToken
       //UnsignedTokenProvider.generateToken
       implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
-      val result = await(mockExclusionListController.mapYearStringToInt("cy"))
+      val result: Int = await(mockExclusionListController.mapYearStringToInt("cy"))
       result must be(dateRange.cyminus1)
     }
   }
