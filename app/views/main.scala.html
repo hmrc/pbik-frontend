@@ -112,9 +112,9 @@
 
     @layouts.footer(analyticsToken = Play.configuration.getString("google-analytics.token"),
         analyticsHost = Play.configuration.getString("google-analytics.host").getOrElse("service.gov.uk"),
-        ssoUrl = None,
+        ssoUrl = Play.configuration.getString("portal.ssoUrl"),
         scriptElem = scriptElement,
-        gaCalls = None)
+        gaCalls = gaCalls)
 }
 
 @govuk_template(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, footerLinks, headerNav.isDefined)(content)
