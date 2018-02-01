@@ -53,8 +53,8 @@ trait MicroService {
       fork in Test := false,
       retrieveManaged := true,
       wartremoverWarnings in (Compile, compile) ++= Warts.allBut(Wart.OptionPartial,
-                                                                Wart.DefaultArguments,
-                                                                Wart.NoNeedForMonad),
+        Wart.DefaultArguments,
+        Wart.NoNeedForMonad),
       wartremoverErrors in (Compile, compile) ++= Seq.empty,
       wartremoverExcluded ++= wartRemovedExcludedClasses,
       routesGenerator := StaticRoutesGenerator

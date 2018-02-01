@@ -1,5 +1,5 @@
 @*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,64 +23,64 @@
 @import uk.gov.hmrc.http.SessionKeys
 
 @myLinkElement = {
-    <link rel='stylesheet' href='@routes.AssetsController.at("assets/css/pbik.css")'/>
+<link rel='stylesheet' href='@routes.AssetsController.at("assets/css/pbik.css")'/>
 }
 
 @scriptElement = {
-    <link rel="stylesheet"  type="text/css" href='@routes.AssetsController.at("assets/css/pbik.css")' />
-    <!-- Google Analytics -->
+<link rel="stylesheet"  type="text/css" href='@routes.AssetsController.at("assets/css/pbik.css")' />
+<!-- Google Analytics -->
 
-    <script>
+<script>
             window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
             ga('create', '@Play.configuration.getString(s"google-analytics.token")', 'auto');
             ga('send', 'pageview', '@pageTitle + @request.session.get(SessionKeys.sessionId)');
     </script>
 
-    <script async src='//www.google-analytics.com/analytics.js'></script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
 
-    <!-- End Google Analytics -->
+<!-- End Google Analytics -->
 
-    <!--[if IE 7]>
+<!--[if IE 7]>
 
-    <link rel="stylesheet" type="text/css" href='@routes.AssetsController.at("assets/css/ie7.css")'/>
+<link rel="stylesheet" type="text/css" href='@routes.AssetsController.at("assets/css/ie7.css")'/>
 
 
-    <![endif]-->
+<![endif]-->
 
-    <script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/pbik.js")'></script>
+<script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/pbik.js")'></script>
 
-    <script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/print.js")'></script>
+<script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/print.js")'></script>
 }
 
 @serviceInfo = {
-    @if(showLanguage) {
-        <div class="pbik-banner-links">
+@if(showLanguage) {
+<div class="pbik-banner-links">
 
-            <div class="toggle-lang">
-                @if(showLanguage) {
-                    @if(applicationMessages.lang.language.toLowerCase == "cy") {
-                        <a href="@routes.QuestionnaireController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
-                    } else {
-                        <span>English | </span><a href="@routes.QuestionnaireController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>
-                    }
-                }
-            </div>
+    <div class="toggle-lang">
+        @if(showLanguage) {
+        @if(applicationMessages.lang.language.toLowerCase == "cy") {
+        <a href="@routes.QuestionnaireController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">English</a><span> | Cymraeg</span>
+        } else {
+        <span>English | </span><a href="@routes.QuestionnaireController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">Cymraeg</a>
+        }
+        }
+    </div>
 
-        </div>
-    }
+</div>
+}
 }
 
 @main(
-    title = pageTitle,
-    headerNav = Some(views.helpers.HeaderNav(
-    title = Some(Messages("Service.title")),
-    titleLink = None,
-    links = None,
-    showBetaLink = false)),
-    supportLinkEnabled = true,
-    linkElement = Some(myLinkElement),
-    serviceInfoContent = Some(serviceInfo),
-    headScripts = Some(scriptElement)
+title = pageTitle,
+headerNav = Some(views.helpers.HeaderNav(
+title = Some(Messages("Service.title")),
+titleLink = None,
+links = None,
+showBetaLink = false)),
+supportLinkEnabled = true,
+linkElement = Some(myLinkElement),
+serviceInfoContent = Some(serviceInfo),
+headScripts = Some(scriptElement)
 ) {
 @mainContent
 }

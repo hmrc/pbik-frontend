@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import play.api.data.Form
 import scala.concurrent.Future
 import connectors.{HmrcTierConnector, TierConnector}
 import models._
-import org.joda.time.DateTime
+import org.joda.time.{DateTime, LocalDate}
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
@@ -47,8 +47,9 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{ControllersReferenceData, FormMappings, TaxDateUtils}
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.time.TaxYearResolver
 
 
 class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
@@ -213,21 +214,12 @@ class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakeP
          implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
          val formRegistrationList: Form[RegistrationList] = objSelectedForm
          val formFilled = formRegistrationList.fill(registrationList)
-         //val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2016)})
-
-         val date = new DateTime()
-         val year = if(date.getMonthOfYear <= 4 && date.getDayOfMonth < 6){
-           date.getYear
-         } else {
-           date.getYear + 1
-         }
+         val year = TaxYearResolver.taxYearFor(LocalDate.now)
          val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, year)})
-
          result.header.status must be(OK)
          result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
-         //result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April 2016.")
-         result.body.asInstanceOf[Strict].data.utf8String must include(s"Now tax Private medical treatment or insurance through your payroll from 6 April ${year}.")
-
+         result.body.asInstanceOf[Strict].data.utf8String must include(
+           s"Now tax Private medical treatment or insurance through your payroll from 6 April ${year}.")
        }
 
       "(Register a BIK next year) Single benefit - state the status is ok and correct page is displayed" in {

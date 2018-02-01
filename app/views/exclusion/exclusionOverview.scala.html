@@ -1,5 +1,5 @@
 @*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,109 +19,104 @@
 @import config.PbikAppConfig.maximumExclusions
 
 @(taxYearRange:TaxYearRange,
-  isCurrentTaxYear:String,
-  iabdType:String,
-  current:List[EiLPerson])(implicit request:Request[_],
-                           ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
-                           context: config.PbikContext, applicationMessages: Messages)
+isCurrentTaxYear:String,
+iabdType:String,
+current:List[EiLPerson])(implicit request:Request[_],
+ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+context: config.PbikContext, applicationMessages: Messages)
 
 @parentTemplate(pageTitle = Messages("ExclusionOverview.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
-    <script>
-        //Starts a new GA session
-        ga('send', 'pageview', {'sessionControl': 'end'});
-    </script>
+@defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
+<header class="page-header">
+    <h1 id="title" class="heading-with-border">@Messages("ExclusionOverview.title")</h1>
+</header>
+<section id="exclusion-overview">
+    @if(current.isEmpty) {
+    <p class="lede-para text">
+        @Messages("ExclusionOverview.instruction.empty", Messages("BenefitInKind.label." + iabdType), yearvalue)
+    </p>
 
-    @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
-        <header class="page-header">
-            <h1 id="title" class="heading-with-border">@Messages("ExclusionOverview.title")</h1>
-        </header>
-        <section id="exclusion-overview">
-            @if(current.isEmpty) {
-                <p class="lede-para text">
-                        @Messages("ExclusionOverview.instruction.empty", Messages("BenefitInKind.label." + iabdType), yearvalue)
-                </p>
-
-            }else{
-                <p class="lede-para text">
-                    @if(isCurrentTaxYear=="cy") {
-                        @Messages("ExclusionOverview.instruction.cy.notempty", Messages("BenefitInKind.label." + iabdType))
-                    }else{
-                        @Messages("ExclusionOverview.instruction.notempty", Messages("BenefitInKind.label." + iabdType), yearvalue)
-                    }
-                </p>
-            }
-
-            @if(!current.isEmpty) {
-                    <table>
-                        <caption>@Messages("ExclusionOverview.caption")</caption>
-                        <thead>
-                        <tr>
-                            <th>@Messages("Service.field.name")</th>
-                            <th>@Messages("Service.field.nino")<br>
-                                <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
-                            </th>
-                            <th>@Messages("Service.field.worksnumber")</th>
-                            <th>@Messages("Service.action")</th>
-
-                        </tr>
-                        </thead>
-                        <tbody>
-
-                        @for( (c, index) <- current.zipWithIndex ) {
-
-                         @helpers.form(action=routes.ExclusionListController.remove(isCurrentTaxYear, iabdValueURLMapper(iabdType))){
-                            <tr>
-                              <td width="25%" id='name-@c.nino'>@c.surname, @c.firstForename </td>
-                              <td width="40%" class="nino" id = 'nino-@c.nino'>
-                                  @c.nino
-                              </td>
-                              <td width="25%" id='dob-@c.nino'>@c.worksPayrollNumber</td>
-                              @if(isCurrentTaxYear!="cy"){
-                                    <td><input class="button--link-style" type="submit" name="submit" id='@c.nino-remove' value="@Messages("Service.removeexclusion")"></td>
-                              }
-
-                            </tr>
-
-
-                        <input type="hidden" name="individuals[0].nino" value="@c.nino" />
-                        <input type="hidden" name="individuals[0].firstName" value="@c.firstForename" />
-                        <input type="hidden" name="individuals[0].secondName" value="@c.secondForename" />
-                        <input type="hidden" name="individuals[0].surname"    value="@c.surname" />
-                        <input type="hidden" name="individuals[0].worksPayrollNumber" value ="@c.worksPayrollNumber" />
-                        <input type="hidden" name="individuals[0].dateOfBirth" value="@c.dateOfBirth" />
-                        <input type="hidden" name="individuals[0].gender" value="@c.gender" />
-                        <input type="hidden" name="individuals[0].perOptLock" value="@c.perOptLock" />
-                        <input type="hidden" name="individuals[0].status" value="30" />
-                            }
-                        }
-                        </tbody>
-                    </table>
-            }
-
-            <div style="clear:both"></div>
-
-            <div class="panel-indent panel-border-wide">
-                @Messages("ExclusionOverview.warning")
-            </div>
-
-            <div style="margin-top: 10px;">
-                @if(current.size <= maximumExclusions ) {
-                    @defining( if(current.isEmpty){"Service.excludeanemployee"}else{"Service.excludeanotheremployee"}) { buttonlabel =>
-                        <a class="button" role="button" role="button" id="button-exclude"
-                           href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdValueURLMapper(iabdType))'>
-                        @Messages(buttonlabel)</a>
-                    }
-                } else {
-                <p class="text">
-                    @Messages("ExclusionOverview.excludecount.exceeded")
-                </p>
-                }
-
-                <p class="text"><a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad"
-                                   id="link-back">@Messages("Service.back.overview")</a></p>
-            </div>
-        </section>
+    }else{
+    <p class="lede-para text">
+        @if(isCurrentTaxYear=="cy") {
+        @Messages("ExclusionOverview.instruction.cy.notempty", Messages("BenefitInKind.label." + iabdType))
+        }else{
+        @Messages("ExclusionOverview.instruction.notempty", Messages("BenefitInKind.label." + iabdType), yearvalue)
+        }
+    </p>
     }
+
+    @if(!current.isEmpty) {
+    <table>
+        <caption>@Messages("ExclusionOverview.caption")</caption>
+        <thead>
+        <tr>
+            <th>@Messages("Service.field.name")</th>
+            <th>@Messages("Service.field.nino")<br>
+                <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
+            </th>
+            <th>@Messages("Service.field.worksnumber")</th>
+            <th>@Messages("Service.action")</th>
+
+        </tr>
+        </thead>
+        <tbody>
+
+        @for( (c, index) <- current.zipWithIndex ) {
+
+        @helpers.form(action=routes.ExclusionListController.remove(isCurrentTaxYear, iabdValueURLMapper(iabdType))){
+        <tr>
+            <td width="25%" id='name-@c.nino'>@c.surname, @c.firstForename </td>
+            <td width="40%" class="nino" id = 'nino-@c.nino'>
+                @c.nino
+            </td>
+            <td width="25%" id='dob-@c.nino'>@c.worksPayrollNumber</td>
+            @if(isCurrentTaxYear!="cy"){
+            <td><input class="button--link-style" type="submit" name="submit" id='@c.nino-remove' value="@Messages("Service.removeexclusion")"></td>
+            }
+
+        </tr>
+
+
+        <input type="hidden" name="individuals[0].nino" value="@c.nino" />
+        <input type="hidden" name="individuals[0].firstName" value="@c.firstForename" />
+        <input type="hidden" name="individuals[0].secondName" value="@c.secondForename" />
+        <input type="hidden" name="individuals[0].surname"    value="@c.surname" />
+        <input type="hidden" name="individuals[0].worksPayrollNumber" value ="@c.worksPayrollNumber" />
+        <input type="hidden" name="individuals[0].dateOfBirth" value="@c.dateOfBirth" />
+        <input type="hidden" name="individuals[0].gender" value="@c.gender" />
+        <input type="hidden" name="individuals[0].perOptLock" value="@c.perOptLock" />
+        <input type="hidden" name="individuals[0].status" value="30" />
+        }
+        }
+        </tbody>
+    </table>
+    }
+
+    <div style="clear:both"></div>
+
+    <div class="panel-indent panel-border-wide">
+        @Messages("ExclusionOverview.warning")
+    </div>
+
+    <div style="margin-top: 10px;">
+        @if(current.size <= maximumExclusions ) {
+        @defining( if(current.isEmpty){"Service.excludeanemployee"}else{"Service.excludeanotheremployee"}) { buttonlabel =>
+        <a class="button" role="button" role="button" id="button-exclude"
+           href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdValueURLMapper(iabdType))'>
+            @Messages(buttonlabel)</a>
+        }
+        } else {
+        <p class="text">
+            @Messages("ExclusionOverview.excludecount.exceeded")
+        </p>
+        }
+
+        <p class="text"><a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad"
+                           id="link-back">@Messages("Service.back.overview")</a></p>
+    </div>
+</section>
+}
 
 }
