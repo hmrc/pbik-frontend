@@ -20,6 +20,18 @@ trait MicroService {
   lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala)
   lazy val playSettings : Seq[Setting[_]] = Seq.empty
 
+  lazy val scoverageSettings = {
+    import ScoverageSbtPlugin._
+
+    Seq(
+      ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;views.*;config.*;models.*;" +
+        ".*(AuthService|BuildInfo|Routes).*",
+      ScoverageKeys.coverageMinimum := 75,
+      ScoverageKeys.coverageFailOnMinimum := false,
+      ScoverageKeys.coverageHighlighting := true
+    )
+
+  }
 
   val wartRemovedExcludedClasses = Seq(
     "app.Routes", "prod.Routes", "app.routes", "prod.routes", "uk.gov.hmrc.BuildInfo",
@@ -28,7 +40,7 @@ trait MicroService {
 
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(plugins : _*)
-    .settings(playSettings)
+    .settings(playSettings ++ scoverageSettings : _*)
     .settings(wartremoverSettings : _*)
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
@@ -41,8 +53,8 @@ trait MicroService {
       fork in Test := false,
       retrieveManaged := true,
       wartremoverWarnings in (Compile, compile) ++= Warts.allBut(Wart.OptionPartial,
-                                                                Wart.DefaultArguments,
-                                                                Wart.NoNeedForMonad),
+        Wart.DefaultArguments,
+        Wart.NoNeedForMonad),
       wartremoverErrors in (Compile, compile) ++= Seq.empty,
       wartremoverExcluded ++= wartRemovedExcludedClasses,
       routesGenerator := StaticRoutesGenerator
@@ -79,4 +91,3 @@ private object TestPhases {
       test => new Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))
     }
 }
-
