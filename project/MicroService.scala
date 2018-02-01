@@ -1,7 +1,7 @@
 import sbt.Keys._
-import sbt.Tests.{Group, SubProcess}
+import sbt.Tests.{SubProcess, Group}
 import sbt._
-import scoverage.{ScoverageKeys, ScoverageSbtPlugin}
+import scoverage.ScoverageSbtPlugin
 import wartremover._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import play.routes.compiler.StaticRoutesGenerator
