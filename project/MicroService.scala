@@ -1,7 +1,7 @@
 import sbt.Keys._
-import sbt.Tests.{Group, SubProcess}
+import sbt.Tests.{SubProcess, Group}
 import sbt._
-import scoverage.{ScoverageKeys, ScoverageSbtPlugin}
+import scoverage.ScoverageSbtPlugin
 import wartremover._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import play.routes.compiler.StaticRoutesGenerator
@@ -53,8 +53,8 @@ trait MicroService {
       fork in Test := false,
       retrieveManaged := true,
       wartremoverWarnings in (Compile, compile) ++= Warts.allBut(Wart.OptionPartial,
-        Wart.DefaultArguments,
-        Wart.NoNeedForMonad),
+                                                                Wart.DefaultArguments,
+                                                                Wart.NoNeedForMonad),
       wartremoverErrors in (Compile, compile) ++= Seq.empty,
       wartremoverExcluded ++= wartRemovedExcludedClasses,
       routesGenerator := StaticRoutesGenerator
@@ -91,3 +91,4 @@ private object TestPhases {
       test => new Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))
     }
 }
+
