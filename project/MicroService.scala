@@ -20,18 +20,6 @@ trait MicroService {
   lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala)
   lazy val playSettings : Seq[Setting[_]] = Seq.empty
 
-  lazy val scoverageSettings = {
-    import ScoverageSbtPlugin._
-
-    Seq(
-      ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;views.*;config.*;models.*;" +
-        ".*(AuthService|BuildInfo|Routes).*",
-      ScoverageKeys.coverageMinimum := 75,
-      ScoverageKeys.coverageFailOnMinimum := false,
-      ScoverageKeys.coverageHighlighting := true
-    )
-
-  }
 
   val wartRemovedExcludedClasses = Seq(
     "app.Routes", "prod.Routes", "app.routes", "prod.routes", "uk.gov.hmrc.BuildInfo",
@@ -40,7 +28,7 @@ trait MicroService {
 
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(plugins : _*)
-    .settings(playSettings ++ scoverageSettings : _*)
+    .settings(playSettings)
     .settings(wartremoverSettings : _*)
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
