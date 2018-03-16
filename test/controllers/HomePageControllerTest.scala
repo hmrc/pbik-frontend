@@ -107,7 +107,7 @@ class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKA
   "When checking if from YTA referer ends /account " in {
     val homePageController = HomePageController
     implicit val request = FakeRequest().withHeaders(
-      "referer" -> "tax.service.gov.uk/account"
+      "referer" -> "/account"
     )
     val result = homePageController.isFromYTA
     result must be(true)
@@ -116,7 +116,7 @@ class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKA
   "When checking if from YTA referer ends /business-account " in {
     val homePageController = HomePageController
     implicit val request = FakeRequest().withHeaders(
-      "referer" -> "tax.service.gov.uk/business-account"
+      "referer" -> "/business-account"
     )
     val result = homePageController.isFromYTA
     result must be(true)
@@ -125,7 +125,7 @@ class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKA
   "When checking if from YTA referer ends /someother " in {
     val homePageController = HomePageController
     implicit val request = FakeRequest().withHeaders(
-      "referer" -> "tax.service.gov.uk/someother"
+      "referer" -> "/someother"
     )
     val result = homePageController.isFromYTA
     result must be(false)
