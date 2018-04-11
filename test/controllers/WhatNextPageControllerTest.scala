@@ -235,7 +235,7 @@ class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakeP
         val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017)})
         result.header.status must be(OK)
         result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
-        result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April 2017.")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April")
       }
 
       "(Register a BIK next year) Multiple benefits - state the status is ok and correct page is displayed" in {
