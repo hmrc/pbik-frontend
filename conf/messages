@@ -469,10 +469,10 @@ whatNext.cy1.add.lede = Now tax the following benefits and expenses through your
 whatNext.cy1.add.lede.singular = Now tax {0} through your payroll from 6 April {1}.
 whatNext.cy1.add.table.header = Registered benefits and expenses
 whatNext.add.p1 = Tell your employees that their tax codes will change and we’ll send them a new tax code. You must also provide your employees with a letter straight away explaining that you’re payrolling certain benefits and what it means for them.
-whatNext.add.p2 = From 6 April add the cash equivalent of the benefits and expenses to your employees’ pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
+whatNext.add.p2 = From 6 April add the cash equivalent or relevant amount of the benefits and expenses to your employees’ pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
 whatNext.add.p3 = Stop sending us <a href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11Ds</a> for the employees’ who have benefits and expenses payrolled.
 whatNext.add.p4 = Continue sending a <a href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db">P11D(b)</a> to report Class 1A National Insurance contributions.
-whatNext.add.p2.singular = From 6 April add the cash equivalent of the benefit or expense to your employees’ pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
+whatNext.add.p2.singular = From 6 April add the cash equivalent or relevant amount of the benefit or expense to your employees’ pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
 whatNext.add.p3.singular = Stop sending us <a href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11Ds</a> for the employees who have the benefit or expense payrolled.
 
 whatNext.subHeading = Next steps
