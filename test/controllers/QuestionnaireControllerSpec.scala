@@ -50,12 +50,12 @@ class QuestionnaireControllerSpec extends PlaySpec with OneServerPerSuite {
         result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
-          document.title() must be("You’ve signed out")
-          document.getElementById("questionnaire-h1").text() must be("You’ve signed out")
+          document.title() must be("You have signed out")
+          document.getElementById("questionnaire-h1").text() must be("You have signed out")
           document.getElementById("questionnaire-p1").text() must be("You can sign in again if you need to.")
           document.getElementById("questionnaire-p2").text() must be("Before you go, please answer some questions to help us improve your experience.")
           document.getElementById("questionnaire-legend").text() must be("Tell us how we can improve this service")
-          document.getElementById("questionnaire-p3").text() must be("Please don’t include any personal or financial information, for example your National Insurance or credit card numbers.")
+          document.getElementById("questionnaire-p3").text() must be("Please do not include any personal or financial information, for example your National Insurance or credit card numbers.")
           document.getElementById("questionnaire-p4").text() must be("1,200 character limit")
           document.getElementById("questionnaire-button").text() must be("Send feedback")
       }

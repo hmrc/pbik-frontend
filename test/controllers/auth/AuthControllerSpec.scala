@@ -103,12 +103,12 @@ class AuthControllerSpec extends PlaySpec with OneAppPerSuite with Mockito with 
       val result: Future[Result] = await(Future{controller.notAuthorisedResult}(scala.concurrent.ExecutionContext.Implicits.global))
       val bodyText: String = contentAsString(result)
       assert(bodyText.contains("Enrol to use this service"))
-      assert(bodyText.contains("You’re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue."))
-      assert(bodyText.contains("To enrol you’ll need:"))
+      assert(bodyText.contains("You are signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue."))
+      assert(bodyText.contains("To enrol you will need:"))
       assert(bodyText.contains("employer PAYE reference"))
       assert(bodyText.contains("Accounts office reference"))
-      assert(bodyText.contains("You’ll then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment."))
-      assert(bodyText.contains("You’ll then be able to use payrolling benefits and expenses."))
+      assert(bodyText.contains("You will then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment."))
+      assert(bodyText.contains("You will then be able to use payrolling benefits and expenses."))
     }
   }
 
