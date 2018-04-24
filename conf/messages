@@ -11,9 +11,9 @@ Service.yes = Yes
 Service.no = No
 Service.back = Back
 Service.back.overview = Back to your summary
-Service.back.overview.whatNext = View your summary
+Service.back.overview.whatNext = View your benefits and expenses summary
 Service.back.cancel = Back to your summary
-Service.back.excluded = Back to your excluded employees
+Service.back.excluded = Cancel and return to your excluded employees
 Service.back.yta = Your tax account
 Service.new-window = (opens in new window)
 Service.paye.label = Employer PAYE reference:
@@ -58,7 +58,7 @@ Service.signout = Sign out
 # Overview
 #*************************************************************
 
-Overview.heading = Payrolling summary
+Overview.heading = Benefits and expenses summary
 Overview.next.heading = Next tax year – starting 6 April {0}
 Overview.next.lead = You have registered the following benefits and expenses to tax through your payroll.
 Overview.next.lead.empty = You have not registered any benefits and expenses to tax through your payroll.
@@ -151,13 +151,14 @@ RemoveBenefits.reason.other.label = Explain why
 
 ExclusionOverview.title = Excluded employees
 ExclusionOverview.caption = Employees excluded from payrolling
-ExclusionOverview.instruction.empty = All of your employees who receive {0} benefit are having it taxed through your payroll.
-ExclusionOverview.instruction.notempty = These employees receive {0} and from 6 April {1} will be excluded from having it taxed through your payroll.
+ExclusionOverview.instruction.empty = All of your employees who get {0}, have it taxed through your payroll.
+ExclusionOverview.instruction.notempty = These employees get {0} and from 6 April {1}, have been excluded from having it taxed through your payroll.
+
 ExclusionOverview.instruction.cy.notempty = These employees receive {0} and from 6 April {1} have been excluded from having it taxed through your payroll.
-ExclusionOverview.warning = Only exclude employees who get this benefit. You must fill in a P11D for them. You cannot exclude more than 300 employees.
+ExclusionOverview.warning = You can exclude up to 300 employees.
 ExclusionOverview.excludecount.exceeded = You cannot exclude any more employees.
 
-ExclusionDecision.noselection.error = You need to choose an option
+ExclusionDecision.noselection.error = Select yes if you know the National Insurance number of the employee you want to exclude
 ExclusionNinoDecision.title = Exclude an employee
 ExclusionNinoDecision.question = Do you know the National Insurance number of the employee you want to exclude?
 
