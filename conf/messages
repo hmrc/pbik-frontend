@@ -391,13 +391,13 @@ ServiceMessage.63092 = We are having technical difficulties. We are working to f
 # Service fields
 #*************************************************************
 
-Service.field.firstname = First name
-Service.field.surname = Last name
+Service.field.firstname = Employee’s first name
+Service.field.surname = Employee’s last name
 Service.field.name = Name
 Service.field.nino = National Insurance number
 Service.field.nino.2lines = National Insurance number
 Service.field.ninohint = For example, QQ123456A
-Service.field.dob = Date of birth
+Service.field.dob = Employee’s date of birth
 Service.field.worksnumber = Payroll ID or Works number
 Service.field.dobhint = For example, 31 3 1980
 Service.field.dob.day = Day
@@ -438,20 +438,20 @@ ErrorPage.backButtonNoCache = You have not performed a search yet. Please go bac
 # Error- validation messages
 #*************************************************************
 
-error.required = Choose a gender.
-error.invaliddate = Enter a valid date.
+error.required = Choose a gender
+error.invaliddate = Enter a valid date
 
-error.empty.nino = Enter a National Insurance number.
-error.empty.firstname = Enter a first name.
-error.empty.lastname = Enter a last name.
+error.empty.nino = Enter employee’s National Insurance number
+error.empty.firstname = Enter employee’s first name
+error.empty.lastname = Enter employee’s last name
 
-error.incorrect.nino = Enter a National Insurance number in the same format as the example shown.
-error.incorrect.firstname = Enter a first name that does not contain any numbers or special characters.
-error.incorrect.lastname = Enter a last name that does not contain any numbers or special characters.
+error.incorrect.nino = Enter a National Insurance number in the same format as the example shown
+error.incorrect.firstname = Enter a first name that does not contain any numbers or special characters
+error.incorrect.lastname = Enter a last name that does not contain any numbers or special characters
 
-error.empty.dob = Enter a date of birth.
-error.invaliddate.day = Enter a valid day.
-error.invaliddate.month = Enter a valid month.
+error.empty.dob = Enter employee’s date of birth
+error.invaliddate.day = Enter a valid day
+error.invaliddate.month = Enter a valid month
 error.invaliddate.year = Enter a valid year.
 error.invaliddate.future.year = Year of date of birth cannot be in the future.
 error.invaliddate.past.year = Year of date of birth must be in the last 130 years.
