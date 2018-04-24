@@ -470,8 +470,8 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
         val result = await(mockExclusionController.searchResults("cy","car", ExclusionListController.FORM_TYPE_NINO).apply(mockrequest))(timeout)
         result.header.status must be(OK)
         result.body.asInstanceOf[Strict].data.utf8String must include(title)
-        result.body.asInstanceOf[Strict].data.utf8String must include("First name")
-        result.body.asInstanceOf[Strict].data.utf8String must include("Last name")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Employee’s first name")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Employee’s last name")
         result.body.asInstanceOf[Strict].data.utf8String must include("National Insurance number")
       }
     }
@@ -486,9 +486,9 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
         val result = await(mockExclusionController.searchResults("cy","car", ExclusionListController.FORM_TYPE_NONINO).apply(mockrequest))(timeout)
         result.header.status must be(OK)
         result.body.asInstanceOf[Strict].data.utf8String must include(title)
-        result.body.asInstanceOf[Strict].data.utf8String must include("First name")
-        result.body.asInstanceOf[Strict].data.utf8String must include("Last name")
-        result.body.asInstanceOf[Strict].data.utf8String must include("Date of birth")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Employee’s first name")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Employee’s last name")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Employee’s date of birth")
         result.body.asInstanceOf[Strict].data.utf8String must include("Gender")
       }
     }
