@@ -480,9 +480,9 @@ whatNext.subHeading = Next steps
 whatNext.remove.lede = You have told us you will not be taxing <span id = "cy1-{3}">{0}</span> through your payroll from 6 April {1}.
 whatNext.remove.p1 = If you are still providing this benefit or expense to any of your employees, you will need to complete a <a href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> for them at the end of the tax year.
 
-whatNext.exclude.heading = Exclusion complete
+whatNext.exclude.heading = Employee excluded
 whatNext.rescind.heading = Registration complete
-whatNext.exclude.lede = You have told us that {0} won’t be having {1} taxed through your payroll from 6 April {2}.
+whatNext.exclude.lede = {0} will not have {1} taxed through your payroll from 6 April {2}.
 whatNext.exclude.p1 = You will need to report the value of this benefit on a <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> instead.
 whatNext.cy1.exclude.p2 = Will no longer have the following benefits and expenses payrolled on {0}
 whatNext.exclude.p3 = Set up your payroll correctly so that the employees do not have their benefits and expenses taxed in their pay.
