@@ -13,7 +13,7 @@ Service.back = Yn ôl
 Service.back.overview = Yn ôl i’ch crynodeb
 Service.back.overview.whatNext = Gweld eich crynodeb
 Service.back.cancel = Yn ôl i’ch crynodeb
-Service.back.excluded = Yn ôl i’ch cyflogeion sydd wedi’u heithrio
+Service.back.excluded = Canslo a dychwelyd i’ch cyflogeion sydd wedi’u heithrio
 Service.back.yta = Eich Cyfrif Treth
 Service.new-window = (yn agor mewn ffenestr newydd)
 Service.paye.label = Cyfeirnod TWE y cyflogwr:
@@ -58,7 +58,7 @@ Service.signout = Allgofnodi
 # Rwyf wedi cofrestru i dalu drwy’r gyflogres
 #*************************************************************
 
-Overview.heading = Crynodeb o dalu drwy’r gyflogres
+Overview.heading = Crynodeb buddiannau a threuliau
 Overview.next.heading = Y flwyddyn dreth nesaf – yn dechrau ar 6 Ebrill {0}
 Overview.next.lead = Rydych wedi cofrestru’r buddiannau a’r treuliau canlynol i gael eu trethu drwy eich cyflogres.
 Overview.next.lead.empty = Nid ydych wedi cofrestru buddiannau a threuliau i gael eu trethu drwy eich cyflogres.
@@ -151,12 +151,12 @@ RemoveBenefits.reason.other.label = Eglurwch pam
 
 ExclusionOverview.title = Cyflogeion sydd wedi’u heithrio
 ExclusionOverview.caption = Talu trwy’r gyflogres – cyflogeion sydd wedi’u heithrio
-ExclusionOverview.instruction.empty = Mae’ch holl gyflogeion sy’n cael buddiant ‘{0}’ yn ei gael wedi’i drethu drwy eich cyflogres.
-ExclusionOverview.instruction.notempty = Mae’r cyflogeion hyn yn cael {0}, ac o 6 Ebrill {1} ymlaen, byddant wedi’u heithrio o’i gael/chael wedi’i drethu/threthu drwy eich cyflogres.
-ExclusionOverview.instruction.cy.notempty = Mae’r cyflogeion hyn yn cael {0}, ac o 6 Ebrill {1} ymlaen, byddant wedi’u heithrio rhag ei gael/chael wedi’i drethu/threthu drwy eich cyflogres.
-ExclusionOverview.warning = Dim ond cyflogeion sy’n cael y buddiant hwn a ddylai gael eu heithrio. Mae’n rhaid i chi lenwi ffurflen P11D ar eu cyfer.
+ExclusionOverview.instruction.empty = Mae’ch holl gyflogeion sy’n cael ‘{0}’ yn ei gael/chael wedi’i drethu/threthu drwy’ch cyflogres.
+ExclusionOverview.instruction.notempty = Mae’r cyflogeion hyn sy’n cael {0}, ac o 6 Ebrill {1} wedi’u heithrio o’i gael/chael wedi’i drethu/threthu drwy’ch cyflogres.
+ExclusionOverview.instruction.cy.notempty = Mae’r cyflogeion hyn sy’n cael {0}, ac o 6 Ebrill {1} wedi’u heithrio o’i gael/chael wedi’i drethu/threthu drwy’ch cyflogres.
+ExclusionOverview.warning = Gallwch eithrio hyd at 300 o gyflogeion.
 
-ExclusionDecision.noselection.error = Mae’n rhaid i chi ddewis un o’r opsiynau
+ExclusionDecision.noselection.error = Dewiswch Iawn os ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai rydych am ei eithrio
 ExclusionNinoDecision.title = Eithrio cyflogai
 ExclusionNinoDecision.question = A ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai yr ydych am ei eithrio?
 
@@ -389,13 +389,13 @@ ServiceMessage.63092 = Mae problemau technegol yn effeithio ar y gwasanaeth. Ryd
 # Service fields
 #*************************************************************
 
-Service.field.firstname = Enw cyntaf
-Service.field.surname = Enw olaf
+Service.field.firstname = Enw cyntaf y cyflogai
+Service.field.surname = Enw olaf y cyflogai
 Service.field.name = Enw
 Service.field.nino = Rhif Yswiriant Gwladol
 Service.field.nino.2lines = Rhif Yswiriant Gwladol
 Service.field.ninohint = Er enghraifft, QQ123456A
-Service.field.dob = Dyddiad geni
+Service.field.dob = Dyddiad geni’r cyflogai
 Service.field.worksnumber = ID y gyflogres neu Rif gwaith
 Service.field.dobhint = Er enghraifft, 31 3 1980
 Service.field.dob.day = Dydd
@@ -483,9 +483,9 @@ whatNext.subHeading = Camau nesaf
 whatNext.remove.lede = Rydych wedi rhoi gwybod i ni na fyddwch yn trethu <span id = "cy1-{3}">‘{0}’</span> drwy eich cyflogres o 6 Ebrill {1} ymlaen.
 whatNext.remove.p1 = Os ydych yn dal i roi’r buddiant hwn neu’r draul hon i’ch cyflogeion, bydd yn rhaid i chi lenwi <a href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d.cy">ffurflen P11D</a> ar eu cyfer ar ddiwedd y flwyddyn dreth.
 
-whatNext.exclude.heading = Eithriad wedi’i gyflawni
+whatNext.exclude.heading = Cyflogai wedi’i eithrio
 whatNext.rescind.heading = Cofrestriad wedi’i gyflawni
-whatNext.exclude.lede = Rydych wedi rhoi gwybod i ni na fydd {0} yn cael {1} wedi’i drethu/threthu drwy eich cyflogres o 6 Ebrill {2} ymlaen.
+whatNext.exclude.lede = Ni fydd {1} {0} yn cael ei drethu/threthu drwy’ch cyflogres o 6 Ebrill ymlaen {2} ymlaen.
 whatNext.exclude.p1 = Bydd yn rhaid i chi roi gwybod am werth y buddiant hwn ar <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflen P11D</a> yn lle hynny.
 whatNext.cy1.exclude.p2 = Ni fydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’r gyflogres bellach ar {0}
 whatNext.exclude.p3 = Dylech drefnu eich cyflogres yn gywir fel nad oes rhaid i’r cyflogeion gael eu buddiannau a’u treuliau wedi’u trethu yn eu cyflog.
