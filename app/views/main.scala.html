@@ -33,7 +33,8 @@
   mainConfig: MainConfig = MainConfig(),
   includeGridWrapper: Boolean = false,
   actingAttorney: Option[uk.gov.hmrc.play.frontend.auth.ActingAsAttorneyFor] = None,
-  gaCalls: Option[(String,String) => Html] = None)(mainContent: Html)(implicit request : Request[_],
+  gaCalls: Option[(String,String) => Html] = None,
+  isUserResearchBannerVisible:Boolean = true)(mainContent: Html)(implicit request : Request[_],
                                                                                context: config.PbikContext,
                                                                                applicationMessages: Messages)
 @import config.PbikAppConfig.assetsPrefix
@@ -55,7 +56,20 @@
     }
 }
 
-@afterHeader = {
+@urToggle = @{
+  true
+}
+
+@afterHeader = @{
+
+    if(isUserResearchBannerVisible && urToggle) {
+        helpers.fullWidthBanner(
+        Messages("urbanner.message.text"),
+        urBannerLink
+    )
+}
+else HtmlFormat.empty
+
 }
 
 @actingAttorneyBanner = {
@@ -106,6 +120,7 @@
 }
 
 @footerTop = {
+
 }
 
 @bodyEnd = {
@@ -115,6 +130,7 @@
         ssoUrl = Play.configuration.getString("portal.ssoUrl"),
         scriptElem = scriptElement,
         gaCalls = gaCalls)
+<script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/urBanner.js")'></script>
 }
 
 @govuk_template(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, footerLinks, headerNav.isDefined)(content)

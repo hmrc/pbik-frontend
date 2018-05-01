@@ -530,3 +530,12 @@ questionnaire.sendFeedback = Anfon adborth
 questionnaire.thanksFeedback = Diolch am eich adborth
 questionnaire.signIn = Mewngofnodwch eto
 questionnaire.exploreGov = Chwilio drwy GOV.UK
+
+
+#***********************
+# UR banner
+#***********************
+urbanner.message.text = Helpwch i wella gwasanaethau digidol drwy ymuno â phanel defnyddwyr CThEM
+urbanner.message.ga.text = homepage UR banner
+urbanner.message.open.new.window = (opens in new window)
+urbanner.message.reject = Dim diolch

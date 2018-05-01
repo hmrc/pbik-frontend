@@ -526,3 +526,12 @@ questionnaire.sendFeedback = Send feedback
 questionnaire.thanksFeedback = Thanks for your feedback
 questionnaire.signIn = Sign in again
 questionnaire.exploreGov = Explore GOV.UK
+
+
+#********************************************************************
+# ur banner text
+#********************************************************************
+urbanner.message.text = Help improve digital services by joining the HMRC user panel
+urbanner.message.ga.text = homepage UR banner
+urbanner.message.open.new.window = (opens in new window)
+urbanner.message.reject = No thanks
