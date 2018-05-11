@@ -27,6 +27,8 @@ lib_managed
 target
 
 app/assets/stylesheets/pbik.scss
+app/assets/stylesheets/ie7.scss
+app/assets/stylesheets/elements/forms/_form-date-of-birth.scss
 **/bin/*
 **/lib/*
 *.classpath
