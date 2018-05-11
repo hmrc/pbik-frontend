@@ -26,7 +26,7 @@ lib_managed
 **/target/*
 target
 
-app/assets/stylesheets/*
+app/assets/stylesheets/pbik.scss
 **/bin/*
 **/lib/*
 *.classpath
