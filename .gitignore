@@ -46,7 +46,9 @@ app/assets/stylesheets/*
 node_modules
 **/npm-debug.log
 bower_components
+public/assets/css/
 /bin
+app/assets/stylesheets
 
 activator-sbt*
 project/activator-sbt*

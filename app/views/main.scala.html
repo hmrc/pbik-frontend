@@ -131,7 +131,7 @@ else HtmlFormat.empty
         scriptElem = scriptElement,
         gaCalls = gaCalls)
 <link rel="stylesheet" href='@routes.AssetsController.at("stylesheets/urBanner.css")' media="screen" type="text/css" />
-<script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/urBanner.js")'></script>
+<script type="text/javascript" src='@routes.AssetsController.at("javascripts/urBanner.js")'></script>
 }
 
 @govuk_template(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, footerLinks, headerNav.isDefined)(content)
