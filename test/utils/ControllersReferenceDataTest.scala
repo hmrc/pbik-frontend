@@ -67,6 +67,9 @@ class ControllersReferenceDataTest extends PlaySpec with OneAppPerSuite with Fak
                                                           toArray(new Array[Integer](0)).toList.map(_.intValue())
       override lazy val maximumExclusions:Int = 300
 
+      override lazy val urBannerLink:String = ""
+
+
   }
 
   object TestCYEnabledConfig extends AppConfig {
@@ -86,6 +89,7 @@ class ControllersReferenceDataTest extends PlaySpec with OneAppPerSuite with Fak
     override lazy val biksNotSupportedCY:List[Int] = List.empty[Int]
     override lazy val biksDecommissioned:List[Int] = List.empty[Int]
     override lazy val maximumExclusions:Int = 300
+    override lazy val urBannerLink: String = ""
 
   }
 
@@ -106,6 +110,7 @@ class ControllersReferenceDataTest extends PlaySpec with OneAppPerSuite with Fak
     override lazy val biksNotSupportedCY:List[Int] = List.empty[Int]
     override lazy val biksDecommissioned:List[Int] = List.empty[Int]
     override lazy val maximumExclusions:Int = 300
+    override lazy val urBannerLink: String = ""
 
   }
 

@@ -26,7 +26,9 @@ lib_managed
 **/target/*
 target
 
-app/assets/stylesheets/*
+app/assets/stylesheets/pbik.scss
+app/assets/stylesheets/ie7.scss
+app/assets/stylesheets/elements/forms/_form-date-of-birth.scss
 **/bin/*
 **/lib/*
 *.classpath
@@ -48,7 +50,6 @@ node_modules
 bower_components
 public/assets/css/
 /bin
-app/assets/stylesheets
 
 activator-sbt*
 project/activator-sbt*

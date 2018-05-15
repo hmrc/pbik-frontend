@@ -34,6 +34,7 @@ trait AppConfig {
   val biksNotSupported: List[Int]
   val biksNotSupportedCY: List[Int]
   val biksDecommissioned: List[Int]
+  val urBannerLink: String
 }
 
 object PbikAppConfig extends AppConfig with ServicesConfig {
@@ -57,4 +58,8 @@ object PbikAppConfig extends AppConfig with ServicesConfig {
   override lazy val biksNotSupported:List[Int] = (configuration.getIntList("pbik.unsupported.biks.cy1").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
   override lazy val biksNotSupportedCY:List[Int] = (configuration.getIntList("pbik.unsupported.biks.cy").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
   override lazy val biksDecommissioned:List[Int] = (configuration.getIntList("pbik.decommissioned.biks").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
+
+  lazy val urBannerToggle:Boolean = loadConfig("urBanner.toggle").toBoolean
+  override lazy val urBannerLink: String = loadConfig("urBanner.link")
+
 }

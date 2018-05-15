@@ -24,7 +24,8 @@ showLanguage:Boolean = false,
 showYTAlink:Boolean = false,
 hNav: Option[views.helpers.HeaderNav] = Some(views.helpers.HeaderNav(title = Some(Messages("Service.title")),showBetaLink = true)),
 sidebarLinks: Option[Html] = None,
-contactSupportLinkEnabled: Boolean = true)(mainContent: Html)(implicit request : Request[_],
+contactSupportLinkEnabled: Boolean = true
+)(mainContent: Html)(implicit request : Request[_],
 context: config.PbikContext, applicationMessages: Messages)
 
 @import play.api.Play

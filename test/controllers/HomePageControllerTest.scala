@@ -309,7 +309,9 @@ class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKA
         result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.next.heading", ""+YEAR_RANGE.cy, ""+YEAR_RANGE.cyplus1))
         result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.table.heading.1"))
         result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.current.heading", ""+YEAR_RANGE.cyminus1, ""+YEAR_RANGE.cy))
-    }
+        result.body.asInstanceOf[Strict].data.utf8String must include("Help improve digital services by joining the HMRC user panel <span class=\"visuallyhidden\">(opens in new window)</span></a>")
+        result.body.asInstanceOf[Strict].data.utf8String must include("No thanks")
+      }
   }
 
 }

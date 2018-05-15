@@ -27,3 +27,4 @@ addSbtPlugin("org.brianmckenna" % "sbt-wartremover" % "0.11")
 
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
 
+addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.9")
