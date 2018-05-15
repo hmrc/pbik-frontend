@@ -17,7 +17,7 @@ object JavaScriptBuild {
   val javaScriptUiSettings = Seq(
 
     // the JavaScript application resides in "ui"
-    uiDirectory <<= (baseDirectory in Compile) { _ /"app" / "assets" / "js"},
+    uiDirectory <<= (baseDirectory in Compile) { _ /"app" / "assets" / "javascripts"},
 
     // add "npm" and "grunt" commands in sbt
     commands <++= uiDirectory { base => Seq(Grunt.gruntCommand(base), npmCommand(base))},
