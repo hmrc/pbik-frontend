@@ -39,7 +39,7 @@ Service.notEnrolled.text3 = Anfonir cod cychwyn atoch yn y post. Pan fydd y cod 
 Service.notEnrolled.text4 = Byddwch wedyn yn gallu defnyddio’r gwasanaeth Talu Buddiannau drwy’r Gyflogres.
 Service.notEnrolled.button = Ymrestru
 
-Service.removeexclusion = Ychwanegu yn ôl i’r gyflogres
+Service.removeexclusion = Canslo’r gwaharddiad
 Service.finish.excluded = Gweld cyflogeion wedi’u heithrio ac ychwanegu mwy
 Service.finish.rescinded = Gweld cyflogeion sydd wedi’u heithrio
 
