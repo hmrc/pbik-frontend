@@ -24,7 +24,7 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
 
-@parentTemplate(pageTitle = Messages("ExclusionNinoDecision.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
+@parentTemplate(pageTitle = Messages("Service.govUk.title", Messages("ExclusionNinoDecision.title")), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
 

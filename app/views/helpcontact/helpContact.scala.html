@@ -20,7 +20,7 @@
                           context: config.PbikContext, applicationMessages: Messages)
 @import connectors.FormPartialProvider
 
-@parentTemplate(pageTitle = Messages("HelpAndContact.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
+@parentTemplate(pageTitle = Messages("Service.govUk.title", Messages("HelpAndContact.title")), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
 
     <span class="link-back-top-wrap">
         <a class="button-link" id="link-back-top"

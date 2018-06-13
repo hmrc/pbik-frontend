@@ -4,6 +4,8 @@
 
 common.feedback.get.help = Contact us for support using this service
 Service.title = Payrolling benefits and expenses
+Service.govUk.title = {0} - Payrolling benefits and expenses - GOV.UK
+Service.govUk.standalone.title = Payrolling benefits and expenses - GOV.UK
 
 Service.news.banner.message = Any changes you make will affect your employees’ tax codes for the next tax year and may result in them receiving more than one coding notice.
 
@@ -511,6 +513,7 @@ ConfirmationHelpAndContact.p1 = Someone will get back to you within 2 working da
 # Exit questionnaire
 #*************************************************************
 questionnaire.signedOut = You’ve signed out
+questionnaire.signedOut.title = You’ve signed out - GOV.UK
 questionnaire.signInAgain = You can <a href = "{0}">sign in again</a> if you need to.
 questionnaire.beforeYouGo = Before you go, please answer some questions to help us improve your experience.
 questionnaire.howDoYouFeel = Overall, how do you feel after using this service?
@@ -524,6 +527,7 @@ questionnaire.noPersonalInfo = Please don’t include any personal or financial 
 questionnaire.characterLimit = 1,200 character limit
 questionnaire.sendFeedback = Send feedback
 questionnaire.thanksFeedback = Thanks for your feedback
+questionnaire.thanksFeedback.title = Thanks for your feedback - GOV.UK
 questionnaire.signIn = Sign in again
 questionnaire.exploreGov = Explore GOV.UK
 

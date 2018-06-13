@@ -50,7 +50,7 @@ class QuestionnaireControllerSpec extends PlaySpec with OneServerPerSuite {
         result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
-          document.title() must be("You’ve signed out")
+          document.title() must be("You’ve signed out - GOV.UK")
           document.getElementById("questionnaire-h1").text() must be("You’ve signed out")
           document.getElementById("questionnaire-p1").text() must be("You can sign in again if you need to.")
           document.getElementById("questionnaire-p2").text() must be("Before you go, please answer some questions to help us improve your experience.")
@@ -112,7 +112,7 @@ class QuestionnaireControllerSpec extends PlaySpec with OneServerPerSuite {
         result =>
           status(result) must be(OK)
           val document = Jsoup.parse(contentAsString(result))
-          document.title() must be("Thanks for your feedback")
+          document.title() must be("Thanks for your feedback - GOV.UK")
           document.getElementById("thank-you-h1").text() must be("Thanks for your feedback")
           document.getElementById("thank-you-p1").text() must be("Sign in again")
           document.getElementById("thank-you-p2").text() must be("Explore GOV.UK")

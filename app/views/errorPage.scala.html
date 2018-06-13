@@ -35,7 +35,7 @@
     Some("")
 }
 
-@parentTemplate(pageTitle = Messages("Service.title"), Some(taxYearRange), active(ac) ) {
+@parentTemplate(pageTitle = Messages("Service.govUk.standalone.title"), Some(taxYearRange), active(ac) ) {
 
     @isCurrentTaxYear match {
         case utils.FormMappingsConstants.CY => {<h1 id="title">@Messages(pageHeading,taxYearRange.cyminus1.toString, taxYearRange.cy.toString)</h1>}
