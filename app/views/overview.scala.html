@@ -55,7 +55,7 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
     }
 
     <h2 id="heading-cy1">
-        @Messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")</h2>
+        @Messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")rrr</h2>
 
     @if(!registeredBenefitsNextYear.isEmpty) {
     <p class="text">
@@ -63,28 +63,31 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
     </p>
 
     <table role="presentation">
-        <caption class="caption-margin-top">@Messages("Overview.table.heading.1")</caption>
+        <caption class="caption-margin-top">@Messages("Overview.table.heading.1")sdfsdfsdf</caption>
         <tbody>
         @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsNextYear).zipWithIndex ) {
         <tr>
-            <td role="gridcell" id="cy1-@n.iabdType" width="40%">@Messages("BenefitInKind.label." + n.iabdType)</td>
+            <td role="gridcell" id="cy1-@n.iabdType" width="40%">@Messages("BenefitInKind.label." + n.iabdType)gggggg</td>
             <td role="gridcell" width="28%">
                 <a id="cy1-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", iabdValueURLMapper(n.iabdType))'>
                     @if(n.eilCount == 0) {@Messages("Overview.table.exclude.none.link")} else {@Messages("Overview.table.exclude.link")}
                     @if(n.eilCount > 0) {(@n.eilCount)}
-                    <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
+                    <span class="visuallyhidden"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
                 </a>
             </td>
             <td role="gridcell" width="30%">
                 <a id="cy1-remove-@n.iabdType" href="@controllers.registration.routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(n.iabdType))">
                     @Messages("Overview.table.remove.link")
-                    <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
+                    <span class="visuallyhidden"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
                 </a>
             </td>
         </tr>
         }
         </tbody>
     </table>
+
+
+
     }else {
     <p id="no-benefits" class="text">
         @Messages("Overview.next.lead.empty", taxYearRange.cy + "")
@@ -129,7 +132,7 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
                 <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", iabdValueURLMapper(n.iabdType))'>
                     @if(n.eilCount == 0) {@Messages("Overview.table.exclude.none.link")} else {@Messages("Overview.table.exclude.link")}
                     @if(n.eilCount > 0) {(@n.eilCount)}
-                    <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
+                    <span class="visuallyhidden"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
                 </a>
             </td>
             <td role="gridcell" width="30%"></td>
