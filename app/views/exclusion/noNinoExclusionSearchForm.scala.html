@@ -28,14 +28,7 @@
 @excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">}
 
 @parentTemplate(pageTitle = Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
-    <span class="link-back-top-wrap">
-        <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
-            href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))'>
-
-            <div class="arrow-back"></div>
-            @Messages("Service.back")
-        </a>
-    </span>
+    @includes.back_link(Some(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))))
 
     <header class="page-header">
         <h1 id="title" class="h1-heading-margin">

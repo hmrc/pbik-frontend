@@ -31,9 +31,8 @@
         @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, iabdValueURLMapper(iabdType)),
             'onsubmit -> "gaEventLinkSteps()") {
             <input type="hidden" id="button-nino"  name="confirmation" value="@formType">
-            <button type="submit" class="button--link-style" id="link-back-top">
+            <button type="submit" class="link-back" id="link-back-top">
 
-                <div class="arrow-back"></div>
                 @Messages("Service.back")
             </button>
         }
