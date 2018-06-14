@@ -27,7 +27,7 @@
 @screenReaderExclusionOpen = @{Messages("AddBenefits.Confirm.help.reveal.link.sr.open")}
 @screenReaderExclusionClosed = @{Messages("AddBenefits.Confirm.help.reveal.link.sr.closed")}
 
-@title = @{if(singleBik) {Messages("AddBenefits.Confirm.Single.Title")}else {Messages("AddBenefits.Confirm.Multiple.Title")}}
+@title = @{if(singleBik) {Messages("Service.govUk.title", Messages("AddBenefits.Confirm.Single.Title"))}else {Messages("Service.govUk.title", Messages("AddBenefits.Confirm.Multiple.Title"))}}
 
 @parentTemplate(pageTitle = title, Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
     <span class="link-back-top-wrap">

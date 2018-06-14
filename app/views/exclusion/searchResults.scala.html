@@ -25,7 +25,7 @@
 @import utils.URIInformation._
 
 
-@parentTemplate( pageTitle=Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
+@parentTemplate( pageTitle=Messages("Service.govUk.title", Messages("ExclusionSearch.title")), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
     @defining( if(year=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
         @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, iabdValueURLMapper(iabdType)),

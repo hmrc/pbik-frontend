@@ -16,7 +16,7 @@
 
 @()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, context: config.PbikContext, applicationMessages: Messages)
 
-@parentTemplate(pageTitle = Messages("ConfirmationHelpAndContact.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
+@parentTemplate(pageTitle = Messages("Service.govUk.title", Messages("ConfirmationHelpAndContact.title")), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
 
     <h1 id="title">
         @Messages("ConfirmationHelpAndContact.title")

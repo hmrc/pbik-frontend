@@ -26,7 +26,7 @@
 @import utils.URIInformation._
 @excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">}
 
-@parentTemplate(pageTitle = Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
+@parentTemplate(pageTitle = Messages("Service.govUk.title", Messages("ExclusionSearch.title")), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
     <span class="link-back-top-wrap">
         <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"

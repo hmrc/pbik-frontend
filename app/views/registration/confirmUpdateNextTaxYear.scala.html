@@ -34,7 +34,7 @@
 @screenReaderExclusionOpen = @{Messages("AddBenefits.Confirm.help.reveal.link.sr.open")}
 @screenReaderExclusionClosed = @{Messages("AddBenefits.Confirm.help.reveal.link.sr.closed")}
 
-@title = @{if(additive && singleBik) {Messages("AddBenefits.Confirm.Single.Title")}else if(additive && !singleBik){Messages("AddBenefits.Confirm.Multiple.Title")}else {Messages("RemoveBenefits.Confirm.Title")}}
+@title = @{if(additive && singleBik) {Messages("Service.govUk.title", Messages("AddBenefits.Confirm.Single.Title"))}else if(additive && !singleBik){Messages("Service.govUk.title", Messages("AddBenefits.Confirm.Multiple.Title"))}else {Messages("Service.govUk.title", Messages("RemoveBenefits.Confirm.Title"))}}
 
 @parentTemplate(pageTitle = title, Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
