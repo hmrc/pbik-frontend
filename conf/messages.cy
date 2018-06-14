@@ -42,6 +42,7 @@ Service.notEnrolled.button = Ymrestru
 Service.removeexclusion = Canslo’r gwaharddiad
 Service.finish.excluded = Gweld cyflogeion wedi’u heithrio ac ychwanegu mwy
 Service.finish.rescinded = Gweld cyflogeion sydd wedi’u heithrio
+Service.for = ar gyfer
 
 Service.excludeanemployee = Eithrio cyflogai
 Service.excludeanotheremployee = Eithrio cyflogai arall
