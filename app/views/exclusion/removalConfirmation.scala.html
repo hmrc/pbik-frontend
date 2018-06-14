@@ -27,6 +27,8 @@
 
 @parentTemplate(pageTitle = Messages("ExclusionRemovalConfirmation.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
+    @includes.back_link()
+
     <header class="page-header">
         <h1 id="title">
             @Messages("ExclusionRemovalConfirmation.title")

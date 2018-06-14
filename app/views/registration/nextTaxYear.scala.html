@@ -40,12 +40,14 @@
     if(additive) {Messages("AddBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)}else {Messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)},
     Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString), sidebarLinks = Some(sidebarLinks)) {
 
+    @includes.back_link()
+
     @if(additive) {
-        <h1 id="title">
+        <h1 id="title" class="title">
             @Messages("AddBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
         </h1>
     } else {
-        <h1 id="title">
+        <h1 id="title" class="title">
             @Messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
         </h1>
     }
