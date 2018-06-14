@@ -5,6 +5,8 @@
 common.feedback.get.help = Cysylltwch â ni am gymorth gyda’r gwasanaeth hwn
 
 Service.title = Talu buddiannau a threuliau drwy’r gyflogres
+Service.govUk.title = {0} - Talu buddiannau a threuliau drwy’r gyflogres - GOV.UK
+Service.govUk.standalone.title = Talu buddiannau a threuliau drwy’r gyflogres - GOV.UK
 Service.news.banner.message = Bydd newidiadau a wnewch yn effeithio ar godau treth eich cyflogeion ar gyfer y flwyddyn dreth nesaf, a gallai hyn arwain at anfon mwy nag un hysbysiad o god iddynt.
 
 Service.yes = Iawn
@@ -515,6 +517,7 @@ ConfirmationHelpAndContact.p1 = Bydd rhywun yn cysylltu â chi cyn pen 2 diwrnod
 # Exit questionnaire
 #*************************************************************
 questionnaire.signedOut = Rydych wedi allgofnodi
+questionnaire.signedOut.title = Rydych wedi allgofnodi - GOV.UK
 questionnaire.signInAgain = Gallwch <a href = "{0}">fewngofnodi eto</a> os oes angen i chi wneud hynny.
 questionnaire.beforeYouGo = Cyn i chi fynd, a fyddwch cystal ag ateb rhai cwestiynau i’n helpu i wella’ch profiad o’r gwasanaeth.
 questionnaire.howDoYouFeel = Yn gyffredinol, sut oeddech yn teimlo ar ôl defnyddio’r gwasanaeth?
@@ -528,6 +531,7 @@ questionnaire.noPersonalInfo = Peidiwch â chynnwys unrhyw wybodaeth bersonol ne
 questionnaire.characterLimit = Hyd at 1,200 o gymeriadau
 questionnaire.sendFeedback = Anfon adborth
 questionnaire.thanksFeedback = Diolch am eich adborth
+questionnaire.thanksFeedback.title = Diolch am eich adborth - GOV.UK
 questionnaire.signIn = Mewngofnodwch eto
 questionnaire.exploreGov = Chwilio drwy GOV.UK
 
