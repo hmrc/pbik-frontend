@@ -40,19 +40,24 @@
     if(additive) {Messages("AddBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)}else {Messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)},
     Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString), sidebarLinks = Some(sidebarLinks)) {
 
-    @includes.back_link()
-
     @if(additive) {
+        @includes.back_link(gaLabel = Messages("AddBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1))
+
         <h1 id="title" class="title">
             @Messages("AddBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
         </h1>
     } else {
+        @includes.back_link(gaLabel = Messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1))
+
         <h1 id="title" class="title">
             @Messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
         </h1>
     }
 
     @if(bikForm("actives").hasErrors && additive){
+
+        @includes.back_link(gaLabel = Messages("AddBenefits.noselection.error"))
+
         <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
             <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">

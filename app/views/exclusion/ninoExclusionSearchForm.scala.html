@@ -28,7 +28,7 @@
 
 @parentTemplate(pageTitle = Messages("ExclusionSearch.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
-    @includes.back_link(Some(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))))
+    @includes.back_link(Some(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))), Messages("ExclusionSearch.form.title"))
 
     <header class="page-header">
         <h1 id="title" class="h1-heading-margin">

@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@(href: Option[Call] = None)(implicit messages: Messages)
+@(href: Option[Call] = None, gaLabel: String = "back")(implicit messages: Messages)
 
 <div class="js-visible">
-    <p><a id="back-link" class="link-back" href=@href.getOrElse('#')>@messages("Service.back")</a></p>
+    <p><a id="back-link" class="link-back" data-journey-click="link - click:back:@gaLabel" href=@href.getOrElse('#')>@messages("Service.back")</a></p>
 </div>
 

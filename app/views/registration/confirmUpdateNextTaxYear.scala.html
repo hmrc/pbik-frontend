@@ -39,9 +39,9 @@
 @parentTemplate(pageTitle = title, Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
 
-        @includes.back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad))
-
         @if(additive) {
+
+            @includes.back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad), Messages("AddBenefits.Confirm.Single.Title"))
 
             <h1 id="title" class="title">
                 @if(!singleBik) {
@@ -51,6 +51,9 @@
                 }
             </h1>
         } else {
+
+            @includes.back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad), Messages("RemoveBenefits.Confirm.Title"))
+
             <h1 id="title" class="title">
                 @Messages("RemoveBenefits.Confirm.Title")
             </h1>
