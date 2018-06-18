@@ -15,6 +15,9 @@ Service.back.overview.whatNext = View your summary
 Service.back.cancel = Back to your summary
 Service.back.excluded = Back to your excluded employees
 Service.back.yta = Your tax account
+Service.back.yta-ga-track-EventCategory=Click back to YTA link
+Service.back.yta-ga-track-EventAction=Redirect to tax account
+Service.back.yta-ga-track-EventLabel=Your tax account
 Service.new-window = (opens in new window)
 Service.paye.label = Employer PAYE reference:
 Service.nino.lastletter = (Last letter not shown)
@@ -86,6 +89,8 @@ ManagingRegistration.add.exhausted = You’ve already added all of the benefits 
 sidebar.h2.expenses.help = Help with expenses
 sidebar.expenses.help.1 = For benefits you’ve previously reported on a <a rel = "external" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> (opens in new window), make sure you register them under the same category. You have to payroll everything included within that P11D category.
 sidebar.link.a-z = Expenses and benefits: A to Z guide
+whatNext.remove.link.a-z-ga-track-EventCategory=link - click
+whatNext.remove.link.P11D=P11D
 
 #*************************************************************
 # Add benefits
@@ -477,8 +482,8 @@ whatNext.add.p3.singular = Stop sending us <a href = "https://www.gov.uk/governm
 
 whatNext.subHeading = Next steps
 whatNext.remove.lede = You’ve told us you won’t be taxing <span id = "cy1-{3}">{0}</span> through your payroll from 6 April {1}.
-whatNext.remove.p1 = If you’re still providing this benefit or expense to any of your employees, you’ll need to complete a <a href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> for them at the end of the tax year.
-
+whatNext.remove.p1 = If you’re still providing this benefit or expense to any of your employees, you’ll need to complete a
+whatNext.remove.p1-after= for them at the end of the tax year.
 whatNext.exclude.heading = Exclusion complete
 whatNext.rescind.heading = Registration complete
 whatNext.exclude.lede = You’ve told us that {0} won’t be having {1} taxed through your payroll from 6 April {2}.

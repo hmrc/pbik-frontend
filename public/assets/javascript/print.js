@@ -2,10 +2,12 @@ window.onload = function() {
     if (document.getElementById('printContainer') !=null)  {
         if(supportPrint() || (isiOS() && !iOSLessThan4()) || (isAndroid() && !androidLessThan4())) {
             var prtContainer = document.getElementById("printContainer");
+            var pageTitle=document.title;
             var newTag = document.createElement('a');
             newTag.setAttribute('href',"javascript:window.print();");
             newTag.setAttribute("class", "print-link");
             newTag.setAttribute("id", "print");
+            newTag.setAttribute("data-journey-click", "print - click:"+pageTitle+":Print this page");
             newTag.innerHTML = "Print this page";
             prtContainer.appendChild(newTag);
         }

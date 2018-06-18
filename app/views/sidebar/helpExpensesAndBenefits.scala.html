@@ -26,7 +26,10 @@
         @Html(Messages("sidebar.expenses.help.1"))
     </p>
     <p id="sidebar-link-az" class="sidebar-link text">
-        <a rel="external" href="https://www.gov.uk/expenses-and-benefits-a-to-z" target="_blank">
+        <a rel="external" data-journey-click='@Messages("sidebar.link.a-z-ga-track-EventCategory"):
+                                              @Messages("sidebar.h2.expenses.help"):
+                                              @Messages("sidebar.link.a-z")'
+           href="https://www.gov.uk/expenses-and-benefits-a-to-z" target="_blank">
             @Messages("sidebar.link.a-z")
         </a> @Messages("Service.new-window")
     </p>

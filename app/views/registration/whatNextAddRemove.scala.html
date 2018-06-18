@@ -136,7 +136,18 @@
             </h2>
 
             <p class="text">
-                @Html(Messages("whatNext.remove.p1"))
+                @Messages("whatNext.remove.p1") <a data-journey-click='@Messages("whatNext.remove.link.a-z-ga-track-EventCategory"):
+                                                @if(additive) {
+                                                                    @if(singleBik){
+                                                                        @Messages("whatNext.add.heading.singular")
+                                                                    }else {
+                                                                        @Messages("whatNext.add.heading")
+                                                                    }
+                                                                } else {@Messages("whatNext.remove.heading")}:
+                                                @Messages("whatNext.remove.link.P11D")'
+
+                                              href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" target="_blank">@Messages("whatNext.remove.link.P11D")</a>
+                @Messages("whatNext.remove.p1-after")
             </p>
         }
 
