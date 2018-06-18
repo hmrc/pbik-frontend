@@ -79,10 +79,10 @@
 
                     <ul class="error-summary-pbik-list">
                         @if(searchForm("firstname").hasErrors) {
-                            <li><a href="#firstname">@searchForm.error("firstname").get.message.dropRight(1)</a></li>
+                            <li><a href="#firstnameContainer">@searchForm.error("firstname").get.message.dropRight(1)</a></li>
                         }
                         @if(searchForm("surname").hasErrors) {
-                            <li><a href="#lastname">@searchForm.error("surname").get.message.dropRight(1)</a></li>
+                            <li><a href="#surnameContainer">@searchForm.error("surname").get.message.dropRight(1)</a></li>
                         }
                         @if(searchForm("dob").hasErrors) {
 
@@ -120,15 +120,15 @@
             <fieldset>
                 <legend>@Messages("ExclusionSearch.no-nino.caption")</legend>
                 @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdValueURLMapper(iabdType), "no-nino"), 'autocomplete -> "off", 'novalidate -> "true") {
-                <div class="form-group" id="firstname">
+                <div class="form-group" id="firstnameContainer">
                 @helpers.input(searchForm("firstname"), '_label -> Messages("Service.field.firstname"), '_inputClass -> "form-control")
                 </div>
-                <div class="form-group" id="lastname">
+                <div class="form-group" id="surnameContainer">
                     @helpers.input(searchForm("surname"), '_label -> Messages("Service.field.surname"), '_inputClass -> "form-control")
                 </div>
 
                 @localhelpers.dateFieldsNumberInputs(searchForm, "dob","dob-day", "dob-month", "dob-year", new Html(Messages("Service.field.dob")), '_hintText->Messages("Service.field.dobhint"), '_groupClass -> "form-group")
-                <div style="clear: both"></div>
+
                 <div class="form-group inline" id="gender">
                     @helpers.inputRadioGroup(searchForm("gender"), Seq(("female", Messages("Service.field.gender.female")), ("male",Messages("Service.field.gender.male"))), '_labelClass -> "block-label", '_legend -> Messages("Service.field.gender"), '_legendClass -> "form-label fieldset-legend-error")
                 </div>
