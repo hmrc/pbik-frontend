@@ -76,7 +76,11 @@ context: config.PbikContext, applicationMessages: Messages)
             </td>
             <td width="25%" id='dob-@c.nino'>@c.worksPayrollNumber</td>
             @if(isCurrentTaxYear!="cy"){
-            <td><input class="button--link-style" type="submit" name="submit" id='@c.nino-remove' value="@Messages("Service.removeexclusion")"></td>
+            <td>
+                <button class="button--link-style" id='@c.nino-remove' data-journey-click="link - click:@Messages("ExclusionOverview.title"):@Messages("Service.removeexclusion")">
+                    @Messages("Service.removeexclusion")<span class="visuallyhidden">@Messages("Service.for") @c.firstForename @c.surname @c.nino</span>
+                </button>
+            </td>
             }
 
         </tr>
@@ -106,7 +110,7 @@ context: config.PbikContext, applicationMessages: Messages)
     <div style="margin-top: 10px;">
         @if(current.size <= maximumExclusions ) {
         @defining( if(current.isEmpty){"Service.excludeanemployee"}else{"Service.excludeanotheremployee"}) { buttonlabel =>
-        <a class="button" role="button" role="button" id="button-exclude"
+        <a class="button" role="button" role="button" id="button-exclude" data-journey-click="button - click:@Messages("ExclusionOverview.title"):@Messages(buttonlabel)"
            href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdValueURLMapper(iabdType))'>
             @Messages(buttonlabel)</a>
         }
