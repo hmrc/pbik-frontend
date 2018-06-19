@@ -39,9 +39,10 @@ Service.notEnrolled.text3 = You’ll then be sent an activation code in the post
 Service.notEnrolled.text4 = You’ll then be able to use payrolling benefits and expenses.
 Service.notEnrolled.button = Enrol
 
-Service.removeexclusion = Add back to payroll
+Service.removeexclusion = Cancel exclusion
 Service.finish.excluded = View excluded employees and add more
 Service.finish.rescinded = View excluded employees
+Service.for = for
 
 Service.excludeanemployee = Exclude an employee
 Service.excludeanotheremployee = Exclude another employee
