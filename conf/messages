@@ -189,8 +189,8 @@ ExclusionRemoval.WhatNext.lede = You’ve told us that {0} will be having {1} ta
 
 ExclusionRescind.WhatNext.p1 = Tell your employees that their tax codes will change and we’ll send them a new tax code. You must also provide your employees with a letter straight away explaining that you are payrolling certain benefits and what it means for them.
 ExclusionRescind.WhatNext.p2 = From 6 April add the cash equivalent of the benefit or expense to your employee’s pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
-ExclusionRescind.WhatNext.p3 = Stop sending us a <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> for the employee who has the benefit or expense payrolled.
-ExclusionRescind.WhatNext.p4 = Continue sending a <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D(b)</a> to report Class 1A National Insurance contributions.
+ExclusionRescind.WhatNext.p3 = Stop sending us a <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">P11D</a> for the employee who has the benefit or expense payrolled.
+ExclusionRescind.WhatNext.p4 = Continue sending a <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D(b)">P11D(b)</a> to report Class 1A National Insurance contributions.
 
 #*************************************************************
 # Benifits messages
@@ -487,7 +487,7 @@ whatNext.remove.p1-after= for them at the end of the tax year.
 whatNext.exclude.heading = Exclusion complete
 whatNext.rescind.heading = Registration complete
 whatNext.exclude.lede = You’ve told us that {0} won’t be having {1} taxed through your payroll from 6 April {2}.
-whatNext.exclude.p1 = You’ll need to report the value of this benefit on a <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> instead.
+whatNext.exclude.p1 = You’ll need to report the value of this benefit on a <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">P11D</a> instead.
 whatNext.cy1.exclude.p2 = Will no longer have the following benefits and expenses payrolled on {0}
 whatNext.exclude.p3 = Set up your payroll correctly so that the employees don’t have their benefits and expenses taxed in their pay.
 whatNext.exclude.p4 = You’ll need to submit a P11D for those employees you’ve excluded, informing us of the value of the benefits and expenses they receive so we can include it in their tax code.
