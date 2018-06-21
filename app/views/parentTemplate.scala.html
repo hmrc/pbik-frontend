@@ -50,7 +50,8 @@ context: config.PbikContext, applicationMessages: Messages)
 <script async src='//www.google-analytics.com/analytics.js'></script>
 <!-- End Google Analytics -->
 
-<!--[if IE 7]><link rel="stylesheet" type="text/css" href='@routes.AssetsController.at("assets/css/ie7.css")'/><![endif]-->
+<!--[if IE 7]>
+<link rel="stylesheet" type="text/css" href='@routes.AssetsController.at("assets/css/ie7.css")'/><![endif]-->
 <script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/pbik.js")'></script>
 <script type="text/javascript" src='@routes.AssetsController.at("assets/javascript/print.js")'></script>
 }
@@ -66,7 +67,10 @@ context: config.PbikContext, applicationMessages: Messages)
 <div class="pbik-banner-links">
     @if(showYTAlink) {
     <div class="yta-link">
-        <a href="/account" onclick="gaEvent('Click back to YTA link')">@Messages("Service.back.yta")</a>
+        <a href="/account" data-journey-click='@Messages("Service.back.yta-ga-track-EventCategory"):
+                                                @Messages("Service.back.yta-ga-track-EventAction"):
+                                                @Messages("Service.back.yta-ga-track-EventLabel")'
+           onclick="gaEvent('Click back to YTA link')">@Messages("Service.back.yta")</a>
     </div>
     }
     <div class="toggle-lang" style="text-align: right">
@@ -74,7 +78,8 @@ context: config.PbikContext, applicationMessages: Messages)
         @if(applicationMessages.lang.language.toLowerCase == "cy") {
         <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">@Messages("service.lang.english")</a><span> | @Messages("service.lang.cymraeg")</span>
         } else {
-        <span>@Messages("service.lang.english") | </span><a href="@routes.HomePageController.setLanguage?lang=cy" onclick="gaEvent('Set language to Welsh')">@Messages("service.lang.cymraeg")</a>
+        <span>@Messages("service.lang.english") | </span><a href="@routes.HomePageController.setLanguage?lang=cy"
+                                                            onclick="gaEvent('Set language to Welsh')">@Messages("service.lang.cymraeg")</a>
         }
         }
     </div>

@@ -801,7 +801,7 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
         val FROM_OVERVIEW = "false"
         implicit val request = mockrequest
         val title = Messages("whatNext.exclude.heading")
-        val excludedText = Messages("whatNext.exclude.p1")
+        val excludedText = Messages("whatNext.exclude.p1","Exclusion complete")
         val mockExclusionController = new MockExclusionListController
         def csrfToken = "csrfToken" -> Crypto.generateToken
         //UnsignedTokenProvider.generateToken
