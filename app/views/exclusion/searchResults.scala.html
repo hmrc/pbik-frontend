@@ -89,31 +89,30 @@
 
                   @helpers.form(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdValueURLMapper(iabdType)),
                     'onsubmit -> "gaEventConfirmExcludeMulti()") {
-                  <table class="employee-table">
-                    <caption>@Messages("ExclusionSearch.caption.multi")</caption>
-                    <thead>
-                      <tr>
-                        <th>&nbsp;</th>
-                        <th>@Messages("Service.field.name")</th>
-                        <th>@Messages("Service.field.nino")
-                            <br>
-                            <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
-                        </th>
-                        <th>@Messages("Service.field.worksnumber")</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+
+                    <h2>@Messages("ExclusionSearch.caption.multi")</h2>
+                    <dl class="govuk-check-your-answers cya-questions-short" id="nonino">
+                        <div>
+                            <dt class="cya-answer input">&nbsp;</dt>
+                            <dt class="cya-answer bold">@Messages("Service.field.name")</dt>
+                            <dt class="cya-answer bold">@Messages("Service.field.nino")
+                                <br>
+                                <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span></dt>
+                            <dt class="cya-answer bold">@Messages("Service.field.worksnumber")</dt>
+                        </div>
+
+
                       @repeatWithIndex(listOfMatchesForm("individuals"), min=1) { (listItem,index) =>
 
-                              <tr onclick=selectRadioButtonTable('@listItem("nino").value.get-radio')>
+                              <div onclick=selectRadioButtonTable('@listItem("nino").value.get-radio')>
 
-                                <td>
+                                <dt class="cya-answer input">
                                    @if(listItem("nino").value.get.equals(listOfMatchesForm("individualSelection").value.getOrElse(""))){
                                         <input class="radio-indent" id ='@listItem("nino").value.get-radio' type="radio" name="individualSelection" value='@listItem("nino").value.get' checked>
                                     }else{
                                         <input class="radio-indent" id ='@listItem("nino").value.get-radio' type="radio" name="individualSelection" value='@listItem("nino").value.get'>
                                     }
-                                </td>
+                                </dt>
                                 <input type="hidden" id='individuals_@{index}_nino' name='individuals[@index].nino' value='@listItem("nino").value.getOrElse("")' />
                                 <input type="hidden" id='individuals_@{index}_firstName' name='individuals[@index].firstName' value='@listItem("firstName").value.get' />
                                 @if(listItem("secondName").value.isDefined) { <input type="hidden" id='individuals_@{index}_secondName' name='individuals[@index].secondName' value='@listItem("secondName").value.get' /> }
@@ -123,22 +122,20 @@
                                 @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
                                 <input type="hidden" id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
                                 <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
-                                <td width="30%" id='table-row-name-@listItem("nino").value.get' >
+                                <dt class="cya-answer" id='table-row-name-@listItem("nino").value.get' >
                                     @listItem("surname").value.get, @listItem("firstName").value.get
-                                </td>
-                                <td id='table-row-nino-@listItem("nino").value.get'>
+                                </dt>
+                                <dt class="cya-answer" id='table-row-nino-@listItem("nino").value.get'>
                                   @listItem("nino").value.get
-                                </td>
-                                <td id='table-row-dob-@listItem("nino").value.get'>
+                                </dt>
+                                <dt class="cya-answer" id='table-row-dob-@listItem("nino").value.get'>
                                   @listItem("worksPayrollNumber").value.getOrElse("")
-                                </td>
+                                </dt>
 
-                             </tr>
+                             </div>
 
                       }
-                      <tbody>
-                    </table>
-                    </div>
+                    </dl>
                 <div style="clear:both"></div>
                 <p class="panel-indent panel-border-wide">
                     @Messages("ExclusionImportant.ExcludeEmployee")
@@ -176,31 +173,29 @@
                              @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
                              <input type="hidden"  id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
                              <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
-                            <table>
-                              <caption>@Messages("ExclusionSearch.caption")</caption>
-                              <tbody>
-                                <tr>
-                                  <th>@Messages("Service.field.name")</th>
-                                  <td id="table-row-name">
+                              <h2>@Messages("ExclusionSearch.caption")</h2>
+                              <dl class="govuk-check-your-answers cya-questions-short">
+                                <div>
+                                  <dt class="cya-answer bold">@Messages("Service.field.name")</dt>
+                                  <dt class="cya-answer" id="table-row-name">
                                     @listItem("firstName").value.get
                                     @listItem("surname").value.get
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <th>@Html(Messages("Service.field.nino.2lines"))
+                                  </dt>
+                                </div>
+                                <div>
+                                  <dt class="cya-answer bold">@Html(Messages("Service.field.nino.2lines"))
                                       <br>
                                       <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
-                                  </th>
-                                  <td id="table-row-nino">@listItem("nino").value.get
-                                </tr>
+                                  </dt>
+                                  <dt class="cya-answer" id="table-row-nino">@listItem("nino").value.get</dt>
+                                </div>
                                 @if(listItem("gender").value.isDefined) {
-                                <tr>
-                                  <th>@Messages("Service.field.worksnumber")</th>
-                                  <td id="table-row-dob">@listItem("worksPayrollNumber").value.getOrElse("")</td>
-                                </tr>
+                                <div>
+                                  <dt class="cya-answer bold">@Messages("Service.field.worksnumber")</>
+                                  <dt class="cya-answer" id="table-row-dob">@listItem("worksPayrollNumber").value.getOrElse("")</dt>
+                                </div>
                                 }
-                              </tbody>
-                            </table>
+                              </dl>
 
 
                          </fieldset>

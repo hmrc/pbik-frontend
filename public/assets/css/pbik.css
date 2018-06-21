@@ -20,7 +20,42 @@
         margin-right: 0;
         display: inline-block;
     }
+
+    .govuk-check-your-answers .cya-answer.bold {
+        padding-top: 0.5em;
+    }
+    #search-results #nonino .cya-answer {
+        display: inline-block;
+        width: 28%;
+    }
+    #search-results #nonino .cya-answer.input {
+        display: inline-block;
+        width: 7%;
+    }
+
+    #removal-confirmation .cya-answer {
+        display: inline-block;
+        width: 48%;
+    }
+
 }
+#exclusion-overview .cya-answer {
+    display: inline-block;
+    width: 23%;
+    padding-right: 0;
+}
+
+#exclusion-overview #action {
+    text-align: center;
+}
+
 .govuk-check-your-answers .cya-answer.p11dSection {
     text-align: right;
+}
+.bold {
+    font-weight: bold;
+}
+
+#searchResult .nino-span, #exclusion-overview .nino-span {
+    font-size: 0.85em;
 }

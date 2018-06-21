@@ -48,39 +48,36 @@ context: config.PbikContext, applicationMessages: Messages)
     }
 
     @if(!current.isEmpty) {
-    <table>
-        <caption>@Messages("ExclusionOverview.caption")</caption>
-        <thead>
-        <tr>
-            <th>@Messages("Service.field.name")</th>
-            <th>@Messages("Service.field.nino")<br>
-                <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
-            </th>
-            <th>@Messages("Service.field.worksnumber")</th>
-            <th>@Messages("Service.action")</th>
+    <h2>@Messages("ExclusionOverview.caption")</h2>
 
-        </tr>
-        </thead>
-        <tbody>
+    <dl class="govuk-check-your-answers cya-questions-short">
+        <div>
+            <dt class="cya-answer bold">@Messages("Service.field.name")</dt>
+            <dt class="cya-answer bold">@Messages("Service.field.nino")
+                <br>
+                <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span></dt>
+            <dt class="cya-answer bold">@Messages("Service.field.worksnumber")</dt>
+            <dt class="cya-answer bold" id="action">@Messages("Service.action")</dt>
+        </div>
 
         @for( (c, index) <- current.zipWithIndex ) {
 
         @helpers.form(action=routes.ExclusionListController.remove(isCurrentTaxYear, iabdValueURLMapper(iabdType))){
-        <tr>
-            <td width="25%" id='name-@c.nino'>@c.surname, @c.firstForename </td>
-            <td width="40%" class="nino" id = 'nino-@c.nino'>
+        <div>
+            <dt class="cya-answer" id='name-@c.nino'>@c.surname, @c.firstForename </dt>
+            <dt class="cya-answer" class="nino" id = 'nino-@c.nino'>
                 @c.nino
-            </td>
-            <td width="25%" id='dob-@c.nino'>@c.worksPayrollNumber</td>
+            </dt>
+            <dt  class="cya-answer" id='dob-@c.nino'>@c.worksPayrollNumber</dt>
             @if(isCurrentTaxYear!="cy"){
-            <td>
+            <dt class="cya-answer">
                 <button class="button--link-style" id='@c.nino-remove' data-journey-click="link - click:@Messages("ExclusionOverview.title"):@Messages("Service.removeexclusion")">
                     @Messages("Service.removeexclusion")<span class="visuallyhidden">@Messages("Service.for") @c.firstForename @c.surname @c.nino</span>
                 </button>
-            </td>
+            </dt>
             }
 
-        </tr>
+        </div>
 
 
         <input type="hidden" name="individuals[0].nino" value="@c.nino" />
@@ -95,7 +92,7 @@ context: config.PbikContext, applicationMessages: Messages)
         }
         }
         </tbody>
-    </table>
+    </dl>
     }
 
     <div style="clear:both"></div>
