@@ -1,0 +1,26 @@
+
+.govuk-check-your-answers.cya-questions-short .cya-question.benefitOrExpense {
+    width: 70%;
+}
+.govuk-check-your-answers.cya-questions-short .cya-question.p11dSection {
+    width: 30%;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .govuk-check-your-answers.cya-questions-short .cya-question.benefitOrExpense, .govuk-check-your-answers .cya-answer.benefitOrExpense {
+        width: 69%;
+        margin-right: 0;
+        display: inline-block;
+        padding-top: 0.5em;
+    }
+    .govuk-check-your-answers.cya-questions-short .cya-question.p11dSection, .govuk-check-your-answers .cya-answer.p11dSection {
+        width: 29%;
+        text-align: right;
+        margin-right: 0;
+        display: inline-block;
+    }
+}
+.govuk-check-your-answers .cya-answer.p11dSection {
+    text-align: right;
+}
