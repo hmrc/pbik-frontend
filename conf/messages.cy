@@ -91,7 +91,7 @@ sidebar.link.a-z = Expenses and benefits: A to Z guide
 #*************************************************************
 # Add benefits
 #*************************************************************
-
+whatNext.remove.link.P11D=ffurflen P11D
 AddBenefits.Heading = Dewis buddiannau a threuliau
 AddBenefits.table.heading.input = Buddiant neu draul
 AddBenefits.table.heading.section = Adran P11D
@@ -482,8 +482,8 @@ whatNext.add.p3.singular = Dylech beidio â chyflwyno <a href = "https://www.gov
 
 whatNext.subHeading = Camau nesaf
 whatNext.remove.lede = Rydych wedi rhoi gwybod i ni na fyddwch yn trethu <span id = "cy1-{3}">‘{0}’</span> drwy eich cyflogres o 6 Ebrill {1} ymlaen.
-whatNext.remove.p1 = Os ydych yn dal i roi’r buddiant hwn neu’r draul hon i’ch cyflogeion, bydd yn rhaid i chi lenwi <a href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d.cy">ffurflen P11D</a> ar eu cyfer ar ddiwedd y flwyddyn dreth.
-
+whatNext.remove.p1 = Os ydych yn dal i roi’r buddiant hwn neu’r draul hon i’ch cyflogeion, bydd yn rhaid i chi lenwi
+whatNext.remove.p1-after=ar eu cyfer ar ddiwedd y flwyddyn dreth.
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.rescind.heading = Cofrestriad wedi’i gyflawni
 whatNext.exclude.lede = Rydych wedi rhoi gwybod i ni na fydd {0} yn cael {1} wedi’i drethu/threthu drwy eich cyflogres o 6 Ebrill {2} ymlaen.
