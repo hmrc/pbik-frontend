@@ -106,10 +106,11 @@
                         <div>
                             <dt class="cya-answer" id='confirmation-row-confirmation-@activeField("uid").value.get'>
                                 @Messages("BenefitInKind.label." + activeField("uid").value.get )</dt>
-                            @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
-                            @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
-                            @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
-
+                            <div class="hidden">
+                                @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
+                                @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
+                                @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
+                            </div>
                         </div>
                         }
 

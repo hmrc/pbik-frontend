@@ -1,4 +1,6 @@
-
+.touchevents .date-of-birth {
+    display: block;
+}
 .govuk-check-your-answers.cya-questions-short .cya-question.benefitOrExpense {
     width: 70%;
 }
@@ -19,9 +21,10 @@
         text-align: right;
         margin-right: 0;
         display: inline-block;
+        vertical-align: top;
     }
 
-    .govuk-check-your-answers .cya-answer.bold {
+    .govuk-check-your-answers .cya-answer, #search-results  .cya-answer.bold {
         padding-top: 0.5em;
     }
     #search-results #nonino .cya-answer {
@@ -31,7 +34,13 @@
     #search-results #nonino .cya-answer.input {
         display: inline-block;
         width: 7%;
+        vertical-align: bottom;
     }
+
+    #search-results  .cya-answer {
+        padding-top: 0;
+    }
+
 
     #removal-confirmation .cya-answer {
         display: inline-block;
@@ -45,6 +54,14 @@
     padding-right: 0;
 }
 
+.cya-answer.bold {
+    vertical-align: unset;
+}
+
+.cya-answer {
+    vertical-align: top;
+}
+
 #exclusion-overview #action {
     text-align: center;
 }
@@ -56,6 +73,6 @@
     font-weight: bold;
 }
 
-#searchResult .nino-span, #exclusion-overview .nino-span {
+#searchResult .nino-span, #exclusion-overview .nino-span, #search-results .nino-span {
     font-size: 0.85em;
 }
