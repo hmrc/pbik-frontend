@@ -64,6 +64,16 @@ function gaEventLinkSteps() {
     ga('send', 'event', "Click 'back' steps link", "Click steps");
 }
 
+function gaEventPrintLink(pageTitle) {
+    ga('send', 'event', {
+        'eventCategory': 'print - click ',
+        'eventAction': pageTitle,
+        'eventLabel': 'Print this page'
+
+    });
+    javascript:window.print();
+}
+
 function gaEventLinkOverview() {
     ga('send', 'event', "Click back to overview", "Click overview");
 }
