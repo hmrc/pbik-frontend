@@ -28,6 +28,9 @@ context: config.PbikContext, applicationMessages: Messages)
 @parentTemplate(pageTitle = Messages("ExclusionOverview.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
 
 @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
+
+@includes.back_link(gaLabel = Messages("ExclusionOverview.title"))
+
 <header class="page-header">
     <h1 id="title" class="heading-with-border">@Messages("ExclusionOverview.title")</h1>
 </header>
