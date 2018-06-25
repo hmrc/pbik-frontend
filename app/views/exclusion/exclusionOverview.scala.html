@@ -52,29 +52,29 @@ context: config.PbikContext, applicationMessages: Messages)
 
     <dl class="govuk-check-your-answers cya-questions-short">
         <div>
-            <dt class="cya-answer bold">@Messages("Service.field.name")</dt>
-            <dt class="cya-answer bold">@Messages("Service.field.nino")
+            <div class="cya-answer bold">@Messages("Service.field.name")</div>
+            <div class="cya-answer bold">@Messages("Service.field.nino")
                 <br>
-                <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span></dt>
-            <dt class="cya-answer bold">@Messages("Service.field.worksnumber")</dt>
-            <dt class="cya-answer bold" id="action">@Messages("Service.action")</dt>
+                <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span></div>
+            <div class="cya-answer bold">@Messages("Service.field.worksnumber")</div>
+            <div class="cya-answer bold" id="action">@Messages("Service.action")</div>
         </div>
 
         @for( (c, index) <- current.zipWithIndex ) {
 
         @helpers.form(action=routes.ExclusionListController.remove(isCurrentTaxYear, iabdValueURLMapper(iabdType))){
         <div>
-            <dt class="cya-answer" id='name-@c.nino'>@c.surname, @c.firstForename </dt>
-            <dt class="cya-answer" class="nino" id = 'nino-@c.nino'>
+            <div class="cya-answer" id='name-@c.nino'>@c.surname, @c.firstForename </div>
+            <div class="cya-answer" class="nino" id = 'nino-@c.nino'>
                 @c.nino
-            </dt>
-            <dt  class="cya-answer" id='dob-@c.nino'>@c.worksPayrollNumber</dt>
+            </div>
+            <div  class="cya-answer" id='dob-@c.nino'>@c.worksPayrollNumber</div>
             @if(isCurrentTaxYear!="cy"){
-            <dt class="cya-answer">
+            <div class="cya-answer">
                 <button class="button--link-style" id='@c.nino-remove' data-journey-click="link - click:@Messages("ExclusionOverview.title"):@Messages("Service.removeexclusion")">
                     @Messages("Service.removeexclusion")<span class="visuallyhidden">@Messages("Service.for") @c.firstForename @c.surname @c.nino</span>
                 </button>
-            </dt>
+            </div>
             }
 
         </div>
@@ -94,8 +94,6 @@ context: config.PbikContext, applicationMessages: Messages)
         </tbody>
     </dl>
     }
-
-    <div style="clear:both"></div>
 
     <div class="panel-indent panel-border-wide">
         @Messages("ExclusionOverview.warning")

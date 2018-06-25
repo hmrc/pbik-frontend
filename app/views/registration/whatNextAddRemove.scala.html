@@ -77,14 +77,14 @@
 
                     @helper.repeat(bikForm("actives"), min=0) { activeField =>
                         <div>
-                            <dt class="cya-answer">
+                            <div class="cya-answer">
                                 <div class="hidden">
                                     @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
                                     @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
                                     @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
                                 </div>
                                 <span id='li-@activeField("uid").value.get'> @Messages("BenefitInKind.label." + activeField("uid").value.get )</span>
-                            </dt>
+                            </div>
                         </div>
                         }
                     </dl>

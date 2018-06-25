@@ -54,43 +54,41 @@
             <h2>@Messages("ExclusionRemovalConfirmation.caption")</h2>
             <dl class="govuk-check-your-answers cya-questions-short">
                 <div>
-                    <dt class="cya-answer bold">
+                    <div class="cya-answer bold">
                         @Messages("Service.field.name")
-                    </dt>
-                    <dt class="cya-answer" id="name">
+                    </div>
+                    <div class="cya-answer" id="name">
                         @listItem("firstName").value.get
                         @if(listItem("secondName").value.isDefined) { @listItem("secondName").value.get }
                         @listItem("surname").value.get
-                    </dt>
+                    </div>
                 </div>
                 <div>
-                    <dt class="cya-answer bold">@Messages("Service.field.nino")<br>
+                    <div class="cya-answer bold">@Messages("Service.field.nino")<br>
                         <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
-                    </dt>
-                    <dt class="cya-answer" id="nino">
+                    </div>
+                    <div class="cya-answer" id="nino">
                         @listItem("nino").value.get
 
-                    </dt>
+                    </div>
 
                 </div>
                 @if((listItem("worksPayrollNumber").value.isDefined)) {
                 <div>
-                    <dt class="cya-answer bold">@Messages("Service.field.worksnumber")</dt>
-                    <dt class="cya-answer">@listItem("worksPayrollNumber").value.get</dt>
+                    <div class="cya-answer bold">@Messages("Service.field.worksnumber")</div>
+                    <div class="cya-answer">@listItem("worksPayrollNumber").value.get</div>
                 </div>
                 }
                 @if((listItem("dateOfBirth").value.isDefined)) {
                 <div>
-                    <dt class="cya-answer bold">@Messages("Service.field.dob")</dt>
-                    <dt class="cya-answer" id="dob">@DateUtils.NPSDateConversionFormat(listItem("dateOfBirth").value.get)</dt>
+                    <div class="cya-answer bold">@Messages("Service.field.dob")</div>
+                    <div class="cya-answer" id="dob">@DateUtils.NPSDateConversionFormat(listItem("dateOfBirth").value.get)</div>
                 </div>
                 }
             </dl>
 
             </fieldset>
             }
-
-        <div style="clear:both"></div>
 
         <p>
             <input type="submit" class="button" role="button" id="button-confirm" value="@Messages("Service.exclusion.add")">
