@@ -68,7 +68,7 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
     <dl class="govuk-check-your-answers cya-questions-long">
         @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsNextYear).zipWithIndex ) {
         <div>
-            <div class="cya-question">
+            <div class="cya-question" id="cy1-@n.iabdType">
                 @Messages("BenefitInKind.label." + n.iabdType)
             </div>
             <div class="cya-answer">
@@ -125,7 +125,7 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
     <dl class="govuk-check-your-answers cya-questions-short">
         @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
         <div>
-            <div class="cya-question">
+            <div class="cya-question" id="cy-@n.iabdType">
                 @Messages("BenefitInKind.label." + n.iabdType)
             </div>
             <div class="cya-answer">
