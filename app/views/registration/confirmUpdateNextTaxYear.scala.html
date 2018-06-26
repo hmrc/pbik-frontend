@@ -38,17 +38,12 @@
 
 @parentTemplate(pageTitle = title, Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
+
         @if(additive) {
 
-            <span class="link-back-top-wrap">
-                <a class="button-link" id="link-back-top" onclick="gaEventLinkSteps()"
-                   href='@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad'>
+            @includes.back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad), Messages("AddBenefits.Confirm.Single.Title"))
 
-                    <div class="arrow-back"></div>
-                    @Messages("Service.back")
-                </a>
-            </span>
-            <h1 id="title" class="h1-heading-margin">
+            <h1 id="title" class="title">
                 @if(!singleBik) {
                     @Messages("AddBenefits.Confirm.Multiple.Title")
                 }else{
@@ -56,7 +51,10 @@
                 }
             </h1>
         } else {
-            <h1 id="title">
+
+            @includes.back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad), Messages("RemoveBenefits.Confirm.Title"))
+
+            <h1 id="title" class="title">
                 @Messages("RemoveBenefits.Confirm.Title")
             </h1>
         }

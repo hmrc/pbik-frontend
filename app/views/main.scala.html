@@ -130,7 +130,9 @@ else HtmlFormat.empty
         ssoUrl = Play.configuration.getString("portal.ssoUrl"),
         scriptElem = scriptElement,
         gaCalls = gaCalls)
+<link rel="stylesheet" href='@routes.AssetsController.at("stylesheets/pbik.css")' media="screen" type="text/css" />
 <link rel="stylesheet" href='@routes.AssetsController.at("stylesheets/urBanner.css")' media="screen" type="text/css" />
+<script type="text/javascript" src='@routes.AssetsController.at("javascripts/pbik.js")'></script>
 <script type="text/javascript" src='@routes.AssetsController.at("javascripts/urBanner.js")'></script>
 }
 

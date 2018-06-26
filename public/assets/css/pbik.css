@@ -47,6 +47,10 @@
         width: 48%;
     }
 
+    .govuk-check-your-answers .cya-change {
+        text-align: left;
+        position: relative;
+    }
 }
 #exclusion-overview .cya-answer {
     display: inline-block;
