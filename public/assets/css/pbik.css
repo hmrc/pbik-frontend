@@ -1,0 +1,6 @@
+@media (max-width: 770px) {
+.govuk-check-your-answers .cya-change {
+	text-align: left;
+	position: relative;
+	}
+}

@@ -58,35 +58,37 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
         @Messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")</h2>
 
     @if(!registeredBenefitsNextYear.isEmpty) {
-    <p class="text">
+    <p>
         @Messages("Overview.next.lead")
     </p>
 
-    <table role="presentation">
-        <caption class="caption-margin-top">@Messages("Overview.table.heading.1")</caption>
-        <tbody>
+    <h3 class="heading-medium">
+        @Messages("Overview.table.heading.1")
+    </h3>
+    <dl class="govuk-check-your-answers cya-questions-long">
         @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsNextYear).zipWithIndex ) {
-        <tr>
-            <td role="gridcell" id="cy1-@n.iabdType" width="40%">@Messages("BenefitInKind.label." + n.iabdType)</td>
-            <td role="gridcell" width="28%">
+        <div>
+            <div class="cya-question" id="cy1-@n.iabdType">
+                @Messages("BenefitInKind.label." + n.iabdType)
+            </div>
+            <div class="cya-answer">
                 <a id="cy1-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", iabdValueURLMapper(n.iabdType))'>
                     @if(n.eilCount == 0) {@Messages("Overview.table.exclude.none.link")} else {@Messages("Overview.table.exclude.link")}
                     @if(n.eilCount > 0) {(@n.eilCount)}
-                    <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
+                    <span class="visuallyhidden">@Messages("Overview.current.from") @Messages("BenefitInKind.label." + n.iabdType)</span>
                 </a>
-            </td>
-            <td role="gridcell" width="30%">
+            </div>
+            <div class="cya-change">
                 <a id="cy1-remove-@n.iabdType" href="@controllers.registration.routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(n.iabdType))">
-                    @Messages("Overview.table.remove.link")
-                    <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
+                   <span aria-hidden="true">@Messages("Overview.table.remove.link")</span>
+                    <span class="visuallyhidden">@Messages("Overview.current.remove") @Messages("BenefitInKind.label." + n.iabdType) @Messages("Overview.current.from") @Messages("Overview.current.payroll.p11d")</span>
                 </a>
-            </td>
-        </tr>
+            </div>
+        </div>
         }
-        </tbody>
-    </table>
+     </dl>
     }else {
-    <p id="no-benefits" class="text">
+    <p id="no-benefits">
         @Messages("Overview.next.lead.empty", taxYearRange.cy + "")
     </p>
     }
@@ -107,11 +109,11 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
     <h2>@Messages("Overview.current.heading", taxYearRange.cyminus1 + "", taxYearRange.cy + "")</h2>
 
     @if(!registeredBenefitsCurrentYear.isEmpty) {
-    <p class="text">
+    <p>
         @Messages("Overview.current.lead")
     </p>
     }else {
-    <p class="text">
+    <p>
         @Messages("Overview.current.lead.empty", taxYearRange.cyminus1 + "")
     </p>
     }
@@ -119,24 +121,25 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
 
     }
     @if(!registeredBenefitsCurrentYear.isEmpty) {
-    <table role="presentation">
-        <caption class="caption-margin-top">@Messages("Overview.table.heading.1")</caption>
-        <tbody>
+
+    <dl class="govuk-check-your-answers cya-questions-short">
         @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
-        <tr>
-            <td role="gridcell" id="cy-@n.iabdType" width="40%">@Messages("BenefitInKind.label." + n.iabdType)</td>
-            <td role="gridcell" width="28%">
+        <div>
+            <div class="cya-question" id="cy-@n.iabdType">
+                @Messages("BenefitInKind.label." + n.iabdType)
+            </div>
+            <div class="cya-answer">
                 <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", iabdValueURLMapper(n.iabdType))'>
                     @if(n.eilCount == 0) {@Messages("Overview.table.exclude.none.link")} else {@Messages("Overview.table.exclude.link")}
                     @if(n.eilCount > 0) {(@n.eilCount)}
-                    <span class="hidden-screen-reader"> for @Messages("BenefitInKind.label." + n.iabdType)</span>
+                    <span class="visuallyhidden"> @Messages("Overview.current.from") @Messages("BenefitInKind.label." + n.iabdType)</span>
                 </a>
-            </td>
-            <td role="gridcell" width="30%"></td>
-        </tr>
+            </div>
+
+        </div>
         }
-        </tbody>
-    </table>
+
+    </dl>
     }
 
     @if(cyAllowed) {

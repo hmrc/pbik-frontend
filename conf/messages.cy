@@ -60,10 +60,13 @@ Service.signout = Allgofnodi
 #*************************************************************
 
 Overview.heading = Crynodeb o dalu drwy’r gyflogres
-Overview.next.heading = Y flwyddyn dreth nesaf – yn dechrau ar 6 Ebrill {0}
-Overview.next.lead = Rydych wedi cofrestru’r buddiannau a’r treuliau canlynol i gael eu trethu drwy eich cyflogres.
+Overview.next.heading = 6 Ebrill {0} i 5 Ebrill {1}
+Overview.next.lead = Buddiannau a threuliau rydych wedi’u cofrestru i’w trethu drwy’ch cyflogres
 Overview.next.lead.empty = Nid ydych wedi cofrestru buddiannau a threuliau i gael eu trethu drwy eich cyflogres.
-Overview.current.heading = Y flwyddyn dreth hon – dechreuodd ar 6 Ebrill {0}
+Overview.current.from=o
+Overview.current.remove=Dileu
+Overview.current.payroll.p11d=y gyflogres ac adrodd ar P11D
+Overview.current.heading = 6 Ebrill {0} i 5 Ebrill {1}
 Overview.current.lead = Rydych wedi cofrestru’r buddiannau a’r treuliau canlynol i gael eu trethu drwy eich cyflogres.
 Overview.current.lead.empty = Nid ydych wedi cofrestru buddiannau a threuliau i gael eu trethu drwy eich cyflogres.
 Overview.table.heading.1 = Buddiant neu draul
