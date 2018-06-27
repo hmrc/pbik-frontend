@@ -56,7 +56,7 @@
             <h2>@Messages("ExclusionRemovalConfirmation.caption")</h2>
             <dl class="govuk-check-your-answers cya-questions-short">
                 <div>
-                    <div class="cya-answer bold">
+                    <div class="cya-question">
                         @Messages("Service.field.name")
                     </div>
                     <div class="cya-answer" id="name">
@@ -66,7 +66,7 @@
                     </div>
                 </div>
                 <div>
-                    <div class="cya-answer bold">@Messages("Service.field.nino")<br>
+                    <div class="cya-question">@Messages("Service.field.nino")<br>
                         <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
                     </div>
                     <div class="cya-answer" id="nino">
@@ -77,7 +77,7 @@
                 </div>
                 @if((listItem("worksPayrollNumber").value.isDefined)) {
                 <div>
-                    <div class="cya-answer bold">@Messages("Service.field.worksnumber")</div>
+                    <div class="cya-question">@Messages("Service.field.worksnumber")</div>
                     <div class="cya-answer">@listItem("worksPayrollNumber").value.get</div>
                 </div>
                 }

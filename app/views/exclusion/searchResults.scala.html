@@ -92,12 +92,12 @@
                     <h2>@Messages("ExclusionSearch.caption.multi")</h2>
                     <dl class="govuk-check-your-answers cya-questions-short" id="nonino">
                         <div>
-                            <div class="cya-answer input">&nbsp;</div>
-                            <div class="cya-answer bold">@Messages("Service.field.name")</div>
-                            <div class="cya-answer bold">@Messages("Service.field.nino")
+                            <div class="cya-question">&nbsp;</div>
+                            <div class="cya-question">@Messages("Service.field.name")</div>
+                            <div class="cya-question">@Messages("Service.field.nino")
                                 <br>
                                 <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span></div>
-                            <div class="cya-answer bold">@Messages("Service.field.worksnumber")</div>
+                            <div class="cya-question">@Messages("Service.field.worksnumber")</div>
                         </div>
 
 
@@ -175,14 +175,14 @@
                               <h2>@Messages("ExclusionSearch.caption")</h2>
                               <dl class="govuk-check-your-answers cya-questions-short">
                                 <div>
-                                  <div class="cya-answer bold">@Messages("Service.field.name")</div>
+                                  <div class="cya-question">@Messages("Service.field.name")</div>
                                   <div class="cya-answer" id="table-row-name">
                                     @listItem("firstName").value.get
                                     @listItem("surname").value.get
                                   </div>
                                 </div>
                                 <div>
-                                  <div class="cya-answer bold">@Html(Messages("Service.field.nino.2lines"))
+                                  <div class="cya-question">@Html(Messages("Service.field.nino.2lines"))
                                       <br>
                                       <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
                                   </div>
@@ -190,7 +190,7 @@
                                 </div>
                                 @if(listItem("gender").value.isDefined) {
                                 <div>
-                                  <div class="cya-answer bold">@Messages("Service.field.worksnumber")</div>
+                                  <div class="cya-question">@Messages("Service.field.worksnumber")</div>
                                   <div class="cya-answer" id="table-row-dob">@listItem("worksPayrollNumber").value.getOrElse("")</div>
                                 </div>
                                 }
