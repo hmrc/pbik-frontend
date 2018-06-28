@@ -83,7 +83,9 @@ else HtmlFormat.empty
 @serviceInfo = {
     @layouts.serviceInfo(betaBanner,
         includeGridWrapper,
-        serviceInfoContent)
+        serviceInfoContent,
+        includeHMRCBranding=true,
+        setLang=applicationMessages.lang.code)
 }
 
 @getHelpForm = {

@@ -219,7 +219,7 @@ BenefitInKind.desc.44 = Dyma swm y lwfansau car a milltiroedd a delir i gyflogai
 BenefitInKind.url.44 = <a target = "_blank" href = "https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#mileage">rhagor</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.44.ref = Adran E
 
-BenefitInKind.label.31 = Ceir a thanwydd ceir
+BenefitInKind.label.31 = Car a thanwydd car
 BenefitInKind.desc.31 = Os bydd cyflogai yn defnyddio car sy’n eiddo i’r cwmni ar gyfer teithiau preifat neu ar gyfer cymudo, yna mae’n rhaid talu treth ar bris sylfaenol y cerbyd a’r tanwydd a ddefnyddir ar gyfer teithiau nad ydynt yn ymwneud â’r gwaith.
 BenefitInKind.url.31 = <a href = "https://www.gov.uk/expenses-and-benefits-company-cars" target = "_blank">Arweiniad ar geir a thanwydd car</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.31.ref = Adran F
@@ -229,7 +229,7 @@ BenefitInKind.desc.29 = Dyma’r tanwydd a gyflenwir gan y cyflogwr ar gyfer tei
 BenefitInKind.url.29 = <a target = "_blank" href = "https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#car-fuel">rhagor</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.29.ref = Adran F
 
-BenefitInKind.label.35 = Faniau
+BenefitInKind.label.35 = fan
 BenefitInKind.desc.35 = Costau faniau a ddefnyddir gan gyflogeion at ddibenion preifat.
 BenefitInKind.url.35 = <a target = "_blank" href = "https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#vans">rhagor</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.35.ref = Adran G
