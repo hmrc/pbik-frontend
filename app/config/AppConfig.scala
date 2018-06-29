@@ -17,6 +17,7 @@
 package config
 
 import java.util.Collections
+
 import play.api.Play.{configuration, current}
 import uk.gov.hmrc.play.config.ServicesConfig
 
@@ -48,7 +49,8 @@ object PbikAppConfig extends AppConfig with ServicesConfig {
   private lazy val contactHost = configuration.getString("contact-frontend.host").getOrElse("")
 
   override lazy val assetsPrefix = loadConfig("assets.url") + loadConfig("assets.version")
-  override lazy val reportAProblemPartialUrl = s"$contactFrontendService/contact/problem_reports?secure=$contactFormServiceIdentifier"
+  override lazy val reportAProblemPartialUrl = s"${baseUrl("contact-frontend")}/contact/problem_reports"
+
   override lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
   override lazy val analyticsToken: String = loadConfig("google-analytics.token")

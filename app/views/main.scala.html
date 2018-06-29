@@ -89,8 +89,9 @@ else HtmlFormat.empty
 }
 
 @getHelpForm = {
-    @includes.report_problem(supportLinkEnabled)
+    @config.LocalFormPartialRetriever.getPartialContent(reportAProblemPartialUrl)(request)
 }
+
 
 @sidebar = {
     @if(sidebarLinks.isDefined) {
