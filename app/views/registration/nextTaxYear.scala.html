@@ -103,7 +103,7 @@
 
                                     @if(prioritisedBiks.contains(activeField("uid").value.get)) {
                                     <div>
-                                        <dd class="cya-answer benefitOrExpense">
+                                        <div class="cya-answer benefitOrExpense">
                                         <input type="hidden" id='actives_@{index}_uid' name='actives[@index].uid' value='@activeField("uid").value.get'  />
                                         @if(previouslySelectedBenefits.filter(x => x.id == activeField("uid").value.get && x.active).length==1) {
                                             <label id='label-@activeField("uid").value.get' class="selected" for='checkbox-@activeField("uid").value.get'>
@@ -111,8 +111,7 @@
                                                 @if( nonLegislationBiks.contains(activeField("uid").value.get.toInt) | decommissionedBiks.contains(activeField("uid").value.get.toInt ) ) {
 
                                                 }else {
-                                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" checked
-                                                       aria-labelledby="table-heading-1"/>
+                                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" checked/>
                                                 }
                                                 </span>
                                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)
@@ -132,8 +131,7 @@
                                                 @if( nonLegislationBiks.contains(activeField("uid").value.get.toInt) | decommissionedBiks.contains(activeField("uid").value.get.toInt ) ) {
 
                                                 }else {
-                                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true"
-                                                       aria-labelledby="table-heading-1"/>
+                                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true"/>
                                                 }
                                                 </span>
                                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)
@@ -148,10 +146,10 @@
                                                 }
                                             </label>
                                         }
-                                        </dd>
-                                        <dd class="cya-answer p11dSection" onclick=selectCheckBoxTable('checkbox-@activeField("uid").value.get')>
+                                        </div>
+                                        <div class="cya-answer p11dSection" onclick=selectCheckBoxTable('checkbox-@activeField("uid").value.get')>
                                             @Messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
-                                        </dd>
+                                        </div>
                                     </div>
                                     }
                             }
@@ -160,7 +158,7 @@
                             @repeatWithIndex(bikForm("actives"), min=0) { (activeField, index) =>
                                     @if(!prioritisedBiks.contains(activeField("uid").value.get)) {
                                     <div>
-                                        <dd class="cya-answer benefitOrExpense">
+                                        <div class="cya-answer benefitOrExpense">
                                             <input type="hidden" id='actives_@{index}_uid' name='actives[@index].uid' value='@activeField("uid").value.get'  />
                                             @if(previouslySelectedBenefits.filter(x => x.id == activeField("uid").value.get && x.active).length==1) {
                                             <label id='label-@activeField("uid").value.get' class="selected" for='checkbox-@activeField("uid").value.get'>
@@ -168,8 +166,7 @@
                                                 @if( nonLegislationBiks.contains(activeField("uid").value.get.toInt) | decommissionedBiks.contains(activeField("uid").value.get.toInt ) ) {
 
                                                 }else {
-                                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" checked
-                                                       aria-labelledby="table-heading-1"/>
+                                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active'  value="true" checked/>
                                                 }
                                                 </span>
                                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)
@@ -189,8 +186,7 @@
                                                 @if( nonLegislationBiks.contains(activeField("uid").value.get.toInt) | decommissionedBiks.contains(activeField("uid").value.get.toInt ) ) {
 
                                                 }else {
-                                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true"
-                                                       aria-labelledby="table-heading-1"/>
+                                                    <input type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true"/>
                                                 }
                                                 </span>
                                                 @Messages("BenefitInKind.label." + activeField("uid").value.get)
@@ -205,10 +201,10 @@
                                                 }
                                             </label>
                                             }
-                                        </dd>
-                                        <dd class="cya-answer p11dSection" onclick=selectCheckBoxTable('checkbox-@activeField("uid").value.get')>
+                                        </div>
+                                        <div class="cya-answer p11dSection" onclick=selectCheckBoxTable('checkbox-@activeField("uid").value.get')>
                                             @Messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
-                                        </dd>
+                                        </div>
                                     </div>
                                     }
                             }
