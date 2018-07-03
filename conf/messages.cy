@@ -61,7 +61,7 @@ Service.signout = Allgofnodi
 
 Overview.heading = Crynodeb o dalu drwy’r gyflogres
 Overview.next.heading = 6 Ebrill {0} i 5 Ebrill {1}
-Overview.next.lead = Buddiannau a threuliau rydych wedi’u cofrestru i’w trethu drwy’ch cyflogres
+Overview.next.lead = Buddiannau a threuliau rydych wedi’u cofrestru i’w trethu drwy’ch cyflogres.
 Overview.next.lead.empty = Nid ydych wedi cofrestru buddiannau a threuliau i gael eu trethu drwy eich cyflogres.
 Overview.current.from=o
 Overview.current.remove=Dileu
@@ -229,7 +229,7 @@ BenefitInKind.desc.29 = Dyma’r tanwydd a gyflenwir gan y cyflogwr ar gyfer tei
 BenefitInKind.url.29 = <a target = "_blank" href = "https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#car-fuel">rhagor</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.29.ref = Adran F
 
-BenefitInKind.label.35 = fan
+BenefitInKind.label.35 = Faniau
 BenefitInKind.desc.35 = Costau faniau a ddefnyddir gan gyflogeion at ddibenion preifat.
 BenefitInKind.url.35 = <a target = "_blank" href = "https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#vans">rhagor</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.35.ref = Adran G
