@@ -91,13 +91,13 @@
                 @helpers.form(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes(),
                 'onsubmit -> "gaEventConfirmAddBenefits()") {
 
-                <h3>
+                <h2>
                     @if(!singleBik) {
                     @Messages("AddBenefits.Confirm.Multiple.Table.Heading")
                     }else {
                     @Messages("AddBenefits.Confirm.Single.Table.Heading")
                     }
-                </h3>
+                </h2>
                 <dl class="govuk-check-your-answers cya-questions-short">
                     @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
                         @helper.repeat(bikForm("actives"), min=0) { activeField =>
