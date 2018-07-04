@@ -61,7 +61,7 @@ Service.signout = Allgofnodi
 
 Overview.heading = Crynodeb o dalu drwy’r gyflogres
 Overview.next.heading = 6 Ebrill {0} i 5 Ebrill {1}
-Overview.next.lead = Buddiannau a threuliau rydych wedi’u cofrestru i’w trethu drwy’ch cyflogres
+Overview.next.lead = Buddiannau a threuliau rydych wedi’u cofrestru i’w trethu drwy’ch cyflogres.
 Overview.next.lead.empty = Nid ydych wedi cofrestru buddiannau a threuliau i gael eu trethu drwy eich cyflogres.
 Overview.current.from=o
 Overview.current.remove=Dileu
@@ -219,7 +219,7 @@ BenefitInKind.desc.44 = Dyma swm y lwfansau car a milltiroedd a delir i gyflogai
 BenefitInKind.url.44 = <a target = "_blank" href = "https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#mileage">rhagor</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.44.ref = Adran E
 
-BenefitInKind.label.31 = Ceir a thanwydd ceir
+BenefitInKind.label.31 = Car a thanwydd car
 BenefitInKind.desc.31 = Os bydd cyflogai yn defnyddio car sy’n eiddo i’r cwmni ar gyfer teithiau preifat neu ar gyfer cymudo, yna mae’n rhaid talu treth ar bris sylfaenol y cerbyd a’r tanwydd a ddefnyddir ar gyfer teithiau nad ydynt yn ymwneud â’r gwaith.
 BenefitInKind.url.31 = <a href = "https://www.gov.uk/expenses-and-benefits-company-cars" target = "_blank">Arweiniad ar geir a thanwydd car</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.31.ref = Adran F

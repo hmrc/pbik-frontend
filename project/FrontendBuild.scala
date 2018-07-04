@@ -38,7 +38,7 @@ object FrontendBuild extends Build with MicroService {
 private object AppDependencies {
   import play.core.PlayVersion
 
-  private val frontendBootstrapVersion = "8.19.0"
+  private val frontendBootstrapVersion = "8.24.0"
   private val playPartials = "6.1.0"
   private val urlBuilderVersion = "2.1.0"
   private val scalaTestVersion = "2.2.6"
