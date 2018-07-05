@@ -91,30 +91,32 @@
                 @helpers.form(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes(),
                 'onsubmit -> "gaEventConfirmAddBenefits()") {
 
-                    <table id="list-of-confirmation-benefits" role="presentation">
-                        <caption>
-                            @if(!singleBik) {
-                            @Messages("AddBenefits.Confirm.Multiple.Table.Heading")
-                            }else {
-                            @Messages("AddBenefits.Confirm.Single.Table.Heading")
-                            }
-                        </caption>
-
-                        <tbody>
-                        @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
-                            @helper.repeat(bikForm("actives"), min=0) { activeField =>
-                                <tr role="row">
-                                    @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
-                                    @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
-                                    @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
-                                    <td role="gridcell" id='confirmation-row-confirmation-@activeField("uid").value.get'>
-                                        @Messages("BenefitInKind.label." + activeField("uid").value.get )</td>
-                                </tr>
-                            }
+                <h2>
+                    @if(!singleBik) {
+                    @Messages("AddBenefits.Confirm.Multiple.Table.Heading")
+                    }else {
+                    @Messages("AddBenefits.Confirm.Single.Table.Heading")
+                    }
+                </h2>
+                <dl class="govuk-check-your-answers cya-questions-short">
+                    @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
+                        @helper.repeat(bikForm("actives"), min=0) { activeField =>
+                        <div>
+                            <div class="cya-answer" id='confirmation-row-confirmation-@activeField("uid").value.get'>
+                                @Messages("BenefitInKind.label." + activeField("uid").value.get )</div>
+                            <div class="hidden">
+                                @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
+                                @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
+                                @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
+                            </div>
+                        </div>
                         }
-                        </tbody>
 
-                    </table>
+                </dl>
+
+
+
+
 
                     <div class="panel-indent panel-border-wide" id="exclude-info">
                         @if(singleBik){
@@ -130,7 +132,9 @@
                     <input type="submit" role="button" class="button" id="button-confirm" value="@Messages("Service.register.multiple")">
                     }
                 }
-                <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
+            }
+
+            <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
                       href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
             } else {
 

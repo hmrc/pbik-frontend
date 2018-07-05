@@ -53,46 +53,44 @@
             @if(listItem("status").value.isDefined) { <input type="hidden" name="individuals[@index].status" id="status" value='@listItem("status").value.get'/> }
             @if(listItem("perOptLock").value.isDefined) { <input type="hidden" name="individuals[@index].perOptLock" id="perOptLock" value='@listItem("perOptLock").value.get'/> }
 
-            <table>
-                <caption>@Messages("ExclusionRemovalConfirmation.caption")</caption>
-                <tr>
-                    <th>
+            <h2>@Messages("ExclusionRemovalConfirmation.caption")</h2>
+            <dl class="govuk-check-your-answers cya-questions-short">
+                <div>
+                    <div class="cya-question">
                         @Messages("Service.field.name")
-                    </th>
-                    <td id="name">
+                    </div>
+                    <div class="cya-answer" id="name">
                         @listItem("firstName").value.get
                         @if(listItem("secondName").value.isDefined) { @listItem("secondName").value.get }
                         @listItem("surname").value.get
-                    </td>
-                </tr>
-                <tr>
-                    <th>@Messages("Service.field.nino")<br>
+                    </div>
+                </div>
+                <div>
+                    <div class="cya-question">@Messages("Service.field.nino")<br>
                         <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
-                    </th>
-                    <td id="nino">
+                    </div>
+                    <div class="cya-answer" id="nino">
                         @listItem("nino").value.get
 
-                    </td>
+                    </div>
 
-                </tr>
+                </div>
                 @if((listItem("worksPayrollNumber").value.isDefined)) {
-                <tr>
-                    <th>@Messages("Service.field.worksnumber")</th>
-                    <td>@listItem("worksPayrollNumber").value.get</td>
-                </tr>
+                <div>
+                    <div class="cya-question">@Messages("Service.field.worksnumber")</div>
+                    <div class="cya-answer">@listItem("worksPayrollNumber").value.get</div>
+                </div>
                 }
                 @if((listItem("dateOfBirth").value.isDefined)) {
-                <tr>
-                    <th>@Messages("Service.field.dob")</th>
-                    <td id="dob">@DateUtils.NPSDateConversionFormat(listItem("dateOfBirth").value.get)</td>
-                </tr>
+                <div>
+                    <div class="cya-answer bold">@Messages("Service.field.dob")</div>
+                    <div class="cya-answer" id="dob">@DateUtils.NPSDateConversionFormat(listItem("dateOfBirth").value.get)</div>
+                </div>
                 }
-            </table>
+            </dl>
 
             </fieldset>
             }
-
-        <div style="clear:both"></div>
 
         <p>
             <input type="submit" class="button" role="button" id="button-confirm" value="@Messages("Service.exclusion.add")">

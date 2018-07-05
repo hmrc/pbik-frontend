@@ -1,6 +1,82 @@
-@media (max-width: 770px) {
-.govuk-check-your-answers .cya-change {
-	text-align: left;
-	position: relative;
-	}
+.touchevents .date-of-birth {
+    display: block;
+}
+.govuk-check-your-answers.cya-questions-short .cya-question.benefitOrExpense {
+    width: 70%;
+}
+.govuk-check-your-answers.cya-questions-short .cya-question.p11dSection {
+    width: 30%;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .govuk-check-your-answers.cya-questions-short .cya-question.benefitOrExpense, .govuk-check-your-answers .cya-answer.benefitOrExpense {
+        width: 69%;
+        margin-right: 0;
+        display: inline-block;
+        padding-top: 0.5em;
+    }
+    .govuk-check-your-answers.cya-questions-short .cya-question.p11dSection, .govuk-check-your-answers .cya-answer.p11dSection {
+        width: 29%;
+        text-align: right;
+        margin-right: 0;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .govuk-check-your-answers .cya-answer, #search-results  .cya-answer.bold {
+        padding-top: 0.5em;
+    }
+    #search-results #nonino .cya-answer {
+        display: inline-block;
+        width: 28%;
+    }
+    #search-results #nonino .cya-answer.input {
+        display: inline-block;
+        width: 7%;
+        vertical-align: bottom;
+    }
+
+    #search-results  .cya-answer {
+        padding-top: 0;
+    }
+
+
+    #removal-confirmation .cya-answer {
+        display: inline-block;
+        width: 48%;
+    }
+
+    .govuk-check-your-answers .cya-change {
+        text-align: left;
+        position: relative;
+    }
+}
+#exclusion-overview .cya-answer {
+    display: inline-block;
+    width: 23%;
+    padding-right: 0;
+}
+
+.cya-answer.bold {
+    vertical-align: unset;
+}
+
+.cya-answer {
+    vertical-align: top;
+}
+
+#exclusion-overview #action {
+    text-align: center;
+}
+
+.govuk-check-your-answers .cya-answer.p11dSection {
+    text-align: right;
+}
+.bold {
+    font-weight: bold;
+}
+
+#searchResult .nino-span, #exclusion-overview .nino-span, #search-results .nino-span {
+    font-size: 0.85em;
 }

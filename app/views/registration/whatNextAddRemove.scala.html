@@ -71,30 +71,24 @@
 
         @if(additive) {
             @if(!singleBik){
-                <div class="data">
-                    <table id="list-of-confirmation-benefits" role="benefits list">
-                        <thead>
-                            <tr role="row">
-                                <th role="columnheader">@Messages("whatNext.cy1.add.table.header")</th>
-                            </tr>
-                        </thead>
+                <h2>@Messages("whatNext.cy1.add.table.header")</h2>
+                    @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
+                    <dl class="govuk-check-your-answers cya-questions-short" id="list-of-confirmation-benefits">
 
-                        <tbody>
-                            @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
-                                @helper.repeat(bikForm("actives"), min=0) { activeField =>
-                                    <tr role="row">
+                    @helper.repeat(bikForm("actives"), min=0) { activeField =>
+                        <div>
+                            <div class="cya-answer">
+                                <div class="hidden">
                                     @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
                                     @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
                                     @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
-                                    <td role="gridcell" id='li-@activeField("uid").value.get'> @Messages("BenefitInKind.label." + activeField("uid").value.get )</td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-
-                    </table>
-
-                </div>
+                                </div>
+                                <span id='li-@activeField("uid").value.get'> @Messages("BenefitInKind.label." + activeField("uid").value.get )</span>
+                            </div>
+                        </div>
+                        }
+                    </dl>
+                }
             }
 
             <h2>
