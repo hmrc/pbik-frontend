@@ -520,7 +520,7 @@ ConfirmationHelpAndContact.p1 = Bydd rhywun yn cysylltu â chi cyn pen 2 diwrnod
 #*************************************************************
 questionnaire.signedOut = Rydych wedi allgofnodi
 questionnaire.signInAgain = Gallwch <a href = "{0}">fewngofnodi eto</a> os oes angen i chi wneud hynny.
-questionnaire.beforeYouGo = Cyn i chi fynd, a fyddwch cystal ag ateb rhai cwestiynau i’n helpu i wella’ch profiad o’r gwasanaeth.
+questionnaire.beforeYouGo = Rydym yn defnyddio’ch adborth i wella ein gwasanaethau.
 questionnaire.howDoYouFeel = Yn gyffredinol, sut oeddech yn teimlo ar ôl defnyddio’r gwasanaeth?
 questionnaire.verySatisfied = Bodlon iawn
 questionnaire.satisfied = Bodlon
