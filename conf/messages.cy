@@ -520,14 +520,14 @@ ConfirmationHelpAndContact.p1 = Bydd rhywun yn cysylltu â chi cyn pen 2 diwrnod
 #*************************************************************
 questionnaire.signedOut = Rydych wedi allgofnodi
 questionnaire.signInAgain = Gallwch <a href = "{0}">fewngofnodi eto</a> os oes angen i chi wneud hynny.
-questionnaire.beforeYouGo = Cyn i chi fynd, a fyddwch cystal ag ateb rhai cwestiynau i’n helpu i wella’ch profiad o’r gwasanaeth.
+questionnaire.beforeYouGo = Rydym yn defnyddio’ch adborth i wella ein gwasanaethau.
 questionnaire.howDoYouFeel = Yn gyffredinol, sut oeddech yn teimlo ar ôl defnyddio’r gwasanaeth?
 questionnaire.verySatisfied = Bodlon iawn
 questionnaire.satisfied = Bodlon
 questionnaire.neither = Ddim yn fodlon nac yn anfodlon
 questionnaire.dissatisfied = Anfodlon
 questionnaire.veryDissatisfied = Anfodlon iawn
-questionnaire.howCanWeImprove = Rhowch wybod sut y gallwn wella’r gwasanaeth
+questionnaire.howCanWeImprove = Rhowch wybod sut y gallwn wella’r gwasanaeth hwn.
 questionnaire.noPersonalInfo = Peidiwch â chynnwys unrhyw wybodaeth bersonol neu ariannol, er enghraifft, eich rhif Yswiriant Gwladol neu rifau cardiau credyd.
 questionnaire.characterLimit = Hyd at 1,200 o gymeriadau
 questionnaire.sendFeedback = Anfon adborth

@@ -521,14 +521,14 @@ ConfirmationHelpAndContact.p1 = Someone will get back to you within 2 working da
 #*************************************************************
 questionnaire.signedOut = You’ve signed out
 questionnaire.signInAgain = You can <a href = "{0}">sign in again</a> if you need to.
-questionnaire.beforeYouGo = Before you go, please answer some questions to help us improve your experience.
+questionnaire.beforeYouGo = We use your feedback to make our services better.
 questionnaire.howDoYouFeel = Overall, how do you feel after using this service?
 questionnaire.verySatisfied = Very satisfied
 questionnaire.satisfied = Satisfied
 questionnaire.neither = Neither satisfied nor dissatisfied
 questionnaire.dissatisfied = Dissatisfied
 questionnaire.veryDissatisfied = Very dissatisfied
-questionnaire.howCanWeImprove = Tell us how we can improve this service
+questionnaire.howCanWeImprove = Tell us how we can improve this service.
 questionnaire.noPersonalInfo = Please don’t include any personal or financial information, for example your National Insurance or credit card numbers.
 questionnaire.characterLimit = 1,200 character limit
 questionnaire.sendFeedback = Send feedback
