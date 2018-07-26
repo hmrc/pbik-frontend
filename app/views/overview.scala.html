@@ -41,7 +41,7 @@ context: config.PbikContext, applicationMessages: Messages)
 </div>
 }
 
-@parentTemplate(pageTitle = Messages("Overview.heading"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), true,
+@parentTemplate(pageTitle = Messages("Overview.heading") + " - " + Messages("Service.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), true,
 showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
 
 <h1 id="title">@Messages("Overview.heading")</h1>

@@ -29,7 +29,7 @@
 
 @title = @{if(singleBik) {Messages("AddBenefits.Confirm.Single.Title")}else {Messages("AddBenefits.Confirm.Multiple.Title")}}
 
-@parentTemplate(pageTitle = title, Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+@parentTemplate(pageTitle = title + " - " + Messages("Service.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
     <span class="link-back-top-wrap">
         <a class="link-back" id="link-back-top" onclick="gaEventLinkSteps()"
            href='@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad'>
