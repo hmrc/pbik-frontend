@@ -29,9 +29,9 @@
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @cyplus1 = @{""+taxYearRange.cyplus1}
-@metaTitleAdditive = @{if(singleBik){Messages("whatNext.add.heading.singular") + " - " + Messages("Service.title")}else {Messages("whatNext.add.heading")}}
+@metaTitleAdditive = @{if(singleBik){Messages("whatNext.add.heading.singular")}else {Messages("whatNext.add.heading")}}
 
-@parentTemplate(pageTitle = if(additive) {metaTitleAdditive}else{Messages("whatNext.remove.heading") + " - " + Messages("Service.title")},
+@parentTemplate(pageTitle = if(additive) {metaTitleAdditive + " - " + Messages("Service.title")}else{Messages("whatNext.remove.heading") + " - " + Messages("Service.title")},
                 None, Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
     <section id="print-section">
