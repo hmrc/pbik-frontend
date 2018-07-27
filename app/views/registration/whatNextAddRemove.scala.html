@@ -24,12 +24,26 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
 
+    @stringBuilderBenefitsAndExpenses(list:Form[RegistrationList], currentString: String = "") = @{
+        var sentenceBuilder = ""
+        for(i <- 0 to list("actives").indexes.length -1) {
+            (list("actives").indexes.length-1) - i match{
+                case 0 => sentenceBuilder = sentenceBuilder + Messages("BenefitInKind.label." + list("actives[" + i + "].uid").value.get)
+                case 1 => sentenceBuilder = sentenceBuilder + Messages("BenefitInKind.label." + list("actives[" + i + "].uid").value.get) + " and "
+                case _ => sentenceBuilder = sentenceBuilder + Messages("BenefitInKind.label." + list("actives[" + i + "].uid").value.get) + ", "
+            }
+        }
+        sentenceBuilder
+    }
+
 @benefitLabel = @{Messages("BenefitInKind.label." + bikForm("actives[0].uid").value.get )}
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @cyplus1 = @{""+taxYearRange.cyplus1}
 @metaTitleAdditive = @{if(singleBik){Messages("whatNext.add.heading.singular")}else {Messages("whatNext.add.heading")}}
+
+
 
 @parentTemplate(pageTitle = if(additive) {metaTitleAdditive}else{Messages("whatNext.remove.heading")},
                 None, Some(ac.principal.accounts.epaye.get.empRef.toString)) {
@@ -97,26 +111,26 @@
 
             @if(isCurrentYear) {
                 <!-- CY content will go here when enabled-->
-                <ul class="list-bullet" id="next-steps">
-                    <li>@Html(Messages("whatNext.add.p1", cyminus1))</li>
+                <ul id="next-steps">
+                    <li>@Html(Messages("whatNext.add.p1", stringBuilderBenefitsAndExpenses(bikForm)))</li>
                     @if(singleBik) {
-                        <li>@Html(Messages("whatNext.add.p2.singular"))</li>
-                        <li>@Html(Messages("whatNext.add.p3.singular", cyminus1, cy))</li>
+                        <p>@Html(Messages("whatNext.add.p2.singular"))</p>
+                        <p>@Html(Messages("whatNext.add.p3.singular", cyminus1, cy))</p>
                     }else {
-                        <li>@Html(Messages("whatNext.add.p2"))</li>
-                        <li>@Html(Messages("whatNext.add.p3", cyminus1, cy))</li>
+                        <p>@Html(Messages("whatNext.add.p2", cyplus1))</p>
+                        <p>@Html(Messages("whatNext.add.p3", cyminus1, cy))</p>
                     }
                     <li>@Html(Messages("whatNext.add.p4"))</li>
                 </ul>
             }else {
-                <ul class="list-bullet" id="next-steps">
-                    <li>@Html(Messages("whatNext.add.p1", cy))</li>
+                <ul id="next-steps">
+                    <p>@Html(Messages("whatNext.add.p1", stringBuilderBenefitsAndExpenses(bikForm)))</p>
                     @if(singleBik) {
-                        <li>@Html(Messages("whatNext.add.p2.singular"))</li>
-                        <li>@Html(Messages("whatNext.add.p3.singular", cy, cyplus1)) </li>
+                        <p>@Html(Messages("whatNext.add.p2.singular"))</p>
+                        <p>@Html(Messages("whatNext.add.p3.singular", cy, cyplus1)) </p>
                     }else {
-                        <li>@Html(Messages("whatNext.add.p2"))</li>
-                        <li>@Html(Messages("whatNext.add.p3", cy, cyplus1))</li>
+                        <p>@Html(Messages("whatNext.add.p2", cyplus1))</p>
+                        <p>@Html(Messages("whatNext.add.p3", cy, cyplus1))</p>
                     }
 
                     <li>@Html(Messages("whatNext.add.p4"))</li>

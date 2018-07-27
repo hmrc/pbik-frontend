@@ -11,7 +11,7 @@ Service.yes = Iawn
 Service.no = Na
 Service.back = Yn ôl
 Service.back.overview = Yn ôl i’ch crynodeb
-Service.back.overview.whatNext = Gweld eich crynodeb
+Service.back.overview.whatNext = Yn ôl i grynodeb eich buddiannau a’ch treuliau
 Service.back.cancel = Yn ôl i’ch crynodeb
 Service.back.excluded = Yn ôl i’ch cyflogeion sydd wedi’u heithrio
 Service.back.yta = Eich Cyfrif Treth
@@ -476,9 +476,9 @@ whatNext.add.info = Bydd yn rhaid i chi gyflwyno ffurflen P11D i CThEM er mwyn r
 whatNext.cy1.add.lede = Dylech drethu’r buddiannau a’r treuliau canlynol drwy eich cyflogres o 6 Ebrill {0} ymlaen.
 whatNext.cy1.add.lede.singular = Dylech drethu {0} drwy eich cyflogres o 6 Ebrill {1} ymlaen.
 whatNext.cy1.add.table.header = Buddiannau a threuliau cofrestredig
-whatNext.add.p1 = Rhowch wybod i’ch cyflogeion y bydd eu codau treth yn newid a byddwn yn anfon cod treth newydd atynt. Ceir llythyrau enghreifftiol yn yr <a target = "_blank" href = "https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">arweiniad ‘Talu buddiannau a threuliau drwy’r gyflogres’</a> (yn agor mewn ffenestr newydd).
-whatNext.add.p2 = O 6 Ebrill ymlaen, ychwanegwch gyfwerth mewn arian parod, neu swm perthnasol y buddiannau a’r treuliau, at gyflog eich cyflogeion, a’u trethu drwy’ch cyflogres. Mae’n bosibl y bydd yn rhaid i chi ail-lunio’ch meddalwedd y gyflogres i wneud hyn.
-whatNext.add.p3 = Dylech beidio â chyflwyno <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d.cy">ffurflen P11D</a> ar gyfer y cyflogeion sydd â’r buddiannau neu’r treuliau wedi’u talu drwy’r gyflogres.
+whatNext.add.part1 = Ysgrifennu at eich cyflogeion ynghylch y [benefits or expenses], y newid yn eu cod treth a beth fydd goblygiadau hyn iddynt.
+whatNext.add.p2 = O 6 Ebrill {0} ymlaen, adiwch y swm cyfwerth mewn arian parod, neu swm perthnasol y buddiannau neu’r treuliau at gyflog eich cyflogeion, a’u trethu drwy’ch cyflogres. Mae’n bosibl y bydd yn rhaid i chi ail-lunio’ch meddalwedd gyflogres i wneud hyn.
+whatNext.add.p3 = Ni ddylech anfon <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d.cy">ffurflenni P11D</a> mwyach ar gyfer y cyflogeion sydd â buddiannau a threuliau a delir drwy’ch cyflogres.
 whatNext.add.p4 = Dylech barhau i gyflwyno <a href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db.cy">ffurflen P11D(b)</a> i roi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A.
 whatNext.add.p2.singular = O 6 Ebrill ymlaen, adiwch gyfwerth mewn arian parod, neu swm perthnasol, y buddiant neu’r treuliau at gyflog eich cyflogeion, a’u trethu drwy’ch cyflogres. Mae’n bosibl y bydd yn rhaid i chi ail-lunio’ch meddalwedd cyflogres i wneud hyn.
 whatNext.add.p3.singular = Dylech beidio â chyflwyno <a href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflenni P11D</a> ar gyfer y cyflogeion sydd â’r buddiant neu’r draul wedi’i dalu/thalu drwy’r gyflogres.
