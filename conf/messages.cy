@@ -9,6 +9,7 @@ Service.news.banner.message = Bydd newidiadau a wnewch yn effeithio ar godau tre
 
 Service.yes = Iawn
 Service.no = Na
+Service.and = a
 Service.back = Yn ôl
 Service.back.overview = Yn ôl i’ch crynodeb
 Service.back.overview.whatNext = Yn ôl i grynodeb eich buddiannau a’ch treuliau

@@ -24,17 +24,18 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
 
-    @stringBuilderBenefitsAndExpenses(list:Form[RegistrationList], currentString: String = "") = @{
-        var sentenceBuilder = ""
-        for(i <- 0 to list("actives").indexes.length -1) {
-            (list("actives").indexes.length-1) - i match{
-                case 0 => sentenceBuilder = sentenceBuilder + Messages("BenefitInKind.label." + list("actives[" + i + "].uid").value.get)
-                case 1 => sentenceBuilder = sentenceBuilder + Messages("BenefitInKind.label." + list("actives[" + i + "].uid").value.get) + " and "
-                case _ => sentenceBuilder = sentenceBuilder + Messages("BenefitInKind.label." + list("actives[" + i + "].uid").value.get) + ", "
+    @stringBuilder(list: Form[RegistrationList], indexes: Seq[Int]) = {
+    @{
+            def stringBuilderBenefitsAndExpenses(list: Form[RegistrationList], indexes: Seq[Int]): String = {
+                indexes.length match {
+                    case 1 => Messages("BenefitInKind.label." + list("actives[" + indexes(0) + "].uid").value.get) + ","
+                    case 2 => Messages("BenefitInKind.label." + list("actives[" + indexes(0) + "].uid").value.get) + " " + Messages("Service.and") + " " + stringBuilderBenefitsAndExpenses(list, indexes.drop(1))
+                    case _ => Messages("BenefitInKind.label." + list("actives[" + indexes(0) + "].uid").value.get) + ", " + stringBuilderBenefitsAndExpenses(list, indexes.drop(1))
+                }
             }
-        }
-        sentenceBuilder
+        stringBuilderBenefitsAndExpenses(list, indexes)
     }
+}
 
 @benefitLabel = @{Messages("BenefitInKind.label." + bikForm("actives[0].uid").value.get )}
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
@@ -97,7 +98,7 @@
                                     @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
                                     @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
                                 </div>
-                                <span id='li-@activeField("uid").value.get'> @Messages("BenefitInKind.label." + activeField("uid").value.get )</span>
+                                <span id='li-@activeField("uid").value.get'> @Messages("BenefitInKind.label." + activeField("uid").value.get)</span>
                             </div>
                         </div>
                         }
@@ -112,7 +113,7 @@
             @if(isCurrentYear) {
                 <!-- CY content will go here when enabled-->
                 <ul id="next-steps">
-                    <li>@Html(Messages("whatNext.add.p1", stringBuilderBenefitsAndExpenses(bikForm)))</li>
+                    <li>@Html(Messages("whatNext.add.p1", stringBuilder(bikForm, bikForm("actives").indexes)))</li>
                     @if(singleBik) {
                         <p>@Html(Messages("whatNext.add.p2.singular"))</p>
                         <p>@Html(Messages("whatNext.add.p3.singular", cyminus1, cy))</p>
@@ -124,7 +125,7 @@
                 </ul>
             }else {
                 <ul id="next-steps">
-                    <p>@Html(Messages("whatNext.add.p1", stringBuilderBenefitsAndExpenses(bikForm)))</p>
+                    <p>@Html(Messages("whatNext.add.p1", stringBuilder(bikForm, bikForm("actives").indexes)))</p>
                     @if(singleBik) {
                         <p>@Html(Messages("whatNext.add.p2.singular"))</p>
                         <p>@Html(Messages("whatNext.add.p3.singular", cy, cyplus1)) </p>
