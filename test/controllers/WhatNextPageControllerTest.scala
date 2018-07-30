@@ -70,7 +70,7 @@ class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakeP
 
   lazy val listOfPeopleForm: Form[EiLPersonList] = individualsForm.fill(new EiLPersonList(listOfPeople))
   lazy val registrationList = RegistrationList(None, List(RegistrationItem("30", true, true)))
-  lazy val registrationListMultiple = RegistrationList(None, List(RegistrationItem("30", true, true), RegistrationItem("8", true, true)))
+  lazy val registrationListMultiple = RegistrationList(None, List(RegistrationItem("30", true, true), RegistrationItem("8", true, true), RegistrationItem("39", true, true)))
   lazy val CYCache = List.tabulate(21)(n => new Bik("" + (n + 1), 10))
   def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
 
@@ -250,7 +250,9 @@ class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakeP
         result.header.status must be(OK)
         result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
         result.body.asInstanceOf[Strict].data.utf8String must include("Private medical treatment or insurance")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Assets placed at the employee’s disposal")
         result.body.asInstanceOf[Strict].data.utf8String must include("Services supplied")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Private medical treatment or insurance, Services supplied and Assets placed at the employee’s disposal,")
       }
 
      "(Remove a BIK)- state the status is ok and correct page is displayed" in {
