@@ -478,6 +478,7 @@ whatNext.cy1.add.lede = Dylech drethu’r buddiannau a’r treuliau canlynol drw
 whatNext.cy1.add.lede.singular = Dylech drethu {0} drwy eich cyflogres o 6 Ebrill {1} ymlaen.
 whatNext.cy1.add.table.header = Buddiannau a threuliau cofrestredig
 whatNext.add.part1 = Ysgrifennu at eich cyflogeion ynghylch y [benefits or expenses], y newid yn eu cod treth a beth fydd goblygiadau hyn iddynt.
+whatNext.add.p1 = Ysgrifennwch at eich cyflogeion ynghylch y {0} y newid yn eu cod treth a beth fydd goblygiadau hyn iddynt.
 whatNext.add.p2 = O 6 Ebrill {0} ymlaen, adiwch y swm cyfwerth mewn arian parod, neu swm perthnasol y buddiannau neu’r treuliau at gyflog eich cyflogeion, a’u trethu drwy’ch cyflogres. Mae’n bosibl y bydd yn rhaid i chi ail-lunio’ch meddalwedd gyflogres i wneud hyn.
 whatNext.add.p3 = Ni ddylech anfon <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d.cy">ffurflenni P11D</a> mwyach ar gyfer y cyflogeion sydd â buddiannau a threuliau a delir drwy’ch cyflogres.
 whatNext.add.p4 = Dylech barhau i gyflwyno <a href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db.cy">ffurflen P11D(b)</a> i roi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A.
