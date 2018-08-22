@@ -23,10 +23,10 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
 
-@parentTemplate(pageTitle = Messages("whatNext.exclude.heading"), None,  Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+@parentTemplate(pageTitle = Messages("whatNext.exclude.heading") + " - " + Messages("Service.title"), None,  Some(ac.principal.accounts.epaye.get.empRef.toString)) {
 
     <section id="print-section">
-        <div id="printContainer"/>
+        <div id="printContainer"></div>
     </section>
 
     <section id="what-next-exclusion">

@@ -3,7 +3,7 @@
 #*************************************************************
 
 common.feedback.get.help = Contact us for support using this service
-Service.title = Payrolling benefits and expenses
+Service.title = Payrolling benefits and expenses - GOV.UK
 
 Service.news.banner.message = Any changes you make will affect your employees’ tax codes for the next tax year and may result in them receiving more than one coding notice.
 
@@ -149,7 +149,7 @@ RemoveBenefits.reason.other.required = You need to explain why you’ve selected
 RemoveBenefits.reason.desc = Tell us why
 RemoveBenefits.reason.software = Your software provider doesn’t support payrolling benefits and expenses yet
 RemoveBenefits.reason.guidance = The guidance for this service wasn’t clear
-RemoveBenefits.reason.not-clear = The purpose of the service wasn’ clear
+RemoveBenefits.reason.not-clear = The purpose of the service wasn’t clear
 RemoveBenefits.reason.not-offering = You’re no longer offering this benefit to your employees
 RemoveBenefits.reason.other = Other
 RemoveBenefits.reason.other.label = Explain why
