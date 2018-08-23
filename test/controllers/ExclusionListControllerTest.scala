@@ -424,7 +424,7 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
 
     "When loading the withOrWithoutNinoDecision page with a nino form, an authorised user " must {
       "see the page in order to confirm their decision " in {
-        val title = Messages("ExclusionSearch.title")
+        val title = Messages("ExclusionSearch.form.title")
         val mockExclusionController = new MockExclusionListController
         def csrfToken = "csrfToken" -> Crypto.generateToken
         //UnsignedTokenProvider.generateToken
@@ -443,7 +443,7 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
 
     "When loading the withOrWithoutNinoDecision page with a non-nino form, an authorised user " must {
       "see the page in order to confirm their decision " in {
-        val title = Messages("ExclusionSearch.title")
+        val title = Messages("ExclusionSearch.form.title")
         val mockExclusionController = new MockExclusionListController
         def csrfToken = "csrfToken" -> Crypto.generateToken
         //UnsignedTokenProvider.generateToken
@@ -462,7 +462,7 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
 
     "When loading the searchResults page for an unpopulated NINO search, an authorised user " must {
       "see the NINO specific fields " in {
-        val title = Messages("ExclusionSearch.title")
+        val title = Messages("ExclusionSearch.form.title")
         val mockExclusionController = new MockExclusionListController
         def csrfToken = "csrfToken" -> Crypto.generateToken
           //UnsignedTokenProvider.generateToken
@@ -478,7 +478,7 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
 
     "When loading the searchResults page for an unpopulated non-NINO search, an authorised user " must {
       "see the NON-NINO specific fields " in {
-        val title = Messages("ExclusionSearch.title")
+        val title = Messages("ExclusionSearch.form.title")
         val mockExclusionController = new MockExclusionListController
         def csrfToken = "csrfToken" -> Crypto.generateToken
         //UnsignedTokenProvider.generateToken
@@ -505,7 +505,7 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
         implicit val timeout : Timeout = 5 seconds
         val result = await(mockExclusionController.searchResults("cy","car", ExclusionListController.FORM_TYPE_NINO).apply(formrequest))(timeout)
         result.header.status must be(OK)
-        result.body.asInstanceOf[Strict].data.utf8String must include("Search results")
+        result.body.asInstanceOf[Strict].data.utf8String must include("Search for an employee")
         result.body.asInstanceOf[Strict].data.utf8String must include("Adam")
         result.body.asInstanceOf[Strict].data.utf8String must include("AB111111")
       }
