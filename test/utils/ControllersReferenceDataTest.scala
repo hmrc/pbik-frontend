@@ -68,8 +68,7 @@ class ControllersReferenceDataTest extends PlaySpec with OneAppPerSuite with Fak
       override lazy val maximumExclusions:Int = 300
 
       override lazy val urBannerLink:String = ""
-
-
+    override val serviceSignOut: String = ""
   }
 
   object TestCYEnabledConfig extends AppConfig {
@@ -90,7 +89,7 @@ class ControllersReferenceDataTest extends PlaySpec with OneAppPerSuite with Fak
     override lazy val biksDecommissioned:List[Int] = List.empty[Int]
     override lazy val maximumExclusions:Int = 300
     override lazy val urBannerLink: String = ""
-
+    override val serviceSignOut: String = ""
   }
 
   object TestCYDisabledConfig extends AppConfig{
@@ -111,7 +110,7 @@ class ControllersReferenceDataTest extends PlaySpec with OneAppPerSuite with Fak
     override lazy val biksDecommissioned:List[Int] = List.empty[Int]
     override lazy val maximumExclusions:Int = 300
     override lazy val urBannerLink: String = ""
-
+    override val serviceSignOut: String = ""
   }
 
   object MockCYEnabledControllersReferenceData extends ControllersReferenceData {
