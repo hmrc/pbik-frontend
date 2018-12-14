@@ -21,17 +21,18 @@ import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.auth._
 import play.api.Logger
-import play.api.mvc.{Result,LegacyI18nSupport, _}
-import services.{BikListService}
+import play.api.mvc.{LegacyI18nSupport, Result, _}
+import services.BikListService
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.frontend.controller.{UnauthorisedAction, FrontendController}
+import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 import utils._
+
 import scala.concurrent.Future
-import play.api.Play.configuration
 import play.api.i18n.Lang
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+
 import scala.util.{Success, Try}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -55,7 +56,7 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
 
   def signout: Action[AnyContent] = UnauthorisedAction {
     implicit request =>
-      Redirect(controllers.routes.QuestionnaireController.showQuestionnaire).withNewSession
+      Redirect(PbikAppConfig.serviceSignOut).withNewSession
   }
 
   def setLanguage:Action[AnyContent] = AuthorisedForPbik {
@@ -74,11 +75,6 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
         val staticDataRequest: Future[Result] = Future.successful(Ok(views.html.registration.cautionAddCurrentTaxYear(YEAR_RANGE)))
         responseCheckCYEnabled(staticDataRequest)
   }
-
-//  def setLanguage(body: Request): Action[AnyContent] = AuthorisedFor(getAuthorisedForPolicy, pageVisibility = GGConfidence).async {
-//    implicit ac => implicit request =>
-//     request.add
-//  }
 
   def onPageLoad:Action[AnyContent] = AuthorisedForPbik {
     implicit ac =>
@@ -111,8 +107,8 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
   def isFromYTA(implicit request: Request[_]): Boolean = {
     val refererUrl = Try(request.headers("referer"))
     refererUrl match {
-      case Success(url) if(url.endsWith("/business-account"))=> true
-      case Success(url) if(url.endsWith("/account"))=> true
+      case Success(url) if url.endsWith("/business-account") => true
+      case Success(url) if url.endsWith("/account") => true
       case _ => false
     }
   }

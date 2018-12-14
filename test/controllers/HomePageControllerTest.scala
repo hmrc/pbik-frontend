@@ -104,7 +104,7 @@ class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKA
     when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
   }
 
-  "When checking if from YTA referer ends /account " in {
+  "When checking if from YTA referer ends /account" in {
     val homePageController = HomePageController
     implicit val request = FakeRequest().withHeaders(
       "referer" -> "/account"
@@ -113,7 +113,7 @@ class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKA
     result must be(true)
   }
 
-  "When checking if from YTA referer ends /business-account " in {
+  "When checking if from YTA referer ends /business-account" in {
     val homePageController = HomePageController
     implicit val request = FakeRequest().withHeaders(
       "referer" -> "/business-account"
@@ -122,7 +122,7 @@ class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKA
     result must be(true)
   }
 
-  "When checking if from YTA referer ends /someother " in {
+  "When checking if from YTA referer ends /someother" in {
     val homePageController = HomePageController
     implicit val request = FakeRequest().withHeaders(
       "referer" -> "/someother"
@@ -131,7 +131,7 @@ class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKA
     result must be(false)
   }
 
-  "When instantiating the HomePageController " in {
+  "When instantiating the HomePageController" in {
     val homePageController = HomePageController
     assert(homePageController.pbikAppConfig != null)
     assert(homePageController.tierConnector != null)
@@ -148,6 +148,15 @@ class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKA
         SessionKeys.userId -> userId)
       val result = homePageController.onPageLoad.apply(request)
       status(result) must be(UNAUTHORIZED) //401
+    }
+
+    "logout and redirect to feed back page" in {
+      val homePageController = new MockHomePageController
+      val result = homePageController.signout.apply(FakeRequest())
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result).get  must include("/feedback/PBIK")
+
     }
   }
 
@@ -295,7 +304,7 @@ class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKA
 
 */
   "HomePageController" should {
-      "display the navigation page " in {
+      "display the navigation page" in {
         val homePageController = new MockHomePageController
         def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
         implicit val request = FakeRequest().withSession(

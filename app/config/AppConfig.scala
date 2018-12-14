@@ -36,6 +36,8 @@ trait AppConfig {
   val biksNotSupportedCY: List[Int]
   val biksDecommissioned: List[Int]
   val urBannerLink: String
+  val serviceSignOut : String
+
 }
 
 object PbikAppConfig extends AppConfig with ServicesConfig {
@@ -63,5 +65,6 @@ object PbikAppConfig extends AppConfig with ServicesConfig {
 
   lazy val urBannerToggle:Boolean = loadConfig("urBanner.toggle").toBoolean
   override lazy val urBannerLink: String = loadConfig("urBanner.link")
+  override lazy val serviceSignOut: String = loadConfig("service-signout.url")
 
 }

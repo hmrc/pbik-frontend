@@ -45,10 +45,3 @@ POST        /:year/:iabdType/exclude-selected          controllers.ExclusionList
 POST        /:year/:iabdType/exclude-employee-remove                         controllers.ExclusionListController.remove(year:String, iabdType:String)
 POST        /:iabdType/remove-commit                  controllers.ExclusionListController.removeExclusionsCommit(iabdType:String)
 
-# Exit Questionnaire
-GET         /signed-out                             controllers.QuestionnaireController.showQuestionnaire
-POST        /signed-out                             controllers.QuestionnaireController.submitQuestionnaire
-
-GET         /feedbackThankYou                       controllers.QuestionnaireController.feedbackThankYou
-
-GET         /setLanguageQuestionnaire               controllers.QuestionnaireController.setLanguage
