@@ -38,7 +38,7 @@ object FrontendBuild extends Build with MicroService {
 private object AppDependencies {
   import play.core.PlayVersion
 
-  private val frontendBootstrapVersion = "8.24.0"
+  private val frontendBootstrapVersion = "12.1.0"
   private val playPartials = "6.1.0"
   private val urlBuilderVersion = "2.1.0"
   private val scalaTestVersion = "2.2.6"
@@ -48,12 +48,14 @@ private object AppDependencies {
   private val pegDownVersion = "1.6.0"
   private val jSoupVersion = "1.9.2"
   private val scalatestPlusPlayVersion = "1.5.1"
+  private val taxYearVersion = "0.4.0"
 
   val compile = Seq(
 
     "uk.gov.hmrc" %% "frontend-bootstrap" % frontendBootstrapVersion,
     "uk.gov.hmrc" %% "play-partials" % playPartials,
-    "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion
+    "uk.gov.hmrc" %% "url-builder" % urlBuilderVersion,
+    "uk.gov.hmrc" %% "tax-year" % taxYearVersion
   )
 
   trait TestDependencies {

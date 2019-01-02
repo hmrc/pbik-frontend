@@ -16,12 +16,13 @@
 
 package utils
 
+import config.RunModeConfig
 import uk.gov.hmrc.play.config.ServicesConfig
 import utils.Exceptions.InvalidBikTypeURIException
 import play.api.Logger
 
 object URIInformation extends URIInformation
-trait URIInformation extends ServicesConfig with URIValues with FormMappings{
+trait URIInformation extends ServicesConfig with URIValues with FormMappings with RunModeConfig{
   val baseUrl: String = baseUrl("pbik") + "/epaye"
 
   val urlMappedIABDValues = List(

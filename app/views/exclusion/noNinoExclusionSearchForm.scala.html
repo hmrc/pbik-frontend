@@ -123,7 +123,7 @@
                 @localhelpers.dateFieldsNumberInputs(searchForm, "dob","dob-day", "dob-month", "dob-year", new Html(Messages("Service.field.dob")), '_hintText->Messages("Service.field.dobhint"), '_groupClass -> "form-group")
 
                 <div class="form-group inline" id="gender">
-                    @helpers.inputRadioGroup(searchForm("gender"), Seq(("female", Messages("Service.field.gender.female")), ("male",Messages("Service.field.gender.male"))), '_labelClass -> "block-label", '_legend -> Messages("Service.field.gender"), '_legendClass -> "form-label fieldset-legend-error")
+                    @helpers.input_radio_group(searchForm("gender"), Seq(("female", Messages("Service.field.gender.female")), ("male",Messages("Service.field.gender.male"))), '_labelClass -> "block-label", '_legend -> Messages("Service.field.gender"), '_legendClass -> "form-label fieldset-legend-error")
                 </div>
             </fieldset>
         </div>

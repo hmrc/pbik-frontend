@@ -16,11 +16,12 @@
 
 package controllers
 
+import config.RunModeConfig
 import play.api.Play
 import play.api.Play.current
 import uk.gov.hmrc.play.config.RunMode
 
-object ExternalUrls extends RunMode {
+object ExternalUrls extends RunMode with RunModeConfig {
 
   val loginCallback   = Play.configuration.getString("microservice.auth.login-callback.url").getOrElse(routes.HomePageController.onPageLoad().url)
   val companyAuthHost = Play.configuration.getString("microservice.auth.company-auth.host").getOrElse("")

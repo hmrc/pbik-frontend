@@ -22,7 +22,7 @@ import java.util.{Calendar, Date}
 import models.TaxYearRange
 import org.joda.time.{LocalDate, DateTime}
 import play.api.{Play, Logger}
-import uk.gov.hmrc.time.TaxYearResolver
+import uk.gov.hmrc.time.TaxYear
 import play.api.Play.current
 
 object TaxDateUtils extends PayrollBikDefaults {
@@ -45,11 +45,11 @@ object TaxDateUtils extends PayrollBikDefaults {
   def getTaxYearRange(year:Int = getCurrentTaxYear(getDefaultDate)):TaxYearRange = generateTaxYearRange(year)
 
   def getCurrentTaxYear(dateToCheck:LocalDate = getDefaultDate):Int = {
-      TaxYearResolver.taxYearFor(dateToCheck)
+      TaxYear.taxYearFor(dateToCheck).currentYear
   }
 
   def isCurrentTaxYear(yearToCheck:Int = getDefaultYear, dateToCheck:LocalDate = getDefaultDate):Boolean = {
-    yearToCheck == TaxYearResolver.taxYearFor(dateToCheck)
+    yearToCheck == TaxYear.taxYearFor(dateToCheck).currentYear
   }
 
   def isServiceLaunched(year:Int = getCurrentTaxYear()):Boolean = {

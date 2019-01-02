@@ -15,6 +15,12 @@
  */
 
 package connectors
+
+
+import akka.actor.ActorSystem
+import com.typesafe.config.Config
+import config.RunModeConfig
+import play.api.Play
 import uk.gov.hmrc.play.audit.http.HttpAuditing
 import uk.gov.hmrc.play.config._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -25,13 +31,15 @@ import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.frontend.config.LoadAuditingConfig
 import uk.gov.hmrc.http._
 
-object FrontendAuditConnector extends AuditConnector with AppName with RunMode {
+object FrontendAuditConnector extends AuditConnector with AppName with RunMode with RunModeConfig {
   override lazy val auditingConfig = LoadAuditingConfig("auditing")
 }
 
-object WSHttp extends HttpGet with WSGet with HttpPut with WSPut with WSPost with HttpPost with WSDelete with HttpDelete with WSPatch with HttpPatch with AppName with RunMode with HttpAuditing {
+object WSHttp extends HttpGet with WSGet with HttpPut with WSPut with WSPost with HttpPost with WSDelete with HttpDelete with WSPatch with HttpPatch with AppName with RunMode with HttpAuditing with RunModeConfig {
   override val hooks = Seq(AuditingHook)
   override val auditConnector = FrontendAuditConnector
+  override val configuration: Option[Config] = Some(appNameConfiguration.underlying)
+  override val actorSystem: ActorSystem = Play.current.actorSystem
 }
 
 
@@ -51,11 +59,11 @@ object PBIKHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsCon
 trait SessionCookieCryptoFilterWrapper {
 
   def encryptCookieString(cookie: String) : String = {
-    SessionCookieCryptoFilter.encrypt(cookie)
+    config.ApplicationGlobal.sessionCookieCryptoFilter.encrypt(cookie)
   }
 }
 
-object FrontendAuthConnector extends AuthConnector with ServicesConfig {
+object FrontendAuthConnector extends AuthConnector with ServicesConfig with RunModeConfig {
   val serviceUrl = baseUrl("auth")
   lazy val http = WSHttp
 }

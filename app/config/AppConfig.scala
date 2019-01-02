@@ -40,7 +40,7 @@ trait AppConfig {
 
 }
 
-object PbikAppConfig extends AppConfig with ServicesConfig {
+object PbikAppConfig extends AppConfig with ServicesConfig with RunModeConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing key: $key"))
 

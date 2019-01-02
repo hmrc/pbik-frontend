@@ -35,6 +35,13 @@ import play.api.{Application, Configuration}
 import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import uk.gov.hmrc.play.frontend.filters.MicroserviceFilterSupport
+import play.api.Mode.Mode
+
+trait RunModeConfig {
+  def appNameConfiguration: Configuration = Play.current.configuration
+  def runModeConfiguration: Configuration = Play.current.configuration
+  def mode: Mode = Play.current.mode
+}
 
 object ApplicationGlobal extends FrontendGlobal {
 
@@ -44,7 +51,7 @@ object ApplicationGlobal extends FrontendGlobal {
 
 abstract class FrontendGlobal
   extends DefaultFrontendGlobal
-  with RunMode {
+  with RunMode with RunModeConfig {
 
   override val auditConnector = FrontendAuditConnector
   override val loggingFilter: FrontendLoggingFilter = LoggingFilter
@@ -52,7 +59,7 @@ abstract class FrontendGlobal
 
   override def onStart(app: Application) {
     super.onStart(app)
-    ApplicationCrypto.verifyConfiguration()
+    applicationCrypto.verifyConfiguration()
   }
   // TODO: Check this and update the doFilter
   /*
@@ -81,7 +88,7 @@ object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSuppor
   override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging
 }
 
-object PbikAuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport {
+object PbikAuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport with RunModeConfig {
 
   import play.api.Play.current
 
@@ -93,3 +100,5 @@ object PbikAuditFilter extends FrontendAuditFilter with RunMode with AppName wit
 
   override def controllerNeedsAuditing(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsAuditing
 }
+
+
