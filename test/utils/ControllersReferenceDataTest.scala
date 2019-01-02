@@ -18,7 +18,7 @@ package utils
 
 import java.util.Collections
 
-import config.{AppConfig, PbikAppConfig}
+import config.{AppConfig, PbikAppConfig, RunModeConfig}
 import controllers.FakePBIKApplication
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Play
@@ -30,6 +30,7 @@ import uk.gov.hmrc.play.config.ServicesConfig
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages.Implicits._
+
 import scala.concurrent.{Future, Promise}
 import scala.util.Try
 import uk.gov.hmrc.http.Upstream5xxResponse
@@ -38,7 +39,7 @@ class ControllersReferenceDataTest extends PlaySpec with OneAppPerSuite with Fak
                                                     with TestAuthUser with Results {
 
 
-  object StubPbikConfig extends AppConfig with ServicesConfig {
+  object StubPbikConfig extends AppConfig with ServicesConfig with RunModeConfig {
 
       private def loadConfig(key: String) = Play.current.configuration.getString(key).
                                                             getOrElse(throw new Exception(s"Missing key: $key"))

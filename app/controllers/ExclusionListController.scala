@@ -37,7 +37,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import uk.gov.hmrc.http.{ HeaderCarrier, SessionKeys }
 
-trait ExclusionListConfiguration extends RunMode {
+trait ExclusionListConfiguration extends RunMode with RunModeConfig  {
 
   lazy val exclusionsAllowed = Play.configuration.getBoolean("pbik.enabled.eil").getOrElse(false)
 
