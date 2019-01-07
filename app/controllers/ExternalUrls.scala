@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 package controllers
 
+import config.RunModeConfig
 import play.api.Play
 import play.api.Play.current
 import uk.gov.hmrc.play.config.RunMode
 
-object ExternalUrls extends RunMode {
+object ExternalUrls extends RunMode with RunModeConfig {
 
   val loginCallback   = Play.configuration.getString("microservice.auth.login-callback.url").getOrElse(routes.HomePageController.onPageLoad().url)
   val companyAuthHost = Play.configuration.getString("microservice.auth.company-auth.host").getOrElse("")

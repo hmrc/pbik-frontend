@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,18 +17,19 @@
 package config
 
 import connectors.WSHttp
+import play.api.Play
+import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.frontend.config.LoadAuditingConfig
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.partials.FormPartialRetriever
 
-
-object PbikFrontendAuditConnector extends Auditing with AppName with RunMode {
+object PbikFrontendAuditConnector extends Auditing with AppName with RunMode with RunModeConfig {
   override lazy val auditingConfig = LoadAuditingConfig(s"auditing")
 }
 
 object LocalFormPartialRetriever extends FormPartialRetriever {
   override val httpGet = WSHttp
-  override def crypto: (String) => String = SessionCookieCryptoFilter.encrypt
+  override def crypto: (String) => String = ApplicationGlobal.sessionCookieCryptoFilter.encrypt
 }

@@ -7,10 +7,16 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import play.routes.compiler.StaticRoutesGenerator
 import play.sbt.routes.RoutesKeys.routesGenerator
 
+import uk.gov.hmrc.SbtAutoBuildPlugin
+import uk.gov.hmrc.versioning.SbtGitVersioning
+import uk.gov.hmrc.SbtArtifactory
+
+import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+
 trait MicroService {
 
+  import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings, targetJvm}
   import uk.gov.hmrc._
-  import DefaultBuildSettings._
   import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt}
   import TestPhases._
 
@@ -40,6 +46,7 @@ trait MicroService {
 
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(plugins : _*)
+    .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
     .settings(playSettings ++ scoverageSettings : _*)
     .settings(wartremoverSettings : _*)
     .settings(scalaSettings: _*)
@@ -75,6 +82,7 @@ trait MicroService {
         Resolver.jcenterRepo
       )
     )
+    .settings(majorVersion := 7)
 
 }
 

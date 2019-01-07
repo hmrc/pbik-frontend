@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,14 @@
 
 package connectors
 
+import akka.actor.ActorSystem
+import com.typesafe.config.Config
+import config.RunModeConfig
+import connectors.WSHttp.appNameConfiguration
 import controllers.FakePBIKApplication
 import models.PbikError
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.Play
 import play.api.libs.json.Json
 import play.api.mvc.Results
 import play.api.test.Helpers._
@@ -78,9 +83,11 @@ class TierConnectorTest extends PlaySpec with OneAppPerSuite with FakePBIKApplic
 
 
   class MockHmrcTierConnector extends HmrcTierConnector {
-    object WSHttp extends WSGet with HttpGet with WSPut with HttpPut with WSPost with HttpPost with WSDelete with HttpDelete with WSPatch with HttpPatch with AppName with RunMode with HttpAuditing {
+    object WSHttp extends WSGet with HttpGet with WSPut with HttpPut with WSPost with HttpPost with WSDelete with HttpDelete with WSPatch with HttpPatch with AppName with RunMode with HttpAuditing with RunModeConfig {
       override val hooks = Seq(AuditingHook)
       override val auditConnector = FrontendAuditConnector
+      override val configuration: Option[Config] = Some(appNameConfiguration.underlying)
+      override val actorSystem: ActorSystem = Play.current.actorSystem
       override def doGet(url : scala.Predef.String)(implicit hc : _root_.uk.gov.hmrc.http.HeaderCarrier) :
                 scala.concurrent.Future[_root_.uk.gov.hmrc.http.HttpResponse] = Future.successful(new FakeResponse)
     }

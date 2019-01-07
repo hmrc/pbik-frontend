@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package connectors
 
+import config.RunModeConfig
 import org.apache.http.client.methods.HttpGet
 import play.api.Logger
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -23,7 +24,7 @@ import uk.gov.hmrc.play.config.ServicesConfig
 import scala.concurrent.Future
 import uk.gov.hmrc.http.{BadGatewayException, CoreGet, HeaderCarrier, HttpGet}
 
-trait ContactFrontendConnector extends ServicesConfig {
+trait ContactFrontendConnector extends ServicesConfig with RunModeConfig {
 
   import scala.concurrent.ExecutionContext.Implicits.global
 

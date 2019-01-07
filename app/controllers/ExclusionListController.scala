@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 import uk.gov.hmrc.http.{ HeaderCarrier, SessionKeys }
 
-trait ExclusionListConfiguration extends RunMode {
+trait ExclusionListConfiguration extends RunMode with RunModeConfig  {
 
   lazy val exclusionsAllowed = Play.configuration.getBoolean("pbik.enabled.eil").getOrElse(false)
 

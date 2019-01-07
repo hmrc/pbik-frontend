@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 import utils.{ControllersReferenceData, FormMappings, TaxDateUtils}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.logging.SessionId
-import uk.gov.hmrc.time.TaxYearResolver
+import uk.gov.hmrc.time.TaxYear
 
 
 class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
@@ -214,7 +214,7 @@ class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakeP
          implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
          val formRegistrationList: Form[RegistrationList] = objSelectedForm
          val formFilled = formRegistrationList.fill(registrationList)
-         val year = TaxYearResolver.taxYearFor(LocalDate.now)
+         val year = TaxYear.taxYearFor(LocalDate.now).currentYear
          val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, year)})
          result.header.status must be(OK)
          result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
