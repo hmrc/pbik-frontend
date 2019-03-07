@@ -36,7 +36,7 @@ import utils.Exceptions.GenericServerErrorException
 import scala.concurrent.Future
 import uk.gov.hmrc.http._
 
-class TierConnectorTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
+class TierConnectorTest extends PlaySpec  with FakePBIKApplication
                                           with TestAuthUser with Results {
 
   "When instantiating the TierConnector it " should {

@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 
 class TestEPayeUser extends EpayeUser
 
-class EpayeUserSpec extends PlaySpec with OneAppPerSuite with FakePBIKApplication with TestAuthUser {
+class EpayeUserSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
 
   def v() = {
     val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "123", taxOfficeReference ="45678" ), link =""))

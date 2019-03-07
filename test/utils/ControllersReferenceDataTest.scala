@@ -35,7 +35,7 @@ import scala.concurrent.{Future, Promise}
 import scala.util.Try
 import uk.gov.hmrc.http.Upstream5xxResponse
 
-class ControllersReferenceDataTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
+class ControllersReferenceDataTest extends PlaySpec with FakePBIKApplication
                                                     with TestAuthUser with Results {
 
 

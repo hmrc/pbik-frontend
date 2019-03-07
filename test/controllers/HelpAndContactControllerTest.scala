@@ -22,6 +22,7 @@ import models.TaxYearRange
 import org.mockito.Mockito._
 import org.scalatest.Matchers
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.http.HttpEntity.Strict
@@ -37,6 +38,7 @@ import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{FormMappings, TaxDateUtils}
 import play.api.i18n.Messages.Implicits._
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.Crypto
 import play.mvc.Http
 
@@ -45,8 +47,12 @@ import scala.concurrent.duration._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.logging.SessionId
 
-class HelpAndContactControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
+class HelpAndContactControllerTest extends PlaySpec with FakePBIKApplication
                                               with TestAuthUser with FormMappings{
+
+  override val fakeApplication: Application = GuiceApplicationBuilder()
+    .configure(config)
+    .build()
 
   implicit val ac = createDummyUser("testid")
   val timeoutValue = 10 seconds
@@ -98,9 +104,7 @@ class HelpAndContactControllerTest extends PlaySpec with OneAppPerSuite with Fak
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include("")
     }
-  }
 
-  "When using help/ contact hmrc, the HelpAndContactController " should {
     "be able to submit the contact form successfully " in {
       val mockHelpController = new MockHelpAndContactController
       def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
@@ -120,5 +124,4 @@ class HelpAndContactControllerTest extends PlaySpec with OneAppPerSuite with Fak
       contentAsString(newResult) must include("")
     }
   }
-
 }

@@ -23,32 +23,29 @@ import models._
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures._
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.PlaySpec
 import play.api.data.Form
-import play.api.i18n.{Lang, Messages}
+import play.api.http.HttpEntity.Strict
+import play.api.i18n.Lang
+import play.api.i18n.Messages.Implicits._
 import play.api.libs.{Crypto, json}
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.filters.csrf.CSRF
-import play.filters.csrf.CSRF.UnsignedTokenProvider
 import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
 import support.TestAuthUser
+import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils._
-import play.api.i18n.Messages.Implicits._
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
-import akka.util.Timeout
-import play.api.http.HttpEntity.Strict
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse, SessionKeys }
-import uk.gov.hmrc.http.logging.SessionId
 
-class LanguageSupportTest extends PlaySpec with OneAppPerSuite with FormMappings with TestAuthUser
+class LanguageSupportTest extends PlaySpec with FormMappings with TestAuthUser
    with FakePBIKApplication {
 
   implicit val ac = createDummyUser("testid")

@@ -52,7 +52,7 @@ import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.time.TaxYear
 
 
-class WhatNextPageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
+class WhatNextPageControllerTest extends PlaySpec with FakePBIKApplication
                                               with FormMappings with TestAuthUser{
 
   // TODO The following needs refactoring as it similar to registrationcontrollertest, consider moving to utils

@@ -53,7 +53,7 @@ object UserBuilder {
 
 }
 
-class AuthControllerSpec extends PlaySpec with OneAppPerSuite with Mockito with FakePBIKApplication {
+class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication {
 
   class SetUp {
     implicit val hc = HeaderCarrier()
