@@ -56,6 +56,7 @@ trait MicroService {
     .settings(
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
+        "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",
         Resolver.typesafeRepo("releases"),
         Resolver.jcenterRepo
       )
