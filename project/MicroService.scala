@@ -1,30 +1,25 @@
+import com.typesafe.sbt.web.SbtWeb
 import sbt.Keys._
-import sbt.Tests.{SubProcess, Group}
 import sbt._
 import scoverage.ScoverageSbtPlugin
-import wartremover._
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin._
 import play.routes.compiler.StaticRoutesGenerator
 import play.sbt.routes.RoutesKeys.routesGenerator
-
-import uk.gov.hmrc.SbtAutoBuildPlugin
+import com.typesafe.sbt.web.SbtWeb.autoImport._
+import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
-import uk.gov.hmrc.SbtArtifactory
-
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 trait MicroService {
 
-  import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings, scalaSettings, targetJvm}
+  import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings, targetJvm}
   import uk.gov.hmrc._
-  import uk.gov.hmrc.{SbtBuildInfo, ShellPrompt}
-  import TestPhases._
+
 
   val appName: String
 
-  lazy val appDependencies : Seq[ModuleID] = Seq.empty
-  lazy val plugins : Seq[Plugins] = Seq(play.sbt.PlayScala)
-  lazy val playSettings : Seq[Setting[_]] = Seq.empty
+  val appDependencies : Seq[ModuleID]
+  lazy val plugins : Seq[Plugins] = Seq(SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb, SbtArtifactory)
 
   lazy val scoverageSettings = {
     import ScoverageSbtPlugin._
@@ -46,56 +41,26 @@ trait MicroService {
 
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(plugins : _*)
-    .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
-    .settings(playSettings ++ scoverageSettings : _*)
-    .settings(wartremoverSettings : _*)
+    .settings(scoverageSettings : _*)
     .settings(scalaSettings: _*)
     .settings(publishingSettings: _*)
     .settings(defaultSettings(): _*)
-    .settings(scalaVersion := "2.11.11")
     .settings(
-      targetJvm := "jvm-1.8",
       libraryDependencies ++= appDependencies,
-      parallelExecution in Test := false,
-      fork in Test := false,
       retrieveManaged := true,
-      wartremoverWarnings in (Compile, compile) ++= Warts.allBut(Wart.OptionPartial,
-        Wart.DefaultArguments,
-        Wart.NoNeedForMonad),
-      wartremoverErrors in (Compile, compile) ++= Seq.empty,
-      wartremoverExcluded ++= wartRemovedExcludedClasses,
-      routesGenerator := StaticRoutesGenerator
+      routesGenerator := StaticRoutesGenerator,
+      unmanagedResourceDirectories in Assets += baseDirectory.value / "app" / "assets",
+      excludeFilter in Assets := "js*" || "sass*",
+      JavaScriptBuild.javaScriptUiSettings
     )
-    .settings(inConfig(TemplateTest)(Defaults.testSettings): _*)
-    .configs(IntegrationTest)
-    .settings(inConfig(TemplateItTest)(Defaults.itSettings): _*)
-    .settings(
-      Keys.fork in IntegrationTest := false,
-      unmanagedSourceDirectories in IntegrationTest <<= (baseDirectory in IntegrationTest)(base => Seq(base / "it")),
-      addTestReportOption(IntegrationTest, "int-test-reports"),
-      testGrouping in IntegrationTest := oneForkedJvmPerTest((definedTests in IntegrationTest).value),
-      parallelExecution in IntegrationTest := false)
     .settings(
       resolvers := Seq(
         Resolver.bintrayRepo("hmrc", "releases"),
+        "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",
         Resolver.typesafeRepo("releases"),
         Resolver.jcenterRepo
       )
     )
     .settings(majorVersion := 7)
 
-}
-
-private object TestPhases {
-
-  val allPhases = "tt->test;test->test;test->compile;compile->compile"
-  val allItPhases = "tit->it;it->it;it->compile;compile->compile"
-
-  lazy val TemplateTest = config("tt") extend Test
-  lazy val TemplateItTest = config("tit") extend IntegrationTest
-
-  def oneForkedJvmPerTest(tests: Seq[TestDefinition]) =
-    tests map {
-      test => new Group(test.name, Seq(test), SubProcess(ForkOptions(runJVMOptions = Seq("-Dtest.name=" + test.name))))
-    }
 }

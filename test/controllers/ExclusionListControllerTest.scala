@@ -25,6 +25,7 @@ import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.Futures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.Application
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
@@ -43,7 +44,7 @@ import utils.{TaxDateUtils, _}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.logging.SessionId
 
 class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
@@ -197,7 +198,7 @@ class ExclusionListControllerTest extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  override lazy val fakeApplication = GuiceApplicationBuilder(
+  override val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
     .build()

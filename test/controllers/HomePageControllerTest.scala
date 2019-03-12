@@ -44,7 +44,7 @@ import scala.concurrent.Future
 import uk.gov.hmrc.http.{ HeaderCarrier, SessionKeys }
 import uk.gov.hmrc.http.logging.SessionId
 
-class HomePageControllerTest extends PlaySpec with OneAppPerSuite with FakePBIKApplication
+class HomePageControllerTest extends PlaySpec with FakePBIKApplication
                                               with TestAuthUser with FormMappings{
 
   implicit val user = createDummyUser("testid")

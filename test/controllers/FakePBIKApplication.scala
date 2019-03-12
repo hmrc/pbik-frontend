@@ -17,16 +17,19 @@
 package controllers
 
 import java.util.UUID
+
 import models.HeaderTags
 import org.specs2.mock.Mockito
-import org.scalatest.Suite
+import org.scalatest.TestSuite
+import org.scalatestplus.play.OneAppPerSuite
+import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.SessionKeys
 
-trait FakePBIKApplication extends Mockito {
+trait FakePBIKApplication extends Mockito with OneAppPerSuite {
 
-  this: Suite =>
+  this: TestSuite =>
 
   val config = Map("application.secret" -> "Its secret",
                     "csrf.sign.tokens" -> false,
@@ -54,7 +57,7 @@ trait FakePBIKApplication extends Mockito {
 
   def noSessionIdRequest = FakeRequest().withSession(SessionKeys.userId -> userId)
 
-  lazy val fakeApplication = GuiceApplicationBuilder(
+  override val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
     .build()

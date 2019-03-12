@@ -55,7 +55,7 @@ import play.api.i18n.Messages.Implicits._
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 import uk.gov.hmrc.http.logging.SessionId
 
-class ManageRegistrationControllerTest extends PlaySpec with OneAppPerSuite with FormMappings
+class ManageRegistrationControllerTest extends PlaySpec with FormMappings
   with TestAuthUser with FakePBIKApplication {
 
   implicit val ac = createDummyUser("testid")
