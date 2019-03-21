@@ -51,12 +51,10 @@ trait FormMappings extends PayrollBikDefaults {
   import FormMappingsConstants._
   import ControllersReferenceData._
 
-  private val nameValidationRegex = "([a-zA-Z-'\\s])*"
+  private val nameValidationRegex = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
   private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
-  //private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])(\\s|)[0-9][0-9](\\s|)[0-9][0-9](\\s|)[0-9][0-9](\\s|)([a-zA-Z]?)"
   private val ninoTrimmedRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
   private val yearRegEx = generateYearString(YEAR_LENGTH_VALUE)
-  //  private val dateRegex: String = "([0-9])|([0-9][0-9])"
 
   def generateYearString(length: Int): String = {
     if (length > 0) {
