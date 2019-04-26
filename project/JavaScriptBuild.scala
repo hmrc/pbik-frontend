@@ -1,6 +1,7 @@
 import sbt._
 import sbt.Keys._
 import com.typesafe.sbt.packager.Keys._
+
 /**
  * Build of UI in JavaScript
  */
