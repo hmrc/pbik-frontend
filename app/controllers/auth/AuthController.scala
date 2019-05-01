@@ -17,28 +17,35 @@
 package controllers.auth
 
 import config.PbikAppConfig
-import play.api.mvc.{Action, AnyContent, Request}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import scala.concurrent.Future
-import utils.{ControllersReferenceData, TaxDateUtils}
-import play.i18n.Messages
-import play.api.i18n.Messages.Implicits._
+import controllers.actions.{AuthAction, NoSessionCheckAction}
+import models.AuthenticatedRequest
+import play.api.Play
 import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.play.frontend.auth.{Actions, AuthContext}
+import uk.gov.hmrc.play.frontend.controller.FrontendController
+import utils.ControllersReferenceData
+
+import scala.concurrent.Future
 
 object AuthController extends AuthController with AuthenticationConnector {
-  def pbikAppConfig = PbikAppConfig
+  def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
+  val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
+  val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
 }
 
 trait AuthController extends FrontendController with Actions with ControllersReferenceData {
 
-  def notAuthorised:Action[AnyContent] = AuthenticatedBy(PBIKGovernmentGateway, pageVisibility = GGConfidence).async {
-    implicit ac => implicit request =>
+  val authenticate: AuthAction
+  val noSessionCheck: NoSessionCheckAction
+
+  def notAuthorised:Action[AnyContent] = authenticate.async {
+    implicit request =>
       notAuthorisedResult
   }
 
-  private[auth] def notAuthorisedResult(implicit request: Request[AnyContent], ac: AuthContext) = {
-    Future.successful(Ok(views.html.enrol()))
+  private[auth] def notAuthorisedResult(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+    Future.successful(Ok(views.html.enrol(Some(request.empRef))))
   }
-
 }

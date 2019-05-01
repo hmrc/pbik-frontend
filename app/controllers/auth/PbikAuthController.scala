@@ -33,29 +33,30 @@ object PBIKGovernmentGateway extends GovernmentGateway {
 
 object PBIKEpayeRegime extends TaxRegime {
 
-  override def isAuthorised(accounts: Accounts):Boolean = accounts.epaye.isDefined
+  override def isAuthorised(accounts: Accounts): Boolean = accounts.epaye.isDefined
 
   override val unauthorisedLandingPage = Some(routes.AuthController.notAuthorised().url)
 
-  override val authenticationType = PBIKGovernmentGateway
+  override val authenticationType: PBIKGovernmentGateway.type = PBIKGovernmentGateway
 }
 
 trait PbikActions extends Actions {
 
   self: EpayeUser =>
 
-  def getAuthorisedForPolicy:TaxRegime = PBIKEpayeRegime
+  def getAuthorisedForPolicy: TaxRegime = PBIKEpayeRegime
 
-  private type AsyncPlayUserRequest = AuthContext => (Request[AnyContent] => Future[Result])
+  private type AsyncPlayUserRequest = AuthContext => Request[AnyContent] => Future[Result]
 
   def AuthorisedForPbik(body: AsyncPlayUserRequest): Action[AnyContent] = AuthorisedFor(getAuthorisedForPolicy, pageVisibility = GGConfidence).async {
-    implicit ac => implicit request =>
+    implicit ac =>
+      implicit request =>
         noSessionCheck(body)
   }
 
-  def noSessionCheck(body: AsyncPlayUserRequest)(implicit ac: AuthContext, request: Request[AnyContent]):Future[Result]  = {
+  def noSessionCheck(body: AsyncPlayUserRequest)(implicit ac: AuthContext, request: Request[AnyContent]): Future[Result] = {
 
-    val sessionId = request.session.get(SessionKeys.sessionId )
+    val sessionId = request.session.get(SessionKeys.sessionId)
     sessionId match {
       case None => Future.successful(Redirect(controllers.routes.HomePageController.onPageLoad()).withSession(
         request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}")))

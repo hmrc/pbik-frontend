@@ -28,7 +28,7 @@ class TestEPayeUser extends EpayeUser
 
 class EpayeUserSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
 
-  def v() = {
+  def v(): AuthContext = {
     val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "123", taxOfficeReference ="45678" ), link =""))
     val accounts = Accounts(epaye = epayeAccount)
     val authority = epayeAuthority("testUserId", "123/45678")
@@ -37,7 +37,7 @@ class EpayeUserSpec extends PlaySpec with FakePBIKApplication with TestAuthUser 
     new AuthContext(user, principal, None, None, None, None)
   }
 
-  def i() = {
+  def i(): AuthContext = {
     val epayeAccount = None
     val accounts = Accounts(epaye = epayeAccount)
     val authority = ctAuthority("testUserId", "UTREF")
@@ -49,7 +49,7 @@ class EpayeUserSpec extends PlaySpec with FakePBIKApplication with TestAuthUser 
   "When accessing the PBIKEpayeRegime the unauthorisedLandingPage " should {
     "  be set correctly " in {
       val ob = PBIKEpayeRegime
-      assert(ob.unauthorisedLandingPage == Some("/payrollbik/not-authorised"))
+      assert(ob.unauthorisedLandingPage.contains("/payrollbik/not-authorised"))
     }
   }
 

@@ -18,8 +18,8 @@
   isCurrentTaxYear:String,
   iabdType:String,
   searchForm: Form[EiLPerson],
-  alreadyExists: Boolean = false)(implicit request:Request[_],
-                                  ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+  alreadyExists: Boolean = false,
+    empRef: EmpRef)(implicit request:Request[_],
                                   context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
@@ -27,7 +27,7 @@
 
 @excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">}
 
-@parentTemplate(pageTitle = Messages("ExclusionSearch.form.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString) ) {
+@parentTemplate(pageTitle = Messages("ExclusionSearch.form.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString) ) {
     @includes.back_link(Some(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))), Messages("ExclusionSearch.form.title"))
 
     <header class="page-header">

@@ -17,16 +17,15 @@
 package controllers.auth
 
 import controllers.FakePBIKApplication
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
-import play.api.mvc.{Action, AnyContent, Results}
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import org.scalatestplus.play.PlaySpec
 import org.specs2.mock.Mockito
 import play.api.http.HttpEntity.Strict
+import play.api.mvc.Results
 import play.api.test.Helpers._
 import support.TestAuthUser
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, TaxRegime}
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
-import uk.gov.hmrc.play.frontend.auth.TaxRegime
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -55,11 +54,11 @@ class AuthControllerTest extends PlaySpec with FakePBIKApplication
 
     override def isAuthorised(accounts: Accounts):Boolean = true
     override val unauthorisedLandingPage = Some(routes.AuthController.notAuthorised().url)
-    override val authenticationType = PBIKGovernmentGateway
+    override val authenticationType: PBIKGovernmentGateway.type = PBIKGovernmentGateway
   }
 
   class PbikActionTestController extends PbikActions with EpayeUser with Mockito {
-    override lazy val authConnector = mock[AuthConnector]
+    override lazy val authConnector: AuthConnector = mock[AuthConnector]
     override val getAuthorisedForPolicy = new StubRegime
 
   }
@@ -73,17 +72,6 @@ class AuthControllerTest extends PlaySpec with FakePBIKApplication
       result.body.asInstanceOf[Strict].data.utf8String must include("Passed Test")
     }
   }
-
-/*
-  "PbikActions Authentocation " should {
-    "not mutate the action body when successfully authenticationg" in {
-      val controller = new PbikActionTestController()
-      val user:AuthContext = createDummyUser("VALID_ID")
-      implicit val timeout : akka.util.Timeout = 15 seconds
-      val result:Action[AnyContent] = await(controller.AuthorisedForPbik(implicit user => implicit request => Future{Ok("Passed Test")}))(timeout)
-      val r = await( result.apply(mockrequest) )
-    }
-  }*/
 
   "PbikActions " should {
     "show the start page if the session is not set" in {

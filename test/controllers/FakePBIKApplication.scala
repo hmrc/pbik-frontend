@@ -18,12 +18,14 @@ package controllers
 
 import java.util.UUID
 
+import akka.stream.Materializer
 import models.HeaderTags
 import org.specs2.mock.Mockito
 import org.scalatest.TestSuite
 import org.scalatestplus.play.OneAppPerSuite
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.SessionKeys
 
@@ -31,7 +33,7 @@ trait FakePBIKApplication extends Mockito with OneAppPerSuite {
 
   this: TestSuite =>
 
-  val config = Map("application.secret" -> "Its secret",
+  val config: Map[String, Any] = Map("application.secret" -> "Its secret",
                     "csrf.sign.tokens" -> false,
                     "microservice.services.contact-frontend.host" -> "localhost",
                     "microservice.services.contact-frontend.port" -> "9250",
@@ -41,27 +43,27 @@ trait FakePBIKApplication extends Mockito with OneAppPerSuite {
   val sessionId = s"session-${UUID.randomUUID}"
   val userId = s"user-${UUID.randomUUID}"
 
-  def mockrequest = FakeRequest().withSession(
+  def mockrequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
     SessionKeys.sessionId -> sessionId,
     SessionKeys.token -> "RANDOMTOKEN",
     SessionKeys.userId -> userId,
     HeaderTags.ETAG -> "0",
     HeaderTags.X_TXID -> "0")
 
-  def mockWelshrequest = FakeRequest("GET", "?lang=cy").withSession(
+  def mockWelshrequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "?lang=cy").withSession(
     SessionKeys.sessionId -> sessionId,
     SessionKeys.token -> "RANDOMTOKEN",
     SessionKeys.userId -> userId,
     HeaderTags.ETAG -> "0",
     HeaderTags.X_TXID -> "0")
 
-  def noSessionIdRequest = FakeRequest().withSession(SessionKeys.userId -> userId)
+  def noSessionIdRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(SessionKeys.userId -> userId)
 
   override val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
     .build()
 
-  implicit lazy val materializer = fakeApplication.materializer
+  implicit lazy val materializer: Materializer = fakeApplication.materializer
 
 }

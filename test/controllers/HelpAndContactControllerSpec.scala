@@ -26,7 +26,7 @@ import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.http.HttpEntity.Strict
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.filters.csrf.CSRF
@@ -47,15 +47,15 @@ import scala.concurrent.duration._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.logging.SessionId
 
-class HelpAndContactControllerTest extends PlaySpec with FakePBIKApplication
+class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
                                               with TestAuthUser with FormMappings{
 
   override val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(config)
     .build()
 
-  implicit val ac = createDummyUser("testid")
-  val timeoutValue = 10 seconds
+  implicit val ac: AuthContext = createDummyUser("testid")
+  val timeoutValue: FiniteDuration = 10 seconds
   def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
 
   val helpForm = Form(
@@ -66,14 +66,13 @@ class HelpAndContactControllerTest extends PlaySpec with FakePBIKApplication
     )
   )
 
-
   class MockHelpAndContactController extends HelpAndContactController with TierConnector {
-    override lazy val pbikAppConfig = mock[AppConfig]
-    override def bikListService = mock[BikListService]
-    override val tierConnector = mock[HmrcTierConnector]
-    override val httpPost = mock[WSHttp]
-    override val contactFrontendPartialBaseUrl = pbikAppConfig.contactFrontendService
-    override val contactFormServiceIdentifier = pbikAppConfig.contactFormServiceIdentifier
+    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+    override def bikListService: BikListService = mock[BikListService]
+    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
+    override val httpPost: WSHttp = mock[WSHttp]
+    override val contactFrontendPartialBaseUrl: String = pbikAppConfig.contactFrontendService
+    override val contactFormServiceIdentifier: String = pbikAppConfig.contactFormServiceIdentifier
 
     override def AuthorisedForPbik(body: AuthContext => Request[AnyContent] => Future[Result]): Action[AnyContent] = {
       val ac = createDummyUser("testid")
@@ -97,9 +96,8 @@ class HelpAndContactControllerTest extends PlaySpec with FakePBIKApplication
   "When using help/ contact hmrc, the HelpAndContactController " should {
     "get 500 response when there is an empty form" in {
       val mockHelpController = new MockHelpAndContactController
-      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-      implicit val request = mockrequest
-      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = await(mockHelpController.submitContactHmrcForm().apply(request)/*(ac, mockrequest, hc)*/)
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include("")
@@ -107,9 +105,8 @@ class HelpAndContactControllerTest extends PlaySpec with FakePBIKApplication
 
     "be able to submit the contact form successfully " in {
       val mockHelpController = new MockHelpAndContactController
-      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-      implicit val request = mockrequest
-      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val helpFormFilled = helpForm.fill("John", "john@gmail.com", "test comment")
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(helpForm.data.toSeq: _*)
       val result = await(mockHelpController.submitContactHmrcForm().apply(mockRequestForm))

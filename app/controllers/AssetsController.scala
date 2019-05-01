@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers;
+package controllers
 
 import play.api.http.{HttpErrorHandler, LazyHttpErrorHandler}
 

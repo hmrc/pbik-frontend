@@ -14,23 +14,13 @@
  * limitations under the License.
  */
 
-package controllers
+package models
 
-import controllers.auth.{EpayeUser, PbikActions}
-import play.api.mvc._
+import uk.gov.hmrc.auth.core.retrieve.Name
 
-object RedirectController extends Controller {
+case class UserName(name: Name) {
 
-  def redirectIfFromStart() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
-  }
-
-  def redirectIfFromOldOverview() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
-  }
-
-  def redirectIfFromRoot() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
-  }
+    override def toString: String =
+      s"${name.name.getOrElse("")} ${name.lastName.getOrElse("")}"
 
 }

@@ -22,6 +22,7 @@ import controllers.registration.ManageRegistrationController
 import models._
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.concurrent.ScalaFutures._
 import org.scalatestplus.play.PlaySpec
 import play.api.data.Form
@@ -43,38 +44,36 @@ import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils._
 
 import scala.concurrent.Future
-import scala.concurrent.duration.DurationInt
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
-class LanguageSupportTest extends PlaySpec with FormMappings with TestAuthUser
+class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
    with FakePBIKApplication {
 
-  implicit val ac = createDummyUser("testid")
-  lazy val CYCache = List.tabulate(21)(n => new Bik("" + (n + 1), 10))
-  lazy val CYRegistrationItems = List.tabulate(21)(n=> new RegistrationItem("" + (n + 1), true, true))
-  val timeoutValue = 15 seconds
+  implicit val ac: AuthContext = createDummyUser("testid")
+  lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
+  lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n=> RegistrationItem("" + (n + 1), active = true, enabled = true))
+  val timeoutValue: FiniteDuration = 15 seconds
 
   def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
   class StubBikListService extends BikListService {
 
-    override lazy val pbikAppConfig = mock[AppConfig]
-    override val tierConnector = mock[HmrcTierConnector]
-    lazy val CYCache = List.range(3, 32).map(n => new Bik("" + n, 10))/*(n => new Bik("" + (n + 1), 10))*/
+    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
+    lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))/*(n => new Bik("" + (n + 1), 10))*/
     override lazy val pbikHeaders:Map[String,String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
 
-    override def currentYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]):
+    def currentYearList(implicit hc: HeaderCarrier, request: Request[_]):
     Future[(Map[String, String], List[Bik])] = {
-
-      Future.successful((Map(HeaderTags.ETAG -> "1"),CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) == 31) }))
+      Future.successful((Map(HeaderTags.ETAG -> "1"),CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
     }
 
-    override def nextYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]):
+    def nextYearList(implicit hc: HeaderCarrier, request: Request[_]):
     Future[(Map[String, String], List[Bik])] = {
-
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) == 31) }))
+      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
     }
 
-    override def registeredBenefitsList(year: Int, orgIdentifier: String)(path: String)
-                                       (implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]) :  Future[List[Bik]] = {
+    def registeredBenefitsList(year: Int, orgIdentifier: String)(path: String)
+                                       (implicit hc: HeaderCarrier, request: Request[_]) :  Future[List[Bik]] = {
       Future(CYCache)(scala.concurrent.ExecutionContext.Implicits.global)
     }
 
@@ -88,11 +87,11 @@ class LanguageSupportTest extends PlaySpec with FormMappings with TestAuthUser
 
     override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
     override def bikListService: BikListService = new StubBikListService
-    override val tierConnector = mock[HmrcTierConnector]
-    val dateRange = TaxDateUtils.getTaxYearRange()
+    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
+    val dateRange: TaxYearRange = TaxDateUtils.getTaxYearRange()
 
     val registeredListOption =List.empty[Bik]
-    val allRegisteredListOption = CYCache
+    val allRegisteredListOption: List[Bik] = CYCache
     val mockRegistrationItemList = List.empty[RegistrationItem]
     val mockFormRegistrationList: Form[RegistrationList] = objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
 
@@ -100,18 +99,15 @@ class LanguageSupportTest extends PlaySpec with FormMappings with TestAuthUser
     override def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                                 generateViewBasedOnFormItems: (Form[RegistrationList],
                                                   List[RegistrationItem], List[Bik], List[Int], List[Int], Option[Int]) => HtmlFormat.Appendable)
-                                               (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext):
+                                               (implicit hc:HeaderCarrier, request: AuthenticatedRequest[AnyContent]):
     Future[Result] = {
       year match {
         case dateRange.cyminus1 => {
-          Future.successful(Ok(
-            views.html.registration.currentTaxYear(mockFormRegistrationList,dateRange,mockRegistrationItemList,allRegisteredListOption,PbikAppConfig.biksNotSupported, biksAvailableCount=Some(17))
-          ))
+          Future.successful(Ok(views.html.registration.currentTaxYear(mockFormRegistrationList,dateRange,mockRegistrationItemList,allRegisteredListOption,PbikAppConfig.biksNotSupported, biksAvailableCount=Some(17), empRef = request.empRef)))
         }
         case _ => {
-          Future.successful(Ok(
-            views.html.registration.nextTaxYear(mockFormRegistrationList,true,dateRange,mockRegistrationItemList,registeredListOption,PbikAppConfig.biksNotSupported, biksAvailableCount=Some(17))
-          ))
+          Future.successful(Ok(views.html.registration.nextTaxYear(mockFormRegistrationList,additive = true,dateRange,mockRegistrationItemList,registeredListOption,PbikAppConfig.biksNotSupported, biksAvailableCount=Some(17), empRef = request.empRef))
+          )
         }
       }
     }
@@ -119,11 +115,11 @@ class LanguageSupportTest extends PlaySpec with FormMappings with TestAuthUser
   }
 
   class MockHomePageController extends HomePageController with TierConnector {
-    override lazy val pbikAppConfig = mock[AppConfig]
-    override val tierConnector = mock[HmrcTierConnector]
+    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
     override def bikListService = new StubBikListService
 
-    override def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier, ac: AuthContext): Future[AuditResult] = {
+    override def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
       Future.successful(AuditResult.Success)
     }
 
@@ -145,7 +141,7 @@ class LanguageSupportTest extends PlaySpec with FormMappings with TestAuthUser
 
     import org.scalatest.time.{Millis, Seconds, Span}
 
-    implicit val defaultPatience =
+    implicit val defaultPatience: ScalaFutures.PatienceConfig =
       PatienceConfig(timeout = Span(7, Seconds), interval = Span(600, Millis))
 
     override def AuthorisedForPbik(body: AuthContext => Request[AnyContent] => Future[Result]): Action[AnyContent] = {
@@ -159,7 +155,7 @@ class LanguageSupportTest extends PlaySpec with FormMappings with TestAuthUser
       }
     }
 
-    override def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier, ac: AuthContext): Future[AuditResult] = {
+    override def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
       Future.successful(AuditResult.Success)
     }
 
@@ -167,92 +163,71 @@ class LanguageSupportTest extends PlaySpec with FormMappings with TestAuthUser
     override def bikListService: BikListService = new StubBikListService
     override def registrationService = new StubbedRegistrationService
 
-    implicit val mr = mockrequest
+    implicit val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
 
-    override val tierConnector = mock[HmrcTierConnector]
+    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
 
-    val dateRange = TaxDateUtils.getTaxYearRange()
+    val dateRange: TaxYearRange = TaxDateUtils.getTaxYearRange()
 
     when(pbikAppConfig.cyEnabled).thenReturn(true)
 
     when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
-      anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+      any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
+      Integer.parseInt(x.iabdType) <= 10
     }))
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+      EmpRef("", ""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
+      Integer.parseInt(x.iabdType) <= 10
     }))
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
+      EmpRef("", ""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
+      Integer.parseInt(x.iabdType) <= 10
     }))
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
+      EmpRef("", ""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
+      Integer.parseInt(x.iabdType) <= 10
     }))
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      anyString, mockEq(2020))(any[HeaderCarrier], any[Request[_]],
+      any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 5)
+      Integer.parseInt(x.iabdType) <= 5
     }))
 
     when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
-      anyString, anyInt, any)(any[HeaderCarrier], any[Request[_]],
+      any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
         any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getRegisteredPath),
-      anyString, anyInt)(any[HeaderCarrier], any[Request[_]],
+      any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) >= 15)
+      Integer.parseInt(x.iabdType) >= 15
     }))
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+      EmpRef("", ""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) <= 10)
+      Integer.parseInt(x.iabdType) <= 10
     }))
   }
-
-
-  /*"The Homepage Controller " should {
-    "show the welsh language homepage when the language is welsh " in {
-      running(fakeApplication) {
-        val mockRegistrationController = new MockRegistrationController
-        def csrfToken = "csrfToken"Name -> UnsignedTokenProvider.generateToken
-        implicit val request = mockrequest
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-        val additions = CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) > 15) }
-        val testac = createDummyUser("testid")
-        implicit val timeout : scala.concurrent.duration.Duration = timeoutValue
-        implicit val lang:Lang = new Lang("cy")
-        val r = await(mockRegistrationController.updateBiksFutureAction(2020, additions, true)(mockrequest, testac/*, lang */))(timeout)
-        status(r) shouldBe 200
-        bodyOf(r) should include("Cyfeirnod TWE y Cyflogwr")
-      }
-    }
-  }*/
 
   "The Homepage Controller " should {
     "set the request language and redirect to the homepage" in {
       val mockController = new MockHomePageController
-      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-      implicit val request = mockWelshrequest
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshrequest
       implicit val ac: AuthContext = createDummyUser("VALID_ID")
-      implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      val additions = CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) > 15) }
-      implicit val timeout = timeoutValue
-      //implicit val lang:Lang = new Lang("cy")
+      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+      val additions = CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) > 15 }
+      implicit val timeout: FiniteDuration = timeoutValue
       val result = await( mockController.setLanguage.apply(request))(timeout)
       result.header.status must be(SEE_OTHER) // 303
     }
@@ -261,12 +236,11 @@ class LanguageSupportTest extends PlaySpec with FormMappings with TestAuthUser
   "HomePageController" should {
     "display the navigation page " in {
       val homePageController = new MockHomePageController
-      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-      implicit val request = FakeRequest().withSession(
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> sessionId,
         SessionKeys.token -> "RANDOMTOKEN",
         SessionKeys.userId -> userId).withCookies(Cookie("PLAY_LANG", "cy"))
-      implicit val timeout = timeoutValue
+      implicit val timeout: FiniteDuration = timeoutValue
       implicit val lang : Lang = new Lang("cy")
       val result = await(homePageController.onPageLoad.apply(request))(timeout)
       result.header.status must be(OK) // 200

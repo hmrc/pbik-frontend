@@ -21,7 +21,7 @@ import java.net.URLEncoder
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, PBIKHeaderCarrierForPartialsConverter, TierConnector, WSHttp}
 import controllers.auth._
-import play.api.Logger
+import play.api.{Logger, Play}
 import play.api.mvc._
 import play.twirl.api.{Html, HtmlFormat}
 import services.BikListService
@@ -34,6 +34,7 @@ import play.api.Play.current
 
 import scala.concurrent.Future
 import uk.gov.hmrc.http.{Request => _, _}
+import _root_.controllers.actions.{AuthAction, NoSessionCheckAction}
 
 object HelpAndContactController extends HelpAndContactController with TierConnector
 with AuthenticationConnector with Actions {
@@ -45,13 +46,17 @@ with AuthenticationConnector with Actions {
 
   override val contactFrontendPartialBaseUrl = pbikAppConfig.contactFrontendService
   override val contactFormServiceIdentifier = pbikAppConfig.contactFormServiceIdentifier
+  val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
+  val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
 }
 
 trait HelpAndContactController extends FrontendController with URIInformation
 with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger  {
-
   this: TierConnector =>
   def bikListService: BikListService
+
+  val authenticate: AuthAction
+  val noSessionCheck: NoSessionCheckAction
 
   def httpPost: CorePost
   private val TICKET_ID = "ticketId"
@@ -71,25 +76,22 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
     PBIKHeaderCarrierForPartialsConverter.headerCarrierForPartialsToHeaderCarrier(hc1)
   }
 
-  def onPageLoad:Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
+  def onPageLoad:Action[AnyContent] = (authenticate andThen noSessionCheck) {
       implicit request =>
-        Future.successful(Ok(views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, None)))
+        Ok(views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, None, empRef = request.empRef))
   }
 
-  def submitContactHmrcForm = AuthorisedForPbik {
-    implicit ac =>
+  def submitContactHmrcForm: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
       implicit request =>
 
         submitContactHmrc(contactHmrcSubmitPartialUrl,
           routes.HelpAndContactController.confirmationContactHmrc(),
-          (body: Html) => views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, Some(body)))
+          (body: Html) => views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, Some(body), empRef = request.empRef ))
   }
 
-  def confirmationContactHmrc:Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
+  def confirmationContactHmrc:Action[AnyContent] = (authenticate andThen noSessionCheck) {
       implicit request =>
-        Future.successful(Ok(views.html.helpcontact.confirmHelpContact()))
+        Ok(views.html.helpcontact.confirmHelpContact(empRef = request.empRef))
   }
 
   private def submitContactHmrc(formUrl: String, successRedirect: Call, failedValidationResponseContent: (Html) => HtmlFormat.Appendable)

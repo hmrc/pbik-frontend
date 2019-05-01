@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, context: config.PbikContext, applicationMessages: Messages)
+@(empRef: EmpRef)(implicit request:Request[_], context: config.PbikContext, applicationMessages: Messages)
 
-@parentTemplate(pageTitle = Messages("ConfirmationHelpAndContact.title") + " - " + Messages("Service.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
+@parentTemplate(pageTitle = Messages("ConfirmationHelpAndContact.title") + " - " + Messages("Service.title"), None, Some(empRef.toString), contactSupportLinkEnabled = false){
 
     <h1 id="title">
         @Messages("ConfirmationHelpAndContact.title")

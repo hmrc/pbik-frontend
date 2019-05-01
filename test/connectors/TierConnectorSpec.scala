@@ -21,10 +21,10 @@ import com.typesafe.config.Config
 import config.RunModeConfig
 import connectors.WSHttp.appNameConfiguration
 import controllers.FakePBIKApplication
-import models.PbikError
+import models.{EmpRef, PbikError}
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Play
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results
 import play.api.test.Helpers._
 import support.TestAuthUser
@@ -36,7 +36,7 @@ import utils.Exceptions.GenericServerErrorException
 import scala.concurrent.Future
 import uk.gov.hmrc.http._
 
-class TierConnectorTest extends PlaySpec  with FakePBIKApplication
+class TierConnectorSpec extends PlaySpec  with FakePBIKApplication
                                           with TestAuthUser with Results {
 
   "When instantiating the TierConnector it " should {
@@ -46,24 +46,6 @@ class TierConnectorTest extends PlaySpec  with FakePBIKApplication
     }
   }
 
-//  "When instantiating the HmrcTierConnector it " should {
-//    "not have a null serviceUrl reference " in {
-//      running(fakeApplication) {
-//        val tc = HmrcTierConnector
-//        assert(tc.serviceUrl != null)
-//      }
-//    }
-//  }
-
-//  "When instantiating the HmrcTierConnector it " should {
-//    "not have a null http reference " in {
-//      running(fakeApplication) {
-//        val tc = HmrcTierConnector.http
-//        assert(tc != null)
-//      }
-//    }
-//  }
-
   class FakeResponse extends HttpResponse {
     override def status = 200
     override def body = ""
@@ -71,9 +53,9 @@ class TierConnectorTest extends PlaySpec  with FakePBIKApplication
 
   class FakeResponseWithError extends HttpResponse {
     override def status = 200
-    val jsonValue = Json.toJson(new PbikError("64990"))
-    override def body = jsonValue.toString()
-    override def json = jsonValue
+    val jsonValue: JsValue = Json.toJson(new PbikError("64990"))
+    override def body: String = jsonValue.toString()
+    override def json: JsValue = jsonValue
   }
 
   class FakeSevereResponse extends HttpResponse {
@@ -81,11 +63,10 @@ class TierConnectorTest extends PlaySpec  with FakePBIKApplication
     override def body = "A severe server error"
   }
 
-
   class MockHmrcTierConnector extends HmrcTierConnector {
     object WSHttp extends WSGet with HttpGet with WSPut with HttpPut with WSPost with HttpPost with WSDelete with HttpDelete with WSPatch with HttpPatch with AppName with RunMode with HttpAuditing with RunModeConfig {
       override val hooks = Seq(AuditingHook)
-      override val auditConnector = FrontendAuditConnector
+      override val auditConnector: FrontendAuditConnector.type = FrontendAuditConnector
       override val configuration: Option[Config] = Some(appNameConfiguration.underlying)
       override val actorSystem: ActorSystem = Play.current.actorSystem
       override def doGet(url : scala.Predef.String)(implicit hc : _root_.uk.gov.hmrc.http.HeaderCarrier) :
@@ -96,7 +77,7 @@ class TierConnectorTest extends PlaySpec  with FakePBIKApplication
   "When creating a GET URL with an orgainsation needing encoding it " should {
     " encode the slash properly " in {
       val tc = new MockHmrcTierConnector
-      val result:String = tc.createGetUrl("theBaseUrl","theURIExtension","780/MODES16",2015)
+      val result:String = tc.createGetUrl("theBaseUrl","theURIExtension", EmpRef("780", "MODES16"),2015)
       assert(result == "theBaseUrl/780%2FMODES16/2015/theURIExtension")
     }
   }
@@ -104,7 +85,7 @@ class TierConnectorTest extends PlaySpec  with FakePBIKApplication
   "When creating a GET URL with no organisation it " should {
     " omit the organisation " in {
       val tc = new MockHmrcTierConnector
-      val result:String = tc.createGetUrl("theBaseUrl","theURIExtension","",2015)
+      val result:String = tc.createGetUrl("theBaseUrl","theURIExtension", EmpRef("", ""),2015)
       assert(result == "theBaseUrl/2015/theURIExtension")
     }
   }
@@ -117,26 +98,10 @@ class TierConnectorTest extends PlaySpec  with FakePBIKApplication
     }
   }
 
-  "When creating a GET URL with an orgainsation which doesnt need encoding it " should {
-    " still be properly formed " in {
-      val tc = new MockHmrcTierConnector
-      val result:String = tc.createGetUrl("theBaseUrl","theURIExtension","nonEncodedOrganisation",2015)
-      assert(result == "theBaseUrl/nonEncodedOrganisation/2015/theURIExtension")
-    }
-  }
-
-  "When encoding a slash it " should {
-    " becomes %2F " in {
-      val tc = new MockHmrcTierConnector
-      val result:String = tc.encode("/")
-      assert(result == "%2F")
-    }
-  }
-
   "When creating a POST URL with an organisation which needs encoding it " should {
     " be properly formed with the %2F encoding " in {
       val tc = new MockHmrcTierConnector
-      val result:String = tc.createPostUrl("theBaseUrl", "theURIExtension", "780/MODES16", 2015)
+      val result:String = tc.createPostUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), 2015)
       assert(result == "theBaseUrl/780%2FMODES16/2015/theURIExtension")
     }
   }

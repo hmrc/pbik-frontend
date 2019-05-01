@@ -20,12 +20,12 @@
 
 @(taxYearRange: TaxYearRange,
   year: String, iabdType:String,
-  individualsToRemove: Form[EiLPersonList])(implicit request: Request[_],
-                                            ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+  individualsToRemove: Form[EiLPersonList],
+empRef: EmpRef)(implicit request: Request[_],
                                             context: config.PbikContext, applicationMessages: Messages)
 
 
-@parentTemplate(pageTitle = Messages("ExclusionRemovalConfirmation.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+@parentTemplate(pageTitle = Messages("ExclusionRemovalConfirmation.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
     @includes.back_link(gaLabel = Messages("ExclusionRemovalConfirmation.title"))
 

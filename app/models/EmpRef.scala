@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package controllers
+package models
 
-import controllers.auth.{EpayeUser, PbikActions}
-import play.api.mvc._
+case class EmpRef(taxOfficeNumber:String, taxOfficeReference:String) {
+ def encodedEmpRef: String = s"$taxOfficeNumber%2F$taxOfficeReference"
 
-object RedirectController extends Controller {
+  override def toString: String = encodedEmpRef.toString
 
-  def redirectIfFromStart() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
-  }
+}
 
-  def redirectIfFromOldOverview() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
-  }
-
-  def redirectIfFromRoot() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
-  }
-
+object EmpRef {
+ val empty: EmpRef = EmpRef("", "")
 }

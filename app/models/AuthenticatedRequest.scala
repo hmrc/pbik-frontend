@@ -14,23 +14,9 @@
  * limitations under the License.
  */
 
-package controllers
+package models
 
-import controllers.auth.{EpayeUser, PbikActions}
-import play.api.mvc._
+import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.auth.core.retrieve.Name
 
-object RedirectController extends Controller {
-
-  def redirectIfFromStart() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
-  }
-
-  def redirectIfFromOldOverview() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
-  }
-
-  def redirectIfFromRoot() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
-  }
-
-}
+case class AuthenticatedRequest[A](empRef: EmpRef, name: UserName, request:Request[A]) extends WrappedRequest[A](request)

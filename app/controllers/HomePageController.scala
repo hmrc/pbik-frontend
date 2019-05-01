@@ -19,8 +19,9 @@ package controllers
 import _root_.models._
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
+import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.auth._
-import play.api.Logger
+import play.api.{Logger, Play}
 import play.api.mvc.{LegacyI18nSupport, Result, _}
 import services.BikListService
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -37,21 +38,26 @@ import scala.util.{Success, Try}
 import uk.gov.hmrc.http.HeaderCarrier
 
 object HomePageController extends HomePageController with TierConnector
-with AuthenticationConnector {
+  with AuthenticationConnector {
   def pbikAppConfig = PbikAppConfig
+
   def bikListService = BikListService
+
   val tierConnector = new HmrcTierConnector
+  val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
+  val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
 }
 
 trait HomePageController extends FrontendController with URIInformation
-with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger with LegacyI18nSupport {
-
+  with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger with LegacyI18nSupport {
   this: TierConnector =>
   def bikListService: BikListService
+  val authenticate: AuthAction
+  val noSessionCheck: NoSessionCheckAction
 
-  def notAuthorised:Action[AnyContent] = AuthenticatedBy(PBIKGovernmentGateway, pageVisibility = GGConfidence).async {
-    implicit ac => implicit request =>
-      Future.successful(Ok(views.html.errorPage(AUTHORISATION_ERROR, TaxDateUtils.getTaxYearRange())))
+  def notAuthorised: Action[AnyContent] = authenticate {
+    implicit request =>
+      Ok(views.html.errorPage(AUTHORISATION_ERROR, TaxDateUtils.getTaxYearRange(), empRef = Some(request.empRef)))
   }
 
   def signout: Action[AnyContent] = UnauthorisedAction {
@@ -59,48 +65,46 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
       Redirect(PbikAppConfig.serviceSignOut).withNewSession
   }
 
-  def setLanguage:Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        val lang = request.getQueryString("lang").getOrElse("en")
-        Logger.info("Language from request query is " + lang)
-        implicit val newLang = Lang(lang)
-        Logger.info("New language set to " + newLang.code)
-        Future.successful(Redirect(routes.HomePageController.onPageLoad).withLang(newLang))
+  def setLanguage: Action[AnyContent] = (authenticate andThen noSessionCheck) {
+    implicit request =>
+      val lang = request.getQueryString("lang").getOrElse("en")
+      Logger.info("Language from request query is " + lang)
+      val newLang = Lang(lang)
+      Logger.info("New language set to " + newLang.code)
+      Redirect(routes.HomePageController.onPageLoad).withLang(newLang)
   }
 
-  def loadCautionPageForCY:Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        val staticDataRequest: Future[Result] = Future.successful(Ok(views.html.registration.cautionAddCurrentTaxYear(YEAR_RANGE)))
-        responseCheckCYEnabled(staticDataRequest)
+  def loadCautionPageForCY: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+    implicit request =>
+      val staticDataRequest: Future[Result] = Future.successful(Ok(views.html.registration.cautionAddCurrentTaxYear(YEAR_RANGE, empRef = request.empRef)))
+      responseCheckCYEnabled(staticDataRequest)
   }
 
-  def onPageLoad:Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
+  def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+    implicit request =>
 
-        val taxYearRange = TaxDateUtils.getTaxYearRange()
-        val pageLoadFuture = for {
-          // Get the available count of biks available for each tax year
-          biksListOptionCY:List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cyminus1, "")(getBenefitTypesPath)
-          biksListOptionCYP1:List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cy, "")(getBenefitTypesPath)
-          currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
-          nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
+      val taxYearRange = TaxDateUtils.getTaxYearRange()
+      val pageLoadFuture = for {
+        // Get the available count of biks available for each tax year
+        biksListOptionCY: List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cyminus1, EmpRef("", ""))(getBenefitTypesPath)
+        biksListOptionCYP1: List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cy, EmpRef("", ""))(getBenefitTypesPath)
+        currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
+        nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
 
-        } yield {
-          val fromYTA = if (request.session.get(SESSION_FROM_YTA).isDefined) {
-            request.session.get(SESSION_FROM_YTA).get
-          }
-          else {
-            isFromYTA
-          }
-          auditHomePageView
-          Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2,
-            biksListOptionCY.size, biksListOptionCYP1.size, fromYTA.toString))
-            .addingToSession(nextYearList._1.toSeq: _*).addingToSession(SESSION_FROM_YTA -> fromYTA.toString)
+      } yield {
+        val fromYTA = if (request.session.get(SESSION_FROM_YTA).isDefined) {
+          request.session.get(SESSION_FROM_YTA).get
         }
-        responseErrorHandler(pageLoadFuture)
+        else {
+          isFromYTA
+        }
+        auditHomePageView
+        Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2,
+          biksListOptionCY.size, biksListOptionCYP1.size, fromYTA.toString, empRef = request.empRef))
+          .addingToSession(nextYearList._1.toSeq: _*)
+          .addingToSession(SESSION_FROM_YTA -> fromYTA.toString)
+      }
+      responseErrorHandler(pageLoadFuture)
 
   }
 
@@ -113,14 +117,17 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
     }
   }
 
-  def auditHomePageView(implicit hc:HeaderCarrier, ac: AuthContext): Future[AuditResult] = {
-      logSplunkEvent(createDataEvent(
-        tier=spTier.FRONTEND,
-        action=spAction.VIEW,
-        target=spTarget.BIK,
-        period=spPeriod.BOTH,
-        msg="Home page view",
-        nino=None,
-        iabd=None))
+  def auditHomePageView(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[AuditResult] = {
+    logSplunkEvent(createDataEvent(
+      tier = spTier.FRONTEND,
+      action = spAction.VIEW,
+      target = spTarget.BIK,
+      period = spPeriod.BOTH,
+      msg = "Home page view",
+      nino = None,
+      iabd = None,
+      name = Option(request.name),
+      empRef = request.empRef
+    ))
   }
 }

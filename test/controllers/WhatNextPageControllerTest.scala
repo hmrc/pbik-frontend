@@ -35,7 +35,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.{Crypto, json}
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.filters.csrf.CSRF
@@ -79,67 +79,67 @@ class WhatNextPageControllerTest extends PlaySpec with FakePBIKApplication
     override val tierConnector = mock[HmrcTierConnector]
     lazy val CYCache = List.tabulate(21)(n => new Bik("" + (n + 1), 10))
 
-    override def currentYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]):
+    override def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
         Future[(Map[String, String], List[Bik])] = {
 
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) <= 10) }))
+      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) <= 10 }))
     }
 
-    override def nextYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]):
+    override def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
         Future[(Map[String, String], List[Bik])] = {
 
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => (Integer.parseInt(x.iabdType) > 10) }))
+      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) > 10 }))
     }
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, anyString,
-      anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, anyString,
-      anyString, mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, anyString,
-      anyString, mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, mockEq(""),
-      anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier],any[Request[_]],
+      EmpRef("",""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier],any[Request[_]],
+      EmpRef("",""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier],any[Request[_]],
+      EmpRef("",""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, anyString,
-      anyString, mockEq(2020))(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], mockEq(2020))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 5) }))
+      Integer.parseInt(x.iabdType) <= 5 }))
 
     when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
-      anyString, anyInt, any)(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], anyInt, any)(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
     when(tierConnector.genericGetCall[List[Bik]](anyString,  mockEq(getRegisteredPath),
-      anyString, anyInt)(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], anyInt)(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) >= 15) }))
+      Integer.parseInt(x.iabdType) >= 15 }))
 
   }
 
@@ -160,45 +160,45 @@ class WhatNextPageControllerTest extends PlaySpec with FakePBIKApplication
       }
     }
 
-    override lazy val pbikAppConfig = mock[AppConfig]
+    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
     override def bikListService: BikListService = new StubBikListService
-    override val tierConnector = mock[HmrcTierConnector]
+    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
 
-    val dateRange = TaxDateUtils.getTaxYearRange()
+    val dateRange: TaxYearRange = TaxDateUtils.getTaxYearRange()
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, mockEq(""),
-      anyString, mockEq(YEAR_RANGE.cy))(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier],any[Request[_]],
+      EmpRef("",""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier],any[Request[_]],
+      EmpRef("",""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, mockEq(getBenefitTypesPath),
-      mockEq(""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier],any[Request[_]],
+      EmpRef("",""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 10) }))
+      Integer.parseInt(x.iabdType) <= 10 }))
 
     when(tierConnector.genericGetCall[List[Bik]]( anyString, anyString,
-      anyString, mockEq(2020))(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], mockEq(2020))(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) <= 5) }))
+      Integer.parseInt(x.iabdType) <= 5 }))
 
     when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
-      anyString, anyInt, any)(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], anyInt, any)(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
     when(tierConnector.genericGetCall[List[Bik]](anyString,  mockEq(getRegisteredPath),
-      anyString, anyInt)(any[HeaderCarrier],any[Request[_]],
+      any[EmpRef], anyInt)(any[HeaderCarrier],any[Request[_]],
         any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter{ x:Bik =>
-      (Integer.parseInt(x.iabdType) >= 15) }))
+      Integer.parseInt(x.iabdType) >= 15 }))
 
   }
 
@@ -209,13 +209,12 @@ class WhatNextPageControllerTest extends PlaySpec with FakePBIKApplication
          import play.api.libs.concurrent.Execution.Implicits._
 
          val mockWhatNextPageController = new MockWhatNextPageController
-         def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-         implicit val request = mockrequest
-         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+         implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+         implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
          val formRegistrationList: Form[RegistrationList] = objSelectedForm
          val formFilled = formRegistrationList.fill(registrationList)
          val year = TaxYear.taxYearFor(LocalDate.now).currentYear
-         val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, year)})
+         val result = mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, year)
          result.header.status must be(OK)
          result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
          result.body.asInstanceOf[Strict].data.utf8String must include(
@@ -226,13 +225,12 @@ class WhatNextPageControllerTest extends PlaySpec with FakePBIKApplication
         import play.api.libs.concurrent.Execution.Implicits._
 
         val mockWhatNextPageController = new MockWhatNextPageController
-        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-        implicit val request = mockrequest
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+        implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
         val formRegistrationList: Form[RegistrationList] = objSelectedForm
         val formFilled = formRegistrationList.fill(registrationList)
         formRegistrationList.fill(registrationList)
-        val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017)})
+        val result = mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017)
         result.header.status must be(OK)
         result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
         result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April")
@@ -242,9 +240,8 @@ class WhatNextPageControllerTest extends PlaySpec with FakePBIKApplication
         import play.api.libs.concurrent.Execution.Implicits._
 
         val mockWhatNextPageController = new MockWhatNextPageController
-        def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-        implicit val request = mockrequest
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+        implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
         val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationListMultiple)
         val result = await(Future{mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016)})
         result.header.status must be(OK)
@@ -257,10 +254,9 @@ class WhatNextPageControllerTest extends PlaySpec with FakePBIKApplication
          import play.api.libs.concurrent.Execution.Implicits._
 
          val mockWhatNextPageController = new MockWhatNextPageController
-         def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-         implicit val request = mockrequest
-          val whatNextRemoveMsg = Messages("whatNext.remove.p1")
-         implicit val hc = new HeaderCarrier(sessionId = Some(SessionId("session001")))
+         implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+          val whatNextRemoveMsg: String = Messages("whatNext.remove.p1")
+         implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
 
          val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationList)
          val result = await(Future{mockWhatNextPageController.loadWhatNextRemovedBIK(formRegistrationList, 2015)})

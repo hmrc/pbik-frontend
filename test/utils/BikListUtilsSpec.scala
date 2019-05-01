@@ -23,8 +23,17 @@ import models.Bik
 
 class BikListUtilsSpec extends UnitSpec {
 
+  def fixture: Object {
+    val alphaSorted: List[Int]
 
-  def fixture =
+    val normaliseResult: List[Int]
+
+    val biks: List[Bik]
+
+    val registered: List[Bik]
+
+    val modifications: List[Bik]
+  } =
     new {
       val biks = List(Bik("" + 40, 10),Bik("" + 48, 10),Bik("" + 54, 10),Bik("" + 38, 10),Bik("" + 44, 10),
         Bik("" + 31, 10),Bik("" + 35, 10),Bik("" + 36, 10),Bik("" + 37, 10),
@@ -40,12 +49,10 @@ class BikListUtilsSpec extends UnitSpec {
 
     }
 
-//  removeMatches
-
   "The Biks, when sorted Alphabetically according to labels " should {
     " result in the correct order " in {
       val f = fixture
-      running(new FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
+      running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
         assert(BikListUtils.sortAlphabeticallyByLabels(f.biks).map(x => x.iabdType.toInt) == f.alphaSorted)
       }
     }
@@ -54,7 +61,7 @@ class BikListUtilsSpec extends UnitSpec {
   "The Biks, when sorted Alphabetically according to labels " should {
     "  be the same size as the original list " in {
       val f = fixture
-      running(new FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
+      running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
         assert(BikListUtils.sortAlphabeticallyByLabels(f.biks).size == f.biks.size)
       }
     }
@@ -63,7 +70,7 @@ class BikListUtilsSpec extends UnitSpec {
   "The Registration Items, when sorted Alphabetically according to labels " should {
     " result in the correct order " in {
       val f = fixture
-      running(new FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
+      running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
         assert(BikListUtils.sortRegistrationsAlphabeticallyByLabels(BikListUtils.mergeSelected(f.biks, f.biks)).active.map(x => x.id.toInt) == f.alphaSorted)
       }
     }
@@ -72,7 +79,7 @@ class BikListUtilsSpec extends UnitSpec {
   "The Registration Items, when sorted Alphabetically according to labels " should {
     "  be the same size as the original list " in {
       val f = fixture
-      running(new FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
+      running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
         assert(BikListUtils.sortRegistrationsAlphabeticallyByLabels(BikListUtils.mergeSelected(f.biks, f.biks)).active.size == f.biks.size)
       }
     }

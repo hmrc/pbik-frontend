@@ -38,7 +38,7 @@ import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
 
-class RegistrationServiceTest extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication {
+class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication {
 
  object MockRegistrationService extends RegistrationService with TierConnector {
    lazy val CYCache = List.tabulate(5)(n => new Bik("" + (n + 1), 10))

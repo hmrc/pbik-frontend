@@ -15,8 +15,7 @@
  *@
 
 @(bikForm:Form[RegistrationList],
-  taxYearRange:TaxYearRange)(implicit request:Request[_],
-                             ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+  taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_],
                              context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
@@ -29,7 +28,7 @@
 
 @title = @{if(singleBik) {Messages("AddBenefits.Confirm.Single.Title")}else {Messages("AddBenefits.Confirm.Multiple.Title")}}
 
-@parentTemplate(pageTitle = title + " - " + Messages("Service.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+@parentTemplate(pageTitle = title + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
     <span class="link-back-top-wrap">
         <a class="link-back" id="link-back-top" onclick="gaEventLinkSteps()"
            href='@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad'>
