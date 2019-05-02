@@ -16,13 +16,13 @@
 
 package models
 
-case class EmpRef(taxOfficeNumber:String, taxOfficeReference:String) {
- def encodedEmpRef: String = s"$taxOfficeNumber%2F$taxOfficeReference"
+case class EmpRef(taxOfficeNumber: String, taxOfficeReference: String) {
+  def encodedEmpRef: String = s"$taxOfficeNumber%2F$taxOfficeReference"
+  def unencodedEmpRef: String = s"$taxOfficeNumber/$taxOfficeReference"
 
-  override def toString: String = encodedEmpRef.toString
-
+  override def toString: String = unencodedEmpRef.toString
 }
 
 object EmpRef {
- val empty: EmpRef = EmpRef("", "")
+  val empty: EmpRef = EmpRef("", "")
 }

@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthControllerTest extends PlaySpec with FakePBIKApplication
+class PbikActionSpec extends PlaySpec with FakePBIKApplication
                           with TestAuthUser with Results {
 
 

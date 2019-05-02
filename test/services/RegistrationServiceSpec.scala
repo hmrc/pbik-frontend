@@ -19,12 +19,12 @@ package services
 import config._
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.FakePBIKApplication
-import models.{Bik, HeaderTags, RegistrationItem}
+import models._
 import org.mockito.Matchers.{eq => mockEq}
 import org.specs2.mock.Mockito
 import play.api.i18n.Messages
 import play.api.libs.json
-import play.api.mvc.Request
+import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import support.TestAuthUser
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -34,6 +34,9 @@ import uk.gov.hmrc.play.test.UnitSpec
 import utils.TaxDateUtils
 import org.mockito.Mockito._
 import play.api.i18n.Messages.Implicits._
+import play.api.test.FakeRequest
+import uk.gov.hmrc.auth.core.retrieve.Name
+
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
@@ -41,31 +44,28 @@ import uk.gov.hmrc.http.logging.SessionId
 class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication {
 
  object MockRegistrationService extends RegistrationService with TierConnector {
-   lazy val CYCache = List.tabulate(5)(n => new Bik("" + (n + 1), 10))
-   val tierConnector = mock[HmrcTierConnector]
-   override lazy val pbikAppConfig = mock[AppConfig]
-   override val bikListService = mock[BikListService]
+   lazy val CYCache: List[Bik] = List.tabulate(5)(n => Bik("" + (n + 1), 10))
+   val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
+   override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+   override val bikListService: BikListService = mock[BikListService]
 
-//   override def logSplunkEvent(dataEvent:DataEvent)(implicit hc:HeaderCarrier, ac: AuthContext):Future[AuditResult] = {
-//     Future.successful(AuditResult.Success)
-//   }
    when(bikListService.pbikHeaders).thenReturn(Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1"))
 
-   when(bikListService.registeredBenefitsList(anyInt,anyString)(anyString)
-     (any[AuthContext],any[HeaderCarrier], any[Request[_]])).thenReturn(Future.successful(CYCache))
+   when(bikListService.registeredBenefitsList(anyInt,any[EmpRef])(anyString)
+     (any[HeaderCarrier], any[Request[_]])).thenReturn(Future.successful(CYCache))
 
    // Return instance where not all Biks have been registered for CY
    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-     anyString, mockEq(TaxDateUtils.getCurrentTaxYear()) )(any[HeaderCarrier], any[Request[_]],
+     any[EmpRef], mockEq(TaxDateUtils.getCurrentTaxYear()) )(any[HeaderCarrier], any[Request[_]],
        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-     (Integer.parseInt(x.iabdType) <= 3)
+     Integer.parseInt(x.iabdType) <= 3
    }))
 
    // Return instance where not all Biks have been registered for CYP1
    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-     anyString, mockEq(TaxDateUtils.getCurrentTaxYear()+1) )(any[HeaderCarrier], any[Request[_]],
+     any[EmpRef], mockEq(TaxDateUtils.getCurrentTaxYear()+1) )(any[HeaderCarrier], any[Request[_]],
        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-     (Integer.parseInt(x.iabdType) <= 5)
+     Integer.parseInt(x.iabdType) <= 5
    }))
 
  }
@@ -92,35 +92,21 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito w
     " return the selection page " in {
       running(fakeApplication) {
         implicit val context: PbikContext = PbikContextImpl
-        implicit val request = mockrequest
-        implicit val ac: AuthContext = createDummyUser("VALID_ID")
-        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+        val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+        implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+          EmpRef("taxOfficeNumber", "taxOfficeReference"),
+          UserName(Name(None, None)),
+          request)
+        implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
         val YEAR_RANGE = TaxDateUtils.getTaxYearRange()
         val regService:RegistrationService = MockRegistrationService
         val result = await(regService.generateViewForBikRegistrationSelection(YEAR_RANGE.cyminus1,
-          "add", views.html.registration.nextTaxYear(_, true, YEAR_RANGE, _, _, _, _, _)))
+          "add", views.html.registration.nextTaxYear(_, true, YEAR_RANGE, _, _, _, _, _, EmpRef("",""))))
         status(result) shouldBe 200
         bodyOf(result) should include(Messages("AddBenefits.Heading"))
         bodyOf(result) should include(Messages("BenefitInKind.label.37"))
       }
     }
   }
-
-// No longer needed when non-legislation biks are shown in the list
-//  "When generating a page which doesn't allow registrations, the service " should {
-//    " return the error page showing none are allowed " in {
-//      running(fakeApplication) {
-//        implicit val request = mockrequest
-//        implicit val ac: AuthContext = createDummyUser("VALID_ID")
-//        implicit val hc = new HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-//        val YEAR_RANGE = TaxDateUtils.getTaxYearRange()
-//        val regService:RegistrationService = MockRegistrationService
-//        val result = await(regService.generateViewForBikRegistrationSelection(YEAR_RANGE.cy,
-//          "add", views.html.registration.nextTaxYear(_, true, YEAR_RANGE, _, _, _)))
-//        status(result) shouldBe 200
-//        bodyOf(result) should include(Messages("ErrorPage.noBenefitsToAddcy"))
-//      }
-//    }
-//  }
 
 }

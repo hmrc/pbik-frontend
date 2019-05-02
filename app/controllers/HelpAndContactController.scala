@@ -37,11 +37,13 @@ import uk.gov.hmrc.http.{Request => _, _}
 import _root_.controllers.actions.{AuthAction, NoSessionCheckAction}
 
 object HelpAndContactController extends HelpAndContactController with TierConnector
-with AuthenticationConnector with Actions {
+  with AuthenticationConnector with Actions {
   override val httpPost = WSHttp
 
   def pbikAppConfig = PbikAppConfig
+
   def bikListService = BikListService
+
   val tierConnector = new HmrcTierConnector
 
   override val contactFrontendPartialBaseUrl = pbikAppConfig.contactFrontendService
@@ -51,7 +53,7 @@ with AuthenticationConnector with Actions {
 }
 
 trait HelpAndContactController extends FrontendController with URIInformation
-with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger  {
+  with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger {
   this: TierConnector =>
   def bikListService: BikListService
 
@@ -59,9 +61,11 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
   val noSessionCheck: NoSessionCheckAction
 
   def httpPost: CorePost
+
   private val TICKET_ID = "ticketId"
 
   def contactFrontendPartialBaseUrl: String
+
   def contactFormServiceIdentifier: String
 
   private lazy val submitUrl = routes.HelpAndContactController.submitContactHmrcForm().url
@@ -76,37 +80,38 @@ with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger 
     PBIKHeaderCarrierForPartialsConverter.headerCarrierForPartialsToHeaderCarrier(hc1)
   }
 
-  def onPageLoad:Action[AnyContent] = (authenticate andThen noSessionCheck) {
-      implicit request =>
-        Ok(views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, None, empRef = request.empRef))
+  def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck) {
+    implicit request =>
+      Ok(views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, None, empRef = request.empRef))
   }
 
   def submitContactHmrcForm: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
-      implicit request =>
+    implicit request =>
 
-        submitContactHmrc(contactHmrcSubmitPartialUrl,
-          routes.HelpAndContactController.confirmationContactHmrc(),
-          (body: Html) => views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, Some(body), empRef = request.empRef ))
+      submitContactHmrc(contactHmrcSubmitPartialUrl,
+        routes.HelpAndContactController.confirmationContactHmrc(),
+        (body: Html) => views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, Some(body), empRef = request.empRef))
   }
 
-  def confirmationContactHmrc:Action[AnyContent] = (authenticate andThen noSessionCheck) {
-      implicit request =>
-        Ok(views.html.helpcontact.confirmHelpContact(empRef = request.empRef))
+  def confirmationContactHmrc: Action[AnyContent] = (authenticate andThen noSessionCheck) {
+    implicit request =>
+      Ok(views.html.helpcontact.confirmHelpContact(empRef = request.empRef))
   }
 
   private def submitContactHmrc(formUrl: String, successRedirect: Call, failedValidationResponseContent: (Html) => HtmlFormat.Appendable)
-                               (implicit request: Request[AnyContent]) : Future[Result] = {
+                               (implicit request: Request[AnyContent]): Future[Result] = {
     request.body.asFormUrlEncoded.map { formData =>
       httpPost.POSTForm[HttpResponse](formUrl, formData)(rds = PartialsFormReads.readPartialsForm, hc = partialsReadyHeaderCarrier, mdcExecutionContext).map {
-        resp => resp.status match {
-          case 200 => Redirect(successRedirect).withSession(request.session + (TICKET_ID -> resp.body))
-          case 400 => BadRequest(failedValidationResponseContent(Html(resp.body)))
-          case 500 => {
-            Logger.warn("submit contact form internal error 500, " + resp.body)
-            InternalServerError(Html(resp.body))
+        resp =>
+          resp.status match {
+            case 200 => Redirect(successRedirect).withSession(request.session + (TICKET_ID -> resp.body))
+            case 400 => BadRequest(failedValidationResponseContent(Html(resp.body)))
+            case 500 => {
+              Logger.warn("submit contact form internal error 500, " + resp.body)
+              InternalServerError(Html(resp.body))
+            }
+            case status => throw new Exception(s"Unexpected status code from contact HMRC form: $status")
           }
-          case status => throw new Exception(s"Unexpected status code from contact HMRC form: $status")
-        }
       }
     }.getOrElse {
       Logger.warn("Trying to submit an empty contact form")

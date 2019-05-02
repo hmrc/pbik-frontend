@@ -47,6 +47,7 @@ import utils.BikListUtils.MandatoryRadioButton
 import utils.FormMappingsConstants._
 import utils._
 import akka.util.Timeout
+import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.HttpEntity.Strict
 
@@ -60,7 +61,6 @@ import uk.gov.hmrc.http.logging.SessionId
 class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   with TestAuthUser with FakePBIKApplication {
 
-  implicit val ac: AuthContext = createDummyUser("testid")
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n=> RegistrationItem("" + (n + 1), active = true, enabled = true))
   val timeoutValue: FiniteDuration = 15 seconds
@@ -276,6 +276,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     override def bikListService: BikListService = new StubBikListService
     override def registrationService = new StubbedRegistrationService
 
+    override val authenticate: AuthAction = new TestAuthAction
+    override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
+
     implicit val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
 
     override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
@@ -331,9 +334,13 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       "state the status is ok " in {
         val mockRegistrationController = new MockRegistrationController
         implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+        implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+          EmpRef("taxOfficeNumber", "taxOfficeReference"),
+          UserName(Name(None, None)),
+          request)
         implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
         implicit val timeout: FiniteDuration = timeoutValue
-        val result = await(mockRegistrationController.loadNextTaxYearOnRemoveData(ac, mockrequest, hc))(timeout)
+        val result = await(mockRegistrationController.loadNextTaxYearOnRemoveData)(timeout)
         result.header.status must be(OK) // 200
       }
     }
@@ -342,11 +349,15 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     "display the correct Biks on the removal screen " in {
       val mockRegistrationController = new MockRegistrationController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+        EmpRef("taxOfficeNumber", "taxOfficeReference"),
+        UserName(Name(None, None)),
+        request)
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val title = Messages("RemoveBenefits.Heading").substring(0,44)
       val testac = createDummyUser("testid")
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.loadNextTaxYearOnRemoveData(testac, mockrequest, hc))(timeout)
+      val result = await(mockRegistrationController.loadNextTaxYearOnRemoveData)(timeout)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.15"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.16"))
@@ -384,7 +395,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("AddBenefits.Heading")
       val mockRegistrationController = new MockRegistrationController
-      implicit val timeout = timeoutValue
+      implicit val timeout: FiniteDuration = timeoutValue
       val result = await(mockRegistrationController.nextTaxYearAddOnPageLoad.apply(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
@@ -400,14 +411,14 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("RemoveBenefits.Heading").substring(0, 10)
       val mockRegistrationController = new MockRegistrationController
-      implicit val timeout = timeoutValue
+      implicit val timeout: FiniteDuration = timeoutValue
       val result = await(mockRegistrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.15"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.16"))
-      result.body.asInstanceOf[Strict].data.utf8String must not include(Messages("ManagingRegistration.add.hint"))
-      result.body.asInstanceOf[Strict].data.utf8String must not include(Messages("ManagingRegistration.cant.hint"))
+      result.body.asInstanceOf[Strict].data.utf8String must not include Messages("ManagingRegistration.add.hint")
+      result.body.asInstanceOf[Strict].data.utf8String must not include Messages("ManagingRegistration.cant.hint")
     }
   }
 
@@ -416,7 +427,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("RemoveBenefits.Heading").substring(0, 10)
       val mockRegistrationController = new MockRegistrationController
-      implicit val timeout = timeoutValue
+      implicit val timeout: FiniteDuration = timeoutValue
       val result = await(mockRegistrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
@@ -453,7 +464,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
 
   "When loading the updateRegisteredBenefitTypes, an authorised user " should {
     "persist their changes and be redirected to the what next page " in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", true, true)), Some(BinaryRadioButtonWithDesc("software", None)))
+      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("software", None)))
       val form = objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
@@ -483,7 +494,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("whatNext.add.heading")
       val mockRegistrationController = new MockRegistrationController
-      implicit val timeout = timeoutValue
+      implicit val timeout: FiniteDuration = timeoutValue
       val result = await(mockRegistrationController.removeNextYearRegisteredBenefitTypes.apply(noSessionIdRequest))(timeout)
       result.header.status must be(UNAUTHORIZED)
       result.body.asInstanceOf[Strict].data.utf8String must include("Request was not authenticated user should be redirected")
@@ -581,31 +592,39 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
 
   "When a user removes a benefit " should {
     "selecting no reason should redirect with error" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", true, true)), None)
+      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)), None)
       val bikList = List(Bik("8", 10))
       val form = objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
-      implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+        EmpRef("taxOfficeNumber", "taxOfficeReference"),
+        UserName(Name(None, None)),
+        request)
       val errorMsg = Messages("RemoveBenefits.reason.no.selection")
       val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac)}(scala.concurrent.ExecutionContext.Implicits.global))
+      val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
       result.header.status must be(SEE_OTHER) // 303
       result.header.headers.getOrElse("Location","") must be("/payrollbik/services/remove-benefit-expense")
       result.header.headers.getOrElse("Set-Cookie","").replace("+", " ").replace("%27", "'") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
     }
 
     "selecting 'other' reason but no explanation should redirect with error" in {
-        val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", true, true)),
+        val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("other", Some(""))))
         val bikList = List(Bik("8", 10))
         val form = objSelectedForm.fill(mockRegistrationList)
         val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
-        implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+        EmpRef("taxOfficeNumber", "taxOfficeReference"),
+        UserName(Name(None, None)),
+        request)
         val errorMsg = Messages("RemoveBenefits.reason.other.required")
         val mockRegistrationController = new MockRegistrationController
         implicit val timeout: FiniteDuration = timeoutValue
-        val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm, ac)}(scala.concurrent.ExecutionContext.Implicits.global))
+        val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
         result.header.status must be(SEE_OTHER) // 303
         result.header.headers.getOrElse("Location","") must be("/payrollbik/services/remove-benefit-expense")
         result.header.headers.getOrElse("Set-Cookie","").replace("+", " ").replace("%E2%80%99", "’") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
@@ -617,10 +636,14 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val bikList = List(Bik("8", 10))
       val form = objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
-      implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+        EmpRef("taxOfficeNumber", "taxOfficeReference"),
+        UserName(Name(None, None)),
+        request)
       val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm)}(scala.concurrent.ExecutionContext.Implicits.global))
+      val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
     }
@@ -632,13 +655,13 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val form = objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsFormUrlEncoded] = AuthenticatedRequest(
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
         UserName(Name(None, None)),
         request)
       val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)(mockRequestForm)}(scala.concurrent.ExecutionContext.Implicits.global))
+      val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
     }

@@ -90,14 +90,6 @@ class TierConnectorSpec extends PlaySpec  with FakePBIKApplication
     }
   }
 
-  "When creating a GET URL with a null organisation it " should {
-    " omit the organisation " in {
-      val tc = new MockHmrcTierConnector
-      val result:String = tc.createGetUrl("theBaseUrl","theURIExtension",null,2015)
-      assert(result == "theBaseUrl/2015/theURIExtension")
-    }
-  }
-
   "When creating a POST URL with an organisation which needs encoding it " should {
     " be properly formed with the %2F encoding " in {
       val tc = new MockHmrcTierConnector

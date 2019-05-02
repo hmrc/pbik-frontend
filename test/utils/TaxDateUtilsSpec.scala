@@ -16,17 +16,11 @@
 
 package utils
 
-import java.util.Date
-
 import controllers.FakePBIKApplication
-import org.joda.time.LocalDate
 import org.joda.time.DateTimeConstants._
-import play.api.Logger
-import utils.TaxDateUtils
-import uk.gov.hmrc.play.test.UnitSpec
-import org.scalatest._
-import play.api.test._
+import org.joda.time.LocalDate
 import play.api.test.Helpers._
+import uk.gov.hmrc.play.test.UnitSpec
 
 class TaxDateUtilsSpec extends UnitSpec with FakePBIKApplication {
 
@@ -38,7 +32,6 @@ class TaxDateUtilsSpec extends UnitSpec with FakePBIKApplication {
       }
     }
   }
-
 
   "The application " should {
     "state the service has not launched if the current tax year is before the year of launch" in {
@@ -83,18 +76,5 @@ class TaxDateUtilsSpec extends UnitSpec with FakePBIKApplication {
       assert(TaxDateUtils.isServiceLaunched(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear)) == true)
     }
   }
-
-
-//  "The tax year range for the current year " should {
-//    " be cy-1, cy and cy+1" in {
-//      val taxYear2014 = new LocalDate(2015, APRIL, 1)
-//      val range = TaxDateUtils.getTaxYearRange()
-//      if (TaxDateUtils.applyYearOverride) {
-//        assert(TaxDateUtils.applyYearOverride)
-//      } else {
-//         assert(range.cy == 2014 && range.cyminus1 == 2013 && range.cyplus1 == 2015)
-//      }
-//    }
-//  }
 
 }

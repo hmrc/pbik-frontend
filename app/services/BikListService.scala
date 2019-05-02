@@ -33,6 +33,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 object BikListService extends BikListService {
   def pbikAppConfig = PbikAppConfig
+
   val tierConnector = new HmrcTierConnector
 }
 
@@ -58,12 +59,9 @@ trait BikListService extends TierConnector with URIInformation with ControllersR
   }
 
   def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
-    val newPath = path match {
-      case "" => getRegisteredPath
-      case _ => path
-    }
-    val response = tierConnector.genericGetCall[List[Bik]](baseUrl,
-      newPath, empRef, year)
+    println("Inside real registeredBenefitsList")
+    val newPath = if (path == "") getRegisteredPath else path
+    val response = tierConnector.genericGetCall[List[Bik]](baseUrl, newPath, empRef, year)
     response
   }
 }

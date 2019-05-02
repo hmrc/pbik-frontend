@@ -16,41 +16,33 @@
 
 package controllers
 
-import models.{Bik, BinaryRadioButton, HeaderTags, TaxYearRange}
 import config.AppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
+import models.{Bik, HeaderTags, TaxYearRange}
 import org.mockito.Mockito._
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.PlaySpec
+import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.filters.csrf.CSRF
-import play.filters.csrf.CSRF.UnsignedTokenProvider
 import services.BikListService
-import uk.gov.hmrc.play.frontend.auth.AuthContext
+import support.TestAuthUser
+import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.test.UnitSpec
-import utils.BikListUtils.MandatoryRadioButton
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction}
-import utils.FormMappingsConstants._
-import support.TestAuthUser
-
-import scala.concurrent.duration._
-import play.api.i18n.Messages.Implicits._
-import play.api.http.HttpEntity.Strict
-import play.api.libs.Crypto
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.http.logging.SessionId
+import scala.concurrent.duration._
 
 class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
                                               with TestAuthUser with FormMappings{
 
-  implicit val user: AuthContext = createDummyUser("testid")
   val timeoutValue: FiniteDuration = 10 seconds
   def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
 
@@ -74,8 +66,9 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
     }
 
     def registeredBenefitsList(year: Int, orgIdentifier: String)(path: String)
-                                       (implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]) :  Future[List[Bik]] = {
-      Future(CYCache)(scala.concurrent.ExecutionContext.Implicits.global)
+                                       (implicit hc: HeaderCarrier, request: Request[_]) :  Future[List[Bik]] = {
+      println("Inside stub registeredBenefitsList")
+      Future.successful(CYCache)
     }
 
   }
@@ -83,7 +76,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
   class MockHomePageController extends HomePageController with TierConnector {
     override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
     override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
-    override def bikListService = new StubBikListService
+    override val bikListService: BikListService = new StubBikListService
     override val authenticate: AuthAction = new TestAuthAction
     override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
 
@@ -186,7 +179,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
           SessionKeys.token -> "RANDOMTOKEN",
           SessionKeys.userId -> userId)
         implicit val timeout : akka.util.Timeout = timeoutValue
-        val result = await(homePageController.onPageLoad.apply(request))(timeout)
+        val result = await(homePageController.onPageLoad(request))(timeout)
         result.header.status must be(OK)
         result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.heading"))
         result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.next.heading", ""+YEAR_RANGE.cy, ""+YEAR_RANGE.cyplus1))

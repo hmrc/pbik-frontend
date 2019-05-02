@@ -321,7 +321,7 @@ trait ManageRegistrationController extends FrontendController with URIInformatio
         removeReason = if (additive) None else Some(removeReason.get._1),
         removeReasonDesc = if (additive) None else Some(removeReason.get._2.getOrElse("")),
         name = Some(request.name),
-        empRef = request.empRef
+        empRef = Some(request.empRef)
       ))
     }
   }

@@ -35,6 +35,10 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
+    println("-")
+    println("In AuthAction")
+    println("-")
+
     authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE")).retrieve(Retrievals.authorisedEnrolments and Retrievals.name) {
       case Enrolments(enrolments) ~ name => {
         enrolments.find(_.key == "IR-PAYE").map {
@@ -62,7 +66,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
 
-object AuthConnector extends PlayAuthConnector {
+class AuthConnector extends PlayAuthConnector {
   override val serviceUrl: String = FrontendAuthConnector.serviceUrl
   override def http: CorePost = WSHttp
 }

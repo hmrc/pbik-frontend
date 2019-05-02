@@ -19,6 +19,7 @@ package controllers.auth
 import config.AppConfig
 import connectors.FrontendAuthConnector
 import controllers.FakePBIKApplication
+import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import org.specs2.mock.Mockito
@@ -30,15 +31,15 @@ import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.frontend.auth.{LoggedInUser, Principal}
+import utils.{TestAuthAction, TestNoSessionCheckAction}
 
 import scala.concurrent.Future
 
 object UserBuilder {
 
-  val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
+  val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference = "taxOfficeReference"), link = ""))
   val accounts = Accounts(epaye = epayeAccount)
-  val authority = new Authority("", accounts,None,None, CredentialStrength.None,ConfidenceLevel.L50, None, None, None, legacyOid = "testOId")
-  val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
+  val authority = new Authority("", accounts, None, None, CredentialStrength.None, ConfidenceLevel.L50, None, None, None, legacyOid = "testOId")
   val principal = Principal(name = Some("TEST_USER"), accounts)
 
 }
@@ -47,22 +48,25 @@ class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication 
 
   class SetUp {
     implicit val hc: HeaderCarrier = HeaderCarrier()
-    implicit def user = UserBuilder()
 
-    def csrfToken: (String, String) = "csrfToken" ->  Crypto.generateToken
+    def csrfToken: (String, String) = "csrfToken" -> Crypto.generateToken
+
     def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
-    def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken).withHeaders()
 
+    def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken).withHeaders()
   }
 
   class TestController extends AuthController {
     override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+    override val authenticate: AuthAction = new TestAuthAction
+    override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
     when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
+
     override protected implicit def authConnector: FrontendAuthConnector.type = FrontendAuthConnector
   }
 
   "When an invalid user logs in, notAuthorised" should {
-    "redirect to the authenticaiton page " in new SetUp  {
+    "redirect to the authenticaiton page " in new SetUp {
       val controller = new TestController()
       val result: Future[Result] = controller.notAuthorised()(fakeRequest)
       status(result) must be(SEE_OTHER) //303
@@ -76,7 +80,6 @@ class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication 
   "When an valid user logs in, but their action is not Authorised" should {
     "redirect to the not authorised page " in new SetUp {
       val controller = new TestController()
-      implicit val testac = user
       implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = fakeRequest
       val result: Future[Result] = controller.notAuthorised()(fakeRequest)
       status(result) must be(OK) // 200
@@ -85,10 +88,9 @@ class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication 
     }
   }
 
-  "When an valid user logs in, and their action is  Authorised" should {
+  "When an valid user logs in, and their action is Authorised" should {
     "be status 200 " in new SetUp {
       val controller = new TestController()
-      implicit val testac = user
       implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = fakeRequest
       val result: Future[Result] = controller.notAuthorised()(fakeRequest)
       val bodyText: String = contentAsString(result)

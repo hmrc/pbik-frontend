@@ -440,7 +440,7 @@ trait ExclusionListController extends FrontendController with URIInformation
       nino = Some(employee),
       iabd = Some(iabdType),
       name = Some(request.name),
-      empRef = request.empRef))
+      empRef = Some(request.empRef)))
   }
 
 }

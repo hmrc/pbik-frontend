@@ -28,8 +28,9 @@ import support.TestAuthUser
 import uk.gov.hmrc.play.test.UnitSpec
 import play.api.test.Helpers._
 import play.api.test.FakeRequest
-import models.{Bik, HeaderTags}
-import play.api.mvc.AnyContentAsEmpty
+import models._
+import play.api.mvc.{AnyContent, AnyContentAsEmpty}
+import uk.gov.hmrc.auth.core.retrieve.Name
 
 import scala.concurrent.duration._
 import scala.concurrent.Future
@@ -38,17 +39,17 @@ import scala.concurrent.Await
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 
-class BikListServiceSpec extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication {
+class BikListServiceSpec extends UnitSpec with TestAuthUser with Mockito with FakePBIKApplication {
 
   "The BIK service " should {
     val mockTierConnector: HmrcTierConnector = mock[HmrcTierConnector]
     val headers: Map[String, String] = Map(HeaderTags.ETAG -> "1", HeaderTags.X_TXID -> "1")
 
-    val bikListService = running(fakeApplication) {
-       new BikListService {
-         override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-         override lazy val pbikHeaders:Map[String,String] = headers
-         override val tierConnector: HmrcTierConnector = mockTierConnector
+    val bikListService: BikListService = running(fakeApplication) {
+      new BikListService {
+        override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+        override lazy val pbikHeaders: Map[String, String] = headers
+        override val tierConnector: HmrcTierConnector = mockTierConnector
       }
     }
     val user: AuthContext = createDummyUser("user001")
@@ -58,23 +59,30 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser  with Mockito with F
       val listBiks = List(Bik("Car & Car Fuel", 30, 10), Bik("Van Fuel", 40, 10))
 
       when(mockTierConnector.genericGetCall[List[Bik]](any, any, any, any)(any, any, any, any)).thenReturn(Future.successful(listBiks))
-      val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-
-      val result: (Map[String, String], List[Bik]) = Await.result(bikListService.currentYearList(user, hc, request), 10 seconds)
-
-      result shouldBe (null, listBiks)
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+        EmpRef("taxOfficeNumber", "taxOfficeReference"),
+        UserName(Name(None, None)),
+        request)
+      val result: (Map[String, String], List[Bik]) = Await.result(bikListService.currentYearList, 10 seconds)
+      result shouldBe(null, listBiks)
     }
 
     "Be able to get the BIKS for the current year - no biks returned" in {
       when(mockTierConnector.genericGetCall[List[Bik]](any, any, any, any)(any, any, any, any)).thenThrow(new IllegalStateException())
-      val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+        EmpRef("taxOfficeNumber", "taxOfficeReference"),
+        UserName(Name(None, None)),
+        request)
       // Intercept exception
       try {
-        val result: Future[(Map[String, String], List[Bik])] = bikListService.currentYearList(user, hc, request)
+        val result: Future[(Map[String, String], List[Bik])] = bikListService.currentYearList
       } catch {
-        case illegal: IllegalStateException => illegal.getMessage// Expected, so pass the test
-        case e: Exception =>  fail ("Did not match expected exception, was expecting IllegalStateException")
+        case illegal: IllegalStateException => illegal.getMessage // Expected, so pass the test
+        case e: Exception => fail("Did not match expected exception, was expecting IllegalStateException")
       }
 
       reset(mockTierConnector) // Reset the mock object so next test can run
@@ -85,22 +93,30 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser  with Mockito with F
 
       when(mockTierConnector.genericGetCall[List[Bik]](any, any, any, any)(any, any, any, any)).thenReturn(Future.successful(listBiks))
       val request = FakeRequest()
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+        EmpRef("taxOfficeNumber", "taxOfficeReference"),
+        UserName(Name(None, None)),
+        request)
+      val result = Await.result(bikListService.nextYearList, 10 seconds)
 
-      val result = Await.result(bikListService.nextYearList(user, hc, request), 10 seconds)
-
-      result shouldBe (null, listBiks)
+      result shouldBe(null, listBiks)
     }
 
     "Be able to get the BIKS for the next year - no biks returned" in {
       when(mockTierConnector.genericGetCall[List[Bik]](any, any, any, any)(any, any, any, any)).thenThrow(new IllegalStateException())
       val request = FakeRequest()
-
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+        EmpRef("taxOfficeNumber", "taxOfficeReference"),
+        UserName(Name(None, None)),
+        request)
       // Intercept exception
       try {
-        val result = bikListService.nextYearList(user, hc, request)
+        val result = bikListService.nextYearList
       } catch {
         case illegal: IllegalStateException => // Expected, so pass the test
-        case e: Exception =>  fail ("Did not match expected exception, was expecting IllegalStateException")
+        case e: Exception => fail("Did not match expected exception, was expecting IllegalStateException")
       }
 
       reset(mockTierConnector) // Reset the mock object so next test can run

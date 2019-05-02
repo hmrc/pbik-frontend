@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.{HmrcTierConnector, TierConnector}
+import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models.TaxYearRange
 import org.mockito.Mockito._
 import org.scalatest.Matchers
@@ -36,7 +37,7 @@ import support.TestAuthUser
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.ws.WSHttp
 import uk.gov.hmrc.play.test.UnitSpec
-import utils.{FormMappings, TaxDateUtils}
+import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction}
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.Crypto
@@ -48,7 +49,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.logging.SessionId
 
 class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
-                                              with TestAuthUser with FormMappings{
+  with TestAuthUser with FormMappings {
 
   override val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(config)
@@ -56,19 +57,24 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
 
   implicit val ac: AuthContext = createDummyUser("testid")
   val timeoutValue: FiniteDuration = 10 seconds
-  def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
+
+  def YEAR_RANGE: TaxYearRange = TaxDateUtils.getTaxYearRange()
 
   val helpForm = Form(
     tuple(
-      "contact-name" -> text,
-      "contact-email" -> text,
-      "contact-comments" -> text
+      a1 = "contact-name" -> text,
+      a2 = "contact-email" -> text,
+      a3 = "contact-comments" -> text
     )
   )
 
   class MockHelpAndContactController extends HelpAndContactController with TierConnector {
     override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+    override val authenticate: AuthAction = new TestAuthAction
+    override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
+
     override def bikListService: BikListService = mock[BikListService]
+
     override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
     override val httpPost: WSHttp = mock[WSHttp]
     override val contactFrontendPartialBaseUrl: String = pbikAppConfig.contactFrontendService
@@ -90,7 +96,6 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
 
     when(httpPost.GET[HttpResponse](anyString)(any, any, any))
       .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
-
   }
 
   "When using help/ contact hmrc, the HelpAndContactController " should {
@@ -98,7 +103,7 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
       val mockHelpController = new MockHelpAndContactController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      val result = await(mockHelpController.submitContactHmrcForm().apply(request)/*(ac, mockrequest, hc)*/)
+      val result = await(mockHelpController.submitContactHmrcForm(request))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include("")
     }
@@ -107,18 +112,13 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
       val mockHelpController = new MockHelpAndContactController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      val helpFormFilled = helpForm.fill("John", "john@gmail.com", "test comment")
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(helpForm.data.toSeq: _*)
-      val result = await(mockHelpController.submitContactHmrcForm().apply(mockRequestForm))
+      val result = await(mockHelpController.submitContactHmrcForm(mockRequestForm))
       result.header.status must be(SEE_OTHER) // 303
 
-      val nextUrl = redirectLocation(Future(result)(scala.concurrent.ExecutionContext.Implicits.global)) match {
-        case Some(s: String) => s
-        case _ => ""
-      }
-      println("Next URL " + nextUrl)
-      val newResult = route(FakeRequest(GET, nextUrl)).get
-      contentAsString(newResult) must include("")
+      val nextUrl = redirectLocation(Future.successful(result)).getOrElse("")
+
+      nextUrl mustBe "/payrollbik/help-and-contact-confirmed"
     }
   }
 }

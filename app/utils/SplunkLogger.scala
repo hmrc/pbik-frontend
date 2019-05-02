@@ -17,7 +17,7 @@
 package utils
 
 import controllers.auth.AuthenticationConnector
-import models.{EiLPerson, EiLPersonList, EmpRef, UserName}
+import models._
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.EpayeAccount
@@ -111,22 +111,31 @@ trait SplunkLogger extends AuthenticationConnector {
     * @param ac     - the implicit Auth Context involved in the audit action
     * @return - a properly formed PBIK DataEvent which may be sent using the logSplunkEvent method.
     */
-  def createDataEvent(tier: spTier, action: spAction, target: spTarget, period: spPeriod, msg: String, nino: Option[String] = None, iabd: Option[String] = None, removeReason: Option[String] = None, removeReasonDesc: Option[String] = None, name: Option[UserName], empRef: EmpRef): DataEvent
-  = {
+  def createDataEvent(tier: spTier,
+                      action: spAction,
+                      target: spTarget,
+                      period: spPeriod,
+                      msg: String,
+                      nino: Option[String] = None,
+                      iabd: Option[String] = None,
+                      removeReason: Option[String] = None,
+                      removeReasonDesc: Option[String] = None,
+                      name: Option[UserName],
+                      empRef: Option[EmpRef]): DataEvent = {
 
     val derivedAuditType = target match {
       case spTarget.BIK => pbik_benefit_type
       case spTarget.EIL => pbik_exclude_type
     }
 
-    val entityIABD = if (iabd.isDefined) Seq((key_iabd -> iabd.get)) else Nil
-    val entityNINO = if (nino.isDefined) Seq((key_nino -> nino.get)) else Nil
-    val entityRemoveReason = if (removeReason.isDefined) Seq((key_remove_reason -> removeReason.get)) else Nil
-    val entityRemoveReasonDesc = if (removeReasonDesc.isDefined) Seq((key_remove_reason_desc -> removeReasonDesc.get)) else Nil
+    val entityIABD = if (iabd.isDefined) Seq(key_iabd -> iabd.get) else Nil
+    val entityNINO = if (nino.isDefined) Seq(key_nino -> nino.get) else Nil
+    val entityRemoveReason = if (removeReason.isDefined) Seq(key_remove_reason -> removeReason.get) else Nil
+    val entityRemoveReasonDesc = if (removeReasonDesc.isDefined) Seq(key_remove_reason_desc -> removeReasonDesc.get) else Nil
 
     val entities = Seq(key_event_name -> pbik_event_name,
       key_gateway_user -> name.map(_.toString).getOrElse(pbik_no_ref),
-      key_empref -> empRef.toString,
+      key_empref -> empRef.map(_.toString).getOrElse(pbik_no_ref),
       key_tier -> tier.toString,
       key_action -> action.toString,
       key_target -> target.toString,
@@ -148,19 +157,13 @@ trait SplunkLogger extends AuthenticationConnector {
     * @param ac
     * @return A DataEvent with the PBIK specific error payload which may be sent using the logSplunkEvent method.
     */
-  def createErrorEvent(tier: spTier, error: spError, msg: String)
-                      (implicit ac: AuthContext): DataEvent = {
+  def createErrorEvent(tier: spTier, error: spError, msg: String)(implicit request: AuthenticatedRequest[_]): DataEvent = {
 
     DataEvent(auditSource = pbik_audit_source, auditType = pbik_error_type,
       detail = Map(
         key_event_name -> pbik_event_name,
-        key_gateway_user -> ac.principal.name.getOrElse(pbik_no_ref),
-        key_empref -> {
-          ac.principal.accounts.epaye.isDefined match {
-            case true => ac.principal.accounts.epaye.get.empRef.toString
-            case false => pbik_no_ref
-          }
-        },
+        key_gateway_user -> request.name.getOrElse(pbik_no_ref),
+        key_empref -> request.empRef.toString,
         key_tier -> tier.toString,
         key_error -> error.toString,
         key_message -> msg
@@ -200,11 +203,8 @@ trait SplunkLogger extends AuthenticationConnector {
     }
   }
 
-  def extractGovernmentGatewayString(implicit ac: AuthContext): String = {
-    ac.principal.name match {
-      case e: Some[String] => e.get
-      case None => pbik_no_ref
-    }
+  def extractGovernmentGatewayString(implicit request: AuthenticatedRequest[_]): String = {
+    request.name.getOrElse(pbik_no_ref)
   }
 
 }
