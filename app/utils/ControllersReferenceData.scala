@@ -18,21 +18,19 @@ package utils
 
 import config.{AppConfig, PbikAppConfig, PbikContext, PbikContextImpl}
 import models._
+import play.api.Logger
+import play.api.Play.current
 import play.api.i18n.Messages
-import play.api.libs.json.{JsValue, Json, OFormat}
+import play.api.i18n.Messages.Implicits._
+import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request, Result}
+import uk.gov.hmrc.http.Upstream5xxResponse
 import utils.BikListUtils.MandatoryRadioButton
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
-import uk.gov.hmrc.play.http._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import play.api.{Logger, Play}
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-import uk.gov.hmrc.http.Upstream5xxResponse
 
 object ControllersReferenceData extends ControllersReferenceData {
   def pbikAppConfig: PbikAppConfig.type = PbikAppConfig

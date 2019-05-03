@@ -31,25 +31,24 @@ import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.{Crypto, json}
 import play.api.libs.json.{JsValue, Json}
+import play.api.libs.{Crypto, json}
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, EiLListService}
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
+import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
-import utils.{TaxDateUtils, _}
+import utils._
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.logging.SessionId
-
 import scala.language.postfixOps
 
 class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with FakePBIKApplication

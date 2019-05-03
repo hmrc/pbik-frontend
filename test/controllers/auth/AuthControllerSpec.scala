@@ -27,22 +27,10 @@ import play.api.libs.Crypto
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.connectors.domain._
-import uk.gov.hmrc.play.frontend.auth.{LoggedInUser, Principal}
 import utils.{TestAuthAction, TestNoSessionCheckAction}
 
 import scala.concurrent.Future
-
-object UserBuilder {
-
-  val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference = "taxOfficeReference"), link = ""))
-  val accounts = Accounts(epaye = epayeAccount)
-  val authority = new Authority("", accounts, None, None, CredentialStrength.None, ConfidenceLevel.L50, None, None, None, legacyOid = "testOId")
-  val principal = Principal(name = Some("TEST_USER"), accounts)
-
-}
 
 class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication {
 
@@ -66,7 +54,7 @@ class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication 
   }
 
   "When an invalid user logs in, notAuthorised" should {
-    "redirect to the authenticaiton page " in new SetUp {
+    "redirect to the authentication page " in new SetUp {
       val controller = new TestController()
       val result: Future[Result] = controller.notAuthorised()(fakeRequest)
       status(result) must be(SEE_OTHER) //303

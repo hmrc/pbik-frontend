@@ -22,8 +22,8 @@ import models.AuthenticatedRequest
 import play.api.Play
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{Action, AnyContent, Request, Result}
-import uk.gov.hmrc.play.frontend.auth.{Actions, AuthContext}
+import play.api.mvc.{Action, AnyContent, Result}
+import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.ControllersReferenceData
 

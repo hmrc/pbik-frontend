@@ -17,12 +17,12 @@
 package controllers.auth
 
 import controllers.FakePBIKApplication
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.PlaySpec
 import support.AuthorityUtils._
 import support.TestAuthUser
 import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
 
 class TestEPayeUser extends EpayeUser
 

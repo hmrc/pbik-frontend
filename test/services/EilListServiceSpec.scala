@@ -16,23 +16,23 @@
 
 package services
 
-import config.{AppConfig, PbikAppConfig}
+import config.AppConfig
 import connectors.HmrcTierConnector
 import controllers.FakePBIKApplication
 import models.{AuthenticatedRequest, EiLPerson, EmpRef, UserName}
-import org.scalatest.Matchers
 import org.mockito.Mockito._
+import org.scalatest.Matchers
 import play.api.libs.json
-import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
+import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.ControllersReferenceData
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.SessionId
 
 import scala.collection.immutable
 

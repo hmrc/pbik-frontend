@@ -1,4 +1,3 @@
-import sbt.Opts.compile
 import sbt._
 
 object AppDependencies {

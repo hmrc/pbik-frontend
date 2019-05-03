@@ -16,25 +16,25 @@
 
 package utils
 
+import controllers.FakePBIKApplication
 import models.{AuthenticatedRequest, EiLPerson, EiLPersonList, UserName}
-import support.AuthorityUtils._
-import play.api.test.Helpers._
+import play.api.libs.Crypto
+import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import support.AuthorityUtils._
 import support.TestAuthUser
+import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.domain.EmpRef
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
-import play.api.libs.Crypto
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
+import uk.gov.hmrc.play.frontend.auth.{LoggedInUser, Principal}
 import uk.gov.hmrc.play.test.UnitSpec
-import controllers.FakePBIKApplication
-import play.api.mvc.{AnyContent, AnyContentAsEmpty}
-import uk.gov.hmrc.auth.core.retrieve.Name
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUser {
 

@@ -30,7 +30,7 @@ import play.api.data.Form
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Lang
 import play.api.i18n.Messages.Implicits._
-import play.api.libs.{Crypto, json}
+import play.api.libs.json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

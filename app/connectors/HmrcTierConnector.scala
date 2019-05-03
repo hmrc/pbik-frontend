@@ -16,20 +16,20 @@
 
 package connectors
 
-import models.{Bik, EmpRef, HeaderTags, PbikError}
-import play.api.Logger
-import play.api.libs.json
-import play.api.libs.json.{JsError, JsResult, JsSuccess, Json}
-import play.api.mvc.Results._
-import play.api.mvc.{AnyContent, Request}
-import uk.gov.hmrc.play.config.ServicesConfig
-import utils.URIInformation
-import utils.Exceptions.GenericServerErrorException
 import java.net.URLEncoder
 
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import models.{EmpRef, HeaderTags, PbikError}
+import play.api.Logger
+import play.api.libs.json
+import play.api.libs.json.{JsError, JsSuccess}
+import play.api.mvc.Request
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.config.ServicesConfig
+import utils.Exceptions.GenericServerErrorException
+import utils.URIInformation
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 trait TierClient {
 

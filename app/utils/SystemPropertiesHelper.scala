@@ -16,8 +16,9 @@
 
 package utils
 
-import scala.sys.SystemProperties
 import play.api.Logger
+
+import scala.sys.SystemProperties
 
 /**
  * Helper to check for System properties and marshal them to the correct types

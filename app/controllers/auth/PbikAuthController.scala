@@ -20,11 +20,11 @@ import java.util.UUID
 
 import controllers.ExternalUrls
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 import uk.gov.hmrc.play.frontend.auth.{Actions, AuthContext, GovernmentGateway, TaxRegime}
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.SessionKeys
 
 object PBIKGovernmentGateway extends GovernmentGateway {
   override val loginURL = ExternalUrls.signIn

@@ -19,9 +19,9 @@ package builders
 import java.util.concurrent.ConcurrentLinkedQueue
 
 import config.PbikFrontendAuditConnector
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.model.Audit._
 import uk.gov.hmrc.play.audit.model.{Audit, AuditAsMagnet, DataEvent}
-import uk.gov.hmrc.http.HeaderCarrier
 
 class TestAudit extends Audit("test", PbikFrontendAuditConnector) {
 

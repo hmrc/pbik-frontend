@@ -17,12 +17,9 @@
 package config
 
 import connectors.WSHttp
-import play.api.Play
-import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
 import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.frontend.config.LoadAuditingConfig
-import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.partials.FormPartialRetriever
 
 object PbikFrontendAuditConnector extends Auditing with AppName with RunMode with RunModeConfig {

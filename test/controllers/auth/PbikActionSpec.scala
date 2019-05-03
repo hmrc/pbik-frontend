@@ -23,9 +23,9 @@ import play.api.http.HttpEntity.Strict
 import play.api.mvc.Results
 import play.api.test.Helpers._
 import support.TestAuthUser
-import uk.gov.hmrc.play.frontend.auth.{AuthContext, TaxRegime}
 import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, TaxRegime}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

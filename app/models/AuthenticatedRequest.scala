@@ -17,6 +17,5 @@
 package models
 
 import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.retrieve.Name
 
 case class AuthenticatedRequest[A](empRef: EmpRef, name: UserName, request:Request[A]) extends WrappedRequest[A](request)

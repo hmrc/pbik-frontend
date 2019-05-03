@@ -21,21 +21,19 @@ import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.auth._
-import play.api.{Logger, Play}
+import play.api.Play.current
+import play.api.i18n.Lang
+import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{LegacyI18nSupport, Result, _}
+import play.api.{Logger, Play}
 import services.BikListService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
 import utils._
 
 import scala.concurrent.Future
-import play.api.i18n.Lang
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-
 import scala.util.{Success, Try}
-import uk.gov.hmrc.http.HeaderCarrier
 
 object HomePageController extends HomePageController with TierConnector
   with AuthenticationConnector {

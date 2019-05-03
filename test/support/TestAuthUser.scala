@@ -17,8 +17,8 @@
 package support
 
 import uk.gov.hmrc.domain.{CtUtr, EmpRef}
-import uk.gov.hmrc.play.frontend.auth.{Attorney, Principal, LoggedInUser, AuthContext}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
+import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
 
 trait TestAuthUser {
 

@@ -17,21 +17,19 @@
 package controllers
 
 import java.util.UUID
+
 import _root_.models._
 import config._
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.auth._
-import play.api.data.Form
-import play.api.i18n.Lang
-import play.api.mvc.{Result, _}
-import services.BikListService
-import utils._
-import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
+import play.api.data.Form
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Result
+import services.BikListService
 import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.play.frontend.controller.FrontendController
+import utils._
 
 object WhatNextPageController extends WhatNextPageController with TierConnector
   with AuthenticationConnector {

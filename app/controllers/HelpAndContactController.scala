@@ -18,23 +18,22 @@ package controllers
 
 import java.net.URLEncoder
 
+import _root_.controllers.actions.{AuthAction, NoSessionCheckAction}
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, PBIKHeaderCarrierForPartialsConverter, TierConnector, WSHttp}
 import controllers.auth._
-import play.api.{Logger, Play}
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
+import play.api.{Logger, Play}
 import play.twirl.api.{Html, HtmlFormat}
 import services.BikListService
+import uk.gov.hmrc.http.{HeaderCarrier, Request => _, _}
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
-import play.api.i18n.Messages.Implicits._
-import uk.gov.hmrc.http.HeaderCarrier
-import play.api.Play.current
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{Request => _, _}
-import _root_.controllers.actions.{AuthAction, NoSessionCheckAction}
 
 object HelpAndContactController extends HelpAndContactController with TierConnector
   with AuthenticationConnector with Actions {

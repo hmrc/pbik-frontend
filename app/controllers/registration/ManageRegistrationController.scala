@@ -24,25 +24,20 @@ import connectors.{HmrcTierConnector, TierConnector}
 import controllers.WhatNextPageController
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
-import play.api.{Logger, Play}
+import play.api.Play
+import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.mvc._
-import play.api.i18n.Lang
+import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils.BikListUtils.MandatoryRadioButton
-import utils.FormMappingsConstants._
 import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
 
 object ManageRegistrationController extends ManageRegistrationController with TierConnector with AuthenticationConnector {
   def pbikAppConfig: PbikAppConfig.type = PbikAppConfig

@@ -16,7 +16,6 @@
 
 package controllers
 
-import controllers.auth.{EpayeUser, PbikActions}
 import play.api.mvc._
 
 object RedirectController extends Controller {

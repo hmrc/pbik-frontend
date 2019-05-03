@@ -20,9 +20,9 @@ import java.util.UUID
 
 import akka.stream.Materializer
 import models.HeaderTags
-import org.specs2.mock.Mockito
 import org.scalatest.TestSuite
 import org.scalatestplus.play.OneAppPerSuite
+import org.specs2.mock.Mockito
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty

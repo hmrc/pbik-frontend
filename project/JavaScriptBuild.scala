@@ -1,6 +1,6 @@
-import sbt._
-import sbt.Keys._
 import com.typesafe.sbt.packager.Keys._
+import sbt.Keys._
+import sbt._
 
 /**
  * Build of UI in JavaScript

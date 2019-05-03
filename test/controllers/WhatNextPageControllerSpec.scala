@@ -16,41 +16,31 @@
 
 package controllers
 
-import java.util.UUID
-
 import config._
-import play.api.data.Form
-
-import scala.concurrent.Future
 import connectors.{HmrcTierConnector, TierConnector}
 import models._
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.LocalDate
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
-import play.api.Application
+import org.scalatestplus.play.PlaySpec
+import play.api.data.Form
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.{Crypto, json}
-import play.api.libs.json.JsValue
+import play.api.libs.json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.filters.csrf.CSRF
-import play.filters.csrf.CSRF.UnsignedTokenProvider
 import services.BikListService
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.test.UnitSpec
-import utils.{ControllersReferenceData, FormMappings, TaxDateUtils}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.time.TaxYear
+import utils.{FormMappings, TaxDateUtils}
+
+import scala.concurrent.Future
 
 
 class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication

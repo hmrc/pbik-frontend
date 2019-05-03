@@ -16,47 +16,36 @@
 
 package controllers
 
-import akka.stream.Materializer
 import config.{AppConfig, PbikAppConfig}
+import connectors.{HmrcTierConnector, TierConnector}
+import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
 import models._
-import connectors.{HmrcTierConnector, TierConnector}
-import org.mockito.Mockito._
-import org.scalatest.Matchers
-import org.scalatest.concurrent.ScalaFutures._
 import org.mockito.Matchers.{eq => mockEq}
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.mockito.Mockito._
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.concurrent.ScalaFutures._
+import org.scalatestplus.play.PlaySpec
 import play.api.data.Form
-import play.api.i18n.{Lang, Messages}
+import play.api.http.HttpEntity.Strict
+import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
 import play.api.libs.json
-import play.api.libs.json.JsValue
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.libs.Crypto
-import play.filters.csrf.CSRF
-import play.filters.csrf.CSRF.UnsignedTokenProvider
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
 import support.TestAuthUser
+import uk.gov.hmrc.auth.core.retrieve.Name
+import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.test.UnitSpec
-import utils.BikListUtils.MandatoryRadioButton
-import utils.FormMappingsConstants._
 import utils._
-import akka.util.Timeout
-import controllers.actions.{AuthAction, NoSessionCheckAction}
-import org.scalatest.concurrent.ScalaFutures
-import play.api.http.HttpEntity.Strict
 
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
-import play.api.i18n.Messages.Implicits._
-import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.logging.SessionId
 
 class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   with TestAuthUser with FakePBIKApplication {

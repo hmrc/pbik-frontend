@@ -19,22 +19,20 @@ package connectors
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import config.RunModeConfig
-import connectors.WSHttp.appNameConfiguration
 import controllers.FakePBIKApplication
 import models.{EmpRef, PbikError}
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.PlaySpec
 import play.api.Play
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results
-import play.api.test.Helpers._
 import support.TestAuthUser
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.HttpAuditing
 import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.http.ws._
 import utils.Exceptions.GenericServerErrorException
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http._
 
 class TierConnectorSpec extends PlaySpec  with FakePBIKApplication
                                           with TestAuthUser with Results {

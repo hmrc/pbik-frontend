@@ -1,5 +1,5 @@
-import sbt._
 import play.sbt.PlayRunHook
+import sbt._
 
 
 /*

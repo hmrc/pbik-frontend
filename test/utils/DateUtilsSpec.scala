@@ -16,9 +16,6 @@
 
 package utils
 
-import models.Bik
-import play.api.test.FakeApplication
-import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.DateUtils._
 

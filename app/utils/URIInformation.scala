@@ -17,9 +17,9 @@
 package utils
 
 import config.RunModeConfig
+import play.api.Logger
 import uk.gov.hmrc.play.config.ServicesConfig
 import utils.Exceptions.InvalidBikTypeURIException
-import play.api.Logger
 
 object URIInformation extends URIInformation
 trait URIInformation extends ServicesConfig with URIValues with FormMappings with RunModeConfig{

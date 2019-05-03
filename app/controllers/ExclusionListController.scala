@@ -19,27 +19,26 @@ package controllers
 import java.util.UUID
 
 import config._
-import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
-import models._
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import play.api.i18n.{Lang, Messages}
+import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
+import models._
+import play.api.Play.current
 import play.api.data.Form
-import play.api.{Logger, Play}
+import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
+import play.api.{Logger, Play}
 import services.{BikListService, EiLListService}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.play.config.RunMode
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.HeaderCarrierConverter
 
 trait ExclusionListConfiguration extends RunMode with RunModeConfig {
 
@@ -91,7 +90,7 @@ trait ExclusionListController extends FrontendController with URIInformation
       year <- mapYearStringToInt(isCurrentYear)
       registeredBenefits: List[Bik] <- bikListService.registeredBenefitsList(year, request.empRef)(getRegisteredPath)
     } yield {
-      if (registeredBenefits.filter(x => x.iabdType.equals(iabdValueURLDeMapper(iabdType))).length > 0) {
+      if (registeredBenefits.exists(x => x.iabdType.equals(iabdValueURLDeMapper(iabdType)))) {
         year
       } else {
         throw new InvalidBikTypeURIException()
@@ -101,7 +100,7 @@ trait ExclusionListController extends FrontendController with URIInformation
 
   def performPageLoad(isCurrentTaxYear: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
       if (exclusionsAllowed) {
         val iabdTypeValue = iabdValueURLDeMapper(iabdType)
         val staticDataRequest = for {
@@ -172,7 +171,7 @@ trait ExclusionListController extends FrontendController with URIInformation
 
   def searchResults(isCurrentTaxYear: String, iabdType: String, formType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
       val iabdTypeValue = iabdValueURLDeMapper(iabdType)
       if (exclusionsAllowed) {
         val form = formType match {
@@ -267,14 +266,13 @@ trait ExclusionListController extends FrontendController with URIInformation
 
   def updateMultipleExclusions(year: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
       val iabdTypeValue = iabdValueURLDeMapper(iabdType)
       if (exclusionsAllowed) {
         val taxYearRange = YEAR_RANGE
         val form = individualsFormWithRadio.bindFromRequest
         val futureResult = processIndividualExclusionForm(form, year, iabdTypeValue, taxYearRange)
         responseErrorHandler(futureResult)
-
       } else {
         Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
       }
@@ -301,10 +299,9 @@ trait ExclusionListController extends FrontendController with URIInformation
     )
   }
 
-  def processExclusionForm(form: Form[(EiLPersonList)], year: String,
+  def processExclusionForm(form: Form[EiLPersonList], year: String,
                            iabdType: String, taxYearRange: TaxYearRange)
                           (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-
     form.fold(
       formWithErrors => Future {
         Ok(views.html.errorPage(INVALID_FORM_ERROR, taxYearRange, year, empRef = Some(request.empRef)))
@@ -324,7 +321,7 @@ trait ExclusionListController extends FrontendController with URIInformation
                      (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent], context: PbikContext): Future[Result] = {
     val yearInt = if (year.equals(utils.FormMappingsConstants.CY)) taxYearRange.cyminus1 else taxYearRange.cy
     val spYear = if (TaxDateUtils.isCurrentTaxYear(yearInt)) spPeriod.CY else spPeriod.CYP1
-    val registrationList: RegistrationList = new RegistrationList(None, List(new RegistrationItem(iabdType, false, false)))
+    val registrationList: RegistrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = false, enabled = false)))
 
     Logger.info(s"Committing Exclusion for scheme ${request.empRef.toString} , with employees Optimisitic Lock: ${excludedIndividual.get.perOptLock}")
 
@@ -336,7 +333,6 @@ trait ExclusionListController extends FrontendController with URIInformation
             auditExclusion(exclusion = true, yearInt, excludedIndividual.get.nino, iabdType)
             Ok(views.html.exclusion.whatNextExclusion(TaxDateUtils.getTaxYearRange(), year,
               iabdType, excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname, request.empRef))
-
           }
           case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "", empRef = Some(request.empRef))(request, context, applicationMessages)).
             withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
@@ -353,11 +349,10 @@ trait ExclusionListController extends FrontendController with URIInformation
       case 0 => None
       case 1 => Some(individuals.active.head)
       case _ => {
-        chosenNino.trim.size match {
+        chosenNino.trim.length match {
           case 0 => Some(individuals.active.head)
-          case _ => individuals.active.filter(x => x.nino == chosenNino).headOption
+          case _ => individuals.active.find(x => x.nino == chosenNino)
         }
-
       }
     }
   }
@@ -405,7 +400,7 @@ trait ExclusionListController extends FrontendController with URIInformation
         values.active
       }
     )
-    val registrationList: RegistrationList = new RegistrationList(None, List(new RegistrationItem(iabdType, false, false)))
+    val registrationList: RegistrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = false, enabled = false)))
 
     val individual = removalsList.head
     val iabdTypeValue = iabdValueURLMapper(iabdType)

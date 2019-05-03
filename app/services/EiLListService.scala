@@ -18,19 +18,13 @@ package services
 
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
-import controllers.auth.{EpayeUser, PbikActions}
-import models.{AuthenticatedRequest, Bik, EiLPerson}
-import play.api.Logger
-import play.api.mvc.Request
-import uk.gov.hmrc.play.frontend.auth.AuthContext
+import controllers.auth.EpayeUser
+import models.{AuthenticatedRequest, EiLPerson}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, SplunkLogger, URIInformation}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 object EiLListService extends EiLListService {
   def pbikAppConfig: PbikAppConfig.type = PbikAppConfig

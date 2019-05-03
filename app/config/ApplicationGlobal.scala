@@ -17,25 +17,20 @@
 package config
 
 import connectors.FrontendAuditConnector
-import play.api.mvc.{EssentialAction, Filters, Request}
+import play.api.mvc.{EssentialAction, Filters}
 import uk.gov.hmrc.play.frontend.filters.{FrontendAuditFilter, FrontendLoggingFilter}
 //import play.filters.headers.{SecurityHeadersConfig, SecurityHeadersFilter, SecurityHeadersParser}
+import com.typesafe.config.Config
+import net.ceedubs.ficus.Ficus._
+import play.api.Mode.Mode
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Request
+import play.api.{Application, Configuration, _}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.config._
 import uk.gov.hmrc.play.frontend.bootstrap._
-import play.api._
-import uk.gov.hmrc.crypto.ApplicationCrypto
-import play.api.Mode.Mode
-import java.io.File
-import com.typesafe.config.Config
-import net.ceedubs.ficus.Ficus._
-import play.api.mvc.Request
-import play.twirl.api.Html
-import play.api.{Application, Configuration}
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 import uk.gov.hmrc.play.frontend.filters.MicroserviceFilterSupport
-import play.api.Mode.Mode
 
 trait RunModeConfig {
   def appNameConfiguration: Configuration = Play.current.configuration

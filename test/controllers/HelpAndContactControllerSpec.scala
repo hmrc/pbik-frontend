@@ -21,32 +21,25 @@ import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models.TaxYearRange
 import org.mockito.Mockito._
-import org.scalatest.Matchers
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.http.HttpEntity.Strict
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.filters.csrf.CSRF
-import play.filters.csrf.CSRF.UnsignedTokenProvider
 import services.BikListService
 import support.TestAuthUser
+import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.http.ws.WSHttp
-import uk.gov.hmrc.play.test.UnitSpec
 import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction}
-import play.api.i18n.Messages.Implicits._
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.Crypto
-import play.mvc.Http
 
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 import scala.concurrent.duration._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.http.logging.SessionId
 
 class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
   with TestAuthUser with FormMappings {
@@ -98,7 +91,7 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
       .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
   }
 
-  "When using help/ contact hmrc, the HelpAndContactController " should {
+  "When using help / contact hmrc, the HelpAndContactController " should {
     "get 500 response when there is an empty form" in {
       val mockHelpController = new MockHelpAndContactController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest

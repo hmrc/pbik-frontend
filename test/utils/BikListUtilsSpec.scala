@@ -16,10 +16,10 @@
 
 package utils
 
-import uk.gov.hmrc.play.test.UnitSpec
-import play.api.test.Helpers._
-import play.api.test.FakeApplication
 import models.Bik
+import play.api.test.FakeApplication
+import play.api.test.Helpers._
+import uk.gov.hmrc.play.test.UnitSpec
 
 class BikListUtilsSpec extends UnitSpec {
 

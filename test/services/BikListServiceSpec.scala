@@ -17,27 +17,22 @@
 package services
 
 import config.AppConfig
-import connectors.{HmrcTierConnector, TierConnector}
+import connectors.HmrcTierConnector
 import controllers.FakePBIKApplication
-import org.scalatest.mock.MockitoSugar
-import org.mockito.Matchers.{eq => Meq, _}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.{mock, reset, verify, when}
-import org.specs2.mock.Mockito
-import support.TestAuthUser
-import uk.gov.hmrc.play.test.UnitSpec
-import play.api.test.Helpers._
-import play.api.test.FakeRequest
 import models._
+import org.mockito.Mockito.{reset, when}
+import org.specs2.mock.Mockito
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
-
-import scala.concurrent.duration._
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Await
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
+import uk.gov.hmrc.play.test.UnitSpec
+
+import scala.concurrent.{Await, Future}
+import scala.concurrent.duration._
 
 class BikListServiceSpec extends UnitSpec with TestAuthUser with Mockito with FakePBIKApplication {
 

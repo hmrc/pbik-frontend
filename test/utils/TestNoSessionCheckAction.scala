@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package utils.Exceptions
+package utils
 
-class InvalidYearURIException extends Exception {
+import controllers.actions.NoSessionCheckAction
+import models.AuthenticatedRequest
+import play.api.mvc.Result
 
-}
+import scala.concurrent.Future
 
-class InvalidBikTypeURIException extends Exception {
-
-}
-
-class GenericServerErrorException(val message: String) extends Exception(message) {
-
+class TestNoSessionCheckAction extends NoSessionCheckAction {
+  override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
+      block(request)
+  }
 }

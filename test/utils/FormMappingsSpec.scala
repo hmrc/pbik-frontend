@@ -16,10 +16,11 @@
 
 package utils
 
-import uk.gov.hmrc.play.test.UnitSpec
-import scala.concurrent.ExecutionContext.Implicits.global
-import utils.FormMappingsConstants._
 import org.joda.time.DateTimeConstants._
+import uk.gov.hmrc.play.test.UnitSpec
+import utils.FormMappingsConstants._
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class FormMappingsSpec extends UnitSpec {
 

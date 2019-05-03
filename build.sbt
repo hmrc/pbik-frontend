@@ -1,7 +1,7 @@
 import sbt.Def
+import scoverage.ScoverageSbtPlugin._
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
-import ScoverageSbtPlugin._
 
 val appName = "pbik-frontend"
 

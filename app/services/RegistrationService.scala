@@ -27,7 +27,6 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{AnyContent, Result}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
 

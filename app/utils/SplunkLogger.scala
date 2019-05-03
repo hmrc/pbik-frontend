@@ -18,17 +18,12 @@ package utils
 
 import controllers.auth.AuthenticationConnector
 import models._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.EpayeAccount
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.Logger
-import uk.gov.hmrc.auth.core.retrieve.Name
-
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 object SplunkLogger {
 
@@ -92,7 +87,12 @@ trait SplunkLogger extends AuthenticationConnector {
     override def toString: String = Value.toString
   }
 
-  import spTier._, spAction._, spError._, spTarget._, spPeriod._, SplunkLogger._
+  import SplunkLogger._
+  import spAction._
+  import spError._
+  import spPeriod._
+  import spTarget._
+  import spTier._
 
   /**
     * Method creates a PBIK Specific DataEvent which will be sent to splunk so product owners

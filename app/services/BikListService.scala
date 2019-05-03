@@ -18,18 +18,13 @@ package services
 
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
-import models.{AuthenticatedRequest, Bik, EmpRef, UserName}
+import models.{AuthenticatedRequest, Bik, EmpRef}
 import play.api.mvc.Request
-import uk.gov.hmrc.play.frontend.auth.AuthContext
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, URIInformation}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-import uk.gov.hmrc.auth.core.retrieve.Name
-
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 object BikListService extends BikListService {
   def pbikAppConfig = PbikAppConfig
