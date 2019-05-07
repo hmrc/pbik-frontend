@@ -35,43 +35,43 @@ class SystemPropertiesHelperSpec extends UnitSpec with FakePBIKApplication with 
   }
 
 
-  "When getting a Boolean system property which doesnt exist the helper " should {
-    "return the default value " in {
+  "When getting a Boolean system property which doesnt exist the helper" should {
+    "return the default value" in {
         val s = new StubSystemProperties
         assert(s.getBooleanProperty("Wibble",false) == false)
     }
   }
 
-  "When getting an Int system property which doesnt exist the helper " should {
-    "return the default value " in {
+  "When getting an Int system property which doesnt exist the helper" should {
+    "return the default value" in {
       val s = new StubSystemProperties
       assert(s.getIntProperty("Intible",5) == 5)
     }
   }
 
-  "When getting a String system property which doesnt exist the helper " should {
-    "return the default value " in {
+  "When getting a String system property which doesnt exist the helper" should {
+    "return the default value" in {
       val s = new StubSystemProperties
       assert(s.getStringProperty("Wibble","bibble") == "bibble")
     }
   }
 
-  "When getting a Boolean system property which does exist the helper " should {
-    "return the default value " in {
+  "When getting a Boolean system property which does exist the helper" should {
+    "return the default value" in {
       val s = new StubSystemProperties
       assert(s.getBooleanProperty("searchBoolean",false) == true)
     }
   }
 
-  "When getting an Int system property which does exist the helper " should {
-    "return the default value " in {
+  "When getting an Int system property which does exist the helper" should {
+    "return the default value" in {
       val s = new StubSystemProperties
       assert(s.getIntProperty("searchInt",-1) == 555)
     }
   }
 
-  "When getting a String system property which does exist the helper " should {
-    "return the default value " in {
+  "When getting a String system property which does exist the helper" should {
+    "return the default value" in {
       val s = new StubSystemProperties
       assert(s.getStringProperty("searchString",null) == "foundString")
     }

@@ -86,8 +86,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     ))
   }
 
-  "When logging events, the SplunkLogger " should {
-    "return a properly formatted DataEvent for Pbik events " in new SetUp {
+  "When logging events, the SplunkLogger" should {
+    "return a properly formatted DataEvent for Pbik events" in new SetUp {
       running(fakeApplication) {
         val d: DataEvent = controller.createDataEvent(controller.spTier.FRONTEND,
           controller.spAction.ADD,
@@ -111,8 +111,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When logging events, the SplunkLogger without a ePaye account " should {
-    "return a properly formatted DataEvent with a empref default for Pbik events " in new SetUp {
+  "When logging events, the SplunkLogger without a ePaye account" should {
+    "return a properly formatted DataEvent with a empref default for Pbik events" in new SetUp {
       running(fakeApplication) {
         val epayeAccount = None
         val accounts = Accounts(epaye = epayeAccount)
@@ -141,9 +141,9 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When logging events, the SplunkLogger " should {
+  "When logging events, the SplunkLogger" should {
 
-    "complete successfully when sending a PBIK DataEvent " in new SetUp {
+    "complete successfully when sending a PBIK DataEvent" in new SetUp {
       running(fakeApplication) {
 
         val r: AuditResult = await(controller.logSplunkEvent(pbikDataEvent))
@@ -152,8 +152,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When logging events, the SplunkLogger " should {
-    "complete successfully when sending a general DataEvent " in new SetUp {
+  "When logging events, the SplunkLogger" should {
+    "complete successfully when sending a general DataEvent" in new SetUp {
       running(fakeApplication) {
 
         val nonPbikEvent = DataEvent(auditSource = "TEST", auditType = "TEST-AUDIT-TYPE", detail = Map(
@@ -171,9 +171,9 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When logging events, the SplunkLogger " should {
+  "When logging events, the SplunkLogger" should {
 
-    "return a properly formatted DataEvent for Pbik errors " in new SetUp {
+    "return a properly formatted DataEvent for Pbik errors" in new SetUp {
       running(fakeApplication) {
 
         implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -198,8 +198,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-/*  "When logging events, the SplunkLogger " should {
-    "mark the empref with a default if one is not present " in new SetUp {
+/*  "When logging events, the SplunkLogger" should {
+    "mark the empref with a default if one is not present" in new SetUp {
       running(fakeApplication) {
 
         implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -225,8 +225,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }*/
 
-  "When logging events, the SplunkLogger " should {
-    "return the correct splunk field names " in new SetUp {
+  "When logging events, the SplunkLogger" should {
+    "return the correct splunk field names" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
@@ -246,8 +246,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When extracting a Nino from an empty list the conroller " should {
-    "return a not found label " in new SetUp {
+  "When extracting a Nino from an empty list the conroller" should {
+    "return a not found label" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
@@ -258,8 +258,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When extracting a Nino from a list the conroller " should {
-    "return a not found label " in new SetUp {
+  "When extracting a Nino from a list the conroller" should {
+    "return a not found label" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
@@ -270,8 +270,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When extracting a Nino from a Person list the conroller " should {
-    "return a not found label " in new SetUp {
+  "When extracting a Nino from a Person list the conroller" should {
+    "return a not found label" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
@@ -282,8 +282,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When extracting a Nino from an empty Person List the conroller " should {
-    "return a not found label " in new SetUp {
+  "When extracting a Nino from an empty Person List the conroller" should {
+    "return a not found label" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
@@ -294,8 +294,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When extracting the Government Gateway Id from a valid user the controller " should {
-    "return the Government Gateway name " in new SetUp {
+  "When extracting the Government Gateway Id from a valid user the controller" should {
+    "return the Government Gateway name" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
@@ -311,8 +311,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When extracting the Government Gateway Id from an invalid user the controller " should {
-    "return the default " in new SetUp {
+  "When extracting the Government Gateway Id from an invalid user the controller" should {
+    "return the default" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"

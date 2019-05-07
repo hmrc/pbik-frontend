@@ -128,15 +128,15 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     override def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
   }
 
-  "When instantiating the ControllersReferenceData it " should {
-    "not have a null config " in {
+  "When instantiating the ControllersReferenceData it" should {
+    "not have a null config" in {
       val mockControllerConfig = ControllersReferenceData.pbikAppConfig
       assert(mockControllerConfig != null)
     }
   }
 
-  "When CY mode is disabled the controller " should {
-    "display the result passsed to it " in {
+  "When CY mode is disabled the controller" should {
+    "display the result passsed to it" in {
       val mockController = MockCYDisabledControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -152,8 +152,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When CY mode is enabled the controller " should {
-    "display the result passsed to it " in {
+  "When CY mode is enabled the controller" should {
+    "display the result passsed to it" in {
       val mockController = MockCYEnabledControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -168,8 +168,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When parsing the response in the responseErrorHandler the controller " should {
-    "show an error page when the Future completes with a NoSuchElementException " in {
+  "When parsing the response in the responseErrorHandler the controller" should {
+    "show an error page when the Future completes with a NoSuchElementException" in {
       val mockController = MockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -184,8 +184,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When parsing the response in the responseErrorHandler the controller " should {
-    "show an error page when the Future completes with a InvalidYearURIException " in {
+  "When parsing the response in the responseErrorHandler the controller" should {
+    "show an error page when the Future completes with a InvalidYearURIException" in {
       val mockController = MockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -200,8 +200,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When parsing the response in the responseErrorHandler the controller " should {
-    "show an error page when the Future completes with a InvalidBikTypeURIException " in {
+  "When parsing the response in the responseErrorHandler the controller" should {
+    "show an error page when the Future completes with a InvalidBikTypeURIException" in {
       val mockController = MockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -216,8 +216,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When parsing the response in the responseErrorHandler the controller " should {
-    "show an error page when the Future completes with a Upstream5xxResponse " in {
+  "When parsing the response in the responseErrorHandler the controller" should {
+    "show an error page when the Future completes with a Upstream5xxResponse" in {
       val mockController = MockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -236,8 +236,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When parsing the response in the responseErrorHandler the controller " should {
-    "show the default error page if the Upstream5xxResponse error message is null " in {
+  "When parsing the response in the responseErrorHandler the controller" should {
+    "show the default error page if the Upstream5xxResponse error message is null" in {
       val mockController = MockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -256,8 +256,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When parsing the response in the responseErrorHandler the controller " should {
-    "show the default error page if the Upstream5xxResponse error has no number " in {
+  "When parsing the response in the responseErrorHandler the controller" should {
+    "show the default error page if the Upstream5xxResponse error has no number" in {
       val mockController = MockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -276,8 +276,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When parsing the response in the responseErrorHandler the controller " should {
-    "show the default error page if the Upstream5xxResponse error omits the comma delimeter " in {
+  "When parsing the response in the responseErrorHandler the controller" should {
+    "show the default error page if the Upstream5xxResponse error omits the comma delimeter" in {
       val mockController = MockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -296,8 +296,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When parsing the response in the responseErrorHandler the controller " should {
-    "show an error page when the Future completes with a GenericServerErrorException " in {
+  "When parsing the response in the responseErrorHandler the controller" should {
+    "show an error page when the Future completes with a GenericServerErrorException" in {
       val mockController = MockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -312,7 +312,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When parsing the response in the responseErrorHandler the controller " should {
+  "When parsing the response in the responseErrorHandler the controller" should {
     "show the default error page if the GenericServerErrorException cannot be parsed" in {
       val mockController = MockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
@@ -330,7 +330,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When parsing the response in the responseErrorHandler the controller " should {
+  "When parsing the response in the responseErrorHandler the controller" should {
     "show the default error page when exception is unknown" in {
       val mockController = MockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest

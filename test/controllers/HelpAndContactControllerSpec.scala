@@ -91,7 +91,7 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
       .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
   }
 
-  "When using help / contact hmrc, the HelpAndContactController " should {
+  "When using help / contact hmrc, the HelpAndContactController" should {
     "get 500 response when there is an empty form" in {
       val mockHelpController = new MockHelpAndContactController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
@@ -101,7 +101,7 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
       result.body.asInstanceOf[Strict].data.utf8String must include("")
     }
 
-    "be able to submit the contact form successfully " in {
+    "be able to submit the contact form successfully" in {
       val mockHelpController = new MockHelpAndContactController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))

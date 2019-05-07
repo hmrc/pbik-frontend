@@ -209,7 +209,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
 
   }
 
-  "When loading the what next page " must {
+  "When loading the what next page" must {
     "(Register a BIK current year) Single benefit- state the status is ok and correct page is displayed" in {
       val mockWhatNextPageController = new MockWhatNextPageController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest

@@ -19,7 +19,7 @@ package controllers
 import config.AppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models.{Bik, HeaderTags, TaxYearRange}
+import models._
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.http.HttpEntity.Strict
@@ -53,21 +53,20 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
     lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))/*(n => new Bik("" + (n + 1), 10))*/
     override lazy val pbikHeaders:Map[String,String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
 
-    def currentYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]):
+    override def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
         Future[(Map[String, String], List[Bik])] = {
 
       Future.successful((Map(HeaderTags.ETAG -> "1"),CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
     }
 
-    def nextYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]):
+    override def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
         Future[(Map[String, String], List[Bik])] = {
       
       Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
     }
 
-    def registeredBenefitsList(year: Int, orgIdentifier: String)(path: String)
+    override def registeredBenefitsList(year: Int,  empRef: EmpRef)(path: String)
                                        (implicit hc: HeaderCarrier, request: Request[_]) :  Future[List[Bik]] = {
-      println("Inside stub registeredBenefitsList")
       Future.successful(CYCache)
     }
 

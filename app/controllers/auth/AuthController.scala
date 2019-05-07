@@ -17,12 +17,11 @@
 package controllers.auth
 
 import config.PbikAppConfig
-import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models.AuthenticatedRequest
+import controllers.actions.MinimalAuthAction
 import play.api.Play
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{Action, AnyContent, Result}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.ControllersReferenceData
@@ -31,21 +30,19 @@ import scala.concurrent.Future
 
 object AuthController extends AuthController with AuthenticationConnector {
   def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
-  val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
-  val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
+  val authenticate: MinimalAuthAction = Play.current.injector.instanceOf[MinimalAuthAction]
 }
 
 trait AuthController extends FrontendController with Actions with ControllersReferenceData {
 
-  val authenticate: AuthAction
-  val noSessionCheck: NoSessionCheckAction
+  val authenticate: MinimalAuthAction
 
   def notAuthorised:Action[AnyContent] = authenticate.async {
     implicit request =>
       notAuthorisedResult
   }
 
-  private[auth] def notAuthorisedResult(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    Future.successful(Ok(views.html.enrol(Some(request.empRef))))
+  def notAuthorisedResult(implicit request: Request[AnyContent]): Future[Result] = {
+    Future.successful(Ok(views.html.enrol(None)))
   }
 }

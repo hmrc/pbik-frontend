@@ -31,12 +31,12 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.test.UnitSpec
 
-import scala.concurrent.{Await, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
 
 class BikListServiceSpec extends UnitSpec with TestAuthUser with Mockito with FakePBIKApplication {
 
-  "The BIK service " should {
+  "The BIK service" should {
     val mockTierConnector: HmrcTierConnector = mock[HmrcTierConnector]
     val headers: Map[String, String] = Map(HeaderTags.ETAG -> "1", HeaderTags.X_TXID -> "1")
 

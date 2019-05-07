@@ -29,9 +29,6 @@ class TestAuthAction extends AuthAction {
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     if (request.session.get("sessionId").getOrElse("").startsWith("session")) {
       implicit val authenticatedRequest: AuthenticatedRequest[A] = AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      println("-")
-      println("In TestAuthAction")
-      println("-")
       block(authenticatedRequest)
     } else {
       Future(Unauthorized("Request was not authenticated user should be redirected"))

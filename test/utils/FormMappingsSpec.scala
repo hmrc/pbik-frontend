@@ -27,8 +27,8 @@ class FormMappingsSpec extends UnitSpec {
   object FormHolder extends FormMappings
 
 
-  "An input date " should {
-    " be zero padded, if only one digit of the date is supplied " in {
+  "An input date" should {
+   " be zero padded, if only one digit of the date is supplied" in {
       assert(FormHolder.addZeroIfNeeded("1") == "01")
       assert(FormHolder.addZeroIfNeeded("2") == "02")
       assert(FormHolder.addZeroIfNeeded("3") == "03")
@@ -46,26 +46,26 @@ class FormMappingsSpec extends UnitSpec {
     }
   }
 
-  "A Valid date " should {
-    " be valid in all cases when the days in the year are greater than 0 and less than 29 " in {
+  "A Valid date" should {
+   " be valid in all cases when the days in the year are greater than 0 and less than 29" in {
       RANGE_28_DAYS.map { i => FormHolder.addZeroIfNeeded(i.toString) }.foreach { a => assert( FormHolder.isValidDate( (a,"01","2014") ) ) }
     }
   }
 
-  "A day of 29 " should {
-    " be valid in Febuary during a leap year ( such as 2016 )" in {
+  "A day of 29" should {
+   " be valid in Febuary during a leap year ( such as 2016 )" in {
       assert ( FormHolder.isValidDate( ("29","02","2016") ) == true )
     }
   }
 
-  "A day of 29 " should {
-    " not be valid in February when its not a leap year ( such as 2014 )" in {
+  "A day of 29" should {
+   " not be valid in February when its not a leap year ( such as 2014 )" in {
       assert ( FormHolder.isValidDate( ("29","02","2014") ) == false )
     }
   }
 
-  "A day of 31 " should {
-    " not be valid in February, April, June, Septmember, November" in {
+  "A day of 31" should {
+   " not be valid in February, April, June, Septmember, November" in {
       assert(FormHolder.isValidDate( ("31",NOVEMBER.toString,"2014") ) == false)
       assert(FormHolder.isValidDate( ("31",APRIL.toString,"2014") ) == false)
       assert(FormHolder.isValidDate( ("31",SEPTEMBER.toString,"2014") ) == false)
@@ -73,14 +73,14 @@ class FormMappingsSpec extends UnitSpec {
     }
   }
 
-  "A day greater than 31 " should {
-    " not be valid in any month " in {
+  "A day greater than 31" should {
+   " not be valid in any month" in {
       (JANUARY to DECEMBER).map { i => FormHolder.addZeroIfNeeded(i.toString) }.foreach { a => assert ( FormHolder.isValidDate( ("32",a,"2014") ) == false ) }
     }
   }
 
-  "A day equal to 31 " should {
-    " be valid in Jan, May, Jul,Aug,Oct,Dec " in {
+  "A day equal to 31" should {
+   " be valid in Jan, May, Jul,Aug,Oct,Dec" in {
       assert(FormHolder.isValidDate( ("31",JANUARY.toString,"2014") ) == true)
       assert(FormHolder.isValidDate( ("31",MARCH.toString,"2014") ) == true)
       assert(FormHolder.isValidDate( ("31",MAY.toString,"2014") ) == true)
@@ -91,26 +91,26 @@ class FormMappingsSpec extends UnitSpec {
     }
   }
 
-  "A day value less than 1 " should {
-    " not be valid in a month " in {
+  "A day value less than 1" should {
+   " not be valid in a month" in {
       (0, -1).map { i => FormHolder.addZeroIfNeeded(i.toString) }.foreach { a => assert ( FormHolder.isValidDate( (a,"01","2014") ) == false ) }
     }
   }
 
-  "A month value less than 1 " should {
-    " not be valid in a year " in {
+  "A month value less than 1" should {
+   " not be valid in a year" in {
       (0, -1).map { i => FormHolder.addZeroIfNeeded(i.toString) }.foreach { a => assert ( FormHolder.isValidDate( ("01",a,"2014") ) == false ) }
     }
   }
 
-  "A month value greater than 12 " should {
-    " not be valid in a year " in {
+  "A month value greater than 12" should {
+   " not be valid in a year" in {
       (DECEMBER+1 to DECEMBER+20).map { i => FormHolder.addZeroIfNeeded(i.toString) }.foreach { a => assert ( FormHolder.isValidDate( ("01",a,"2014") ) == false ) }
     }
   }
 
-  "A month value less than 12 " should {
-    " not be valid in a year " in {
+  "A month value less than 12" should {
+   " not be valid in a year" in {
       (-5 to 0).map { i => FormHolder.addZeroIfNeeded(i.toString) }.foreach { a => assert ( FormHolder.isValidDate( ("01",a,"2014") ) == false ) }
     }
   }

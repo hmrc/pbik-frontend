@@ -46,36 +46,36 @@ class EpayeUserSpec extends PlaySpec with FakePBIKApplication with TestAuthUser 
     new AuthContext(user, principal, None, None, None, None)
   }
 
-  "When accessing the PBIKEpayeRegime the unauthorisedLandingPage " should {
-    "  be set correctly " in {
+  "When accessing the PBIKEpayeRegime the unauthorisedLandingPage" should {
+   "be set correctly" in {
       val ob = PBIKEpayeRegime
       assert(ob.unauthorisedLandingPage.contains("/payrollbik/not-authorised"))
     }
   }
 
-  "When accessing the PBIKEpayeRegime the authenticationType " should {
-    " should not be null " in {
+  "When accessing the PBIKEpayeRegime the authenticationType" should {
+   "should not be null" in {
       val ob = PBIKEpayeRegime
       assert(ob.authenticationType != null)
     }
   }
 
-  "When accessing the PBIKEpayeRegime a valid account  " should {
-    " return true " in {
+  "When accessing the PBIKEpayeRegime a valid account " should {
+   " return true" in {
       val ob = PBIKEpayeRegime
       assert(ob.isAuthorised(createDummyUser("VALID").principal.accounts))
     }
   }
 
-  "When accessing the PBIKEpayeRegime a no EPaye account  " should {
-    " return false " in {
+  "When accessing the PBIKEpayeRegime a no EPaye account " should {
+   " return false" in {
       val ob = PBIKEpayeRegime
       assert(ob.isAuthorised(createDummyNonEpayeUser("INVALID").principal.accounts) == false)
     }
   }
 
-  "When an EpayeUser is created a valid EmpRef " should {
-    " be available " in {
+  "When an EpayeUser is created a valid EmpRef" should {
+   " be available" in {
       val controller = new TestEPayeUser()
       val result = controller.ePayeUtr(v)
       assert(result.taxOfficeNumber == "123")
@@ -83,8 +83,8 @@ class EpayeUserSpec extends PlaySpec with FakePBIKApplication with TestAuthUser 
     }
   }
 
-  "When an EpayeUser is created without a valid EmpRef it " should {
-    " not return an EmpRef " in {
+  "When an EpayeUser is created without a valid EmpRef it" should {
+   " not return an EmpRef" in {
       val controller = new TestEPayeUser()
       val result = controller.ePayeUtr(i)
       assert(result == null)

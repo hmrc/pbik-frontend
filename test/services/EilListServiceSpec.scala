@@ -54,7 +54,7 @@ with TestAuthUser with ControllersReferenceData {
   }
 
 
-  "When instantiating the EilListService " in {
+  "When instantiating the EilListService" in {
     running(fakeApplication) {
       val eilService: EiLListService = EiLListService
       assert(eilService.pbikAppConfig != null)
@@ -62,7 +62,7 @@ with TestAuthUser with ControllersReferenceData {
     }
   }
 
-  "When calling the EILService it " should {
+  "When calling the EILService it" should {
     "return an empty list" in {
       running(fakeApplication) {
         val eilService: EiLListService =  MockEiLListService

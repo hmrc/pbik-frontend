@@ -80,11 +80,6 @@ trait HomePageController extends FrontendController with URIInformation
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-
-      println("----------------")
-      println(bikListService.baseUrl)
-      println("----------------")
-
       val taxYearRange = TaxDateUtils.getTaxYearRange()
       val pageLoadFuture = for {
         // Get the available count of biks available for each tax year

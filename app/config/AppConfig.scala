@@ -44,13 +44,13 @@ object PbikAppConfig extends AppConfig with ServicesConfig with RunModeConfig {
 
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing key: $key"))
 
-  override lazy val contactFrontendService = baseUrl("contact-frontend")
+  override lazy val contactFrontendService: String = baseUrl("contact-frontend")
   override lazy val contactFormServiceIdentifier = "PayrollBIK"
   override lazy val maximumExclusions:Int = configuration.getInt("pbik.exclusions.maximum").getOrElse(300)
 
   private lazy val contactHost = configuration.getString("contact-frontend.host").getOrElse("")
 
-  override lazy val assetsPrefix = loadConfig("assets.url") + loadConfig("assets.version")
+  override lazy val assetsPrefix: String = loadConfig("assets.url") + loadConfig("assets.version")
   override lazy val reportAProblemPartialUrl = s"${baseUrl("contact-frontend")}/contact/problem_reports"
 
   override lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
@@ -58,13 +58,16 @@ object PbikAppConfig extends AppConfig with ServicesConfig with RunModeConfig {
   override lazy val analyticsToken: String = loadConfig("google-analytics.token")
   override lazy val analyticsHost: String = loadConfig("google-analytics.host")
 
-  override lazy val cyEnabled = configuration.getBoolean("pbik.enabled.cy").getOrElse(false)
-  override lazy val biksNotSupported:List[Int] = (configuration.getIntList("pbik.unsupported.biks.cy1").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
-  override lazy val biksNotSupportedCY:List[Int] = (configuration.getIntList("pbik.unsupported.biks.cy").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
-  override lazy val biksDecommissioned:List[Int] = (configuration.getIntList("pbik.decommissioned.biks").getOrElse(Collections.emptyList[Integer]())).toArray(new Array[Integer](0)).toList.map(_.intValue())
+  override lazy val cyEnabled: Boolean = configuration.getBoolean("pbik.enabled.cy").getOrElse(false)
+  override lazy val biksNotSupported:List[Int] = configuration.getIntList("pbik.unsupported.biks.cy1").getOrElse(Collections.emptyList[Integer]()).toArray(new Array[Integer](0)).toList.map(_.intValue())
+  override lazy val biksNotSupportedCY:List[Int] = configuration.getIntList("pbik.unsupported.biks.cy").getOrElse(Collections.emptyList[Integer]()).toArray(new Array[Integer](0)).toList.map(_.intValue())
+  override lazy val biksDecommissioned:List[Int] = configuration.getIntList("pbik.decommissioned.biks").getOrElse(Collections.emptyList[Integer]()).toArray(new Array[Integer](0)).toList.map(_.intValue())
 
   lazy val urBannerToggle:Boolean = loadConfig("urBanner.toggle").toBoolean
   override lazy val urBannerLink: String = loadConfig("urBanner.link")
   override lazy val serviceSignOut: String = loadConfig("service-signout.url")
+
+  lazy val loginUrl: String = loadConfig("government-gateway-sign-in.host")
+  lazy val loginContinueUrl: String = loadConfig("login-callback.url")
 
 }

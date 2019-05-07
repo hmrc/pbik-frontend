@@ -19,7 +19,7 @@ package controllers.auth
 import config.AppConfig
 import connectors.FrontendAuthConnector
 import controllers.FakePBIKApplication
-import controllers.actions.{AuthAction, NoSessionCheckAction}
+import controllers.actions.MinimalAuthAction
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import org.specs2.mock.Mockito
@@ -28,7 +28,8 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{TestAuthAction, TestNoSessionCheckAction}
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import utils.TestMinimalAuthAction
 
 import scala.concurrent.Future
 
@@ -46,41 +47,18 @@ class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication 
 
   class TestController extends AuthController {
     override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override val authenticate: AuthAction = new TestAuthAction
-    override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
+    override val authenticate: MinimalAuthAction = new TestMinimalAuthAction
     when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
 
-    override protected implicit def authConnector: FrontendAuthConnector.type = FrontendAuthConnector
+    override protected implicit def authConnector: AuthConnector = FrontendAuthConnector
   }
 
-  "When an invalid user logs in, notAuthorised" should {
-    "redirect to the authentication page " in new SetUp {
-      val controller = new TestController()
-      val result: Future[Result] = controller.notAuthorised()(fakeRequest)
-      status(result) must be(SEE_OTHER) //303
-      redirectLocation(result).get must include(
-        "http://localhost:9025/gg/sign-in?continue=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fpayrolled-benefits-expenses&origin=pbik-frontend")
-      val bodyText: String = contentAsString(result)
-      assert(bodyText.contains(""))
-    }
-  }
-
-  "When an valid user logs in, but their action is not Authorised" should {
-    "redirect to the not authorised page " in new SetUp {
+  "When an valid user logs in, and their action is Authorised" should {
+    "be status 200" in new SetUp {
       val controller = new TestController()
       implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = fakeRequest
       val result: Future[Result] = controller.notAuthorised()(fakeRequest)
       status(result) must be(OK) // 200
-      val bodyText: String = contentAsString(result)
-      assert(bodyText.contains("Enrol to use this service"))
-    }
-  }
-
-  "When an valid user logs in, and their action is Authorised" should {
-    "be status 200 " in new SetUp {
-      val controller = new TestController()
-      implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = fakeRequest
-      val result: Future[Result] = controller.notAuthorised()(fakeRequest)
       val bodyText: String = contentAsString(result)
       assert(bodyText.contains("Enrol to use this service"))
       assert(bodyText.contains("You’re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue."))

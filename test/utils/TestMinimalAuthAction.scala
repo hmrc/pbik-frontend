@@ -16,25 +16,14 @@
 
 package utils
 
-import uk.gov.hmrc.play.test.UnitSpec
-import utils.DateUtils._
+import controllers.actions.MinimalAuthAction
+import play.api.mvc.{Request, Result}
 
-class DateUtilsSpec extends UnitSpec {
+import scala.concurrent.Future
 
-  "NPS date conversion" should {
-   " output 1 January 1980" in {
-      val date: String = "01/01/1980"
-      val convertedDate = NPSDateConversionFormat(date)
+class TestMinimalAuthAction extends MinimalAuthAction {
+  override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
+    block(request)
 
-      convertedDate shouldBe "1 January 1980"
-    }
-
-   " output 30 August 2015" in {
-      val date: String = "30/08/2015"
-      val convertedDate = NPSDateConversionFormat(date)
-
-      convertedDate shouldBe "30 August 2015"
-    }
   }
-
 }

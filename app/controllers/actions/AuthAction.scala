@@ -17,9 +17,11 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
+import config.PbikAppConfig
 import connectors.{FrontendAuthConnector, WSHttp}
 import javax.inject.Inject
 import models.{AuthenticatedRequest, EmpRef, UserName}
+import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -34,10 +36,6 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-
-    println("-")
-    println("In AuthAction")
-    println("-")
 
     authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE")).retrieve(Retrievals.authorisedEnrolments and Retrievals.name) {
       case Enrolments(enrolments) ~ name => {
@@ -55,10 +53,13 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
             }
         }.getOrElse(Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad())))
       }
-      case _ => ??? //TODO: What to do when no enrolments
     } recover {
-      case ex: NoActiveSession => ???
-      case ex: InsufficientConfidenceLevel => ???
+      case ex: NoActiveSession =>
+        Redirect(PbikAppConfig.loginUrl, Map("continue" -> Seq(PbikAppConfig.loginContinueUrl),
+                                             "origin" -> Seq("pbik-frontend")))
+      case ex: InsufficientEnrolments =>
+        Results.Redirect(controllers.auth.routes.AuthController.notAuthorised())
+
     }
   }
 }

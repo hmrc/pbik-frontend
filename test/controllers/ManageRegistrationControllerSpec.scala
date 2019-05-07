@@ -319,8 +319,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }))
   }
 
-  "When loading the next tax years on-remove data, the RegistrationController " should {
-      "state the status is ok " in {
+  "When loading the next tax years on-remove data, the RegistrationController" should {
+      "state the status is ok" in {
         val mockRegistrationController = new MockRegistrationController
         implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
         implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -334,8 +334,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       }
     }
 
-  "The Registration Controller " should {
-    "display the correct Biks on the removal screen " in {
+  "The Registration Controller" should {
+    "display the correct Biks on the removal screen" in {
       val mockRegistrationController = new MockRegistrationController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -357,7 +357,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When instantiating the RegistrationController " in {
+  "When instantiating the RegistrationController" in {
     val registrationController = ManageRegistrationController
     assert(registrationController.pbikAppConfig != null)
     assert(registrationController.tierConnector != null)
@@ -365,8 +365,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     assert(registrationController.registrationService != null)
   }
 
-  "When loading the currentTaxYearOnPageLoad, an authorised user " should {
-    "be directed to cy page with list of biks " in {
+  "When loading the currentTaxYearOnPageLoad, an authorised user" should {
+    "be directed to cy page with list of biks" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("AddBenefits.Heading")
       val mockRegistrationController = new MockRegistrationController
@@ -379,7 +379,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When loading the nextTaxYearAddOnPageLoad, an authorised user " should {
+  "When loading the nextTaxYearAddOnPageLoad, an authorised user" should {
     "be directed to cy + 1 page with list of biks" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("AddBenefits.Heading")
@@ -395,8 +395,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   }
 
 
-  "When loading the nextTaxYearRemoveOnPageLoad, an authorised user " should {
-    "be directed to the cy + 1 remove page with biks to remove " in {
+  "When loading the nextTaxYearRemoveOnPageLoad, an authorised user" should {
+    "be directed to the cy + 1 remove page with biks to remove" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("RemoveBenefits.Heading").substring(0, 10)
       val mockRegistrationController = new MockRegistrationController
@@ -411,8 +411,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When loading the addOrRemovePageLoad, an authorised user " should {
-    "be directed to options to add or remove page " in {
+  "When loading the addOrRemovePageLoad, an authorised user" should {
+    "be directed to options to add or remove page" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("RemoveBenefits.Heading").substring(0, 10)
       val mockRegistrationController = new MockRegistrationController
@@ -425,8 +425,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When loading the addOrRemoveDecision, an authorised user " should {
-    "be directed to the login page " in {
+  "When loading the addOrRemoveDecision, an authorised user" should {
+    "be directed to the login page" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("RemoveBenefits.Heading").substring(0, 10)
       val mockRegistrationController = new MockRegistrationController
@@ -439,8 +439,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When loading the confirmRemoveNextTaxYear, an authorised user " should {
-    "be directed cy + 1 confirmation page to remove bik " in {
+  "When loading the confirmRemoveNextTaxYear, an authorised user" should {
+    "be directed cy + 1 confirmation page to remove bik" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("RemoveBenefits.Heading").substring(0, 10)
       val mockRegistrationController = new MockRegistrationController
@@ -451,8 +451,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When loading the updateRegisteredBenefitTypes, an authorised user " should {
-    "persist their changes and be redirected to the what next page " in {
+  "When loading the updateRegisteredBenefitTypes, an authorised user" should {
+    "persist their changes and be redirected to the what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("software", None)))
       val form = objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
@@ -466,8 +466,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When loading the addNextYearRegisteredBenefitTypes, an unauthorised user " should {
-    "be directed to the login page " in {
+  "When loading the addNextYearRegisteredBenefitTypes, an unauthorised user" should {
+    "be directed to the login page" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("whatNext.add.heading")
       val mockRegistrationController = new MockRegistrationController
@@ -478,8 +478,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When loading the removeNextYearRegisteredBenefitTypes, an unauthorised user " should {
-    "be directed to the login page " in {
+  "When loading the removeNextYearRegisteredBenefitTypes, an unauthorised user" should {
+    "be directed to the login page" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("whatNext.add.heading")
       val mockRegistrationController = new MockRegistrationController
@@ -490,7 +490,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When a user removes a benefit " should {
+  "When a user removes a benefit" should {
     "selecting 'software' should redirect to what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("software", None)))
       val form = objSelectedForm.fill(mockRegistrationList)
@@ -505,7 +505,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When a user removes a benefit " should {
+  "When a user removes a benefit" should {
     "selecting 'guidance' should redirect to what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("guidance", None)))
       val form = objSelectedForm.fill(mockRegistrationList)
@@ -520,7 +520,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When a user removes a benefit " should {
+  "When a user removes a benefit" should {
     "selecting 'not-clear' should redirect to what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("not-clear", None)))
       val form = objSelectedForm.fill(mockRegistrationList)
@@ -535,7 +535,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When a user removes a benefit " should {
+  "When a user removes a benefit" should {
     "selecting 'not-offering' should redirect to what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("not-offering", None)))
       val form = objSelectedForm.fill(mockRegistrationList)
@@ -550,7 +550,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When a user removes a benefit " should {
+  "When a user removes a benefit" should {
     "selecting 'other' & providing 'info' should redirect to what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("other", Some("other info here"))))
       val form = objSelectedForm.fill(mockRegistrationList)
@@ -565,7 +565,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When a user removes a benefit " should {
+  "When a user removes a benefit" should {
     "selecting 'other' & not providing 'info' should redirect with error" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("other", None)))
       val form = objSelectedForm.fill(mockRegistrationList)
@@ -579,7 +579,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When a user removes a benefit " should {
+  "When a user removes a benefit" should {
     "selecting no reason should redirect with error" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)), None)
       val bikList = List(Bik("8", 10))
@@ -596,7 +596,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
       result.header.status must be(SEE_OTHER) // 303
       result.header.headers.getOrElse("Location","") must be("/payrollbik/services/remove-benefit-expense")
-      result.header.headers.getOrElse("Set-Cookie","").replace("+", " ").replace("%27", "'") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
+      result.header.headers.getOrElse("Set-Cookie","").replace("+"," ").replace("%27", "'") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
     }
 
     "selecting 'other' reason but no explanation should redirect with error" in {
@@ -616,7 +616,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
         val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
         result.header.status must be(SEE_OTHER) // 303
         result.header.headers.getOrElse("Location","") must be("/payrollbik/services/remove-benefit-expense")
-        result.header.headers.getOrElse("Set-Cookie","").replace("+", " ").replace("%E2%80%99", "’") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
+        result.header.headers.getOrElse("Set-Cookie","").replace("+"," ").replace("%E2%80%99", "’") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
     }
 
     "selecting 'other' reason but and providing explanation should redirect to what-next" in {

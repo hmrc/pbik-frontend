@@ -67,8 +67,8 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito w
 
  }
 
-  "When instantiating the RegistrationService the connectors " should {
-    " not be null " in {
+  "When instantiating the RegistrationService the connectors" should {
+   " not be null" in {
       running(fakeApplication) {
         val regService:RegistrationService = RegistrationService
         assert(regService.bikListService != null)
@@ -76,8 +76,8 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito w
     }
   }
 
-  "When instantiating the RegistrationService the config " should {
-    " not be null " in {
+  "When instantiating the RegistrationService the config" should {
+   " not be null" in {
       running(fakeApplication) {
         val regService:RegistrationService = RegistrationService
         assert(regService.pbikAppConfig != null)
@@ -85,8 +85,8 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito w
     }
   }
 
-  "When generating a page which allows registrations, the service " should {
-    " return the selection page " in {
+  "When generating a page which allows registrations, the service" should {
+   " return the selection page" in {
       running(fakeApplication) {
         implicit val context: PbikContext = PbikContextImpl
         val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest

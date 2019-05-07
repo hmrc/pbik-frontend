@@ -54,7 +54,6 @@ trait BikListService extends TierConnector with URIInformation with ControllersR
   }
 
   def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
-    println("Inside real registeredBenefitsList")
     val newPath = if (path == "") getRegisteredPath else path
     val response = tierConnector.genericGetCall[List[Bik]](baseUrl, newPath, empRef, year)
     response

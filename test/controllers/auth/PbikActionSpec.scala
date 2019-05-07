@@ -34,8 +34,8 @@ class PbikActionSpec extends PlaySpec with FakePBIKApplication
                           with TestAuthUser with Results {
 
 
-  "When initialising the connectors " should {
-    " not be null " in {
+  "When initialising the connectors" should {
+   " not be null" in {
       new {
         val traitname = "auth-connector"
       } with AuthenticationConnector {
@@ -44,8 +44,8 @@ class PbikActionSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "When initialising the AuthController's config " should {
-    " not be null " in {
+  "When initialising the AuthController's config" should {
+   " not be null" in {
       assert(AuthController.pbikAppConfig != null)
     }
   }
@@ -63,7 +63,7 @@ class PbikActionSpec extends PlaySpec with FakePBIKApplication
 
   }
 
-  "PbikActions " should {
+  "PbikActions" should {
     "show Unauthorised if the session is not authenticated" in {
       val controller = new PbikActionTestController()
       val ac: AuthContext = createDummyUser("VALID_ID")
@@ -73,7 +73,7 @@ class PbikActionSpec extends PlaySpec with FakePBIKApplication
     }
   }
 
-  "PbikActions " should {
+  "PbikActions" should {
     "show the start page if the session is not set" in {
       val controller = new PbikActionTestController()
       val ac: AuthContext = createDummyUser("VALID_ID")

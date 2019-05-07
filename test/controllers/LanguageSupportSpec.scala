@@ -65,17 +65,17 @@ class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
     /*(n => new Bik("" + (n + 1), 10))*/
     override lazy val pbikHeaders: Map[String, String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
 
-    def currentYearList(implicit hc: HeaderCarrier, request: Request[_]):
+    override def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
     Future[(Map[String, String], List[Bik])] = {
       Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
     }
 
-    def nextYearList(implicit hc: HeaderCarrier, request: Request[_]):
+    override def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
     Future[(Map[String, String], List[Bik])] = {
       Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
     }
 
-    def registeredBenefitsList(year: Int, orgIdentifier: String)(path: String)
+    override def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)
                               (implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
       Future(CYCache)(scala.concurrent.ExecutionContext.Implicits.global)
     }
@@ -233,7 +233,7 @@ class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
     }))
   }
 
-  "The Homepage Controller " should {
+  "The Homepage Controller" should {
     "set the request language and redirect to the homepage" in {
       val mockController = new MockHomePageController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshrequest
@@ -247,7 +247,7 @@ class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
   }
 
   "HomePageController" should {
-    "display the navigation page " in {
+    "display the navigation page" in {
       val homePageController = new MockHomePageController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> sessionId,

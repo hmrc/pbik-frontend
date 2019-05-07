@@ -243,8 +243,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     override def bikListService: BikListService = new StubNoRegisteredBikListService
   }
 
-  "When instantiating the ExclusionListController the services " must {
-    " should not be null " in {
+  "When instantiating the ExclusionListController the services" must {
+   " should not be null" in {
       val mockExclusionListController = ExclusionListController
       assert(mockExclusionListController.tierConnector != null)
       assert(mockExclusionListController.pbikAppConfig != null)
@@ -253,29 +253,29 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When testing exclusions the exclusion functionality " must {
-    " should be enabled " in {
+  "When testing exclusions the exclusion functionality" must {
+   " should be enabled" in {
       val mockExclusionListController = new MockExclusionListController
       assert(mockExclusionListController.exclusionsAllowed)
     }
   }
 
-  "When testing exclusions the EILService " must {
-    " should be defined " in {
+  "When testing exclusions the EILService" must {
+   " should be defined" in {
       val mockExclusionListController = new MockExclusionListController
       assert(mockExclusionListController.eiLListService != null)
     }
   }
 
-  "When testing exclusions the BIKService " must {
-    " should be defined " in {
+  "When testing exclusions the BIKService" must {
+   " should be defined" in {
       val mockExclusionListController = new MockExclusionListController
       assert(mockExclusionListController.bikListService != null)
     }
   }
 
-  "When mapping the CY string, the date returned by the controller " must {
-    " be the first year in the CY pair (e.g CY in range 15/16-16/17 would be 15 ) " in {
+  "When mapping the CY string, the date returned by the controller" must {
+   " be the first year in the CY pair (e.g CY in range 15/16-16/17 would be 15 )" in {
       val mockExclusionListController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
@@ -284,8 +284,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When mapping the CY+1 string, the date returned by the controller " must {
-    " be the first year in the CYP1 pair (e.g CYP1 in range 15/16-16/17 would be 16 )  " in {
+  "When mapping the CY+1 string, the date returned by the controller" must {
+   " be the first year in the CYP1 pair (e.g CYP1 in range 15/16-16/17 would be 16 ) " in {
       val mockExclusionListController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
@@ -294,8 +294,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When mapping an unknown string, the controller " must {
-    " throw an InvalidYearURIException " in {
+  "When mapping an unknown string, the controller" must {
+   " throw an InvalidYearURIException" in {
       val mockExclusionListController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
@@ -305,8 +305,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When checking the Bik's IABD value is valid for CY the ExclusionListController " must {
-    " return the start year of the CY pair, when the IABD value is valid " in {
+  "When checking the Bik's IABD value is valid for CY the ExclusionListController" must {
+   " return the start year of the CY pair, when the IABD value is valid" in {
       val mockExclusionListController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
@@ -320,8 +320,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When checking the Bik's IABD value is invalid for CY the ExclusionListController " must {
-    " throw a InvalidBikTypeURIException " in {
+  "When checking the Bik's IABD value is invalid for CY the ExclusionListController" must {
+   " throw a InvalidBikTypeURIException" in {
       val mockExclusionListController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
@@ -336,8 +336,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the performPageLoad, an unauthorised user " should {
-    "see the users already excluded " in {
+  "When loading the performPageLoad, an unauthorised user" should {
+    "see the users already excluded" in {
       val mockExclusionController = new MockExclusionListController
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionController.performPageLoad("cy", "car").apply(mockrequest))(timeout)
@@ -350,8 +350,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the performPageLoad without nacigating from the overview page, an unauthorised user " should {
-    "see the users already excluded " in {
+  "When loading the performPageLoad without nacigating from the overview page, an unauthorised user" should {
+    "see the users already excluded" in {
       val mockExclusionController = new MockExclusionListController
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionController.performPageLoad("cy", "car").apply(mockrequest))(timeout)
@@ -368,8 +368,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the performPageLoad when exclusions are disallowed the controller " must {
-    "show the restriction page " in {
+  "When loading the performPageLoad when exclusions are disallowed the controller" must {
+    "show the restriction page" in {
       val mockExclusionController = new MockExclusionsDisallowedController
       //UnsignedTokenProvider.generateToken
       implicit val timeout: akka.util.Timeout = 10 seconds
@@ -379,8 +379,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the withOrWithoutNinoOnPageLoad the controller " must {
-    "show the page in order to make a decision " in {
+  "When loading the withOrWithoutNinoOnPageLoad the controller" must {
+    "show the page in order to make a decision" in {
       val title = Messages("ExclusionNinoDecision.title").substring(0, 10)
       val mockExclusionController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
@@ -394,8 +394,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the withOrWithoutNinoOnPageLoad when exclusions feature is disabled the controller " must {
-    "display the error page " in {
+  "When loading the withOrWithoutNinoOnPageLoad when exclusions feature is disabled the controller" must {
+    "display the error page" in {
       val title = Messages("ServiceMessage.10002")
       val mockExclusionController = new MockExclusionsDisallowedController
       //UnsignedTokenProvider.generateToken
@@ -406,8 +406,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the withOrWithoutNinoDecision page with the form omitted, an authorised user " must {
-    "see the page in order to confirm their decision " in {
+  "When loading the withOrWithoutNinoDecision page with the form omitted, an authorised user" must {
+    "see the page in order to confirm their decision" in {
       val title = Messages("ExclusionNinoDecision.title").substring(0, 10)
       val mockExclusionController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
@@ -421,8 +421,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the withOrWithoutNinoDecision page when exclusions are disabled the controller " must {
-    "show an error page " in {
+  "When loading the withOrWithoutNinoDecision page when exclusions are disabled the controller" must {
+    "show an error page" in {
       val title = Messages("ServiceMessage.10002")
       val mockExclusionController = new MockExclusionsDisallowedController
       //UnsignedTokenProvider.generateToken
@@ -433,8 +433,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the withOrWithoutNinoDecision page with a nino form, an authorised user " must {
-    "see the page in order to confirm their decision " in {
+  "When loading the withOrWithoutNinoDecision page with a nino form, an authorised user" must {
+    "see the page in order to confirm their decision" in {
       val title = Messages("ExclusionSearch.form.title")
       val mockExclusionController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
@@ -450,8 +450,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the withOrWithoutNinoDecision page with a non-nino form, an authorised user " must {
-    "see the page in order to confirm their decision " in {
+  "When loading the withOrWithoutNinoDecision page with a non-nino form, an authorised user" must {
+    "see the page in order to confirm their decision" in {
       val title = Messages("ExclusionSearch.form.title")
       val mockExclusionController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
@@ -466,8 +466,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the searchResults page for an unpopulated NINO search, an authorised user " must {
-    "see the NINO specific fields " in {
+  "When loading the searchResults page for an unpopulated NINO search, an authorised user" must {
+    "see the NINO specific fields" in {
       val title = Messages("ExclusionSearch.form.title")
       val mockExclusionController = new MockExclusionListController
 
@@ -484,8 +484,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the searchResults page for an unpopulated non-NINO search, an authorised user " must {
-    "see the NON-NINO specific fields " in {
+  "When loading the searchResults page for an unpopulated non-NINO search, an authorised user" must {
+    "see the NON-NINO specific fields" in {
       val title = Messages("ExclusionSearch.form.title")
       val mockExclusionController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
@@ -500,8 +500,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the searchResults page for a NINO search, an authorised user " must {
-    "see the NON-NINO specific fields " in {
+  "When loading the searchResults page for a NINO search, an authorised user" must {
+    "see the NON-NINO specific fields" in {
       val ninoSearchPerson = EiLPerson("AB111111", "Adam", None, "Smith", None, None, None, None, 0)
       val f = exclusionSearchFormWithNino.fill(ninoSearchPerson)
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
@@ -516,8 +516,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the searchResults page for a non-NINO search, an authorised user " must {
-    "see the NON-NINO specific fields " in {
+  "When loading the searchResults page for a non-NINO search, an authorised user" must {
+    "see the NON-NINO specific fields" in {
       val ninoSearchPerson = EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0)
       val f = exclusionSearchFormWithoutNino.fill(ninoSearchPerson)
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
@@ -535,8 +535,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When loading the searchResults page when exclusions are disabled, the controller " must {
-    "show an error page " in {
+  "When loading the searchResults page when exclusions are disabled, the controller" must {
+    "show an error page" in {
       val title = Messages("ServiceMessage.10002")
       val mockExclusionController = new MockExclusionsDisallowedController
       //UnsignedTokenProvider.generateToken
@@ -547,8 +547,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When updating exclusions, an authorised user " must {
-    "see the page in order to review their result " in {
+  "When updating exclusions, an authorised user" must {
+    "see the page in order to review their result" in {
       val TEST_YEAR_CODE = "cy"
       val TEST_IABD_VALUE = "31"
       val FROM_OVERVIEW = "false"
@@ -568,8 +568,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When removing an excluded individual, with an error free form, an authorised user " must {
-    "see the removal confirmation screen " in {
+  "When removing an excluded individual, with an error free form, an authorised user" must {
+    "see the removal confirmation screen" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -591,8 +591,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When confirming the removal of an excluded individual, an authorised user " must {
-    "see the removal confirmation screen " in {
+  "When confirming the removal of an excluded individual, an authorised user" must {
+    "see the removal confirmation screen" in {
       val TEST_IABD = "31"
       val TEST_YEAR_CODE = "cyp1"
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
@@ -611,8 +611,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When validating a year the controller " must {
-    "should return the current tax year if the validation passes for cy  " in {
+  "When validating a year the controller" must {
+    "should return the current tax year if the validation passes for cy" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -626,7 +626,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       result must be(utils.TaxDateUtils.getCurrentTaxYear())
     }
 
-    "it should throw a if the Bik is not registered valid " in {
+    "it should throw an InvalidBikTypeURIException if the Bik is not registered valid" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -642,8 +642,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
   }
 
-  "When initialising the ExclusionListController the exclusion variable " must {
-    " be true " in {
+  "When initialising the ExclusionListController the exclusion variable" must {
+   " be true" in {
       val cfg: ExclusionListConfiguration = new {
         val test = "ExclusionListConfigurationTest"
       } with ExclusionListConfiguration {
@@ -652,8 +652,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When remove exclusions are committed the controller " must {
-    " show the what next page " in {
+  "When remove exclusions are committed the controller" must {
+   " show the what next page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -668,8 +668,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When remove Exclusions Commit when exclusions are disabled the controller " must {
-    " should show an error page " in {
+  "When remove Exclusions Commit when exclusions are disabled the controller" must {
+   " should show an error page" in {
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
@@ -683,8 +683,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When remove is called the controller " must {
-    " show the confirmation page " in {
+  "When remove is called the controller" must {
+   " show the confirmation page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -699,8 +699,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When remove is called when exclusion mode is disabled the controller " must {
-    " should show an error page " in {
+  "When remove is called when exclusion mode is disabled the controller" must {
+   " should show an error page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -715,8 +715,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When updateExclusions is called the controller " must {
-    " redirect to the what next page " in {
+  "When updateExclusions is called the controller" must {
+   " redirect to the what next page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -731,8 +731,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When updateExclusions is called but exclusions are disabled the controller " must {
-    " redirect back to the overview page " in {
+  "When updateExclusions is called but exclusions are disabled the controller" must {
+   " redirect back to the overview page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -747,8 +747,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When updateMultipleExclusions is called the controller " must {
-    " redirect to the what next page " in {
+  "When updateMultipleExclusions is called the controller" must {
+   " redirect to the what next page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -763,8 +763,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When updateMultipleExclusions is called but exclusions are disabled the controller " must {
-    " redirect back to the overview page " in {
+  "When updateMultipleExclusions is called but exclusions are disabled the controller" must {
+   " redirect back to the overview page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -779,8 +779,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  "When updating individual exclusions, an authorised user " must {
-    "see the page in order to review their result " in {
+  "When updating individual exclusions, an authorised user" must {
+    "see the page in order to review their result" in {
       val TEST_YEAR_CODE = "cy"
       val TEST_IABD_VALUE = "31"
       val FROM_OVERVIEW = "false"
@@ -803,9 +803,9 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   // Tests below to check input validation
-  "When updating exclusions, " must {
-    "an invalid input on first name " in {
-      val TEST_EIL_PERSON: List[EiLPerson] = List(EiLPerson("AA111111", " ", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0))
+  "When updating exclusions," must {
+    "an invalid input on first name" in {
+      val TEST_EIL_PERSON: List[EiLPerson] = List(EiLPerson("AA111111"," ", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0))
       val TEST_YEAR_CODE = "cy"
       val TEST_IABD_VALUE = "car"
       val f = individualsForm.fill(EiLPersonList(TEST_EIL_PERSON))
