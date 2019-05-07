@@ -17,6 +17,7 @@
 package controllers.actions
 
 import akka.util.Timeout
+import controllers.AuthActionImpl
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status._

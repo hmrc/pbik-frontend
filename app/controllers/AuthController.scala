@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.auth
+package controllers
 
 import config.PbikAppConfig
 import controllers.actions.MinimalAuthAction
@@ -22,18 +22,17 @@ import play.api.Play
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.ControllersReferenceData
 
 import scala.concurrent.Future
 
-object AuthController extends AuthController with AuthenticationConnector {
+object AuthController extends AuthController {
   def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
   val authenticate: MinimalAuthAction = Play.current.injector.instanceOf[MinimalAuthAction]
 }
 
-trait AuthController extends FrontendController with Actions with ControllersReferenceData {
+trait AuthController extends FrontendController with ControllersReferenceData {
 
   val authenticate: MinimalAuthAction
 

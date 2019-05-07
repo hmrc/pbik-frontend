@@ -37,7 +37,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE")).retrieve(Retrievals.authorisedEnrolments and Retrievals.name) {
+    authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE") and AuthProvider()).retrieve(Retrievals.authorisedEnrolments and Retrievals.name) {
       case Enrolments(enrolments) ~ name => {
         enrolments.find(_.key == "IR-PAYE").map {
           enrolment =>
@@ -58,7 +58,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
         Redirect(PbikAppConfig.loginUrl, Map("continue" -> Seq(PbikAppConfig.loginContinueUrl),
                                              "origin" -> Seq("pbik-frontend")))
       case ex: InsufficientEnrolments =>
-        Results.Redirect(controllers.auth.routes.AuthController.notAuthorised())
+        Results.Redirect(controllers.routes.AuthController.notAuthorised())
 
     }
   }

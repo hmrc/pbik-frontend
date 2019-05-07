@@ -16,7 +16,7 @@
 
 package utils
 
-import controllers.auth.AuthenticationConnector
+import connectors.FrontendAuditConnector
 import models._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -50,7 +50,9 @@ object SplunkLogger {
 
 }
 
-trait SplunkLogger extends AuthenticationConnector {
+trait SplunkLogger {
+
+  lazy val auditConnector = FrontendAuditConnector
 
   object spTier extends Enumeration {
     type spTier = Value

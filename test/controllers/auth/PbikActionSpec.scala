@@ -34,22 +34,6 @@ class PbikActionSpec extends PlaySpec with FakePBIKApplication
                           with TestAuthUser with Results {
 
 
-  "When initialising the connectors" should {
-   " not be null" in {
-      new {
-        val traitname = "auth-connector"
-      } with AuthenticationConnector {
-        assert(auditConnector != null)
-      }
-    }
-  }
-
-  "When initialising the AuthController's config" should {
-   " not be null" in {
-      assert(AuthController.pbikAppConfig != null)
-    }
-  }
-
   class StubRegime extends TaxRegime {
 
     override def isAuthorised(accounts: Accounts):Boolean = true
@@ -57,8 +41,10 @@ class PbikActionSpec extends PlaySpec with FakePBIKApplication
     override val authenticationType: PBIKGovernmentGateway.type = PBIKGovernmentGateway
   }
 
-  class PbikActionTestController extends PbikActions with EpayeUser with Mockito {
-    override lazy val authConnector: AuthConnector = mock[AuthConnector]
+  class PbikActionTestController extends PbikActions with Mockito {
+
+    //TODO: Make sure this is using new Auth
+    lazy val authConnector: AuthConnector = mock[AuthConnector]
     override val getAuthorisedForPolicy = new StubRegime
 
   }

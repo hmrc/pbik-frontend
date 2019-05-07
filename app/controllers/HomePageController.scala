@@ -35,8 +35,7 @@ import utils._
 import scala.concurrent.Future
 import scala.util.{Success, Try}
 
-object HomePageController extends HomePageController with TierConnector
-  with AuthenticationConnector {
+object HomePageController extends HomePageController with TierConnector {
   def pbikAppConfig = PbikAppConfig
 
   def bikListService = BikListService
@@ -47,7 +46,7 @@ object HomePageController extends HomePageController with TierConnector
 }
 
 trait HomePageController extends FrontendController with URIInformation
-  with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger with LegacyI18nSupport {
+  with ControllersReferenceData with PbikActions with SplunkLogger with LegacyI18nSupport {
   this: TierConnector =>
   def bikListService: BikListService
   val authenticate: AuthAction

@@ -40,9 +40,7 @@ object PBIKEpayeRegime extends TaxRegime {
   override val authenticationType: PBIKGovernmentGateway.type = PBIKGovernmentGateway
 }
 
-trait PbikActions extends Actions {
-
-  self: EpayeUser =>
+trait PbikActions {
 
   def getAuthorisedForPolicy: TaxRegime = PBIKEpayeRegime
 

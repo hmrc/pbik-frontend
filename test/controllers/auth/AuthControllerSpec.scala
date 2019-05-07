@@ -18,7 +18,7 @@ package controllers.auth
 
 import config.AppConfig
 import connectors.FrontendAuthConnector
-import controllers.FakePBIKApplication
+import controllers.{AuthController, FakePBIKApplication}
 import controllers.actions.MinimalAuthAction
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec

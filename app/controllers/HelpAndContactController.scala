@@ -18,7 +18,7 @@ package controllers
 
 import java.net.URLEncoder
 
-import _root_.controllers.actions.{AuthAction, NoSessionCheckAction}
+import _root_.controllers.actions.NoSessionCheckAction
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, PBIKHeaderCarrierForPartialsConverter, TierConnector, WSHttp}
 import controllers.auth._
@@ -35,8 +35,7 @@ import utils._
 
 import scala.concurrent.Future
 
-object HelpAndContactController extends HelpAndContactController with TierConnector
-  with AuthenticationConnector with Actions {
+object HelpAndContactController extends HelpAndContactController with TierConnector {
   override val httpPost = WSHttp
 
   def pbikAppConfig = PbikAppConfig
@@ -52,7 +51,7 @@ object HelpAndContactController extends HelpAndContactController with TierConnec
 }
 
 trait HelpAndContactController extends FrontendController with URIInformation
-  with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger {
+  with ControllersReferenceData with PbikActions with SplunkLogger {
   this: TierConnector =>
   def bikListService: BikListService
 

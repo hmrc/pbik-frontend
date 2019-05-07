@@ -18,7 +18,6 @@ package services
 
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
-import controllers.auth.EpayeUser
 import models.{AuthenticatedRequest, EiLPerson}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, SplunkLogger, URIInformation}
@@ -32,8 +31,7 @@ object EiLListService extends EiLListService {
 }
 
 trait EiLListService extends TierConnector with URIInformation
-with ControllersReferenceData with EpayeUser
-with SplunkLogger {
+with ControllersReferenceData with SplunkLogger {
 
   def currentYearEiL(iabdType: String, year: Int)(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[List[EiLPerson]] = {
     val response = tierConnector.genericGetCall[List[EiLPerson]](baseUrl,

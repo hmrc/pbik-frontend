@@ -31,15 +31,14 @@ import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
 
-object WhatNextPageController extends WhatNextPageController with TierConnector
-  with AuthenticationConnector {
+object WhatNextPageController extends WhatNextPageController with TierConnector {
   def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
   def bikListService: BikListService.type = BikListService
   val tierConnector = new HmrcTierConnector
 }
 
 trait WhatNextPageController extends FrontendController with URIInformation
-  with ControllersReferenceData with PbikActions with EpayeUser with SplunkLogger {
+  with ControllersReferenceData with PbikActions with SplunkLogger {
   this: TierConnector =>
   def bikListService: BikListService
 

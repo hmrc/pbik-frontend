@@ -19,7 +19,7 @@ package services
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.WhatNextPageController
-import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
+import controllers.auth.PbikActions
 import models._
 import play.api.Play.current
 import play.api.data.Form
@@ -32,7 +32,7 @@ import utils._
 
 import scala.concurrent.Future
 
-object RegistrationService extends RegistrationService with TierConnector with AuthenticationConnector {
+object RegistrationService extends RegistrationService with TierConnector {
   def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
 
   def bikListService: BikListService.type = BikListService
@@ -41,8 +41,7 @@ object RegistrationService extends RegistrationService with TierConnector with A
 }
 
 trait RegistrationService extends FrontendController with URIInformation
-  with ControllersReferenceData with WhatNextPageController with PbikActions
-  with EpayeUser {
+  with ControllersReferenceData with WhatNextPageController with PbikActions {
 
   this: TierConnector =>
 

@@ -21,7 +21,7 @@ import java.util.UUID
 import config._
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
+import controllers.auth.PbikActions
 import models._
 import play.api.Play.current
 import play.api.data.Form
@@ -46,8 +46,7 @@ trait ExclusionListConfiguration extends RunMode with RunModeConfig {
 
 }
 
-object ExclusionListController extends ExclusionListController with TierConnector
-  with AuthenticationConnector {
+object ExclusionListController extends ExclusionListController with TierConnector {
   def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
 
   def eiLListService: EiLListService.type = EiLListService
@@ -60,7 +59,7 @@ object ExclusionListController extends ExclusionListController with TierConnecto
 }
 
 trait ExclusionListController extends FrontendController with URIInformation
-  with ControllersReferenceData with PbikActions with EpayeUser
+  with ControllersReferenceData with PbikActions
   with SplunkLogger with ExclusionListConfiguration {
   this: TierConnector =>
 

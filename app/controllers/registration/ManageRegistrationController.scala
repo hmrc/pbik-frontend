@@ -23,7 +23,7 @@ import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.WhatNextPageController
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
+import controllers.auth.PbikActions
 import play.api.Play
 import play.api.Play.current
 import play.api.data.Form
@@ -39,7 +39,7 @@ import utils._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object ManageRegistrationController extends ManageRegistrationController with TierConnector with AuthenticationConnector {
+object ManageRegistrationController extends ManageRegistrationController with TierConnector {
   def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
 
   def registrationService: RegistrationService.type = RegistrationService
@@ -52,8 +52,7 @@ object ManageRegistrationController extends ManageRegistrationController with Ti
 }
 
 trait ManageRegistrationController extends FrontendController with URIInformation
-  with WhatNextPageController with ControllersReferenceData with PbikActions
-  with EpayeUser with SplunkLogger {
+  with WhatNextPageController with ControllersReferenceData with PbikActions with SplunkLogger {
   this: TierConnector =>
 
   def bikListService: BikListService
