@@ -21,13 +21,12 @@ import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mock.MockitoSugar
-import play.api.test.Helpers._
-import uk.gov.hmrc.play.config.ServicesConfig
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.test.Helpers._
+import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpGet, HttpResponse}
+import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpGet, HttpResponse}
 
 class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with MockitoSugar
   with BeforeAndAfterEach with ServicesConfig with RunModeConfig {

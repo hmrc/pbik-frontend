@@ -15,12 +15,11 @@
  *@
 
 @(partialUrl: String,
-  formBody: Option[Html])(implicit request:Request[_],
-                          ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+  formBody: Option[Html],empRef: EmpRef)(implicit request:Request[_],
                           context: config.PbikContext, applicationMessages: Messages)
 @import connectors.FormPartialProvider
 
-@parentTemplate(pageTitle = Messages("HelpAndContact.title") + " - " + Messages("Service.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), contactSupportLinkEnabled = false){
+@parentTemplate(pageTitle = Messages("HelpAndContact.title") + " - " + Messages("Service.title"), None, Some(empRef.toString), contactSupportLinkEnabled = false){
 
     <span class="link-back-top-wrap">
         <a class="link-back" id="link-back-top"

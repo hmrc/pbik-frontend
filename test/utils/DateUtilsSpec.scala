@@ -16,23 +16,20 @@
 
 package utils
 
-import models.Bik
-import play.api.test.FakeApplication
-import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.DateUtils._
 
 class DateUtilsSpec extends UnitSpec {
 
   "NPS date conversion" should {
-    " output 1 January 1980 " in {
+   " output 1 January 1980" in {
       val date: String = "01/01/1980"
       val convertedDate = NPSDateConversionFormat(date)
 
       convertedDate shouldBe "1 January 1980"
     }
 
-    " output 30 August 2015 " in {
+   " output 30 August 2015" in {
       val date: String = "30/08/2015"
       val convertedDate = NPSDateConversionFormat(date)
 

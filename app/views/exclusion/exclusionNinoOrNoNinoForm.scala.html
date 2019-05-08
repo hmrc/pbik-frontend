@@ -17,14 +17,15 @@
 @(taxYearRange: TaxYearRange,
   isCurrentTaxYear: String,
   iabdType: String,
-  previousSelection: String = "")(implicit request: Request[_],
-                                  ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+  previousSelection: String = "",
+    empRef: EmpRef)(implicit request: Request[_],
                                   flash: Flash, context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
 
-@parentTemplate(pageTitle = Messages("ExclusionNinoDecision.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString), showLanguage = true) {
+
+@parentTemplate(pageTitle = Messages("ExclusionNinoDecision.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString), showLanguage = true) {
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
         @includes.back_link(gaLabel = Messages("ExclusionNinoDecision.title"))

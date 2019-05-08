@@ -21,21 +21,13 @@
  taxYearRange:TaxYearRange,
  isCurrentTaxYear:String= "", code:Int = 0,
  pageHeading:String ="An error has occurred",
- backLink:String= "overview")(implicit request:Request[_],
-                              ac: uk.gov.hmrc.play.frontend.auth.AuthContext ,
+ backLink:String= "overview", empRef: Option[EmpRef])(implicit request:Request[_],
                               context: config.PbikContext, applicationMessages: Messages)
 
 @import utils.FormMappingsConstants._
 @import uk.gov.hmrc.play.views.html.helpers
 
-@active(ac: uk.gov.hmrc.play.frontend.auth.AuthContext) = @{
-    if (ac.principal.accounts.epaye.isDefined)
-    Some( ac.principal.accounts.epaye.get.empRef.toString )
-    else
-    Some("")
-}
-
-@parentTemplate(pageTitle = Messages("Service.title"), Some(taxYearRange), active(ac) ) {
+@parentTemplate(pageTitle = Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
     @isCurrentTaxYear match {
         case utils.FormMappingsConstants.CY => {<h1 id="title">@Messages(pageHeading,taxYearRange.cyminus1.toString, taxYearRange.cy.toString)</h1>}

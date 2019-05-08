@@ -16,8 +16,7 @@
 
 @(bikForm:Form[RegistrationList],
   additive: Boolean,
-  taxYearRange:TaxYearRange)(implicit request:Request[_],
-                             ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+  taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_],
                              flash: Flash, context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
@@ -36,8 +35,8 @@
 
 @title = @{if(additive && singleBik) {Messages("AddBenefits.Confirm.Single.Title")}else if(additive && !singleBik){Messages("AddBenefits.Confirm.Multiple.Title")}else {Messages("RemoveBenefits.Confirm.Title")}}
 
-@parentTemplate(pageTitle = title + " - " + Messages("Service.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString), showLanguage = true) {
 
+@parentTemplate(pageTitle = title + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString), showLanguage = true) {
 
         @if(additive) {
 

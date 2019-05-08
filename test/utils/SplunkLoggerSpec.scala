@@ -16,27 +16,30 @@
 
 package utils
 
-import models.{EiLPerson, EiLPersonList}
-import support.AuthorityUtils._
-import play.api.test.Helpers._
+import controllers.FakePBIKApplication
+import models.{AuthenticatedRequest, EiLPerson, EiLPersonList, UserName}
+import play.api.libs.Crypto
+import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import support.AuthorityUtils._
 import support.TestAuthUser
+import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.domain.EmpRef
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
-import play.api.libs.Crypto
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
+import uk.gov.hmrc.play.frontend.auth.{LoggedInUser, Principal}
 import uk.gov.hmrc.play.test.UnitSpec
-import controllers.FakePBIKApplication
+
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HeaderCarrier
 
 class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUser {
 
-  val testList = List[EiLPerson](new EiLPerson("AB111111","Adam", None ,"Smith",None, Some("01/01/1980"),Some("male"), None, 0))
-  val testPersonList = EiLPersonList(testList)
+  val testList: List[EiLPerson] = List[EiLPerson](new EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0))
+  val testPersonList: EiLPersonList = EiLPersonList(testList)
 
   class TestSplunkLogger extends SplunkLogger /*with TestAuditConnector*/ {
 
@@ -57,99 +60,90 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     //      }
     //    }
 
-    override def logSplunkEvent(dataEvent:DataEvent)(implicit hc:HeaderCarrier, ac: AuthContext):Future[AuditResult] = {
+    override def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
       Future.successful(AuditResult.Success)
     }
   }
 
-    class SetUp {
-      implicit val hc = HeaderCarrier()
-      val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
-      val accounts = Accounts(epaye = epayeAccount)
-      val authority = epayeAuthority("testUserId", "emp/ref")
-      val user = LoggedInUser(userId = "testUserId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
-      val principal = Principal(name = Some("TEST_USER"), accounts)
+  class SetUp {
+    implicit val hc: HeaderCarrier = HeaderCarrier()
+    val controller = new TestSplunkLogger
+    val msg = "Hello"
 
-      implicit def fakeAuthContext = new AuthContext(user, principal, None, None, None, None)
+    def csrfToken: (String, String) = "csrfToken" -> Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+    def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
 
-      val controller = new TestSplunkLogger
-      val msg = "Hello"
-      def csrfToken = "csrfToken" ->  Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-      def fakeRequest = FakeRequest().withSession(csrfToken)
-      def fakeAuthenticatedRequest = FakeRequest().withSession(csrfToken).withHeaders()
-      val pbikDataEvent = DataEvent(auditSource = SplunkLogger.pbik_audit_source, auditType = SplunkLogger.pbik_benefit_type, detail = Map(
-        SplunkLogger.key_event_name -> SplunkLogger.pbik_event_name,
-        SplunkLogger.key_gateway_user -> fakeAuthContext.principal.accounts.epaye.get.empRef.toString,
-        SplunkLogger.key_tier -> controller.spTier.FRONTEND.toString,
-        SplunkLogger.key_action -> controller.spAction.ADD.toString,
-        SplunkLogger.key_target -> controller.spTarget.BIK.toString,
-        SplunkLogger.key_period -> controller.spPeriod.CYP1.toString,
-        SplunkLogger.key_message -> msg
-      ))
-    }
+    def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken).withHeaders()
 
-  "When logging events, the SplunkLogger " should {
-    "return a properly formatted DataEvent for Pbik events " in new SetUp {
+    val pbikDataEvent = DataEvent(auditSource = SplunkLogger.pbik_audit_source, auditType = SplunkLogger.pbik_benefit_type, detail = Map(
+      SplunkLogger.key_event_name -> SplunkLogger.pbik_event_name,
+      SplunkLogger.key_gateway_user -> EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference").toString,
+      SplunkLogger.key_tier -> controller.spTier.FRONTEND.toString,
+      SplunkLogger.key_action -> controller.spAction.ADD.toString,
+      SplunkLogger.key_target -> controller.spTarget.BIK.toString,
+      SplunkLogger.key_period -> controller.spPeriod.CYP1.toString,
+      SplunkLogger.key_message -> msg
+    ))
+  }
+
+  "When logging events, the SplunkLogger" should {
+    "return a properly formatted DataEvent for Pbik events" in new SetUp {
       running(fakeApplication) {
         val d: DataEvent = controller.createDataEvent(controller.spTier.FRONTEND,
-                                                  controller.spAction.ADD,
-                                                  controller.spTarget.BIK,
-                                                  controller.spPeriod.CYP1,
-                                                  "Employer Added Bik to CY Plus 1")(fakeAuthContext)
+          controller.spAction.ADD,
+          controller.spTarget.BIK,
+          controller.spPeriod.CYP1,
+          msg = "Employer Added Bik to CY Plus 1",
+          name = Option(UserName(Name(Some("TEST_USER"), None))),
+          empRef = Some(models.EmpRef("taxOfficeNumber", "taxOfficeReference")))
 
         assert(d.auditSource == SplunkLogger.pbik_audit_source)
-        assert(d.detail.size > 0)
+        assert(d.detail.nonEmpty)
         assert(d.detail.contains(SplunkLogger.key_event_name))
         assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
-        assert(d.detail.get(SplunkLogger.key_empref).get == fakeAuthContext.principal.accounts.epaye.get.empRef.toString)
-        assert(d.detail.get(SplunkLogger.key_gateway_user).get == fakeAuthContext.principal.name.get)
+        assert(d.detail.get(SplunkLogger.key_empref).get == "taxOfficeNumber/taxOfficeReference")
+        assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
         assert(d.detail.get(SplunkLogger.key_action).get == controller.spAction.ADD.toString)
         assert(d.detail.get(SplunkLogger.key_tier).get == controller.spTier.FRONTEND.toString)
         assert(d.detail.get(SplunkLogger.key_target).get == controller.spTarget.BIK.toString)
         assert(d.detail.get(SplunkLogger.key_period).get == controller.spPeriod.CYP1.toString)
-//        assert(d.auditSource == controller.pbikAuditSource)
       }
     }
   }
 
-  "When logging events, the SplunkLogger without a ePaye account " should {
-    "return a properly formatted DataEvent with a empref default for Pbik events " in new SetUp {
+  "When logging events, the SplunkLogger without a ePaye account" should {
+    "return a properly formatted DataEvent with a empref default for Pbik events" in new SetUp {
       running(fakeApplication) {
         val epayeAccount = None
         val accounts = Accounts(epaye = epayeAccount)
         val authority = ctAuthority("nonpayeId", "ctref")
         val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
         val principal = Principal(name = Some("TEST_USER"), accounts)
-
-        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None, None)
-        //implicit def nonPayeUser = User(userId = "nonpayeId", userAuthority = ctAuthority("nonpayeId", "ctref"), nameFromGovernmentGateway = Some("TEST_USER"), decryptedToken = None)
-
         val d: DataEvent = controller.createDataEvent(controller.spTier.FRONTEND,
           controller.spAction.ADD,
           controller.spTarget.BIK,
           controller.spPeriod.CYP1,
-          "Employer Added Bik to CY Plus 1")(nonPayeUser)
+          msg = "Employer Added Bik to CY Plus 1",
+          name = Option(UserName(Name(Some("TEST_USER"), None))),
+          empRef = None)
 
         assert(d.auditSource == SplunkLogger.pbik_audit_source)
-        assert(d.detail.size > 0)
+        assert(d.detail.nonEmpty)
         assert(d.detail.contains(SplunkLogger.key_event_name))
         assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
-        assert(d.detail.get(SplunkLogger.key_empref).get ==  SplunkLogger.pbik_no_ref)
-        assert(d.detail.get(SplunkLogger.key_gateway_user).get == fakeAuthContext.principal.name.get)
+        assert(d.detail.get(SplunkLogger.key_empref).get == SplunkLogger.pbik_no_ref)
+        assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
         assert(d.detail.get(SplunkLogger.key_action).get == controller.spAction.ADD.toString)
         assert(d.detail.get(SplunkLogger.key_tier).get == controller.spTier.FRONTEND.toString)
         assert(d.detail.get(SplunkLogger.key_target).get == controller.spTarget.BIK.toString)
         assert(d.detail.get(SplunkLogger.key_period).get == controller.spPeriod.CYP1.toString)
-        //        assert(d.auditSource == controller.pbikAuditSource)
       }
     }
   }
 
+  "When logging events, the SplunkLogger" should {
 
-
-  "When logging events, the SplunkLogger " should {
-
-    "complete successfully when sending a PBIK DataEvent " in new SetUp {
+    "complete successfully when sending a PBIK DataEvent" in new SetUp {
       running(fakeApplication) {
 
         val r: AuditResult = await(controller.logSplunkEvent(pbikDataEvent))
@@ -158,8 +152,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When logging events, the SplunkLogger " should {
-    "complete successfully when sending a general DataEvent " in new SetUp {
+  "When logging events, the SplunkLogger" should {
+    "complete successfully when sending a general DataEvent" in new SetUp {
       running(fakeApplication) {
 
         val nonPbikEvent = DataEvent(auditSource = "TEST", auditType = "TEST-AUDIT-TYPE", detail = Map(
@@ -177,167 +171,158 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-  "When logging events, the SplunkLogger " should {
+  "When logging events, the SplunkLogger" should {
 
-    "return a properly formatted DataEvent for Pbik errors " in new SetUp {
+    "return a properly formatted DataEvent for Pbik errors" in new SetUp {
       running(fakeApplication) {
+
+        implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+          models.EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference"),
+          UserName(Name(Some("TEST_USER"),None)),
+          FakeRequest()
+        )
+
         val d: DataEvent = controller.createErrorEvent(controller.spTier.FRONTEND,
           controller.spError.EXCEPTION,
-          "No PAYE Scheme found for user")(fakeAuthContext)
+          "No PAYE Scheme found for user")
 
         assert(d.auditSource == SplunkLogger.pbik_audit_source)
-        assert(d.detail.size > 0)
+        assert(d.detail.nonEmpty)
         assert(d.detail.contains(SplunkLogger.key_event_name))
         assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
-        assert(d.detail.get(SplunkLogger.key_empref).get == fakeAuthContext.principal.accounts.epaye.get.empRef.toString)
-        assert(d.detail.get(SplunkLogger.key_gateway_user).get == fakeAuthContext.principal.name.get)
+        assert(d.detail.get(SplunkLogger.key_empref).get == EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference").toString)
+        assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
         assert(d.detail.get(SplunkLogger.key_error).get == controller.spError.EXCEPTION.toString)
         assert(d.detail.get(SplunkLogger.key_message).get == "No PAYE Scheme found for user")
       }
     }
   }
 
-  "When logging events, the SplunkLogger " should {
-    "mark the empref with a default if one is not present " in new SetUp {
+  "When logging events, the SplunkLogger" should {
+    "mark the empref with a default if one is not present" in new SetUp {
       running(fakeApplication) {
-        val epayeAccount = None
-        val accounts = Accounts(epaye = epayeAccount)
-        val authority = ctAuthority("nonpayeId", "ctref")
-        val user = LoggedInUser(userId = "nonpayeId", None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
-        val principal = Principal(name = Some("TEST_USER"), accounts)
 
-        implicit def nonPayeUser = new AuthContext(user, principal, None, None, None, None)
+        implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+          models.EmpRef.empty,
+          UserName(Name(Some("TEST_USER"),None)),
+          FakeRequest()
+        )
+
 
         val d: DataEvent = controller.createErrorEvent(controller.spTier.FRONTEND,
           controller.spError.EXCEPTION,
-          "No Empref")(nonPayeUser)
+          msg="No Empref")
 
         assert(d.auditSource == SplunkLogger.pbik_audit_source)
-        assert(d.detail.size > 0)
+        assert(d.detail.nonEmpty)
         assert(d.detail.contains(SplunkLogger.key_event_name))
         assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
         assert(d.detail.get(SplunkLogger.key_empref).get == SplunkLogger.pbik_no_ref)
-        assert(d.detail.get(SplunkLogger.key_gateway_user).get == nonPayeUser.principal.name.get)
+        assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
         assert(d.detail.get(SplunkLogger.key_error).get == controller.spError.EXCEPTION.toString)
         assert(d.detail.get(SplunkLogger.key_message).get == "No Empref")
       }
     }
   }
 
-  "When logging events, the SplunkLogger " should {
-    "return the correct splunk field names " in new SetUp {
+  "When logging events, the SplunkLogger" should {
+    "return the correct splunk field names" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
-         // val t1 = spTier.FRONTEND
+          // val t1 = spTier.FRONTEND
           assert(spTier.toString != null)
-          val t2 = spAction.ADD
-          assert(spAction.toString!=null)
-          val t3 = spError.EXCEPTION
+          val t2: spAction.Value = spAction.ADD
+          assert(spAction.toString != null)
+          val t3: spError.Value = spError.EXCEPTION
           assert(spError.toString != null)
-          val t4 = spPeriod.BOTH
+          val t4: spPeriod.Value = spPeriod.BOTH
           assert(spPeriod.toString != null)
-          val t5 = spTarget.BIK
+          val t5: spTarget.Value = spTarget.BIK
           assert(spTarget.toString != null)
         }
       }
     }
   }
 
-  "When extracting a Nino from an empty list the conroller " should {
-    "return a not found label " in new SetUp {
+  "When extracting a Nino from an empty list the conroller" should {
+    "return a not found label" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
-          assert (extractListNino(List[EiLPerson]()) == SplunkLogger.pbik_no_ref)
+          assert(extractListNino(List[EiLPerson]()) == SplunkLogger.pbik_no_ref)
         }
       }
     }
   }
 
-  "When extracting a Nino from a list the conroller " should {
-    "return a not found label " in new SetUp {
+  "When extracting a Nino from a list the conroller" should {
+    "return a not found label" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
-          assert (extractListNino(testList) == "AB111111")
+          assert(extractListNino(testList) == "AB111111")
         }
       }
     }
   }
 
-  "When extracting a Nino from a Person list the conroller " should {
-    "return a not found label " in new SetUp {
+  "When extracting a Nino from a Person list the conroller" should {
+    "return a not found label" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
-          assert (extractPersonListNino(testPersonList) == "AB111111")
+          assert(extractPersonListNino(testPersonList) == "AB111111")
         }
       }
     }
   }
 
-  "When extracting a Nino from an empty Person List the conroller " should {
-    "return a not found label " in new SetUp {
+  "When extracting a Nino from an empty Person List the conroller" should {
+    "return a not found label" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
-          assert (extractPersonListNino(new EiLPersonList(List[EiLPerson]())) == SplunkLogger.pbik_no_ref)
+          assert(extractPersonListNino(EiLPersonList(List[EiLPerson]())) == SplunkLogger.pbik_no_ref)
         }
       }
     }
   }
 
-  "When extracting the Government Gateway Id from a valid user the controller " should {
-    "return the Government Gateway name " in new SetUp {
+  "When extracting the Government Gateway Id from a valid user the controller" should {
+    "return the Government Gateway name" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
-          assert (extractGovernmentGatewayString == fakeAuthContext.principal.name.get)
+          implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+            models.EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference"),
+            UserName(Name(Some("TEST_USER"),None)),
+            FakeRequest()
+          )
+          assert(extractGovernmentGatewayString == "TEST_USER")
         }
       }
     }
   }
 
-  "When extracting the Government Gateway Id from an invalid user the controller " should {
-    "return the default " in new SetUp {
+  "When extracting the Government Gateway Id from an invalid user the controller" should {
+    "return the default" in new SetUp {
       running(fakeApplication) {
         new {
           val testSplunker = "testSplunker"
         } with SplunkLogger {
-          val badUser = createDummyNonGatewayUser("NON_GW_USER")
-          assert (extractGovernmentGatewayString(badUser) == SplunkLogger.pbik_no_ref)
-        }
-      }
-    }
-  }
-
-  "When extracting the Empref Id from a valid user the controller " should {
-    "return the Empref " in new SetUp {
-      running(fakeApplication) {
-        new {
-          val testSplunker = "testSplunker"
-        } with SplunkLogger {
-          assert (extractEmprefString == fakeAuthContext.principal.accounts.epaye.get.empRef.toString)
-        }
-      }
-    }
-  }
-
-  "When extracting the Empref Id from an invalid user the controller " should {
-    "return the default " in new SetUp {
-      running(fakeApplication) {
-        new {
-          val testSplunker = "testSplunker"
-        } with SplunkLogger {
-          val badUser = createDummyNonEpayeUser("NON_GW_USER")
-          assert (extractEmprefString(badUser) == SplunkLogger.pbik_no_ref)
+          implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+            models.EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference"),
+            UserName(Name(None,None)),
+            FakeRequest()
+          )
+          assert(extractGovernmentGatewayString == SplunkLogger.pbik_no_ref)
         }
       }
     }

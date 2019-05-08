@@ -16,7 +16,7 @@
 
 package utils
 
-import java.text.{SimpleDateFormat, DateFormat}
+import java.text.{DateFormat, SimpleDateFormat}
 import java.util.Date
 
 object DateUtils extends PayrollBikDefaults {

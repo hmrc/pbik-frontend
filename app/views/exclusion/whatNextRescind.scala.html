@@ -16,14 +16,14 @@
 
 @(taxYearRange:TaxYearRange,
   year:String, iabdType:String,
-  name:String)(implicit request:Request[_],
-               ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+  name:String,empRef: EmpRef)(implicit request:Request[_],
                context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
 
-@parentTemplate(pageTitle = Messages("whatNext.rescind.heading") + " - " + Messages("Service.title"), None,  Some(ac.principal.accounts.epaye.get.empRef.toString), showLanguage = true) {
+
+@parentTemplate(pageTitle = Messages("whatNext.rescind.heading") + " - " + Messages("Service.title"), None,  Some(empRef.toString), showLanguage = true) {
 
     <section id="print-section">
         <div id="printContainer"></div>

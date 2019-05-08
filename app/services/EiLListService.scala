@@ -16,33 +16,27 @@
 
 package services
 
-import config.PbikAppConfig
+import config.{AppConfig, PbikAppConfig}
 import connectors.{HmrcTierConnector, TierConnector}
-import controllers.auth.{EpayeUser, PbikActions}
-import models.{EiLPerson, Bik}
-import play.api.Logger
-import play.api.mvc.Request
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import utils.{SplunkLogger, ControllersReferenceData, URIInformation}
-import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-import scala.concurrent.Future
+import models.{AuthenticatedRequest, EiLPerson}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.{ControllersReferenceData, SplunkLogger, URIInformation}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object EiLListService extends EiLListService {
-  def pbikAppConfig = PbikAppConfig
+  val pbikAppConfig: AppConfig = PbikAppConfig
   val tierConnector = new HmrcTierConnector
 }
 
 trait EiLListService extends TierConnector with URIInformation
-with ControllersReferenceData with EpayeUser
-with SplunkLogger {
+with ControllersReferenceData with SplunkLogger {
 
-  def currentYearEiL(iabdType: String, year: Int)(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]): Future[List[EiLPerson]] = {
+  def currentYearEiL(iabdType: String, year: Int)(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[List[EiLPerson]] = {
     val response = tierConnector.genericGetCall[List[EiLPerson]](baseUrl,
       exclusionGetPath(iabdType),
-      ac.principal.accounts.epaye.get.empRef.toString, year)
+      request.empRef, year)
 
     response.map {
       resultList: List[EiLPerson] =>
@@ -50,7 +44,7 @@ with SplunkLogger {
     }
   }
 
-  def searchResultsRemoveAlreadyExcluded(existingEiL: List[EiLPerson], searchResultsEiL: List[EiLPerson]): List[EiLPerson] = {
-    (searchResultsEiL diff  existingEiL)
-  }
+  def searchResultsRemoveAlreadyExcluded(existingEiL: List[EiLPerson], searchResultsEiL: List[EiLPerson]): List[EiLPerson] =
+    searchResultsEiL diff existingEiL
+
 }

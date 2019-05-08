@@ -23,8 +23,8 @@ registeredBenefitsCurrentYear: List[Bik],
 registeredBenefitsNextYear: List[Bik],
 serviceBiksCountCY: Int,
 serviceBiksCountCYP1: Int,
-fromYTA: String)(implicit request:Request[_],
-ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+fromYTA: String,
+empRef: EmpRef)(implicit request:Request[_],
 context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
@@ -41,7 +41,7 @@ context: config.PbikContext, applicationMessages: Messages)
 </div>
 }
 
-@parentTemplate(pageTitle = Messages("Overview.heading") + " - " + Messages("Service.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString), true,
+@parentTemplate(pageTitle = Messages("Overview.heading") + " - " + Messages("Service.title"), None, Some(empRef.toString), true,
 showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
 
 <h1 id="title">@Messages("Overview.heading")</h1>

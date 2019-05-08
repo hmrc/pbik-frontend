@@ -14,13 +14,12 @@
  * limitations under the License.
  *@
 
-@(taxYearRange:TaxYearRange)(implicit request:Request[_],
-                             ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+@(taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_],
                              context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 
-@parentTemplate(pageTitle = Messages("AddBenefits.CY.Caution.Title") + " - " + Messages("Service.title"), None, Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+@parentTemplate(pageTitle = Messages("AddBenefits.CY.Caution.Title") + " - " + Messages("Service.title"), None, Some(empRef.toString)) {
 
 
     <h1 id="title">@Messages("AddBenefits.CY.Caution.Title")</h1>

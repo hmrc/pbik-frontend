@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package controllers.auth
+package models
 
-import connectors.{FrontendAuditConnector, FrontendAuthConnector}
+import play.api.mvc.{Request, WrappedRequest}
 
-trait AuthenticationConnector {
-  lazy val auditConnector = FrontendAuditConnector
-  lazy val authConnector = FrontendAuthConnector
-}
+case class AuthenticatedRequest[A](empRef: EmpRef, name: UserName, request:Request[A]) extends WrappedRequest[A](request)

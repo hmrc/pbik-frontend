@@ -17,62 +17,74 @@
 package controllers
 
 import java.util.UUID
+
 import config._
-import controllers.auth.{AuthenticationConnector, EpayeUser, PbikActions}
-import models._
 import connectors.{HmrcTierConnector, TierConnector}
-import play.api.i18n.{Lang, Messages}
+import controllers.actions.{AuthAction, NoSessionCheckAction}
+import models._
+import play.api.Play.current
 import play.api.data.Form
-import play.api.{Play, Logger}
+import play.api.i18n.Messages
+import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
+import play.api.{Logger, Play}
 import services.{BikListService, EiLListService}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.play.config.RunMode
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-import uk.gov.hmrc.http.{ HeaderCarrier, SessionKeys }
 
-trait ExclusionListConfiguration extends RunMode with RunModeConfig  {
+trait ExclusionListConfiguration extends RunMode with RunModeConfig {
 
-  lazy val exclusionsAllowed = Play.configuration.getBoolean("pbik.enabled.eil").getOrElse(false)
+  lazy val exclusionsAllowed: Boolean = Play.configuration.getBoolean("pbik.enabled.eil").getOrElse(false)
 
 }
 
-object ExclusionListController extends ExclusionListController with TierConnector
-with AuthenticationConnector {
-  def pbikAppConfig = PbikAppConfig
-  def eiLListService = EiLListService
-  def bikListService = BikListService
+object ExclusionListController extends ExclusionListController with TierConnector {
+  val pbikAppConfig: AppConfig = PbikAppConfig
+
+  def eiLListService: EiLListService.type = EiLListService
+
+  def bikListService: BikListService.type = BikListService
+
   val tierConnector = new HmrcTierConnector
+  val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
+  val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
 }
 
-trait ExclusionListController extends FrontendController with URIInformation
-with ControllersReferenceData with PbikActions with EpayeUser
-with SplunkLogger with ExclusionListConfiguration {
+trait ExclusionListController extends FrontendController
+  with URIInformation
+  with ControllersReferenceData
+  with SplunkLogger
+  with ExclusionListConfiguration {
   this: TierConnector =>
 
+  val authenticate: AuthAction
+  val noSessionCheck: NoSessionCheckAction
+
   def eiLListService: EiLListService
+
   def bikListService: BikListService
 
   def mapYearStringToInt(URIYearString: String): Future[Int] = {
     URIYearString match {
-      case utils.FormMappingsConstants.CY => Future{YEAR_RANGE.cyminus1}
-      case utils.FormMappingsConstants.CYP1 => Future{YEAR_RANGE.cy}
-      case (_) => Future{throw new InvalidYearURIException()}
+      case utils.FormMappingsConstants.CY => Future.successful(YEAR_RANGE.cyminus1)
+      case utils.FormMappingsConstants.CYP1 => Future.successful(YEAR_RANGE.cy)
+      case _ => Future.failed(throw new InvalidYearURIException())
     }
   }
 
-  def validateRequest(isCurrentYear: String, iabdType: String)(implicit ac: AuthContext, request: Request[_]):Future[Int] = {
+  def validateRequest(isCurrentYear: String, iabdType: String)(implicit request: AuthenticatedRequest[_]): Future[Int] = {
     for {
       year <- mapYearStringToInt(isCurrentYear)
-      registeredBenefits: List[Bik] <- bikListService.registeredBenefitsList(year, ac.principal.accounts.epaye.get.empRef.toString)(getRegisteredPath)
+      registeredBenefits: List[Bik] <- bikListService.registeredBenefitsList(year, request.empRef)(getRegisteredPath)
     } yield {
-      if (registeredBenefits.filter(x => x.iabdType.equals(iabdValueURLDeMapper(iabdType))).length > 0) {
+      if (registeredBenefits.exists(_.iabdType.equals(iabdValueURLDeMapper(iabdType)))) {
         year
       } else {
         throw new InvalidBikTypeURIException()
@@ -80,110 +92,108 @@ with SplunkLogger with ExclusionListConfiguration {
     }
   }
 
-  def performPageLoad(isCurrentTaxYear: String, iabdType: String):Action[AnyContent] = AuthorisedForPbik {
-    implicit user =>
-      implicit request =>
-        if ( exclusionsAllowed) {
-          val iabdTypeValue = iabdValueURLDeMapper(iabdType)
-          val staticDataRequest = for {
-            year <- validateRequest(isCurrentTaxYear, iabdType)
-            currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
-            nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
-            currentYearEIL: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
-          } yield {
-              Ok(views.html.exclusion.exclusionOverview(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, currentYearEIL.sortWith(_.surname < _.surname)))
-                .removingFromSession(HeaderTags.ETAG)
-                .addingToSession(nextYearList._1.toSeq: _*)
-            }
-          responseErrorHandler(staticDataRequest)
-
-        } else {
-          Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED,
-            TaxDateUtils.getTaxYearRange())))
+  def performPageLoad(isCurrentTaxYear: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+    implicit request =>
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      if (exclusionsAllowed) {
+        val iabdTypeValue = iabdValueURLDeMapper(iabdType)
+        val staticDataRequest = for {
+          year <- validateRequest(isCurrentTaxYear, iabdType)
+          currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
+          nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
+          currentYearEIL: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
+        } yield {
+          Ok(views.html.exclusion.exclusionOverview(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, currentYearEIL.sortWith(_.surname < _.surname), request.empRef))
+            .removingFromSession(HeaderTags.ETAG)
+            .addingToSession(nextYearList._1.toSeq: _*)
         }
+        responseErrorHandler(staticDataRequest)
+
+      } else {
+        Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED,
+          TaxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+      }
 
   }
 
-  def withOrWithoutNinoOnPageLoad(isCurrentTaxYear: String, iabdType: String):Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        val iabdTypeValue = iabdValueURLDeMapper(iabdType)
-        if ( exclusionsAllowed ) {
-          val resultFuture = for {
-            _ <- validateRequest(isCurrentTaxYear, iabdType)
-          } yield {
-              Ok(views.html.exclusion.exclusionNinoOrNoNinoForm(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue))
-            }
-          responseErrorHandler(resultFuture)
-        } else {
-          Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED,
-            TaxDateUtils.getTaxYearRange())))
+  def withOrWithoutNinoOnPageLoad(isCurrentTaxYear: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+    implicit request =>
+      val iabdTypeValue = iabdValueURLDeMapper(iabdType)
+      if (exclusionsAllowed) {
+        val resultFuture = for {
+          _ <- validateRequest(isCurrentTaxYear, iabdType)
+        } yield {
+          Ok(views.html.exclusion.exclusionNinoOrNoNinoForm(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, empRef = request.empRef))
         }
+        responseErrorHandler(resultFuture)
+      } else {
+        Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED,
+          TaxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+      }
   }
 
-  def withOrWithoutNinoDecision(isCurrentTaxYear: String, iabdType: String):Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        val iabdTypeValue = iabdValueURLDeMapper(iabdType)
-        if ( exclusionsAllowed ) {
-          val taxYearRange = YEAR_RANGE
-          val resultFuture = binaryRadioButton.bindFromRequest().fold(
-            formWithErrors => Future(Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
-              isCurrentTaxYear, iabdType)).flashing("error" -> Messages("ExclusionDecision.noselection.error")))
-            ,
-            values => {
-              val selectedValue = values.selectionValue
-              for {
-                _ <- validateRequest(isCurrentTaxYear, iabdType)
-              } yield {
-                selectedValue match {
-                  case FORM_TYPE_NINO => Ok(views.html.exclusion.ninoExclusionSearchForm(taxYearRange,
-                    isCurrentTaxYear, iabdTypeValue, exclusionSearchFormWithNino))
-                  case FORM_TYPE_NONINO => Ok(views.html.exclusion.noNinoExclusionSearchForm(taxYearRange,
-                    isCurrentTaxYear, iabdTypeValue, exclusionSearchFormWithoutNino))
-                  case "" => Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
-                    isCurrentTaxYear, iabdTypeValue)).flashing("error" -> Messages("ExclusionDecision.noselection.error"))
-                }
+  def withOrWithoutNinoDecision(isCurrentTaxYear: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+    implicit request =>
+      val iabdTypeValue = iabdValueURLDeMapper(iabdType)
+      if (exclusionsAllowed) {
+        val taxYearRange = YEAR_RANGE
+        val resultFuture = binaryRadioButton.bindFromRequest().fold(
+          formWithErrors => Future(Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
+            isCurrentTaxYear, iabdType)).flashing("error" -> Messages("ExclusionDecision.noselection.error")))
+          ,
+          values => {
+            val selectedValue = values.selectionValue
+            for {
+              _ <- validateRequest(isCurrentTaxYear, iabdType)
+            } yield {
+              selectedValue match {
+                case FORM_TYPE_NINO => Ok(views.html.exclusion.ninoExclusionSearchForm(taxYearRange,
+                  isCurrentTaxYear, iabdTypeValue, exclusionSearchFormWithNino, empRef = request.empRef))
+                case FORM_TYPE_NONINO => Ok(views.html.exclusion.noNinoExclusionSearchForm(taxYearRange,
+                  isCurrentTaxYear, iabdTypeValue, exclusionSearchFormWithoutNino, empRef = request.empRef))
+                case "" => Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
+                  isCurrentTaxYear, iabdTypeValue)).flashing("error" -> Messages("ExclusionDecision.noselection.error"))
               }
             }
-          )
-          responseErrorHandler(resultFuture)
-        } else {
-          Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange())))
-        }
-  }
-
-  def searchResults(isCurrentTaxYear: String, iabdType: String, formType: String):Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        val iabdTypeValue = iabdValueURLDeMapper(iabdType)
-        if ( exclusionsAllowed ) {
-          val form = formType match {
-            case FORM_TYPE_NINO => exclusionSearchFormWithNino
-            case FORM_TYPE_NONINO => exclusionSearchFormWithoutNino
           }
-          val futureResult = form.bindFromRequest().fold(
-            formWithErrors =>
-              searchResultsHandleFormErrors(isCurrentTaxYear, formType, iabdTypeValue, formWithErrors),
-            validModel => {
-              for {
-                year <- validateRequest(isCurrentTaxYear, iabdType)
-                result <- tierConnector.genericPostCall(baseUrl, exclusionPostUpdatePath(iabdTypeValue),
-                  ac.principal.accounts.epaye.get.empRef.toString, year, validModel)
-                resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
+        )
+        responseErrorHandler(resultFuture)
+      } else {
+        Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+      }
+  }
 
-              } yield {
-                val listOfMatches: List[EiLPerson] = eiLListService.searchResultsRemoveAlreadyExcluded(resultAlreadyExcluded,
-                  result.json.validate[List[EiLPerson]].asOpt.get)
-                searchResultsHandleValidResult(listOfMatches, resultAlreadyExcluded, isCurrentTaxYear, formType,
-                  iabdTypeValue, form, None)
-              }
-            }
-          )
-          responseErrorHandler(futureResult)
-        } else {
-          Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange())))
+  def searchResults(isCurrentTaxYear: String, iabdType: String, formType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+    implicit request =>
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      val iabdTypeValue = iabdValueURLDeMapper(iabdType)
+      if (exclusionsAllowed) {
+        val form = formType match {
+          case FORM_TYPE_NINO => exclusionSearchFormWithNino
+          case FORM_TYPE_NONINO => exclusionSearchFormWithoutNino
         }
+        val futureResult = form.bindFromRequest().fold(
+          formWithErrors =>
+            searchResultsHandleFormErrors(isCurrentTaxYear, formType, iabdTypeValue, formWithErrors),
+          validModel => {
+            for {
+              year <- validateRequest(isCurrentTaxYear, iabdType)
+              result <- tierConnector.genericPostCall(baseUrl, exclusionPostUpdatePath(iabdTypeValue),
+                request.empRef, year, validModel)
+              resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
+
+            } yield {
+              val listOfMatches: List[EiLPerson] = eiLListService.searchResultsRemoveAlreadyExcluded(resultAlreadyExcluded,
+                result.json.validate[List[EiLPerson]].asOpt.get)
+              searchResultsHandleValidResult(listOfMatches, resultAlreadyExcluded, isCurrentTaxYear, formType,
+                iabdTypeValue, form, None)
+            }
+          }
+        )
+        responseErrorHandler(futureResult)
+      } else {
+        Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+      }
   }
 
   /*
@@ -192,18 +202,18 @@ with SplunkLogger with ExclusionListConfiguration {
   */
   def searchResultsHandleValidResult(listOfMatches: List[EiLPerson], resultAlreadyExcluded: List[EiLPerson], isCurrentTaxYear: String, formType: String,
                                      iabdTypeValue: String, form: Form[EiLPerson], individualSelectionOption: Option[String])
-                                    (implicit request: Request[_], ac: AuthContext): Result = {
+                                    (implicit request: AuthenticatedRequest[_]): Result = {
     listOfMatches.size match {
       case 0 =>
         Logger.error("Matches are zero size")
         val existsAlready = resultAlreadyExcluded.contains(form.bindFromRequest().get)
-        val message = if(existsAlready) Messages("ExclusionSearch.Fail.Exists.P") else Messages("ExclusionSearch.Fail.P")
+        val message = if (existsAlready) Messages("ExclusionSearch.Fail.Exists.P") else Messages("ExclusionSearch.Fail.P")
 
         formType match {
           case FORM_TYPE_NINO => Ok(views.html.exclusion.ninoExclusionSearchForm(YEAR_RANGE, isCurrentTaxYear,
-            iabdTypeValue, form.bindFromRequest().withError("status", message), existsAlready))
+            iabdTypeValue, form.bindFromRequest().withError("status", message), existsAlready, empRef = request.empRef))
           case _ => Ok(views.html.exclusion.noNinoExclusionSearchForm(YEAR_RANGE, isCurrentTaxYear,
-            iabdTypeValue, form.bindFromRequest().withError("status", message), existsAlready))
+            iabdTypeValue, form.bindFromRequest().withError("status", message), existsAlready, empRef = request.empRef))
         }
 
       case _ =>
@@ -211,7 +221,7 @@ with SplunkLogger with ExclusionListConfiguration {
         val filledListOfMatchesForm = individualsFormWithRadio.fill((individualSelectionOption.getOrElse(""),
           EiLPersonList(listOfMatches)))
         Ok(views.html.exclusion.searchResults(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue,
-          filledListOfMatchesForm, formType))
+          filledListOfMatchesForm, formType, empRef = request.empRef))
 
     }
   }
@@ -222,50 +232,49 @@ with SplunkLogger with ExclusionListConfiguration {
   */
   def searchResultsHandleFormErrors(isCurrentTaxYear: String, formType: String, iabdTypeValue: String,
                                     formWithErrors: Form[EiLPerson])
-                                   (implicit request: Request[_], ac: AuthContext): Future[Result] = {
+                                   (implicit request: AuthenticatedRequest[_]): Future[Result] = {
     Future {
       formType match {
         case FORM_TYPE_NINO => Ok(views.html.exclusion.ninoExclusionSearchForm(YEAR_RANGE, isCurrentTaxYear,
-          iabdTypeValue, formWithErrors))
+          iabdTypeValue, formWithErrors, empRef = request.empRef))
         case FORM_TYPE_NONINO => Ok(views.html.exclusion.noNinoExclusionSearchForm(YEAR_RANGE, isCurrentTaxYear,
-          iabdTypeValue, formWithErrors))
+          iabdTypeValue, formWithErrors, empRef = request.empRef))
       }
     }
   }
 
-  def updateExclusions(year: String, iabdType: String):Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        val iabdTypeValue = iabdValueURLDeMapper(iabdType)
-        if ( exclusionsAllowed ) {
-          val taxYearRange = YEAR_RANGE
+  def updateExclusions(year: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+    implicit request =>
+      implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      val iabdTypeValue = iabdValueURLDeMapper(iabdType)
+      if (exclusionsAllowed) {
+        val taxYearRange = YEAR_RANGE
 
-          val futureResult = processExclusionForm(individualsForm.bindFromRequest, year, iabdTypeValue, taxYearRange)
-          responseErrorHandler(futureResult)
+        val futureResult = processExclusionForm(individualsForm.bindFromRequest, year, iabdTypeValue, taxYearRange)
+        responseErrorHandler(futureResult)
 
-        } else {
-          Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange())))
-        }
+      } else {
+        Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+      }
   }
 
-  def updateMultipleExclusions(year: String, iabdType: String):Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        val iabdTypeValue = iabdValueURLDeMapper(iabdType)
-        if ( exclusionsAllowed ) {
-          val taxYearRange = YEAR_RANGE
-          val form = individualsFormWithRadio.bindFromRequest
-          val futureResult = processIndividualExclusionForm(form, year, iabdTypeValue, taxYearRange)
-          responseErrorHandler(futureResult)
-
-        } else {
-          Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange())))
-        }
+  def updateMultipleExclusions(year: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+    implicit request =>
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      val iabdTypeValue = iabdValueURLDeMapper(iabdType)
+      if (exclusionsAllowed) {
+        val taxYearRange = YEAR_RANGE
+        val form = individualsFormWithRadio.bindFromRequest
+        val futureResult = processIndividualExclusionForm(form, year, iabdTypeValue, taxYearRange)
+        responseErrorHandler(futureResult)
+      } else {
+        Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+      }
   }
 
-  def processIndividualExclusionForm (form: Form[(String,EiLPersonList)], isCurrentTaxYear: String,
-                                      iabdType: String, taxYearRange: TaxYearRange)
-                                     (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext) : Future[Result] = {
+  def processIndividualExclusionForm(form: Form[(String, EiLPersonList)], isCurrentTaxYear: String,
+                                     iabdType: String, taxYearRange: TaxYearRange)
+                                    (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     val iabdTypeValue = iabdValueURLMapper(iabdType)
     form.fold(
       formWithErrors =>
@@ -273,7 +282,7 @@ with SplunkLogger with ExclusionListConfiguration {
           _ <- validateRequest(isCurrentTaxYear, iabdTypeValue)
         } yield {
           Ok(views.html.exclusion.searchResults(taxYearRange, isCurrentTaxYear, iabdType,
-            formWithErrors, FORM_TYPE_NONINO))
+            formWithErrors, FORM_TYPE_NONINO, empRef = request.empRef))
         },
       values => {
 
@@ -284,42 +293,42 @@ with SplunkLogger with ExclusionListConfiguration {
     )
   }
 
-  def processExclusionForm(form: Form[(EiLPersonList)], year: String,
+  def processExclusionForm(form: Form[EiLPersonList], year: String,
                            iabdType: String, taxYearRange: TaxYearRange)
-                          (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext) : Future[Result] = {
-
+                          (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     form.fold(
       formWithErrors => Future {
-        Ok(views.html.errorPage(INVALID_FORM_ERROR, taxYearRange, year))
+        Ok(views.html.errorPage(INVALID_FORM_ERROR, taxYearRange, year, empRef = Some(request.empRef)))
       },
       values => {
-        val excludedIndividual = extractExcludedIndividual("",values)
-        if ( excludedIndividual.isEmpty ) {
-          Future.successful(Ok(views.html.errorPage(INVALID_FORM_ERROR, taxYearRange, year)))
+        val excludedIndividual = extractExcludedIndividual("", values)
+        if (excludedIndividual.isEmpty) {
+          Future.successful(Ok(views.html.errorPage(INVALID_FORM_ERROR, taxYearRange, year, empRef = Some(request.empRef))))
         } else {
-          commitExclusion(year, iabdType, taxYearRange,excludedIndividual)
+          commitExclusion(year, iabdType, taxYearRange, excludedIndividual)
         }
       }
     )
   }
 
-  def commitExclusion(year:String, iabdType:String, taxYearRange:TaxYearRange, excludedIndividual:Option[EiLPerson])
-                     (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext, context: PbikContext) : Future[Result] = {
+  def commitExclusion(year: String, iabdType: String, taxYearRange: TaxYearRange, excludedIndividual: Option[EiLPerson])
+                     (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent], context: PbikContext): Future[Result] = {
     val yearInt = if (year.equals(utils.FormMappingsConstants.CY)) taxYearRange.cyminus1 else taxYearRange.cy
     val spYear = if (TaxDateUtils.isCurrentTaxYear(yearInt)) spPeriod.CY else spPeriod.CYP1
-    val registrationList: RegistrationList = new RegistrationList(None, List(new RegistrationItem(iabdType, false, false)))
-    Logger.info("Committing Exclusion for scheme " + ac.principal.accounts.epaye.get.empRef.toString + " , with employees Optimisitic Lock: " + excludedIndividual.get.perOptLock)
+    val registrationList: RegistrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = false, enabled = false)))
+
+    Logger.info(s"Committing Exclusion for scheme ${request.empRef.toString} , with employees Optimisitic Lock: ${excludedIndividual.get.perOptLock}")
+
     tierConnector.genericPostCall(baseUrl, exclusionPostUpdatePath(iabdType),
-      ac.principal.accounts.epaye.get.empRef.toString, yearInt, excludedIndividual.get).map {
+      request.empRef, yearInt, excludedIndividual.get).map {
       response =>
         response.status match {
           case OK => {
-            auditExclusion(true, yearInt,excludedIndividual.get.nino, iabdType)
-            Ok(views.html.exclusion.whatNextExclusion.render(TaxDateUtils.getTaxYearRange(), year,
-              iabdType, excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname, request, ac, context,applicationMessages))
-
+            auditExclusion(exclusion = true, yearInt, excludedIndividual.get.nino, iabdType)
+            Ok(views.html.exclusion.whatNextExclusion(TaxDateUtils.getTaxYearRange(), year,
+              iabdType, excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname, request.empRef))
           }
-          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")(request,ac,context,applicationMessages)).
+          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "", empRef = Some(request.empRef))(request, context, applicationMessages)).
             withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
         }
     }
@@ -334,52 +343,50 @@ with SplunkLogger with ExclusionListConfiguration {
       case 0 => None
       case 1 => Some(individuals.active.head)
       case _ => {
-        chosenNino.trim.size match {
+        chosenNino.trim.length match {
           case 0 => Some(individuals.active.head)
-          case _ => individuals.active.filter(x => x.nino == chosenNino).headOption
+          case _ => individuals.active.find(x => x.nino == chosenNino)
         }
-
       }
     }
   }
 
-  def remove(year:String, iabdType: String):Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        if ( exclusionsAllowed ) {
-
-          processRemoval(individualsForm.bindFromRequest, year, iabdType, YEAR_RANGE)
-        } else {
-          Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange())))
-        }
+  def remove(year: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+    implicit request =>
+      implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      if (exclusionsAllowed) {
+        processRemoval(individualsForm.bindFromRequest, year, iabdType, YEAR_RANGE)
+      } else {
+        Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, TaxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+      }
   }
 
-  def processRemoval(form: Form[(EiLPersonList)], year:String,
+  def processRemoval(form: Form[EiLPersonList], year: String,
                      iabdType: String, taxYearRange: TaxYearRange)
-                    (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext) : Future[Result] = {
+                    (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     form.fold(
-      formWithErrors => Future.successful(Ok(views.html.errorPage(INVALID_FORM_ERROR, taxYearRange, ""))),
+      formWithErrors => Future.successful(Ok(views.html.errorPage(INVALID_FORM_ERROR, taxYearRange, "", empRef = Some(request.empRef)))),
       values => Future.successful(Ok(views.html.exclusion.removalConfirmation(taxYearRange, year, iabdType,
-        individualsForm.fill(values))))
+        individualsForm.fill(values), empRef = request.empRef)))
     )
 
   }
 
-  def removeExclusionsCommit(iabdType: String):Action[AnyContent] = AuthorisedForPbik {
-    implicit ac =>
-      implicit request =>
-        val iabdTypeValue = iabdValueURLDeMapper(iabdType)
-        val taxYearRange = TaxDateUtils.getTaxYearRange()
-        if ( exclusionsAllowed) {
-          processRemovalCommit(individualsForm.bindFromRequest, iabdTypeValue, taxYearRange)
-        } else {
-          Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED,taxYearRange )))
-        }
+  def removeExclusionsCommit(iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+    implicit request =>
+      implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      val iabdTypeValue = iabdValueURLDeMapper(iabdType)
+      val taxYearRange = TaxDateUtils.getTaxYearRange()
+      if (exclusionsAllowed) {
+        processRemovalCommit(individualsForm.bindFromRequest, iabdTypeValue, taxYearRange)
+      } else {
+        Future.successful(Ok(views.html.errorPage(FEATURE_RESTRICTED, taxYearRange, empRef = Some(request.empRef))))
+      }
   }
 
-  def processRemovalCommit(form: Form[(EiLPersonList)],
-                           iabdType: String, taxYearRange:TaxYearRange)
-                          (implicit hc:HeaderCarrier, request: Request[AnyContent], ac: AuthContext, context: PbikContext) : Future[Result] = {
+  def processRemovalCommit(form: Form[EiLPersonList],
+                           iabdType: String, taxYearRange: TaxYearRange)
+                          (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent], context: PbikContext): Future[Result] = {
     val year = taxYearRange.cy
     val removalsList = form.fold(
       formWithErrors => List.empty[EiLPerson],
@@ -387,40 +394,42 @@ with SplunkLogger with ExclusionListConfiguration {
         values.active
       }
     )
-    val registrationList: RegistrationList = new RegistrationList(None, List(new RegistrationItem(iabdType, false, false)))
+    val registrationList: RegistrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = false, enabled = false)))
 
     val individual = removalsList.head
     val iabdTypeValue = iabdValueURLMapper(iabdType)
     val futureExclude = tierConnector.genericPostCall(baseUrl, exclusionPostRemovePath(iabdType),
-      ac.principal.accounts.epaye.get.empRef.toString, year, individual ).map {
+      request.empRef, year, individual).map {
       response =>
         response.status match {
 
           case OK => {
-            auditExclusion(false, year,extractListNino(removalsList),iabdType)
-            Ok(views.html.exclusion.whatNextRescind.render(TaxDateUtils.getTaxYearRange(), NEXT_TAX_YEAR,
-              iabdTypeValue, individual.firstForename + " " + individual.surname, request, ac, context,applicationMessages)).
-              withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+            auditExclusion(exclusion = false, year, extractListNino(removalsList), iabdType)
+            Ok(views.html.exclusion.whatNextRescind(TaxDateUtils.getTaxYearRange(), NEXT_TAX_YEAR,
+              iabdTypeValue, individual.firstForename + " " + individual.surname, request.empRef))
+              .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
 
           }
-          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "")(request,ac, context,applicationMessages)).
-            withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "", empRef = Some(request.empRef)))
+            .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
         }
     }
     responseErrorHandler(futureExclude)
   }
 
 
-  private def auditExclusion(exclusion:Boolean, year:Int, employee:String, iabdType:String )
-                            (implicit hc:HeaderCarrier, ac: AuthContext) = {
+  private def auditExclusion(exclusion: Boolean, year: Int, employee: String, iabdType: String)
+                            (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]) = {
     logSplunkEvent(createDataEvent(
-      tier=spTier.FRONTEND,
-      action= if (exclusion) spAction.ADD else spAction.REMOVE,
-      target=spTarget.EIL,
-      period= taxYearToSpPeriod(year),
-      msg= if (exclusion) "Employee excluded" else "Employee exclusion rescinded",
-      nino=Some(employee),
-      iabd=Some(iabdType)))
+      tier = spTier.FRONTEND,
+      action = if (exclusion) spAction.ADD else spAction.REMOVE,
+      target = spTarget.EIL,
+      period = taxYearToSpPeriod(year),
+      msg = if (exclusion) "Employee excluded" else "Employee exclusion rescinded",
+      nino = Some(employee),
+      iabd = Some(iabdType),
+      name = Some(request.name),
+      empRef = Some(request.empRef)))
   }
 
 }

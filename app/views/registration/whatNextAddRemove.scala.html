@@ -17,8 +17,7 @@
 @(isCurrentYear: Boolean,
   taxYearRange:TaxYearRange,
   additive: Boolean,
-  bikForm:Form[RegistrationList])(implicit request:Request[_],
-                                  ac: uk.gov.hmrc.play.frontend.auth.AuthContext ,
+  bikForm:Form[RegistrationList], empRef: EmpRef)(implicit request:Request[_],
                                   context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
@@ -31,8 +30,9 @@
 @cyplus1 = @{""+taxYearRange.cyplus1}
 @metaTitleAdditive = @{if(singleBik){Messages("whatNext.add.heading.singular")}else {Messages("whatNext.add.heading")}}
 
+
 @parentTemplate(pageTitle = if(additive) {metaTitleAdditive + " - " + Messages("Service.title")}else{Messages("whatNext.remove.heading") + " - " + Messages("Service.title")},
-                None, Some(ac.principal.accounts.epaye.get.empRef.toString), showLanguage = true) {
+                None, Some(empRef.toString), showLanguage = true) {
 
     <section id="print-section">
         <div id="printContainer"></div>

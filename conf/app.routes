@@ -11,7 +11,7 @@ GET         /help-and-contact                       controllers.HelpAndContactCo
 POST        /help-and-contact                       controllers.HelpAndContactController.submitContactHmrcForm
 GET         /help-and-contact-confirmed             controllers.HelpAndContactController.confirmationContactHmrc
 
-GET         /not-authorised                         controllers.auth.AuthController.notAuthorised
+GET         /not-authorised                         controllers.AuthController.notAuthorised
 
 GET         /signout                                controllers.HomePageController.signout
 

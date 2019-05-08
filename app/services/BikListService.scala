@@ -16,53 +16,46 @@
 
 package services
 
-import config.PbikAppConfig
+import config.{AppConfig, PbikAppConfig}
 import connectors.{HmrcTierConnector, TierConnector}
-import models.Bik
+import models.{AuthenticatedRequest, Bik, EmpRef}
 import play.api.mvc.Request
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import utils.{ControllersReferenceData, URIInformation}
-import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.{ControllersReferenceData, URIInformation}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object BikListService extends BikListService {
-  def pbikAppConfig = PbikAppConfig
+  val pbikAppConfig: AppConfig = PbikAppConfig
+
   val tierConnector = new HmrcTierConnector
 }
 
 trait BikListService extends TierConnector with URIInformation with ControllersReferenceData {
-  def pbikHeaders = Map[String, String]()
+  def pbikHeaders: Map[String, String] = Map[String, String]()
 
-  def currentYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]): Future[(Map[String, String], List[Bik])] = {
+  def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {
     val response = tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
-        ac.principal.accounts.epaye.get.empRef.toString,
-        YEAR_RANGE.cyminus1)
+      request.empRef, YEAR_RANGE.cyminus1)
 
     response.map { resultOption: List[Bik] =>
       (tierConnector.pbikHeaders, resultOption.distinct)
     }
   }
 
-  def nextYearList(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]): Future[(Map[String, String], List[Bik])] = {
+  def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {
     val response = tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
-        ac.principal.accounts.epaye.get.empRef.toString,
-        YEAR_RANGE.cy)
+      request.empRef, YEAR_RANGE.cy)
 
     response.map { resultOption: List[Bik] =>
       (tierConnector.pbikHeaders, resultOption.distinct)
     }
   }
 
-  def registeredBenefitsList(year: Int, orgIdentifier: String)(path: String)(implicit ac: AuthContext, hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
-    val newPath = path match {
-      case "" => getRegisteredPath
-      case _ => path
-    }
-    val response = tierConnector.genericGetCall[List[Bik]](baseUrl,
-      newPath, orgIdentifier, year)
+  def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
+    val newPath = if (path == "") getRegisteredPath else path
+    val response = tierConnector.genericGetCall[List[Bik]](baseUrl, newPath, empRef, year)
     response
   }
 }

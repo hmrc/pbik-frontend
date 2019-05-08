@@ -17,15 +17,14 @@
 @(taxYearRange: TaxYearRange,
   year: String, iabdType: String,
   listOfMatchesForm: Form[(String,EiLPersonList)],
-  formType: String)(implicit request: Request[_],
-                    ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+  formType: String, empRef: EmpRef)(implicit request: Request[_],
                     context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
 
 
-@parentTemplate( pageTitle=Messages("ExclusionSearch.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString), showLanguage = true) {
+@parentTemplate( pageTitle=Messages("ExclusionSearch.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString), showLanguage = true) {
 
     @defining( if(year=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
         @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, iabdValueURLMapper(iabdType)),
