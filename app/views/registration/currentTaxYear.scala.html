@@ -20,8 +20,7 @@
   registeredBiks:List[Bik] = List.empty[Bik],
   nonLegislationBiks:List[Int]=config.PbikAppConfig.biksNotSupportedCY,
   decommissionedBiks:List[Int]=config.PbikAppConfig.biksDecommissioned,
-  biksAvailableCount: Option[Int])(implicit request:Request[_],
-                                   ac: uk.gov.hmrc.play.frontend.auth.AuthContext,
+  biksAvailableCount: Option[Int], empRef: EmpRef)(implicit request:Request[_],
                                    context: config.PbikContext, applicationMessages: Messages)
 
 @import uk.gov.hmrc.play.views.html.helpers
@@ -37,7 +36,7 @@
 
 @parentTemplate(pageTitle =
 Messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy) + " - " + Messages("Service.title"),
-Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString), sidebarLinks = Some(sidebarLinks)) {
+Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
 
     <h1 id="title">
         @Messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)

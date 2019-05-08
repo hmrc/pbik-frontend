@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package controllers.auth
+package utils
 
-import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.play.frontend.auth.AuthContext
+import controllers.actions.MinimalAuthAction
+import play.api.mvc.{Request, Result}
 
-trait EpayeUser {
-  def ePayeUtr(ac: AuthContext):EmpRef = ac.principal.accounts.epaye.isDefined match {
-    case true => ac.principal.accounts.epaye.get.empRef
-    case _ => null
+import scala.concurrent.Future
+
+class TestMinimalAuthAction extends MinimalAuthAction {
+  override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
+    block(request)
+
   }
 }

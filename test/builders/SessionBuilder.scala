@@ -18,7 +18,7 @@ package builders
 
 import java.util.UUID
 
-import play.api.mvc.{AnyContentAsFormUrlEncoded, AnyContentAsJson}
+import play.api.mvc.AnyContentAsJson
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.SessionKeys
 

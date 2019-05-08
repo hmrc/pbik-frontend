@@ -16,17 +16,18 @@
 
 package controllers
 
-import controllers.auth.{EpayeUser, PbikActions}
 import play.api.mvc._
 
-object RedirectController extends Controller{
+object RedirectController extends Controller {
 
   def redirectIfFromStart() = Action { implicit request =>
     Redirect(routes.HomePageController.onPageLoad)
   }
+
   def redirectIfFromOldOverview() = Action { implicit request =>
     Redirect(routes.HomePageController.onPageLoad)
   }
+
   def redirectIfFromRoot() = Action { implicit request =>
     Redirect(routes.HomePageController.onPageLoad)
   }

@@ -18,38 +18,37 @@ package utils
 
 import config.{AppConfig, PbikAppConfig, PbikContext, PbikContextImpl}
 import models._
+import play.api.Logger
+import play.api.Play.current
 import play.api.i18n.Messages
-import play.api.libs.json.{JsValue, Json}
+import play.api.i18n.Messages.Implicits._
+import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request, Result}
+import uk.gov.hmrc.http.Upstream5xxResponse
 import utils.BikListUtils.MandatoryRadioButton
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
-import uk.gov.hmrc.play.http._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import play.api.{Logger, Play}
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
-import uk.gov.hmrc.http.Upstream5xxResponse
 
 object ControllersReferenceData extends ControllersReferenceData {
-  def pbikAppConfig = PbikAppConfig
+  val pbikAppConfig: AppConfig = PbikAppConfig
 }
 
 trait ControllersReferenceData extends FormMappings {
 
   implicit val context: PbikContext = PbikContextImpl
 
-  implicit val bikFormats = Json.format[Bik]
-  implicit val eilFormats = Json.format[EiLPerson]
-  implicit val eilListFormats = Json.format[EiLPersonList]
-  implicit val mandatoryDecisionFormats = Json.format[MandatoryRadioButton]
-  implicit val addRemoveDecisionFormats = Json.format[BinaryRadioButton]
-  implicit val registrationItemsFormats = Json.format[RegistrationItem]
+  implicit val bikFormats: OFormat[Bik] = Json.format[Bik]
+  implicit val eilFormats: OFormat[EiLPerson] = Json.format[EiLPerson]
+  implicit val eilListFormats: OFormat[EiLPersonList] = Json.format[EiLPersonList]
+  implicit val mandatoryDecisionFormats: OFormat[MandatoryRadioButton] = Json.format[MandatoryRadioButton]
+  implicit val addRemoveDecisionFormats: OFormat[BinaryRadioButton] = Json.format[BinaryRadioButton]
+  implicit val registrationItemsFormats: OFormat[RegistrationItem] = Json.format[RegistrationItem]
 
   def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
-  def pbikAppConfig: AppConfig
+  val pbikAppConfig: AppConfig
 
   val CY_RESTRICTED = "ServiceMessage.10003"
   val FEATURE_RESTRICTED = "ServiceMessage.10002"
@@ -103,49 +102,49 @@ trait ControllersReferenceData extends FormMappings {
     persistentBiks
   }
 
-  def responseCheckCYEnabled(staticDataRequest: Future[Result])(implicit request: Request[AnyContent], ac: AuthContext): Future[Result] = {
+  def responseCheckCYEnabled(staticDataRequest: Future[Result])(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     if(pbikAppConfig.cyEnabled) {
       responseErrorHandler(staticDataRequest)
     } else {
       Logger.info("Cy is disabled")
-      Future(Ok(views.html.errorPage(CY_RESTRICTED, YEAR_RANGE, "", 10003)))
+      Future(Ok(views.html.errorPage(CY_RESTRICTED, YEAR_RANGE, "", 10003, empRef = Some(request.empRef))))
     }
   }
 
-  def responseErrorHandler(staticDataRequest: Future[Result])(implicit request: Request[AnyContent], ac: AuthContext): Future[Result] = {
+  def responseErrorHandler(staticDataRequest: Future[Result])(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     staticDataRequest.recover {
       case e0: NoSuchElementException => {
         Logger.warn("ResponseErrorHandler. A NoSuchElementException was handled :  " + e0)
-        Ok(views.html.errorPage(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, ""))
+        Ok(views.html.errorPage(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e1: InvalidYearURIException => {
         Logger.warn("ResponseErrorHandler. An InvalidYearURIException was handled :  " + e1)
-        Ok(views.html.errorPage(INVALID_YEAR_REFERENCE, YEAR_RANGE, ""))
+        Ok(views.html.errorPage(INVALID_YEAR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e2: InvalidBikTypeURIException => {
         Logger.warn("ResponseErrorHandler. An InvalidBikTypeURIException was handled :  " + e2)
-        Ok(views.html.errorPage(INVALID_BIK_TYPE_REFERENCE, YEAR_RANGE, ""))
+        Ok(views.html.errorPage(INVALID_BIK_TYPE_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e3:Upstream5xxResponse => {
           Logger.warn("ResponseErrorHandler. An Upstream5xxResponse was handled :  " + e3.message)
-          Ok(views.html.maintenancePage())
+          Ok(views.html.maintenancePage(empRef = Some(request.empRef)))
       }
       case e4: GenericServerErrorException => {
         try {
           Logger.warn("ResponseErrorHandler. A GenericServerErrorException was handled :  " + e4.message)
           val msgValue = e4.message
-          if((Messages("ServiceMessage." + (msgValue))) == ("ServiceMessage." + (msgValue))) throw new Exception(msgValue)
-          else Ok(views.html.errorPage(Messages("ServiceMessage." + (msgValue)), YEAR_RANGE, "",msgValue.toInt))
+          if(Messages("ServiceMessage." + msgValue) == ("ServiceMessage." + msgValue)) throw new Exception(msgValue)
+          else Ok(views.html.errorPage(Messages("ServiceMessage." + msgValue), YEAR_RANGE, "", msgValue.toInt, empRef = Some(request.empRef)))
         } catch {
           case e: Exception => {
             Logger.warn("Could not parse GenericServerError System Error number: " + e4.message + " .Showing default error page instead")
-            Ok(views.html.maintenancePage())
+            Ok(views.html.maintenancePage(empRef = Some(request.empRef)))
           }
         }
       }
       case e5 => {
         Logger.warn("ResponseErrorHandler. An exception was handled : " + e5.getMessage)
-        Ok(views.html.maintenancePage())
+        Ok(views.html.maintenancePage(empRef = Some(request.empRef)))
       }
     }
   }

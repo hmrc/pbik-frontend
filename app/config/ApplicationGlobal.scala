@@ -17,25 +17,21 @@
 package config
 
 import connectors.FrontendAuditConnector
-import play.api.mvc.{EssentialAction, Filters, Request}
+import play.api.mvc.{EssentialAction, Filters}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.frontend.filters.{FrontendAuditFilter, FrontendLoggingFilter}
 //import play.filters.headers.{SecurityHeadersConfig, SecurityHeadersFilter, SecurityHeadersParser}
+import com.typesafe.config.Config
+import net.ceedubs.ficus.Ficus._
+import play.api.Mode.Mode
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Request
+import play.api.{Application, Configuration, _}
 import play.twirl.api.Html
 import uk.gov.hmrc.play.config._
 import uk.gov.hmrc.play.frontend.bootstrap._
-import play.api._
-import uk.gov.hmrc.crypto.ApplicationCrypto
-import play.api.Mode.Mode
-import java.io.File
-import com.typesafe.config.Config
-import net.ceedubs.ficus.Ficus._
-import play.api.mvc.Request
-import play.twirl.api.Html
-import play.api.{Application, Configuration}
-import play.api.i18n.Messages.Implicits._
-import play.api.Play.current
 import uk.gov.hmrc.play.frontend.filters.MicroserviceFilterSupport
-import play.api.Mode.Mode
 
 trait RunModeConfig {
   def appNameConfiguration: Configuration = Play.current.configuration
@@ -53,9 +49,9 @@ abstract class FrontendGlobal
   extends DefaultFrontendGlobal
   with RunMode with RunModeConfig {
 
-  override val auditConnector = FrontendAuditConnector
+  override val auditConnector: FrontendAuditConnector.type = FrontendAuditConnector
   override val loggingFilter: FrontendLoggingFilter = LoggingFilter
-  override val frontendAuditFilter = PbikAuditFilter
+  override val frontendAuditFilter: PbikAuditFilter.type = PbikAuditFilter
 
   override def onStart(app: Application) {
     super.onStart(app)
@@ -79,26 +75,23 @@ abstract class FrontendGlobal
   override def microserviceMetricsConfig(implicit app: Application): Option[Configuration] = app.configuration.getConfig("microservice.metrics")
 }
 
-
 object ControllerConfiguration extends ControllerConfig {
-  lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
+  lazy val controllerConfigs: Config = Play.current.configuration.underlying.as[Config]("controllers")
 }
 
 object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSupport {
-  override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging
+  override def controllerNeedsLogging(controllerName: String): Boolean = ControllerConfiguration.paramsForController(controllerName).needsLogging
 }
 
 object PbikAuditFilter extends FrontendAuditFilter with RunMode with AppName with MicroserviceFilterSupport with RunModeConfig {
 
   import play.api.Play.current
 
-  override lazy val maskedFormFields = Play.configuration.getString("frontend-audit.masked-form-fields").getOrElse("password").split(',').toSeq
+  override lazy val maskedFormFields: Seq[String] = Play.configuration.getString("frontend-audit.masked-form-fields").getOrElse("password").split(',').toSeq
 
-  override lazy val applicationPort = None
+  override lazy val applicationPort:Option[Int] = None
 
-  override lazy val auditConnector = FrontendAuditConnector
+  override lazy val auditConnector: AuditConnector = FrontendAuditConnector
 
-  override def controllerNeedsAuditing(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsAuditing
+  override def controllerNeedsAuditing(controllerName: String): Boolean = ControllerConfiguration.paramsForController(controllerName).needsAuditing
 }
-
-

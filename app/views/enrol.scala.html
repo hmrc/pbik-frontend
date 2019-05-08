@@ -17,18 +17,11 @@
 @import play.api.i18n.Messages.Implicits._
 @import play.api.Play.current
 
-@()(implicit request:Request[_],ac: uk.gov.hmrc.play.frontend.auth.AuthContext, context: config.PbikContext, applicationMessages: Messages)
+@(empRef: Option[EmpRef])(implicit request:Request[_], context: config.PbikContext, applicationMessages: Messages)
 
 @import utils.FormMappingsConstants._
 
-@active(ac: uk.gov.hmrc.play.frontend.auth.AuthContext) = @{
-    if (ac.principal.accounts.epaye.isDefined)
-        Some( ac.principal.accounts.epaye.get.empRef.toString )
-    else
-        Some("")
-}
-
-@parentTemplate(pageTitle = Messages("Service.notEnrolled.title") + " - " + Messages("Service.title"), None, active(ac) ) {
+@parentTemplate(pageTitle = Messages("Service.notEnrolled.title") + " - " + Messages("Service.title"), None, empRef.map(_.toString)) {
     <h1 id="title">@Messages("Service.notEnrolled.title")</h1>
 
     <p class="lede-para">@Messages("Service.notEnrolled.text1")</p>

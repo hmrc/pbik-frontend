@@ -16,54 +16,50 @@
 
 package connectors
 
-import models.{PbikError, HeaderTags, Bik}
+import java.net.URLEncoder
+
+import models.{EmpRef, HeaderTags, PbikError}
 import play.api.Logger
 import play.api.libs.json
-import play.api.libs.json.{JsResult, Json, JsError, JsSuccess}
-import play.api.mvc.Results._
-import play.api.mvc.{AnyContent, Request}
+import play.api.libs.json.{JsError, JsSuccess}
+import play.api.mvc.Request
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.config.ServicesConfig
-import utils.{URIInformation}
 import utils.Exceptions.GenericServerErrorException
-import java.net.URLEncoder
-import scala.concurrent.Future
+import utils.URIInformation
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
+import scala.concurrent.Future
 
 trait TierClient {
 
 }
 
 object HmrcTierConnector extends HmrcTierConnector with ServicesConfig {
-    val serviceUrl = baseUrl("government-gateway")
-    lazy val http = WSHttp
+  val serviceUrl = baseUrl("government-gateway")
+  lazy val http = WSHttp
 }
 
-class HmrcTierConnector extends URIInformation with TierClient  {
+class HmrcTierConnector extends URIInformation with TierClient {
   var pbikHeaders = Map[String, String]()
 
-  def encode(value:String):String = URLEncoder.encode(value, "UTF-8")
+  def encode(value: String): String = URLEncoder.encode(value, "UTF-8")
 
-  def createGetUrl(baseUrl: String,URIExtension: String,orgIdentifier:String, year:Int):String = {
-    // TODO: Why can't we use this: if (orgIdentifier.trim.isEmpty)
-    if ( orgIdentifier ==  null ) {
-      s"$baseUrl/$year/$URIExtension"
-    } else {
-      val orgIdentifierEncoded = encode(orgIdentifier)
-      orgIdentifier.trim.length match {
-        case 0 => s"$baseUrl/$year/$URIExtension"
-        case _ => s"$baseUrl/$orgIdentifierEncoded/$year/$URIExtension"
-      }
+  def createGetUrl(baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int): String = {
+    val orgIdentifierEncoded = empRef.encodedEmpRef
+    orgIdentifierEncoded.trim.length match {
+      case 3 => s"$baseUrl/$year/$URIExtension"
+      case _ => s"$baseUrl/$orgIdentifierEncoded/$year/$URIExtension"
     }
   }
 
-  def genericGetCall[T](baseUrl: String,URIExtension: String,orgIdentifier:String, year:Int)
-                       (implicit hc:HeaderCarrier,request:Request[_],
-                        formats: json.Format[T], m:Manifest[T]): Future[T] = {
-    val resp = WSHttp.GET(createGetUrl(baseUrl, URIExtension,orgIdentifier, year))
+  def genericGetCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)
+                       (implicit hc: HeaderCarrier, request: Request[_],
+                        formats: json.Format[T], m: Manifest[T]): Future[T] = {
+    val resp = WSHttp.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
 
-    resp.map{r =>
-      val headers:Map[String, String] = Map(HeaderTags.ETAG -> r.header(HeaderTags.ETAG).getOrElse("0"), HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1") )
+    resp.map { r =>
+      val headers: Map[String, String] = Map(HeaderTags.ETAG -> r.header(HeaderTags.ETAG).getOrElse("0"), HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1"))
 
       pbikHeaders = headers
       Logger.info("GET etag/xtxid headers: " + pbikHeaders)
@@ -76,31 +72,31 @@ class HmrcTierConnector extends URIInformation with TierClient  {
     }
   }
 
-  def createPostUrl(baseUrl: String,URIExtension: String,orgIdentifier:String, year:Int):String = {
-    val orgIdentifierEncoded = encode(orgIdentifier)
+  def createPostUrl(baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int): String = {
+    val orgIdentifierEncoded = empRef.encodedEmpRef
     s"$baseUrl/$orgIdentifierEncoded/$year/$URIExtension"
   }
 
 
-  def genericPostCall[T](baseUrl: String,URIExtension: String,orgIdentifier:String, year:Int, data:T)
-                        (implicit hc:HeaderCarrier, request:Request[_],
-                         formats: json.Format[T]): Future[HttpResponse]= {
+  def genericPostCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int, data: T)
+                        (implicit hc: HeaderCarrier, request: Request[_],
+                         formats: json.Format[T]): Future[HttpResponse] = {
 
-      val etagFromSession = request.session.get(HeaderTags.ETAG).getOrElse("0")
-      val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")
-      val optMapped = Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession)
+    val etagFromSession = request.session.get(HeaderTags.ETAG).getOrElse("0")
+    val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")
+    val optMapped = Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession)
 
-      Logger.info("POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession)
+    Logger.info("POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession)
 
-      WSHttp.POST( createPostUrl(baseUrl, URIExtension,orgIdentifier, year), data, optMapped.toSeq).map { response:HttpResponse =>
-        processResponse(response)
-      }
+    WSHttp.POST(createPostUrl(baseUrl, URIExtension, empRef, year), data, optMapped.toSeq).map { response: HttpResponse =>
+      processResponse(response)
+    }
   }
 
-  def processResponse(response:HttpResponse): HttpResponse = {
+  def processResponse(response: HttpResponse): HttpResponse = {
     response match {
-      case _ if(response.status >= 400) => throw new GenericServerErrorException(response.body)
-      case _ if(response.body.length <= 0) => response
+      case _ if (response.status >= 400) => throw new GenericServerErrorException(response.body)
+      case _ if (response.body.length <= 0) => response
       case _ => {
         response.json.validate[PbikError].asOpt match {
           case Some(pe) => {

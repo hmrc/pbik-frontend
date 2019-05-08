@@ -17,8 +17,9 @@
 package config
 
 import connectors.ContactFrontendConnector
-import scala.concurrent.Future
 import uk.gov.hmrc.http.HeaderCarrier
+
+import scala.concurrent.Future
 
 trait PbikContext {
 

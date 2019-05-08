@@ -17,28 +17,29 @@
 package utils
 
 import java.text.SimpleDateFormat
-import java.util.{Calendar, Date}
+import java.util
+import java.util.Date
 
 import models.TaxYearRange
-import org.joda.time.{LocalDate, DateTime}
-import play.api.{Play, Logger}
-import uk.gov.hmrc.time.TaxYear
+import org.joda.time.{DateTime, LocalDate}
+import play.api.Play
 import play.api.Play.current
+import uk.gov.hmrc.time.TaxYear
 
 object TaxDateUtils extends PayrollBikDefaults {
 
-  val overridedDateFromConfig = Play.configuration.getIntList("pbik.date.override")
+  val overridedDateFromConfig: Option[util.List[Integer]] = Play.configuration.getIntList("pbik.date.override")
 
   val sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss")
-  val startDateBanner = sdf.parse(Play.configuration.getString("pbik.banner.date.start").getOrElse(""))
-  val endDateBanner = sdf.parse(Play.configuration.getString("pbik.banner.date.end").getOrElse(""))
+  val startDateBanner: Date = sdf.parse(Play.configuration.getString("pbik.banner.date.start").getOrElse(""))
+  val endDateBanner: Date = sdf.parse(Play.configuration.getString("pbik.banner.date.end").getOrElse(""))
 
-  def getDefaultDate = {
+  def getDefaultDate: LocalDate = {
     if(overridedDateFromConfig.isDefined) {
       new LocalDate(overridedDateFromConfig.get.get(0), overridedDateFromConfig.get.get(1), overridedDateFromConfig.get.get(2))} else new LocalDate()
   }
 
-  def getDefaultYear = {
+  def getDefaultYear: Int = {
     if(overridedDateFromConfig.isDefined) new DateTime().getYear + 1 else new DateTime().getYear
   }
 
@@ -53,7 +54,7 @@ object TaxDateUtils extends PayrollBikDefaults {
   }
 
   def isServiceLaunched(year:Int = getCurrentTaxYear()):Boolean = {
-      val launched = (year >= TAX_YEAR_OF_LAUNCH)
+      val launched = year >= TAX_YEAR_OF_LAUNCH
       launched
   }
 
@@ -63,7 +64,7 @@ object TaxDateUtils extends PayrollBikDefaults {
 
   def dateWithinAnnualCodingRun(today:Date):Boolean = {
 
-    today.getTime() >= startDateBanner.getTime() && today.getTime() <= endDateBanner.getTime()
+    today.getTime >= startDateBanner.getTime && today.getTime <= endDateBanner.getTime
   }
 
 }
