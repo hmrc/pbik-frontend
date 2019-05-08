@@ -16,11 +16,10 @@
 
 package controllers
 
-import _root_.models._
+import models._
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import controllers.auth._
 import play.api.Play.current
 import play.api.i18n.Lang
 import play.api.i18n.Messages.Implicits._
@@ -45,9 +44,13 @@ object HomePageController extends HomePageController with TierConnector {
   val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
 }
 
-trait HomePageController extends FrontendController with URIInformation
-  with ControllersReferenceData with PbikActions with SplunkLogger with LegacyI18nSupport {
+trait HomePageController extends FrontendController
+  with URIInformation
+  with ControllersReferenceData
+  with SplunkLogger
+  with LegacyI18nSupport {
   this: TierConnector =>
+
   def bikListService: BikListService
   val authenticate: AuthAction
   val noSessionCheck: NoSessionCheckAction

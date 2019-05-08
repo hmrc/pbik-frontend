@@ -18,10 +18,9 @@ package controllers
 
 import java.util.UUID
 
-import _root_.models._
+import models._
 import config._
 import connectors.{HmrcTierConnector, TierConnector}
-import controllers.auth._
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
@@ -37,9 +36,12 @@ object WhatNextPageController extends WhatNextPageController with TierConnector 
   val tierConnector = new HmrcTierConnector
 }
 
-trait WhatNextPageController extends FrontendController with URIInformation
-  with ControllersReferenceData with PbikActions with SplunkLogger {
+trait WhatNextPageController extends FrontendController
+  with URIInformation
+  with ControllersReferenceData
+  with SplunkLogger {
   this: TierConnector =>
+
   def bikListService: BikListService
 
   def calculateTaxYear(isCurrentTaxYear: Boolean): (Int, Int) = {

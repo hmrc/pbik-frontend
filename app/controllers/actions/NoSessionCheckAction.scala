@@ -34,9 +34,8 @@ class NoSessionCheckActionImpl extends NoSessionCheckAction {
         Results.Redirect(controllers.routes.HomePageController.onPageLoad()).withSession(
                           request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
       )
-      case _ => {
-        block(request)
-      }
+
+      case _ => block(request)
     }
   }
 }

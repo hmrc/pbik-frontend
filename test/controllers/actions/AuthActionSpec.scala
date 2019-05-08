@@ -17,11 +17,10 @@
 package controllers.actions
 
 import akka.util.Timeout
-import controllers.AuthActionImpl
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status._
-import play.api.mvc.Controller
+import play.api.mvc.{Action, AnyContent, Controller}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, status}
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
@@ -30,10 +29,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class AuthActionSpec  extends PlaySpec with GuiceOneAppPerSuite {
+class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   class Harness(authAction: AuthAction) extends Controller {
-    def onPageLoad() = authAction { request => Ok }
+    def onPageLoad(): Action[AnyContent] = authAction { request => Ok }
   }
 
   implicit val timeout:Timeout = 5 seconds
@@ -55,7 +54,7 @@ class AuthActionSpec  extends PlaySpec with GuiceOneAppPerSuite {
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.auth.routes.AuthController.notAuthorised().url)
+        redirectLocation(result) mustBe Some(controllers.routes.AuthController.notAuthorised().url)
 
       }
     }

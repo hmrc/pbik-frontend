@@ -19,11 +19,10 @@ package controllers.registration
 import java.util.UUID
 
 import _root_.models._
-import config.PbikAppConfig
+import config.{AppConfig, PbikAppConfig}
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.WhatNextPageController
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import controllers.auth.PbikActions
 import play.api.Play
 import play.api.Play.current
 import play.api.data.Form
@@ -40,19 +39,22 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object ManageRegistrationController extends ManageRegistrationController with TierConnector {
-  def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
+  def pbikAppConfig: AppConfig = PbikAppConfig
 
-  def registrationService: RegistrationService.type = RegistrationService
+  def registrationService: RegistrationService = RegistrationService
 
-  def bikListService: BikListService.type = BikListService
+  def bikListService: BikListService = BikListService
 
   val tierConnector = new HmrcTierConnector
   val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
   val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
 }
 
-trait ManageRegistrationController extends FrontendController with URIInformation
-  with WhatNextPageController with ControllersReferenceData with PbikActions with SplunkLogger {
+trait ManageRegistrationController extends FrontendController
+  with URIInformation
+  with WhatNextPageController
+  with ControllersReferenceData
+  with SplunkLogger {
   this: TierConnector =>
 
   def bikListService: BikListService

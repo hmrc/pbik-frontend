@@ -18,6 +18,7 @@ package controllers.actions
 
 import com.google.inject.ImplementedBy
 import config.PbikAppConfig
+import controllers.ExternalUrls
 import javax.inject.Inject
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -36,7 +37,7 @@ class MinimalAuthActionImpl @Inject()(override val authConnector: AuthConnector)
      block(request)
     }recover {
         case ex: NoActiveSession =>
-          Redirect(PbikAppConfig.loginUrl, Map("continue" -> Seq(PbikAppConfig.loginContinueUrl),
+          Redirect(ExternalUrls.signIn, Map("continue" -> Seq(ExternalUrls.loginCallback),
                                                "origin" -> Seq("pbik-frontend")))
     }
   }

@@ -18,41 +18,41 @@ package controllers
 
 import java.net.URLEncoder
 
-import _root_.controllers.actions.NoSessionCheckAction
+import controllers.actions.{NoSessionCheckAction, AuthAction}
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, PBIKHeaderCarrierForPartialsConverter, TierConnector, WSHttp}
-import controllers.auth._
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
 import play.api.{Logger, Play}
 import play.twirl.api.{Html, HtmlFormat}
 import services.BikListService
 import uk.gov.hmrc.http.{HeaderCarrier, Request => _, _}
-import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
+
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 
 import scala.concurrent.Future
 
 object HelpAndContactController extends HelpAndContactController with TierConnector {
   override val httpPost = WSHttp
-
   def pbikAppConfig = PbikAppConfig
-
   def bikListService = BikListService
-
   val tierConnector = new HmrcTierConnector
 
-  override val contactFrontendPartialBaseUrl = pbikAppConfig.contactFrontendService
-  override val contactFormServiceIdentifier = pbikAppConfig.contactFormServiceIdentifier
+  override val contactFrontendPartialBaseUrl: String = pbikAppConfig.contactFrontendService
+  override val contactFormServiceIdentifier: String = pbikAppConfig.contactFormServiceIdentifier
+
   val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
   val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
 }
 
-trait HelpAndContactController extends FrontendController with URIInformation
-  with ControllersReferenceData with PbikActions with SplunkLogger {
+trait HelpAndContactController extends FrontendController
+  with URIInformation
+  with ControllersReferenceData
+  with SplunkLogger {
   this: TierConnector =>
+
   def bikListService: BikListService
 
   val authenticate: AuthAction

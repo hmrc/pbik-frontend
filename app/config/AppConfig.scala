@@ -67,7 +67,4 @@ object PbikAppConfig extends AppConfig with ServicesConfig with RunModeConfig {
   override lazy val urBannerLink: String = loadConfig("urBanner.link")
   override lazy val serviceSignOut: String = loadConfig("service-signout.url")
 
-  lazy val loginUrl: String = loadConfig("government-gateway-sign-in.host")
-  lazy val loginContinueUrl: String = loadConfig("login-callback.url")
-
 }

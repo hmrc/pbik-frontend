@@ -21,7 +21,6 @@ import java.util.UUID
 import config._
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import controllers.auth.PbikActions
 import models._
 import play.api.Play.current
 import play.api.data.Form
@@ -58,9 +57,11 @@ object ExclusionListController extends ExclusionListController with TierConnecto
   val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
 }
 
-trait ExclusionListController extends FrontendController with URIInformation
-  with ControllersReferenceData with PbikActions
-  with SplunkLogger with ExclusionListConfiguration {
+trait ExclusionListController extends FrontendController
+  with URIInformation
+  with ControllersReferenceData
+  with SplunkLogger
+  with ExclusionListConfiguration {
   this: TierConnector =>
 
   val authenticate: AuthAction

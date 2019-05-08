@@ -19,7 +19,6 @@ package services
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.WhatNextPageController
-import controllers.auth.PbikActions
 import models._
 import play.api.Play.current
 import play.api.data.Form
@@ -40,9 +39,10 @@ object RegistrationService extends RegistrationService with TierConnector {
   val tierConnector = new HmrcTierConnector
 }
 
-trait RegistrationService extends FrontendController with URIInformation
-  with ControllersReferenceData with WhatNextPageController with PbikActions {
-
+trait RegistrationService extends FrontendController
+  with URIInformation
+  with ControllersReferenceData
+  with WhatNextPageController {
   this: TierConnector =>
 
   def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,

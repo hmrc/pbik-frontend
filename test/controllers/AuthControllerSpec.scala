@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package controllers.auth
+package controllers
 
 import config.AppConfig
-import connectors.FrontendAuthConnector
-import controllers.{AuthController, FakePBIKApplication}
 import controllers.actions.MinimalAuthAction
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
@@ -28,7 +26,6 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import utils.TestMinimalAuthAction
 
 import scala.concurrent.Future
@@ -48,9 +45,8 @@ class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication 
   class TestController extends AuthController {
     override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
     override val authenticate: MinimalAuthAction = new TestMinimalAuthAction
-    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
 
-    override protected implicit def authConnector: AuthConnector = FrontendAuthConnector
+    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
   }
 
   "When an valid user logs in, and their action is Authorised" should {

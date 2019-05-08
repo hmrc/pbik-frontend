@@ -18,16 +18,20 @@ package controllers.actions
 
 import com.google.inject.ImplementedBy
 import config.PbikAppConfig
-import connectors.{FrontendAuthConnector, WSHttp}
+import connectors.WSHttp
+import controllers.ExternalUrls
 import javax.inject.Inject
 import models.{AuthenticatedRequest, EmpRef, UserName}
+import play.api.Mode.Mode
 import play.api.mvc.Results._
 import play.api.mvc._
+import play.api.{Configuration, Play}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
 import uk.gov.hmrc.http.{CorePost, HeaderCarrier}
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,7 +41,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE") and AuthProvider()).retrieve(Retrievals.authorisedEnrolments and Retrievals.name) {
+    authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE")).retrieve(Retrievals.authorisedEnrolments and Retrievals.name) {
       case Enrolments(enrolments) ~ name => {
         enrolments.find(_.key == "IR-PAYE").map {
           enrolment =>
@@ -55,7 +59,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
       }
     } recover {
       case ex: NoActiveSession =>
-        Redirect(PbikAppConfig.loginUrl, Map("continue" -> Seq(PbikAppConfig.loginContinueUrl),
+        Redirect(ExternalUrls.signIn, Map("continue" -> Seq(ExternalUrls.loginCallback),
                                              "origin" -> Seq("pbik-frontend")))
       case ex: InsufficientEnrolments =>
         Results.Redirect(controllers.routes.AuthController.notAuthorised())
@@ -67,7 +71,11 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
 
-class AuthConnector extends PlayAuthConnector {
-  override val serviceUrl: String = FrontendAuthConnector.serviceUrl
+class AuthConnector extends PlayAuthConnector with ServicesConfig {
+  override val serviceUrl: String = baseUrl("auth")
   override def http: CorePost = WSHttp
+
+  override protected def mode: Mode = Play.current.mode
+
+  override protected def runModeConfiguration: Configuration = Play.current.configuration
 }
