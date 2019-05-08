@@ -25,7 +25,7 @@
                                             context: config.PbikContext, applicationMessages: Messages)
 
 
-@parentTemplate(pageTitle = Messages("ExclusionRemovalConfirmation.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString)) {
+@parentTemplate(pageTitle = Messages("ExclusionRemovalConfirmation.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(ac.principal.accounts.epaye.get.empRef.toString), showLanguage = true) {
 
     @includes.back_link(gaLabel = Messages("ExclusionRemovalConfirmation.title"))
 
