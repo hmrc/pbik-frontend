@@ -18,9 +18,9 @@ package controllers
 
 import java.util.UUID
 
-import models._
 import config._
 import connectors.{HmrcTierConnector, TierConnector}
+import models._
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._

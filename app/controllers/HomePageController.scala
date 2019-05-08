@@ -16,10 +16,10 @@
 
 package controllers
 
-import models._
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
+import models._
 import play.api.Play.current
 import play.api.i18n.Lang
 import play.api.i18n.Messages.Implicits._

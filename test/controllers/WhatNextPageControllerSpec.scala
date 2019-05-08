@@ -148,17 +148,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
 
   class MockWhatNextPageController extends WhatNextPageController with TierConnector {
 
-    override def AuthorisedForPbik(body: AuthContext => Request[AnyContent] => Future[Result]): Action[AnyContent] = {
-      val user = createDummyUser("testid")
-      Action.async { implicit request =>
-        if (request.session.get("sessionId").getOrElse("").startsWith("session")) {
-          body(user)(request)
-        } else {
-          Future(Unauthorized("Request was not authenticated user should be redirected"))
-        }
-      }
-    }
-
     override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
 
     override def bikListService: BikListService = new StubBikListService

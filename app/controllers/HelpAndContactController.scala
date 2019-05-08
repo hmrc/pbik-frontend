@@ -18,9 +18,11 @@ package controllers
 
 import java.net.URLEncoder
 
-import controllers.actions.{NoSessionCheckAction, AuthAction}
 import config.PbikAppConfig
 import connectors.{HmrcTierConnector, PBIKHeaderCarrierForPartialsConverter, TierConnector, WSHttp}
+import controllers.actions.{AuthAction, NoSessionCheckAction}
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
 import play.api.{Logger, Play}
 import play.twirl.api.{Html, HtmlFormat}
@@ -28,9 +30,6 @@ import services.BikListService
 import uk.gov.hmrc.http.{HeaderCarrier, Request => _, _}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
-
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
 
 import scala.concurrent.Future
 

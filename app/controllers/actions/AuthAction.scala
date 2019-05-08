@@ -17,7 +17,6 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
-import config.PbikAppConfig
 import connectors.WSHttp
 import controllers.ExternalUrls
 import javax.inject.Inject

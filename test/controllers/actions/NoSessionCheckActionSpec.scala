@@ -19,52 +19,63 @@ package controllers.actions
 import java.util.UUID
 
 import akka.util.Timeout
-import models.AuthenticatedRequest
+import models.{AuthenticatedRequest, EmpRef, UserName}
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
-import play.api.mvc.{Action, AnyContent, Controller}
-import play.api.test.{FakeRequest, ResultExtractors}
-import play.api.test.Helpers.{OK, SEE_OTHER, status}
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.mvc._
+import play.api.test.FakeRequest
+import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.SessionKeys
-import play.api.http.{HeaderNames, MimeTypes, Status}
-import utils.{TestAuthAction, TestMinimalAuthAction}
 
+import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class NoSessionCheckActionSpec extends PlaySpec
-  with ResultExtractors
-  with Status
-  with MimeTypes
-  with HeaderNames{
+  with ScalaFutures
+  with GuiceOneAppPerSuite {
 
-  class Harness(noSessionCheckAction: NoSessionCheckAction) extends Controller {
-    def onPageLoad(): Action[AnyContent] = (new TestAuthAction andThen noSessionCheckAction) { request:AuthenticatedRequest[_] => Ok }
+  class Harness() extends NoSessionCheckActionImpl {
+    def callTransform[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
+      refine(request)
   }
 
-  implicit val timeout:Timeout = 5 seconds
+  implicit val timeout: Timeout = 5 seconds
 
   "No Session Check Action" when {
-    "there is a session" must{
-      "show the correct page" in {
-        val requestWithSessionID = FakeRequest("", "").withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}")
-        val controller = new Harness(new NoSessionCheckActionImpl)
-        val result = controller.onPageLoad()(requestWithSessionID)
-        status(result) mustBe OK
+    "there is a session" must {
+      "leave the request unfiltered" in {
+        val requestWithSessionID = AuthenticatedRequest(EmpRef.empty,
+          UserName(Name(None, None)),
+          FakeRequest("", "")
+            .withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+        val result = new Harness().callTransform(requestWithSessionID)
+        whenReady(result) {
+          _ mustBe Right(requestWithSessionID)
+        }
       }
     }
 
     "the session is not set" must {
-      "show the start page " in {
-        val requestWithSessionID = FakeRequest("", "").withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}")
-        val controller = new Harness(new NoSessionCheckActionImpl)
-        val result = controller.onPageLoad()(requestWithSessionID)
+      "redirect user to home page controller " in {
+        val request = AuthenticatedRequest(EmpRef.empty,
+          UserName(Name(None, None)),
+          FakeRequest("", ""))
+        val result = new Harness().callTransform(request)
 
-        status(result) mustBe SEE_OTHER
-
-        val resultHeaders:Map[String, String] = headers(result)
-        resultHeaders.getOrElse("Location", "") must include("/payrollbik/payrolled-benefits-expenses")
-        resultHeaders.getOrElse("Set-Cookie", "") must include("mdtp=")
-        resultHeaders.getOrElse("Set-Cookie", "") must include("Path=/; HTTPOnly")
+        whenReady(result) {
+          call: Either[Result, AuthenticatedRequest[_]] =>
+            call match {
+              case Left(callResult) => {
+                val headers: Map[String, String] = callResult.header.headers
+                headers.getOrElse("Location", "") must include("/payrollbik/payrolled-benefits-expenses")
+                headers.getOrElse("Set-Cookie", "") must include("mdtp=")
+                headers.getOrElse("Set-Cookie", "") must include("Path=/; HTTPOnly")
+              }
+              case Right(_) => fail("Result not a Left")
+            }
+        }
       }
     }
   }

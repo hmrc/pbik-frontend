@@ -205,16 +205,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
     override lazy val exclusionsAllowed = true
 
-    override def AuthorisedForPbik(body: AuthContext => Request[AnyContent] => Future[Result]): Action[AnyContent] = {
-      val user = createDummyUser("testid")
-      Action.async { implicit request =>
-        if (request.session.get("sessionId").getOrElse("").startsWith("session")) {
-          body(user)(request)
-        } else {
-          Future(Unauthorized("Request was not authenticated user should be redirected"))
-        }
-      }
-    }
   }
 
   override val fakeApplication: Application = GuiceApplicationBuilder(
@@ -230,12 +220,12 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
 
     lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
-    override val tierConnector = mock[HmrcTierConnector]
+    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
       any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      (Integer.parseInt(x.iabdType) > 50)
+      Integer.parseInt(x.iabdType) > 50
     }))
   }
 

@@ -131,17 +131,6 @@ class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
       Future.successful(AuditResult.Success)
     }
 
-    override def AuthorisedForPbik(body: AuthContext => Request[AnyContent] => Future[Result]): Action[AnyContent] = {
-      val user = createDummyUser("testid")
-      Action.async { implicit request =>
-        if (request.session.get("sessionId").getOrElse("").startsWith("session")) {
-          body(user)(request)
-        } else {
-          Future(Unauthorized("Request was not authenticated user should be redirected"))
-        }
-      }
-    }
-
   }
 
   class MockRegistrationController extends ManageRegistrationController with TierConnector
@@ -154,17 +143,6 @@ class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
 
     implicit val defaultPatience: ScalaFutures.PatienceConfig =
       PatienceConfig(timeout = Span(7, Seconds), interval = Span(600, Millis))
-
-    override def AuthorisedForPbik(body: AuthContext => Request[AnyContent] => Future[Result]): Action[AnyContent] = {
-      val ac = createDummyUser("testid")
-      Action.async { implicit request =>
-        if (request.session.get("sessionId").getOrElse("").startsWith("session")) {
-          body(ac)(request)
-        } else {
-          Future(Unauthorized("Request was not authenticated user should be redirected"))
-        }
-      }
-    }
 
     override def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
       Future.successful(AuditResult.Success)

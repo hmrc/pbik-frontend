@@ -26,19 +26,19 @@ import uk.gov.hmrc.http.SessionKeys
 import scala.concurrent.Future
 
 class NoSessionCheckActionImpl extends NoSessionCheckAction {
-  override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
+  override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
 
     val sessionId = request.session.get(SessionKeys.sessionId)
     sessionId match {
-      case None => Future.successful(
+      case None => Future.successful( Left(
         Results.Redirect(controllers.routes.HomePageController.onPageLoad()).withSession(
-                          request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+                          request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}")))
       )
 
-      case _ => block(request)
+      case _ => Future.successful(Right(request))
     }
   }
 }
 
 @ImplementedBy(classOf[NoSessionCheckActionImpl])
-trait NoSessionCheckAction extends ActionFunction[AuthenticatedRequest, AuthenticatedRequest]
+trait NoSessionCheckAction extends ActionRefiner[AuthenticatedRequest, AuthenticatedRequest]

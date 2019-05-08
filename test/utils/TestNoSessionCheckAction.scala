@@ -23,7 +23,7 @@ import play.api.mvc.Result
 import scala.concurrent.Future
 
 class TestNoSessionCheckAction extends NoSessionCheckAction {
-  override def invokeBlock[A](request: AuthenticatedRequest[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
-      block(request)
+  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
+      Future.successful(Right(request))
   }
 }

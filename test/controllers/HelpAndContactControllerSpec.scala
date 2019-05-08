@@ -73,17 +73,6 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
     override val contactFrontendPartialBaseUrl: String = pbikAppConfig.contactFrontendService
     override val contactFormServiceIdentifier: String = pbikAppConfig.contactFormServiceIdentifier
 
-    override def AuthorisedForPbik(body: AuthContext => Request[AnyContent] => Future[Result]): Action[AnyContent] = {
-      val ac = createDummyUser("testid")
-      Action.async { implicit request =>
-        if (request.session.get("sessionId").getOrElse("").startsWith("session")) {
-          body(ac)(request)
-        } else {
-          Future(Unauthorized("Request was not authenticated user should be redirected"))
-        }
-      }
-    }
-
     when(httpPost.POSTForm[HttpResponse](anyString, any)(any, any, any))
       .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
 
