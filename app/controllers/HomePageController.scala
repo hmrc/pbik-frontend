@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.PbikAppConfig
+import config.{AppConfig, PbikAppConfig}
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
@@ -35,9 +35,9 @@ import scala.concurrent.Future
 import scala.util.{Success, Try}
 
 object HomePageController extends HomePageController with TierConnector {
-  def pbikAppConfig = PbikAppConfig
+  val pbikAppConfig: AppConfig = PbikAppConfig
 
-  def bikListService = BikListService
+  val bikListService: BikListService = BikListService
 
   val tierConnector = new HmrcTierConnector
   val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]

@@ -16,7 +16,7 @@
 
 package services
 
-import config.PbikAppConfig
+import config.{AppConfig, PbikAppConfig}
 import connectors.{HmrcTierConnector, TierConnector}
 import models.{AuthenticatedRequest, EiLPerson}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -26,7 +26,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object EiLListService extends EiLListService {
-  def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
+  val pbikAppConfig: AppConfig = PbikAppConfig
   val tierConnector = new HmrcTierConnector
 }
 
@@ -44,7 +44,7 @@ with ControllersReferenceData with SplunkLogger {
     }
   }
 
-  def searchResultsRemoveAlreadyExcluded(existingEiL: List[EiLPerson], searchResultsEiL: List[EiLPerson]): List[EiLPerson] = {
-    searchResultsEiL diff  existingEiL
-  }
+  def searchResultsRemoveAlreadyExcluded(existingEiL: List[EiLPerson], searchResultsEiL: List[EiLPerson]): List[EiLPerson] =
+    searchResultsEiL diff existingEiL
+
 }

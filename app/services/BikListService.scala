@@ -16,7 +16,7 @@
 
 package services
 
-import config.PbikAppConfig
+import config.{AppConfig, PbikAppConfig}
 import connectors.{HmrcTierConnector, TierConnector}
 import models.{AuthenticatedRequest, Bik, EmpRef}
 import play.api.mvc.Request
@@ -27,7 +27,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object BikListService extends BikListService {
-  def pbikAppConfig = PbikAppConfig
+  val pbikAppConfig: AppConfig = PbikAppConfig
 
   val tierConnector = new HmrcTierConnector
 }

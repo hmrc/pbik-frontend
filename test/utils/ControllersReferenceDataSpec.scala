@@ -117,15 +117,15 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
   }
 
   object MockCYEnabledControllersReferenceData extends ControllersReferenceData {
-    override def pbikAppConfig: TestCYEnabledConfig.type = TestCYEnabledConfig
+    override val pbikAppConfig: AppConfig = TestCYEnabledConfig
   }
 
   object MockCYDisabledControllersReferenceData extends ControllersReferenceData {
-    override def pbikAppConfig: TestCYDisabledConfig.type = TestCYDisabledConfig
+    override val pbikAppConfig: AppConfig = TestCYDisabledConfig
   }
 
   object MockControllersReferenceData extends ControllersReferenceData {
-    override def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
+    override val pbikAppConfig: AppConfig = PbikAppConfig
   }
 
   "When instantiating the ControllersReferenceData it" should {

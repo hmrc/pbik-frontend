@@ -198,12 +198,12 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     }
   }
 
-/*  "When logging events, the SplunkLogger" should {
+  "When logging events, the SplunkLogger" should {
     "mark the empref with a default if one is not present" in new SetUp {
       running(fakeApplication) {
 
         implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-          models.EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference"),
+          models.EmpRef.empty,
           UserName(Name(Some("TEST_USER"),None)),
           FakeRequest()
         )
@@ -223,7 +223,7 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
         assert(d.detail.get(SplunkLogger.key_message).get == "No Empref")
       }
     }
-  }*/
+  }
 
   "When logging events, the SplunkLogger" should {
     "return the correct splunk field names" in new SetUp {

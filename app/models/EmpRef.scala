@@ -21,6 +21,11 @@ case class EmpRef(taxOfficeNumber: String, taxOfficeReference: String) {
   def unencodedEmpRef: String = s"$taxOfficeNumber/$taxOfficeReference"
 
   override def toString: String = unencodedEmpRef.toString
+
+  def getOrElse(default:String):String = (taxOfficeNumber, taxOfficeReference) match{
+    case ("", "") => default
+    case _ => toString
+  }
 }
 
 object EmpRef {

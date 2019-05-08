@@ -18,7 +18,7 @@ package controllers
 
 import java.net.URLEncoder
 
-import config.PbikAppConfig
+import config.{AppConfig, PbikAppConfig}
 import connectors.{HmrcTierConnector, PBIKHeaderCarrierForPartialsConverter, TierConnector, WSHttp}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import play.api.Play.current
@@ -35,8 +35,8 @@ import scala.concurrent.Future
 
 object HelpAndContactController extends HelpAndContactController with TierConnector {
   override val httpPost = WSHttp
-  def pbikAppConfig = PbikAppConfig
-  def bikListService = BikListService
+  val pbikAppConfig: AppConfig = PbikAppConfig
+  val bikListService:BikListService = BikListService
   val tierConnector = new HmrcTierConnector
 
   override val contactFrontendPartialBaseUrl: String = pbikAppConfig.contactFrontendService
@@ -52,7 +52,7 @@ trait HelpAndContactController extends FrontendController
   with SplunkLogger {
   this: TierConnector =>
 
-  def bikListService: BikListService
+  val bikListService: BikListService
 
   val authenticate: AuthAction
   val noSessionCheck: NoSessionCheckAction

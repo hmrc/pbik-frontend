@@ -37,7 +37,3 @@ lazy val microservice = Project(appName, file("."))
       Resolver.jcenterRepo
     )
   )
-
-    
-
-

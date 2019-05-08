@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object ControllersReferenceData extends ControllersReferenceData {
-  def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
+  val pbikAppConfig: AppConfig = PbikAppConfig
 }
 
 trait ControllersReferenceData extends FormMappings {
@@ -48,7 +48,7 @@ trait ControllersReferenceData extends FormMappings {
   implicit val registrationItemsFormats: OFormat[RegistrationItem] = Json.format[RegistrationItem]
 
   def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
-  def pbikAppConfig: AppConfig
+  val pbikAppConfig: AppConfig
 
   val CY_RESTRICTED = "ServiceMessage.10003"
   val FEATURE_RESTRICTED = "ServiceMessage.10002"

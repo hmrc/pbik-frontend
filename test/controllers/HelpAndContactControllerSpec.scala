@@ -66,7 +66,7 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
     override val authenticate: AuthAction = new TestAuthAction
     override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
 
-    override def bikListService: BikListService = mock[BikListService]
+    override val bikListService: BikListService = mock[BikListService]
 
     override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
     override val httpPost: WSHttp = mock[WSHttp]

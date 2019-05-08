@@ -16,7 +16,7 @@
 
 package services
 
-import config.PbikAppConfig
+import config.{AppConfig, PbikAppConfig}
 import connectors.{HmrcTierConnector, TierConnector}
 import controllers.WhatNextPageController
 import models._
@@ -32,9 +32,9 @@ import utils._
 import scala.concurrent.Future
 
 object RegistrationService extends RegistrationService with TierConnector {
-  def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
+  val pbikAppConfig: AppConfig = PbikAppConfig
 
-  def bikListService: BikListService.type = BikListService
+  def bikListService: BikListService = BikListService
 
   val tierConnector = new HmrcTierConnector
 }
@@ -67,15 +67,18 @@ trait RegistrationService extends FrontendController
     }
 
     for {
-      biksListOption: List[Bik] <- bikListService.registeredBenefitsList(year, EmpRef("", ""))(getBenefitTypesPath)
-      registeredListOption <- tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
-        request.empRef, year)
+      biksListOption: List[Bik] <- bikListService.registeredBenefitsList(year, EmpRef.empty)(getBenefitTypesPath)
+      registeredListOption <- tierConnector.genericGetCall[List[Bik]](baseUrl,
+        getRegisteredPath,
+        request.empRef,
+        year)
       nonLegislationList = nonLegislationBiks.map { x =>
         Bik("" + x, 30, 0)
       }
       decommissionedBikList = decommissionedBikIds.map { x =>
         Bik("" + x, 30, 0)
       }
+
       // During transition, we have to ensure we handle the existing decommissioned IABDs (e.g 47 ) being sent by the server
       // and after the NPS R38 config release, when it wont be. Therefore, aas this is a list, we remove the
       // decommissioned values ( if they exist ) and then add them back in

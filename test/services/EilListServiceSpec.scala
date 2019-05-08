@@ -45,7 +45,7 @@ with TestAuthUser with ControllersReferenceData {
 
   val MockEiLListService: EiLListService = running(fakeApplication) {
     new EiLListService {
-      def pbikAppConfig: AppConfig = mock[AppConfig]
+      val pbikAppConfig: AppConfig = mock[AppConfig]
       val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
       when(tierConnector.genericGetCall[List[EiLPerson]](anyString,
         anyString,any[EmpRef], anyInt)(any[HeaderCarrier],any[Request[_]],

@@ -39,7 +39,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object ManageRegistrationController extends ManageRegistrationController with TierConnector {
-  def pbikAppConfig: AppConfig = PbikAppConfig
+  val pbikAppConfig: AppConfig = PbikAppConfig
 
   def registrationService: RegistrationService = RegistrationService
 
@@ -81,7 +81,7 @@ trait ManageRegistrationController extends FrontendController
     implicit request =>
       val resultFuture = for {
         result <- registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cyminus1,
-          "add", views.html.registration.currentTaxYear(_, YEAR_RANGE, _, _, _, _, _, empRef = request.empRef))
+          cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.currentTaxYear(_, YEAR_RANGE, _, _, _, _, _, empRef = request.empRef))
       } yield {
         result
       }
@@ -101,7 +101,7 @@ trait ManageRegistrationController extends FrontendController
         RegistrationItem(x.iabdType, active = false, enabled = true)
       })
       val sortedData = BikListUtils.sortRegistrationsAlphabeticallyByLabels(initialData)
-      if (sortedData.active.size == 0) {
+      if (sortedData.active.isEmpty) {
         Ok(views.html.errorPage(NO_MORE_BENEFITS_TO_REMOVE_CY1,
           taxYearRange,
           FormMappingsConstants.CYP1,
@@ -129,14 +129,14 @@ trait ManageRegistrationController extends FrontendController
   def confirmAddCurrentTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture = for {
-        biksListOption: List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cyminus1, EmpRef("", ""))(getBenefitTypesPath)
-        result <- generateConfirmationScreenView(YEAR_RANGE.cyminus1, "add", views.html.registration.
-          confirmAddCurrentTaxYear(_, YEAR_RANGE, empRef = request.empRef), (formWithErrors =>
+        biksListOption: List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cyminus1, EmpRef.empty)(getBenefitTypesPath)
+        result <- generateConfirmationScreenView(YEAR_RANGE.cyminus1, cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.
+          confirmAddCurrentTaxYear(_, YEAR_RANGE, empRef = request.empRef), viewToRedirect = formWithErrors =>
           Ok(views.html.registration.currentTaxYear(formWithErrors,
             YEAR_RANGE,
             biksAvailableCount = Some(biksListOption.size),
             empRef = request.empRef))
-            .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))))
+            .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}")))
       } yield {
         result
       }
@@ -148,15 +148,15 @@ trait ManageRegistrationController extends FrontendController
   def confirmAddNextTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture = for {
-        biksListOption: List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cy, EmpRef("", ""))(getBenefitTypesPath)
-        result <- generateConfirmationScreenView(YEAR_RANGE.cy, "add", views.html.registration.
-          confirmUpdateNextTaxYear(_, additive = true, YEAR_RANGE, empRef = request.empRef), (formWithErrors =>
+        biksListOption: List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cy, EmpRef.empty)(getBenefitTypesPath)
+        result <- generateConfirmationScreenView(YEAR_RANGE.cy, cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.
+          confirmUpdateNextTaxYear(_, additive = true, YEAR_RANGE, empRef = request.empRef), viewToRedirect = formWithErrors =>
           Ok(views.html.registration.nextTaxYear(formWithErrors,
             additive = true,
             YEAR_RANGE,
             biksAvailableCount = Some(biksListOption.size),
             empRef = request.empRef
-          ))))
+          )))
       } yield {
         result
       }
@@ -166,14 +166,14 @@ trait ManageRegistrationController extends FrontendController
   def confirmRemoveNextTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture = for {
-        result <- generateConfirmationScreenView(YEAR_RANGE.cy, "remove", views.html.registration.
-          confirmUpdateNextTaxYear(_, additive = false, YEAR_RANGE, empRef = request.empRef), (formWithErrors =>
+        result <- generateConfirmationScreenView(YEAR_RANGE.cy, cachingSuffix = "remove", generateViewBasedOnFormItems = views.html.registration.
+          confirmUpdateNextTaxYear(_, additive = false, YEAR_RANGE, empRef = request.empRef), viewToRedirect = formWithErrors =>
           Ok(views.html.registration.nextTaxYear(formWithErrors,
-            false,
+            additive = false,
             YEAR_RANGE,
             biksAvailableCount = None,
             empRef = request.empRef
-          ))))
+          )))
       } yield {
         result
       }
@@ -182,11 +182,11 @@ trait ManageRegistrationController extends FrontendController
 
   def confirmRemoveNextTaxYearNoForm(iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val registrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = true, enabled = false)), None)
+      val registrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = true, enabled = false)), reason = None)
       val form: Form[RegistrationList] = objSelectedForm.fill(registrationList)
       val resultFuture = Future.successful(
         Ok(views.html.registration.confirmUpdateNextTaxYear(objSelectedForm.fill(form.get),
-          false,
+          additive = false,
           YEAR_RANGE,
           empRef = request.empRef)))
       responseErrorHandler(resultFuture)

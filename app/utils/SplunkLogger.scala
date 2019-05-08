@@ -165,7 +165,7 @@ trait SplunkLogger {
       detail = Map(
         key_event_name -> pbik_event_name,
         key_gateway_user -> request.name.getOrElse(pbik_no_ref),
-        key_empref -> request.empRef.toString,
+        key_empref -> request.empRef.getOrElse(pbik_no_ref),
         key_tier -> tier.toString,
         key_error -> error.toString,
         key_message -> msg
@@ -184,7 +184,7 @@ trait SplunkLogger {
     auditConnector.sendEvent(dataEvent)
   }
 
-  def taxYearToSpPeriod(year: Int): spPeriod.Value = {
+  def taxYearToSpPeriod(year: Int) = {
     TaxDateUtils.isCurrentTaxYear(year) match {
       case true => spPeriod.CY
       case false => spPeriod.CYP1

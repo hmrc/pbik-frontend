@@ -83,7 +83,7 @@ class TierConnectorSpec extends PlaySpec  with FakePBIKApplication
   "When creating a GET URL with no organisation it" should {
    " omit the organisation" in {
       val tc = new MockHmrcTierConnector
-      val result:String = tc.createGetUrl("theBaseUrl","theURIExtension", EmpRef("", ""),2015)
+      val result:String = tc.createGetUrl("theBaseUrl","theURIExtension", EmpRef.empty,2015)
       assert(result == "theBaseUrl/2015/theURIExtension")
     }
   }

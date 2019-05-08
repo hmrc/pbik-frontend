@@ -31,8 +31,8 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import utils._
 
 object WhatNextPageController extends WhatNextPageController with TierConnector {
-  def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
-  def bikListService: BikListService.type = BikListService
+  val pbikAppConfig: AppConfig = PbikAppConfig
+  def bikListService: BikListService = BikListService
   val tierConnector = new HmrcTierConnector
 }
 
@@ -47,7 +47,7 @@ trait WhatNextPageController extends FrontendController
   def calculateTaxYear(isCurrentTaxYear: Boolean): (Int, Int) = {
     val isCurrentYear = if (isCurrentTaxYear) FormMappingsConstants.CY else FormMappingsConstants.CYP1
     isCurrentYear match {
-      case FormMappingsConstants.CY => (YEAR_RANGE.cyminus1, +YEAR_RANGE.cy)
+      case FormMappingsConstants.CY => (YEAR_RANGE.cyminus1, YEAR_RANGE.cy)
       case FormMappingsConstants.CYP1 => (YEAR_RANGE.cy, YEAR_RANGE.cyplus1)
     }
   }

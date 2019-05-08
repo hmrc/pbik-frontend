@@ -46,7 +46,7 @@ trait ExclusionListConfiguration extends RunMode with RunModeConfig {
 }
 
 object ExclusionListController extends ExclusionListController with TierConnector {
-  def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
+  val pbikAppConfig: AppConfig = PbikAppConfig
 
   def eiLListService: EiLListService.type = EiLListService
 
@@ -73,15 +73,9 @@ trait ExclusionListController extends FrontendController
 
   def mapYearStringToInt(URIYearString: String): Future[Int] = {
     URIYearString match {
-      case utils.FormMappingsConstants.CY => Future {
-        YEAR_RANGE.cyminus1
-      }
-      case utils.FormMappingsConstants.CYP1 => Future {
-        YEAR_RANGE.cy
-      }
-      case _ => Future {
-        throw new InvalidYearURIException()
-      }
+      case utils.FormMappingsConstants.CY => Future.successful(YEAR_RANGE.cyminus1)
+      case utils.FormMappingsConstants.CYP1 => Future.successful(YEAR_RANGE.cy)
+      case _ => Future.failed(throw new InvalidYearURIException())
     }
   }
 
@@ -90,7 +84,7 @@ trait ExclusionListController extends FrontendController
       year <- mapYearStringToInt(isCurrentYear)
       registeredBenefits: List[Bik] <- bikListService.registeredBenefitsList(year, request.empRef)(getRegisteredPath)
     } yield {
-      if (registeredBenefits.exists(x => x.iabdType.equals(iabdValueURLDeMapper(iabdType)))) {
+      if (registeredBenefits.exists(_.iabdType.equals(iabdValueURLDeMapper(iabdType)))) {
         year
       } else {
         throw new InvalidBikTypeURIException()

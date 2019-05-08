@@ -27,6 +27,6 @@ object PbikFrontendAuditConnector extends Auditing with AppName with RunMode wit
 }
 
 object LocalFormPartialRetriever extends FormPartialRetriever {
-  override val httpGet: WSHttp.type = WSHttp
+  override val httpGet = WSHttp
   override def crypto: String => String = ApplicationGlobal.sessionCookieCryptoFilter.encrypt
 }

@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.PbikAppConfig
+import config.{AppConfig, PbikAppConfig}
 import controllers.actions.MinimalAuthAction
 import play.api.Play
 import play.api.Play.current
@@ -28,7 +28,7 @@ import utils.ControllersReferenceData
 import scala.concurrent.Future
 
 object AuthController extends AuthController {
-  def pbikAppConfig: PbikAppConfig.type = PbikAppConfig
+  val pbikAppConfig:  AppConfig = PbikAppConfig
   val authenticate: MinimalAuthAction = Play.current.injector.instanceOf[MinimalAuthAction]
 }
 
@@ -41,7 +41,7 @@ trait AuthController extends FrontendController with ControllersReferenceData {
       notAuthorisedResult
   }
 
-  def notAuthorisedResult(implicit request: Request[AnyContent]): Future[Result] = {
+  private def notAuthorisedResult(implicit request: Request[AnyContent]): Future[Result] = {
     Future.successful(Ok(views.html.enrol(None)))
   }
 }

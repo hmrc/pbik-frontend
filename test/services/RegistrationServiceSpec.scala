@@ -98,7 +98,7 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito w
         val YEAR_RANGE = TaxDateUtils.getTaxYearRange()
         val regService:RegistrationService = MockRegistrationService
         val result = await(regService.generateViewForBikRegistrationSelection(YEAR_RANGE.cyminus1,
-          "add", views.html.registration.nextTaxYear(_, true, YEAR_RANGE, _, _, _, _, _, EmpRef("",""))))
+          "add", views.html.registration.nextTaxYear(_, true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty)))
         status(result) shouldBe 200
         bodyOf(result) should include(Messages("AddBenefits.Heading"))
         bodyOf(result) should include(Messages("BenefitInKind.label.37"))
