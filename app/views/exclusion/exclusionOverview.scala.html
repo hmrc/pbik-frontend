@@ -25,7 +25,7 @@ current:List[EiLPerson],
 empRef: EmpRef)(implicit request:Request[_],
 context: config.PbikContext, applicationMessages: Messages)
 
-@parentTemplate(pageTitle = Messages("ExclusionOverview.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString), showLanguage = true) {
+@parentTemplate(pageTitle = Messages("ExclusionOverview.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
 @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
 

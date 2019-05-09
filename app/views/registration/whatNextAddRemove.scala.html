@@ -31,7 +31,7 @@
 @metaTitleAdditive = @{if(singleBik){Messages("whatNext.add.heading.singular")}else {Messages("whatNext.add.heading")}}
 
 @parentTemplate(pageTitle = if(additive) {metaTitleAdditive + " - " + Messages("Service.title")}else{Messages("whatNext.remove.heading") + " - " + Messages("Service.title")},
-                None, Some(empRef.toString), showLanguage = true) {
+                None, Some(empRef.toString)) {
 
     <section id="print-section">
         <div id="printContainer"></div>

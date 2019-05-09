@@ -38,7 +38,7 @@
 @parentTemplate(pageTitle =
     if(additive) {Messages("AddBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1) + " - " + Messages("Service.title")}else {Messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1) + " - " + Messages("Service.title")},
 
-    Some(taxYearRange), Some(empRef.toString),showLanguage = true, sidebarLinks = Some(sidebarLinks)) {
+    Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
 
     @if(additive) {
         @includes.back_link(gaLabel = Messages("AddBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1))

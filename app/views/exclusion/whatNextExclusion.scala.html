@@ -23,7 +23,7 @@ empRef: EmpRef)(implicit request:Request[_],
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation._
 
-@parentTemplate(pageTitle = Messages("whatNext.exclude.heading") + " - " + Messages("Service.title"), None,  Some(empRef.toString), showLanguage = true) {
+@parentTemplate(pageTitle = Messages("whatNext.exclude.heading") + " - " + Messages("Service.title"), None,  Some(empRef.toString)) {
 
     <section id="print-section">
         <div id="printContainer"></div>
