@@ -18,6 +18,6 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.2.0")
 
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
 
-addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.9")
+addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.13")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-artifactory" % "0.19.0")

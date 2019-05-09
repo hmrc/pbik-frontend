@@ -29,7 +29,6 @@ lazy val microservice = Project(appName, file("."))
     routesGenerator := StaticRoutesGenerator,
     unmanagedResourceDirectories in Assets += baseDirectory.value / "app" / "assets",
     excludeFilter in Assets := "js*" || "sass*",
-    JavaScriptBuild.javaScriptUiSettings,
     resolvers := Seq(
       Resolver.bintrayRepo("hmrc", "releases"),
       "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",
