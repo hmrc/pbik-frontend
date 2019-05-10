@@ -17,8 +17,11 @@
 package services
 
 import config.{AppConfig, PbikAppConfig}
-import connectors.{HmrcTierConnector, TierConnector}
+import connectors.HmrcTierConnector
+import javax.inject.Inject
 import models.{AuthenticatedRequest, Bik, EmpRef}
+import play.api.Mode.Mode
+import play.api.{Configuration, Environment}
 import play.api.mvc.Request
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, URIInformation}
@@ -26,13 +29,13 @@ import utils.{ControllersReferenceData, URIInformation}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object BikListService extends BikListService {
-  val pbikAppConfig: AppConfig = PbikAppConfig
+class BikListService @Inject()( val pbikAppConfig: PbikAppConfig,
+                                val tierConnector: HmrcTierConnector,
+                                val runModeConfiguration : Configuration,
+                                environment : Environment)
+                                  extends URIInformation with ControllersReferenceData {
 
-  val tierConnector = new HmrcTierConnector
-}
-
-trait BikListService extends TierConnector with URIInformation with ControllersReferenceData {
+  val mode: Mode = environment.mode
   def pbikHeaders: Map[String, String] = Map[String, String]()
 
   def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {

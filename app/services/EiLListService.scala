@@ -17,21 +17,24 @@
 package services
 
 import config.{AppConfig, PbikAppConfig}
-import connectors.{HmrcTierConnector, TierConnector}
+import connectors.{HmrcTierConnector}
+import javax.inject.Inject
 import models.{AuthenticatedRequest, EiLPerson}
+import play.api.Mode.Mode
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, SplunkLogger, URIInformation}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object EiLListService extends EiLListService {
-  val pbikAppConfig: AppConfig = PbikAppConfig
-  val tierConnector = new HmrcTierConnector
-}
-
-trait EiLListService extends TierConnector with URIInformation
-with ControllersReferenceData with SplunkLogger {
+class EiLListService @Inject()( val pbikAppConfig: PbikAppConfig,
+                                val tierConnector: HmrcTierConnector,
+                                val runModeConfiguration : Configuration,
+                                environment : Environment)
+                                        extends  URIInformation
+                                        with ControllersReferenceData with SplunkLogger {
+  val mode: Mode = environment.mode
 
   def currentYearEiL(iabdType: String, year: Int)(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[List[EiLPerson]] = {
     val response = tierConnector.genericGetCall[List[EiLPerson]](baseUrl,

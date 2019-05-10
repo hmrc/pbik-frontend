@@ -16,20 +16,24 @@
 
 package controllers
 
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-object RedirectController extends Controller {
+class RedirectController extends FrontendController {
 
-  def redirectIfFromStart() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
+  def redirectIfFromStart(): Action[AnyContent] = Action {
+    implicit request =>
+      Redirect(routes.HomePageController.onPageLoad)
   }
 
-  def redirectIfFromOldOverview() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
+  def redirectIfFromOldOverview(): Action[AnyContent] = Action {
+    implicit request =>
+      Redirect(routes.HomePageController.onPageLoad)
   }
 
-  def redirectIfFromRoot() = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
+  def redirectIfFromRoot(): Action[AnyContent] = Action {
+    implicit request =>
+      Redirect(routes.HomePageController.onPageLoad)
   }
 
 }

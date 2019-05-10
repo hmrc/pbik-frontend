@@ -16,25 +16,20 @@
 
 package controllers
 
-import config.{AppConfig, PbikAppConfig}
+import config.PbikAppConfig
 import controllers.actions.MinimalAuthAction
-import play.api.Play
+import javax.inject.Inject
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.ControllersReferenceData
 
 import scala.concurrent.Future
 
-object AuthController extends AuthController {
-  val pbikAppConfig:  AppConfig = PbikAppConfig
-  val authenticate: MinimalAuthAction = Play.current.injector.instanceOf[MinimalAuthAction]
-}
-
-trait AuthController extends FrontendController with ControllersReferenceData {
-
-  val authenticate: MinimalAuthAction
+class AuthController @Inject()(val pbikAppConfig: PbikAppConfig,
+                               val authenticate: MinimalAuthAction) extends FrontendController
+                                                                    with ControllersReferenceData {
 
   def notAuthorised:Action[AnyContent] = authenticate.async {
     implicit request =>

@@ -18,51 +18,43 @@ package controllers.registration
 
 import java.util.UUID
 
-import _root_.models._
-import config.{AppConfig, PbikAppConfig}
-import connectors.{HmrcTierConnector, TierConnector}
+import models._
+import config.PbikAppConfig
+import connectors.HmrcTierConnector
 import controllers.WhatNextPageController
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import play.api.Play
+import javax.inject.Inject
+import play.api.Mode.Mode
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.{Configuration, Environment}
 import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object ManageRegistrationController extends ManageRegistrationController with TierConnector {
-  val pbikAppConfig: AppConfig = PbikAppConfig
+class ManageRegistrationController @Inject()(val pbikAppConfig: PbikAppConfig,
+                                             registrationService: RegistrationService,
+                                             val bikListService: BikListService,
+                                             tierConnector: HmrcTierConnector,
+                                             val authenticate: AuthAction,
+                                             val noSessionCheck: NoSessionCheckAction,
+                                             val runModeConfiguration: Configuration,
+                                             environment:Environment
+                                            ) extends FrontendController
+                                                  with URIInformation
+                                                  with WhatNextPageController
+                                                  with ControllersReferenceData
+                                                  with SplunkLogger {
 
-  def registrationService: RegistrationService = RegistrationService
-
-  def bikListService: BikListService = BikListService
-
-  val tierConnector = new HmrcTierConnector
-  val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
-  val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
-}
-
-trait ManageRegistrationController extends FrontendController
-  with URIInformation
-  with WhatNextPageController
-  with ControllersReferenceData
-  with SplunkLogger {
-  this: TierConnector =>
-
-  def bikListService: BikListService
-
-  def registrationService: RegistrationService
-
-  val authenticate: AuthAction
-  val noSessionCheck: NoSessionCheckAction
+  val mode: Mode = environment.mode
 
   def nextTaxYearAddOnPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
@@ -252,21 +244,18 @@ trait ManageRegistrationController extends FrontendController
           ,
           values => {
             val changes = BikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
-            additive match {
-              case true => {
-                // Process registration
-                val saveFuture = tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
-                  request.empRef, year, changes)
-                saveFuture.map {
-                  saveResponse: HttpResponse =>
-                    auditBikUpdate(additive = true, year, persistentBiks)
-                    loadWhatNextRegisteredBIK(form, year)
-                }
+            if (additive) {
+              // Process registration
+              val saveFuture = tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
+                request.empRef, year, changes)
+              saveFuture.map {
+                saveResponse: HttpResponse =>
+                  auditBikUpdate(additive = true, year, persistentBiks)
+                  loadWhatNextRegisteredBIK(form, year)
               }
-              case _ => {
-                // Remove benefit - if there are no errors proceed
-                Future(removeBenefitReasonValidation(values, form, year, persistentBiks, changes))
-              }
+            } else {
+              // Remove benefit - if there are no errors proceed
+              Future(removeBenefitReasonValidation(values, form, year, persistentBiks, changes))
             }
           }
         )
@@ -277,22 +266,22 @@ trait ManageRegistrationController extends FrontendController
                                     persistentBiks: List[Bik], changes: List[Bik])
                                    (implicit request: AuthenticatedRequest[AnyContent]): Result = {
     registrationList.reason match {
-      case Some(reasonValue) if (BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue)) => {
+      case Some(reasonValue) if BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue) => {
         reasonValue.info match {
-          case _ if (reasonValue.selectionValue.equals("other") && reasonValue.info.getOrElse("").trim.isEmpty) => {
+          case _ if reasonValue.selectionValue.equals("other") && reasonValue.info.getOrElse("").trim.isEmpty => {
             Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(persistentBiks.head.iabdType)
             )).flashing("error" -> Messages("RemoveBenefits.reason.other.required"))
           }
           case Some(info) => {
             tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
               request.empRef, year, changes)
-            auditBikUpdate(false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, Some(info))))
+            auditBikUpdate(additive = false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, Some(info))))
             loadWhatNextRemovedBIK(form, year)
           }
           case _ => {
             tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
               request.empRef, year, changes)
-            auditBikUpdate(false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, None)))
+            auditBikUpdate(additive = false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, None)))
             loadWhatNextRemovedBIK(form, year)
           }
         }
@@ -303,7 +292,7 @@ trait ManageRegistrationController extends FrontendController
   }
 
   private def auditBikUpdate(additive: Boolean, year: Int, persistentBiks: List[Bik], removeReason: Option[(String, Option[String])] = None)
-                            (implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]) = {
+                            (implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Unit = {
     val derivedMsg = if (additive) "Benefit added to " + taxYearToSpPeriod(year) else "Benefit removed from " + taxYearToSpPeriod(year)
     for (bik <- persistentBiks) {
       logSplunkEvent(createDataEvent(
