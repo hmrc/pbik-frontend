@@ -84,8 +84,8 @@ object BikListUtils {
 
     val items: List[RegistrationItem] = initialList map { bik:Bik =>
       bik match {
-        case a if (checkedList.contains(a)) =>  RegistrationItem(a.iabdType, true, false)
-        case _ => RegistrationItem(bik.iabdType, false, true)
+        case a if checkedList.contains(a) =>  RegistrationItem(a.iabdType, active = true, enabled = false)
+        case _ => RegistrationItem(bik.iabdType, active = false, enabled = true)
       }
     }
     RegistrationList(None, items)
@@ -99,7 +99,7 @@ object BikListUtils {
    */
   def removeMatches(initialList: List[Bik], checkedList: List[Bik]): RegistrationList = {
     val diff:List[Bik] = initialList.diff(checkedList)
-    RegistrationList(None, diff.map { x => RegistrationItem(x.iabdType, false, true)} )
+    RegistrationList(None, diff.map { x => RegistrationItem(x.iabdType, active = false, enabled = true)} )
 
   }
 }

@@ -16,13 +16,12 @@
 
 package utils
 
-import config.RunModeConfig
 import play.api.Logger
 import uk.gov.hmrc.play.config.ServicesConfig
 import utils.Exceptions.InvalidBikTypeURIException
 
-object URIInformation extends URIInformation
-trait URIInformation extends ServicesConfig with URIValues with FormMappings with RunModeConfig{
+
+trait URIInformation extends ServicesConfig with URIValues with FormMappings{
   val baseUrl: String = baseUrl("pbik") + "/epaye"
 
   val urlMappedIABDValues = List(
@@ -49,7 +48,7 @@ trait URIInformation extends ServicesConfig with URIValues with FormMappings wit
     ("45", "non-qualifying-relocation")
   )
 
-  def iabdValueURLMapper(iabd: String) = {
+  def iabdValueURLMapper(iabd: String): String = {
     val value = urlMappedIABDValues.find(x=> x._1 == iabd)
     value match {
       case Some(_) => value.get._2
@@ -60,14 +59,13 @@ trait URIInformation extends ServicesConfig with URIValues with FormMappings wit
     }
   }
 
-  def iabdValueURLDeMapper(iabdMappedURL: String) = {
+  def iabdValueURLDeMapper(iabdMappedURL: String): String = {
     val value = urlMappedIABDValues.find(x=> x._2 == iabdMappedURL)
     value match {
       case Some(_) => value.get._1
-      case None => {
+      case None =>
         Logger.info("invalid bik passed to de-map url: " + iabdMappedURL)
         throw new InvalidBikTypeURIException
-      }
     }
   }
 }

@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-import play.api.GlobalSettings
-import play.api.mvc.WithFilters
-import play.filters.headers.SecurityHeadersFilter
+package models
 
-// Add the security header filter by default
-object Global extends WithFilters(SecurityHeadersFilter()) with GlobalSettings {}
+case class EiLPersonList(active: List[EiLPerson])
