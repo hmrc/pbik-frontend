@@ -19,57 +19,43 @@ package controllers
 import java.util.UUID
 
 import config._
-import connectors.{HmrcTierConnector, TierConnector}
+import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
+import javax.inject.Inject
 import models._
+import play.api.Mode.Mode
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
-import play.api.{Logger, Play}
+import play.api.{Configuration, Environment, Logger, Play}
 import services.{BikListService, EiLListService}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.play.config.RunMode
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait ExclusionListConfiguration extends RunMode with RunModeConfig {
+
+class ExclusionListController @Inject()(val pbikAppConfig: PbikAppConfig,
+                                        val authenticate: AuthAction,
+                                        val noSessionCheck: NoSessionCheckAction,
+                                        eiLListService: EiLListService,
+                                        bikListService: BikListService,
+                                        val tierConnector: HmrcTierConnector, //TODO: Why do we need this?,
+                                        val runModeConfiguration: Configuration,
+                                        environment:Environment
+                                       ) extends FrontendController
+                                                                          with URIInformation
+                                                                          with ControllersReferenceData
+                                                                          with SplunkLogger {
+  val mode: Mode = environment.mode
 
   lazy val exclusionsAllowed: Boolean = Play.configuration.getBoolean("pbik.enabled.eil").getOrElse(false)
-
-}
-
-object ExclusionListController extends ExclusionListController with TierConnector {
-  val pbikAppConfig: AppConfig = PbikAppConfig
-
-  def eiLListService: EiLListService.type = EiLListService
-
-  def bikListService: BikListService.type = BikListService
-
-  val tierConnector = new HmrcTierConnector
-  val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
-  val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
-}
-
-trait ExclusionListController extends FrontendController
-  with URIInformation
-  with ControllersReferenceData
-  with SplunkLogger
-  with ExclusionListConfiguration {
-  this: TierConnector =>
-
-  val authenticate: AuthAction
-  val noSessionCheck: NoSessionCheckAction
-
-  def eiLListService: EiLListService
-
-  def bikListService: BikListService
 
   def mapYearStringToInt(URIYearString: String): Future[Int] = {
     URIYearString match {
@@ -103,8 +89,12 @@ trait ExclusionListController extends FrontendController
           nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
           currentYearEIL: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
         } yield {
-          Ok(views.html.exclusion.exclusionOverview(YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, currentYearEIL.sortWith(_.surname < _.surname), request.empRef))
-            .removingFromSession(HeaderTags.ETAG)
+          Ok(views.html.exclusion.exclusionOverview(YEAR_RANGE,
+            isCurrentTaxYear,
+            iabdTypeValue,
+            currentYearEIL.sortWith(_.surname < _.surname),
+            request.empRef)
+          ).removingFromSession(HeaderTags.ETAG)
             .addingToSession(nextYearList._1.toSeq: _*)
         }
         responseErrorHandler(staticDataRequest)
@@ -245,7 +235,7 @@ trait ExclusionListController extends FrontendController
 
   def updateExclusions(year: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
       val iabdTypeValue = iabdValueURLDeMapper(iabdType)
       if (exclusionsAllowed) {
         val taxYearRange = YEAR_RANGE
@@ -328,7 +318,10 @@ trait ExclusionListController extends FrontendController
             Ok(views.html.exclusion.whatNextExclusion(TaxDateUtils.getTaxYearRange(), year,
               iabdType, excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname, request.empRef))
           }
-          case _ => Ok(views.html.errorPage("Could not perform update operation", YEAR_RANGE, "", empRef = Some(request.empRef))(request, context, applicationMessages)).
+          case _ => Ok(views.html.errorPage("Could not perform update operation",
+            YEAR_RANGE,
+            isCurrentTaxYear = "",
+            empRef = Some(request.empRef))(request, context, applicationMessages)).
             withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
         }
     }

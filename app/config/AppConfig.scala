@@ -18,8 +18,11 @@ package config
 
 import java.util.Collections
 
-import play.api.Play.{configuration, current}
+import javax.inject.Inject
+import play.api.Mode.Mode
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.config.ServicesConfig
+
 
 trait AppConfig {
   val assetsPrefix: String
@@ -40,8 +43,11 @@ trait AppConfig {
 
 }
 
-object PbikAppConfig extends AppConfig with ServicesConfig with RunModeConfig {
+class PbikAppConfig @Inject() (configuration: Configuration,
+                               environment: Environment) extends AppConfig with ServicesConfig {
 
+  val mode: Mode = environment.mode
+  val runModeConfiguration: Configuration = configuration
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing key: $key"))
 
   override lazy val contactFrontendService: String = baseUrl("contact-frontend")

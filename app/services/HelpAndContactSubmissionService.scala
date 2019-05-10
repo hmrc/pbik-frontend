@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package connectors
+package services
 
-object TierConnector extends TierConnector {
-  val tierConnector = new HmrcTierConnector
-}
+import connectors.ContactFrontendConnector
+import javax.inject.Inject
+import play.api.mvc.{AnyContent, Request}
+import uk.gov.hmrc.http.HttpResponse
 
-trait TierConnector {
+import scala.concurrent.{ExecutionContext, Future}
 
-  val tierConnector: HmrcTierConnector
+class HelpAndContactSubmissionService @Inject()(contactFrontendConnector: ContactFrontendConnector) {
+  def submitContactHmrc(contactHmrcSubmitPartialUrl: String, formData: Map[String, Seq[String]])(implicit request: Request[AnyContent], ec: ExecutionContext): Future[HttpResponse] =
+    contactFrontendConnector.submitContactHmrc(contactHmrcSubmitPartialUrl, formData)
 
 }

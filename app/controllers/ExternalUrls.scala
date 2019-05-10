@@ -16,18 +16,16 @@
 
 package controllers
 
-import config.RunModeConfig
-import play.api.Play
-import play.api.Play.current
-import uk.gov.hmrc.play.config.RunMode
+import javax.inject.Inject
+import play.api.Configuration
 
-object ExternalUrls extends RunMode with RunModeConfig {
+class ExternalUrls @Inject()(configuration: Configuration) {
 
-  val loginCallback: String = Play.configuration.getString("microservice.auth.login-callback.url").getOrElse(routes.HomePageController.onPageLoad().url)
-  val companyAuthHost: String = Play.configuration.getString("microservice.auth.company-auth.host").getOrElse("")
-  val loginLocalPath: String = Play.configuration.getString("microservice.auth.login_local_path").getOrElse("")
-  val loginPath: String = Play.configuration.getString("microservice.auth.login_path").getOrElse("")
-  val signOutPath: String = Play.configuration.getString("microservice.auth.signout_path").getOrElse("")
+  val loginCallback: String = configuration.getString("microservice.auth.login-callback.url").getOrElse(routes.HomePageController.onPageLoad().url)
+  val companyAuthHost: String = configuration.getString("microservice.auth.company-auth.host").getOrElse("")
+  val loginLocalPath: String = configuration.getString("microservice.auth.login_local_path").getOrElse("")
+  val loginPath: String = configuration.getString("microservice.auth.login_path").getOrElse("")
+  val signOutPath: String = configuration.getString("microservice.auth.signout_path").getOrElse("")
 
   val continue: String = loginCallback
   val signIn          = s"$companyAuthHost/gg/$loginPath"

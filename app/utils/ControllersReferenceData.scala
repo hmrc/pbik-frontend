@@ -16,7 +16,7 @@
 
 package utils
 
-import config.{AppConfig, PbikAppConfig, PbikContext, PbikContextImpl}
+import config.AppConfig
 import models._
 import play.api.Logger
 import play.api.Play.current
@@ -32,15 +32,8 @@ import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object ControllersReferenceData extends ControllersReferenceData {
-  val pbikAppConfig: AppConfig = PbikAppConfig
-}
-
 trait ControllersReferenceData extends FormMappings {
 
-  implicit val context: PbikContext = PbikContextImpl
-
-  implicit val bikFormats: OFormat[Bik] = Json.format[Bik]
   implicit val eilFormats: OFormat[EiLPerson] = Json.format[EiLPerson]
   implicit val eilListFormats: OFormat[EiLPersonList] = Json.format[EiLPersonList]
   implicit val mandatoryDecisionFormats: OFormat[MandatoryRadioButton] = Json.format[MandatoryRadioButton]

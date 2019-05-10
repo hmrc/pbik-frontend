@@ -16,34 +16,33 @@
 
 package services
 
-import config.{AppConfig, PbikAppConfig}
-import connectors.{HmrcTierConnector, TierConnector}
+import config.PbikAppConfig
+import connectors.HmrcTierConnector
 import controllers.WhatNextPageController
+import javax.inject.Inject
 import models._
+import play.api.Mode.Mode
+import play.api.{Configuration, Environment}
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{AnyContent, Result}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils._
 
 import scala.concurrent.Future
 
-object RegistrationService extends RegistrationService with TierConnector {
-  val pbikAppConfig: AppConfig = PbikAppConfig
-
-  def bikListService: BikListService = BikListService
-
-  val tierConnector = new HmrcTierConnector
-}
-
-trait RegistrationService extends FrontendController
-  with URIInformation
-  with ControllersReferenceData
-  with WhatNextPageController {
-  this: TierConnector =>
+class RegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
+                                    tierConnector: HmrcTierConnector,
+                                    bikListService: BikListService,
+                                    val runModeConfiguration : Configuration,
+                                    environment : Environment)
+                                            extends FrontendController
+                                              with URIInformation
+                                              with ControllersReferenceData {
+  val mode: Mode = environment.mode
 
   def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                               generateViewBasedOnFormItems: (Form[RegistrationList],
@@ -52,11 +51,11 @@ trait RegistrationService extends FrontendController
 
   Future[Result] = {
 
-    val decommissionedBikIds: List[Int] = PbikAppConfig.biksDecommissioned
+    val decommissionedBikIds: List[Int] = pbikAppConfig.biksDecommissioned
     val nonLegislationBiks: List[Int] = if (TaxDateUtils.isCurrentTaxYear(year)) {
-      PbikAppConfig.biksNotSupportedCY
+      pbikAppConfig.biksNotSupportedCY
     } else {
-      PbikAppConfig.biksNotSupported
+      pbikAppConfig.biksNotSupported
     }
 
     val isCurrentYear: String = {
@@ -100,7 +99,7 @@ trait RegistrationService extends FrontendController
       }
       else {
         Ok(generateViewBasedOnFormItems(objSelectedForm.fill(sortedMegedData),
-          fetchFromCacheMapBiksValue, registeredListOption, nonLegislationBiks, PbikAppConfig.biksDecommissioned, Some(biksListOption.size)))
+          fetchFromCacheMapBiksValue, registeredListOption, nonLegislationBiks, pbikAppConfig.biksDecommissioned, Some(biksListOption.size)))
       }
 
     }

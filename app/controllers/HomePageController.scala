@@ -17,43 +17,36 @@
 package controllers
 
 import config.{AppConfig, PbikAppConfig}
-import connectors.{HmrcTierConnector, TierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
+import javax.inject.Inject
 import models._
+import play.api.Mode.Mode
+import play.api.{Configuration, Environment, Logger}
 import play.api.Play.current
 import play.api.i18n.Lang
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{LegacyI18nSupport, Result, _}
-import play.api.{Logger, Play}
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.frontend.controller.{FrontendController, UnauthorisedAction}
+import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
 import utils._
 
 import scala.concurrent.Future
 import scala.util.{Success, Try}
 
-object HomePageController extends HomePageController with TierConnector {
-  val pbikAppConfig: AppConfig = PbikAppConfig
-
-  val bikListService: BikListService = BikListService
-
-  val tierConnector = new HmrcTierConnector
-  val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
-  val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
-}
-
-trait HomePageController extends FrontendController
+class HomePageController @Inject() (bikListService: BikListService,
+                                    authenticate: AuthAction,
+                                    val noSessionCheck: NoSessionCheckAction,
+                                    val pbikAppConfig: AppConfig,
+                                    val runModeConfiguration: Configuration,
+                                    environment: Environment) extends FrontendController
   with URIInformation
   with ControllersReferenceData
   with SplunkLogger
   with LegacyI18nSupport {
-  this: TierConnector =>
 
-  def bikListService: BikListService
-  val authenticate: AuthAction
-  val noSessionCheck: NoSessionCheckAction
+  val mode: Mode = environment.mode
 
   def notAuthorised: Action[AnyContent] = authenticate {
     implicit request =>
@@ -62,7 +55,7 @@ trait HomePageController extends FrontendController
 
   def signout: Action[AnyContent] = UnauthorisedAction {
     implicit request =>
-      Redirect(PbikAppConfig.serviceSignOut).withNewSession
+      Redirect(pbikAppConfig.serviceSignOut).withNewSession
   }
 
   def setLanguage: Action[AnyContent] = (authenticate andThen noSessionCheck) {
@@ -71,7 +64,7 @@ trait HomePageController extends FrontendController
       Logger.info("Language from request query is " + lang)
       val newLang = Lang(lang)
       Logger.info("New language set to " + newLang.code)
-      Redirect(routes.HomePageController.onPageLoad).withLang(newLang)
+      Redirect(routes.HomePageController.onPageLoad()).withLang(newLang)
   }
 
   def loadCautionPageForCY: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
@@ -89,7 +82,6 @@ trait HomePageController extends FrontendController
         biksListOptionCYP1: List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cy, EmpRef("", ""))(getBenefitTypesPath)
         currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
         nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
-
       } yield {
         val fromYTA = if (request.session.get(SESSION_FROM_YTA).isDefined) {
           request.session.get(SESSION_FROM_YTA).get

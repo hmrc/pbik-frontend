@@ -17,19 +17,19 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
-import connectors.WSHttp
 import controllers.ExternalUrls
 import javax.inject.Inject
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import play.api.Mode.Mode
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.{Configuration, Play}
+import play.api.{Configuration, Environment, Play}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
 import uk.gov.hmrc.http.{CorePost, HeaderCarrier}
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -70,11 +70,10 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
 
-class AuthConnector extends PlayAuthConnector with ServicesConfig {
+class AuthConnector @Inject()(val http: HttpClient,
+                              val runModeConfiguration: Configuration,
+                              val environment: Environment) extends PlayAuthConnector with ServicesConfig {
   override val serviceUrl: String = baseUrl("auth")
-  override def http: CorePost = WSHttp
 
-  override protected def mode: Mode = Play.current.mode
-
-  override protected def runModeConfiguration: Configuration = Play.current.configuration
+  override protected def mode: Mode = environment.mode
 }

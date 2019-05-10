@@ -16,33 +16,51 @@
 
 package connectors
 
-import config.RunModeConfig
-import play.api.Logger
-import uk.gov.hmrc.http.{BadGatewayException, CoreGet, HeaderCarrier}
+import javax.inject.Inject
+import play.api.Mode.Mode
+import play.api.mvc.{AnyContent, Request, Results}
+import play.api.{Configuration, Environment, Logger}
+import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpReads, HttpResponse, Request => _}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.config.ServicesConfig
 
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
-trait ContactFrontendConnector extends ServicesConfig with RunModeConfig {
+class ContactFrontendConnector @Inject()(client: HttpClient,
+                                         configuration: Configuration,
+                                         environment: Environment) extends ServicesConfig
+        with Results {
 
-  import scala.concurrent.ExecutionContext.Implicits.global
+  val mode: Mode = environment.mode
+  val runModeConfiguration: Configuration = configuration
 
-  val http: CoreGet = WSHttp
   lazy val serviceBase = s"${baseUrl("contact-frontend")}/contact"
 
   def getHelpPartial(implicit hc: HeaderCarrier): Future[String] = {
 
     val url = s"$serviceBase/problem_reports"
 
-    http.GET(url) map { r =>
-      r.body
-    } recover {
+    client.GET[String](url) recover {
       case e: BadGatewayException =>
         Logger.error(s"[ContactFrontendConnector] ${e.message}", e)
         ""
     }
   }
 
+  def submitContactHmrc(formUrl: String, formData: Map[String, Seq[String]])(implicit request: Request[AnyContent], ec: ExecutionContext): Future[HttpResponse] = {
+      client.POSTForm[HttpResponse](formUrl, formData)(rds = PartialsFormReads.readPartialsForm, hc = partialsReadyHeaderCarrier, ec = ec)
+  }
+
+  private def partialsReadyHeaderCarrier(implicit request: Request[_]): HeaderCarrier = {
+    val hc1 = PBIKHeaderCarrierForPartialsConverter.headerCarrierEncryptingSessionCookieFromRequest(request)
+    PBIKHeaderCarrierForPartialsConverter.headerCarrierForPartialsToHeaderCarrier(hc1)
+  }
+
 }
 
-object ContactFrontendConnector extends ContactFrontendConnector {}
+object PartialsFormReads {
+  implicit val readPartialsForm: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
+    def read(method: String, url: String, response: HttpResponse) = response
+  }
+}

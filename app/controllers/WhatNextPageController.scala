@@ -19,30 +19,29 @@ package controllers
 import java.util.UUID
 
 import config._
-import connectors.{HmrcTierConnector, TierConnector}
+import connectors.{HmrcTierConnector}
+import javax.inject.Inject
 import models._
+import play.api.Mode.Mode
+import play.api.{Configuration, Environment}
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Result
 import services.BikListService
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils._
 
-object WhatNextPageController extends WhatNextPageController with TierConnector {
-  val pbikAppConfig: AppConfig = PbikAppConfig
-  def bikListService: BikListService = BikListService
-  val tierConnector = new HmrcTierConnector
-}
-
-trait WhatNextPageController extends FrontendController
-  with URIInformation
-  with ControllersReferenceData
-  with SplunkLogger {
-  this: TierConnector =>
-
-  def bikListService: BikListService
+class WhatNextPageController @Inject()( val pbikAppConfig: PbikAppConfig,
+                                        bikListService: BikListService,
+                                        val tierConnector: HmrcTierConnector,
+                                        val runModeConfiguration: Configuration,
+                                        environment: Environment) extends FrontendController
+                                                                            with URIInformation
+                                                                            with ControllersReferenceData
+                                                                            with SplunkLogger {
+  val mode: Mode = environment.mode
 
   def calculateTaxYear(isCurrentTaxYear: Boolean): (Int, Int) = {
     val isCurrentYear = if (isCurrentTaxYear) FormMappingsConstants.CY else FormMappingsConstants.CYP1
