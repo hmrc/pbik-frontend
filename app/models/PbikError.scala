@@ -16,4 +16,10 @@
 
 package models
 
-case class TaxYearRange(cyminus1: Int, cy: Int, cyplus1: Int)
+import play.api.libs.json.Json
+
+case class PbikError(errorCode: String)
+
+object PbikError {
+  implicit val pbikErrorFormat = Json.format[PbikError]
+}

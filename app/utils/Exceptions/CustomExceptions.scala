@@ -16,14 +16,8 @@
 
 package utils.Exceptions
 
-class InvalidYearURIException extends Exception {
+class InvalidYearURIException extends Exception
 
-}
+class InvalidBikTypeURIException extends Exception
 
-class InvalidBikTypeURIException extends Exception {
-
-}
-
-class GenericServerErrorException(val message: String) extends Exception(message) {
-
-}
+class GenericServerErrorException(val message: String) extends Exception(message)

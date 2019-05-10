@@ -16,13 +16,11 @@
 
 package utils
 
-import connectors.FrontendAuditConnector
 import models._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object SplunkLogger {
@@ -110,7 +108,6 @@ trait SplunkLogger {
     * @param target - BIK, EIL
     * @param period - CY, CYP1, BOTH ( actions such as overview screen apply to both CY & CYP1 )
     * @param msg    - free text message. Note - ensure no personal or sensitive details are included )
-    * @param ac     - the implicit Auth Context involved in the audit action
     * @return - a properly formed PBIK DataEvent which may be sent using the logSplunkEvent method.
     */
   def createDataEvent(tier: spTier,
@@ -156,7 +153,6 @@ trait SplunkLogger {
     *
     * @param tier - either the FRONTEND MicroService or GATEWAY Microservice response
     * @param msg  - free text message. Note - ensure no personal or sensitive details are included )
-    * @param ac
     * @return A DataEvent with the PBIK specific error payload which may be sent using the logSplunkEvent method.
     */
   def createErrorEvent(tier: spTier, error: spError, msg: String)(implicit request: AuthenticatedRequest[_]): DataEvent = {
@@ -177,7 +173,6 @@ trait SplunkLogger {
     *
     * @param dataEvent The Event which will be persisted to Splunk and may contain an audit payload or an error payload
     * @param hc        HeaderCarrier infomration
-    * @param ac        Auth Context for whom the audit is about
     * @return an AuditResult which will determine if the auditing was successful or not
     */
   def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
