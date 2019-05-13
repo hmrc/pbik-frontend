@@ -16,12 +16,18 @@
 
 package utils
 
-import play.api.Logger
+import javax.inject.Inject
+import play.api.Mode.Mode
+import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.play.config.ServicesConfig
 import utils.Exceptions.InvalidBikTypeURIException
 
 
-trait URIInformation extends ServicesConfig with URIValues with FormMappings{
+class URIInformation @Inject()(configuration: Configuration,
+                               environment: Environment) extends ServicesConfig with URIValues with FormMappings{
+
+  val mode: Mode = environment.mode
+  val runModeConfiguration: Configuration = configuration
   val baseUrl: String = baseUrl("pbik") + "/epaye"
 
   val urlMappedIABDValues = List(

@@ -14,47 +14,48 @@
  * limitations under the License.
  *@
 
-@(partialUrl: String,
-  formBody: Option[Html],empRef: EmpRef, formPartialProvider: FormPartialProvider)(implicit request:Request[_],
-                          context: config.PbikContext, applicationMessages: Messages)
 @import connectors.FormPartialProvider
 
-@parentTemplate(pageTitle = Messages("HelpAndContact.title") + " - " + Messages("Service.title"), None, Some(empRef.toString), contactSupportLinkEnabled = false){
+@(partialUrl: String,
+  formBody: Option[Html],empRef: EmpRef, formPartialProvider: FormPartialProvider)(implicit request:Request[_],
+                          context: config.PbikContext, messages: Messages, externalURLs: ExternalUrls)
+
+@parentTemplate(pageTitle = messages("HelpAndContact.title") + " - " + messages("Service.title"), None, Some(empRef.toString), contactSupportLinkEnabled = false){
 
     <span class="link-back-top-wrap">
         <a class="link-back" id="link-back-top"
            href='@routes.HomePageController.onPageLoad'>
 
             <div class="arrow-back"></div>
-            @Messages("Service.back")
+            @messages("Service.back")
         </a>
     </span>
 
     <h1 id="title" class="h1-heading-margin">
-        @Messages("HelpAndContact.title")
+        @messages("HelpAndContact.title")
     </h1>
 
     <div class="pbik-help-section-content">
         <p class="text">
-            @Html(Messages("HelpAndContact.p1"))
+            @Html(messages("HelpAndContact.p1"))
         </p>
 
         <p class="text">
-            @Html(Messages("HelpAndContact.p2"))
+            @Html(messages("HelpAndContact.p2"))
         </p>
 
         <h2>
-            @Messages("HelpAndContact.form.title")
+            @messages("HelpAndContact.form.title")
         </h2>
 
         <p class="text">
-            @Messages("HelpAndContact.form.p1")
+            @messages("HelpAndContact.form.p1")
         </p>
 
         <p class="text">
-            @Messages("HelpAndContact.form.p2")
+            @messages("HelpAndContact.form.p2")
         </p>
     </div>
 
-    @formBody.getOrElse(FormPartialProvider.getPartialContent(partialUrl))
+    @formBody.getOrElse(formPartialProvider.getPartialContent(partialUrl))
 }

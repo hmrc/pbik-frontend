@@ -29,8 +29,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ContactFrontendConnector @Inject()(client: HttpClient,
                                          configuration: Configuration,
-                                         environment: Environment) extends ServicesConfig
-        with Results {
+                                         environment: Environment,
+                                         pBIKHeaderCarrierForPartialsConverter: PBIKHeaderCarrierForPartialsConverter) extends ServicesConfig
+  with Results {
 
   val mode: Mode = environment.mode
   val runModeConfiguration: Configuration = configuration
@@ -49,18 +50,18 @@ class ContactFrontendConnector @Inject()(client: HttpClient,
   }
 
   def submitContactHmrc(formUrl: String, formData: Map[String, Seq[String]])(implicit request: Request[AnyContent], ec: ExecutionContext): Future[HttpResponse] = {
-      client.POSTForm[HttpResponse](formUrl, formData)(rds = PartialsFormReads.readPartialsForm, hc = partialsReadyHeaderCarrier, ec = ec)
+    client.POSTForm[HttpResponse](formUrl, formData)(rds = PartialsFormReads.readPartialsForm, hc = partialsReadyHeaderCarrier, ec = ec)
   }
 
   private def partialsReadyHeaderCarrier(implicit request: Request[_]): HeaderCarrier = {
-    val hc1 = PBIKHeaderCarrierForPartialsConverter.headerCarrierEncryptingSessionCookieFromRequest(request)
-    PBIKHeaderCarrierForPartialsConverter.headerCarrierForPartialsToHeaderCarrier(hc1)
+    val hc1 = pBIKHeaderCarrierForPartialsConverter.headerCarrierEncryptingSessionCookieFromRequest(request)
+    pBIKHeaderCarrierForPartialsConverter.headerCarrierForPartialsToHeaderCarrier(hc1)
   }
 
 }
 
 object PartialsFormReads {
   implicit val readPartialsForm: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
-    def read(method: String, url: String, response: HttpResponse) = response
+    def read(method: String, url: String, response: HttpResponse): HttpResponse = response
   }
 }

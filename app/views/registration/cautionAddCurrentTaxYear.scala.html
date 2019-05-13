@@ -14,51 +14,52 @@
  * limitations under the License.
  *@
 
-@(taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_],
-                             context: config.PbikContext, applicationMessages: Messages)
-
 @import uk.gov.hmrc.play.views.html.helpers
 
-@parentTemplate(pageTitle = Messages("AddBenefits.CY.Caution.Title") + " - " + Messages("Service.title"), None, Some(empRef.toString)) {
+@(taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_],
+                             context: config.PbikContext, messages: Messages,
+                                externalURLs: ExternalUrls)
+
+@parentTemplate(pageTitle = messages("AddBenefits.CY.Caution.Title") + " - " + messages("Service.title"), None, Some(empRef.toString)) {
 
 
-    <h1 id="title">@Messages("AddBenefits.CY.Caution.Title")</h1>
+    <h1 id="title">@messages("AddBenefits.CY.Caution.Title")</h1>
 
 
     <p class="alert alert--failure">
         <img src=@routes.AssetsController.at("assets/images/icon-important.png") style="vertical-align: middle">
-        <span style="margin-left:10px">@Messages("AddBenefits.CY.Caution.p1", "" + taxYearRange.cyminus1)</span>
+        <span style="margin-left:10px">@messages("AddBenefits.CY.Caution.p1", "" + taxYearRange.cyminus1)</span>
         <br>
-        <span style="margin-left:50px">@Messages("AddBenefits.CY.Caution.p2", taxYearRange.cy)</span>
+        <span style="margin-left:50px">@messages("AddBenefits.CY.Caution.p2", taxYearRange.cy)</span>
     </p>
 
     <p class="text">
-        @Messages("AddBenefits.CY.Caution.p3")
+        @messages("AddBenefits.CY.Caution.p3")
     </p>
     <ul class="list-bullet text">
-        <li>@Messages("AddBenefits.CY.Caution.p4")</li>
-        <li>@Messages("AddBenefits.CY.Caution.p5")</li>
-        <li>@Messages("AddBenefits.CY.Caution.p6")</li>
+        <li>@messages("AddBenefits.CY.Caution.p4")</li>
+        <li>@messages("AddBenefits.CY.Caution.p5")</li>
+        <li>@messages("AddBenefits.CY.Caution.p6")</li>
     </ul>
 
     <p class="text">
-        @Messages("AddBenefits.CY.Caution.p7")
+        @messages("AddBenefits.CY.Caution.p7")
     </p>
     <ul class="list-bullet text">
-        <li>@Messages("AddBenefits.CY.Caution.p8", "" + taxYearRange.cyminus1)</li>
-        <li>@Messages("AddBenefits.CY.Caution.p9")</li>
-        <li>@Messages("AddBenefits.CY.Caution.p10")</li>
-        <li>@Messages("AddBenefits.CY.Caution.p11")</li>
+        <li>@messages("AddBenefits.CY.Caution.p8", "" + taxYearRange.cyminus1)</li>
+        <li>@messages("AddBenefits.CY.Caution.p9")</li>
+        <li>@messages("AddBenefits.CY.Caution.p10")</li>
+        <li>@messages("AddBenefits.CY.Caution.p11")</li>
     </ul>
 
     <p class="">
-        @Messages("AddBenefits.CY.Caution.p12.1")
-        <a href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad" id="link-cy1">@Messages("AddBenefits.CY.Caution.p12.2")</a>
-        @Messages("AddBenefits.CY.Caution.p12.3", "" + taxYearRange.cy)
+        @messages("AddBenefits.CY.Caution.p12.1")
+        <a href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad" id="link-cy1">@messages("AddBenefits.CY.Caution.p12.2")</a>
+        @messages("AddBenefits.CY.Caution.p12.3", "" + taxYearRange.cy)
     </p>
 
-    <a class="button" id="button-cancel" onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad">@Messages("Service.cancel")</a>
+    <a class="button" id="button-cancel" onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad">@messages("Service.cancel")</a>
     <div style="clear:both"></div>
 
-    <a href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad" id="link-cy">@Messages("Service.proceed")</a>
+    <a href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad" id="link-cy">@messages("Service.proceed")</a>
 }

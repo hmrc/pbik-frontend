@@ -16,6 +16,8 @@
 
 package models
 
+import play.api.libs.json.{Json, OFormat}
+
 case class EiLPerson(nino: String, firstForename: String, secondForename: Option[String], surname: String, worksPayrollNumber: Option[String],
                      dateOfBirth: Option[String], gender: Option[String], status: Option[Int], perOptLock: Int = 0) {
 
@@ -51,4 +53,6 @@ object EiLPerson {
   def defaultEiLPerson(): EiLPerson = {
     EiLPerson(defaultNino, defaultFirstName, defaultSecondName, defaultSurname, defaultWorksPayrollNumber, defaultDateOfBirth, defaultGender, defaultStatus, defaultPerOptLock )
   }
+
+  implicit val EiLPersonFormats: OFormat[EiLPerson] = Json.format[EiLPerson]
 }

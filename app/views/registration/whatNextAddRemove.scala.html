@@ -14,23 +14,23 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation
+
 @(isCurrentYear: Boolean,
   taxYearRange:TaxYearRange,
   additive: Boolean,
   bikForm:Form[RegistrationList], empRef: EmpRef)(implicit request:Request[_],
-                                  context: config.PbikContext, applicationMessages: Messages)
+                                  context: config.PbikContext, messages: Messages, externalURLs: ExternalUrls)
 
-@import uk.gov.hmrc.play.views.html.helpers
-@import utils.URIInformation._
-
-@benefitLabel = @{Messages("BenefitInKind.label." + bikForm("actives[0].uid").value.get )}
+@benefitLabel = @{messages("BenefitInKind.label." + bikForm("actives[0].uid").value.get )}
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @cyplus1 = @{""+taxYearRange.cyplus1}
-@metaTitleAdditive = @{if(singleBik){Messages("whatNext.add.heading.singular")}else {Messages("whatNext.add.heading")}}
+@metaTitleAdditive = @{if(singleBik){messages("whatNext.add.heading.singular")}else {messages("whatNext.add.heading")}}
 
-@parentTemplate(pageTitle = if(additive) {metaTitleAdditive + " - " + Messages("Service.title")}else{Messages("whatNext.remove.heading") + " - " + Messages("Service.title")},
+@parentTemplate(pageTitle = if(additive) {metaTitleAdditive + " - " + messages("Service.title")}else{messages("whatNext.remove.heading") + " - " + messages("Service.title")},
                 None, Some(empRef.toString)) {
 
     <section id="print-section">
@@ -42,27 +42,27 @@
             <h1 id="title" class="bold-large">
                 @if(additive) {
                     @if(singleBik){
-                        @Messages("whatNext.add.heading.singular")
+                        @messages("whatNext.add.heading.singular")
                     }else {
-                        @Messages("whatNext.add.heading")
+                        @messages("whatNext.add.heading")
                     }
-                } else {@Messages("whatNext.remove.heading")}
+                } else {@messages("whatNext.remove.heading")}
             </h1>
             <p id="confirmation-p">
                 @if(!isCurrentYear) {
                     @if(additive) {
                         @if(singleBik){
-                            @Messages("whatNext.cy1.add.lede.singular", benefitLabel, cy)
+                            @messages("whatNext.cy1.add.lede.singular", benefitLabel, cy)
                         }else {
-                            @Messages("whatNext.cy1.add.lede", cy)
+                            @messages("whatNext.cy1.add.lede", cy)
                         }
                     }else {
-                        @Html(Messages("whatNext.remove.lede", benefitLabel, cy, cyplus1, bikForm("actives[0].uid").value.get))}
+                        @Html(messages("whatNext.remove.lede", benefitLabel, cy, cyplus1, bikForm("actives[0].uid").value.get))}
                 }else {
                     @if(singleBik){
-                        @Messages("whatNext.cy1.add.lede.singular", benefitLabel, cyminus1)
+                        @messages("whatNext.cy1.add.lede.singular", benefitLabel, cyminus1)
                     }else {
-                        @Messages("whatNext.cy1.add.lede", cyminus1)
+                        @messages("whatNext.cy1.add.lede", cyminus1)
                     }
                 }
             </p>
@@ -70,7 +70,7 @@
 
         @if(additive) {
             @if(!singleBik){
-                <h2>@Messages("whatNext.cy1.add.table.header")</h2>
+                <h2>@messages("whatNext.cy1.add.table.header")</h2>
                     @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
                     <dl class="govuk-check-your-answers cya-questions-short" id="list-of-confirmation-benefits">
 
@@ -82,7 +82,7 @@
                                     @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
                                     @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
                                 </div>
-                                <span id='li-@activeField("uid").value.get'> @Messages("BenefitInKind.label." + activeField("uid").value.get )</span>
+                                <span id='li-@activeField("uid").value.get'> @messages("BenefitInKind.label." + activeField("uid").value.get )</span>
                             </div>
                         </div>
                         }
@@ -91,62 +91,62 @@
             }
 
             <h2>
-                @Messages("whatNext.subHeading")
+                @messages("whatNext.subHeading")
             </h2>
 
             @if(isCurrentYear) {
                 <!-- CY content will go here when enabled-->
                 <ul class="list-bullet" id="next-steps">
-                    <li>@Html(Messages("whatNext.add.p1", cyminus1))</li>
+                    <li>@Html(messages("whatNext.add.p1", cyminus1))</li>
                     @if(singleBik) {
-                        <li>@Html(Messages("whatNext.add.p2.singular"))</li>
-                        <li>@Html(Messages("whatNext.add.p3.singular", cyminus1, cy))</li>
+                        <li>@Html(messages("whatNext.add.p2.singular"))</li>
+                        <li>@Html(messages("whatNext.add.p3.singular", cyminus1, cy))</li>
                     }else {
-                        <li>@Html(Messages("whatNext.add.p2"))</li>
-                        <li>@Html(Messages("whatNext.add.p3", cyminus1, cy))</li>
+                        <li>@Html(messages("whatNext.add.p2"))</li>
+                        <li>@Html(messages("whatNext.add.p3", cyminus1, cy))</li>
                     }
-                    <li>@Html(Messages("whatNext.add.p4"))</li>
+                    <li>@Html(messages("whatNext.add.p4"))</li>
                 </ul>
             }else {
                 <ul class="list-bullet" id="next-steps">
-                    <li>@Html(Messages("whatNext.add.p1", cy))</li>
+                    <li>@Html(messages("whatNext.add.p1", cy))</li>
                     @if(singleBik) {
-                        <li>@Html(Messages("whatNext.add.p2.singular"))</li>
-                        <li>@Html(Messages("whatNext.add.p3.singular", cy, cyplus1)) </li>
+                        <li>@Html(messages("whatNext.add.p2.singular"))</li>
+                        <li>@Html(messages("whatNext.add.p3.singular", cy, cyplus1)) </li>
                     }else {
-                        <li>@Html(Messages("whatNext.add.p2"))</li>
-                        <li>@Html(Messages("whatNext.add.p3", cy, cyplus1))</li>
+                        <li>@Html(messages("whatNext.add.p2"))</li>
+                        <li>@Html(messages("whatNext.add.p3", cy, cyplus1))</li>
                     }
 
-                    <li>@Html(Messages("whatNext.add.p4"))</li>
+                    <li>@Html(messages("whatNext.add.p4"))</li>
                 </ul>
             }
 
         } else {
 
             <h2>
-                @Messages("whatNext.subHeading")
+                @messages("whatNext.subHeading")
             </h2>
 
             <p class="text">
-                @Messages("whatNext.remove.p1") <a data-journey-click='@Messages("whatNext.remove.link.a-z-ga-track-EventCategory"):
+                @messages("whatNext.remove.p1") <a data-journey-click='@messages("whatNext.remove.link.a-z-ga-track-EventCategory"):
                                                 @if(additive) {
                                                                     @if(singleBik){
-                                                                        @Messages("whatNext.add.heading.singular")
+                                                                        @messages("whatNext.add.heading.singular")
                                                                     }else {
-                                                                        @Messages("whatNext.add.heading")
+                                                                        @messages("whatNext.add.heading")
                                                                     }
-                                                                } else {@Messages("whatNext.remove.heading")}:
-                                                @Messages("whatNext.remove.link.P11D")'
+                                                                } else {@messages("whatNext.remove.heading")}:
+                                                @messages("whatNext.remove.link.P11D")'
 
-                                              href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" target="_blank">@Messages("whatNext.remove.link.P11D")</a>
-                @Messages("whatNext.remove.p1-after")
+                                              href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" target="_blank">@messages("whatNext.remove.link.P11D")</a>
+                @messages("whatNext.remove.p1-after")
             </p>
         }
 
         <p class="text">
             <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">
-                @Messages("Service.back.overview.whatNext")
+                @messages("Service.back.overview.whatNext")
             </a>
         </p>
     </section>

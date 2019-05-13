@@ -32,9 +32,10 @@ import utils.URIInformation
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class HmrcTierConnector @Inject()(client: HttpClient) extends URIInformation {
+class HmrcTierConnector @Inject()(client: HttpClient,
+                                  uRIInformation: URIInformation) {
 
-  val serviceUrl: String = baseUrl("government-gateway")
+  val serviceUrl: String = uRIInformation.baseUrl("government-gateway")
 
   var pbikHeaders: Map[String, String] = Map[String, String]()
 

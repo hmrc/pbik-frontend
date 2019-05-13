@@ -14,17 +14,18 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers
+@import play.api.Play.current
+
 @(bikForm:Form[RegistrationList],
   taxYearRange:TaxYearRange,
   previouslySelectedBenefits: List[RegistrationItem]= List.empty[RegistrationItem],
-  registeredBiks:List[Bik] = List.empty[Bik],
-  nonLegislationBiks:List[Int]=config.PbikAppConfig.biksNotSupportedCY,
-  decommissionedBiks:List[Int]=config.PbikAppConfig.biksDecommissioned,
+  registeredBiks:List[Bik],
+  nonLegislationBiks:List[Int],
+  decommissionedBiks:List[Int],
   biksAvailableCount: Option[Int], empRef: EmpRef)(implicit request:Request[_],
-                                   context: config.PbikContext, applicationMessages: Messages)
-
-@import uk.gov.hmrc.play.views.html.helpers
-@import play.api.Play.current
+                                   context: config.PbikContext, applicationMessages: Messages,
+                                    externalURLs: ExternalUrls)
 
 @prioritisedBiks = @{Messages("Prioritised.Benefits")}
 

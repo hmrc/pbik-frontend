@@ -23,6 +23,7 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.partials.{FormPartialRetriever, HeaderCarrierForPartialsConverter}
 
 class FormPartialProvider @Inject()(val httpGet: HttpClient, cookieCrypto: SessionCookieCryptoFilterWrapper) extends FormPartialRetriever {
+
   override val crypto: String => String = cookieCrypto.encryptCookieString _
 }
 
