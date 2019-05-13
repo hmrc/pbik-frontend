@@ -16,32 +16,34 @@
 
 package services
 
-import config.PbikAppConfig
+import config.{PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
-import controllers.WhatNextPageController
+import controllers.ExternalUrls
 import javax.inject.Inject
 import models._
 import play.api.Mode.Mode
-import play.api.{Configuration, Environment}
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{AnyContent, Result}
+import play.api.{Configuration, Environment}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils._
+import utils.{ControllersReferenceData, URIInformation, _}
 
 import scala.concurrent.Future
 
-class RegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
+class RegistrationService @Inject()(val pbikAppConfig: PbikAppConfig,
                                     tierConnector: HmrcTierConnector,
                                     bikListService: BikListService,
-                                    val runModeConfiguration : Configuration,
-                                    environment : Environment)
-                                            extends FrontendController
-                                              with URIInformation
-                                              with ControllersReferenceData {
+                                    val runModeConfiguration: Configuration,
+                                    environment: Environment,
+                                    taxDateUtils: TaxDateUtils,
+                                    implicit val context: PbikContext,
+                                    controllersReferenceData: ControllersReferenceData,
+                                    uRIInformation: URIInformation,
+                                    implicit val externalURLs: ExternalUrls) extends FrontendController {
   val mode: Mode = environment.mode
 
   def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
@@ -52,23 +54,23 @@ class RegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
   Future[Result] = {
 
     val decommissionedBikIds: List[Int] = pbikAppConfig.biksDecommissioned
-    val nonLegislationBiks: List[Int] = if (TaxDateUtils.isCurrentTaxYear(year)) {
+    val nonLegislationBiks: List[Int] = if (taxDateUtils.isCurrentTaxYear(year)) {
       pbikAppConfig.biksNotSupportedCY
     } else {
       pbikAppConfig.biksNotSupported
     }
 
     val isCurrentYear: String = {
-      if (TaxDateUtils.isCurrentTaxYear(year))
+      if (taxDateUtils.isCurrentTaxYear(year))
         FormMappingsConstants.CY
       else
         FormMappingsConstants.CYP1
     }
 
     for {
-      biksListOption: List[Bik] <- bikListService.registeredBenefitsList(year, EmpRef.empty)(getBenefitTypesPath)
-      registeredListOption <- tierConnector.genericGetCall[List[Bik]](baseUrl,
-        getRegisteredPath,
+      biksListOption: List[Bik] <- bikListService.registeredBenefitsList(year, EmpRef.empty)(uRIInformation.getBenefitTypesPath)
+      registeredListOption <- tierConnector.genericGetCall[List[Bik]](uRIInformation.baseUrl,
+        uRIInformation.getRegisteredPath,
         request.empRef,
         year)
       nonLegislationList = nonLegislationBiks.map { x =>
@@ -91,17 +93,16 @@ class RegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
       val sortedMegedData: RegistrationList = utils.BikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
 
       if (sortedMegedData.active.isEmpty) {
-        Ok(views.html.errorPage(NO_MORE_BENEFITS_TO_ADD, YEAR_RANGE,
+        Ok(views.html.errorPage(controllersReferenceData.NO_MORE_BENEFITS_TO_ADD,
+          controllersReferenceData.YEAR_RANGE,
           isCurrentYear,
-          -1,
-          NO_MORE_BENEFITS_TO_ADD_HEADING,
+          code = -1,
+          pageHeading = controllersReferenceData.NO_MORE_BENEFITS_TO_ADD_HEADING,
           empRef = Some(request.empRef)))
-      }
-      else {
-        Ok(generateViewBasedOnFormItems(objSelectedForm.fill(sortedMegedData),
+      } else {
+        Ok(generateViewBasedOnFormItems(uRIInformation.objSelectedForm.fill(sortedMegedData),
           fetchFromCacheMapBiksValue, registeredListOption, nonLegislationBiks, pbikAppConfig.biksDecommissioned, Some(biksListOption.size)))
       }
-
     }
   }
 

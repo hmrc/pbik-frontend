@@ -14,25 +14,27 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation
+
 @(taxYearRange:TaxYearRange,
   isCurrentTaxYear:String,
   iabdType:String,
   searchForm: Form[EiLPerson],
   alreadyExists: Boolean = false,
     empRef: EmpRef)(implicit request:Request[_],
-                                  context: config.PbikContext, applicationMessages: Messages)
+                                  context: config.PbikContext, messages: Messages,
+                                    uriInformation: URIInformation, externalURLs: ExternalUrls)
 
-@import uk.gov.hmrc.play.views.html.helpers
-@import utils.URIInformation._
 
-@excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">}
+@excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">}
 
-@parentTemplate(pageTitle = Messages("ExclusionSearch.form.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString) ) {
-    @includes.back_link(Some(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))), Messages("ExclusionSearch.form.title"))
+@parentTemplate(pageTitle = messages("ExclusionSearch.form.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString) ) {
+    @includes.back_link(Some(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))), messages("ExclusionSearch.form.title"))
 
     <header class="page-header">
         <h1 id="title" class="h1-heading-margin">
-            @Messages("ExclusionSearch.form.title")
+            @messages("ExclusionSearch.form.title")
         </h1>
     </header>
 
@@ -42,12 +44,12 @@
             <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
                 <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
-                    @Messages("Service.errorSummary.heading")
+                    @messages("Service.errorSummary.heading")
                 </h1>
 
                 @if(alreadyExists) {
-                    @Html(Messages("ExclusionSearch.Fail.Exists.Desc", Messages("BenefitInKind.label." + iabdType), excludedEmployeesLink , "</a>"))
-                }else { @Html(Messages("ExclusionSearch.Fail.Desc"))}
+                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages("BenefitInKind.label." + iabdType), excludedEmployeesLink , "</a>"))
+                }else { @Html(messages("ExclusionSearch.Fail.Desc"))}
 
                 <ul class="error-summary-pbik-list">
                     <li><a href="#error-list-1">@searchForm.error("status").get.message</a></li>
@@ -67,7 +69,7 @@
                 <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
                     <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
-                        @Messages("Service.errorSummary.heading")
+                        @messages("Service.errorSummary.heading")
                     </h1>
 
                     <ul class="error-summary-pbik-list">
@@ -80,30 +82,30 @@
                         @if(searchForm("dob").hasErrors) {
 
                             @if(searchForm.error("dob").get.message.equals("error.empty.dob")){
-                                <li><a href="#dob">@Messages("error.empty.dob").dropRight(1)</a></li>
+                                <li><a href="#dob">@messages("error.empty.dob").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate")){
-                                <li><a href="#dob">@Messages("error.invaliddate").dropRight(1)</a></li>
+                                <li><a href="#dob">@messages("error.invaliddate").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate.day")){
-                                <li><a href="#dob">@Messages("error.invaliddate.day").dropRight(1)</a></li>
+                                <li><a href="#dob">@messages("error.invaliddate.day").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate.month")){
-                                <li><a href="#dob">@Messages("error.invaliddate.month").dropRight(1)</a></li>
+                                <li><a href="#dob">@messages("error.invaliddate.month").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate.year")){
-                                <li><a href="#dob">@Messages("error.invaliddate.year").dropRight(1)</a></li>
+                                <li><a href="#dob">@messages("error.invaliddate.year").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate.future.year")){
-                                <li><a href="#dob">@Messages("error.invaliddate.future.year").dropRight(1)</a></li>
+                                <li><a href="#dob">@messages("error.invaliddate.future.year").dropRight(1)</a></li>
                             }
                             @if(searchForm.error("dob").get.message.equals("error.invaliddate.past.year")){
-                                <li><a href="#dob">@Messages("error.invaliddate.past.year").dropRight(1)</a></li>
+                                <li><a href="#dob">@messages("error.invaliddate.past.year").dropRight(1)</a></li>
                             }
 
                         }
                         @if(searchForm("gender").hasErrors) {
-                        <li><a href="#gender">@Messages("error.required").dropRight(1)</a></li>
+                        <li><a href="#gender">@messages("error.required").dropRight(1)</a></li>
                         }
                     </ul>
 
@@ -111,19 +113,19 @@
             }
 
             <fieldset>
-                <legend>@Messages("ExclusionSearch.no-nino.caption")</legend>
-                @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdValueURLMapper(iabdType), "no-nino"), 'autocomplete -> "off", 'novalidate -> "true") {
+                <legend>@messages("ExclusionSearch.no-nino.caption")</legend>
+                @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), "no-nino"), 'autocomplete -> "off", 'novalidate -> "true") {
                 <div class="form-group" id="firstnameContainer">
-                @helpers.input(searchForm("firstname"), '_label -> Messages("Service.field.firstname"), '_inputClass -> "form-control")
+                @helpers.input(searchForm("firstname"), '_label -> messages("Service.field.firstname"), '_inputClass -> "form-control")
                 </div>
                 <div class="form-group" id="surnameContainer">
-                    @helpers.input(searchForm("surname"), '_label -> Messages("Service.field.surname"), '_inputClass -> "form-control")
+                    @helpers.input(searchForm("surname"), '_label -> messages("Service.field.surname"), '_inputClass -> "form-control")
                 </div>
 
-                @localhelpers.dateFieldsNumberInputs(searchForm, "dob","dob-day", "dob-month", "dob-year", new Html(Messages("Service.field.dob")), '_hintText->Messages("Service.field.dobhint"), '_groupClass -> "form-group")
+                @localhelpers.dateFieldsNumberInputs(searchForm, "dob","dob-day", "dob-month", "dob-year", new Html(messages("Service.field.dob")), '_hintText->messages("Service.field.dobhint"), '_groupClass -> "form-group")
 
                 <div class="form-group inline" id="gender">
-                    @helpers.input_radio_group(searchForm("gender"), Seq(("female", Messages("Service.field.gender.female")), ("male",Messages("Service.field.gender.male"))), '_labelClass -> "block-label", '_legend -> Messages("Service.field.gender"), '_legendClass -> "form-label fieldset-legend-error")
+                    @helpers.input_radio_group(searchForm("gender"), Seq(("female", messages("Service.field.gender.female")), ("male",messages("Service.field.gender.male"))), '_labelClass -> "block-label", '_legend -> messages("Service.field.gender"), '_legendClass -> "form-label fieldset-legend-error")
                 </div>
             </fieldset>
         </div>
@@ -133,11 +135,11 @@
             <input type="hidden" name="perOptLock" id="perOptLock" />
         </fieldset>
         <div class="form-group">
-            <input type="submit" class="button" role="button" id="button-search" value="@Messages("Service.continue")">
+            <input type="submit" class="button" role="button" id="button-search" value="@messages("Service.continue")">
 
             <p><a class="button-link" id="link-exlusion-back"  onclick="gaEvent('Click back to exclusion overview','From: No-nino search form')"
-                  href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">
-                @Messages("Service.back.excluded")</a></p>
+                  href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
+                @messages("Service.back.excluded")</a></p>
 
         </div>
 

@@ -18,7 +18,7 @@ package controllers
 
 import java.net.URLEncoder
 
-import config.PbikAppConfig
+import config.{PbikAppConfig, PbikContext}
 import connectors._
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
@@ -31,7 +31,7 @@ import play.twirl.api.Html
 import services.{BikListService, HelpAndContactSubmissionService}
 import uk.gov.hmrc.http.{Request => _}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils._
+import utils.{ControllersReferenceData, _}
 
 import scala.concurrent.Future
 
@@ -43,10 +43,11 @@ class HelpAndContactController @Inject()(formPartialProvider: FormPartialProvide
                                          val pbikAppConfig: PbikAppConfig,
                                          val tierConnector: HmrcTierConnector,
                                          configuration: Configuration,
-                                         environment: Environment) extends FrontendController
-  with URIInformation
-  with ControllersReferenceData
-  with SplunkLogger {
+                                         environment: Environment,
+                                         controllersReferenceData: ControllersReferenceData,
+                                         splunkLogger: SplunkLogger,
+                                         implicit val context: PbikContext,
+                                         implicit val externalURLs: ExternalUrls) extends FrontendController {
 
   val mode: Mode = environment.mode
   val runModeConfiguration: Configuration = configuration

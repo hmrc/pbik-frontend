@@ -16,6 +16,13 @@
 
 @import play.api.i18n.Messages.Implicits._
 @import play.api.Play.current
+@import play.api.Play
+@import layouts.govuk_template
+@import uk.gov.hmrc.play.views.html.layouts
+@import config._
+@import config.PbikAppConfig
+@import config.PbikContext
+
 
 @(title: String,
   headerNav: Option[views.helpers.HeaderNav] = None,
@@ -32,19 +39,12 @@
   bodyClasses: Option[String] = None,
   mainConfig: MainConfig = MainConfig(),
   includeGridWrapper: Boolean = false,
-  actingAttorney: Option[uk.gov.hmrc.play.frontend.auth.ActingAsAttorneyFor] = None,
   gaCalls: Option[(String,String) => Html] = None,
   isUserResearchBannerVisible:Boolean = true)(mainContent: Html)(implicit request : Request[_],
-                                                                               context: config.PbikContext,
-                                                                               applicationMessages: Messages)
-@import config.PbikAppConfig.assetsPrefix
-@import config.PbikAppConfig.contactFormServiceIdentifier
-@import play.api.Play.current
-@import play.api.Play
-@import layouts.govuk_template
-@import uk.gov.hmrc.play.views.html.layouts
-@import config._
-@import config.PbikAppConfig._
+                                                                               context: PbikContext,
+                                                                               messages: Messages,
+                                                                                config: AppConfig,
+                                                localFormPartialRetriever: LocalFormPartialRetriever)
 
 @head = {
 @layouts.head(linkElement, headScripts)
@@ -64,8 +64,8 @@
 
     if(isUserResearchBannerVisible && urToggle) {
         helpers.fullWidthBanner(
-        Messages("urbanner.message.text"),
-        urBannerLink
+        messages("urbanner.message.text"),
+        config.urBannerLink
     )
 }
 else HtmlFormat.empty
@@ -85,11 +85,11 @@ else HtmlFormat.empty
         includeGridWrapper,
         serviceInfoContent,
         includeHMRCBranding=true,
-        setLang=applicationMessages.lang.code)
+        setLang=messages.lang.code)
 }
 
 @getHelpForm = {
-    @config.LocalFormPartialRetriever.getPartialContent(reportAProblemPartialUrl)(request)
+    @localFormPartialRetriever.getPartialContent(config.reportAProblemPartialUrl)(request)
 }
 
 

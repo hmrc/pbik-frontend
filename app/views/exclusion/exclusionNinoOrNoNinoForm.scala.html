@@ -14,23 +14,24 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation
+
 @(taxYearRange: TaxYearRange,
   isCurrentTaxYear: String,
   iabdType: String,
   previousSelection: String = "",
     empRef: EmpRef)(implicit request: Request[_],
-                                  flash: Flash, context: config.PbikContext, applicationMessages: Messages)
-
-@import uk.gov.hmrc.play.views.html.helpers
-@import utils.URIInformation._
+                                  flash: Flash, context: config.PbikContext, messages: Messages,
+                                    uriInformation: URIInformation, externalURLs: ExternalUrls)
 
 @parentTemplate(pageTitle = Messages("ExclusionNinoDecision.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
-        @includes.back_link(gaLabel = Messages("ExclusionNinoDecision.title"))
+        @includes.back_link(gaLabel = messages("ExclusionNinoDecision.title"))
         <header class="page-header">
             <h1 id="title">
-                @Messages("ExclusionNinoDecision.title")
+                @messages("ExclusionNinoDecision.title")
             </h1>
         </header>
 
@@ -39,57 +40,57 @@
                 <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
                     <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
-                        @Messages("Service.errorSummary.heading")
+                        @messages("Service.errorSummary.heading")
                     </h1>
 
                     <ul class="error-summary-pbik-list">
-                        <li><a href="#error-list-no-selection">@Messages("ExclusionDecision.noselection.error")</a></li>
+                        <li><a href="#error-list-no-selection">@messages("ExclusionDecision.noselection.error")</a></li>
                     </ul>
 
                 </div>
             }
-            @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(isCurrentTaxYear, iabdValueURLMapper(iabdType))) {
+            @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType))) {
 
                 <div class='form-group @if(flash.get("error")) {error}'>
                     @if(flash.get("error")) {
                         <span id="error-list-no-selection" class="error-notification" style="display:block">
-                        @Messages("ExclusionDecision.noselection.error")
+                        @messages("ExclusionDecision.noselection.error")
                         </span>
                     }
                     <fieldset class="inline">
-                        <legend class="text">@Messages("ExclusionNinoDecision.question", Messages("BenefitInKind.label." + iabdType), yearvalue)</legend>
+                        <legend class="text">@messages("ExclusionNinoDecision.question", messages("BenefitInKind.label." + iabdType), yearvalue)</legend>
                         @if(previousSelection=="nino") {
                             <label for="button-nino" class="block-label add-focus selected">
                             <input id="button-nino" type="radio" name="confirmation" value="nino" checked >
-                            @Messages("Service.yes")
+                            @messages("Service.yes")
                             </label>
                         } else {
                             <label for="button-nino" class="block-label">
                             <input id="button-nino" type="radio" name="confirmation" value="nino" >
-                            @Messages("Service.yes")
+                            @messages("Service.yes")
                             </label>
                         }
 
                         @if(previousSelection=="no-nino") {
                             <label for="button-no-nino" class="block-label add-focus selected" >
                             <input id="button-no-nino" type="radio" name="confirmation" value="no-nino" checked >
-                            @Messages("Service.no")
+                            @messages("Service.no")
                             </label>
                         } else {
                             <label for="button-no-nino" class="block-label">
                             <input id="button-no-nino" type="radio" name="confirmation" value="no-nino">
-                            @Messages("Service.no")
+                            @messages("Service.no")
                             </label>
                         }
 
                 </fieldset>
                 </div>
-                <input type="submit" class="button" role="button" id="button-continue" value="@Messages("Service.continue")">
+                <input type="submit" class="button" role="button" id="button-continue" value="@messages("Service.continue")">
             }
 
             <p><a class="button-link" id="link-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Nino/No-nino form')"
-                href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,iabdValueURLMapper(iabdType))">
-              @Messages("Service.back.excluded")</a></p>
+                href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
+              @messages("Service.back.excluded")</a></p>
 
         </section>
     }

@@ -14,31 +14,31 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation
+
 @(taxYearRange: TaxYearRange,
   year: String, iabdType: String,
   listOfMatchesForm: Form[(String,EiLPersonList)],
   formType: String, empRef: EmpRef)(implicit request: Request[_],
-                    context: config.PbikContext, applicationMessages: Messages)
+                    context: config.PbikContext, messages: Messages,
+                    uriInformation: URIInformation, externalURLs: ExternalUrls)
 
-@import uk.gov.hmrc.play.views.html.helpers
-@import utils.URIInformation._
-
-
-@parentTemplate( pageTitle=Messages("ExclusionSearch.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
+@parentTemplate( pageTitle=messages("ExclusionSearch.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
     @defining( if(year=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
-        @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, iabdValueURLMapper(iabdType)),
+        @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, uriInformation.iabdValueURLMapper(iabdType)),
             'onsubmit -> "gaEventLinkSteps()") {
             <input type="hidden" id="button-nino"  name="confirmation" value="@formType">
-            <button type="submit" class="link-back" id="link-back-top" data-journey-click="link - click:back:@Messages("ExclusionSearch.title")">
+            <button type="submit" class="link-back" id="link-back-top" data-journey-click="link - click:back:@messages("ExclusionSearch.title")">
 
-                @Messages("Service.back")
+                @messages("Service.back")
             </button>
         }
 
         <header class="page-header">
             <h1 id="title" class="h1-heading-margin">
-                @Messages("ExclusionSearch.title")
+                @messages("ExclusionSearch.title")
             </h1>
         </header>
 
@@ -50,13 +50,13 @@
                 <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
                     <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
-                        @Messages("Service.errorSummary.heading")
+                        @messages("Service.errorSummary.heading")
                     </h1>
 
                     <ul class="error-summary-pbik-list">
 
                     @if(listOfMatchesForm.error("individualSelection").get.message.equals("error.required")){
-                        <li><a href="#selection">@Messages("error.exclusion.multi.selection")</a></li>
+                        <li><a href="#selection">@messages("error.exclusion.multi.selection")</a></li>
                     }
 
                     </ul>
@@ -65,9 +65,9 @@
 
                 <p class="lede-para text">
                     @if(year=="cy"){
-                        @Messages("ExclusionSearch.intro.multi", Messages("BenefitInKind.label." + iabdType), ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
+                        @messages("ExclusionSearch.intro.multi", messages("BenefitInKind.label." + iabdType), ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
                     }else{
-                        @Messages("ExclusionSearch.intro.multi", Messages("BenefitInKind.label." + iabdType),""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+                        @messages("ExclusionSearch.intro.multi", messages("BenefitInKind.label." + iabdType),""+taxYearRange.cy, ""+taxYearRange.cyplus1)
                     }
                </p>
 
@@ -76,7 +76,7 @@
 
                         @if(listOfMatchesForm.error("individualSelection").get.message.equals("error.required")){
                         <span id="selection" class="error-notification">
-                            @Messages("error.exclusion.multi.selection")
+                            @messages("error.exclusion.multi.selection")
                         </span>
                         }
 
@@ -85,18 +85,18 @@
                 }
 
 
-                  @helpers.form(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdValueURLMapper(iabdType)),
+                  @helpers.form(action = routes.ExclusionListController.updateMultipleExclusions(year, uriInformation.iabdValueURLMapper(iabdType)),
                     'onsubmit -> "gaEventConfirmExcludeMulti()") {
 
-                    <h2>@Messages("ExclusionSearch.caption.multi")</h2>
+                    <h2>@messages("ExclusionSearch.caption.multi")</h2>
                     <dl class="govuk-check-your-answers cya-questions-short" id="nonino">
                         <div>
                             <div class="cya-question">&nbsp;</div>
-                            <div class="cya-question">@Messages("Service.field.name")</div>
-                            <div class="cya-question">@Messages("Service.field.nino")
+                            <div class="cya-question">@messages("Service.field.name")</div>
+                            <div class="cya-question">@messages("Service.field.nino")
                                 <br>
-                                <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span></div>
-                            <div class="cya-question">@Messages("Service.field.worksnumber")</div>
+                                <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span></div>
+                            <div class="cya-question">@messages("Service.field.worksnumber")</div>
                         </div>
 
 
@@ -136,28 +136,28 @@
                     </dl>
                 <div style="clear:both"></div>
                 <p class="panel-indent panel-border-wide">
-                    @Messages("ExclusionImportant.ExcludeEmployee")
+                    @messages("ExclusionImportant.ExcludeEmployee")
                 </p>
 
-                     <input type="submit" class="button" role="button" id="button-confirm" value="@Messages("Service.confirm")">
+                     <input type="submit" class="button" role="button" id="button-confirm" value="@messages("Service.confirm")">
             }
 
             <p><a class="button-link" id="multi-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
-                  href="@routes.ExclusionListController.performPageLoad(year, iabdValueURLMapper(iabdType))">
-                @Messages("Service.back.excluded")</a></p>
+                  href="@routes.ExclusionListController.performPageLoad(year, uriInformation.iabdValueURLMapper(iabdType))">
+                @messages("Service.back.excluded")</a></p>
 
          } else {
            @if(listOfMatchesForm("individuals").indexes.length == 1) {
 
                  <p class="lede-para text">
                   @if(year=="cy"){
-                    @Messages("ExclusionSearch.intro", Messages("BenefitInKind.label." + iabdType), ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
+                    @messages("ExclusionSearch.intro", messages("BenefitInKind.label." + iabdType), ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
                   }else{
-                    @Messages("ExclusionSearch.intro",Messages("BenefitInKind.label." + iabdType), ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+                    @messages("ExclusionSearch.intro",messages("BenefitInKind.label." + iabdType), ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
                   }
                  </p>
 
-                    @helpers.form(action = routes.ExclusionListController.updateExclusions(year, iabdValueURLMapper(iabdType)),
+                    @helpers.form(action = routes.ExclusionListController.updateExclusions(year, uriInformation.iabdValueURLMapper(iabdType)),
                     'onsubmit -> "gaEventConfirmExclude()") {
                      @repeatWithIndex(listOfMatchesForm("individuals"), min=1) { (listItem,index) =>
                          <fieldset class="form-group">
@@ -171,25 +171,25 @@
                              @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
                              <input type="hidden"  id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
                              <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
-                              <h2>@Messages("ExclusionSearch.caption")</h2>
+                              <h2>@messages("ExclusionSearch.caption")</h2>
                               <dl class="govuk-check-your-answers cya-questions-short">
                                 <div>
-                                  <div class="cya-question">@Messages("Service.field.name")</div>
+                                  <div class="cya-question">@messages("Service.field.name")</div>
                                   <div class="cya-answer" id="table-row-name">
                                     @listItem("firstName").value.get
                                     @listItem("surname").value.get
                                   </div>
                                 </div>
                                 <div>
-                                  <div class="cya-question">@Html(Messages("Service.field.nino.2lines"))
+                                  <div class="cya-question">@Html(messages("Service.field.nino.2lines"))
                                       <br>
-                                      <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
+                                      <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span>
                                   </div>
                                   <div class="cya-answer" id="table-row-nino">@listItem("nino").value.get</div>
                                 </div>
                                 @if(listItem("gender").value.isDefined) {
                                 <div>
-                                  <div class="cya-question">@Messages("Service.field.worksnumber")</div>
+                                  <div class="cya-question">@messages("Service.field.worksnumber")</div>
                                   <div class="cya-answer" id="table-row-dob">@listItem("worksPayrollNumber").value.getOrElse("")</div>
                                 </div>
                                 }
@@ -202,26 +202,26 @@
 
                 <div style="clear:both"></div>
                 <div class="panel-indent panel-border-wide">
-                    <p>@Messages("ExclusionImportant.ExcludeEmployee")</p>
+                    <p>@messages("ExclusionImportant.ExcludeEmployee")</p>
                 </div>
 
                 <p>
-                    <input type="submit" class="button" role="button" id="button-confirm" value="@Messages("Service.confirm")">
+                    <input type="submit" class="button" role="button" id="button-confirm" value="@messages("Service.confirm")">
                     <p><a class="button-link" id="link-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
-                          href="@routes.ExclusionListController.performPageLoad(year,iabdValueURLMapper(iabdType))">
-                        @Messages("Service.back.excluded")</a></p>
+                          href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))">
+                        @messages("Service.back.excluded")</a></p>
                 </p>
                 }
 
            } else {
                 @if(listOfMatchesForm("individuals").indexes.length < 1) {
 
-                        @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, iabdValueURLMapper(iabdType))) {
+                        @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, uriInformation.iabdValueURLMapper(iabdType))) {
                             <input type="hidden" id="button-nino"  name="confirmation" value="@formType">
-                            <p class="text">@Html(Messages("ExclusionSearch.Fail.P", "#"))</p>
+                            <p class="text">@Html(messages("ExclusionSearch.Fail.P", "#"))</p>
                         }
                         <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
-                              href="@routes.HomePageController.onPageLoad">@Messages("Service.back")</a></p>
+                              href="@routes.HomePageController.onPageLoad">@messages("Service.back")</a></p>
 
                 }
             }
@@ -231,13 +231,12 @@
 
         <script>
         function gaEventConfirmExcludeMulti() {
-          gaEvent("Exclusion for @yearvalue", "On search results screen multi, @Messages("BenefitInKind.label." + iabdType)");
+          gaEvent("Exclusion for @yearvalue", "On search results screen multi, @messages("BenefitInKind.label." + iabdType)");
         }
         function gaEventConfirmExclude() {
-          gaEvent("Exclusion for @yearvalue", "Employee excluded, @Messages("BenefitInKind.label." + iabdType)");
+          gaEvent("Exclusion for @yearvalue", "Employee excluded, @messages("BenefitInKind.label." + iabdType)");
         }
 
         </script>
     }
 }
-

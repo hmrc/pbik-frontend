@@ -16,7 +16,9 @@
 
 package utils
 
-import config.AppConfig
+import config.{AppConfig, PbikAppConfig, PbikContext}
+import controllers.ExternalUrls
+import javax.inject.Inject
 import models._
 import play.api.Logger
 import play.api.Play.current
@@ -32,7 +34,10 @@ import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait ControllersReferenceData extends FormMappings {
+class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
+                                         implicit val context: PbikContext,
+                                         val pbikAppConfig: PbikAppConfig,
+                                         implicit val externalURLs: ExternalUrls) extends FormMappings {
 
   implicit val eilFormats: OFormat[EiLPerson] = Json.format[EiLPerson]
   implicit val eilListFormats: OFormat[EiLPersonList] = Json.format[EiLPersonList]
@@ -40,8 +45,7 @@ trait ControllersReferenceData extends FormMappings {
   implicit val addRemoveDecisionFormats: OFormat[BinaryRadioButton] = Json.format[BinaryRadioButton]
   implicit val registrationItemsFormats: OFormat[RegistrationItem] = Json.format[RegistrationItem]
 
-  def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
-  val pbikAppConfig: AppConfig
+  def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
 
   val CY_RESTRICTED = "ServiceMessage.10003"
   val FEATURE_RESTRICTED = "ServiceMessage.10002"
@@ -54,7 +58,6 @@ trait ControllersReferenceData extends FormMappings {
   val SESSION_FROM_YTA = "fromYTA"
   val SESSION_LANG = "session_lang"
   val BIK_REMOVE_REASON_LIST = List("software", "guidance", "not-clear", "not-offering", "other")
-
 
   val EXCLUSION_TRACE_AND_MATCH_LIST_OF_PEOPLE = "trace-and-match-list-of-people"
   val EXCLUSION_TRACE_AND_MATCH_RADIO = "trace-and-match-radio"

@@ -14,18 +14,15 @@
  * limitations under the License.
  *@
 
-@import play.api.i18n.Messages.Implicits._
-@import play.api.Play.current
-
-@(pageTitle: String, heading: String, message: String)(implicit applicationMessages: Messages)
-
-@import play.api.Play.current
+@import play.api.i18n.Messages
 @import play.api.Play
+@import play.api.Play.current
 @import uk.gov.hmrc.play.config.RunMode._
-
 @import config.PbikAppConfig
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
+
+@(pageTitle: String, heading: String, message: String)(implicit messages: Messages, config: PbikAppConfig)
 
 @contentHeader = {
 <h1 id="title">@heading</h1>
@@ -45,8 +42,8 @@ headScripts = None)
 @betaBanner = {
 @uiLayouts.betaBanner(
 userLoggedIn = false,
-PbikAppConfig.betaFeedbackUrl,
-PbikAppConfig.betaFeedbackUnauthenticatedUrl,
+config.betaFeedbackUrl,
+config.betaFeedbackUnauthenticatedUrl,
 showFeedbackLinkInBetaBanner = true)
 }
 
@@ -67,8 +64,8 @@ mainContentHeader = contentHeader)
 
 @bodyEnd = {
 @uiLayouts.footer(
-analyticsToken = Some(PbikAppConfig.analyticsToken),
-analyticsHost = PbikAppConfig.analyticsHost,
+analyticsToken = Some(config.analyticsToken),
+analyticsHost = config.analyticsHost,
 ssoUrl =  None,
 scriptElem = None,
 gaCalls = None)

@@ -34,7 +34,8 @@ import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector,
+                               externalUrls: ExternalUrls)
   (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
@@ -58,7 +59,7 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector)
       }
     } recover {
       case ex: NoActiveSession =>
-        Redirect(ExternalUrls.signIn, Map("continue" -> Seq(ExternalUrls.loginCallback),
+        Redirect(externalUrls.signIn, Map("continue" -> Seq(externalUrls.loginCallback),
                                              "origin" -> Seq("pbik-frontend")))
       case ex: InsufficientEnrolments =>
         Results.Redirect(controllers.routes.AuthController.notAuthorised())

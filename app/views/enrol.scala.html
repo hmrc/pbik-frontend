@@ -14,30 +14,29 @@
  * limitations under the License.
  *@
 
-@import play.api.i18n.Messages.Implicits._
-@import play.api.Play.current
-
-@(empRef: Option[EmpRef])(implicit request:Request[_], context: config.PbikContext, applicationMessages: Messages)
-
 @import utils.FormMappingsConstants._
 
-@parentTemplate(pageTitle = Messages("Service.notEnrolled.title") + " - " + Messages("Service.title"), None, empRef.map(_.toString)) {
-    <h1 id="title">@Messages("Service.notEnrolled.title")</h1>
+@(empRef: Option[EmpRef])(implicit request:Request[_], context: config.PbikContext, messages: Messages,
+                                    externalUrls: ExternalUrls)
 
-    <p class="lede-para">@Messages("Service.notEnrolled.text1")</p>
 
-    <p>@Messages("Service.notEnrolled.text2")</p>
+@parentTemplate(pageTitle = messages("Service.notEnrolled.title") + " - " + messages("Service.title"), None, empRef.map(_.toString)) {
+    <h1 id="title">@messages("Service.notEnrolled.title")</h1>
+
+    <p class="lede-para">@messages("Service.notEnrolled.text1")</p>
+
+    <p>@messages("Service.notEnrolled.text2")</p>
 
     <ul class="list-bullet">
-        <li>@Messages("Service.enrollmentLoop.list1")</li>
-        <li>@Messages("Service.enrollmentLoop.list2")</li>
+        <li>@messages("Service.enrollmentLoop.list1")</li>
+        <li>@messages("Service.enrollmentLoop.list2")</li>
     </ul>
 
-    <p>@Messages("Service.notEnrolled.text3")</p>
+    <p>@messages("Service.notEnrolled.text3")</p>
 
-    <p>@Messages("Service.notEnrolled.text4")</p>
+    <p>@messages("Service.notEnrolled.text4")</p>
 
     <p>
-        <a href='https://www.gov.uk/paye-online/enrol' class="button" role="button">@Messages("Service.notEnrolled.button")</a>
+        <a href='https://www.gov.uk/paye-online/enrol' class="button" role="button">@messages("Service.notEnrolled.button")</a>
     </p>
 }

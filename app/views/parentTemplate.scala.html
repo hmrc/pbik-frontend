@@ -14,8 +14,11 @@
  * limitations under the License.
  *@
 
-@import play.api.i18n.Messages.Implicits._
 @import play.api.Play.current
+@import play.api.Play
+@import uk.gov.hmrc.http.SessionKeys
+@import config.AppConfig
+@import config.PbikContext
 
 @(pageTitle: String,
 taxYearRange:Option[models.TaxYearRange] = None,
@@ -25,18 +28,17 @@ hNav: Option[views.helpers.HeaderNav] = Some(views.helpers.HeaderNav(title = Som
 sidebarLinks: Option[Html] = None,
 contactSupportLinkEnabled: Boolean = true
 )(mainContent: Html)(implicit request : Request[_],
-context: config.PbikContext, applicationMessages: Messages)
+context: PbikContext, messages: Messages,
+externalURLs: ExternalUrls,
+config: AppConfig)
 
-@import play.api.Play
-@import play.api.Play.current
-@import uk.gov.hmrc.http.SessionKeys
 
-@logout = @{ new Call("GET", ExternalUrls.signOut) }
+@logout = @{ new Call("GET", externalURLs.signOut) }
 
 @genericLinks = {
 <li>
     <a id="logOutNavHref" onclick="gaEvent('Click Sign-out link', 'Redirect to exit survey feedback')"
-       href="@routes.HomePageController.signout">@Messages("Service.signout")</a>
+       href="@routes.HomePageController.signout">@messages("Service.signout")</a>
 </li>
 }
 
@@ -57,7 +59,7 @@ context: config.PbikContext, applicationMessages: Messages)
 
 @serviceInfo = {
 <div class="service-info__help">
-    <p> @Messages("Service.paye.label") @empref<br>
+    <p> @messages("Service.paye.label") @empref<br>
     </p>
 </div>
 
@@ -66,19 +68,18 @@ context: config.PbikContext, applicationMessages: Messages)
 <div class="pbik-banner-links">
     @if(showYTAlink) {
     <div class="yta-link">
-        <a href="/account" data-journey-click='@Messages("Service.back.yta-ga-track-EventCategory"):
-                                                @Messages("Service.back.yta-ga-track-EventAction"):
-                                                @Messages("Service.back.yta-ga-track-EventLabel")'
-           onclick="gaEvent('Click back to YTA link')">@Messages("Service.back.yta")</a>
+        <a href="/account" data-journey-click='@messages("Service.back.yta-ga-track-EventCategory"):
+                                                @messages("Service.back.yta-ga-track-EventAction"):
+                                                @messages("Service.back.yta-ga-track-EventLabel")'
+           onclick="gaEvent('Click back to YTA link')">@messages("Service.back.yta")</a>
     </div>
     }
     <div class="toggle-lang" style="text-align: right">
-
-        @if(applicationMessages.lang.language.toLowerCase == "cy") {
-        <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">@Messages("service.lang.english")</a><span> | @Messages("service.lang.cymraeg")</span>
+        @if(messages.lang.language.toLowerCase == "cy") {
+        <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">@messages("service.lang.english")</a><span> | @messages("service.lang.cymraeg")</span>
         } else {
-        <span>@Messages("service.lang.english") | </span><a href="@routes.HomePageController.setLanguage?lang=cy"
-                                                            onclick="gaEvent('Set language to Welsh')">@Messages("service.lang.cymraeg")</a>
+        <span>@messages("service.lang.english") | </span><a href="@routes.HomePageController.setLanguage?lang=cy"
+                                                            onclick="gaEvent('Set language to Welsh')">@messages("service.lang.cymraeg")</a>
         }
 
     </div>
@@ -89,7 +90,7 @@ context: config.PbikContext, applicationMessages: Messages)
 @main(
 title = pageTitle,
 headerNav = Some(views.helpers.HeaderNav(
-title = Some(Messages("Service.title")),
+title = Some(messages("Service.title")),
 titleLink = None,
 links = Some(genericLinks),
 showBetaLink = false)),
