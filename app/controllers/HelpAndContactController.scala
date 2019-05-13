@@ -18,7 +18,7 @@ package controllers
 
 import java.net.URLEncoder
 
-import config.{PbikAppConfig, PbikContext}
+import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import connectors._
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
@@ -40,14 +40,15 @@ class HelpAndContactController @Inject()(formPartialProvider: FormPartialProvide
                                          helpAndContactSubmissionService: HelpAndContactSubmissionService,
                                          val authenticate: AuthAction,
                                          val noSessionCheck: NoSessionCheckAction,
-                                         val pbikAppConfig: PbikAppConfig,
+                                         implicit val pbikAppConfig: PbikAppConfig,
                                          val tierConnector: HmrcTierConnector,
                                          configuration: Configuration,
                                          environment: Environment,
                                          controllersReferenceData: ControllersReferenceData,
                                          splunkLogger: SplunkLogger,
                                          implicit val context: PbikContext,
-                                         implicit val externalURLs: ExternalUrls) extends FrontendController {
+                                         implicit val externalURLs: ExternalUrls,
+                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController {
 
   val mode: Mode = environment.mode
   val runModeConfiguration: Configuration = configuration

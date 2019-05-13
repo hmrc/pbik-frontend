@@ -16,13 +16,18 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils._
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(taxYearRange: TaxYearRange,
   year: String, iabdType:String,
   individualsToRemove: Form[EiLPersonList],
 empRef: EmpRef)(implicit request: Request[_],
-                                            context: config.PbikContext, messages: Messages,
-                                            uriInformation: URIInformation, externalURLs: ExternalUrls)
+                                            context: PbikContext, messages: Messages,
+                                            uriInformation: URIInformation, externalURLs: ExternalUrls,
+                                            config: AppConfig,
+                                            localFormPartialRetriever: LocalFormPartialRetriever)
 
 
 @parentTemplate(pageTitle = messages("ExclusionRemovalConfirmation.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {

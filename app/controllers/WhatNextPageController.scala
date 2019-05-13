@@ -33,14 +33,15 @@ import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{ControllersReferenceData, SplunkLogger, _}
 
-class WhatNextPageController @Inject()(val pbikAppConfig: PbikAppConfig,
+class WhatNextPageController @Inject()(implicit val pbikAppConfig: PbikAppConfig,
                                        bikListService: BikListService,
                                        val tierConnector: HmrcTierConnector,
                                        val runModeConfiguration: Configuration,
                                        environment: Environment,
                                        taxDateUtils: TaxDateUtils,
                                        controllersReferenceData: ControllersReferenceData,
-                                       implicit val externalURLs: ExternalUrls) extends FrontendController {
+                                       implicit val externalURLs: ExternalUrls,
+                                       implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController {
 
   val mode: Mode = environment.mode
 

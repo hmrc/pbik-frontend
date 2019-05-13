@@ -15,9 +15,14 @@
  *@
 
 @import utils.FormMappingsConstants._
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
-@(empRef: Option[EmpRef])(implicit request:Request[_], context: config.PbikContext, messages: Messages,
-                                    externalUrls: ExternalUrls)
+@(empRef: Option[EmpRef])(implicit request:Request[_], context: PbikContext, messages: Messages,
+                                    externalUrls: ExternalUrls,
+                                    config: AppConfig,
+                                    localFormPartialRetriever: LocalFormPartialRetriever)
 
 
 @parentTemplate(pageTitle = messages("Service.notEnrolled.title") + " - " + messages("Service.title"), None, empRef.map(_.toString)) {

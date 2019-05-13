@@ -18,8 +18,8 @@ package models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class RegistrationItem(id: String, active: Boolean, enabled: Boolean)
+case class MandatoryRadioButton(selectionValue: String)
 
-object RegistrationItem {
-  implicit val registrationItemsFormats: OFormat[RegistrationItem] = Json.format[RegistrationItem]
+object MandatoryRadioButton {
+  implicit val mandatoryDecisionFormats: OFormat[MandatoryRadioButton] = Json.format[MandatoryRadioButton]
 }

@@ -54,7 +54,8 @@ class ExclusionListController @Inject()(implicit val pbikAppConfig: PbikAppConfi
                                         splunkLogger: SplunkLogger,
                                         controllersReferenceData: ControllersReferenceData,
                                         implicit val uRIInformation: URIInformation,
-                                        implicit val externalURLs: ExternalUrls
+                                        implicit val externalURLs: ExternalUrls,
+                                        implicit val localFormPartialRetriever: LocalFormPartialRetriever
                                        ) extends FrontendController {
   val mode: Mode = environment.mode
 

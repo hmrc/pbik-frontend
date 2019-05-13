@@ -15,10 +15,15 @@
  *@
 
 @import connectors.FormPartialProvider
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(partialUrl: String,
   formBody: Option[Html],empRef: EmpRef, formPartialProvider: FormPartialProvider)(implicit request:Request[_],
-                          context: config.PbikContext, messages: Messages, externalURLs: ExternalUrls)
+                          context: PbikContext, messages: Messages, externalURLs: ExternalUrls,
+                            config: AppConfig,
+                            localFormPartialRetriever: LocalFormPartialRetriever)
 
 @parentTemplate(pageTitle = messages("HelpAndContact.title") + " - " + messages("Service.title"), None, Some(empRef.toString), contactSupportLinkEnabled = false){
 

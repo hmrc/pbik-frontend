@@ -19,12 +19,17 @@
 @import utils.URIInformation
 @import play.api.Play
 @import play.api.Play.current
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(bikForm:Form[RegistrationList],
   additive: Boolean,
   taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_],
-                             flash: Flash, context: config.PbikContext, messages: Messages,
-                                uriInformation: URIInformation, externalUrls: ExternalUrls)
+                             flash: Flash, context: PbikContext, messages: Messages,
+                                uriInformation: URIInformation, externalUrls: ExternalUrls,
+                                config: AppConfig,
+                                localFormPartialRetriever: LocalFormPartialRetriever)
 
 @benefitLabel = @{messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(bikForm("actives[0].uid").value.get ))}
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}

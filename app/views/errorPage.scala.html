@@ -16,14 +16,19 @@
 
 @import utils.FormMappingsConstants._
 @import uk.gov.hmrc.play.views.html.helpers
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(errorMessage:String,
  taxYearRange:TaxYearRange,
  isCurrentTaxYear:String= "", code:Int = 0,
  pageHeading:String ="An error has occurred",
  backLink:String= "overview", empRef: Option[EmpRef])(implicit request:Request[_],
-                              context: config.PbikContext, messages: Messages,
-                                externalURLs: ExternalUrls)
+                              context: PbikContext, messages: Messages,
+                                externalURLs: ExternalUrls,
+                                config: AppConfig,
+                                localFormPartialRetriever: LocalFormPartialRetriever)
 
 @parentTemplate(pageTitle = messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 

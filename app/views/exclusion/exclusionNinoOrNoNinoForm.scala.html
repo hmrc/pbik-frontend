@@ -16,14 +16,19 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(taxYearRange: TaxYearRange,
   isCurrentTaxYear: String,
   iabdType: String,
   previousSelection: String = "",
     empRef: EmpRef)(implicit request: Request[_],
-                                  flash: Flash, context: config.PbikContext, messages: Messages,
-                                    uriInformation: URIInformation, externalURLs: ExternalUrls)
+                                  flash: Flash, context: PbikContext, messages: Messages,
+                                    uriInformation: URIInformation, externalURLs: ExternalUrls,
+                                    config: AppConfig,
+                                    localFormPartialRetriever: LocalFormPartialRetriever)
 
 @parentTemplate(pageTitle = messages("ExclusionNinoDecision.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString) ) {
 

@@ -16,6 +16,9 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import play.api.Play.current
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(bikForm:Form[RegistrationList],
   taxYearRange:TaxYearRange,
@@ -24,10 +27,12 @@
   nonLegislationBiks:List[Int],
   decommissionedBiks:List[Int],
   biksAvailableCount: Option[Int], empRef: EmpRef)(implicit request:Request[_],
-                                   context: config.PbikContext, applicationMessages: Messages,
-                                    externalURLs: ExternalUrls)
+                                   context: PbikContext, messages: Messages,
+                                    externalURLs: ExternalUrls,
+                                    config: AppConfig,
+                                    localFormPartialRetriever: LocalFormPartialRetriever)
 
-@prioritisedBiks = @{Messages("Prioritised.Benefits")}
+@prioritisedBiks = @{messages("Prioritised.Benefits")}
 
 @sidebarLinks={
     <div class="sidebar-side-bar">
@@ -36,22 +41,22 @@
 }
 
 @parentTemplate(pageTitle =
-Messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy) + " - " + Messages("Service.title"),
+messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy) + " - " + messages("Service.title"),
 Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
 
     <h1 id="title">
-        @Messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
+        @messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
     </h1>
 
     @if(bikForm("actives").hasErrors){
         <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
             <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
-                @Messages("Service.errorSummary.heading")
+                @messages("Service.errorSummary.heading")
             </h1>
 
             <ul class="error-summary-pbik-list">
-                <li><a href="#error-list-no-selection">@Messages("AddBenefits.noselection.error")</a></li>
+                <li><a href="#error-list-no-selection">@messages("AddBenefits.noselection.error")</a></li>
             </ul>
 
         </div>
@@ -61,24 +66,24 @@ Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
 
         @if(registeredBiks.size == biksAvailableCount.get) {
             <p class="panel-indent text">
-                @Messages("ManagingRegistration.add.exhausted")
+                @messages("ManagingRegistration.add.exhausted")
             </p>
         }else {
 
         <div class='form-group @if(bikForm("actives").hasErrors) {error}' id="list-benefits">
             @if(bikForm("actives").hasErrors){
                 <span id="error-list-no-selection" class="error-notification">
-                    @Messages("AddBenefits.noselection.error").
+                    @messages("AddBenefits.noselection.error").
                 </span>
             }
 
             <fieldset>
                 <table class="benefits-table">
-                    <caption class="text">@Html(Messages("AddBenefits.ChooseBenefitsLabel.1.CY", ""+taxYearRange.cyminus1, ""+taxYearRange.cy))</caption>
+                    <caption class="text">@Html(messages("AddBenefits.ChooseBenefitsLabel.1.CY", ""+taxYearRange.cyminus1, ""+taxYearRange.cy))</caption>
                     <thead>
                     <tr>
-                        <th id="table-heading-1">@Messages("AddBenefits.table.heading.input")</th>
-                        <th id="table-heading-2">@Messages("AddBenefits.table.heading.section")</th>
+                        <th id="table-heading-1">@messages("AddBenefits.table.heading.input")</th>
+                        <th id="table-heading-2">@messages("AddBenefits.table.heading.section")</th>
                     </tr>
                     </thead>
 
@@ -99,15 +104,15 @@ Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
                                                    aria-labelledby="table-heading-1"/>
                                             }
                                         </span>
-                                        @Messages("BenefitInKind.label." + activeField("uid").value.get)
+                                        @messages("BenefitInKind.label." + activeField("uid").value.get)
                                         @if(47 == activeField("uid").value.get.toInt) {
-                                            <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
+                                            <span class="form-hint other-desc-indent">@messages("BenefitInKind.hint.47")</span>
                                         }
                                         @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
-                                            <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.unavailable")</span>
+                                            <span class="form-hint no-checkbox">@messages("BenefitInKind.label.unavailable")</span>
                                         }
                                         @if(decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
-                                            <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.decommissioned")</span>
+                                            <span class="form-hint no-checkbox">@messages("BenefitInKind.label.decommissioned")</span>
                                         }
                                     </label>
                                     } else {
@@ -120,21 +125,21 @@ Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
                                                aria-labelledby="table-heading-1"/>
                                         }
                                         </span>
-                                        @Messages("BenefitInKind.label." + activeField("uid").value.get)
+                                        @messages("BenefitInKind.label." + activeField("uid").value.get)
                                         @if(47 == activeField("uid").value.get.toInt) {
-                                            <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
+                                            <span class="form-hint other-desc-indent">@messages("BenefitInKind.hint.47")</span>
                                         }
                                         @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
-                                            <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.unavailable")</span>
+                                            <span class="form-hint no-checkbox">@messages("BenefitInKind.label.unavailable")</span>
                                         }
                                         @if(decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
-                                            <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.decommissioned")</span>
+                                            <span class="form-hint no-checkbox">@messages("BenefitInKind.label.decommissioned")</span>
                                         }
                                     </label>
                                     }
                                 </td>
                                 <td class="no-wrap" onclick=selectCheckBoxTable('checkbox-@activeField("uid").value.get')>
-                                    @Messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
+                                    @messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
                                 </td>
                             </tr>
                             }
@@ -156,15 +161,15 @@ Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
                                                aria-labelledby="table-heading-1"/>
                                         }
                                         </span>
-                                        @Messages("BenefitInKind.label." + activeField("uid").value.get)
+                                        @messages("BenefitInKind.label." + activeField("uid").value.get)
                                         @if(47 == activeField("uid").value.get.toInt) {
-                                            <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
+                                            <span class="form-hint other-desc-indent">@messages("BenefitInKind.hint.47")</span>
                                         }
                                         @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
-                                            <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.unavailable")</span>
+                                            <span class="form-hint no-checkbox">@messages("BenefitInKind.label.unavailable")</span>
                                         }
                                         @if(decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
-                                            <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.decommissioned")</span>
+                                            <span class="form-hint no-checkbox">@messages("BenefitInKind.label.decommissioned")</span>
                                         }
                                     </label>
                                     } else {
@@ -177,21 +182,21 @@ Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
                                                aria-labelledby="table-heading-1"/>
                                         }
                                         </span>
-                                        @Messages("BenefitInKind.label." + activeField("uid").value.get)
+                                        @messages("BenefitInKind.label." + activeField("uid").value.get)
                                         @if(47 == activeField("uid").value.get.toInt) {
-                                            <span class="form-hint other-desc-indent">@Messages("BenefitInKind.hint.47")</span>
+                                            <span class="form-hint other-desc-indent">@messages("BenefitInKind.hint.47")</span>
                                         }
                                         @if(nonLegislationBiks.contains(activeField("uid").value.get.toInt)) {
-                                            <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.unavailable")</span>
+                                            <span class="form-hint no-checkbox">@messages("BenefitInKind.label.unavailable")</span>
                                         }
                                         @if(decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
-                                            <span class="form-hint no-checkbox">@Messages("BenefitInKind.label.decommissioned")</span>
+                                            <span class="form-hint no-checkbox">@messages("BenefitInKind.label.decommissioned")</span>
                                         }
                                     </label>
                                     }
                                 </td>
                                 <td class="no-wrap" onclick=selectCheckBoxTable('checkbox-@activeField("uid").value.get')>
-                                    @Messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
+                                    @messages("BenefitInKind.p11d." + activeField("uid").value.get + ".ref")
                                 </td>
                             </tr>
                             }
@@ -204,13 +209,13 @@ Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
         </div>
         }
 
-        <p id="help-unavailable" class="text">@Html(Messages("BenefitInKind.label.unavailable.desc"))</p>
+        <p id="help-unavailable" class="text">@Html(messages("BenefitInKind.label.unavailable.desc"))</p>
 
-        <input type="submit" role="button" class="button" id="button-continue" value="@Messages("Service.continue")">
+        <input type="submit" role="button" class="button" id="button-continue" value="@messages("Service.continue")">
     }
 
     <a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
-       href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a>
+       href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a>
 
 
 }

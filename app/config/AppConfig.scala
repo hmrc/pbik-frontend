@@ -29,8 +29,8 @@ trait AppConfig {
   val reportAProblemPartialUrl: String
   val betaFeedbackUrl: String
   val betaFeedbackUnauthenticatedUrl: String
-  val analyticsToken: String
-  val analyticsHost: String
+  //val analyticsToken: String
+  //val analyticsHost: String
   val contactFrontendService: String
   val contactFormServiceIdentifier: String
   val cyEnabled:Boolean
@@ -40,7 +40,9 @@ trait AppConfig {
   val biksDecommissioned: List[Int]
   val urBannerLink: String
   val serviceSignOut : String
-
+  val analyticsToken:Option[String]
+  val analyticsHost: String
+  val ssoUrl:Option[String]
 }
 
 class PbikAppConfig @Inject() (configuration: Configuration,
@@ -61,8 +63,8 @@ class PbikAppConfig @Inject() (configuration: Configuration,
 
   override lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
-  override lazy val analyticsToken: String = loadConfig("google-analytics.token")
-  override lazy val analyticsHost: String = loadConfig("google-analytics.host")
+  //override lazy val analyticsToken: String = loadConfig("google-analytics.token")
+  //override lazy val analyticsHost: String = loadConfig("google-analytics.host")
 
   override lazy val cyEnabled: Boolean = configuration.getBoolean("pbik.enabled.cy").getOrElse(false)
   override lazy val biksNotSupported:List[Int] = configuration.getIntList("pbik.unsupported.biks.cy1").getOrElse(Collections.emptyList[Integer]()).toArray(new Array[Integer](0)).toList.map(_.intValue())
@@ -72,5 +74,9 @@ class PbikAppConfig @Inject() (configuration: Configuration,
   lazy val urBannerToggle:Boolean = loadConfig("urBanner.toggle").toBoolean
   override lazy val urBannerLink: String = loadConfig("urBanner.link")
   override lazy val serviceSignOut: String = loadConfig("service-signout.url")
+
+  override val analyticsToken:Option[String] = configuration.getString("google-analytics.token")
+  override val analyticsHost:String = configuration.getString("google-analytics.host").getOrElse("service.gov.uk")
+  override val ssoUrl:Option[String] = configuration.getString("portal.ssoUrl")
 
 }

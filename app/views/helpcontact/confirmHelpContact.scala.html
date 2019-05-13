@@ -14,8 +14,14 @@
  * limitations under the License.
  *@
 
-@(empRef: EmpRef)(implicit request:Request[_], context: config.PbikContext, 
-                                    messages: Messages, externalURLs: ExternalUrls)
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
+
+@(empRef: EmpRef)(implicit request:Request[_], context: PbikContext,
+                                    messages: Messages, externalURLs: ExternalUrls,
+                                    config: AppConfig,
+                                    localFormPartialRetriever: LocalFormPartialRetriever)
 
 @parentTemplate(pageTitle = messages("ConfirmationHelpAndContact.title") + " - " + messages("Service.title"), None, Some(empRef.toString), contactSupportLinkEnabled = false){
 

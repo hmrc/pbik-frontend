@@ -15,11 +15,16 @@
  *@
 
 @import uk.gov.hmrc.play.views.html.helpers
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(bikForm:Form[RegistrationList],
   taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_],
-                             context: config.PbikContext, messages: Messages,
-                            externalURLs: ExternalUrls)
+                             context: PbikContext, messages: Messages,
+                            externalURLs: ExternalUrls,
+                            config: AppConfig,
+                            localFormPartialRetriever: LocalFormPartialRetriever)
 
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
 @gaEventBiks = @{helper.repeat(bikForm("actives"), min=0) { activeField => Html(messages("BenefitInKind.label." + activeField("uid").value.get) + " ,")} }

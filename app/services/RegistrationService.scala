@@ -16,7 +16,7 @@
 
 package services
 
-import config.{PbikAppConfig, PbikContext}
+import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
 import controllers.ExternalUrls
 import javax.inject.Inject
@@ -34,7 +34,7 @@ import utils.{ControllersReferenceData, URIInformation, _}
 
 import scala.concurrent.Future
 
-class RegistrationService @Inject()(val pbikAppConfig: PbikAppConfig,
+class RegistrationService @Inject()(implicit val pbikAppConfig: PbikAppConfig,
                                     tierConnector: HmrcTierConnector,
                                     bikListService: BikListService,
                                     val runModeConfiguration: Configuration,
@@ -43,15 +43,14 @@ class RegistrationService @Inject()(val pbikAppConfig: PbikAppConfig,
                                     implicit val context: PbikContext,
                                     controllersReferenceData: ControllersReferenceData,
                                     uRIInformation: URIInformation,
-                                    implicit val externalURLs: ExternalUrls) extends FrontendController {
+                                    implicit val externalURLs: ExternalUrls,
+                                    implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController {
   val mode: Mode = environment.mode
 
   def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                               generateViewBasedOnFormItems: (Form[RegistrationList],
                                                 List[RegistrationItem], List[Bik], List[Int], List[Int], Option[Int]) => HtmlFormat.Appendable)
-                                             (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]):
-
-  Future[Result] = {
+                                             (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
 
     val decommissionedBikIds: List[Int] = pbikAppConfig.biksDecommissioned
     val nonLegislationBiks: List[Int] = if (taxDateUtils.isCurrentTaxYear(year)) {
