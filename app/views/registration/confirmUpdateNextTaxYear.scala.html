@@ -35,8 +35,8 @@
 
 @title = @{if(additive && singleBik) {Messages("AddBenefits.Confirm.Single.Title")}else if(additive && !singleBik){Messages("AddBenefits.Confirm.Multiple.Title")}else {Messages("RemoveBenefits.Confirm.Title")}}
 
-@parentTemplate(pageTitle = title + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
+@parentTemplate(pageTitle = title + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
         @if(additive) {
 
