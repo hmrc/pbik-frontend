@@ -16,13 +16,18 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(taxYearRange: TaxYearRange,
   year: String, iabdType: String,
   listOfMatchesForm: Form[(String,EiLPersonList)],
   formType: String, empRef: EmpRef)(implicit request: Request[_],
-                    context: config.PbikContext, messages: Messages,
-                    uriInformation: URIInformation, externalURLs: ExternalUrls)
+                    context: PbikContext, messages: Messages,
+                    uriInformation: URIInformation, externalURLs: ExternalUrls,
+                    config: AppConfig,
+                    localFormPartialRetriever: LocalFormPartialRetriever)
 
 @parentTemplate( pageTitle=messages("ExclusionSearch.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 

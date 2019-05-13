@@ -18,7 +18,7 @@ package controllers.registration
 
 import java.util.UUID
 
-import config.{PbikAppConfig, PbikContext}
+import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
 import controllers.{ExternalUrls, WhatNextPageController}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
@@ -40,7 +40,7 @@ import utils.{ControllersReferenceData, URIInformation, _}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ManageRegistrationController @Inject()(val pbikAppConfig: PbikAppConfig,
+class ManageRegistrationController @Inject()(implicit val pbikAppConfig: PbikAppConfig,
                                              registrationService: RegistrationService,
                                              val bikListService: BikListService,
                                              tierConnector: HmrcTierConnector,
@@ -54,7 +54,8 @@ class ManageRegistrationController @Inject()(val pbikAppConfig: PbikAppConfig,
                                              controllersReferenceData: ControllersReferenceData,
                                              splunkLogger: SplunkLogger,
                                              implicit val uriInformation: URIInformation,
-                                             implicit val externalURLs: ExternalUrls
+                                             implicit val externalURLs: ExternalUrls,
+                                             implicit val localFormPartialRetriever: LocalFormPartialRetriever
                                             ) extends FrontendController {
 
   val mode: Mode = environment.mode

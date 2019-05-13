@@ -16,4 +16,10 @@
 
 package models
 
+import play.api.libs.json.{Json, OFormat}
+
 case class EiLPersonList(active: List[EiLPerson])
+
+object EiLPersonList {
+  implicit val eilListFormats: OFormat[EiLPersonList] = Json.format[EiLPersonList]
+}

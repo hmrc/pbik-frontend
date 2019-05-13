@@ -16,4 +16,10 @@
 
 package models
 
+import play.api.libs.json.{Json, OFormat}
+
 case class BinaryRadioButton(selectionValue: Option[String])
+
+object BinaryRadioButton {
+  implicit val addRemoveDecisionFormats: OFormat[BinaryRadioButton] = Json.format[BinaryRadioButton]
+}

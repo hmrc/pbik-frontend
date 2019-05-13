@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.{PbikAppConfig, PbikContext}
+import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
 import models._
@@ -46,7 +46,8 @@ class HomePageController @Inject()(bikListService: BikListService,
                                    splunkLogger: SplunkLogger,
                                    implicit val context: PbikContext,
                                    implicit val uRIInformation: URIInformation,
-                                   implicit val externalURLs: ExternalUrls) extends FrontendController with LegacyI18nSupport {
+                                   implicit val externalURLs: ExternalUrls,
+                                   implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController with LegacyI18nSupport {
 
   val mode: Mode = environment.mode
 

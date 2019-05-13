@@ -14,14 +14,16 @@
  * limitations under the License.
  *@
 
-@import play.api.i18n.Messages.Implicits._
-@import play.api.Play.current
+@import config.AppConfig
+@import config.PbikContext
 @import utils.FormMappingsConstants._
+@import config.LocalFormPartialRetriever
 
-@(pageHeading:String = Messages("ServiceMessage.0.h1"),
-  backLink:String= "payrolled-benefits-expenses", empRef: Option[EmpRef])(implicit request:Request[_],
-                                                  context: config.PbikContext, messages: Messages,
-                                                    externalURLs: ExternalUrls)
+@(backLink:String= "payrolled-benefits-expenses", empRef: Option[EmpRef])(implicit request:Request[_],
+                                                  context: PbikContext, messages: Messages,
+                                                    config: AppConfig,
+                                                    externalURLs: ExternalUrls,
+                                                    localFormPartialRetriever: LocalFormPartialRetriever)
 
     @parentTemplate(pageTitle = messages("Service.title"), None, Some(empRef.toString)) {
 

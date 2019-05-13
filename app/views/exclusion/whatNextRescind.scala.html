@@ -16,12 +16,17 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(taxYearRange:TaxYearRange,
   year:String, iabdType:String,
   name:String,empRef: EmpRef)(implicit request:Request[_],
-               context: config.PbikContext, messages: Messages,
-                uriInformation: URIInformation, externalURLs: ExternalUrls)
+               context: PbikContext, messages: Messages,
+                uriInformation: URIInformation, externalURLs: ExternalUrls,
+                config: AppConfig,
+                localFormPartialRetriever: LocalFormPartialRetriever)
 
 @parentTemplate(pageTitle = messages("whatNext.rescind.heading") + " - " + messages("Service.title"), None,  Some(empRef.toString)) {
 

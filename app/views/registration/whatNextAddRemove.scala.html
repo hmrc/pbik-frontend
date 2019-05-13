@@ -16,12 +16,17 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(isCurrentYear: Boolean,
   taxYearRange:TaxYearRange,
   additive: Boolean,
   bikForm:Form[RegistrationList], empRef: EmpRef)(implicit request:Request[_],
-                                  context: config.PbikContext, messages: Messages, externalURLs: ExternalUrls)
+                                  context: PbikContext, messages: Messages, externalURLs: ExternalUrls,
+                                    config: AppConfig,
+                                    localFormPartialRetriever: LocalFormPartialRetriever)
 
 @benefitLabel = @{messages("BenefitInKind.label." + bikForm("actives[0].uid").value.get )}
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}

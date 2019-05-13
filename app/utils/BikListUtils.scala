@@ -26,8 +26,6 @@ object BikListUtils {
   val STATUS_ADD = 30
   val STATUS_REMOVE = 40
 
-  case class MandatoryRadioButton(selectionValue: String)
-
   /**
    * sort the input list according to the labels in the messages files and create a new list based on this order
    * @param biks

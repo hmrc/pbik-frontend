@@ -16,6 +16,9 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(taxYearRange:TaxYearRange,
   isCurrentTaxYear:String,
@@ -23,8 +26,10 @@
   searchForm: Form[EiLPerson],
   alreadyExists: Boolean = false,
     empRef: EmpRef)(implicit request:Request[_],
-                                  context: config.PbikContext, messages: Messages,
-                                    uriInformation: URIInformation, externalURLs: ExternalUrls)
+                                  context: PbikContext, messages: Messages,
+                                    uriInformation: URIInformation, externalURLs: ExternalUrls,
+                                    config: AppConfig,
+                                    localFormPartialRetriever: LocalFormPartialRetriever)
 
 
 @excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">}

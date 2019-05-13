@@ -21,6 +21,7 @@
 @import java.util.Calendar
 
 @import config.PbikAppConfig
+@import config.LocalFormPartialRetriever
 
 @(cyAllowed: Boolean,
 taxYearRange:TaxYearRange,
@@ -34,7 +35,8 @@ context: config.PbikContext, messages: Messages,
 taxDateUtils: TaxDateUtils,
 pbikAppConfig: PbikAppConfig,
 uriInformation: URIInformation,
-externalURLs: ExternalUrls)
+externalURLs: ExternalUrls,
+localFormPartialRetriever: LocalFormPartialRetriever)
 
 
 

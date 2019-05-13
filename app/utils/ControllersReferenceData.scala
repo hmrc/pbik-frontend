@@ -16,7 +16,7 @@
 
 package utils
 
-import config.{AppConfig, PbikAppConfig, PbikContext}
+import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import controllers.ExternalUrls
 import javax.inject.Inject
 import models._
@@ -24,11 +24,9 @@ import play.api.Logger
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
-import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.http.Upstream5xxResponse
-import utils.BikListUtils.MandatoryRadioButton
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,14 +34,9 @@ import scala.concurrent.Future
 
 class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
                                          implicit val context: PbikContext,
-                                         val pbikAppConfig: PbikAppConfig,
-                                         implicit val externalURLs: ExternalUrls) extends FormMappings {
-
-  implicit val eilFormats: OFormat[EiLPerson] = Json.format[EiLPerson]
-  implicit val eilListFormats: OFormat[EiLPersonList] = Json.format[EiLPersonList]
-  implicit val mandatoryDecisionFormats: OFormat[MandatoryRadioButton] = Json.format[MandatoryRadioButton]
-  implicit val addRemoveDecisionFormats: OFormat[BinaryRadioButton] = Json.format[BinaryRadioButton]
-  implicit val registrationItemsFormats: OFormat[RegistrationItem] = Json.format[RegistrationItem]
+                                         implicit val pbikAppConfig: PbikAppConfig,
+                                         implicit val externalURLs: ExternalUrls,
+                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FormMappings {
 
   def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
 

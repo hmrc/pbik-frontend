@@ -15,10 +15,15 @@
  *@
 
 @import uk.gov.hmrc.play.views.html.helpers
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_],
-                             context: config.PbikContext, messages: Messages,
-                                externalURLs: ExternalUrls)
+                             context: PbikContext, messages: Messages,
+                                externalURLs: ExternalUrls,
+                                config: AppConfig,
+                                localFormPartialRetriever: LocalFormPartialRetriever)
 
 @parentTemplate(pageTitle = messages("AddBenefits.CY.Caution.Title") + " - " + messages("Service.title"), None, Some(empRef.toString)) {
 

@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation
 @import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(taxYearRange:TaxYearRange,
 isCurrentTaxYear:String,
@@ -27,7 +28,8 @@ context: config.PbikContext,
 messages: Messages,
 uriInformation: URIInformation,
 appConfig: AppConfig,
-externalURLs: ExternalUrls)
+externalURLs: ExternalUrls,
+localFormPartialRetriever: LocalFormPartialRetriever)
 
 @parentTemplate(pageTitle = messages("ExclusionOverview.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
