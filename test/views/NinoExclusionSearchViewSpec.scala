@@ -14,21 +14,6 @@
  * limitations under the License.
  */
 
-///*
-// * Copyright 2019 HM Revenue & Customs
-// *
-// * Licensed under the Apache License, Version 2.0 (the "License");
-// * you may not use this file except in compliance with the License.
-// * You may obtain a copy of the License at
-// *
-// *     http://www.apache.org/licenses/LICENSE-2.0
-// *
-// * Unless required by applicable law or agreed to in writing, software
-// * distributed under the License is distributed on an "AS IS" BASIS,
-// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// * See the License for the specific language governing permissions and
-// * limitations under the License.
-// */
 
 package views
 
@@ -50,7 +35,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
     views.html.exclusion.ninoExclusionSearchForm(taxYearRange, "cyp1", "30", form, true, EmpRef("", ""))
 
 
-  "exclusionNinoOrNoNinoForm" must {
+  "ninoExclusionSearchPage" must {
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     behave like pageWithHeader(messages("ExclusionSearch.form.title"))
     behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/nino/exclude-employee-results", "Continue")
@@ -81,7 +66,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
 
   "check the nino exclusion page for incorrect details errors" in new PBIKViewBehaviours {
 
-    val view = viewWithForm(exclusionSearchFormWithNino.bind(Map[String, String](("nino", "AA123456"),("firstname", "John"), ("surname", "Smith"))) .withError("status", messages("ExclusionSearch.Fail.P")))
+    val view = viewWithForm(exclusionSearchFormWithNino.bind(Map[String, String](("nino", "AA123456"),("firstname", "John"), ("surname", "Smith")))     .withError("status", messages("ExclusionSearch.Fail.P")))
 
     doc must haveErrorSummary(messages("ExclusionSearch.Fail.P").replace(".", ""))
     doc must haveErrorNotification(messages("ExclusionSearch.Fail.P"))
