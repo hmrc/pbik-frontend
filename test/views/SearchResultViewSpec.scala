@@ -44,8 +44,6 @@ class SearchResultViewSpec extends PBIKBaseViewSpec with FormMappings {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  val messageKeyPrefix = "searchResults"
-
   def viewWithForm(form: Form[(String, EiLPersonList)]): Html =
     views.html.exclusion.searchResults(taxYearRange, "cyp1", "30", form, "", EmpRef("", ""))
 

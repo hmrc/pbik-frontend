@@ -43,7 +43,6 @@ import views.helper.PBIKViewSpec
 class ExclusionOverviewViewSpec extends PBIKViewSpec with FormMappings {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
-  val messageKeyPrefix = "exclusionOverview"
 
   override def view: Html = views.html.exclusion.exclusionOverview(taxYearRange, "cyp1", "30", List(),EmpRef("", ""))
 
@@ -53,7 +52,4 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec with FormMappings {
     behave like pageWithLink(messages("Service.excludeanemployee"), "/payrollbik/cyp1/medical/exclude-employee-search")
 
   }
-
-
-
 }

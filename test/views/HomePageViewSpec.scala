@@ -24,7 +24,6 @@ import views.helper.PBIKViewSpec
 class HomePageViewSpec extends PBIKViewSpec {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
-  val messageKeyPrefix = "overview"
 
   override def view: Html = views.html.overview(true, taxYearRange, List(), List(), 200, 0, "", EmpRef("", ""))
 

@@ -44,7 +44,6 @@ import views.helper.PBIKViewSpec
 class WhatNextAddRemoveViewSpec extends PBIKViewSpec with FormMappings {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
-  val messageKeyPrefix = "whatNextAddRemove"
 
   override def view: Html = viewWithForm(objSelectedForm)
 
@@ -53,15 +52,10 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec with FormMappings {
     views.html.registration.whatNextAddRemove(true, taxYearRange, true, boundForm, EmpRef("", ""))
   }
 
-
-
   "whatNextAddRemove" must {
     behave like pageWithTitle(messages("whatNext.add.heading"))
     behave like pageWithHeader(messages("whatNext.add.heading"))
     behave like pageWithLink(messages("Service.back.overview.whatNext"), "/payrollbik/payrolled-benefits-expenses")
 
-
   }
-
-
 }

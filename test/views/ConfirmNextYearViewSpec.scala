@@ -44,7 +44,6 @@ import views.helper.PBIKViewSpec
 class ConfirmNextYearViewSpec extends PBIKViewSpec with FormMappings {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
-  val messageKeyPrefix = "confirmNextYearPage"
 
   implicit val flash = new Flash
 

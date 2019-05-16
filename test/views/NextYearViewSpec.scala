@@ -44,7 +44,6 @@ import utils.FormMappings
 class NextYearViewSpec extends PBIKViewSpec with FormMappings {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
-  val messageKeyPrefix = "nextYearPage"
 
   override def view: Html = viewWithForm(objSelectedForm)
 

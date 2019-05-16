@@ -45,7 +45,6 @@ import views.helper.PBIKViewSpec
 class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec with FormMappings {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
-  val messageKeyPrefix = "exclusionNinoOrNoNinoForm"
 
   override def view: Html = viewWithForm(new Flash)
 
@@ -54,7 +53,7 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec with FormMappings {
 
 
 
-  "exclusionNinoOrNoNinoForm" must {
+  "exclusionNinoOrNoNinoPage" must {
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))
     behave like pageWithHeader(messages("ExclusionNinoDecision.title"))
     behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/exclude-employee-search", "Continue")
