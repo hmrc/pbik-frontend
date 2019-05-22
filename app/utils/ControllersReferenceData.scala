@@ -16,7 +16,7 @@
 
 package utils
 
-import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import controllers.ExternalUrls
 import javax.inject.Inject
 import models._
@@ -34,7 +34,7 @@ import scala.concurrent.Future
 
 class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
                                          implicit val context: PbikContext,
-                                         implicit val pbikAppConfig: PbikAppConfig,
+                                         implicit val pbikAppConfig: AppConfig,
                                          implicit val externalURLs: ExternalUrls,
                                          implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FormMappings {
 

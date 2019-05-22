@@ -16,8 +16,9 @@
 
 package controllers
 
-import config.AppConfig
+import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import controllers.actions.MinimalAuthAction
+import javax.inject.Inject
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import org.specs2.mock.Mockito
@@ -42,9 +43,14 @@ class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication 
     def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken).withHeaders()
   }
 
-  class TestController extends AuthController {
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override val authenticate: MinimalAuthAction = new TestMinimalAuthAction
+  lazy val pbikAppConfig: PbikAppConfig = mock[PbikAppConfig]
+  class TestController extends AuthController(new TestMinimalAuthAction)(
+    pbikAppConfig,
+    app.injector.instanceOf[PbikContext],
+    app.injector.instanceOf[ExternalUrls],
+    app.injector.instanceOf[LocalFormPartialRetriever]
+  ) {
+
 
     when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
   }

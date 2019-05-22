@@ -28,7 +28,9 @@
   nonLegislationBiks:List[Int],
   decommissionedBiks:List[Int],
   biksAvailableCount: Option[Int], empRef: EmpRef)(implicit request:Request[_],
-                                   context: PbikContext, messages: Messages, externalURLs: ExternalUrls,
+                                    context: PbikContext,
+                                    messages: Messages,
+                                    externalURLs: ExternalUrls,
                                     config: AppConfig,
                                     localFormPartialRetriever: LocalFormPartialRetriever)
 

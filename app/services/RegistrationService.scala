@@ -36,7 +36,7 @@ import scala.concurrent.Future
 
 class RegistrationService @Inject()(implicit val pbikAppConfig: PbikAppConfig,
                                     tierConnector: HmrcTierConnector,
-                                    bikListService: BikListService,
+                                    val bikListService: BikListService,
                                     val runModeConfiguration: Configuration,
                                     environment: Environment,
                                     taxDateUtils: TaxDateUtils,

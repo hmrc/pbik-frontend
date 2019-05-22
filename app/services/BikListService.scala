@@ -16,7 +16,7 @@
 
 package services
 
-import config.PbikAppConfig
+import config.{AppConfig, PbikAppConfig}
 import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models.{AuthenticatedRequest, Bik, EmpRef}
@@ -29,7 +29,7 @@ import utils.{ControllersReferenceData, URIInformation}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class BikListService @Inject()(val pbikAppConfig: PbikAppConfig,
+class BikListService @Inject()(val pbikAppConfig: AppConfig,
                                val tierConnector: HmrcTierConnector,
                                val runModeConfiguration: Configuration,
                                controllersReferenceData: ControllersReferenceData,

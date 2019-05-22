@@ -26,11 +26,11 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
 
-class AuthController @Inject()(implicit val pbikAppConfig: PbikAppConfig,
-                               val authenticate: MinimalAuthAction,
-                               implicit val context: PbikContext,
-                               implicit val externalUrls: ExternalUrls,
-                               implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController {
+class AuthController @Inject()(authenticate: MinimalAuthAction)
+                              (implicit pbikAppConfig: PbikAppConfig,
+                               context: PbikContext,
+                               externalUrls: ExternalUrls,
+                               localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController {
 
   def notAuthorised:Action[AnyContent] = authenticate.async {
     implicit request =>

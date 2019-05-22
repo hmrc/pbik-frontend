@@ -29,6 +29,8 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.SessionKeys
 
+import scala.reflect.ClassTag
+
 trait FakePBIKApplication extends Mockito with OneAppPerSuite {
 
   this: TestSuite =>
@@ -65,5 +67,8 @@ trait FakePBIKApplication extends Mockito with OneAppPerSuite {
     .build()
 
   implicit lazy val materializer: Materializer = fakeApplication.materializer
+
+  def injected[T](c: Class[T]): T = app.injector.instanceOf(c)
+  def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T]
 
 }
