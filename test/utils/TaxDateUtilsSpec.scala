@@ -19,61 +19,60 @@ package utils
 import controllers.FakePBIKApplication
 import org.joda.time.DateTimeConstants._
 import org.joda.time.LocalDate
-import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
 
 class TaxDateUtilsSpec extends UnitSpec with FakePBIKApplication {
+  
+  val taxDateUtils = app.injector.instanceOf[TaxDateUtils]
 
   "The current tax year" should {
    " be the same as current year, if the current date is before 6th April in the current year" in {
-      running(fakeApplication) {
         val dateBeforeTaxYearButSameYearAsTaxYear = new LocalDate(2014, APRIL, 1)
-        assert(TaxDateUtils.getCurrentTaxYear(dateBeforeTaxYearButSameYearAsTaxYear) == 2013)
-      }
+        assert(taxDateUtils.getCurrentTaxYear(dateBeforeTaxYearButSameYearAsTaxYear) == 2013)
     }
   }
 
   "The application" should {
     "state the service has not launched if the current tax year is before the year of launch" in {
-        assert(TaxDateUtils.isServiceLaunched(TaxDateUtils.TAX_YEAR_OF_LAUNCH-1) == false)
+        assert(!taxDateUtils.isServiceLaunched(taxDateUtils.TAX_YEAR_OF_LAUNCH - 1))
     }
   }
 
   "The current tax year" should {
    " be current year, if the current date is before 6th April and in the previous year" in {
       val dateBeforeTaxYearInPreviousYear = new LocalDate(2013, NOVEMBER, 1)
-        assert(TaxDateUtils.getCurrentTaxYear(dateBeforeTaxYearInPreviousYear) == 2013)
+        assert(taxDateUtils.getCurrentTaxYear(dateBeforeTaxYearInPreviousYear) == 2013)
     }
   }
 
   "The current tax year" should {
    " be current year, if the current date is after 6th April in the current year" in {
       val dateAfterTaxYear = new LocalDate(2014, JULY, 1)
-      assert(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear) == 2014)
+      assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear) == 2014)
     }
   }
 
   "The application" should {
     "state the service has NOT launched if the date supplied has the same year as the launch date but is before April 6th" in {
       val dateAfterTaxYear = new LocalDate(2015, FEBRUARY, 1)
-      assert(TaxDateUtils.isServiceLaunched(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear)) == false)
+      assert(!taxDateUtils.isServiceLaunched(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear)))
     }
   }
 
   "The application" should {
     "state the service has  launched if the current tax year is after the year of launch" in {
-      val dateAfterTaxYear = new LocalDate(TaxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, 7)
-      assert(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear) < TaxDateUtils.getTaxYearRange().cyminus1)
-      assert(TaxDateUtils.isServiceLaunched(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear)) == true)
+      val dateAfterTaxYear = new LocalDate(taxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, 7)
+      assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear) < taxDateUtils.getTaxYearRange().cyminus1)
+      assert(taxDateUtils.isServiceLaunched(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear)))
     }
   }
 
   "The application" should {
     "return the correct range for the current year" in {
 
-      val dateAfterTaxYear = new LocalDate(TaxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, 7)
-      assert(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear)< TaxDateUtils.getTaxYearRange().cyminus1)
-      assert(TaxDateUtils.isServiceLaunched(TaxDateUtils.getCurrentTaxYear(dateAfterTaxYear)) == true)
+      val dateAfterTaxYear = new LocalDate(taxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, 7)
+      assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear)< taxDateUtils.getTaxYearRange().cyminus1)
+      assert(taxDateUtils.isServiceLaunched(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear)))
     }
   }
 

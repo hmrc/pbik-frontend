@@ -17,8 +17,12 @@
 package controllers.actions
 
 import akka.util.Timeout
+import controllers.ExternalUrls
+import javax.inject.Inject
+import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.{Configuration, Environment}
 import play.api.http.Status._
 import play.api.mvc.Controller
 import play.api.test.FakeRequest
@@ -27,13 +31,14 @@ import uk.gov.hmrc.auth.core.MissingBearerToken
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
-class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
+class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
   class Harness(authAction: MinimalAuthAction) extends Controller {
     def onPageLoad() = authAction { request => Ok }
@@ -44,7 +49,14 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
   "Minimal Auth Action" when {
     "the user is not logged in" must {
       "redirect the user to log in" in {
-        val minimalAuthAction = new MinimalAuthActionImpl(new BrokenAuthConnector(new MissingBearerToken))
+        val minimalAuthAction = new MinimalAuthActionImpl(
+          new BrokenAuthConnector(new MissingBearerToken,
+            mock[HttpClient],
+            app.injector.instanceOf[Configuration],
+            app.injector.instanceOf[Environment]
+          ),
+          app.injector.instanceOf[ExternalUrls]
+        )
         val controller = new Harness(minimalAuthAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER
@@ -56,7 +68,10 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
 
 }
 
-class BrokenAuthConnector(exception: Throwable) extends AuthConnector {
+class BrokenAuthConnector @Inject()(exception: Throwable, httpClient:HttpClient, runModeConfiguration: Configuration, environment: Environment) extends AuthConnector(
+  httpClient,
+  runModeConfiguration,
+  environment) {
   override val serviceUrl: String = ""
 
   override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =

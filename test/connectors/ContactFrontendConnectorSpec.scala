@@ -16,28 +16,38 @@
 
 package connectors
 
-import config.RunModeConfig
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.Mode.Mode
 import play.api.test.Helpers._
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpGet, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with MockitoSugar
-  with BeforeAndAfterEach with ServicesConfig with RunModeConfig {
+  with BeforeAndAfterEach with ServicesConfig {
 
-  implicit val headerCarrier = HeaderCarrier()
+  override protected def mode: Mode = app.injector.instanceOf[Mode]
+  override protected def runModeConfiguration: Configuration = app.injector.instanceOf[Configuration]
 
-  object TestConnector extends ContactFrontendConnector {
-    override val http = mock[HttpGet]
+  implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
+
+  object TestConnector extends ContactFrontendConnector(
+    app.injector.instanceOf[HttpClient],
+    app.injector.instanceOf[Configuration],
+    app.injector.instanceOf[Environment],
+    app.injector.instanceOf[PBIKHeaderCarrierForPartialsConverter]
+  ) {
+    val http: HttpGet = mock[HttpGet]
   }
 
-  override def beforeEach() = {
+  override def beforeEach(): Unit = {
     reset(TestConnector.http)
   }
 
@@ -60,11 +70,13 @@ class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with Moc
 
     "return an empty string if a BadGatewayException is encountered" in {
 
-      when(TestConnector.http.GET[HttpResponse](meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.failed(new BadGatewayException("Phony exception"))
+      when(TestConnector.http.GET[HttpResponse](meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])) thenReturn
+        Future.failed(new BadGatewayException("Phony exception"))
 
       val result = await(TestConnector.getHelpPartial)
 
       result mustBe ""
     }
   }
+
 }

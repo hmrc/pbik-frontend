@@ -41,7 +41,6 @@ class HelpAndContactController @Inject()(formPartialProvider: FormPartialProvide
                                          val authenticate: AuthAction,
                                          val noSessionCheck: NoSessionCheckAction,
                                          implicit val pbikAppConfig: PbikAppConfig,
-                                         val tierConnector: HmrcTierConnector,
                                          configuration: Configuration,
                                          environment: Environment,
                                          controllersReferenceData: ControllersReferenceData,

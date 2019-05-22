@@ -17,16 +17,17 @@
 package controllers
 
 import akka.util.Timeout
-import config.AppConfig
-import connectors.{HmrcTierConnector, TierConnector}
+import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import connectors.{FormPartialProvider, HmrcTierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
+import javax.inject.Inject
 import models._
 import org.joda.time.LocalDate
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.Futures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
-import play.api.Application
+import play.api.{Application, Configuration, Environment}
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
@@ -43,9 +44,9 @@ import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
-import utils._
+import utils.{ControllersReferenceData, URIInformation, _}
+import org.scalatest.time.{Millis, Seconds, Span}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
@@ -54,7 +55,7 @@ import scala.language.postfixOps
 class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with FakePBIKApplication
   with TestAuthUser with ControllersReferenceData {
 
-  override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+  override lazy val pbikAppConfig: PbikAppConfig = mock[PbikAppConfig]
   val date = new LocalDate()
   val dateRange: TaxYearRange = if (date.getMonthOfYear < 4 || (date.getMonthOfYear == 4 && date.getDayOfMonth < 6)) {
     models.TaxYearRange(date.getYear - 1, date.getYear, date.getYear + 1)
@@ -62,7 +63,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     models.TaxYearRange(date.getYear, date.getYear + 1, date.getYear + 2)
   }
 
-  implicit val user: AuthContext = createDummyUser("testid")
+  // implicit val user: AuthContext = createDummyUser("testid")
   lazy val ListOfPeople: List[EiLPerson] = List(EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
     EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
     EiLPerson("AC111111", "Humpty", Some("Alexander"), "Dumpty", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
@@ -88,13 +89,18 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
              ]""")
   }
 
-  class StubEiLListService extends EiLListService {
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
+  val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
 
-    override def currentYearEiL(iabdType: String, year: Int)(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[List[EiLPerson]] = {
-      Future.successful(ListOfPeople)
-    }
+  class StubEiLListService extends EiLListService(
+    pbikAppConfig,
+    tierConnector,
+    app.injector.instanceOf[Configuration],
+    app.injector.instanceOf[Environment],
+    app.injector.instanceOf[URIInformation])
+  {
+      override def currentYearEiL(iabdType: String, year: Int)(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[List[EiLPerson]] = {
+        Future.successful(ListOfPeople)
+      }
   }
 
   class StubEiLListServiceOneExclusion extends StubEiLListService {
@@ -103,13 +109,18 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
-  class StubBikListService extends BikListService {
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+  val uriInformation: URIInformation
+  class StubBikListService extends BikListService(
+    pbikAppConfig,
+    tierConnector,
+    app.injector.instanceOf[Configuration],
+    app.injector.instanceOf[ControllersReferenceData],
+    app.injector.instanceOf[Environment],
+    app.injector.instanceOf[URIInformation]
+  ) {
 
     lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
     /*(n => new Bik("" + (n + 1), 10))*/
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
-
     when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
       any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -134,19 +145,19 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
@@ -158,11 +169,11 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       Integer.parseInt(x.iabdType) <= 5
     }))
 
-    when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
+    when(tierConnector.genericPostCall(anyString, mockEq(uriInformation.updateBenefitTypesPath),
       any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getRegisteredPath),
+    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getRegisteredPath),
       any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) >= 15
@@ -170,18 +181,35 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
   }
 
-  class MockExclusionListController extends ExclusionListController with TierConnector with Futures {
+  override lazy val pbikAppConfig: PbikAppConfig = mock[PbikAppConfig]
+   val authenticate: AuthAction = new TestAuthAction
+   val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
+  val uriInformation : URIInformation
+  val controllersReferenceData : ControllersReferenceData
 
-    import org.scalatest.time.{Millis, Seconds, Span}
 
-    override val authenticate: AuthAction = new TestAuthAction
-    override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+  class MockExclusionListController extends ExclusionListController(
+    pbikAppConfig,
+    authenticate,
+    noSessionCheck,
+    app.injector.instanceOf[EiLListService],
+    app.injector.instanceOf[BikListService],
+    tierConnector,
+    app.injector.instanceOf[Configuration],
+    app.injector.instanceOf[Environment],
+    app.injector.instanceOf[PbikContext],
+    app.injector.instanceOf[TaxDateUtils],
+    app.injector.instanceOf[SplunkLogger],
+    controllersReferenceData,
+    uriInformation,
+    app.injector.instanceOf[ExternalUrls],
+    app.injector.instanceOf[LocalFormPartialRetriever]
+  ) with Futures {
 
     implicit val defaultPatience: PatienceConfig =
       PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
-    override def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+     def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
       Future.successful(AuditResult.Success)
     }
 
@@ -195,13 +223,13 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
 
-    when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
+    when(tierConnector.genericPostCall(anyString, mockEq(uriInformation.updateBenefitTypesPath),
       any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
-    override def eiLListService: EiLListService = new StubEiLListService
+    override val eiLListService: EiLListService = new StubEiLListService
 
-    override def bikListService: BikListService = new StubBikListService
+    override val bikListService: BikListService = new StubBikListService
 
     override lazy val exclusionsAllowed = true
 
@@ -216,8 +244,13 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     override lazy val exclusionsAllowed = false
   }
 
-  class StubNoRegisteredBikListService extends BikListService {
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+  class StubNoRegisteredBikListService extends BikListService(
+    pbikAppConfig,
+    tierConnector,
+    app.injector.instanceOf[Configuration],
+    app.injector.instanceOf[ControllersReferenceData],
+    app.injector.instanceOf[Environment],
+    app.injector.instanceOf[URIInformation]) {
 
     lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
     override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
@@ -230,12 +263,14 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   class MockNoRegisteredBiksExclusionListController extends MockExclusionListController {
-    override def bikListService: BikListService = new StubNoRegisteredBikListService
+    override val  bikListService: BikListService = new StubNoRegisteredBikListService
   }
 
+  val exclusionListController : ExclusionListController = mock[ExclusionListController]
+
   "When instantiating the ExclusionListController the services" must {
-   " should not be null" in {
-      val mockExclusionListController = ExclusionListController
+    " should not be null" in {
+      val mockExclusionListController = exclusionListController
       assert(mockExclusionListController.tierConnector != null)
       assert(mockExclusionListController.pbikAppConfig != null)
       assert(mockExclusionListController.eiLListService != null)
@@ -244,28 +279,28 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When testing exclusions the exclusion functionality" must {
-   " should be enabled" in {
+    " should be enabled" in {
       val mockExclusionListController = new MockExclusionListController
       assert(mockExclusionListController.exclusionsAllowed)
     }
   }
 
   "When testing exclusions the EILService" must {
-   " should be defined" in {
+    " should be defined" in {
       val mockExclusionListController = new MockExclusionListController
       assert(mockExclusionListController.eiLListService != null)
     }
   }
 
   "When testing exclusions the BIKService" must {
-   " should be defined" in {
+    " should be defined" in {
       val mockExclusionListController = new MockExclusionListController
       assert(mockExclusionListController.bikListService != null)
     }
   }
 
   "When mapping the CY string, the date returned by the controller" must {
-   " be the first year in the CY pair (e.g CY in range 15/16-16/17 would be 15 )" in {
+    " be the first year in the CY pair (e.g CY in range 15/16-16/17 would be 15 )" in {
       val mockExclusionListController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
@@ -275,7 +310,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When mapping the CY+1 string, the date returned by the controller" must {
-   " be the first year in the CYP1 pair (e.g CYP1 in range 15/16-16/17 would be 16 ) " in {
+    " be the first year in the CYP1 pair (e.g CYP1 in range 15/16-16/17 would be 16 ) " in {
       val mockExclusionListController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
@@ -285,7 +320,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When mapping an unknown string, the controller" must {
-   " throw an InvalidYearURIException" in {
+    " throw an InvalidYearURIException" in {
       val mockExclusionListController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
@@ -296,7 +331,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When checking the Bik's IABD value is valid for CY the ExclusionListController" must {
-   " return the start year of the CY pair, when the IABD value is valid" in {
+    " return the start year of the CY pair, when the IABD value is valid" in {
       val mockExclusionListController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
@@ -311,7 +346,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When checking the Bik's IABD value is invalid for CY the ExclusionListController" must {
-   " throw a InvalidBikTypeURIException" in {
+    " throw a InvalidBikTypeURIException" in {
       val mockExclusionListController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
@@ -465,7 +500,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 10 seconds
-      val result = await(mockExclusionController.searchResults("cy", "car", ExclusionListController.FORM_TYPE_NINO).apply(mockrequest))(timeout)
+      val result = await(mockExclusionController.searchResults("cy", "car", controllersReferenceData.FORM_TYPE_NINO).apply(mockrequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include("First name")
@@ -480,7 +515,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       val mockExclusionController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionController.searchResults("cy", "car", ExclusionListController.FORM_TYPE_NONINO).apply(mockrequest))(timeout)
+      val result = await(mockExclusionController.searchResults("cy", "car", controllersReferenceData.FORM_TYPE_NONINO).apply(mockrequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include("First name")
@@ -498,7 +533,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       val mockExclusionController = new MockExclusionListController
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionController.searchResults("cy", "car", ExclusionListController.FORM_TYPE_NINO).apply(formrequest))(timeout)
+      val result = await(mockExclusionController.searchResults("cy", "car", controllersReferenceData.FORM_TYPE_NINO).apply(formrequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include("Search for an employee")
       result.body.asInstanceOf[Strict].data.utf8String must include("Adam")
@@ -511,12 +546,11 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       val ninoSearchPerson = EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0)
       val f = exclusionSearchFormWithoutNino.fill(ninoSearchPerson)
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val mockExclusionController: MockExclusionListController = new MockExclusionListController {
-        override def eiLListService = new StubEiLListServiceOneExclusion
+      val mockExclusionController: MockExclusionListController = new MockExclusionListController {override val eiLListService = new StubEiLListServiceOneExclusion
       }
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionController.searchResults("cy", "car", ExclusionListController.FORM_TYPE_NONINO).apply(formrequest))(timeout)
+      val result = await(mockExclusionController.searchResults("cy", "car", controllersReferenceData.FORM_TYPE_NONINO).apply(formrequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include("Search results")
       result.body.asInstanceOf[Strict].data.utf8String must include("Adam")
@@ -531,7 +565,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       val mockExclusionController = new MockExclusionsDisallowedController
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionController.searchResults("cy", "car", ExclusionListController.FORM_TYPE_NONINO).apply(mockrequest))(timeout)
+      val result = await(mockExclusionController.searchResults("cy", "car", controllersReferenceData.FORM_TYPE_NONINO).apply(mockrequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -595,11 +629,15 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionController.processRemovalCommit(individualsForm.fill(EiLPersonList(ListOfPeople)), TEST_IABD, YEAR_RANGE))(timeout)
+      val result = await(mockExclusionController.processRemovalCommit(individualsForm
+        .fill(EiLPersonList(ListOfPeople)), TEST_IABD, YEAR_RANGE)
+      (hc, authenticatedRequest , context ))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
   }
+
+  val taxDateUtils: TaxDateUtils
 
   "When validating a year the controller" must {
     "should return the current tax year if the validation passes for cy" in {
@@ -613,7 +651,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionController.validateRequest("cy", "car"))(timeout)
-      result must be(utils.TaxDateUtils.getCurrentTaxYear())
+      result must be(taxDateUtils.getCurrentTaxYear())
     }
 
     "it should throw an InvalidBikTypeURIException if the Bik is not registered valid" in {
@@ -632,18 +670,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
   }
 
-  "When initialising the ExclusionListController the exclusion variable" must {
-   " be true" in {
-      val cfg: ExclusionListConfiguration = new {
-        val test = "ExclusionListConfigurationTest"
-      } with ExclusionListConfiguration {
-        assert(exclusionsAllowed)
-      }
-    }
-  }
-
   "When remove exclusions are committed the controller" must {
-   " show the what next page" in {
+    " show the what next page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -659,7 +687,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When remove Exclusions Commit when exclusions are disabled the controller" must {
-   " should show an error page" in {
+    " should show an error page" in {
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
@@ -674,7 +702,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When remove is called the controller" must {
-   " show the confirmation page" in {
+    " show the confirmation page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -690,7 +718,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When remove is called when exclusion mode is disabled the controller" must {
-   " should show an error page" in {
+    " should show an error page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -706,7 +734,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When updateExclusions is called the controller" must {
-   " redirect to the what next page" in {
+    " redirect to the what next page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -722,7 +750,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When updateExclusions is called but exclusions are disabled the controller" must {
-   " redirect back to the overview page" in {
+    " redirect back to the overview page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -738,7 +766,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When updateMultipleExclusions is called the controller" must {
-   " redirect to the what next page" in {
+    " redirect to the what next page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -754,7 +782,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When updateMultipleExclusions is called but exclusions are disabled the controller" must {
-   " redirect back to the overview page" in {
+    " redirect back to the overview page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = individualsForm.fill(EiLPersonList(ListOfPeople))
@@ -795,7 +823,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   // Tests below to check input validation
   "When updating exclusions," must {
     "an invalid input on first name" in {
-      val TEST_EIL_PERSON: List[EiLPerson] = List(EiLPerson("AA111111"," ", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0))
+      val TEST_EIL_PERSON: List[EiLPerson] = List(EiLPerson("AA111111", " ", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0))
       val TEST_YEAR_CODE = "cy"
       val TEST_IABD_VALUE = "car"
       val f = individualsForm.fill(EiLPersonList(TEST_EIL_PERSON))

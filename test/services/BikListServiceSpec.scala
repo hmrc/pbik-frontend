@@ -22,14 +22,12 @@ import controllers.FakePBIKApplication
 import models._
 import org.mockito.Mockito.{reset, when}
 import org.specs2.mock.Mockito
-import play.api.mvc.{AnyContent, AnyContentAsEmpty}
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.mvc.AnyContentAsEmpty
+import play.api.{Configuration, Environment}
 import support.TestAuthUser
-import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.play.test.UnitSpec
+import utils.{ControllersReferenceData, URIInformation}
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
@@ -40,38 +38,32 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with Mockito with Fa
     val mockTierConnector: HmrcTierConnector = mock[HmrcTierConnector]
     val headers: Map[String, String] = Map(HeaderTags.ETAG -> "1", HeaderTags.X_TXID -> "1")
 
-    val bikListService: BikListService = running(fakeApplication) {
-      new BikListService {
-        override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+    val bikListService: BikListService = {
+      new BikListService(mock[AppConfig],
+        mockTierConnector,
+        injected[Configuration],
+        injected[ControllersReferenceData],
+        injected[Environment],
+          injected[URIInformation]) {
         override lazy val pbikHeaders: Map[String, String] = headers
-        override val tierConnector: HmrcTierConnector = mockTierConnector
       }
     }
-    val user: AuthContext = createDummyUser("user001")
-    val hc: HeaderCarrier = HeaderCarrier()
+
+
+    implicit val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockrequest)
+    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     "Be able to get the BIKS for the current year - 2 returned" in {
       val listBiks = List(Bik("Car & Car Fuel", 30, 10), Bik("Van Fuel", 40, 10))
 
       when(mockTierConnector.genericGetCall[List[Bik]](any, any, any, any)(any, any, any, any)).thenReturn(Future.successful(listBiks))
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val hc: HeaderCarrier = HeaderCarrier()
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
+
       val result: (Map[String, String], List[Bik]) = Await.result(bikListService.currentYearList, 10 seconds)
       result shouldBe(null, listBiks)
     }
 
     "Be able to get the BIKS for the current year - no biks returned" in {
       when(mockTierConnector.genericGetCall[List[Bik]](any, any, any, any)(any, any, any, any)).thenThrow(new IllegalStateException())
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val hc: HeaderCarrier = HeaderCarrier()
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
       // Intercept exception
       try {
         val result: Future[(Map[String, String], List[Bik])] = bikListService.currentYearList
@@ -87,12 +79,8 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with Mockito with Fa
       val listBiks = List(Bik("Car & Car Fuel", 30, 10), Bik("Van Fuel", 40, 10))
 
       when(mockTierConnector.genericGetCall[List[Bik]](any, any, any, any)(any, any, any, any)).thenReturn(Future.successful(listBiks))
-      val request = FakeRequest()
       implicit val hc: HeaderCarrier = HeaderCarrier()
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
+
       val result = Await.result(bikListService.nextYearList, 10 seconds)
 
       result shouldBe(null, listBiks)
@@ -100,12 +88,7 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with Mockito with Fa
 
     "Be able to get the BIKS for the next year - no biks returned" in {
       when(mockTierConnector.genericGetCall[List[Bik]](any, any, any, any)(any, any, any, any)).thenThrow(new IllegalStateException())
-      val request = FakeRequest()
-      implicit val hc: HeaderCarrier = HeaderCarrier()
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
+
       // Intercept exception
       try {
         val result = bikListService.nextYearList
