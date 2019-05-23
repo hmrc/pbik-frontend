@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.{AppConfig, PbikAppConfig}
+import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
@@ -27,12 +27,16 @@ import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.concurrent.ScalaFutures._
 import org.scalatestplus.play.PlaySpec
+import play.api.{Application, Configuration, Environment}
 import play.api.data.Form
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Lang
 import play.api.i18n.Messages.Implicits._
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
 import play.api.mvc._
+import play.api.mvc.Results._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -50,6 +54,16 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec with FormMappings with TestAuthUser
   with FakePBIKApplication {
 
+  override val fakeApplication: Application = GuiceApplicationBuilder()
+    .overrides(bind[AppConfig].toInstance(mock[PbikAppConfig]))
+    .overrides(bind[HmrcTierConnector].toInstance(mock[HmrcTierConnector]))
+    .overrides(bind[BikListService].to(classOf[StubBikListService]))
+    .overrides(bind[RegistrationService].to(classOf[StubbedRegistrationService]))
+    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
+    .build()
+
+
 //  implicit val ac: AuthContext = createDummyUser("testid")
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
@@ -57,25 +71,35 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
 
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-  class StubBikListService @Inject()(bikListService: BikListService) {
+  class StubBikListService @Inject()(pbikAppConfig: AppConfig,
+                                     tierConnector: HmrcTierConnector,
+                                     runModeConfiguration: Configuration,
+                                     controllersReferenceData: ControllersReferenceData,
+                                     environment: Environment,
+                                     uriInformation: URIInformation) extends BikListService (
+  pbikAppConfig,
+  tierConnector,
+  runModeConfiguration,
+  controllersReferenceData,
+  environment,
+  uriInformation
+  ) {
 
-    lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
     lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
     /*(n => new Bik("" + (n + 1), 10))*/
-    lazy val pbikHeaders: Map[String, String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
+    override lazy val pbikHeaders: Map[String, String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
 
-    def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
+    override def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
     Future[(Map[String, String], List[Bik])] = {
       Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
     }
 
-    def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
+    override def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
     Future[(Map[String, String], List[Bik])] = {
       Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
     }
 
-    def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)
+    override def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)
                               (implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
       Future(CYCache)(scala.concurrent.ExecutionContext.Implicits.global)
     }
@@ -86,13 +110,31 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
     override def status = 200
   }
 
-  class StubbedRegistrationService @Inject()(val tierConnector: HmrcTierConnector) {
+  class StubbedRegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
+                                             tierConnector: HmrcTierConnector,
+                                             bikListService: BikListService,
+                                             runModeConfiguration: Configuration,
+                                             environment: Environment,
+                                             taxDateUtils: TaxDateUtils,
+                                             context: PbikContext,
+                                             controllersReferenceData: ControllersReferenceData,
+                                             uRIInformation: URIInformation,
+                                             externalURLs: ExternalUrls,
+                                             localFormPartialRetriever: LocalFormPartialRetriever) extends RegistrationService(
 
-    val pbikAppConfig: AppConfig = mock[AppConfig]
+    tierConnector,
+    bikListService,
+    runModeConfiguration,
+    environment,
+    taxDateUtils,
+    controllersReferenceData,
+    uRIInformation)(
+    pbikAppConfig,
+    context,
+    externalURLs,
+    localFormPartialRetriever
+  ) {
 
-  //  override def bikListService: BikListService = new StubBikListService
-
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
     val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
     val registeredListOption = List.empty[Bik]
@@ -108,10 +150,10 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
     Future[Result] = {
       year match {
         case dateRange.cyminus1 => {
-          Future.successful(Ok(views.html.registration.currentTaxYear(mockFormRegistrationList, dateRange, mockRegistrationItemList, allRegisteredListOption, PbikAppConfig.biksNotSupported, biksAvailableCount = Some(17), empRef = request.empRef)))
+          Future.successful(Ok(views.html.registration.currentTaxYear(mockFormRegistrationList, dateRange, mockRegistrationItemList, allRegisteredListOption, nonLegislationBiks = List(0), decommissionedBiks = List(0), biksAvailableCount = Some(17), empRef = request.empRef)))
         }
         case _ => {
-          Future.successful(Ok(views.html.registration.nextTaxYear(mockFormRegistrationList, additive = true, dateRange, mockRegistrationItemList, registeredListOption, PbikAppConfig.biksNotSupported, biksAvailableCount = Some(17), empRef = request.empRef))
+          Future.successful(Ok(views.html.registration.nextTaxYear(mockFormRegistrationList, additive = true, dateRange, mockRegistrationItemList, registeredListOption, nonLegislationBiks = List(0), decommissionedBiks = List(0), biksAvailableCount = Some(17), empRef = request.empRef))
           )
         }
       }
@@ -119,43 +161,77 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
 
   }
 
-  class MockHomePageController @Inject()() {
-//    val pbikAppConfig: PbikAppConfig = mock[PbikAppConfig]
-//    val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
-//    val authenticate: AuthAction = testAuthAction
-////    override val noSessionCheck: NoSessionCheckAction = testNoSessionCheckAction
-//
-//    def bikListService: StubBikListService = stubBikListService
+  class MockHomePageController @Inject()(bikListService: BikListService,
+                                         authenticate: AuthAction,
+                                         noSessionCheck: NoSessionCheckAction,
+                                         pbikAppConfig: PbikAppConfig,
+                                         runModeConfiguration: Configuration,
+                                         environment: Environment,
+                                         taxDateUtils: TaxDateUtils,
+                                         controllersReferenceData: ControllersReferenceData,
+                                         splunkLogger: SplunkLogger,
+                                         context: PbikContext,
+                                         uRIInformation: URIInformation,
+                                         externalURLs: ExternalUrls,
+                                         localFormPartialRetriever: LocalFormPartialRetriever) extends HomePageController(
+    bikListService,
+    authenticate,
+    noSessionCheck,
+    runModeConfiguration,
+    environment,
+    controllersReferenceData,
+    splunkLogger)(
+    taxDateUtils,
+    pbikAppConfig,
+    context,
+    uRIInformation,
+    externalURLs,
+    localFormPartialRetriever
+  )
 
-    def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
-      Future.successful(AuditResult.Success)
-    }
+  class MockRegistrationController @Inject()(pbikAppConfig: PbikAppConfig,
+                                             registrationService: RegistrationService,
+                                             bikListService: BikListService,
+                                             tierConnector: HmrcTierConnector,
+                                             authenticate: AuthAction,
+                                             noSessionCheck: NoSessionCheckAction,
+                                             runModeConfiguration: Configuration,
+                                             environment: Environment,
+                                             taxDateUtils: TaxDateUtils,
+                                             context: PbikContext,
+                                             whatNextPageController: WhatNextPageController,
+                                             controllersReferenceData: ControllersReferenceData,
+                                             splunkLogger: SplunkLogger,
+                                             uriInformation: URIInformation,
+                                             externalURLs: ExternalUrls,
+                                             localFormPartialRetriever: LocalFormPartialRetriever) extends ManageRegistrationController(
 
-  }
-
-  class MockRegistrationController @Inject()() extends ManageRegistrationController with ControllersReferenceData {
+    registrationService,
+    bikListService,
+    tierConnector,
+    authenticate,
+    noSessionCheck,
+    runModeConfiguration,
+    environment,
+    taxDateUtils,
+    whatNextPageController,
+    controllersReferenceData,
+    splunkLogger)(
+    pbikAppConfig,
+    context,
+    uriInformation,
+    externalURLs,
+    localFormPartialRetriever
+  ) {
 
     import org.scalatest.time.{Millis, Seconds, Span}
-
-    override val authenticate: AuthAction = new TestAuthAction
-  //  override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
 
     implicit val defaultPatience: ScalaFutures.PatienceConfig =
       PatienceConfig(timeout = Span(7, Seconds), interval = Span(600, Millis))
 
-    def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
-      Future.successful(AuditResult.Success)
-    }
-
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-
-    override def bikListService: BikListService = new StubBikListService
-
-    override def registrationService = new StubbedRegistrationService
 
     implicit val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
 
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
 
     val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
@@ -212,7 +288,7 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
 
   "The Homepage Controller" should {
     "set the request language and redirect to the homepage" in {
-      val mockController = new MockHomePageController
+      val mockController = app.injector.instanceOf[MockHomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshrequest
 //      implicit val ac: AuthContext = createDummyUser("VALID_ID")
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
@@ -225,7 +301,7 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
 
   "HomePageController" should {
     "display the navigation page" in {
-      val homePageController = new MockHomePageController
+      val homePageController = app.injector.instanceOf[MockHomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> sessionId,
         SessionKeys.token -> "RANDOMTOKEN",

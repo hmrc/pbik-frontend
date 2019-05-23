@@ -40,7 +40,7 @@ import utils.{ControllersReferenceData, URIInformation, _}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ManageRegistrationController @Inject()(implicit val pbikAppConfig: PbikAppConfig,
+class ManageRegistrationController @Inject()(
                                              registrationService: RegistrationService,
                                              val bikListService: BikListService,
                                              tierConnector: HmrcTierConnector,
@@ -49,10 +49,11 @@ class ManageRegistrationController @Inject()(implicit val pbikAppConfig: PbikApp
                                              val runModeConfiguration: Configuration,
                                              environment: Environment,
                                              taxDateUtils: TaxDateUtils,
-                                             implicit val context: PbikContext,
                                              whatNextPageController: WhatNextPageController,
                                              controllersReferenceData: ControllersReferenceData,
-                                             splunkLogger: SplunkLogger,
+                                             splunkLogger: SplunkLogger)(
+                                             implicit val pbikAppConfig: PbikAppConfig,
+                                             implicit val context: PbikContext,
                                              implicit val uriInformation: URIInformation,
                                              implicit val externalURLs: ExternalUrls,
                                              implicit val localFormPartialRetriever: LocalFormPartialRetriever
@@ -98,7 +99,7 @@ class ManageRegistrationController @Inject()(implicit val pbikAppConfig: PbikApp
       })
       val sortedData = BikListUtils.sortRegistrationsAlphabeticallyByLabels(initialData)
       if (sortedData.active.isEmpty) {
-        Ok(views.html.errorPage(controllersReferenceData.NO_MORE_BENEFITS_TO_REMOVE_CY1,
+        Ok(views.html.errorPage(ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_REMOVE_CY1,
           taxYearRange,
           FormMappingsConstants.CYP1,
           -1,
@@ -201,7 +202,7 @@ class ManageRegistrationController @Inject()(implicit val pbikAppConfig: PbikApp
 
   def removeNextYearRegisteredBenefitTypes: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val persistentBiks: List[Bik] = controllersReferenceData.generateListOfBiksBasedOnForm(controllersReferenceData.BIK_REMOVE_STATUS)
+      val persistentBiks: List[Bik] = controllersReferenceData.generateListOfBiksBasedOnForm(ControllersReferenceDataCodes.BIK_REMOVE_STATUS)
       val registeredFuture = updateBiksFutureAction(controllersReferenceData.YEAR_RANGE.cy, persistentBiks, additive = false)
       controllersReferenceData.responseErrorHandler(registeredFuture)
   }
@@ -229,7 +230,7 @@ class ManageRegistrationController @Inject()(implicit val pbikAppConfig: PbikApp
     implicit request =>
       val resultFuture = {
 
-        val persistentBiks: List[Bik] = controllersReferenceData.generateListOfBiksBasedOnForm(controllersReferenceData.BIK_ADD_STATUS)
+        val persistentBiks: List[Bik] = controllersReferenceData.generateListOfBiksBasedOnForm(ControllersReferenceDataCodes.BIK_ADD_STATUS)
         updateBiksFutureAction(controllersReferenceData.YEAR_RANGE.cyminus1, persistentBiks, additive = true)
       }
       controllersReferenceData.responseCheckCYEnabled(resultFuture)
@@ -237,7 +238,7 @@ class ManageRegistrationController @Inject()(implicit val pbikAppConfig: PbikApp
 
   def addNextYearRegisteredBenefitTypes: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val persistentBiks: List[Bik] = controllersReferenceData.generateListOfBiksBasedOnForm(controllersReferenceData.BIK_ADD_STATUS)
+      val persistentBiks: List[Bik] = controllersReferenceData.generateListOfBiksBasedOnForm(ControllersReferenceDataCodes.BIK_ADD_STATUS)
       val actionFuture = updateBiksFutureAction(controllersReferenceData.YEAR_RANGE.cy, persistentBiks, additive = true)
       controllersReferenceData.responseErrorHandler(actionFuture)
   }
@@ -280,7 +281,7 @@ class ManageRegistrationController @Inject()(implicit val pbikAppConfig: PbikApp
                                     persistentBiks: List[Bik], changes: List[Bik])
                                    (implicit request: AuthenticatedRequest[AnyContent]): Result = {
     registrationList.reason match {
-      case Some(reasonValue) if controllersReferenceData.BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue) => {
+      case Some(reasonValue) if ControllersReferenceDataCodes.BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue) => {
         reasonValue.info match {
           case _ if reasonValue.selectionValue.equals("other") && reasonValue.info.getOrElse("").trim.isEmpty => {
             Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(uriInformation.iabdValueURLMapper(persistentBiks.head.iabdType)

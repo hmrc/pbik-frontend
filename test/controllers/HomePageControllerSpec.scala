@@ -16,14 +16,13 @@
 
 package controllers
 
-import config.{AppConfig, PbikAppConfig}
+import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
 import models._
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
-import play.api.{Application, Configuration, Environment}
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
@@ -32,6 +31,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.{Application, Configuration, Environment}
 import services.BikListService
 import support.TestAuthUser
 import uk.gov.hmrc.http.logging.SessionId
@@ -54,7 +54,6 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
     .overrides(bind[BikListService].to(classOf[StubBikListService]))
     .build()
 
-
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   class StubBikListService @Inject()(pbikAppConfig: PbikAppConfig,
@@ -75,13 +74,11 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
 
     override def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
     Future[(Map[String, String], List[Bik])] = {
-
       Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
     }
 
     override def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
     Future[(Map[String, String], List[Bik])] = {
-
       Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
     }
 
@@ -93,27 +90,71 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
   }
 
 
-  class MockHomePageController @Inject()() extends HomePageController(
-    pbikAppConfig,
+  class MockHomePageController @Inject()(bikListService: BikListService,
+                                         pbikAppConfig: PbikAppConfig,
+                                         authAction: AuthAction,
+                                         noSessionCheckAction: NoSessionCheckAction,
+                                         runModeConfiguration: Configuration,
+                                         environment: Environment,
+                                         taxDateUtils: TaxDateUtils,
+                                         controllersReferenceData: ControllersReferenceData,
+                                         splunkLogger: SplunkLogger,
+                                         context: PbikContext,
+                                         uRIInformation: URIInformation,
+                                         externalURLs: ExternalUrls,
+                                         localFormPartialRetriever: LocalFormPartialRetriever) extends HomePageController(
     bikListService,
-    tierConnector) {
-
-    val authenticate: AuthAction = new TestAuthAction
-    override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
+    authAction,
+    noSessionCheckAction,
+    runModeConfiguration,
+    environment,
+    controllersReferenceData,
+    splunkLogger)(
+    taxDateUtils,
+    pbikAppConfig,
+    context,
+    uRIInformation,
+    externalURLs,
+    localFormPartialRetriever
+  ) {
 
     def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
       Future.successful(AuditResult.Success)
     }
-
   }
 
-  class MockHomePageControllerCYEnabled extends MockHomePageController {
+  class MockHomePageControllerCYEnabled @Inject()(bikListService: BikListService,
+    pbikAppConfig: PbikAppConfig,
+    authAction: AuthAction,
+    noSessionCheckAction: NoSessionCheckAction,
+    runModeConfiguration: Configuration,
+    environment: Environment,
+    taxDateUtils: TaxDateUtils,
+    controllersReferenceData: ControllersReferenceData,
+    splunkLogger: SplunkLogger,
+    context: PbikContext,
+    uRIInformation: URIInformation,
+    externalURLs: ExternalUrls,
+    localFormPartialRetriever: LocalFormPartialRetriever) extends MockHomePageController(bikListService,
+      pbikAppConfig,
+      authAction,
+      noSessionCheckAction,
+      runModeConfiguration,
+      environment,
+      taxDateUtils,
+      controllersReferenceData,
+      splunkLogger,
+      context,
+      uRIInformation,
+      externalURLs,
+      localFormPartialRetriever
+  ) {
     when(pbikAppConfig.cyEnabled).thenReturn(true)
     when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
   }
 
   "When checking if from YTA referer ends /account" in {
-    val homePageController = HomePageController
+    val homePageController = app.injector.instanceOf[HomePageController]
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(
       "referer" -> "/account"
     )
@@ -122,7 +163,7 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
   }
 
   "When checking if from YTA referer ends /business-account" in {
-    val homePageController = HomePageController
+    val homePageController = app.injector.instanceOf[HomePageController]
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(
       "referer" -> "/business-account"
     )
@@ -131,7 +172,7 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
   }
 
   "When checking if from YTA referer ends /someother" in {
-    val homePageController = HomePageController
+    val homePageController = app.injector.instanceOf[HomePageController]
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(
       "referer" -> "/someother"
     )
@@ -141,7 +182,7 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
 
   "HomePageController" should {
     "show Unauthorised if the session is not authenticated" in {
-      val homePageController = new MockHomePageController
+      val homePageController = app.injector.instanceOf[MockHomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> "hackmeister",
         SessionKeys.token -> "RANDOMTOKEN",
@@ -151,7 +192,7 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
     }
 
     "logout and redirect to feed back page" in {
-      val homePageController = new MockHomePageController
+      val homePageController = app.injector.instanceOf[MockHomePageController]
       val result = homePageController.signout.apply(FakeRequest())
 
       status(result) mustBe SEE_OTHER
@@ -162,7 +203,7 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
 
   "When a valid user loads the CY warning but CY is disabled the HomePageController" should {
     "show the CY disabled error page" in {
-      val homePageController = new MockHomePageController
+      val homePageController = app.injector.instanceOf[MockHomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       //        implicit val ac: AuthContext = createDummyUser("VALID_ID")
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
@@ -175,7 +216,7 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
 
   "When a valid user loads the CY warning page and CY mode is enabled the HomePageController" should {
     "show the page" in {
-      val homePageController = new MockHomePageControllerCYEnabled
+      val homePageController = app.injector.instanceOf[MockHomePageControllerCYEnabled]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       //      implicit val ac: AuthContext = createDummyUser("VALID_ID")
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
@@ -187,7 +228,7 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
 
   "HomePageController" should {
     "display the navigation page" in {
-      val homePageController = new MockHomePageController
+      val homePageController = app.injector.instanceOf[MockHomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> sessionId,
         SessionKeys.token -> "RANDOMTOKEN",

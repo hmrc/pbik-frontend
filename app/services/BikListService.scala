@@ -34,14 +34,14 @@ class BikListService @Inject()(val pbikAppConfig: AppConfig,
                                val runModeConfiguration: Configuration,
                                controllersReferenceData: ControllersReferenceData,
                                environment: Environment,
-                               uRIInformation: URIInformation) {
+                               uriInformation: URIInformation) {
 
   val mode: Mode = environment.mode
 
   def pbikHeaders: Map[String, String] = Map[String, String]()
 
   def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {
-    val response = tierConnector.genericGetCall[List[Bik]](uRIInformation.baseUrl, uRIInformation.getRegisteredPath,
+    val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath,
       request.empRef, controllersReferenceData.YEAR_RANGE.cyminus1)
 
     response.map { resultOption: List[Bik] =>
@@ -50,7 +50,7 @@ class BikListService @Inject()(val pbikAppConfig: AppConfig,
   }
 
   def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {
-    val response = tierConnector.genericGetCall[List[Bik]](uRIInformation.baseUrl, uRIInformation.getRegisteredPath,
+    val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath,
       request.empRef, controllersReferenceData.YEAR_RANGE.cy)
 
     response.map { resultOption: List[Bik] =>
@@ -59,8 +59,8 @@ class BikListService @Inject()(val pbikAppConfig: AppConfig,
   }
 
   def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
-    val newPath = if (path == "") uRIInformation.getRegisteredPath else path
-    val response = tierConnector.genericGetCall[List[Bik]](uRIInformation.baseUrl, newPath, empRef, year)
+    val newPath = if (path == "") uriInformation.getRegisteredPath else path
+    val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, newPath, empRef, year)
     response
   }
 }

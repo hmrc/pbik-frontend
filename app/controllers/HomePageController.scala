@@ -38,12 +38,12 @@ import scala.util.{Success, Try}
 class HomePageController @Inject()(bikListService: BikListService,
                                    authenticate: AuthAction,
                                    val noSessionCheck: NoSessionCheckAction,
-                                   implicit val pbikAppConfig: PbikAppConfig,
                                    val runModeConfiguration: Configuration,
                                    environment: Environment,
-                                   implicit val taxDateUtils: TaxDateUtils,
                                    controllersReferenceData: ControllersReferenceData,
-                                   splunkLogger: SplunkLogger,
+                                   splunkLogger: SplunkLogger)(
+                                   implicit val taxDateUtils: TaxDateUtils,
+                                   implicit val pbikAppConfig: PbikAppConfig,
                                    implicit val context: PbikContext,
                                    implicit val uRIInformation: URIInformation,
                                    implicit val externalURLs: ExternalUrls,
@@ -53,7 +53,7 @@ class HomePageController @Inject()(bikListService: BikListService,
 
   def notAuthorised: Action[AnyContent] = authenticate {
     implicit request =>
-      Ok(views.html.errorPage(controllersReferenceData.AUTHORISATION_ERROR, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef)))
+      Ok(views.html.errorPage(ControllersReferenceDataCodes.AUTHORISATION_ERROR, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef)))
   }
 
   def signout: Action[AnyContent] = UnauthorisedAction {
@@ -86,8 +86,8 @@ class HomePageController @Inject()(bikListService: BikListService,
         currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
         nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
       } yield {
-        val fromYTA = if (request.session.get(controllersReferenceData.SESSION_FROM_YTA).isDefined) {
-          request.session.get(controllersReferenceData.SESSION_FROM_YTA).get
+        val fromYTA = if (request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).isDefined) {
+          request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).get
         }
         else {
           isFromYTA
@@ -96,7 +96,7 @@ class HomePageController @Inject()(bikListService: BikListService,
         Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2,
           biksListOptionCY.size, biksListOptionCYP1.size, fromYTA.toString, empRef = request.empRef))
           .addingToSession(nextYearList._1.toSeq: _*)
-          .addingToSession(controllersReferenceData.SESSION_FROM_YTA -> fromYTA.toString)
+          .addingToSession(ControllersReferenceDataCodes.SESSION_FROM_YTA -> fromYTA.toString)
       }
       controllersReferenceData.responseErrorHandler(pageLoadFuture)
 
