@@ -38,7 +38,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, EiLListService}
-import support.TestAuthUser
+import support.{ServiceExclusionSetup, StubEiLListService, TestAuthUser}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -47,7 +47,7 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils.{ControllersReferenceData, URIInformation, _}
 import org.scalatest.time.{Millis, Seconds, Span}
-import play.api.inject.bind
+import play.api.inject.{Injector, bind}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
@@ -67,6 +67,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
 
   val controllersReferenceData: ControllersReferenceData = app.injector.instanceOf[ControllersReferenceData]
+  val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   val date = new LocalDate()
   val dateRange: TaxYearRange = if (date.getMonthOfYear < 4 || (date.getMonthOfYear == 4 && date.getDayOfMonth < 6)) {
     models.TaxYearRange(date.getYear - 1, date.getYear, date.getYear + 1)
@@ -100,36 +101,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
              ]""")
   }
 
-  class StubEiLListService @Inject()(pbikAppConfig: PbikAppConfig,
-                                     tierConnector: HmrcTierConnector,
-                                     runModeConfiguration : Configuration,
-                                     environment : Environment,
-                                     uRIInformation: URIInformation) extends EiLListService(
-    pbikAppConfig,
-    tierConnector,
-    runModeConfiguration,
-    environment,
-    uRIInformation)
-  {
-      override def currentYearEiL(iabdType: String, year: Int)(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[List[EiLPerson]] = {
-        Future.successful(ListOfPeople)
-      }
-  }
 
-  class StubEiLListServiceOneExclusion @Inject()(pbikAppConfig: PbikAppConfig,
-                                                 tierConnector: HmrcTierConnector,
-                                                 runModeConfiguration : Configuration,
-                                                 environment : Environment,
-                                                 uRIInformation: URIInformation) extends StubEiLListService(
-    pbikAppConfig,
-    tierConnector,
-    runModeConfiguration,
-    environment,
-    uRIInformation) {
-    override def currentYearEiL(iabdType: String, year: Int)(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[List[EiLPerson]] = {
-      Future.successful(List(ListOfPeople.head))
-    }
-  }
 
 
   class StubBikListService @Inject()(pbikAppConfig: AppConfig,
@@ -320,15 +292,10 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }))
   }
 
-  //TODO
-  class MockNoRegisteredBiksExclusionListController extends MockExclusionListController {
-    override val  bikListService: BikListService = new StubNoRegisteredBikListService
-  }
-
-  //TODO
-  class MockEiLServiceExclusionController extends MockExclusionListController {
-    override val eiLListService = new StubEiLListServiceOneExclusion
-  }
+//  //TODO
+//  class MockNoRegisteredBiksExclusionListController extends MockExclusionListController {
+//    override val  bikListService: BikListService = new StubNoRegisteredBikListService
+//  }
 
 
   "When testing exclusions the exclusion functionality" must {
@@ -595,11 +562,16 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When loading the searchResults page for a non-NINO search, an authorised user" must {
-    "see the NON-NINO specific fields" in {
+    "see the NON-NINO specific fields" in new ServiceExclusionSetup {
+
+      val injector: Injector = new GuiceApplicationBuilder()
+        .bindings(GuiceTestModule)
+        .injector()
+
       val ninoSearchPerson = EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0)
       val f = controllersReferenceData.exclusionSearchFormWithoutNino.fill(ninoSearchPerson)
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val mockExclusionController: MockExclusionListController = new MockEiLServiceExclusionController
+      val mockExclusionController: MockExclusionListController = injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionController.searchResults("cy", "car", ControllersReferenceDataCodes.FORM_TYPE_NONINO).apply(formrequest))(timeout)
@@ -688,8 +660,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
   }
-
-  val taxDateUtils: TaxDateUtils
 
   "When validating a year the controller" must {
     "should return the current tax year if the validation passes for cy" in {

@@ -132,10 +132,10 @@ else HtmlFormat.empty
         ssoUrl = config.ssoUrl,
         scriptElem = scriptElement,
         gaCalls = gaCalls)
-<link rel="stylesheet" href='@routes.AssetsController.at("stylesheets/pbik.css")' media="screen" type="text/css" />
-<link rel="stylesheet" href='@routes.AssetsController.at("stylesheets/urBanner.css")' media="screen" type="text/css" />
-<script type="text/javascript" src='@routes.AssetsController.at("javascripts/pbik.js")'></script>
-<script type="text/javascript" src='@routes.AssetsController.at("javascripts/urBanner.js")'></script>
+<link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/pbik.css")' media="screen" type="text/css" />
+<link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/urBanner.css")' media="screen" type="text/css" />
+<script type="text/javascript" src='@routes.Assets.versioned("javascripts/pbik.js")'></script>
+<script type="text/javascript" src='@routes.Assets.versioned("javascripts/urBanner.js")'></script>
 }
 
 @govuk_template(Some(title), None)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), headerNav.isDefined)(content)
