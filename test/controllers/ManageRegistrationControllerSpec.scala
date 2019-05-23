@@ -212,15 +212,15 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
     override def status = 200
   }
 
-  class StubbedRegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
-                                             tierConnector: HmrcTierConnector,
+  class StubbedRegistrationService @Inject()(tierConnector: HmrcTierConnector,
                                              bikListService: BikListService,
                                              runModeConfiguration: Configuration,
                                              environment: Environment,
                                              taxDateUtils: TaxDateUtils,
-                                             context: PbikContext,
                                              controllersReferenceData: ControllersReferenceData,
                                              uRIInformation: URIInformation,
+                                             pbikAppConfig: PbikAppConfig,
+                                             context: PbikContext,
                                              externalURLs: ExternalUrls,
                                              localFormPartialRetriever: LocalFormPartialRetriever) extends RegistrationService(
 
