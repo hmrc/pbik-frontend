@@ -61,7 +61,12 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
   ).configure(config)
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
+    .overrides(bind[AppConfig].toInstance(mock[AppConfig]))
+    .overrides(bind[HmrcTierConnector].toInstance(mock[HmrcTierConnector]))
     .build()
+
+  implicit val context: PbikContext = mock[PbikContext]
+
 
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n=> RegistrationItem("" + (n + 1), active = true, enabled = true))
@@ -207,23 +212,30 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
     override def status = 200
   }
 
-  class StubbedRegistrationService extends RegistrationService(
-    injected[PbikAppConfig],
-    injected[HmrcTierConnector],
-    injected[BikListService],
-    injected[Configuration],
-    injected[Environment],
-    injected[TaxDateUtils],
-    injected[PbikContext],
-    injected[ControllersReferenceData],
-    injected[URIInformation],
-    injected[ExternalUrls],
-    injected[LocalFormPartialRetriever]
- ) {
+  class StubbedRegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
+                                             tierConnector: HmrcTierConnector,
+                                             bikListService: BikListService,
+                                             runModeConfiguration: Configuration,
+                                             environment: Environment,
+                                             taxDateUtils: TaxDateUtils,
+                                             context: PbikContext,
+                                             controllersReferenceData: ControllersReferenceData,
+                                             uRIInformation: URIInformation,
+                                             externalURLs: ExternalUrls,
+                                             localFormPartialRetriever: LocalFormPartialRetriever) extends RegistrationService(
 
-    //override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    //override def bikListService: BikListService = new StubBikListService
-   // override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
+    tierConnector,
+    bikListService,
+    runModeConfiguration,
+    environment,
+    taxDateUtils,
+    controllersReferenceData,
+    uRIInformation)(
+    pbikAppConfig,
+    context,
+    externalURLs,
+    localFormPartialRetriever
+ ) {
     val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
     val registeredListOption = List.empty[Bik]

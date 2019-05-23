@@ -18,6 +18,7 @@ package utils
 
 import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import controllers.ExternalUrls
+import ControllersReferenceDataCodes._
 import javax.inject.Inject
 import models._
 import play.api.Logger
@@ -32,14 +33,7 @@ import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
-                                         implicit val context: PbikContext,
-                                         implicit val pbikAppConfig: AppConfig,
-                                         implicit val externalURLs: ExternalUrls,
-                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FormMappings {
-
-  def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
-
+object ControllersReferenceDataCodes {
   val CY_RESTRICTED = "ServiceMessage.10003"
   val FEATURE_RESTRICTED = "ServiceMessage.10002"
   val DEFAULT_ERROR = "ServiceMessage.10001"
@@ -80,6 +74,17 @@ class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
   val EXLCUSIONS_RADIO_BUTTTON_SELECTION_CONFIRMATION_BACK_BUTTON_ERROR = "ErrorPage.backButtonNoCache"
   val AUTHORISATION_ERROR = "ErrorPage.authorisationError"
   val AUTHORISATION_TITLE = "ErrorPage.authorisationTitle"
+}
+
+class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
+                                         implicit val context: PbikContext,
+                                         implicit val pbikAppConfig: AppConfig,
+                                         implicit val externalURLs: ExternalUrls,
+                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FormMappings {
+
+  def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
+
+
 
   def generateListOfBiksBasedOnForm(bikStatus: Int)(implicit request: Request[AnyContent]): List[Bik] = {
     val persistentBiks: List[Bik] = objSelectedForm.bindFromRequest.fold(

@@ -34,17 +34,19 @@ import utils.{ControllersReferenceData, URIInformation, _}
 
 import scala.concurrent.Future
 
-class RegistrationService @Inject()(implicit val pbikAppConfig: PbikAppConfig,
+class RegistrationService @Inject()(
                                     tierConnector: HmrcTierConnector,
                                     val bikListService: BikListService,
                                     val runModeConfiguration: Configuration,
                                     environment: Environment,
                                     taxDateUtils: TaxDateUtils,
-                                    implicit val context: PbikContext,
                                     controllersReferenceData: ControllersReferenceData,
-                                    uRIInformation: URIInformation,
+                                    uriInformation: URIInformation)(
+                                    implicit val pbikAppConfig: PbikAppConfig,
+                                    implicit val context: PbikContext,
                                     implicit val externalURLs: ExternalUrls,
-                                    implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController {
+                                    implicit val localFormPartialRetriever: LocalFormPartialRetriever
+) extends FrontendController {
   val mode: Mode = environment.mode
 
   def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
@@ -67,9 +69,9 @@ class RegistrationService @Inject()(implicit val pbikAppConfig: PbikAppConfig,
     }
 
     for {
-      biksListOption: List[Bik] <- bikListService.registeredBenefitsList(year, EmpRef.empty)(uRIInformation.getBenefitTypesPath)
-      registeredListOption <- tierConnector.genericGetCall[List[Bik]](uRIInformation.baseUrl,
-        uRIInformation.getRegisteredPath,
+      biksListOption: List[Bik] <- bikListService.registeredBenefitsList(year, EmpRef.empty)(uriInformation.getBenefitTypesPath)
+      registeredListOption <- tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl,
+        uriInformation.getRegisteredPath,
         request.empRef,
         year)
       nonLegislationList = nonLegislationBiks.map { x =>
@@ -92,14 +94,14 @@ class RegistrationService @Inject()(implicit val pbikAppConfig: PbikAppConfig,
       val sortedMegedData: RegistrationList = utils.BikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
 
       if (sortedMegedData.active.isEmpty) {
-        Ok(views.html.errorPage(controllersReferenceData.NO_MORE_BENEFITS_TO_ADD,
+        Ok(views.html.errorPage(ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
           controllersReferenceData.YEAR_RANGE,
           isCurrentYear,
           code = -1,
-          pageHeading = controllersReferenceData.NO_MORE_BENEFITS_TO_ADD_HEADING,
+          pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING,
           empRef = Some(request.empRef)))
       } else {
-        Ok(generateViewBasedOnFormItems(uRIInformation.objSelectedForm.fill(sortedMegedData),
+        Ok(generateViewBasedOnFormItems(uriInformation.objSelectedForm.fill(sortedMegedData),
           fetchFromCacheMapBiksValue, registeredListOption, nonLegislationBiks, pbikAppConfig.biksDecommissioned, Some(biksListOption.size)))
       }
     }
