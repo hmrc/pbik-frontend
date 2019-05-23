@@ -18,6 +18,7 @@ package controllers
 
 import config._
 import connectors.HmrcTierConnector
+import javax.inject.Inject
 import models._
 import org.joda.time.LocalDate
 import org.mockito.Matchers.{eq => mockEq}
@@ -73,14 +74,19 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
 
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-  class StubBikListService extends BikListService (
-    app.injector.instanceOf[AppConfig],
-    app.injector.instanceOf[HmrcTierConnector],
-    app.injector.instanceOf[Configuration],
-    app.injector.instanceOf[ControllersReferenceData],
-    app.injector.instanceOf[Environment],
-    app.injector.instanceOf[URIInformation]
-  ) {
+  class StubBikListService @Inject()(pbikAppConfig: AppConfig,
+                                     tierConnector: HmrcTierConnector,
+                                     runModeConfiguration: Configuration,
+                                     controllersReferenceData: ControllersReferenceData,
+                                     environment: Environment,
+                                     uriInformation: URIInformation) extends BikListService(
+    pbikAppConfig,
+    tierConnector,
+    runModeConfiguration,
+    controllersReferenceData,
+    environment,
+    uriInformation
+  ){
 
     lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
 

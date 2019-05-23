@@ -187,134 +187,9 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
 
   }
 
-  class MockHomePageController @Inject()(bikListService: BikListService,
-                                         authenticate: AuthAction,
-                                         noSessionCheck: NoSessionCheckAction,
-                                         pbikAppConfig: PbikAppConfig,
-                                         runModeConfiguration: Configuration,
-                                         environment: Environment,
-                                         taxDateUtils: TaxDateUtils,
-                                         controllersReferenceData: ControllersReferenceData,
-                                         splunkLogger: SplunkLogger,
-                                         context: PbikContext,
-                                         uRIInformation: URIInformation,
-                                         externalURLs: ExternalUrls,
-                                         localFormPartialRetriever: LocalFormPartialRetriever) extends HomePageController(
-    bikListService,
-    authenticate,
-    noSessionCheck,
-    runModeConfiguration,
-    environment,
-    controllersReferenceData,
-    splunkLogger)(
-    taxDateUtils,
-    pbikAppConfig,
-    context,
-    uRIInformation,
-    externalURLs,
-    localFormPartialRetriever
-  )
-
-  class MockRegistrationController @Inject()(pbikAppConfig: PbikAppConfig,
-                                             registrationService: RegistrationService,
-                                             bikListService: BikListService,
-                                             tierConnector: HmrcTierConnector,
-                                             authenticate: AuthAction,
-                                             noSessionCheck: NoSessionCheckAction,
-                                             runModeConfiguration: Configuration,
-                                             environment: Environment,
-                                             taxDateUtils: TaxDateUtils,
-                                             context: PbikContext,
-                                             whatNextPageController: WhatNextPageController,
-                                             controllersReferenceData: ControllersReferenceData,
-                                             splunkLogger: SplunkLogger,
-                                             uriInformation: URIInformation,
-                                             externalURLs: ExternalUrls,
-                                             localFormPartialRetriever: LocalFormPartialRetriever) extends ManageRegistrationController(
-
-    registrationService,
-    bikListService,
-    tierConnector,
-    authenticate,
-    noSessionCheck,
-    runModeConfiguration,
-    environment,
-    taxDateUtils,
-    whatNextPageController,
-    controllersReferenceData,
-    splunkLogger)(
-    pbikAppConfig,
-    context,
-    uriInformation,
-    externalURLs,
-    localFormPartialRetriever
-  ) {
-
-    import org.scalatest.time.{Millis, Seconds, Span}
-
-    implicit val defaultPatience: ScalaFutures.PatienceConfig =
-      PatienceConfig(timeout = Span(7, Seconds), interval = Span(600, Millis))
-
-
-    implicit val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-
-
-    val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
-
-    when(pbikAppConfig.cyEnabled).thenReturn(true)
-
-    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
-      any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getBenefitTypesPath),
-      EmpRef("", ""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getBenefitTypesPath),
-      EmpRef("", ""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getBenefitTypesPath),
-      EmpRef("", ""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 5
-    }))
-
-    when(tierConnector.genericPostCall(anyString, mockEq(uriInformation.updateBenefitTypesPath),
-      any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getRegisteredPath),
-      any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) >= 15
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getBenefitTypesPath),
-      EmpRef("", ""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-  }
-
   "The Homepage Controller" should {
     "set the request language and redirect to the homepage" in {
-      val mockController = app.injector.instanceOf[MockHomePageController]
+      val mockController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshrequest
 //      implicit val ac: AuthContext = createDummyUser("VALID_ID")
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
@@ -327,7 +202,7 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
 
   "HomePageController" should {
     "display the navigation page" in {
-      val homePageController = app.injector.instanceOf[MockHomePageController]
+      val homePageController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> sessionId,
         SessionKeys.token -> "RANDOMTOKEN",
