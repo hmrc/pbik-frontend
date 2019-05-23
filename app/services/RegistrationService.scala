@@ -42,10 +42,10 @@ class RegistrationService @Inject()(
                                     taxDateUtils: TaxDateUtils,
                                     controllersReferenceData: ControllersReferenceData,
                                     uriInformation: URIInformation)(
-                                    implicit val pbikAppConfig: PbikAppConfig,
-                                    implicit val context: PbikContext,
-                                    implicit val externalURLs: ExternalUrls,
-                                    implicit val localFormPartialRetriever: LocalFormPartialRetriever
+                                    val pbikAppConfig: PbikAppConfig,
+                                    val context: PbikContext,
+                                    val externalURLs: ExternalUrls,
+                                    val localFormPartialRetriever: LocalFormPartialRetriever
 ) extends FrontendController {
   val mode: Mode = environment.mode
 
