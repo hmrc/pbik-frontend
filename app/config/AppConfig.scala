@@ -18,6 +18,7 @@ package config
 
 import java.util.Collections
 
+import com.google.inject.ImplementedBy
 import javax.inject.Inject
 import play.api.Mode.Mode
 import play.api.{Configuration, Environment}
@@ -45,7 +46,7 @@ trait AppConfig {
   val ssoUrl:Option[String]
 }
 
-class PbikAppConfig @Inject() (configuration: Configuration,
+class PbikAppConfig @Inject()(configuration: Configuration,
                                environment: Environment) extends AppConfig with ServicesConfig {
 
   val mode: Mode = environment.mode

@@ -32,7 +32,7 @@
 
 
     <p class="alert alert--failure">
-        <img src=@routes.AssetsController.at("assets/images/icon-important.png") style="vertical-align: middle">
+        <img src=@routes.Assets.versioned("assets/images/icon-important.png") style="vertical-align: middle">
         <span style="margin-left:10px">@messages("AddBenefits.CY.Caution.p1", "" + taxYearRange.cyminus1)</span>
         <br>
         <span style="margin-left:50px">@messages("AddBenefits.CY.Caution.p2", taxYearRange.cy)</span>

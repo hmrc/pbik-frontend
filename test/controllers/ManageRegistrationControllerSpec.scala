@@ -65,7 +65,6 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
     .overrides(bind[HmrcTierConnector].toInstance(mock[HmrcTierConnector]))
     .build()
 
-  implicit val context: PbikContext = mock[PbikContext]
 
 
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
@@ -80,9 +79,8 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
                                      environment: Environment,
                                      uriInformation: URIInformation,
                                       bikListService : BikListService
-                                    )  {
-    // lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-   // override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
+                                    ){
+
     lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
 
      def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
@@ -243,7 +241,7 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
     val mockRegistrationItemList = List.empty[RegistrationItem]
     val mockFormRegistrationList: Form[RegistrationList] = objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
 
-    implicit val request = FakeRequest()
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
 
     override def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
@@ -263,7 +261,11 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
               decommissionedBiks = pbikAppConfig.biksNotSupported,
               biksAvailableCount=Some(17),
               empRef = request.empRef
-            )
+            )(implicitly, context,
+              implicitly,
+              externalURLs,
+              pbikAppConfig,
+              localFormPartialRetriever)
           ))
         }
         case _ => {
@@ -277,7 +279,11 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
               nonLegislationBiks = List(0),
               pbikAppConfig.biksNotSupported,
               biksAvailableCount=Some(17),
-              empRef = request.empRef)
+              empRef = request.empRef)(implicitly, context,
+              implicitly,
+              externalURLs,
+              pbikAppConfig,
+              localFormPartialRetriever)
           ))
         }
       }

@@ -64,6 +64,9 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
     .build()
 
 
+  implicit val context: PbikContext = mock[PbikContext]
+
+
 //  implicit val ac: AuthContext = createDummyUser("testid")
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
@@ -150,10 +153,33 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
     Future[Result] = {
       year match {
         case dateRange.cyminus1 => {
-          Future.successful(Ok(views.html.registration.currentTaxYear(mockFormRegistrationList, dateRange, mockRegistrationItemList, allRegisteredListOption, nonLegislationBiks = List(0), decommissionedBiks = List(0), biksAvailableCount = Some(17), empRef = request.empRef)))
+          Future.successful(Ok(views.html.registration.currentTaxYear(mockFormRegistrationList,
+            dateRange,
+            mockRegistrationItemList,
+            allRegisteredListOption,
+            nonLegislationBiks = List(0),
+            decommissionedBiks = List(0),
+            biksAvailableCount = Some(17),
+            empRef = request.empRef)(implicitly, context,
+            implicitly,
+            externalURLs,
+            pbikAppConfig,
+            localFormPartialRetriever)))
         }
         case _ => {
-          Future.successful(Ok(views.html.registration.nextTaxYear(mockFormRegistrationList, additive = true, dateRange, mockRegistrationItemList, registeredListOption, nonLegislationBiks = List(0), decommissionedBiks = List(0), biksAvailableCount = Some(17), empRef = request.empRef))
+          Future.successful(Ok(views.html.registration.nextTaxYear(mockFormRegistrationList,
+            additive = true,
+            dateRange,
+            mockRegistrationItemList,
+            registeredListOption,
+            nonLegislationBiks = List(0),
+            decommissionedBiks = List(0),
+            biksAvailableCount = Some(17),
+            empRef = request.empRef)(implicitly, context,
+            implicitly,
+            externalURLs,
+            pbikAppConfig,
+            localFormPartialRetriever))
           )
         }
       }
