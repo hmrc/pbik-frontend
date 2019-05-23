@@ -23,7 +23,7 @@ import models._
 import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
 import org.specs2.mock.Mockito
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.libs.json
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
@@ -36,7 +36,9 @@ import utils.TaxDateUtils
 
 import scala.concurrent.Future
 
-class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication {
+class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication with I18nSupport {
+
+  override val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   lazy val pbikAppConfig: PbikAppConfig = mock[PbikAppConfig]
   val bikListService: BikListService = mock[BikListService]
@@ -84,7 +86,6 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito w
       val YEAR_RANGE = taxDateUtils.getTaxYearRange()
 
       implicit val context: PbikContext = injected[PbikContext]
-      implicit val messages: Messages = injected[Messages]
       implicit val externalURLs: ExternalUrls = injected[ExternalUrls]
       implicit val config: AppConfig = injected[AppConfig]
       implicit val localFormPartialRetriever: LocalFormPartialRetriever = injected[LocalFormPartialRetriever]
@@ -97,5 +98,6 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito w
       bodyOf(result) should include(Messages("BenefitInKind.label.37"))
     }
   }
+
 
 }

@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.config.ServicesConfig
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class ContactFrontendConnector @Inject()(client: HttpClient,
+class ContactFrontendConnector @Inject()(val client: HttpClient,
                                          configuration: Configuration,
                                          environment: Environment,
                                          pBIKHeaderCarrierForPartialsConverter: PBIKHeaderCarrierForPartialsConverter) extends ServicesConfig
