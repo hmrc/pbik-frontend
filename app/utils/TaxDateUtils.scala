@@ -23,8 +23,7 @@ import java.util.Date
 import javax.inject.Inject
 import models.TaxYearRange
 import org.joda.time.{DateTime, LocalDate}
-import play.api.{Configuration, Play}
-import play.api.Play.current
+import play.api.Configuration
 import uk.gov.hmrc.time.TaxYear
 
 class TaxDateUtils @Inject()(configuration:Configuration) extends PayrollBikDefaults {

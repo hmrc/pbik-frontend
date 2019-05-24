@@ -20,8 +20,6 @@ import config.PbikAppConfig
 import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models.{AuthenticatedRequest, EiLPerson}
-import play.api.Mode.Mode
-import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.URIInformation
 

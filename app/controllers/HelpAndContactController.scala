@@ -23,10 +23,10 @@ import connectors._
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
 import play.api.Mode.Mode
-import play.api.{Configuration, Environment, Logger}
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
+import play.api.{Configuration, Environment, Logger}
 import play.twirl.api.Html
 import services.{BikListService, HelpAndContactSubmissionService}
 import uk.gov.hmrc.http.{Request => _}

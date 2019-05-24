@@ -23,11 +23,11 @@ import models.{AuthenticatedRequest, EmpRef, UserName}
 import play.api.Mode.Mode
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.{Configuration, Environment, Play}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
-import uk.gov.hmrc.http.{CorePost, HeaderCarrier}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.config.ServicesConfig

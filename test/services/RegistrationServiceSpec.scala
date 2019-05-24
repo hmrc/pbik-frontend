@@ -21,10 +21,12 @@ import connectors.HmrcTierConnector
 import controllers.actions.MinimalAuthAction
 import controllers.{ExternalUrls, FakePBIKApplication}
 import models._
-import org.mockito.Matchers.{eq => mockEq}
+import org.mockito.Matchers.{eq => mockEq, _}
 import org.mockito.Mockito._
-import org.specs2.mock.Mockito
+import play.api.Application
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
@@ -34,12 +36,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{TaxDateUtils, TestMinimalAuthAction}
-import org.mockito.Matchers
-import org.mockito.Matchers._
-import org.mockito.Mockito._
-import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 

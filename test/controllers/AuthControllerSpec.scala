@@ -16,20 +16,13 @@
 
 package controllers
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
-import controllers.actions.{AuthAction, NoSessionCheckAction}
-import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import org.specs2.mock.Mockito
-import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.Crypto
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{TestAuthAction, TestMinimalAuthAction, TestNoSessionCheckAction}
 
 import scala.concurrent.Future
 

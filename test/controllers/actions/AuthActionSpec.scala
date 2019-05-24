@@ -21,11 +21,11 @@ import controllers.ExternalUrls
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.{Configuration, Environment}
 import play.api.http.Status._
 import play.api.mvc.{Action, AnyContent, Controller}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, status}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 

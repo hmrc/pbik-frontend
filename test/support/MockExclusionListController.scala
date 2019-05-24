@@ -18,24 +18,24 @@ package support
 
 import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
-import controllers.{ExclusionListController, ExternalUrls}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
+import controllers.{ExclusionListController, ExternalUrls}
 import javax.inject.Inject
 import models.{Bik, EiLPerson, EmpRef}
 import org.mockito.Matchers
+import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.Futures
 import org.scalatest.time.{Millis, Seconds, Span}
-import play.api.{Configuration, Environment}
 import play.api.libs.json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Request
+import play.api.{Configuration, Environment}
 import services.{BikListService, EiLListService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import utils.{ControllersReferenceData, SplunkLogger, TaxDateUtils, URIInformation}
-import org.mockito.Matchers._
-import play.api.libs.json.{JsValue, Json}
 
 import scala.concurrent.Future
 

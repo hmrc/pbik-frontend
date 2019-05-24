@@ -21,10 +21,10 @@ import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models._
 import org.joda.time.LocalDate
-import org.mockito.Matchers.{eq => mockEq}
+import org.mockito.Matchers.{eq => mockEq, _}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
-import play.api.{Application, Configuration, Environment}
+import play.api.Application
 import play.api.data.Form
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
@@ -42,9 +42,7 @@ import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
 import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, URIInformation}
-import org.mockito.Matchers
-import org.mockito.Matchers._
-import org.mockito.Mockito._
+
 import scala.concurrent.Future
 
 
