@@ -16,13 +16,11 @@
 
 package services
 
-import config.{AppConfig, PbikAppConfig}
+import config.AppConfig
 import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models.{AuthenticatedRequest, Bik, EmpRef}
-import play.api.Mode.Mode
 import play.api.mvc.Request
-import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, URIInformation}
 

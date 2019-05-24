@@ -21,7 +21,7 @@ import models._
 import play.api.libs.Crypto
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
-import support.TestAuthUser
+import support.{TestAuthUser, TestSplunkLogger}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -36,8 +36,7 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
 
   class SetUp {
     implicit val hc: HeaderCarrier = HeaderCarrier()
-    val controller = app.injector.instanceOf[SplunkLogger]
-    val splunkLogger = app.injector.instanceOf[SplunkLogger]
+    val controller = app.injector.instanceOf[TestSplunkLogger]
     val msg = "Hello"
 
     def csrfToken: (String, String) = "csrfToken" -> Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken

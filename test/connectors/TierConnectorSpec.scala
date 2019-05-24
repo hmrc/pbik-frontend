@@ -26,6 +26,9 @@ import play.api.mvc.Results
 import support.TestAuthUser
 import uk.gov.hmrc.http._
 import utils.Exceptions.GenericServerErrorException
+import org.mockito.Matchers
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 
 class TierConnectorSpec @Inject()(tierConnector: HmrcTierConnector) extends PlaySpec with FakePBIKApplication
                                          with TestAuthUser with Results {
@@ -54,7 +57,7 @@ class TierConnectorSpec @Inject()(tierConnector: HmrcTierConnector) extends Play
     override def body = "A severe server error"
   }
 
-  val mockHmrcTierConnector  = mock[HmrcTierConnector]
+  val mockHmrcTierConnector  = mock(classOf[HmrcTierConnector])
 
   "When creating a GET URL with an orgainsation needing encoding it" should {
    " encode the slash properly" in {

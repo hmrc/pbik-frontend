@@ -18,18 +18,21 @@ package support
 
 import com.google.inject.AbstractModule
 import connectors.HmrcTierConnector
+import controllers.actions.{AuthAction, NoSessionCheckAction}
+import org.mockito.Mockito.mock
 import org.specs2.specification.Scope
 import play.api.inject.bind
 import services.{BikListService, EiLListService}
+import utils.{TestAuthAction, TestNoSessionCheckAction}
 
 trait ServiceExclusionSetup extends Scope{
 
   object GuiceTestModule extends AbstractModule {
-    override def configure = {
-      println(" IN GUICE TEST")
+    override def configure: Unit = {
       bind(classOf[EiLListService]).to(classOf[StubEiLListServiceOneExclusion])
-      //bind(classOf[BikListService]).to(classOf[StubBikListService])
-      //bind(classOf[HmrcTierConnector]).toInstance(mock[HmrcTierConnector])
+      bind(classOf[AuthAction]).to(classOf[TestAuthAction])
+      bind(classOf[NoSessionCheckAction]).to(classOf[TestNoSessionCheckAction])
+      bind(classOf[HmrcTierConnector]).toInstance(mock(classOf[HmrcTierConnector]))
     }
   }
 }

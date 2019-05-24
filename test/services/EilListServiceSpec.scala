@@ -18,9 +18,13 @@ package services
 
 import connectors.HmrcTierConnector
 import controllers.FakePBIKApplication
+import controllers.actions.MinimalAuthAction
 import models.{AuthenticatedRequest, EiLPerson, EmpRef, UserName}
 import org.mockito.Mockito._
 import org.scalatest.Matchers
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
@@ -29,19 +33,30 @@ import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
+import utils.TestMinimalAuthAction
+import org.mockito.Matchers
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 
 import scala.collection.immutable
 
-class EilListServiceSpec extends UnitSpec with FakePBIKApplication with Matchers with TestAuthUser {
+class EilListServiceSpec extends UnitSpec with FakePBIKApplication with TestAuthUser {
 
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
+    disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
+  ).configure(config)
+    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .build()
 
   val MockEiLListService: EiLListService = {
 
     val els = app.injector.instanceOf[EiLListService]
 
-      when(injected[HmrcTierConnector].genericGetCall[List[EiLPerson]](anyString,
+      when(els.tierConnector.genericGetCall[List[EiLPerson]](anyString,
         anyString,any[EmpRef], anyInt)(any[HeaderCarrier],any[Request[_]],
           any[json.Format[List[EiLPerson]]], any[Manifest[List[EiLPerson]]])).thenReturn(List.empty[EiLPerson])
+
+    els
   }
 
   "When calling the EILService it" should {
@@ -49,7 +64,7 @@ class EilListServiceSpec extends UnitSpec with FakePBIKApplication with Matchers
         val eilService: EiLListService =  MockEiLListService
         implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
         implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-        implicit val authenicatedRequest = AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+        implicit val authenicatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
         val result = await(eilService.currentYearEiL("5", 2015))
         result.size shouldBe 0
     }

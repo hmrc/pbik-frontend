@@ -48,9 +48,9 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
 
   val timeoutValue: FiniteDuration = 10 seconds
 
-  override val fakeApplication: Application = GuiceApplicationBuilder()
-    .overrides(bind[AppConfig].toInstance(mock[PbikAppConfig]))
-    .overrides(bind[HmrcTierConnector].toInstance(mock[HmrcTierConnector]))
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+    .overrides(bind[AppConfig].toInstance(mock(classOf[PbikAppConfig])))
+    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .overrides(bind[BikListService].to(classOf[StubBikListService]))
     .build()
 
