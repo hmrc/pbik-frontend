@@ -16,29 +16,22 @@
 
 package utils
 
-import java.util.Collections
-
 import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import controllers.{ExternalUrls, FakePBIKApplication}
-import javax.inject.Inject
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import org.scalatestplus.play.PlaySpec
-import play.api.{Application, Play}
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.Upstream5xxResponse
-import uk.gov.hmrc.play.config.ServicesConfig
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 
 import scala.concurrent.{Future, Promise}
-import scala.util.Try
 
 class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
   with TestAuthUser with Results {

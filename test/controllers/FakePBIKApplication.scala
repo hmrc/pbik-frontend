@@ -21,7 +21,6 @@ import java.util.UUID
 import akka.stream.Materializer
 import controllers.actions.MinimalAuthAction
 import models.HeaderTags
-import org.mockito.Mockito
 import org.scalatest.TestSuite
 import org.scalatestplus.play.OneAppPerSuite
 import play.api.Application

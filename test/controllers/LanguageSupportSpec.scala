@@ -19,33 +19,25 @@ package controllers
 import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import controllers.registration.ManageRegistrationController
 import javax.inject.Inject
 import models._
-import org.mockito.Matchers.{eq => mockEq}
 import org.mockito.Mockito._
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.concurrent.ScalaFutures._
 import org.scalatestplus.play.PlaySpec
-import play.api.{Application, Configuration, Environment}
 import play.api.data.Form
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Lang
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json
 import play.api.mvc._
-import play.api.mvc.Results._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.{Application, Configuration, Environment}
 import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
 import support.TestAuthUser
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.model.DataEvent
 import utils.{TestAuthAction, TestNoSessionCheckAction, _}
 
 import scala.concurrent.Future

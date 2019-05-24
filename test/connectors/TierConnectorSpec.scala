@@ -16,19 +16,16 @@
 
 package connectors
 
-import config.PbikFrontendAuditConnector
 import controllers.FakePBIKApplication
 import javax.inject.Inject
 import models.{EmpRef, PbikError}
+import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results
 import support.TestAuthUser
 import uk.gov.hmrc.http._
 import utils.Exceptions.GenericServerErrorException
-import org.mockito.Matchers
-import org.mockito.Matchers._
-import org.mockito.Mockito._
 
 class TierConnectorSpec @Inject()(tierConnector: HmrcTierConnector) extends PlaySpec with FakePBIKApplication
                                          with TestAuthUser with Results {

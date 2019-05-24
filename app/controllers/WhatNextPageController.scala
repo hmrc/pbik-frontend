@@ -23,15 +23,15 @@ import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models._
 import play.api.Mode.Mode
-import play.api.{Configuration, Environment}
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Result
+import play.api.{Configuration, Environment}
 import services.BikListService
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{ControllersReferenceData, SplunkLogger, _}
+import utils.{ControllersReferenceData, _}
 
 class WhatNextPageController @Inject()(implicit val pbikAppConfig: PbikAppConfig,
                                        bikListService: BikListService,

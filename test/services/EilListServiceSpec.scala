@@ -18,10 +18,9 @@ package services
 
 import connectors.HmrcTierConnector
 import controllers.FakePBIKApplication
-import controllers.actions.MinimalAuthAction
 import models.{AuthenticatedRequest, EiLPerson, EmpRef, UserName}
+import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatest.Matchers
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -33,10 +32,6 @@ import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
-import utils.TestMinimalAuthAction
-import org.mockito.Matchers
-import org.mockito.Matchers._
-import org.mockito.Mockito._
 
 import scala.collection.immutable
 

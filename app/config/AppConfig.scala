@@ -18,7 +18,6 @@ package config
 
 import java.util.Collections
 
-import com.google.inject.ImplementedBy
 import javax.inject.Inject
 import play.api.Mode.Mode
 import play.api.{Configuration, Environment}

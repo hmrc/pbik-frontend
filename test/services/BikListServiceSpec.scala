@@ -16,26 +16,22 @@
 
 package services
 
-import config.AppConfig
 import connectors.HmrcTierConnector
 import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
 import models._
-import org.mockito.Mockito.{reset, when}
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import support.{StubBikListService, TestAuthUser}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.test.UnitSpec
-import utils.{ControllersReferenceData, TestMinimalAuthAction, URIInformation}
-import org.mockito.Matchers
 import org.mockito.Matchers._
-import org.mockito.Mockito._
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterEach}
+import org.mockito.Mockito.{reset, when, _}
+import org.scalatest.BeforeAndAfterEach
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Format
-import play.api.test.FakeRequest
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import support.{StubBikListService, TestAuthUser}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.test.UnitSpec
+import utils.TestMinimalAuthAction
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}

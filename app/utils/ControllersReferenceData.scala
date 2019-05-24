@@ -16,9 +16,8 @@
 
 package utils
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
 import controllers.ExternalUrls
-import ControllersReferenceDataCodes._
 import javax.inject.Inject
 import models._
 import play.api.Logger
@@ -28,6 +27,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.http.Upstream5xxResponse
+import utils.ControllersReferenceDataCodes._
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 
 import scala.concurrent.ExecutionContext.Implicits.global

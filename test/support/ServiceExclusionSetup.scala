@@ -21,8 +21,7 @@ import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito.mock
 import org.specs2.specification.Scope
-import play.api.inject.bind
-import services.{BikListService, EiLListService}
+import services.EiLListService
 import utils.{TestAuthAction, TestNoSessionCheckAction}
 
 trait ServiceExclusionSetup extends Scope{
