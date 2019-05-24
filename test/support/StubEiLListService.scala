@@ -29,13 +29,9 @@ import scala.concurrent.Future
 
 class StubEiLListService @Inject()(pbikAppConfig: PbikAppConfig,
                                    tierConnector: HmrcTierConnector,
-                                   runModeConfiguration : Configuration,
-                                   environment : Environment,
                                    uRIInformation: URIInformation) extends EiLListService(
   pbikAppConfig,
   tierConnector,
-  runModeConfiguration,
-  environment,
   uRIInformation)
 {
 
@@ -54,13 +50,9 @@ class StubEiLListService @Inject()(pbikAppConfig: PbikAppConfig,
 
 class StubEiLListServiceOneExclusion @Inject()(pbikAppConfig: PbikAppConfig,
                                                tierConnector: HmrcTierConnector,
-                                               runModeConfiguration : Configuration,
-                                               environment : Environment,
                                                uRIInformation: URIInformation) extends StubEiLListService(
   pbikAppConfig,
   tierConnector,
-  runModeConfiguration,
-  environment,
   uRIInformation) {
 
   private lazy val ListOfPeople: List[EiLPerson] = List(EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),

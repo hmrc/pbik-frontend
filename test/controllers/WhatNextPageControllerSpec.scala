@@ -76,15 +76,11 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
 
   class StubBikListService @Inject()(pbikAppConfig: AppConfig,
                                      tierConnector: HmrcTierConnector,
-                                     runModeConfiguration: Configuration,
                                      controllersReferenceData: ControllersReferenceData,
-                                     environment: Environment,
                                      uriInformation: URIInformation) extends BikListService(
     pbikAppConfig,
     tierConnector,
-    runModeConfiguration,
     controllersReferenceData,
-    environment,
     uriInformation
   ){
 
@@ -172,41 +168,41 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
 
     val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-    when(injected[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(""),
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
       any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(injected[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getBenefitTypesPath),
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(injected[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getBenefitTypesPath),
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(injected[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getBenefitTypesPath),
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(injected[HmrcTierConnector].genericGetCall[List[Bik]](anyString, anyString,
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
       any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 5
     }))
 
-    when(injected[HmrcTierConnector].genericPostCall(anyString, mockEq(injected[URIInformation].updateBenefitTypesPath),
+    when(w.tierConnector.genericPostCall(anyString, mockEq(injected[URIInformation].updateBenefitTypesPath),
       any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
-    when(injected[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getRegisteredPath),
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getRegisteredPath),
       any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) >= 15

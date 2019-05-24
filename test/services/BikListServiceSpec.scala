@@ -41,9 +41,7 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with Mockito with Fa
     val bikListService: BikListService = {
       new BikListService(mock[AppConfig],
         mockTierConnector,
-        injected[Configuration],
         injected[ControllersReferenceData],
-        injected[Environment],
           injected[URIInformation]) {
         override lazy val pbikHeaders: Map[String, String] = headers
       }

@@ -31,12 +31,8 @@ import scala.concurrent.Future
 
 class BikListService @Inject()(val pbikAppConfig: AppConfig,
                                val tierConnector: HmrcTierConnector,
-                               val runModeConfiguration: Configuration,
                                controllersReferenceData: ControllersReferenceData,
-                               environment: Environment,
                                uriInformation: URIInformation) {
-
-  val mode: Mode = environment.mode
 
   def pbikHeaders: Map[String, String] = Map[String, String]()
 

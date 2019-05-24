@@ -41,7 +41,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class ExclusionListController @Inject()(implicit val pbikAppConfig: PbikAppConfig,
+class ExclusionListController @Inject()(
                                         val authenticate: AuthAction,
                                         val noSessionCheck: NoSessionCheckAction,
                                         val eiLListService: EiLListService,
@@ -49,10 +49,11 @@ class ExclusionListController @Inject()(implicit val pbikAppConfig: PbikAppConfi
                                         val tierConnector: HmrcTierConnector, //TODO: Why do we need this?,
                                         val runModeConfiguration: Configuration,
                                         environment:Environment,
-                                        implicit val context: PbikContext,
                                         taxDateUtils: TaxDateUtils,
                                         splunkLogger: SplunkLogger,
-                                        controllersReferenceData: ControllersReferenceData,
+                                        controllersReferenceData: ControllersReferenceData)(
+                                        implicit val pbikAppConfig: PbikAppConfig,
+                                        implicit val context: PbikContext,
                                         implicit val uRIInformation: URIInformation,
                                         implicit val externalURLs: ExternalUrls,
                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever
