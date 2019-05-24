@@ -49,6 +49,9 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 import utils.{ControllersReferenceData, _}
 import play.api.mvc.{Result, _}
 import play.api.inject._
+import org.mockito.Matchers
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
@@ -56,13 +59,13 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec with FormMappings
   with TestAuthUser with FakePBIKApplication {
 
-  override val fakeApplication: Application = GuiceApplicationBuilder(
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
-    .overrides(bind[AppConfig].toInstance(mock[AppConfig]))
-    .overrides(bind[HmrcTierConnector].toInstance(mock[HmrcTierConnector]))
+    .overrides(bind[AppConfig].toInstance(mock(classOf[AppConfig])))
+    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
 
@@ -352,6 +355,8 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) >= 15
     }))
+
+    r
   }
 
   "When loading the next tax years on-remove data, the RegistrationController" should {

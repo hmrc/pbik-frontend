@@ -18,6 +18,7 @@ package services
 
 import config._
 import connectors.HmrcTierConnector
+import controllers.actions.MinimalAuthAction
 import controllers.{ExternalUrls, FakePBIKApplication}
 import models._
 import org.mockito.Matchers.{eq => mockEq}
@@ -32,40 +33,50 @@ import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
-import utils.TaxDateUtils
+import utils.{TaxDateUtils, TestMinimalAuthAction}
+import org.mockito.Matchers
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 
 import scala.concurrent.Future
 
-class RegistrationServiceSpec extends UnitSpec with TestAuthUser  with Mockito with FakePBIKApplication with I18nSupport {
+class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplication with I18nSupport {
 
   override val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  lazy val pbikAppConfig: PbikAppConfig = mock[PbikAppConfig]
-  val bikListService: BikListService = mock[BikListService]
-  val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
 
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
+    disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
+  ).configure(config)
+    .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
+    .overrides(bind[BikListService].toInstance(mock(classOf[BikListService])))
+    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .build()
 
 
   val registrationService: RegistrationService = {
 
-    val r = injected[RegistrationService]
+    val r = app.injector.instanceOf[RegistrationService]
 
     lazy val CYCache: List[Bik] = List.tabulate(5)(n => Bik("" + (n + 1), 10))
 
-    when(bikListService.pbikHeaders).thenReturn(Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1"))
+    when(r.bikListService.pbikHeaders).thenReturn(Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1"))
 
-    when(bikListService.registeredBenefitsList(anyInt,any[EmpRef])(anyString)
+    when(r.bikListService.registeredBenefitsList(anyInt,any[EmpRef])(anyString)
     (any[HeaderCarrier], any[Request[_]])).thenReturn(Future.successful(CYCache))
 
     // Return instance where not all Biks have been registered for CY
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+    when(r.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
       any[EmpRef], mockEq(injected[TaxDateUtils].getCurrentTaxYear()) )(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 3
     }))
 
     // Return instance where not all Biks have been registered for CYP1
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+    when(r.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
       any[EmpRef], mockEq(injected[TaxDateUtils].getCurrentTaxYear()+1) )(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 5

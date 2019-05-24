@@ -35,7 +35,7 @@ import utils.{ControllersReferenceData, URIInformation, _}
 import scala.concurrent.Future
 
 class RegistrationService @Inject()(
-                                    tierConnector: HmrcTierConnector,
+                                    val tierConnector: HmrcTierConnector,
                                     val bikListService: BikListService,
                                     val runModeConfiguration: Configuration,
                                     environment: Environment,

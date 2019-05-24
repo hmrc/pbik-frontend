@@ -84,8 +84,6 @@ class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
 
   def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
 
-
-
   def generateListOfBiksBasedOnForm(bikStatus: Int)(implicit request: Request[AnyContent]): List[Bik] = {
     val persistentBiks: List[Bik] = objSelectedForm.bindFromRequest.fold(
       formWithErrors => List[Bik](),

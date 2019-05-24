@@ -34,15 +34,16 @@ import support.TestAuthUser
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
 import utils._
+import org.mockito.Mockito._
 
 import scala.concurrent.Future
 
 class HelpAndContactControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec with FakePBIKApplication
   with TestAuthUser with FormMappings {
 
-  override val fakeApplication: Application = GuiceApplicationBuilder()
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(config)
-    .overrides(bind[AppConfig].toInstance(mock[PbikAppConfig]))
+    .overrides(bind[AppConfig].toInstance(mock(classOf[PbikAppConfig])))
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()

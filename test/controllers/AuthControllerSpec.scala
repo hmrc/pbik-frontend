@@ -17,17 +17,19 @@
 package controllers
 
 import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
-import controllers.actions.MinimalAuthAction
-import javax.inject.Inject
+import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import org.specs2.mock.Mockito
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.Crypto
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.TestMinimalAuthAction
+import utils.{TestAuthAction, TestMinimalAuthAction, TestNoSessionCheckAction}
 
 import scala.concurrent.Future
 
@@ -43,21 +45,9 @@ class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication 
     def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken).withHeaders()
   }
 
-  lazy val pbikAppConfig: PbikAppConfig = mock[PbikAppConfig]
-  class TestController extends AuthController(new TestMinimalAuthAction)(
-    pbikAppConfig,
-    app.injector.instanceOf[PbikContext],
-    app.injector.instanceOf[ExternalUrls],
-    app.injector.instanceOf[LocalFormPartialRetriever]
-  ) {
-
-
-    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
-  }
-
   "When an valid user logs in, and their action is Authorised" should {
     "be status 200" in new SetUp {
-      val controller = new TestController()
+      val controller: AuthController = app.injector.instanceOf[AuthController]
       implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = fakeRequest
       val result: Future[Result] = controller.notAuthorised()(fakeRequest)
       status(result) must be(OK) // 200

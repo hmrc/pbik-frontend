@@ -27,7 +27,7 @@ class SystemPropertiesHelperSpec extends UnitSpec with FakePBIKApplication with 
 
   class StubSystemProperties extends SystemPropertiesHelper {
 
-    override lazy val sysprop =  mock[SystemProperties]
+    override lazy val sysprop =  mock(classOf[SystemProperties])
 
     when(sysprop.get("searchString") ).thenReturn(Some("foundString"))
     when(sysprop.get("searchInt") ).thenReturn(Some("555"))

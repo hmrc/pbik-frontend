@@ -64,8 +64,6 @@ class PbikAppConfig @Inject()(configuration: Configuration,
 
   override lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
-  //override lazy val analyticsToken: String = loadConfig("google-analytics.token")
-  //override lazy val analyticsHost: String = loadConfig("google-analytics.host")
 
   override lazy val cyEnabled: Boolean = configuration.getBoolean("pbik.enabled.cy").getOrElse(false)
   override lazy val biksNotSupported:List[Int] = configuration.getIntList("pbik.unsupported.biks.cy1").getOrElse(Collections.emptyList[Integer]()).toArray(new Array[Integer](0)).toList.map(_.intValue())

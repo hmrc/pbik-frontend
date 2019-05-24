@@ -42,7 +42,9 @@ import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
 import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, URIInformation}
-
+import org.mockito.Matchers
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 import scala.concurrent.Future
 
 
@@ -51,13 +53,14 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
 
   // TODO The following needs refactoring as it similar to registrationcontrollertest, consider moving to utils
 
-  override val fakeApplication: Application = GuiceApplicationBuilder(
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
-    .overrides(bind[BikListService].toInstance(mock[StubBikListService]))
+    .overrides(bind[BikListService].toInstance(mock(classOf[StubBikListService])))
+    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
-  val taxDateUtils = app.injector.instanceOf[TaxDateUtils]
+  val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   implicit val pbikContext:PbikContext = app.injector.instanceOf[PbikContext]
 
   lazy val listOfPeople: List[EiLPerson] = List(EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),

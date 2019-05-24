@@ -17,37 +17,32 @@
 package controllers
 
 import akka.util.Timeout
-import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
-import connectors.{FormPartialProvider, HmrcTierConnector}
+import config.PbikContext
+import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import javax.inject.Inject
 import models._
 import org.joda.time.LocalDate
-import org.mockito.Matchers.{eq => mockEq}
+import org.mockito.Matchers
+import org.mockito.Matchers._
 import org.mockito.Mockito._
-import org.scalatest.concurrent.Futures
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
-import play.api.{Application, Configuration, Environment}
+import play.api.Application
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsValue, Json}
+import play.api.inject.{Injector, bind}
 import play.api.libs.{Crypto, json}
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{BikListService, EiLListService}
-import support.{ServiceExclusionSetup, StubEiLListService, TestAuthUser}
+import services.EiLListService
+import support._
 import uk.gov.hmrc.auth.core.retrieve.Name
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.model.DataEvent
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils.{ControllersReferenceData, URIInformation, _}
-import org.scalatest.time.{Millis, Seconds, Span}
-import play.api.inject.{Injector, bind}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
@@ -57,12 +52,13 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   with TestAuthUser {
 
 
-  override val fakeApplication: Application = GuiceApplicationBuilder(
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
-    .overrides(bind[BikListService].toInstance(stubBikListService))
+    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[EiLListService].to(classOf[StubEiLListService]))
-    .overrides(bind[HmrcTierConnector].toInstance(mock[HmrcTierConnector]))
+    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
 
@@ -83,232 +79,86 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     EiLPerson("AE111111", "Alice", Some("In"), "Wonderland", Some("123"), Some("03/02/1978"), Some("female"), Some(10), 0),
     EiLPerson("AF111111", "Humpty", Some("Alexander"), "Dumpty", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0))
 
-  class FakeResponse extends HttpResponse {
-    override def status = 200
-
-    override val json: JsValue = Json.parse(
-      """[
-                 {
-                     "nino": "AB111111",
-                     "firstForename": "Adam",
-                    "surname": "Smith",
-                     "worksPayrollNumber": "ABC123",
-                     "dateOfBirth": "01/01/1980",
-                     "gender": "male",
-                     "status": 0,
-                     "perOptLock": 0
-                 }
-             ]""")
-  }
+  //  //TODO
+  //  class MockNoRegisteredBiksExclusionListController extends MockExclusionListController {
+  //    override val  bikListService: BikListService = new StubNoRegisteredBikListService
+  //  }
 
 
+  val mockExclusionListController: MockExclusionListController = {
+    val melc: MockExclusionListController = app.injector.instanceOf[MockExclusionListController]
 
-val stubBikListService:BikListService = {
+    lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
 
-  val b = app.injector.instanceOf[BikListService]
+    when(melc.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+      any[EmpRef], Matchers.eq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) <= 10
+    }))
 
-  lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
+    when(melc.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+      any[EmpRef], Matchers.eq(controllersReferenceData.YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) <= 10
+    }))
 
-  when(b.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-    any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 10
-  }))
+    when(melc.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+      any[EmpRef], Matchers.eq(controllersReferenceData.YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) <= 10
+    }))
 
-  when(b.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-    any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 10
-  }))
+    when(melc.tierConnector.genericGetCall[List[Bik]](anyString, Matchers.eq(""),
+      any[EmpRef], Matchers.eq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) <= 10
+    }))
 
-  when(b.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-    any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 10
-  }))
+    when(melc.tierConnector.genericGetCall[List[Bik]](anyString, Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+      Matchers.eq(EmpRef.empty), Matchers.eq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) <= 10
+    }))
 
-  when(b.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
-    any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 10
-  }))
+    when(melc.tierConnector.genericGetCall[List[Bik]](anyString, Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+      Matchers.eq(EmpRef.empty), Matchers.eq(controllersReferenceData.YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) <= 10
+    }))
 
-  when(b.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-    mockEq(EmpRef.empty), mockEq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 10
-  }))
+    when(melc.tierConnector.genericGetCall[List[Bik]](anyString, Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+      Matchers.eq(EmpRef.empty), Matchers.eq(controllersReferenceData.YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) <= 10
+    }))
 
-  when(b.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-    mockEq(EmpRef.empty), mockEq(controllersReferenceData.YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 10
-  }))
+    when(melc.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+      any[EmpRef], Matchers.eq(2020))(any[HeaderCarrier], any[Request[_]],
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) <= 5
+    }))
 
-  when(b.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-    mockEq(EmpRef.empty), mockEq(controllersReferenceData.YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 10
-  }))
-
-  when(b.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-    any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 5
-  }))
-
-  when(b.tierConnector.genericPostCall(anyString, mockEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
-    any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
-
-  when(b.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
-    any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) >= 15
-  }))
-
-  b
-}
-
-
-
-
-  class MockExclusionListController @Inject()(pbikAppConfig: PbikAppConfig,
-                                              authenticate: AuthAction,
-                                              noSessionCheck: NoSessionCheckAction,
-                                              eiLListService: EiLListService,
-                                              bikListService: BikListService,
-                                              tierConnector: HmrcTierConnector,
-                                              runModeConfiguration: Configuration,
-                                              environment:Environment,
-                                              context: PbikContext,
-                                              taxDateUtils: TaxDateUtils,
-                                              splunkLogger: SplunkLogger,
-                                              controllersReferenceData: ControllersReferenceData,
-                                              uriInformation: URIInformation,
-                                              externalURLs: ExternalUrls,
-                                              localFormPartialRetriever: LocalFormPartialRetriever)
-    extends ExclusionListController(
-      authenticate,
-      noSessionCheck,
-      eiLListService,
-      bikListService,
-      tierConnector,
-      runModeConfiguration,
-      environment,
-      taxDateUtils,
-      splunkLogger,
-      controllersReferenceData)(
-      pbikAppConfig,
-      context,
-      uriInformation,
-      externalURLs,
-      localFormPartialRetriever) with Futures {
-
-    implicit val defaultPatience: PatienceConfig =
-      PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
-
-     def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
-      Future.successful(AuditResult.Success)
-    }
-
-    when(tierConnector.genericPostCall[EiLPerson](anyString, mockEq("31/exclusion/update"),
-      any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
-
-    when(tierConnector.genericPostCall[EiLPerson](anyString, mockEq("31/exclusion/remove"),
-      any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
-
-    when(tierConnector.genericPostCall(anyString, mockEq(uriInformation.updateBenefitTypesPath),
+    when(melc.tierConnector.genericPostCall(anyString, Matchers.eq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
       any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
-    override lazy val exclusionsAllowed = true
-  }
-
-
-
-  class MockExclusionsDisallowedController @Inject()(pbikAppConfig: PbikAppConfig,
-                                                     authenticate: AuthAction,
-                                                     noSessionCheck: NoSessionCheckAction,
-                                                     eiLListService: EiLListService,
-                                                     bikListService: BikListService,
-                                                     tierConnector: HmrcTierConnector,
-                                                     runModeConfiguration: Configuration,
-                                                     environment:Environment,
-                                                     context: PbikContext,
-                                                     taxDateUtils: TaxDateUtils,
-                                                     splunkLogger: SplunkLogger,
-                                                     controllersReferenceData: ControllersReferenceData,
-                                                     uriInformation: URIInformation,
-                                                     externalURLs: ExternalUrls,
-                                                     localFormPartialRetriever: LocalFormPartialRetriever) extends MockExclusionListController(pbikAppConfig,
-    authenticate,
-    noSessionCheck,
-    eiLListService,
-    bikListService,
-    tierConnector,
-    runModeConfiguration,
-    environment,
-    context,
-    taxDateUtils,
-    splunkLogger,
-    controllersReferenceData,
-    uriInformation,
-    externalURLs,
-    localFormPartialRetriever) {
-    override lazy val exclusionsAllowed = false
-  }
-
-  class StubNoRegisteredBikListService @Inject()(pbikAppConfig: AppConfig,
-                                                 tierConnector: HmrcTierConnector,
-                                                 controllersReferenceData: ControllersReferenceData,
-                                                 uriInformation: URIInformation) extends BikListService(
-    pbikAppConfig: AppConfig,
-    tierConnector,
-    controllersReferenceData,
-    uriInformation) {
-
-    lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+    when(melc.tierConnector.genericGetCall[List[Bik]](anyString, Matchers.eq(app.injector.instanceOf[URIInformation].getRegisteredPath),
       any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) > 50
+      Integer.parseInt(x.iabdType) >= 15
     }))
+
+    melc
   }
-
-//  //TODO
-//  class MockNoRegisteredBiksExclusionListController extends MockExclusionListController {
-//    override val  bikListService: BikListService = new StubNoRegisteredBikListService
-//  }
-
 
   "When testing exclusions the exclusion functionality" must {
     "should be enabled" in {
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       assert(mockExclusionListController.exclusionsAllowed)
-    }
-  }
-
-  "When testing exclusions the EILService" must {
-    "should be defined" in {
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
-      assert(mockExclusionListController.eiLListService != null)
-    }
-  }
-
-  "When testing exclusions the BIKService" must {
-    "should be defined" in {
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
-      assert(mockExclusionListController.bikListService != null)
     }
   }
 
   "When mapping the CY string, the date returned by the controller" must {
     "be the first year in the CY pair (e.g CY in range 15/16-16/17 would be 15 )" in {
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result: Int = await(mockExclusionListController.mapYearStringToInt("cy"))
@@ -318,7 +168,6 @@ val stubBikListService:BikListService = {
 
   "When mapping the CY+1 string, the date returned by the controller" must {
     "be the first year in the CYP1 pair (e.g CYP1 in range 15/16-16/17 would be 16 ) " in {
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = await(mockExclusionListController.mapYearStringToInt("cyp1"))
@@ -328,7 +177,6 @@ val stubBikListService:BikListService = {
 
   "When mapping an unknown string, the controller" must {
     "throw an InvalidYearURIException" in {
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       intercept[InvalidYearURIException] {
@@ -339,7 +187,6 @@ val stubBikListService:BikListService = {
 
   "When checking the Bik's IABD value is valid for CY the ExclusionListController" must {
     "return the start year of the CY pair, when the IABD value is valid" in {
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = AuthenticatedRequest(
@@ -354,7 +201,6 @@ val stubBikListService:BikListService = {
 
   "When checking the Bik's IABD value is invalid for CY the ExclusionListController" must {
     "throw a InvalidBikTypeURIException" in {
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = AuthenticatedRequest(
@@ -370,7 +216,6 @@ val stubBikListService:BikListService = {
 
   "When loading the performPageLoad, an unauthorised user" should {
     "see the users already excluded" in {
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionListController.performPageLoad("cy", "car").apply(mockrequest))(timeout)
       result.header.status must be(OK)
@@ -384,7 +229,6 @@ val stubBikListService:BikListService = {
 
   "When loading the performPageLoad without nacigating from the overview page, an unauthorised user" should {
     "see the users already excluded" in {
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionListController.performPageLoad("cy", "car").apply(mockrequest))(timeout)
       result.header.status must be(OK)
@@ -414,7 +258,6 @@ val stubBikListService:BikListService = {
   "When loading the withOrWithoutNinoOnPageLoad the controller" must {
     "show the page in order to make a decision" in {
       val title = Messages("ExclusionNinoDecision.title").substring(0, 10)
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionListController.withOrWithoutNinoOnPageLoad("cy", "car").apply(mockrequest))(timeout)
@@ -441,7 +284,6 @@ val stubBikListService:BikListService = {
   "When loading the withOrWithoutNinoDecision page with the form omitted, an authorised user" must {
     "see the page in order to confirm their decision" in {
       val title = Messages("ExclusionNinoDecision.title").substring(0, 10)
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       val result = await(mockExclusionListController.withOrWithoutNinoDecision("cy", "car").apply(mockrequest))(5 seconds)
       result.header.status must be(303)
@@ -468,7 +310,6 @@ val stubBikListService:BikListService = {
   "When loading the withOrWithoutNinoDecision page with a nino form, an authorised user" must {
     "see the page in order to confirm their decision" in {
       val title = Messages("ExclusionSearch.form.title")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(
@@ -485,7 +326,6 @@ val stubBikListService:BikListService = {
   "When loading the withOrWithoutNinoDecision page with a non-nino form, an authorised user" must {
     "see the page in order to confirm their decision" in {
       val title = Messages("ExclusionSearch.form.title")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(
@@ -501,7 +341,6 @@ val stubBikListService:BikListService = {
   "When loading the searchResults page for an unpopulated NINO search, an authorised user" must {
     "see the NINO specific fields" in {
       val title = Messages("ExclusionSearch.form.title")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
 
       def csrfToken = "csrfToken" -> Crypto.generateToken
 
@@ -519,7 +358,6 @@ val stubBikListService:BikListService = {
   "When loading the searchResults page for an unpopulated non-NINO search, an authorised user" must {
     "see the NON-NINO specific fields" in {
       val title = Messages("ExclusionSearch.form.title")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionListController.searchResults("cy", "car", ControllersReferenceDataCodes.FORM_TYPE_NONINO).apply(mockrequest))(timeout)
@@ -555,14 +393,82 @@ val stubBikListService:BikListService = {
         .bindings(GuiceTestModule)
         .injector()
 
+      val mockExclusionListServiceExclusionController: MockExclusionListController = {
+
+        val melc: MockExclusionListController = injector.instanceOf[MockExclusionListController]
+
+        lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
+
+        when(melc.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+          any[EmpRef], Matchers.eq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+          any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 10
+        }))
+
+        when(melc.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+          any[EmpRef], Matchers.eq(controllersReferenceData.YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
+          any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 10
+        }))
+
+        when(melc.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+          any[EmpRef], Matchers.eq(controllersReferenceData.YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
+          any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 10
+        }))
+
+        when(melc.tierConnector.genericGetCall[List[Bik]](anyString, Matchers.eq(""),
+          any[EmpRef], Matchers.eq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+          any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 10
+        }))
+
+        when(melc.tierConnector.genericGetCall[List[Bik]](anyString, Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+          Matchers.eq(EmpRef.empty), Matchers.eq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+          any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 10
+        }))
+
+        when(melc.tierConnector.genericGetCall[List[Bik]](anyString, Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+          Matchers.eq(EmpRef.empty), Matchers.eq(controllersReferenceData.YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
+          any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 10
+        }))
+
+        when(melc.tierConnector.genericGetCall[List[Bik]](anyString, Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+          Matchers.eq(EmpRef.empty), Matchers.eq(controllersReferenceData.YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
+          any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 10
+        }))
+
+        when(melc.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+          any[EmpRef], Matchers.eq(2020))(any[HeaderCarrier], any[Request[_]],
+          any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 5
+        }))
+
+        when(melc.tierConnector.genericPostCall(anyString, Matchers.eq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
+          any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
+          any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
+
+        when(melc.tierConnector.genericGetCall[List[Bik]](anyString, Matchers.eq(app.injector.instanceOf[URIInformation].getRegisteredPath),
+          any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
+          any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) >= 15
+        }))
+
+        melc
+      }
+
+
       val ninoSearchPerson = EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0)
       val f = controllersReferenceData.exclusionSearchFormWithoutNino.fill(ninoSearchPerson)
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val mockExclusionController: MockExclusionListController = injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionController.searchResults("cy", "car", ControllersReferenceDataCodes.FORM_TYPE_NONINO).apply(formrequest))(timeout)
+      val result = await(mockExclusionListServiceExclusionController.searchResults("cy", "car", ControllersReferenceDataCodes.FORM_TYPE_NONINO).apply(formrequest))(timeout)
       result.header.status must be(OK)
+
       result.body.asInstanceOf[Strict].data.utf8String must include("Search results")
       result.body.asInstanceOf[Strict].data.utf8String must include("Adam")
       result.body.asInstanceOf[Strict].data.utf8String must include("01/01/1980")
@@ -593,7 +499,6 @@ val stubBikListService:BikListService = {
         UserName(Name(None, None)),
         request)
       val title = Messages("whatNext.exclude.heading")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 5 seconds
@@ -613,7 +518,6 @@ val stubBikListService:BikListService = {
       val TEST_IABD = "car"
       val TEST_YEAR_CODE = "cy"
       val title = Messages("ExclusionRemovalConfirmation.title")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 5 seconds
@@ -636,13 +540,12 @@ val stubBikListService:BikListService = {
         UserName(Name(None, None)),
         request)
       val title = Messages("whatNext.rescind.heading")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionListController.processRemovalCommit(controllersReferenceData.individualsForm
         .fill(EiLPersonList(ListOfPeople)), TEST_IABD, controllersReferenceData.YEAR_RANGE)
-      (hc, authenticatedRequest, mock[PbikContext]))(timeout)
+      (hc, authenticatedRequest, mock(classOf[PbikContext])))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -655,7 +558,6 @@ val stubBikListService:BikListService = {
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
         UserName(Name(None, None)),
         request)
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 10 seconds
@@ -669,7 +571,6 @@ val stubBikListService:BikListService = {
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
         UserName(Name(None, None)),
         request)
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       intercept[InvalidBikTypeURIException] {
@@ -686,7 +587,6 @@ val stubBikListService:BikListService = {
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("whatNext.rescind.heading")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionListController.removeExclusionsCommit(TEST_IABD)(formrequest))(timeout)
@@ -717,7 +617,6 @@ val stubBikListService:BikListService = {
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("ExclusionRemovalConfirmation.title")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionListController.remove(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
@@ -749,7 +648,6 @@ val stubBikListService:BikListService = {
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("whatNext.exclude.heading")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
@@ -781,7 +679,6 @@ val stubBikListService:BikListService = {
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("ExclusionSearch.title")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionListController.updateMultipleExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
@@ -818,7 +715,6 @@ val stubBikListService:BikListService = {
         request)
       val title = Messages("whatNext.exclude.heading")
       val excludedText = Messages("whatNext.exclude.p1", "Exclusion complete")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 5 seconds
@@ -839,7 +735,6 @@ val stubBikListService:BikListService = {
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("ExclusionSearch.form.title")
       val excludedText = Messages("whatNext.exclude.p1")
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 5 seconds

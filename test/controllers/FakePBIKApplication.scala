@@ -19,19 +19,23 @@ package controllers
 import java.util.UUID
 
 import akka.stream.Materializer
+import controllers.actions.MinimalAuthAction
 import models.HeaderTags
+import org.mockito.Mockito
 import org.scalatest.TestSuite
 import org.scalatestplus.play.OneAppPerSuite
-import org.specs2.mock.Mockito
 import play.api.Application
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.SessionKeys
+import utils.TestMinimalAuthAction
 
 import scala.reflect.ClassTag
 
-trait FakePBIKApplication extends Mockito with OneAppPerSuite {
+
+trait FakePBIKApplication extends OneAppPerSuite {
 
   this: TestSuite =>
 
@@ -61,9 +65,10 @@ trait FakePBIKApplication extends Mockito with OneAppPerSuite {
 
   def noSessionIdRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(SessionKeys.userId -> userId)
 
-  override val fakeApplication: Application = GuiceApplicationBuilder(
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
+    .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .build()
 
   implicit lazy val materializer: Materializer = fakeApplication.materializer

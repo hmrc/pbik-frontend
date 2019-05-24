@@ -54,9 +54,9 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec with FormMappings with TestAuthUser
   with FakePBIKApplication {
 
-  override val fakeApplication: Application = GuiceApplicationBuilder()
-    .overrides(bind[AppConfig].toInstance(mock[PbikAppConfig]))
-    .overrides(bind[HmrcTierConnector].toInstance(mock[HmrcTierConnector]))
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+    .overrides(bind[AppConfig].toInstance(mock(classOf[PbikAppConfig])))
+    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .overrides(bind[BikListService].to(classOf[StubBikListService]))
     .overrides(bind[RegistrationService].to(classOf[StubbedRegistrationService]))
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
@@ -64,7 +64,7 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
     .build()
 
 
-  implicit val context: PbikContext = mock[PbikContext]
+  implicit val context: PbikContext = mock(classOf[PbikContext])
 
 
 //  implicit val ac: AuthContext = createDummyUser("testid")
