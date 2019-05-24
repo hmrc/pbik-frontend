@@ -58,14 +58,10 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
 
   class StubBikListService @Inject()(pbikAppConfig: PbikAppConfig,
                                      tierConnector: HmrcTierConnector,
-                                     runModeConfiguration: Configuration,
                                      controllersReferenceData: ControllersReferenceData,
-                                     environment: Environment,
                                      uRIInformation: URIInformation) extends BikListService(pbikAppConfig,
                                                                                 tierConnector,
-                                                                                runModeConfiguration,
                                                                                 controllersReferenceData,
-                                                                                environment,
                                                                                 uRIInformation) {
 
     lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))

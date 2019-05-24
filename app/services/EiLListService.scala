@@ -30,10 +30,7 @@ import scala.concurrent.Future
 
 class EiLListService @Inject()( val pbikAppConfig: PbikAppConfig,
                                 val tierConnector: HmrcTierConnector,
-                                val runModeConfiguration : Configuration,
-                                environment : Environment,
                                 uRIInformation: URIInformation) {
-  val mode: Mode = environment.mode
 
   def currentYearEiL(iabdType: String, year: Int)(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[List[EiLPerson]] = {
     val response = tierConnector.genericGetCall[List[EiLPerson]](uRIInformation.baseUrl,

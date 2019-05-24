@@ -60,7 +60,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   override val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
-    .overrides(bind[BikListService].to(classOf[StubBikListService]))
+    .overrides(bind[BikListService].toInstance(stubBikListService))
     .overrides(bind[EiLListService].to(classOf[StubEiLListService]))
     .overrides(bind[HmrcTierConnector].toInstance(mock[HmrcTierConnector]))
     .build()
@@ -103,81 +103,73 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
 
 
+val stubBikListService:BikListService = {
 
-  class StubBikListService @Inject()(pbikAppConfig: AppConfig,
-                                     tierConnector: HmrcTierConnector,
-                                     runModeConfiguration: Configuration,
-                                     controllersReferenceData: ControllersReferenceData,
-                                     environment: Environment,
-                                     uriInformation: URIInformation) extends BikListService(
-    pbikAppConfig,
-    tierConnector,
-    runModeConfiguration,
-    controllersReferenceData,
-    environment,
-    uriInformation) {
+  val b = app.injector.instanceOf[BikListService]
 
-    lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
-    /*(n => new Bik("" + (n + 1), 10))*/
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+  lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+  when(b.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+    any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) <= 10
+  }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+  when(b.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+    any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
+    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) <= 10
+  }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
-      any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+  when(b.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+    any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
+    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) <= 10
+  }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getBenefitTypesPath),
-      mockEq(EmpRef.empty), mockEq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+  when(b.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
+    any[EmpRef], mockEq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) <= 10
+  }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getBenefitTypesPath),
-      mockEq(EmpRef.empty), mockEq(controllersReferenceData.YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+  when(b.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+    mockEq(EmpRef.empty), mockEq(controllersReferenceData.YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
+    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) <= 10
+  }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getBenefitTypesPath),
-      mockEq(EmpRef.empty), mockEq(controllersReferenceData.YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+  when(b.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+    mockEq(EmpRef.empty), mockEq(controllersReferenceData.YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
+    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) <= 10
+  }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 5
-    }))
+  when(b.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+    mockEq(EmpRef.empty), mockEq(controllersReferenceData.YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
+    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) <= 10
+  }))
 
-    when(tierConnector.genericPostCall(anyString, mockEq(uriInformation.updateBenefitTypesPath),
-      any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
+  when(b.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+    any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
+    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) <= 5
+  }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(uriInformation.getRegisteredPath),
-      any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) >= 15
-    }))
+  when(b.tierConnector.genericPostCall(anyString, mockEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
+    any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
+    any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
-  }
+  when(b.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
+    any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
+    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) >= 15
+  }))
+
+  b
+}
+
 
 
 
@@ -196,7 +188,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
                                               uriInformation: URIInformation,
                                               externalURLs: ExternalUrls,
                                               localFormPartialRetriever: LocalFormPartialRetriever)
-    extends ExclusionListController()(pbikAppConfig,
+    extends ExclusionListController(
       authenticate,
       noSessionCheck,
       eiLListService,
@@ -204,10 +196,11 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       tierConnector,
       runModeConfiguration,
       environment,
-      context,
       taxDateUtils,
       splunkLogger,
-      controllersReferenceData,
+      controllersReferenceData)(
+      pbikAppConfig,
+      context,
       uriInformation,
       externalURLs,
       localFormPartialRetriever) with Futures {
@@ -218,8 +211,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
      def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
       Future.successful(AuditResult.Success)
     }
-
-    //override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
 
     when(tierConnector.genericPostCall[EiLPerson](anyString, mockEq("31/exclusion/update"),
       any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
@@ -272,15 +263,11 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
   class StubNoRegisteredBikListService @Inject()(pbikAppConfig: AppConfig,
                                                  tierConnector: HmrcTierConnector,
-                                                 runModeConfiguration: Configuration,
                                                  controllersReferenceData: ControllersReferenceData,
-                                                 environment: Environment,
                                                  uriInformation: URIInformation) extends BikListService(
     pbikAppConfig: AppConfig,
     tierConnector,
-    runModeConfiguration,
     controllersReferenceData,
-    environment,
     uriInformation) {
 
     lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))

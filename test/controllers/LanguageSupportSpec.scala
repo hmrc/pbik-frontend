@@ -76,15 +76,11 @@ class LanguageSupportSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec
 
   class StubBikListService @Inject()(pbikAppConfig: AppConfig,
                                      tierConnector: HmrcTierConnector,
-                                     runModeConfiguration: Configuration,
                                      controllersReferenceData: ControllersReferenceData,
-                                     environment: Environment,
                                      uriInformation: URIInformation) extends BikListService (
   pbikAppConfig,
   tierConnector,
-  runModeConfiguration,
   controllersReferenceData,
-  environment,
   uriInformation
   ) {
 
