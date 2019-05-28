@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-
 package views
 
+import config.{AppConfig, LocalFormPartialRetriever}
+import controllers.ExternalUrls
 import models.{EmpRef, RegistrationList, TaxYearRange}
-import org.jsoup.Jsoup
 import play.api.data.Form
-import play.api.i18n.Messages
 import play.twirl.api.Html
-import utils.FormMappings
+import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
 
 
@@ -32,9 +31,14 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec with FormMappings {
 
   override def view: Html = viewWithForm(objSelectedForm)
 
+  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
+  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
+
   def viewWithForm(form: Form[RegistrationList]): Html = {
     val boundForm = form.bind(Map("actives[0].uid" -> "abc"))
-    views.html.registration.whatNextAddRemove(true, taxYearRange, true, boundForm, EmpRef("", ""))
+    views.html.registration.whatNextAddRemove(isCurrentYear = true, taxYearRange, additive = true, boundForm, EmpRef("", ""))
   }
 
   "whatNextAddRemove" must {

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-
-
 package views
 
+import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
+import controllers.ExternalUrls
 import models._
 import play.api.data.Form
 import play.twirl.api.Html
-import utils.FormMappings
+import utils.{FormMappings, URIInformation}
 import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
 
 
@@ -31,9 +31,14 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
 
   override def view: Html = viewWithForm(exclusionSearchFormWithoutNino)
 
-  def viewWithForm(form: Form[EiLPerson]): Html =
-    views.html.exclusion.noNinoExclusionSearchForm(taxYearRange, "cyp1", "30", form, true, EmpRef("", ""))
+  implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
+  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
+  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
+  def viewWithForm(form: Form[EiLPerson]): Html =
+    views.html.exclusion.noNinoExclusionSearchForm(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
 
   "noNinoExclusionSearchPage" must {
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))

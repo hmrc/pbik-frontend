@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-
 package views
 
+import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
+import controllers.ExternalUrls
 import models.{EmpRef, RegistrationList, TaxYearRange}
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.twirl.api.Html
-import utils.TaxDateUtils
-import views.helper.PBIKViewSpec
 import utils.FormMappings
+import views.helper.PBIKViewSpec
 
 
 class NextYearViewSpec extends PBIKViewSpec with FormMappings {
@@ -32,8 +32,13 @@ class NextYearViewSpec extends PBIKViewSpec with FormMappings {
 
   override def view: Html = viewWithForm(objSelectedForm)
 
+  implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
+  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
+
   def viewWithForm(form: Form[RegistrationList]): Html =
-    views.html.registration.nextTaxYear(form, true, taxYearRange, List(), List(), List(), List(), Some(1), EmpRef("", ""))
+    views.html.registration.nextTaxYear(form, additive = true, taxYearRange, List(), List(), List(), List(), Some(1), EmpRef("", ""))
 
   "nextYearPage" must {
     behave like pageWithTitle(messages("AddBenefits.Heading"))

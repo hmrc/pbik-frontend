@@ -405,7 +405,7 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("AddBenefits.Heading")
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(registrationController.nextTaxYearAddOnPageLoad.apply(mockrequest))(timeout)
+      val result = await(registrationController.nextTaxYearAddOnPageLoad(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.1"))

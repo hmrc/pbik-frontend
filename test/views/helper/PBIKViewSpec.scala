@@ -16,15 +16,14 @@
 
 package views.helper
 
-import java.util.UUID
-
 import config.PbikContext
+import connectors.ContactFrontendConnector
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatest.MustMatchers
+import org.mockito.Mockito.mock
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.{GuiceOneAppPerSuite, GuiceOneServerPerSuite}
-import play.api.i18n.Messages
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.http.HeaderCarrier
@@ -111,9 +110,9 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
 
 trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite {
 
-  implicit val request = FakeRequest()
+  implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messages: play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
-  implicit val pbikContext: PbikContext = new PbikContext {
+  implicit val pbikContext: PbikContext = new PbikContext(mock(classOf[ContactFrontendConnector])) {
     override def getPageHelpPartial()(implicit hc: HeaderCarrier): Future[String] = Future.successful("")
   }
 }
