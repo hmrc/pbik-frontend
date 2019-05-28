@@ -30,7 +30,7 @@
                                     config: AppConfig,
                                     localFormPartialRetriever: LocalFormPartialRetriever)
 
-@parentTemplate(pageTitle = Messages("ExclusionNinoDecision.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
+@parentTemplate(pageTitle = messages("ExclusionNinoDecision.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
         @includes.back_link(gaLabel = messages("ExclusionNinoDecision.title"))
@@ -59,8 +59,7 @@
                 <div class='form-group @if(flash.get("error")) {error}'>
                     @if(flash.get("error")) {
                         <span id="error-list-no-selection" class="error-notification" style="display:block">
-                        @messages("ExclusionDecision.noselection.error")
-                        </span>
+                        @messages("ExclusionDecision.noselection.error")</span>
                     }
                     <fieldset class="inline">
                         <legend class="text">@messages("ExclusionNinoDecision.question", messages("BenefitInKind.label." + iabdType), yearvalue)</legend>

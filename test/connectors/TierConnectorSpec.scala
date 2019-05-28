@@ -27,8 +27,10 @@ import support.TestAuthUser
 import uk.gov.hmrc.http._
 import utils.Exceptions.GenericServerErrorException
 
-class TierConnectorSpec @Inject()(tierConnector: HmrcTierConnector) extends PlaySpec with FakePBIKApplication
+class TierConnectorSpec extends PlaySpec with FakePBIKApplication
                                          with TestAuthUser with Results {
+
+  val tierConnector: HmrcTierConnector = app.injector.instanceOf[HmrcTierConnector]
 
   "When instantiating the TierConnector it" should {
     "not have a null tierConnector reference" in {

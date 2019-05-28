@@ -19,22 +19,23 @@ package controllers
 import config.{AppConfig, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models._
+import javax.inject.Inject
+import models.{Bik, TaxYearRange}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Lang
-import play.api.inject.bind
+import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc._
+import play.api.mvc.{AnyContentAsEmpty, Cookie}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, RegistrationService}
 import support.{StubbedBikListService, StubbedRegistrationService, TestAuthUser}
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
-import utils.{TestAuthAction, TestNoSessionCheckAction, _}
+import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
@@ -50,8 +51,9 @@ class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()
 
-  implicit val context: PbikContext = mock(classOf[PbikContext])
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
+  implicit val context: PbikContext = mock(classOf[PbikContext])
+
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   val timeoutValue: FiniteDuration = 15 seconds
 
@@ -75,8 +77,7 @@ class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
 
   "HomePageController" should {
     "display the navigation page" in {
-
-      val mockController = app.injector.instanceOf[HomePageController]
+      val homePageController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> sessionId,
         SessionKeys.token -> "RANDOMTOKEN",
@@ -84,7 +85,7 @@ class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
 
       implicit val timeout: FiniteDuration = timeoutValue
       implicit val lang: Lang = new Lang("cy")
-      val result = await(mockController.onPageLoad(request))(timeout)
+      val result = await(homePageController.onPageLoad(request))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include("Cyfeirnod TWE y cyflogwr")
     }

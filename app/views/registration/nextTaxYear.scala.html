@@ -46,7 +46,6 @@
 
 @parentTemplate(pageTitle =
     if(additive) {messages("AddBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1) + " - " + messages("Service.title")}else {messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1) + " - " + messages("Service.title")},
-
     Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
 
     @if(additive) {

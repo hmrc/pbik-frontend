@@ -38,7 +38,7 @@ import utils._
 
 import scala.concurrent.Future
 
-class HelpAndContactControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec with FakePBIKApplication
+class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
   with TestAuthUser with FormMappings {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
@@ -49,6 +49,7 @@ class HelpAndContactControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends
     .build()
 
   val controller = app.injector.instanceOf[HelpAndContactController]
+  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
 
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
@@ -67,7 +68,6 @@ class HelpAndContactControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = await(mockHelpController.submitContactHmrcForm(request))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      println(s"**************** ${result.body.asInstanceOf[Strict].data.utf8String}")
       result.body.asInstanceOf[Strict].data.utf8String must include("")//TODO - Does this do anything?
     }
 

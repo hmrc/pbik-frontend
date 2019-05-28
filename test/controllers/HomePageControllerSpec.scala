@@ -43,7 +43,7 @@ import utils._
 import scala.concurrent.Future
 import scala.concurrent.duration._
 
-class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec with FakePBIKApplication
+class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
   with TestAuthUser with FormMappings {
 
   val timeoutValue: FiniteDuration = 10 seconds
@@ -54,7 +54,10 @@ class HomePageControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlayS
     .overrides(bind[BikListService].to(classOf[StubBikListService]))
     .build()
 
+  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
+
+
 
   class StubBikListService @Inject()(pbikAppConfig: PbikAppConfig,
                                      tierConnector: HmrcTierConnector,

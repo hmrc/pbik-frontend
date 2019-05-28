@@ -52,7 +52,7 @@ import utils.{ControllersReferenceData, _}
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
-class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) extends PlaySpec with FormMappings
+class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   with TestAuthUser with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
@@ -65,7 +65,7 @@ class ManageRegistrationControllerSpec @Inject()(taxDateUtils: TaxDateUtils) ext
     .build()
 
 
-
+  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n=> RegistrationItem("" + (n + 1), active = true, enabled = true))
   val timeoutValue: FiniteDuration = 15 seconds
