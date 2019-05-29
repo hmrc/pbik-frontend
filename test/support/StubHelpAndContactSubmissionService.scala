@@ -18,7 +18,7 @@ package support
 
 import connectors.ContactFrontendConnector
 import javax.inject.Inject
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Request}
 import services.HelpAndContactSubmissionService
 import uk.gov.hmrc.http.HttpResponse

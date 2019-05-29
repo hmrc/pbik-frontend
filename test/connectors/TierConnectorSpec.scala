@@ -17,9 +17,7 @@
 package connectors
 
 import controllers.FakePBIKApplication
-import javax.inject.Inject
 import models.{EmpRef, PbikError}
-import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results

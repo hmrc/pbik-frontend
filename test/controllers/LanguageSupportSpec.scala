@@ -19,7 +19,6 @@ package controllers
 import config.{AppConfig, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import javax.inject.Inject
 import models.{Bik, TaxYearRange}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec

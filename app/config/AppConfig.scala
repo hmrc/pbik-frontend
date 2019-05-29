@@ -29,8 +29,6 @@ trait AppConfig {
   val reportAProblemPartialUrl: String
   val betaFeedbackUrl: String
   val betaFeedbackUnauthenticatedUrl: String
-  //val analyticsToken: String
-  //val analyticsHost: String
   val contactFrontendService: String
   val contactFormServiceIdentifier: String
   val cyEnabled:Boolean

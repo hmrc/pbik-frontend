@@ -18,7 +18,6 @@ package controllers
 
 import config.{AppConfig, PbikAppConfig}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import javax.inject.Inject
 import models.TaxYearRange
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
