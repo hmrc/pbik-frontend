@@ -16,33 +16,17 @@
 
 package connectors
 
-import akka.actor.ActorSystem
-import com.typesafe.config.Config
-import config.RunModeConfig
 import controllers.FakePBIKApplication
 import models.{EmpRef, PbikError}
 import org.scalatestplus.play.PlaySpec
-import play.api.Play
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Results
 import support.TestAuthUser
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.audit.http.HttpAuditing
-import uk.gov.hmrc.play.config.{AppName, RunMode}
-import uk.gov.hmrc.play.http.ws._
 import utils.Exceptions.GenericServerErrorException
 
-import scala.concurrent.Future
-
-class TierConnectorSpec extends PlaySpec  with FakePBIKApplication
-                                          with TestAuthUser with Results {
-
-  "When instantiating the TierConnector it" should {
-    "not have a null tierConnector reference" in {
-      val tc = TierConnector.tierConnector
-      assert(tc != null)
-    }
-  }
+class TierConnectorSpec extends PlaySpec with FakePBIKApplication
+                                         with TestAuthUser with Results {
 
   class FakeResponse extends HttpResponse {
     override def status = 200
@@ -61,63 +45,48 @@ class TierConnectorSpec extends PlaySpec  with FakePBIKApplication
     override def body = "A severe server error"
   }
 
-  class MockHmrcTierConnector extends HmrcTierConnector {
-    object WSHttp extends WSGet with HttpGet with WSPut with HttpPut with WSPost with HttpPost with WSDelete with HttpDelete with WSPatch with HttpPatch with AppName with RunMode with HttpAuditing with RunModeConfig {
-      override val hooks = Seq(AuditingHook)
-      override val auditConnector: FrontendAuditConnector.type = FrontendAuditConnector
-      override val configuration: Option[Config] = Some(appNameConfiguration.underlying)
-      override val actorSystem: ActorSystem = Play.current.actorSystem
-      override def doGet(url : scala.Predef.String)(implicit hc : _root_.uk.gov.hmrc.http.HeaderCarrier) :
-                scala.concurrent.Future[_root_.uk.gov.hmrc.http.HttpResponse] = Future.successful(new FakeResponse)
-    }
-  }
+  val hmrcTierConnector  = app.injector.instanceOf[HmrcTierConnector]
 
   "When creating a GET URL with an orgainsation needing encoding it" should {
    " encode the slash properly" in {
-      val tc = new MockHmrcTierConnector
-      val result:String = tc.createGetUrl("theBaseUrl","theURIExtension", EmpRef("780", "MODES16"),2015)
+      val result:String = hmrcTierConnector.createGetUrl("theBaseUrl","theURIExtension", EmpRef("780", "MODES16"),2015)
       assert(result == "theBaseUrl/780%2FMODES16/2015/theURIExtension")
     }
   }
 
   "When creating a GET URL with no organisation it" should {
    " omit the organisation" in {
-      val tc = new MockHmrcTierConnector
-      val result:String = tc.createGetUrl("theBaseUrl","theURIExtension", EmpRef.empty,2015)
+      val result:String = hmrcTierConnector.createGetUrl("theBaseUrl","theURIExtension", EmpRef.empty,2015)
       assert(result == "theBaseUrl/2015/theURIExtension")
     }
   }
 
   "When creating a POST URL with an organisation which needs encoding it" should {
    " be properly formed with the %2F encoding" in {
-      val tc = new MockHmrcTierConnector
-      val result:String = tc.createPostUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), 2015)
+      val result:String = hmrcTierConnector.createPostUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), 2015)
       assert(result == "theBaseUrl/780%2FMODES16/2015/theURIExtension")
     }
   }
 
   "When processing a response if the status is greater than 400 it" should {
    " throw a GenericServerErrorException" in {
-      val tc = new MockHmrcTierConnector
       intercept[GenericServerErrorException] {
-        tc.processResponse(new FakeSevereResponse)
+        hmrcTierConnector.processResponse(new FakeSevereResponse)
       }
     }
   }
 
   "When processing a response if the status is less than 400 it" should {
    " return the response" in {
-      val tc = new MockHmrcTierConnector
-      val resp = tc.processResponse(new FakeResponse)
+      val resp = hmrcTierConnector.processResponse(new FakeResponse)
       assert(resp.status == 200)
     }
   }
 
   "When processing a response if there is a PBIK error code" should {
    " throw a GenericServerErrorException" in {
-      val tc = new MockHmrcTierConnector
       intercept[GenericServerErrorException] {
-        tc.processResponse(new FakeResponseWithError)
+        hmrcTierConnector.processResponse(new FakeResponseWithError)
       }
     }
   }

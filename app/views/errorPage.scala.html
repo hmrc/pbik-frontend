@@ -14,59 +14,62 @@
  * limitations under the License.
  *@
 
-@import play.api.i18n.Messages.Implicits._
-@import play.api.Play.current
+@import utils.FormMappingsConstants._
+@import uk.gov.hmrc.play.views.html.helpers
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(errorMessage:String,
  taxYearRange:TaxYearRange,
  isCurrentTaxYear:String= "", code:Int = 0,
  pageHeading:String ="An error has occurred",
  backLink:String= "overview", empRef: Option[EmpRef])(implicit request:Request[_],
-                              context: config.PbikContext, applicationMessages: Messages)
+                              context: PbikContext, messages: Messages,
+                                externalURLs: ExternalUrls,
+                                config: AppConfig,
+                                localFormPartialRetriever: LocalFormPartialRetriever)
 
-@import utils.FormMappingsConstants._
-@import uk.gov.hmrc.play.views.html.helpers
-
-@parentTemplate(pageTitle = Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
+@parentTemplate(pageTitle = messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
     @isCurrentTaxYear match {
-        case utils.FormMappingsConstants.CY => {<h1 id="title">@Messages(pageHeading,taxYearRange.cyminus1.toString, taxYearRange.cy.toString)</h1>}
-        case utils.FormMappingsConstants.CYP1 => {<h1 id="title">@Messages(pageHeading, taxYearRange.cy.toString, taxYearRange.cyplus1.toString)</h1>}
-        case _ if(code >= 0) => {<h1 id="title">@Messages("ServiceMessage." + (code) + ".h1")</h1>}
-        case _ => {<h1 id="title">@Messages(errorMessage + "", "", "")</h1>}
+        case utils.FormMappingsConstants.CY => {<h1 id="title">@messages(pageHeading,taxYearRange.cyminus1.toString, taxYearRange.cy.toString)</h1>}
+        case utils.FormMappingsConstants.CYP1 => {<h1 id="title">@messages(pageHeading, taxYearRange.cy.toString, taxYearRange.cyplus1.toString)</h1>}
+        case _ if(code >= 0) => {<h1 id="title">@messages("ServiceMessage." + (code) + ".h1")</h1>}
+        case _ => {<h1 id="title">@messages(errorMessage + "", "", "")</h1>}
     }
 
     <p class="lede-para text">
      @isCurrentTaxYear match {
-            case utils.FormMappingsConstants.CY => {@Html(Messages(errorMessage + isCurrentTaxYear , taxYearRange.cyminus1.toString, taxYearRange.cy.toString))}
-            case utils.FormMappingsConstants.CYP1 => {@Html(Messages(errorMessage + isCurrentTaxYear , taxYearRange.cy.toString, taxYearRange.cyplus1.toString))}
+            case utils.FormMappingsConstants.CY => {@Html(messages(errorMessage + isCurrentTaxYear , taxYearRange.cyminus1.toString, taxYearRange.cy.toString))}
+            case utils.FormMappingsConstants.CYP1 => {@Html(messages(errorMessage + isCurrentTaxYear , taxYearRange.cy.toString, taxYearRange.cyplus1.toString))}
             case _ if(code == 63091) => {
 
-                @Html(Messages("ServiceMessage." + (code)))
+                @Html(messages("ServiceMessage." + (code)))
 
             }
             case _ if(code == 63088 || code == 64989 || code == 10003)  => {
 
-                @Html(Messages("ServiceMessage." + (code) + ".1"))
+                @Html(messages("ServiceMessage." + (code) + ".1"))
 
             }
-            case _ => {@Html(Messages(errorMessage))}
+            case _ => {@Html(messages(errorMessage))}
         }
     </p>
 
     <p class="text">
         @if(code == 63088 || code == 64989 || code == 10003) {
 
-            @Html(Messages("ServiceMessage." + (code) + ".2"))
+            @Html(messages("ServiceMessage." + (code) + ".2"))
         }
     </p>
 
 
     @code match {
-        case 63082 => {<a id="link-try-again" href='javascript: window.history.go(-1)'>@Messages("Service.tryagain")</a>}
-        case 63085 => {<a id="link-add-another" href='javascript: window.history.go(-1)'>@Messages("Service.excludeanotheremployee")</a>}
-        case 63090 => {<a id="link-add-another" href='javascript: window.history.go(-1)'>@Messages("Service.excludeanotheremployee")</a>}
-        case 63092 => {<a id="link-add-another" href='javascript: window.history.go(-1)'>@Messages("Service.excludeanotheremployee")</a>}
+        case 63082 => {<a id="link-try-again" href='javascript: window.history.go(-1)'>@messages("Service.tryagain")</a>}
+        case 63085 => {<a id="link-add-another" href='javascript: window.history.go(-1)'>@messages("Service.excludeanotheremployee")</a>}
+        case 63090 => {<a id="link-add-another" href='javascript: window.history.go(-1)'>@messages("Service.excludeanotheremployee")</a>}
+        case 63092 => {<a id="link-add-another" href='javascript: window.history.go(-1)'>@messages("Service.excludeanotheremployee")</a>}
         case _ => {}
     }
 
@@ -74,10 +77,10 @@
         @backLink match {
             case _ if(code != 0 && code != 10001 && code != 65176 && code!=65355)=>{
                 <a id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>
-                    @Messages("Service.back.overview")</a>}
+                    @messages("Service.back.overview")</a>}
             case _ => {
                 <a id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>
-                    @Messages("Service.back.overview")</a>
+                    @messages("Service.back.overview")</a>
             }
         }
     </p>

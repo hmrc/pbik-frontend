@@ -14,8 +14,14 @@
  * limitations under the License.
  *@
 
-@import play.api.i18n.Messages.Implicits._
-@import play.api.Play.current
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.BikListUtils._
+@import utils.TaxDateUtils
+@import utils.URIInformation
+@import java.util.Calendar
+
+@import config.PbikAppConfig
+@import config.LocalFormPartialRetriever
 
 @(cyAllowed: Boolean,
 taxYearRange:TaxYearRange,
@@ -25,15 +31,14 @@ serviceBiksCountCY: Int,
 serviceBiksCountCYP1: Int,
 fromYTA: String,
 empRef: EmpRef)(implicit request:Request[_],
-context: config.PbikContext, applicationMessages: Messages)
+context: config.PbikContext, messages: Messages,
+taxDateUtils: TaxDateUtils,
+pbikAppConfig: PbikAppConfig,
+uriInformation: URIInformation,
+externalURLs: ExternalUrls,
+localFormPartialRetriever: LocalFormPartialRetriever)
 
-@import uk.gov.hmrc.play.views.html.helpers
-@import utils.BikListUtils._
-@import utils.TaxDateUtils._
-@import utils.URIInformation._
-@import java.util.Calendar
 
-@import config.PbikAppConfig.biksDecommissioned
 
 @sidebarLinks={
 <div class="sidebar-side-bar">
@@ -41,47 +46,47 @@ context: config.PbikContext, applicationMessages: Messages)
 </div>
 }
 
-@parentTemplate(pageTitle = Messages("Overview.heading") + " - " + Messages("Service.title"), None, Some(empRef.toString),
+@parentTemplate(pageTitle = messages("Overview.heading") + " - " + messages("Service.title"), None, Some(empRef.toString),
 showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
 
-<h1 id="title">@Messages("Overview.heading")</h1>
+<h1 id="title">@messages("Overview.heading")</h1>
 
 <section id="what-to-do">
 
-    @if(dateWithinAnnualCodingRun(Calendar.getInstance.getTime)) {
+    @if(taxDateUtils.dateWithinAnnualCodingRun(Calendar.getInstance.getTime)) {
     <div id="latest-updates-message" class="panel-indent panel-border-wide">
-        <span>@Messages("Service.news.banner.message")</span>
+        <span>@messages("Service.news.banner.message")</span>
     </div>
     }
 
     <h2 id="heading-cy1">
-        @Messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")</h2>
+        @messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")</h2>
 
     @if(!registeredBenefitsNextYear.isEmpty) {
     <p>
-        @Messages("Overview.next.lead")
+        @messages("Overview.next.lead")
     </p>
 
     <h3 class="heading-medium">
-        @Messages("Overview.table.heading.1")
+        @messages("Overview.table.heading.1")
     </h3>
     <dl class="govuk-check-your-answers cya-questions-long">
         @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsNextYear).zipWithIndex ) {
         <div>
             <div class="cya-question" id="cy1-@n.iabdType">
-                @Messages("BenefitInKind.label." + n.iabdType)
+                @messages("BenefitInKind.label." + n.iabdType)
             </div>
             <div class="cya-answer">
-                <a id="cy1-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", iabdValueURLMapper(n.iabdType))'>
-                    @if(n.eilCount == 0) {@Messages("Overview.table.exclude.none.link")} else {@Messages("Overview.table.exclude.link")}
+                <a id="cy1-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", uriInformation.iabdValueURLMapper(n.iabdType))'>
+                    @if(n.eilCount == 0) {@messages("Overview.table.exclude.none.link")} else {@messages("Overview.table.exclude.link")}
                     @if(n.eilCount > 0) {(@n.eilCount)}
-                    <span class="visuallyhidden">@Messages("Overview.current.from") @Messages("BenefitInKind.label." + n.iabdType)</span>
+                    <span class="visuallyhidden">@messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType)</span>
                 </a>
             </div>
             <div class="cya-change">
-                <a id="cy1-remove-@n.iabdType" href="@controllers.registration.routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(n.iabdType))">
-                   <span aria-hidden="true">@Messages("Overview.table.remove.link")</span>
-                    <span class="visuallyhidden">@Messages("Overview.current.remove") @Messages("BenefitInKind.label." + n.iabdType) @Messages("Overview.current.from") @Messages("Overview.current.payroll.p11d")</span>
+                <a id="cy1-remove-@n.iabdType" href="@controllers.registration.routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(uriInformation.iabdValueURLMapper(n.iabdType))">
+                   <span aria-hidden="true">@messages("Overview.table.remove.link")</span>
+                    <span class="visuallyhidden">@messages("Overview.current.remove") @messages("BenefitInKind.label." + n.iabdType) @messages("Overview.current.from") @messages("Overview.current.payroll.p11d")</span>
                 </a>
             </div>
         </div>
@@ -89,16 +94,16 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
      </dl>
     }else {
     <p id="no-benefits">
-        @Messages("Overview.next.lead.empty", taxYearRange.cy + "")
+        @messages("Overview.next.lead.empty", taxYearRange.cy + "")
     </p>
     }
 
-    @if(registeredBenefitsNextYear.size < (serviceBiksCountCYP1 - biksDecommissioned.size)) {
+    @if(registeredBenefitsNextYear.size < (serviceBiksCountCYP1 - pbikAppConfig.biksDecommissioned.size)) {
     <a class="button" role="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
         @if(registeredBenefitsNextYear.size > 0) {
-        @Messages("Overview.table.add.link.more")
+        @messages("Overview.table.add.link.more")
         }else {
-        @Messages("Overview.table.add.link")
+        @messages("Overview.table.add.link")
         }
     </a>
     }
@@ -106,15 +111,15 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
 
 
     @if(cyAllowed || !registeredBenefitsCurrentYear.isEmpty) {
-    <h2>@Messages("Overview.current.heading", taxYearRange.cyminus1 + "", taxYearRange.cy + "")</h2>
+    <h2>@messages("Overview.current.heading", taxYearRange.cyminus1 + "", taxYearRange.cy + "")</h2>
 
     @if(!registeredBenefitsCurrentYear.isEmpty) {
     <p>
-        @Messages("Overview.current.lead")
+        @messages("Overview.current.lead")
     </p>
     }else {
     <p>
-        @Messages("Overview.current.lead.empty", taxYearRange.cyminus1 + "")
+        @messages("Overview.current.lead.empty", taxYearRange.cyminus1 + "")
     </p>
     }
     @if(!cyAllowed) {
@@ -126,13 +131,13 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
         @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
         <div>
             <div class="cya-question" id="cy-@n.iabdType">
-                @Messages("BenefitInKind.label." + n.iabdType)
+                @messages("BenefitInKind.label." + n.iabdType)
             </div>
             <div class="cya-answer">
-                <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", iabdValueURLMapper(n.iabdType))'>
-                    @if(n.eilCount == 0) {@Messages("Overview.table.exclude.none.link")} else {@Messages("Overview.table.exclude.link")}
+                <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", uriInformation.iabdValueURLMapper(n.iabdType))'>
+                    @if(n.eilCount == 0) {@messages("Overview.table.exclude.none.link")} else {@messages("Overview.table.exclude.link")}
                     @if(n.eilCount > 0) {(@n.eilCount)}
-                    <span class="visuallyhidden"> @Messages("Overview.current.from") @Messages("BenefitInKind.label." + n.iabdType)</span>
+                    <span class="visuallyhidden"> @messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType)</span>
                 </a>
             </div>
 
@@ -143,12 +148,12 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
     }
 
     @if(cyAllowed) {
-    @if(registeredBenefitsCurrentYear.size < (serviceBiksCountCY-biksDecommissioned.size)) {
+    @if(registeredBenefitsCurrentYear.size < (serviceBiksCountCY - pbikAppConfig.biksDecommissioned.size)) {
     <a class="button" role="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
         @if(registeredBenefitsCurrentYear.size > 0) {
-        @Messages("Overview.table.add.link.more")
+        @messages("Overview.table.add.link.more")
         }else {
-        @Messages("Overview.table.add.link")
+        @messages("Overview.table.add.link")
         }
     </a>
     }

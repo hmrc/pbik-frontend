@@ -16,26 +16,23 @@
 
 package services
 
-import config.{AppConfig, PbikAppConfig}
-import connectors.{HmrcTierConnector, TierConnector}
+import config.PbikAppConfig
+import connectors.HmrcTierConnector
+import javax.inject.Inject
 import models.{AuthenticatedRequest, EiLPerson}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{ControllersReferenceData, SplunkLogger, URIInformation}
+import utils.URIInformation
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object EiLListService extends EiLListService {
-  val pbikAppConfig: AppConfig = PbikAppConfig
-  val tierConnector = new HmrcTierConnector
-}
-
-trait EiLListService extends TierConnector with URIInformation
-with ControllersReferenceData with SplunkLogger {
+class EiLListService @Inject()( val pbikAppConfig: PbikAppConfig,
+                                val tierConnector: HmrcTierConnector,
+                                uRIInformation: URIInformation) {
 
   def currentYearEiL(iabdType: String, year: Int)(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[List[EiLPerson]] = {
-    val response = tierConnector.genericGetCall[List[EiLPerson]](baseUrl,
-      exclusionGetPath(iabdType),
+    val response = tierConnector.genericGetCall[List[EiLPerson]](uRIInformation.baseUrl,
+      uRIInformation.exclusionGetPath(iabdType),
       request.empRef, year)
 
     response.map {

@@ -16,29 +16,40 @@
 
 package connectors
 
-import config.RunModeConfig
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.Mode.Mode
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpGet, HttpResponse}
+import play.api.{Application, Configuration, Environment}
+import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with MockitoSugar
-  with BeforeAndAfterEach with ServicesConfig with RunModeConfig {
+  with BeforeAndAfterEach with ServicesConfig {
 
-  implicit val headerCarrier = HeaderCarrier()
+  lazy val environment: Environment = app.injector.instanceOf[Environment]
+  override protected def mode: Mode = environment.mode
+  override protected def runModeConfiguration: Configuration = app.injector.instanceOf[Configuration]
 
-  object TestConnector extends ContactFrontendConnector {
-    override val http = mock[HttpGet]
-  }
+  override val fakeApplication: Application = GuiceApplicationBuilder()
+    .overrides(bind[HttpClient].toInstance(mock[HttpClient]))
+    .build()
 
-  override def beforeEach() = {
-    reset(TestConnector.http)
+
+  implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
+
+  val testConnector = app.injector.instanceOf[ContactFrontendConnector]
+
+  override def beforeEach(): Unit = {
+    reset(testConnector.client)
   }
 
   "ContactFrontendConnector" must {
@@ -51,20 +62,22 @@ class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with Moc
 
       val response = HttpResponse(200, responseString = Some(dummyResponseHtml))
 
-      when(TestConnector.http.GET[HttpResponse](meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.successful(response)
+      when(testConnector.client.GET[HttpResponse](meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.successful(response)
 
-      await(TestConnector.getHelpPartial)
+      await(testConnector.getHelpPartial)
 
-      verify(TestConnector.http).GET(meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])
+      verify(testConnector.client).GET(meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])
     }
 
     "return an empty string if a BadGatewayException is encountered" in {
 
-      when(TestConnector.http.GET[HttpResponse](meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.failed(new BadGatewayException("Phony exception"))
+      when(testConnector.client.GET[HttpResponse](meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])) thenReturn
+        Future.failed(new BadGatewayException("Phony exception"))
 
-      val result = await(TestConnector.getHelpPartial)
+      val result = await(testConnector.getHelpPartial)
 
       result mustBe ""
     }
   }
+
 }

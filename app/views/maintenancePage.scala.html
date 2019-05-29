@@ -14,25 +14,27 @@
  * limitations under the License.
  *@
 
-@import play.api.i18n.Messages.Implicits._
-@import play.api.Play.current
-
-@(pageHeading:String =Messages("ServiceMessage.0.h1"),
-  backLink:String= "payrolled-benefits-expenses", empRef: Option[EmpRef])(implicit request:Request[_],
-                                                  context: config.PbikContext, applicationMessages: Messages)
-
+@import config.AppConfig
+@import config.PbikContext
 @import utils.FormMappingsConstants._
+@import config.LocalFormPartialRetriever
 
-    @parentTemplate(pageTitle = Messages("Service.title"), None, Some(empRef.toString)) {
+@(backLink:String= "payrolled-benefits-expenses", empRef: Option[EmpRef])(implicit request:Request[_],
+                                                  context: PbikContext, messages: Messages,
+                                                    config: AppConfig,
+                                                    externalURLs: ExternalUrls,
+                                                    localFormPartialRetriever: LocalFormPartialRetriever)
 
-        <h1 id="title">@Messages("ServiceMessage.0.h1")</h1>
+    @parentTemplate(pageTitle = messages("Service.title"), None, Some(empRef.toString)) {
+
+        <h1 id="title">@messages("ServiceMessage.0.h1")</h1>
         <p class="lede-para text">
-            @Html(Messages("ErrorPage.connectionProblem"))
+            @Html(messages("ErrorPage.connectionProblem"))
         </p>
         <p>
-           @Html(Messages("ErrorPage.connectionAction"))
+           @Html(messages("ErrorPage.connectionAction"))
         </p>
         <p>
-            @Html(Messages("ErrorPage.connectionStatus"))
+            @Html(messages("ErrorPage.connectionStatus"))
         </p>
     }

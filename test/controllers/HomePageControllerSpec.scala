@@ -16,82 +16,48 @@
 
 package controllers
 
-import config.AppConfig
-import connectors.{HmrcTierConnector, TierConnector}
+import config.{AppConfig, PbikAppConfig}
+import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
+import play.api.Application
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+import play.api.inject._
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.BikListService
-import support.TestAuthUser
+import support.{CYEnabledSetup, StubbedBikListService, TestAuthUser, TestSplunkLogger}
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction}
+import utils._
 
-import scala.concurrent.Future
 import scala.concurrent.duration._
 
 class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
-                                              with TestAuthUser with FormMappings{
+  with TestAuthUser with FormMappings {
 
   val timeoutValue: FiniteDuration = 10 seconds
-  def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
 
-  class StubBikListService extends BikListService {
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+    .overrides(bind[AppConfig].to(classOf[PbikAppConfig]))
+    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[BikListService].to(classOf[StubbedBikListService]))
+    .overrides(bind[SplunkLogger].to(classOf[TestSplunkLogger]))
+    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
+    .build()
 
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
-    lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))/*(n => new Bik("" + (n + 1), 10))*/
-    override lazy val pbikHeaders:Map[String,String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
-
-    override def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
-        Future[(Map[String, String], List[Bik])] = {
-
-      Future.successful((Map(HeaderTags.ETAG -> "1"),CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
-    }
-
-    override def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
-        Future[(Map[String, String], List[Bik])] = {
-      
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
-    }
-
-    override def registeredBenefitsList(year: Int,  empRef: EmpRef)(path: String)
-                                       (implicit hc: HeaderCarrier, request: Request[_]) :  Future[List[Bik]] = {
-      Future.successful(CYCache)
-    }
-
-  }
-
-  class MockHomePageController extends HomePageController with TierConnector {
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
-    override val bikListService: BikListService = new StubBikListService
-    override val authenticate: AuthAction = new TestAuthAction
-    override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
-
-    override def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
-      Future.successful(AuditResult.Success)
-    }
-
-  }
-
-  class MockHomePageControllerCYEnabled extends MockHomePageController {
-    when(pbikAppConfig.cyEnabled).thenReturn(true)
-    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
-  }
+  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
+  def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   "When checking if from YTA referer ends /account" in {
-    val homePageController = HomePageController
+    val homePageController = app.injector.instanceOf[HomePageController]
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(
       "referer" -> "/account"
     )
@@ -100,7 +66,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
   }
 
   "When checking if from YTA referer ends /business-account" in {
-    val homePageController = HomePageController
+    val homePageController = app.injector.instanceOf[HomePageController]
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(
       "referer" -> "/business-account"
     )
@@ -109,7 +75,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
   }
 
   "When checking if from YTA referer ends /someother" in {
-    val homePageController = HomePageController
+    val homePageController = app.injector.instanceOf[HomePageController]
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(
       "referer" -> "/someother"
     )
@@ -117,16 +83,9 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
     result must be(false)
   }
 
-  "When instantiating the HomePageController" in {
-    val homePageController = HomePageController
-    assert(homePageController.pbikAppConfig != null)
-    assert(homePageController.tierConnector != null)
-    assert(homePageController.bikListService != null)
-  }
-
   "HomePageController" should {
     "show Unauthorised if the session is not authenticated" in {
-      val homePageController = new MockHomePageController
+      val homePageController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> "hackmeister",
         SessionKeys.token -> "RANDOMTOKEN",
@@ -136,57 +95,61 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
     }
 
     "logout and redirect to feed back page" in {
-      val homePageController = new MockHomePageController
+      val homePageController = app.injector.instanceOf[HomePageController]
       val result = homePageController.signout.apply(FakeRequest())
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result).get  must include("/feedback/PBIK")
+      redirectLocation(result).get must include("/feedback/PBIK")
 
     }
   }
 
-    "When a valid user loads the CY warning but CY is disabled the HomePageController" should {
-      "show the CY disabled error page" in {
-        val homePageController = new MockHomePageController
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-        implicit val ac: AuthContext = createDummyUser("VALID_ID")
-        implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-        val result = await(homePageController.loadCautionPageForCY.apply(request))
-        result.header.status must be(OK)
-        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.1"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.2"))
-      }
-    }
+  "When a valid user loads the CY warning but CY is disabled the HomePageController" should {
+    "show the CY disabled error page" in {
+      val homePageController = app.injector.instanceOf[HomePageController]
 
-    "When a valid user loads the CY warning page and CY mode is enabled the HomePageController" should {
-      "show the page" in {
-        val homePageController = new MockHomePageControllerCYEnabled
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-        implicit val ac: AuthContext = createDummyUser("VALID_ID")
-        implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-        val result = await(homePageController.loadCautionPageForCY.apply(request))
-        result.header.status must be(OK)
-        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("AddBenefits.CY.Caution.Title"))
-      }
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+      val result = await(homePageController.loadCautionPageForCY.apply(request))
+      result.header.status must be(OK)
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.1"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.2"))
     }
+  }
+
+  "When a valid user loads the CY warning page and CY mode is enabled the HomePageController" should {
+    "show the page" in new CYEnabledSetup {
+
+      val injector: Injector = new GuiceApplicationBuilder()
+        .overrides(GuiceTestModule)
+        .injector()
+
+      val homePageController = injector.instanceOf[HomePageController]
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+      val result = await(homePageController.loadCautionPageForCY.apply(request))
+      result.header.status must be(OK)
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("AddBenefits.CY.Caution.Title"))
+    }
+  }
 
   "HomePageController" should {
-      "display the navigation page" in {
-        val homePageController = new MockHomePageController
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-          SessionKeys.sessionId -> sessionId,
-          SessionKeys.token -> "RANDOMTOKEN",
-          SessionKeys.userId -> userId)
-        implicit val timeout : akka.util.Timeout = timeoutValue
-        val result = await(homePageController.onPageLoad(request))(timeout)
-        result.header.status must be(OK)
-        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.heading"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.next.heading", ""+YEAR_RANGE.cy, ""+YEAR_RANGE.cyplus1))
-        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.table.heading.1"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.current.heading", ""+YEAR_RANGE.cyminus1, ""+YEAR_RANGE.cy))
-        result.body.asInstanceOf[Strict].data.utf8String must include("Help improve digital services by joining the HMRC user panel <span class=\"visuallyhidden\">(opens in new window)</span></a>")
-        result.body.asInstanceOf[Strict].data.utf8String must include("No thanks")
-      }
+    "display the navigation page" in {
+      val homePageController = app.injector.instanceOf[HomePageController]
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
+        SessionKeys.sessionId -> sessionId,
+        SessionKeys.token -> "RANDOMTOKEN",
+        SessionKeys.userId -> userId)
+      implicit val timeout: akka.util.Timeout = timeoutValue
+      val result = await(homePageController.onPageLoad(request))(timeout)
+      result.header.status must be(OK)
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.heading"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.next.heading", "" + YEAR_RANGE.cy, "" + YEAR_RANGE.cyplus1))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.table.heading.1"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.current.heading", "" + YEAR_RANGE.cyminus1, "" + YEAR_RANGE.cy))
+      result.body.asInstanceOf[Strict].data.utf8String must include("Help improve digital services by joining the HMRC user panel <span class=\"visuallyhidden\">(opens in new window)</span></a>")
+      result.body.asInstanceOf[Strict].data.utf8String must include("No thanks")
+    }
   }
 
 }

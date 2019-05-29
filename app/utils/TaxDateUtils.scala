@@ -20,23 +20,24 @@ import java.text.SimpleDateFormat
 import java.util
 import java.util.Date
 
+import javax.inject.Inject
 import models.TaxYearRange
 import org.joda.time.{DateTime, LocalDate}
-import play.api.Play
-import play.api.Play.current
+import play.api.Configuration
 import uk.gov.hmrc.time.TaxYear
 
-object TaxDateUtils extends PayrollBikDefaults {
+class TaxDateUtils @Inject()(configuration:Configuration) extends PayrollBikDefaults {
 
-  val overridedDateFromConfig: Option[util.List[Integer]] = Play.configuration.getIntList("pbik.date.override")
+  val overridedDateFromConfig: Option[util.List[Integer]] = configuration.getIntList("pbik.date.override")
 
   val sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss")
-  val startDateBanner: Date = sdf.parse(Play.configuration.getString("pbik.banner.date.start").getOrElse(""))
-  val endDateBanner: Date = sdf.parse(Play.configuration.getString("pbik.banner.date.end").getOrElse(""))
+  val startDateBanner: Date = sdf.parse(configuration.getString("pbik.banner.date.start").getOrElse(""))
+  val endDateBanner: Date = sdf.parse(configuration.getString("pbik.banner.date.end").getOrElse(""))
 
   def getDefaultDate: LocalDate = {
     if(overridedDateFromConfig.isDefined) {
-      new LocalDate(overridedDateFromConfig.get.get(0), overridedDateFromConfig.get.get(1), overridedDateFromConfig.get.get(2))} else new LocalDate()
+      new LocalDate(overridedDateFromConfig.get.get(0), overridedDateFromConfig.get.get(1), overridedDateFromConfig.get.get(2))
+    } else new LocalDate()
   }
 
   def getDefaultYear: Int = {

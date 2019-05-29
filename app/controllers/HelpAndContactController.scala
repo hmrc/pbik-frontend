@@ -18,76 +18,80 @@ package controllers
 
 import java.net.URLEncoder
 
-import config.{AppConfig, PbikAppConfig}
-import connectors.{HmrcTierConnector, PBIKHeaderCarrierForPartialsConverter, TierConnector, WSHttp}
+import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import connectors._
 import controllers.actions.{AuthAction, NoSessionCheckAction}
+import javax.inject.Inject
+import play.api.Mode.Mode
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc._
-import play.api.{Logger, Play}
-import play.twirl.api.{Html, HtmlFormat}
-import services.BikListService
-import uk.gov.hmrc.http.{HeaderCarrier, Request => _, _}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils._
+import play.api.{Configuration, Environment, Logger}
+import play.twirl.api.Html
+import services.{BikListService, HelpAndContactSubmissionService}
+import uk.gov.hmrc.http.{Request => _}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.{ControllersReferenceData, _}
 
 import scala.concurrent.Future
 
-object HelpAndContactController extends HelpAndContactController with TierConnector {
-  override val httpPost = WSHttp
-  val pbikAppConfig: AppConfig = PbikAppConfig
-  val bikListService:BikListService = BikListService
-  val tierConnector = new HmrcTierConnector
+class HelpAndContactController @Inject()(formPartialProvider: FormPartialProvider,
+                                         bikListService: BikListService,
+                                         helpAndContactSubmissionService: HelpAndContactSubmissionService,
+                                         val authenticate: AuthAction,
+                                         val noSessionCheck: NoSessionCheckAction,
+                                         implicit val pbikAppConfig: PbikAppConfig,
+                                         configuration: Configuration,
+                                         environment: Environment,
+                                         controllersReferenceData: ControllersReferenceData,
+                                         splunkLogger: SplunkLogger,
+                                         implicit val context: PbikContext,
+                                         implicit val externalURLs: ExternalUrls,
+                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController {
 
-  override val contactFrontendPartialBaseUrl: String = pbikAppConfig.contactFrontendService
-  override val contactFormServiceIdentifier: String = pbikAppConfig.contactFormServiceIdentifier
+  val mode: Mode = environment.mode
+  val runModeConfiguration: Configuration = configuration
 
-  val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
-  val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
-}
-
-trait HelpAndContactController extends FrontendController
-  with URIInformation
-  with ControllersReferenceData
-  with SplunkLogger {
-  this: TierConnector =>
-
-  val bikListService: BikListService
-
-  val authenticate: AuthAction
-  val noSessionCheck: NoSessionCheckAction
-
-  def httpPost: CorePost
-
-  private val TICKET_ID = "ticketId"
-
-  def contactFrontendPartialBaseUrl: String
-
-  def contactFormServiceIdentifier: String
+  val contactFrontendPartialBaseUrl: String = pbikAppConfig.contactFrontendService
+  val contactFormServiceIdentifier: String = pbikAppConfig.contactFormServiceIdentifier
 
   private lazy val submitUrl = routes.HelpAndContactController.submitContactHmrcForm().url
   private lazy val contactHmrcFormPartialUrl = s"$contactFrontendPartialBaseUrl/contact/contact-hmrc/form?service=${contactFormServiceIdentifier}&submitUrl=${urlEncode(submitUrl)}&renderFormOnly=true"
   private lazy val contactHmrcSubmitPartialUrl = s"$contactFrontendPartialBaseUrl/contact/contact-hmrc/form?resubmitUrl=${urlEncode(submitUrl)}&renderFormOnly=true"
 
-
   private def urlEncode(value: String) = URLEncoder.encode(value, "UTF-8")
 
-  private def partialsReadyHeaderCarrier(implicit request: Request[_]): HeaderCarrier = {
-    val hc1 = PBIKHeaderCarrierForPartialsConverter.headerCarrierEncryptingSessionCookieFromRequest(request)
-    PBIKHeaderCarrierForPartialsConverter.headerCarrierForPartialsToHeaderCarrier(hc1)
-  }
+  private val TICKET_ID = "ticketId"
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck) {
     implicit request =>
-      Ok(views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, None, empRef = request.empRef))
+      Ok(views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, None, empRef = request.empRef, formPartialProvider = formPartialProvider))
   }
 
   def submitContactHmrcForm: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
 
-      submitContactHmrc(contactHmrcSubmitPartialUrl,
-        routes.HelpAndContactController.confirmationContactHmrc(),
-        (body: Html) => views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, Some(body), empRef = request.empRef))
+      val successRedirect = routes.HelpAndContactController.confirmationContactHmrc()
+      val failedValidationResponseContent = (body: Html) => views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, Some(body), empRef = request.empRef, formPartialProvider = formPartialProvider)
+      request.body.asFormUrlEncoded.map {
+        formData =>
+          helpAndContactSubmissionService.submitContactHmrc(contactHmrcSubmitPartialUrl, formData).map {
+            resp =>
+              //TODO: Clean up via exceptions?
+              resp.status match {
+                case 200 => Redirect(successRedirect).withSession(request.session + (TICKET_ID -> resp.body))
+                case 400 => BadRequest(failedValidationResponseContent(Html(resp.body)))
+                case 500 => {
+                  Logger.warn("submit contact form internal error 500, " + resp.body)
+                  InternalServerError(Html(resp.body))
+                }
+                case status => throw new Exception(s"Unexpected status code from contact HMRC form: $status")
+              }
+          }
+      }.getOrElse {
+        Logger.warn("Trying to submit an empty contact form")
+        Future.successful(InternalServerError)
+      }
   }
 
   def confirmationContactHmrc: Action[AnyContent] = (authenticate andThen noSessionCheck) {
@@ -95,30 +99,4 @@ trait HelpAndContactController extends FrontendController
       Ok(views.html.helpcontact.confirmHelpContact(empRef = request.empRef))
   }
 
-  private def submitContactHmrc(formUrl: String, successRedirect: Call, failedValidationResponseContent: (Html) => HtmlFormat.Appendable)
-                               (implicit request: Request[AnyContent]): Future[Result] = {
-    request.body.asFormUrlEncoded.map { formData =>
-      httpPost.POSTForm[HttpResponse](formUrl, formData)(rds = PartialsFormReads.readPartialsForm, hc = partialsReadyHeaderCarrier, mdcExecutionContext).map {
-        resp =>
-          resp.status match {
-            case 200 => Redirect(successRedirect).withSession(request.session + (TICKET_ID -> resp.body))
-            case 400 => BadRequest(failedValidationResponseContent(Html(resp.body)))
-            case 500 => {
-              Logger.warn("submit contact form internal error 500, " + resp.body)
-              InternalServerError(Html(resp.body))
-            }
-            case status => throw new Exception(s"Unexpected status code from contact HMRC form: $status")
-          }
-      }
-    }.getOrElse {
-      Logger.warn("Trying to submit an empty contact form")
-      Future.successful(InternalServerError)
-    }
-  }
-}
-
-object PartialsFormReads {
-  implicit val readPartialsForm: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
-    def read(method: String, url: String, response: HttpResponse) = response
-  }
 }

@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-import play.api.GlobalSettings
-import play.api.mvc.WithFilters
-import play.filters.headers.SecurityHeadersFilter
+package modules
 
-// Add the security header filter by default
-object Global extends WithFilters(SecurityHeadersFilter()) with GlobalSettings {}
+import com.google.inject.AbstractModule
+import config.{AppConfig, PbikAppConfig}
+
+class Module extends AbstractModule {
+
+  override def configure(): Unit = {
+    bind(classOf[AppConfig]).to(classOf[PbikAppConfig])
+  }
+}

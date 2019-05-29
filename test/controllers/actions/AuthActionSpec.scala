@@ -17,19 +17,23 @@
 package controllers.actions
 
 import akka.util.Timeout
+import controllers.ExternalUrls
+import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status._
 import play.api.mvc.{Action, AnyContent, Controller}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, status}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
+class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
   class Harness(authAction: AuthAction) extends Controller {
     def onPageLoad(): Action[AnyContent] = authAction { request => Ok }
@@ -40,7 +44,13 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
   "Auth Action" when {
     "the user is not logged in" must {
       "redirect the user to log in" in {
-        val authAction = new AuthActionImpl(new BrokenAuthConnector(new MissingBearerToken))
+        val authAction = new AuthActionImpl(
+          new BrokenAuthConnector(new MissingBearerToken,
+                                    mock[HttpClient],
+                                    app.injector.instanceOf[Configuration],
+                                    app.injector.instanceOf[Environment]
+                                  ),
+          app.injector.instanceOf[ExternalUrls])
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER
@@ -50,7 +60,13 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
     }
     "the user has an Insufficient Enrolments " must {
       "redirect the user to a page to enroll" in {
-        val authAction = new AuthActionImpl(new BrokenAuthConnector(new InsufficientEnrolments))
+        val authAction = new AuthActionImpl(
+          new BrokenAuthConnector(new InsufficientEnrolments,
+                                    mock[HttpClient],
+                                    app.injector.instanceOf[Configuration],
+                                    app.injector.instanceOf[Environment]
+                                  ),
+          app.injector.instanceOf[ExternalUrls])
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER

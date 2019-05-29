@@ -18,82 +18,79 @@ package controllers.registration
 
 import java.util.UUID
 
-import _root_.models._
-import config.{AppConfig, PbikAppConfig}
-import connectors.{HmrcTierConnector, TierConnector}
-import controllers.WhatNextPageController
+import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import play.api.Play
+import controllers.{ExternalUrls, WhatNextPageController}
+import javax.inject.Inject
+import models._
+import play.api.Mode.Mode
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.{Configuration, Environment}
 import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils._
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.{ControllersReferenceData, URIInformation, _}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object ManageRegistrationController extends ManageRegistrationController with TierConnector {
-  val pbikAppConfig: AppConfig = PbikAppConfig
+class ManageRegistrationController @Inject()(
+                                             registrationService: RegistrationService,
+                                             val bikListService: BikListService,
+                                             tierConnector: HmrcTierConnector,
+                                             val authenticate: AuthAction,
+                                             val noSessionCheck: NoSessionCheckAction,
+                                             val runModeConfiguration: Configuration,
+                                             environment: Environment,
+                                             taxDateUtils: TaxDateUtils,
+                                             whatNextPageController: WhatNextPageController,
+                                             controllersReferenceData: ControllersReferenceData,
+                                             splunkLogger: SplunkLogger)(
+                                             implicit val pbikAppConfig: PbikAppConfig,
+                                             implicit val context: PbikContext,
+                                             implicit val uriInformation: URIInformation,
+                                             implicit val externalURLs: ExternalUrls,
+                                             implicit val localFormPartialRetriever: LocalFormPartialRetriever
+                                            ) extends FrontendController {
 
-  def registrationService: RegistrationService = RegistrationService
-
-  def bikListService: BikListService = BikListService
-
-  val tierConnector = new HmrcTierConnector
-  val authenticate: AuthAction = Play.current.injector.instanceOf[AuthAction]
-  val noSessionCheck: NoSessionCheckAction = Play.current.injector.instanceOf[NoSessionCheckAction]
-}
-
-trait ManageRegistrationController extends FrontendController
-  with URIInformation
-  with WhatNextPageController
-  with ControllersReferenceData
-  with SplunkLogger {
-  this: TierConnector =>
-
-  def bikListService: BikListService
-
-  def registrationService: RegistrationService
-
-  val authenticate: AuthAction
-  val noSessionCheck: NoSessionCheckAction
+  val mode: Mode = environment.mode
 
   def nextTaxYearAddOnPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val staticDataRequest = registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cy,
-        cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.nextTaxYear(_, true, YEAR_RANGE, _, _, _, _, _, empRef = request.empRef))
-      responseErrorHandler(staticDataRequest)
+      val staticDataRequest = registrationService.generateViewForBikRegistrationSelection(controllersReferenceData.YEAR_RANGE.cy,
+        cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.nextTaxYear(_, true, controllersReferenceData.YEAR_RANGE, _, _, _, _, _, empRef = request.empRef))
+      controllersReferenceData.responseErrorHandler(staticDataRequest)
   }
 
   def nextTaxYearRemoveOnPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val staticDataRequest = loadNextTaxYearOnRemoveData
-      responseErrorHandler(staticDataRequest)
+      controllersReferenceData.responseErrorHandler(staticDataRequest)
   }
 
   def currentTaxYearOnPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture = for {
-        result <- registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cyminus1,
-          cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.currentTaxYear(_, YEAR_RANGE, _, _, _, _, _, empRef = request.empRef))
+        result <- registrationService.generateViewForBikRegistrationSelection(controllersReferenceData.YEAR_RANGE.cyminus1,
+          cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.currentTaxYear(_, controllersReferenceData.YEAR_RANGE, _, _, _, _, _, empRef = request.empRef))
       } yield {
         result
       }
 
-      responseCheckCYEnabled(resultFuture)
+      controllersReferenceData.responseCheckCYEnabled(resultFuture)
   }
 
   def loadNextTaxYearOnRemoveData(implicit request: AuthenticatedRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
-    val taxYearRange = TaxDateUtils.getTaxYearRange()
+    val taxYearRange = taxDateUtils.getTaxYearRange()
     val loadResultFuture = for {
-      registeredListOption <- tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
-        request.empRef, YEAR_RANGE.cy)
+      registeredListOption <- tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath,
+        request.empRef, controllersReferenceData.YEAR_RANGE.cy)
     } yield {
       val fetchFromCacheMapBiksValue = List.empty[RegistrationItem]
       val fetchFromCacheMapSelectAllValue = ""
@@ -102,38 +99,42 @@ trait ManageRegistrationController extends FrontendController
       })
       val sortedData = BikListUtils.sortRegistrationsAlphabeticallyByLabels(initialData)
       if (sortedData.active.isEmpty) {
-        Ok(views.html.errorPage(NO_MORE_BENEFITS_TO_REMOVE_CY1,
+        Ok(views.html.errorPage(ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_REMOVE_CY1,
           taxYearRange,
           FormMappingsConstants.CYP1,
           -1,
-          "Registered benefits for tax year starting 6 April " + YEAR_RANGE.cy,
+          "Registered benefits for tax year starting 6 April " + controllersReferenceData.YEAR_RANGE.cy,
           "manage-registrations",
           empRef = Some(request.empRef)))
       }
       else {
-        Ok(views.html.registration.nextTaxYear(objSelectedForm.fill(sortedData),
+        Ok(views.html.registration.nextTaxYear(
+          bikForm = uriInformation.objSelectedForm.fill(sortedData),
           additive = false,
-          taxYearRange,
-          fetchFromCacheMapBiksValue,
-          List.empty[Bik],
-          List.empty[Int],
-          List.empty[Int],
-          None,
+          taxYearRange = taxYearRange,
+          previouslySelectedBenefits = fetchFromCacheMapBiksValue,
+          registeredBiks = List.empty[Bik],
+          nonLegislationBiks = List.empty[Int],
+          decommissionedBiks = List.empty[Int],
+          biksAvailableCount = None,
           empRef = request.empRef
         ))
       }
     }
-    responseErrorHandler(loadResultFuture)
+    controllersReferenceData.responseErrorHandler(loadResultFuture)
   }
 
   def confirmAddCurrentTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture = for {
-        biksListOption: List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cyminus1, EmpRef.empty)(getBenefitTypesPath)
-        result <- generateConfirmationScreenView(YEAR_RANGE.cyminus1, cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.
-          confirmAddCurrentTaxYear(_, YEAR_RANGE, empRef = request.empRef), viewToRedirect = formWithErrors =>
+        biksListOption: List[Bik] <- bikListService.registeredBenefitsList(controllersReferenceData.YEAR_RANGE.cyminus1, EmpRef.empty)(uriInformation.getBenefitTypesPath)
+        result <- generateConfirmationScreenView(controllersReferenceData.YEAR_RANGE.cyminus1, cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.
+          confirmAddCurrentTaxYear(_, controllersReferenceData.YEAR_RANGE, empRef = request.empRef), viewToRedirect = formWithErrors =>
           Ok(views.html.registration.currentTaxYear(formWithErrors,
-            YEAR_RANGE,
+            controllersReferenceData.YEAR_RANGE,
+            registeredBiks = List.empty[Bik],
+            nonLegislationBiks=pbikAppConfig.biksNotSupportedCY,
+            decommissionedBiks=pbikAppConfig.biksDecommissioned,
             biksAvailableCount = Some(biksListOption.size),
             empRef = request.empRef))
             .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}")))
@@ -141,63 +142,69 @@ trait ManageRegistrationController extends FrontendController
         result
       }
 
-      responseCheckCYEnabled(resultFuture)
+      controllersReferenceData.responseCheckCYEnabled(resultFuture)
   }
 
 
   def confirmAddNextTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture = for {
-        biksListOption: List[Bik] <- bikListService.registeredBenefitsList(YEAR_RANGE.cy, EmpRef.empty)(getBenefitTypesPath)
-        result <- generateConfirmationScreenView(YEAR_RANGE.cy, cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.
-          confirmUpdateNextTaxYear(_, additive = true, YEAR_RANGE, empRef = request.empRef), viewToRedirect = formWithErrors =>
-          Ok(views.html.registration.nextTaxYear(formWithErrors,
+        biksListOption: List[Bik] <- bikListService.registeredBenefitsList(controllersReferenceData.YEAR_RANGE.cy, EmpRef.empty)(uriInformation.getBenefitTypesPath)
+        result <- generateConfirmationScreenView(controllersReferenceData.YEAR_RANGE.cy, cachingSuffix = "add", generateViewBasedOnFormItems = views.html.registration.
+          confirmUpdateNextTaxYear(_, additive = true, controllersReferenceData.YEAR_RANGE, empRef = request.empRef), viewToRedirect = formWithErrors =>
+          Ok(views.html.registration.nextTaxYear(
+            bikForm = formWithErrors,
             additive = true,
-            YEAR_RANGE,
+            taxYearRange = controllersReferenceData.YEAR_RANGE,
+            nonLegislationBiks = pbikAppConfig.biksNotSupported,
+            decommissionedBiks = pbikAppConfig.biksDecommissioned,
             biksAvailableCount = Some(biksListOption.size),
             empRef = request.empRef
           )))
       } yield {
         result
       }
-      responseErrorHandler(resultFuture)
+      controllersReferenceData.responseErrorHandler(resultFuture)
   }
 
   def confirmRemoveNextTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture = for {
-        result <- generateConfirmationScreenView(YEAR_RANGE.cy, cachingSuffix = "remove", generateViewBasedOnFormItems = views.html.registration.
-          confirmUpdateNextTaxYear(_, additive = false, YEAR_RANGE, empRef = request.empRef), viewToRedirect = formWithErrors =>
-          Ok(views.html.registration.nextTaxYear(formWithErrors,
+        result <- generateConfirmationScreenView(controllersReferenceData.YEAR_RANGE.cy, cachingSuffix = "remove", generateViewBasedOnFormItems = views.html.registration.
+          confirmUpdateNextTaxYear(_, additive = false, controllersReferenceData.YEAR_RANGE, empRef = request.empRef), viewToRedirect = formWithErrors =>
+          Ok(views.html.registration.nextTaxYear(
+            bikForm = formWithErrors,
             additive = false,
-            YEAR_RANGE,
+            taxYearRange = controllersReferenceData.YEAR_RANGE,
+            nonLegislationBiks = pbikAppConfig.biksNotSupported,
+            decommissionedBiks = pbikAppConfig.biksDecommissioned,
             biksAvailableCount = None,
             empRef = request.empRef
           )))
       } yield {
         result
       }
-      responseErrorHandler(resultFuture)
+      controllersReferenceData.responseErrorHandler(resultFuture)
   }
 
   def confirmRemoveNextTaxYearNoForm(iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val registrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = true, enabled = false)), reason = None)
-      val form: Form[RegistrationList] = objSelectedForm.fill(registrationList)
+      val form: Form[RegistrationList] = uriInformation.objSelectedForm.fill(registrationList)
       val resultFuture = Future.successful(
-        Ok(views.html.registration.confirmUpdateNextTaxYear(objSelectedForm.fill(form.get),
+        Ok(views.html.registration.confirmUpdateNextTaxYear(uriInformation.objSelectedForm.fill(form.get),
           additive = false,
-          YEAR_RANGE,
+          controllersReferenceData.YEAR_RANGE,
           empRef = request.empRef)))
-      responseErrorHandler(resultFuture)
+      controllersReferenceData.responseErrorHandler(resultFuture)
   }
 
 
   def removeNextYearRegisteredBenefitTypes: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val persistentBiks: List[Bik] = generateListOfBiksBasedOnForm(BIK_REMOVE_STATUS)
-      val registeredFuture = updateBiksFutureAction(YEAR_RANGE.cy, persistentBiks, additive = false)
-      responseErrorHandler(registeredFuture)
+      val persistentBiks: List[Bik] = controllersReferenceData.generateListOfBiksBasedOnForm(ControllersReferenceDataCodes.BIK_REMOVE_STATUS)
+      val registeredFuture = updateBiksFutureAction(controllersReferenceData.YEAR_RANGE.cy, persistentBiks, additive = false)
+      controllersReferenceData.responseErrorHandler(registeredFuture)
   }
 
   def generateConfirmationScreenView(year: Int, cachingSuffix: String,
@@ -206,67 +213,64 @@ trait ManageRegistrationController extends FrontendController
     Result)(implicit hc: HeaderCarrier,
             request: Request[AnyContent]): Future[Result] = {
 
-    objSelectedForm.bindFromRequest.fold(
+    uriInformation.objSelectedForm.bindFromRequest.fold(
       formWithErrors => Future.successful(viewToRedirect(formWithErrors))
       ,
       values => {
 
         val items: List[RegistrationItem] = values.active.filter(x => x.active)
         Future.successful(
-          Ok(generateViewBasedOnFormItems(objSelectedForm.fill(RegistrationList(None, items, None)))))
+          Ok(generateViewBasedOnFormItems(uriInformation.objSelectedForm.fill(RegistrationList(None, items, None)))))
 
       }
     )
   }
 
   def updateRegisteredBenefitTypes: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
-      implicit request =>
-        val resultFuture = {
+    implicit request =>
+      val resultFuture = {
 
-          val persistentBiks: List[Bik] = generateListOfBiksBasedOnForm(BIK_ADD_STATUS)
-          updateBiksFutureAction(YEAR_RANGE.cyminus1, persistentBiks, additive = true)
-        }
-        responseCheckCYEnabled(resultFuture)
+        val persistentBiks: List[Bik] = controllersReferenceData.generateListOfBiksBasedOnForm(ControllersReferenceDataCodes.BIK_ADD_STATUS)
+        updateBiksFutureAction(controllersReferenceData.YEAR_RANGE.cyminus1, persistentBiks, additive = true)
+      }
+      controllersReferenceData.responseCheckCYEnabled(resultFuture)
   }
 
   def addNextYearRegisteredBenefitTypes: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
-      implicit request =>
-        val persistentBiks: List[Bik] = generateListOfBiksBasedOnForm(BIK_ADD_STATUS)
-        val actionFuture = updateBiksFutureAction(YEAR_RANGE.cy, persistentBiks, additive = true)
-        responseErrorHandler(actionFuture)
+    implicit request =>
+      val persistentBiks: List[Bik] = controllersReferenceData.generateListOfBiksBasedOnForm(ControllersReferenceDataCodes.BIK_ADD_STATUS)
+      val actionFuture = updateBiksFutureAction(controllersReferenceData.YEAR_RANGE.cy, persistentBiks, additive = true)
+      controllersReferenceData.responseErrorHandler(actionFuture)
   }
 
   def updateBiksFutureAction(year: Int, persistentBiks: List[Bik], additive: Boolean)
                             (implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
+    tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath,
       request.empRef, year).flatMap {
       registeredResponse =>
-        val form = objSelectedForm.bindFromRequest()
+        val form = uriInformation.objSelectedForm.bindFromRequest()
 
         form.fold(
           formWithErrors => Future.successful(
             Ok(views.html.registration.confirmUpdateNextTaxYear(formWithErrors,
               additive,
-              YEAR_RANGE,
+              controllersReferenceData.YEAR_RANGE,
               empRef = request.empRef)))
           ,
           values => {
             val changes = BikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
-            additive match {
-              case true => {
-                // Process registration
-                val saveFuture = tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
-                  request.empRef, year, changes)
-                saveFuture.map {
-                  saveResponse: HttpResponse =>
-                    auditBikUpdate(additive = true, year, persistentBiks)
-                    loadWhatNextRegisteredBIK(form, year)
-                }
+            if (additive) {
+              // Process registration
+              val saveFuture = tierConnector.genericPostCall(uriInformation.baseUrl, uriInformation.updateBenefitTypesPath,
+                request.empRef, year, changes)
+              saveFuture.map {
+                saveResponse: HttpResponse =>
+                  auditBikUpdate(additive = true, year, persistentBiks)
+                  whatNextPageController.loadWhatNextRegisteredBIK(form, year)
               }
-              case _ => {
-                // Remove benefit - if there are no errors proceed
-                Future(removeBenefitReasonValidation(values, form, year, persistentBiks, changes))
-              }
+            } else {
+              // Remove benefit - if there are no errors proceed
+              Future(removeBenefitReasonValidation(values, form, year, persistentBiks, changes))
             }
           }
         )
@@ -277,40 +281,40 @@ trait ManageRegistrationController extends FrontendController
                                     persistentBiks: List[Bik], changes: List[Bik])
                                    (implicit request: AuthenticatedRequest[AnyContent]): Result = {
     registrationList.reason match {
-      case Some(reasonValue) if (BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue)) => {
+      case Some(reasonValue) if ControllersReferenceDataCodes.BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue) => {
         reasonValue.info match {
-          case _ if (reasonValue.selectionValue.equals("other") && reasonValue.info.getOrElse("").trim.isEmpty) => {
-            Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(persistentBiks.head.iabdType)
+          case _ if reasonValue.selectionValue.equals("other") && reasonValue.info.getOrElse("").trim.isEmpty => {
+            Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(uriInformation.iabdValueURLMapper(persistentBiks.head.iabdType)
             )).flashing("error" -> Messages("RemoveBenefits.reason.other.required"))
           }
           case Some(info) => {
-            tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
+            tierConnector.genericPostCall(uriInformation.baseUrl, uriInformation.updateBenefitTypesPath,
               request.empRef, year, changes)
-            auditBikUpdate(false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, Some(info))))
-            loadWhatNextRemovedBIK(form, year)
+            auditBikUpdate(additive = false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, Some(info))))
+            whatNextPageController.loadWhatNextRemovedBIK(form, year)
           }
           case _ => {
-            tierConnector.genericPostCall(baseUrl, updateBenefitTypesPath,
+            tierConnector.genericPostCall(uriInformation.baseUrl, uriInformation.updateBenefitTypesPath,
               request.empRef, year, changes)
-            auditBikUpdate(false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, None)))
-            loadWhatNextRemovedBIK(form, year)
+            auditBikUpdate(additive = false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, None)))
+            whatNextPageController.loadWhatNextRemovedBIK(form, year)
           }
         }
       }
-      case _ => Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdValueURLMapper(persistentBiks.head.iabdType)
+      case _ => Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(uriInformation.iabdValueURLMapper(persistentBiks.head.iabdType)
       )).flashing("error" -> Messages("RemoveBenefits.reason.no.selection"))
     }
   }
 
   private def auditBikUpdate(additive: Boolean, year: Int, persistentBiks: List[Bik], removeReason: Option[(String, Option[String])] = None)
-                            (implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]) = {
-    val derivedMsg = if (additive) "Benefit added to " + taxYearToSpPeriod(year) else "Benefit removed from " + taxYearToSpPeriod(year)
+                            (implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Unit = {
+    val derivedMsg = if (additive) "Benefit added to " + splunkLogger.taxYearToSpPeriod(year) else "Benefit removed from " + splunkLogger.taxYearToSpPeriod(year)
     for (bik <- persistentBiks) {
-      logSplunkEvent(createDataEvent(
-        tier = spTier.FRONTEND,
-        action = if (additive) spAction.ADD else spAction.REMOVE,
-        target = spTarget.BIK,
-        period = taxYearToSpPeriod(year),
+      splunkLogger.logSplunkEvent(splunkLogger.createDataEvent(
+        tier = splunkLogger.spTier.FRONTEND,
+        action = if (additive) splunkLogger.spAction.ADD else splunkLogger.spAction.REMOVE,
+        target = splunkLogger.spTarget.BIK,
+        period = splunkLogger.taxYearToSpPeriod(year),
         msg = derivedMsg + " : " + bik.iabdType,
         nino = None,
         iabd = Some(bik.iabdType),

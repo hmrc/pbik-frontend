@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-
-
 package views
 
-import models.{EmpRef, RegistrationList, TaxYearRange}
+import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import controllers.ExternalUrls
+import models.{EmpRef, TaxYearRange}
 import org.jsoup.Jsoup
-import play.api.data.Form
 import play.api.mvc.Flash
 import play.twirl.api.Html
-import utils.BikListUtils.MandatoryRadioButton
-import utils.FormMappings
+import utils.{FormMappings, TaxDateUtils, URIInformation}
 import views.helper.PBIKViewSpec
-
 
 class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec with FormMappings {
 
@@ -34,10 +31,23 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec with FormMappings {
 
   override def view: Html = viewWithForm(new Flash)
 
+  implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
+  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
+  implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
+  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
+  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
+
   def viewWithForm(flash: Flash): Html =
-    views.html.exclusion.exclusionNinoOrNoNinoForm(taxYearRange, "cyp1", "30", "",EmpRef("", ""))(implicitly, flash, implicitly, implicitly)
-
-
+    views.html.exclusion.exclusionNinoOrNoNinoForm(taxYearRange, "cyp1", "30", "",EmpRef("", ""))(implicitly,
+                                                                                                  flash,
+                                                                                                  context,
+                                                                                                  implicitly,
+                                                                                                  uriInformation,
+                                                                                                  externalURLs,
+                                                                                                  appConfig,
+                                                                                                  localFormPartialRetriever)
 
   "exclusionNinoOrNoNinoPage" must {
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))

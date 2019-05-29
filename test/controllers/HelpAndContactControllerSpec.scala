@@ -16,8 +16,7 @@
 
 package controllers
 
-import config.AppConfig
-import connectors.{HmrcTierConnector, TierConnector}
+import config.{AppConfig, PbikAppConfig}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models.TaxYearRange
 import org.mockito.Mockito._
@@ -26,32 +25,34 @@ import play.api.Application
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.http.HttpEntity.Strict
+import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.BikListService
-import support.TestAuthUser
+import services.HelpAndContactSubmissionService
+import support.{StubHelpAndContactSubmissionService, TestAuthUser}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.ws.WSHttp
-import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction}
+import utils._
 
 import scala.concurrent.Future
-import scala.concurrent.duration._
 
 class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
   with TestAuthUser with FormMappings {
 
-  override val fakeApplication: Application = GuiceApplicationBuilder()
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(config)
+    .overrides(bind[AppConfig].toInstance(mock(classOf[PbikAppConfig])))
+    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
+    .overrides(bind[HelpAndContactSubmissionService].to(classOf[StubHelpAndContactSubmissionService]))
     .build()
 
-  implicit val ac: AuthContext = createDummyUser("testid")
-  val timeoutValue: FiniteDuration = 10 seconds
+  val controller = app.injector.instanceOf[HelpAndContactController]
+  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
 
-  def YEAR_RANGE: TaxYearRange = TaxDateUtils.getTaxYearRange()
+  def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   val helpForm = Form(
     tuple(
@@ -61,37 +62,18 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
     )
   )
 
-  class MockHelpAndContactController extends HelpAndContactController with TierConnector {
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override val authenticate: AuthAction = new TestAuthAction
-    override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
-
-    override val bikListService: BikListService = mock[BikListService]
-
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
-    override val httpPost: WSHttp = mock[WSHttp]
-    override val contactFrontendPartialBaseUrl: String = pbikAppConfig.contactFrontendService
-    override val contactFormServiceIdentifier: String = pbikAppConfig.contactFormServiceIdentifier
-
-    when(httpPost.POSTForm[HttpResponse](anyString, any)(any, any, any))
-      .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
-
-    when(httpPost.GET[HttpResponse](anyString)(any, any, any))
-      .thenReturn(Future.successful(HttpResponse(OK, None, Map(), Some("form submitted"))))
-  }
-
   "When using help / contact hmrc, the HelpAndContactController" should {
     "get 500 response when there is an empty form" in {
-      val mockHelpController = new MockHelpAndContactController
+      val mockHelpController = controller
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = await(mockHelpController.submitContactHmrcForm(request))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      result.body.asInstanceOf[Strict].data.utf8String must include("")
+      result.body.asInstanceOf[Strict].data.utf8String must include("")//TODO - Does this do anything?
     }
 
     "be able to submit the contact form successfully" in {
-      val mockHelpController = new MockHelpAndContactController
+      val mockHelpController = controller
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(helpForm.data.toSeq: _*)

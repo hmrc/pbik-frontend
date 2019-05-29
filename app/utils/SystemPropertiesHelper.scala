@@ -30,46 +30,47 @@ trait SystemPropertiesHelper {
 
   def getIntProperty(key:String, defaultValue:Int):Int = {
     try {
-      sysprop.get(key).isDefined match {
-        case true => sysprop.get(key).get.toInt
-        case false => dosntExist(key,defaultValue)
+      if (sysprop.get(key).isDefined) {
+        sysprop.get(key).get.toInt
+      } else {
+        doesntExist(key, defaultValue)
       }
     } catch {
-      case t:Throwable => dosntParse(key,defaultValue,t.getMessage)
+      case t:Throwable => doesntParse(key,defaultValue,t.getMessage)
     }
   }
 
   def getStringProperty(key:String, defaultValue:String):String = {
     try {
-      sysprop.get(key).isDefined match {
-        case true => sysprop.get(key).getOrElse(defaultValue)
-        case false => dosntExist(key,defaultValue)
+      if (sysprop.get(key).isDefined) {
+        sysprop.get(key).getOrElse(defaultValue)
+      } else {
+        doesntExist(key, defaultValue)
       }
     } catch {
-      case t:Throwable => dosntParse(key,defaultValue,t.getMessage)
+      case t:Throwable => doesntParse(key,defaultValue,t.getMessage)
     }
   }
 
   def getBooleanProperty(key:String, defaultValue:Boolean):Boolean = {
     try {
-      sysprop.get(key).isDefined match {
-        case true => sysprop.get(key).get.toBoolean
-        case false => dosntExist(key,defaultValue)
+      if (sysprop.get(key).isDefined) {
+        sysprop.get(key).get.toBoolean
+      } else {
+        doesntExist(key, defaultValue)
       }
     } catch {
-      case t:Throwable => dosntParse(key,defaultValue,t.getMessage)
+      case t:Throwable => doesntParse(key,defaultValue,t.getMessage)
     }
   }
 
-  def dosntExist[T](key:String, defaultvalue:T):T = {
-    Logger.info("No system property " + key + " defined. Using default value: " + defaultvalue)
+  def doesntExist[T](key:String, defaultvalue:T):T = {
+    Logger.info(s"No system property $key defined. Using default value: $defaultvalue")
     defaultvalue
   }
 
-  def dosntParse[T](key:String, defaultvalue:T, errorMsg:String):T = {
-    Logger.warn("System property " + key +
-      " exists but could not be parsed to the correct type. Please check the value: " + defaultvalue +
-      ". Error was " + errorMsg)
+  def doesntParse[T](key:String, defaultvalue:T, errorMsg:String):T = {
+    Logger.warn(s"System property $key exists but could not be parsed to the correct type. Please check the value: $defaultvalue. Error was $errorMsg")
     defaultvalue
   }
 

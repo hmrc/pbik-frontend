@@ -137,7 +137,7 @@ AddBenefits.Confirm.help.reveal.link.sr.open = click to expand
 AddBenefits.Confirm.help.reveal.link.sr.closed = click to close
 
 #*************************************************************
-# Remove benifits
+# Remove benefits
 #*************************************************************
 
 RemoveBenefits.Confirm.Desc = You’ll stop taxing {0} through your payroll from 6 April {1}.

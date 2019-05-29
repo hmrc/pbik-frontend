@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package connectors
+package models
 
-object TierConnector extends TierConnector {
-  val tierConnector = new HmrcTierConnector
-}
+import play.api.libs.json.{Json, OFormat}
 
-trait TierConnector {
+case class MandatoryRadioButton(selectionValue: String)
 
-  val tierConnector: HmrcTierConnector
-
+object MandatoryRadioButton {
+  implicit val mandatoryDecisionFormats: OFormat[MandatoryRadioButton] = Json.format[MandatoryRadioButton]
 }

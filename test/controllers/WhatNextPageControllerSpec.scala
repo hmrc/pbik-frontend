@@ -17,16 +17,20 @@
 package controllers
 
 import config._
-import connectors.{HmrcTierConnector, TierConnector}
+import connectors.HmrcTierConnector
+import javax.inject.Inject
 import models._
 import org.joda.time.LocalDate
-import org.mockito.Matchers.{eq => mockEq}
+import org.mockito.Matchers.{eq => mockEq, _}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
+import play.api.Application
 import play.api.data.Form
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -36,9 +40,8 @@ import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.frontend.auth.AuthContext
 import uk.gov.hmrc.time.TaxYear
-import utils.{FormMappings, TaxDateUtils}
+import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, URIInformation}
 
 import scala.concurrent.Future
 
@@ -47,8 +50,16 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
   with FormMappings with TestAuthUser {
 
   // TODO The following needs refactoring as it similar to registrationcontrollertest, consider moving to utils
-  implicit val user: AuthContext = createDummyUser("testid")
-  implicit val context: PbikContext = PbikContextImpl
+
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
+    disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
+  ).configure(config)
+    .overrides(bind[BikListService].toInstance(mock(classOf[StubBikListService])))
+    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .build()
+
+  val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
+  implicit val pbikContext:PbikContext = app.injector.instanceOf[PbikContext]
 
   lazy val listOfPeople: List[EiLPerson] = List(EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
     EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
@@ -62,11 +73,18 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
   lazy val registrationListMultiple = RegistrationList(None, List(RegistrationItem("30", active = true, enabled = true), RegistrationItem("8", true, true)))
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
 
-  def YEAR_RANGE: TaxYearRange = TaxDateUtils.getTaxYearRange()
+  def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-  class StubBikListService extends BikListService {
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
+  class StubBikListService @Inject()(pbikAppConfig: AppConfig,
+                                     tierConnector: HmrcTierConnector,
+                                     controllersReferenceData: ControllersReferenceData,
+                                     uriInformation: URIInformation) extends BikListService(
+    pbikAppConfig,
+    tierConnector,
+    controllersReferenceData,
+    uriInformation
+  ){
+
     lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
 
     override def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
@@ -106,19 +124,19 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
@@ -130,11 +148,11 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
       Integer.parseInt(x.iabdType) <= 5
     }))
 
-    when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
+    when(tierConnector.genericPostCall(anyString, mockEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
       any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getRegisteredPath),
+    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
       any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) >= 15
@@ -146,61 +164,56 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
     override def status = 200
   }
 
-  class MockWhatNextPageController extends WhatNextPageController with TierConnector {
+  val whatNextPageController: WhatNextPageController = {
+    val w = injected[WhatNextPageController]
 
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
+    val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-    override def bikListService: BikListService = new StubBikListService
-
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
-
-    val dateRange: TaxYearRange = TaxDateUtils.getTaxYearRange()
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
       any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
       any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 5
     }))
 
-    when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
+    when(w.tierConnector.genericPostCall(anyString, mockEq(injected[URIInformation].updateBenefitTypesPath),
       any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getRegisteredPath),
+    when(w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(injected[URIInformation].getRegisteredPath),
       any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
       any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) >= 15
     }))
 
+    w
   }
 
   "When loading the what next page" must {
     "(Register a BIK current year) Single benefit- state the status is ok and correct page is displayed" in {
-      val mockWhatNextPageController = new MockWhatNextPageController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -210,7 +223,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
       val formRegistrationList: Form[RegistrationList] = objSelectedForm
       val formFilled = formRegistrationList.fill(registrationList)
       val year = TaxYear.taxYearFor(LocalDate.now).currentYear
-      val result = mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, year)
+      val result = whatNextPageController.loadWhatNextRegisteredBIK(formFilled, year)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
       result.body.asInstanceOf[Strict].data.utf8String must include(
@@ -218,7 +231,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
     }
 
     "(Register a BIK next year) Single benefit - state the status is ok and correct page is displayed" in {
-      val mockWhatNextPageController = new MockWhatNextPageController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -228,7 +240,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
       val formRegistrationList: Form[RegistrationList] = objSelectedForm
       val formFilled = formRegistrationList.fill(registrationList)
       formRegistrationList.fill(registrationList)
-      val result = mockWhatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017)
+      val result = whatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
       result.body.asInstanceOf[Strict].data.utf8String must include("Now tax Private medical treatment or insurance through your payroll from 6 April")
@@ -237,7 +249,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
     "(Register a BIK next year) Multiple benefits - state the status is ok and correct page is displayed" in {
       import play.api.libs.concurrent.Execution.Implicits._
 
-      val mockWhatNextPageController = new MockWhatNextPageController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -246,7 +257,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationListMultiple)
       val result = await(Future {
-        mockWhatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016)
+        whatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016)
       })
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
@@ -257,7 +268,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
     "(Remove a BIK)- state the status is ok and correct page is displayed" in {
       import play.api.libs.concurrent.Execution.Implicits._
 
-      val mockWhatNextPageController = new MockWhatNextPageController
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -268,7 +278,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
 
       val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationList)
       val result = await(Future {
-        mockWhatNextPageController.loadWhatNextRemovedBIK(formRegistrationList, 2015)
+        whatNextPageController.loadWhatNextRemovedBIK(formRegistrationList, year = 2015)
       })
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")

@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-
-
 package views
 
-import models.{EmpRef, RegistrationList, TaxYearRange}
-import play.api.data.Form
+import config.{AppConfig, LocalFormPartialRetriever}
+import controllers.ExternalUrls
+import models.{EmpRef, TaxYearRange}
 import play.twirl.api.Html
-import utils.FormMappings
+import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
 
 
 class WhatNextExclusionViewSpec extends PBIKViewSpec with FormMappings {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
+
+  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
+  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   override def view: Html = views.html.exclusion.whatNextExclusion(taxYearRange, "cyp1", "30", "",  EmpRef("", ""))
 

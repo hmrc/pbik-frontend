@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-
-
 package views
 
+import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
+import controllers.ExternalUrls
 import models._
-import org.jsoup.Jsoup
 import play.api.data.Form
 import play.twirl.api.Html
-import utils.FormMappings
+import utils.{FormMappings, URIInformation}
 import views.helper.{PBIKBaseViewSpec, PBIKViewBehaviours}
 
 
@@ -30,9 +29,14 @@ class SearchResultViewSpec extends PBIKBaseViewSpec with FormMappings {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
+  implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
+  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
+  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
+
   def viewWithForm(form: Form[(String, EiLPersonList)]): Html =
     views.html.exclusion.searchResults(taxYearRange, "cyp1", "30", form, "", EmpRef("", ""))
-
 
   "exclusionNinoOrNoNinoForm" in new PBIKViewBehaviours {
 

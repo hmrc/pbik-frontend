@@ -16,33 +16,38 @@
 
 package controllers
 
-import config.{AppConfig, PbikAppConfig}
-import connectors.{HmrcTierConnector, TierConnector}
+import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
+import javax.inject.Inject
 import models._
-import org.mockito.Matchers.{eq => mockEq}
+import org.mockito.Matchers.{eq => mockEq, _}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.concurrent.ScalaFutures._
+import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.PlaySpec
 import play.api.data.Form
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+import play.api.inject._
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
-import play.api.mvc._
+import play.api.mvc.{Result, _}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.{Application, Configuration, Environment}
 import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
-import support.TestAuthUser
+import support.{TestAuthUser, TestCYEnabledConfig}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
-import utils._
+import utils.{ControllersReferenceData, _}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
@@ -50,303 +55,112 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   with TestAuthUser with FakePBIKApplication {
 
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
+    disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
+  ).configure(config)
+    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
+    .overrides(bind[AppConfig].toInstance(TestCYEnabledConfig))
+    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .build()
+
+
+  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n=> RegistrationItem("" + (n + 1), active = true, enabled = true))
   val timeoutValue: FiniteDuration = 15 seconds
 
-  def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
-  class StubBikListService extends BikListService  {
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
-    lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
-
-    override def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
-        Future[(Map[String, String], List[Bik])] = {
-
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) <= 10 }))
-    }
-
-    override def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
-        Future[(Map[String, String], List[Bik])] = {
-
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) > 10 }))
-    }
-
-    when(pbikAppConfig.cyEnabled).thenReturn(true)
-
-    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
-      any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      EmpRef("",""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      EmpRef("",""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      EmpRef("",""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 5
-    }))
-
-    when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
-      any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getRegisteredPath),
-      any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) >= 15
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
-      any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      EmpRef("",""), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      EmpRef("",""), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
-      EmpRef("",""), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 5
-    }))
-
-    when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
-      any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getRegisteredPath),
-      any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) >= 15
-    }))
-
-  }
+  def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
 
   class FakeResponse extends HttpResponse {
     override def status = 200
   }
 
-  class StubbedRegistrationService extends RegistrationService with TierConnector {
-
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override def bikListService: BikListService = new StubBikListService
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
-    val dateRange: TaxYearRange = TaxDateUtils.getTaxYearRange()
-
-    val registeredListOption = List.empty[Bik]
-    val allRegisteredListOption: List[Bik] = CYCache
-    val mockRegistrationItemList = List.empty[RegistrationItem]
-    val mockFormRegistrationList: Form[RegistrationList] = objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
+  val registrationController: ManageRegistrationController = {
 
 
-    override def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
-                                                generateViewBasedOnFormItems: (Form[RegistrationList],
-                                                  List[RegistrationItem], List[Bik], List[Int], List[Int], Option[Int]) => HtmlFormat.Appendable)
-                                               (implicit hc:HeaderCarrier, request: AuthenticatedRequest[AnyContent]):
-    Future[Result] = {
-      year match {
-        case dateRange.cyminus1 => {
-          Future.successful(Ok(
-            views.html.registration.currentTaxYear(
-              mockFormRegistrationList,
-              dateRange,
-              mockRegistrationItemList,
-              allRegisteredListOption,
-              PbikAppConfig.biksNotSupported,
-              biksAvailableCount=Some(17),
-              empRef = request.empRef
-            )
-          ))
-        }
-        case _ => {
-          Future.successful(Ok(
-            views.html.registration.nextTaxYear(
-              mockFormRegistrationList,
-              additive = true,
-              dateRange,
-              mockRegistrationItemList,
-              registeredListOption,
-              PbikAppConfig.biksNotSupported,
-              biksAvailableCount=Some(17),
-              empRef = request.empRef)
-          ))
-        }
-      }
-    }
-
-  }
-
-  class MockRegistrationController extends ManageRegistrationController with TierConnector
-                                      with ControllersReferenceData {
-
-    import org.scalatest.time.{Millis, Seconds, Span}
+    val r = app.injector.instanceOf[ManageRegistrationController]
 
     implicit val defaultPatience: ScalaFutures.PatienceConfig =
       PatienceConfig(timeout = Span(7, Seconds), interval = Span(600, Millis))
 
-    override def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+    def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
       Future.successful(AuditResult.Success)
     }
 
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override def bikListService: BikListService = new StubBikListService
-    override def registrationService = new StubbedRegistrationService
 
-    override val authenticate: AuthAction = new TestAuthAction
-    override val noSessionCheck: NoSessionCheckAction = new TestNoSessionCheckAction
 
-    implicit val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+    implicit lazy val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
 
-    override val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
+    //val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
 
-    val dateRange: TaxYearRange = TaxDateUtils.getTaxYearRange()
+    val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-    when(pbikAppConfig.cyEnabled).thenReturn(true)
-
-    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
-
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""),
+    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(""),
       any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getBenefitTypesPath),
+    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
       mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
+    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, anyString,
       any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 5
     }))
 
-    when(tierConnector.genericPostCall(anyString, mockEq(updateBenefitTypesPath),
+    when(app.injector.instanceOf[HmrcTierConnector].genericPostCall(anyString, mockEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
       any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
+      any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
 
-    when(tierConnector.genericGetCall[List[Bik]](anyString, mockEq(getRegisteredPath),
+    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
       any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
-        any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) >= 15
     }))
+
+    r
   }
 
   "When loading the next tax years on-remove data, the RegistrationController" should {
       "state the status is ok" in {
-        val mockRegistrationController = new MockRegistrationController
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+        implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
         implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
           EmpRef("taxOfficeNumber", "taxOfficeReference"),
           UserName(Name(None, None)),
           request)
         implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
         implicit val timeout: FiniteDuration = timeoutValue
-        val result = await(mockRegistrationController.loadNextTaxYearOnRemoveData)(timeout)
+        val result = await(registrationController.loadNextTaxYearOnRemoveData)(timeout)
         result.header.status must be(OK) // 200
       }
     }
 
   "The Registration Controller" should {
     "display the correct Biks on the removal screen" in {
-      val mockRegistrationController = new MockRegistrationController
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val title = Messages("RemoveBenefits.Heading").substring(0,44)
-      val testac = createDummyUser("testid")
+      implicit lazy val authenticatedRequest: AuthenticatedRequest[AnyContent] = createDummyUser(mockrequest)
+
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.loadNextTaxYearOnRemoveData)(timeout)
+      val result = await(registrationController.loadNextTaxYearOnRemoveData)(timeout)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.15"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.16"))
@@ -357,21 +171,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     }
   }
 
-  "When instantiating the RegistrationController" in {
-    val registrationController = ManageRegistrationController
-    assert(registrationController.pbikAppConfig != null)
-    assert(registrationController.tierConnector != null)
-    assert(registrationController.bikListService != null)
-    assert(registrationController.registrationService != null)
-  }
-
   "When loading the currentTaxYearOnPageLoad, an authorised user" should {
     "be directed to cy page with list of biks" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("AddBenefits.Heading")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.currentTaxYearOnPageLoad.apply(mockrequest))(timeout)
+      val result = await(registrationController.currentTaxYearOnPageLoad(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.1"))
@@ -383,9 +188,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     "be directed to cy + 1 page with list of biks" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("AddBenefits.Heading")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.nextTaxYearAddOnPageLoad.apply(mockrequest))(timeout)
+      val result = await(registrationController.nextTaxYearAddOnPageLoad(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.1"))
@@ -399,9 +203,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     "be directed to the cy + 1 remove page with biks to remove" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("RemoveBenefits.Heading").substring(0, 10)
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
+      val result = await(registrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.15"))
@@ -415,9 +218,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     "be directed to options to add or remove page" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("RemoveBenefits.Heading").substring(0, 10)
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
+      val result = await(registrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.15"))
@@ -429,9 +231,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     "be directed to the login page" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("RemoveBenefits.Heading").substring(0, 10)
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
+      val result = await(registrationController.nextTaxYearRemoveOnPageLoad.apply(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.15"))
@@ -443,9 +244,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     "be directed cy + 1 confirmation page to remove bik" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("RemoveBenefits.Heading").substring(0, 10)
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.confirmRemoveNextTaxYear.apply(mockrequest))(timeout)
+      val result = await(registrationController.confirmRemoveNextTaxYear.apply(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -458,9 +258,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
+      val result = await(registrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -470,9 +269,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     "be directed to the login page" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("whatNext.add.heading")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.addNextYearRegisteredBenefitTypes.apply(noSessionIdRequest))(timeout)
+      val result = await(registrationController.addNextYearRegisteredBenefitTypes.apply(noSessionIdRequest))(timeout)
       result.header.status must be(UNAUTHORIZED)
       result.body.asInstanceOf[Strict].data.utf8String must include("Request was not authenticated user should be redirected")
     }
@@ -482,9 +280,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     "be directed to the login page" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("whatNext.add.heading")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.removeNextYearRegisteredBenefitTypes.apply(noSessionIdRequest))(timeout)
+      val result = await(registrationController.removeNextYearRegisteredBenefitTypes.apply(noSessionIdRequest))(timeout)
       result.header.status must be(UNAUTHORIZED)
       result.body.asInstanceOf[Strict].data.utf8String must include("Request was not authenticated user should be redirected")
     }
@@ -497,9 +294,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
+      val result = await(registrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -512,9 +308,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
+      val result = await(registrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -527,9 +322,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
+      val result = await(registrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -542,9 +336,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
+      val result = await(registrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -557,9 +350,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
+      val result = await(registrationController.updateRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -572,9 +364,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val errorMsg = Messages("RemoveBenefits.reason.other.required")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockRegistrationController.removeNextYearRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
+      val result = await(registrationController.removeNextYearRegisteredBenefitTypes.apply(mockRequestForm))(timeout)
       result.header.status must be(SEE_OTHER) // 303
     }
   }
@@ -591,9 +382,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
         UserName(Name(None, None)),
         request)
       val errorMsg = Messages("RemoveBenefits.reason.no.selection")
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
+      val result = await(Future{registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
       result.header.status must be(SEE_OTHER) // 303
       result.header.headers.getOrElse("Location","") must be("/payrollbik/services/remove-benefit-expense")
       result.header.headers.getOrElse("Set-Cookie","").replace("+"," ").replace("%27", "'") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
@@ -611,9 +401,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
         UserName(Name(None, None)),
         request)
         val errorMsg = Messages("RemoveBenefits.reason.other.required")
-        val mockRegistrationController = new MockRegistrationController
         implicit val timeout: FiniteDuration = timeoutValue
-        val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
+        val result = await(Future{registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
         result.header.status must be(SEE_OTHER) // 303
         result.header.headers.getOrElse("Location","") must be("/payrollbik/services/remove-benefit-expense")
         result.header.headers.getOrElse("Set-Cookie","").replace("+"," ").replace("%E2%80%99", "’") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
@@ -630,9 +419,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
         UserName(Name(None, None)),
         request)
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
+      val result = await(Future{registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
     }
@@ -648,9 +436,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
         UserName(Name(None, None)),
         request)
-      val mockRegistrationController = new MockRegistrationController
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(Future{mockRegistrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
+      val result = await(Future{registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
     }

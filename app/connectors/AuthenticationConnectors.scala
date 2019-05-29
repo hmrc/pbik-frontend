@@ -16,53 +16,24 @@
 
 package connectors
 
+import javax.inject.Inject
+import uk.gov.hmrc.crypto.PlainText
+import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.play.partials.{FormPartialRetriever, HeaderCarrierForPartialsConverter}
 
-import akka.actor.ActorSystem
-import com.typesafe.config.Config
-import config.RunModeConfig
-import play.api.Play
-import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.audit.http.HttpAuditing
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.config._
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
-import uk.gov.hmrc.play.frontend.config.LoadAuditingConfig
-import uk.gov.hmrc.play.http.ws._
-import uk.gov.hmrc.play.partials.{CachedStaticHtmlPartialRetriever, FormPartialRetriever, HeaderCarrierForPartialsConverter}
+class FormPartialProvider @Inject()(val httpGet: HttpClient, cookieCrypto: SessionCookieCryptoFilterWrapper) extends FormPartialRetriever {
 
-object FrontendAuditConnector extends AuditConnector with AppName with RunMode with RunModeConfig {
-  override lazy val auditingConfig = LoadAuditingConfig("auditing")
+  override val crypto: String => String = cookieCrypto.encryptCookieString _
 }
 
-object WSHttp extends HttpGet with WSGet with HttpPut with WSPut with WSPost with HttpPost with WSDelete with HttpDelete with WSPatch with HttpPatch with AppName with RunMode with HttpAuditing with RunModeConfig {
-  override val hooks = Seq(AuditingHook)
-  override val auditConnector = FrontendAuditConnector
-  override val configuration: Option[Config] = Some(appNameConfiguration.underlying)
-  override val actorSystem: ActorSystem = Play.current.actorSystem
+class PBIKHeaderCarrierForPartialsConverter @Inject()(cookieCrypto: SessionCookieCryptoFilterWrapper) extends HeaderCarrierForPartialsConverter {
+  override val crypto: String => String = cookieCrypto.encryptCookieString _
 }
 
-
-object CachedStaticHtmlPartial extends CachedStaticHtmlPartialRetriever {
-  override val httpGet = WSHttp
-}
-
-object FormPartialProvider extends FormPartialRetriever with SessionCookieCryptoFilterWrapper {
-  override val httpGet = WSHttp
-  override val crypto = encryptCookieString _
-}
-
-object PBIKHeaderCarrierForPartialsConverter extends HeaderCarrierForPartialsConverter with SessionCookieCryptoFilterWrapper {
-  override val crypto = encryptCookieString _
-}
-
-trait SessionCookieCryptoFilterWrapper {
+class SessionCookieCryptoFilterWrapper @Inject() (sessionCookieCrypto: SessionCookieCrypto) {
 
   def encryptCookieString(cookie: String) : String = {
-    config.ApplicationGlobal.sessionCookieCryptoFilter.encrypt(cookie)
+    sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
   }
-}
-
-object FrontendAuthConnector extends AuthConnector with ServicesConfig with RunModeConfig {
-  val serviceUrl = baseUrl("auth")
-  lazy val http = WSHttp
 }

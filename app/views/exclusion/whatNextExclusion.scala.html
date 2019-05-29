@@ -14,16 +14,22 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
+
 @(taxYearRange:TaxYearRange,
   year:String, iabdType:String,
   name:String,
 empRef: EmpRef)(implicit request:Request[_],
-               context: config.PbikContext, applicationMessages: Messages)
+               context: PbikContext, messages: Messages,
+                uriInformation: URIInformation, externalURLs: ExternalUrls,
+                config: AppConfig,
+                localFormPartialRetriever: LocalFormPartialRetriever)
 
-@import uk.gov.hmrc.play.views.html.helpers
-@import utils.URIInformation._
-
-@parentTemplate(pageTitle = Messages("whatNext.exclude.heading") + " - " + Messages("Service.title"), None,  Some(empRef.toString)) {
+@parentTemplate(pageTitle = messages("whatNext.exclude.heading") + " - " + messages("Service.title"), None,  Some(empRef.toString)) {
 
     <section id="print-section">
         <div id="printContainer"></div>
@@ -33,34 +39,34 @@ empRef: EmpRef)(implicit request:Request[_],
 
         <div id="confirmation" class="govuk-box-highlight">
             <h1 id="title" class="bold-large">
-                @Messages("whatNext.exclude.heading")
+                @messages("whatNext.exclude.heading")
             </h1>
             <p id="confirmation-p">
                 @if(year=="cy"){
-                    @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType), taxYearRange.cyminus1 + "")
+                    @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cyminus1 + "")
                 }else {
-                    @Messages("whatNext.exclude.lede", name, Messages("BenefitInKind.label." + iabdType), taxYearRange.cy + "")
+                    @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cy + "")
                 }
             </p>
         </div>
 
         <h2>
-            @Messages("whatNext.subHeading")
+            @messages("whatNext.subHeading")
         </h2>
 
         <p class="text" id="exclude-text">
-            @Html(Messages("whatNext.exclude.p1",Messages("whatNext.exclude.heading")))
+            @Html(messages("whatNext.exclude.p1",messages("whatNext.exclude.heading")))
         </p>
         <br>
 
         <p class="text">
             <a  onclick="gaEvent('Click back to exclusion overview','From: Employee excluded What next page')"
-                href="@routes.ExclusionListController.performPageLoad(year,iabdValueURLMapper(iabdType))" id="link-back-excluded">
-                @Messages("Service.finish.excluded")
+                href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))" id="link-back-excluded">
+                @messages("Service.finish.excluded")
             </a>
         </p>
         <p class="text">
-            <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">@Messages("Service.back.overview.whatNext")</a>
+            <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">@messages("Service.back.overview.whatNext")</a>
         </p>
     </section>
 

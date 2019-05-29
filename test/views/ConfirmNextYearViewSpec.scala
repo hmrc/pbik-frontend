@@ -14,28 +14,32 @@
  * limitations under the License.
  */
 
-
 package views
 
+import config.{AppConfig, LocalFormPartialRetriever}
+import controllers.ExternalUrls
 import models.{EmpRef, RegistrationList, TaxYearRange}
-import org.jsoup.Jsoup
 import play.api.data.Form
 import play.api.mvc.Flash
 import play.twirl.api.Html
-import utils.FormMappings
+import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
-
 
 class ConfirmNextYearViewSpec extends PBIKViewSpec with FormMappings {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  implicit val flash = new Flash
+  implicit val flash: Flash = new Flash
 
   override def view: Html = viewWithForm(objSelectedForm)
 
+  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
+  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
+
   def viewWithForm(form: Form[RegistrationList]): Html =
-    views.html.registration.confirmUpdateNextTaxYear(form, true, taxYearRange, EmpRef("", ""))
+    views.html.registration.confirmUpdateNextTaxYear(form, additive = true, taxYearRange, EmpRef("", ""))
 
   "nextYearPage" must {
     behave like pageWithTitle(messages("AddBenefits.Confirm.Single.Title"))

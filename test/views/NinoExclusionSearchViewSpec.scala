@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-
 package views
 
+import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig}
+import controllers.ExternalUrls
 import models._
-import org.jsoup.Jsoup
 import play.api.data.Form
 import play.twirl.api.Html
-import utils.FormMappings
+import utils.{FormMappings, URIInformation}
 import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
 
 
@@ -31,8 +31,14 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
 
   override def view: Html = viewWithForm(exclusionSearchFormWithoutNino)
 
+  implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
+  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
+  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
+
   def viewWithForm(form: Form[EiLPerson]): Html =
-    views.html.exclusion.ninoExclusionSearchForm(taxYearRange, "cyp1", "30", form, true, EmpRef("", ""))
+    views.html.exclusion.ninoExclusionSearchForm(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
 
 
   "ninoExclusionSearchPage" must {
@@ -45,7 +51,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
   }
   "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
 
-    val view = viewWithForm(exclusionSearchFormWithNino.bind(Map[String, String](("nino", ""),("firstname", ""), ("surname", ""))))
+    val view: Html = viewWithForm(exclusionSearchFormWithNino.bind(Map[String, String](("nino", ""),("firstname", ""), ("surname", ""))))
 
     doc must haveErrorSummary(messages("error.empty.nino").replace(".", ""))
     doc must haveErrorNotification(messages("error.empty.nino"))

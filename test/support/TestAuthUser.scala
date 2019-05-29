@@ -16,38 +16,13 @@
 
 package support
 
-import uk.gov.hmrc.domain.{CtUtr, EmpRef}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain._
-import uk.gov.hmrc.play.frontend.auth.{AuthContext, LoggedInUser, Principal}
+import models.{AuthenticatedRequest, EmpRef, UserName}
+import play.api.mvc.Request
+import uk.gov.hmrc.auth.core.retrieve.Name
 
 trait TestAuthUser {
 
-  def createDummyUser(userId : String) : AuthContext = {
-    val epayeAccount = Some(EpayeAccount(empRef = EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference ="taxOfficeReference" ), link =""))
-    val accounts = Accounts(epaye = epayeAccount)
-    val authority = new Authority("", accounts,None,None, CredentialStrength.None, ConfidenceLevel.L50, None, None, None, legacyOid = "testOId")
-    val user = LoggedInUser(userId = userId, None, None, None, CredentialStrength.None,  ConfidenceLevel.L50, oid = "testOId")
-    val principal = Principal(name = Some("EPaye User"), accounts)
-    new AuthContext(user, principal, None, None, None, None)
-  }
+  def createDummyUser[A](request:Request[A]):AuthenticatedRequest[A] =
+  AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(Some("EPaye User"), None)), request)
 
-  def createDummyNonEpayeUser(userId : String) : AuthContext = {
-    val ctAccount = Some(CtAccount(utr = CtUtr(utr = ""), link = ""))
-    val accounts = Accounts(ct = ctAccount)
-    val authority = new Authority("", accounts, None, None, CredentialStrength.None, ConfidenceLevel.L50, None, None, None, legacyOid = "testOId")
-
-    val user = LoggedInUser(userId = userId, None, None, None, CredentialStrength.None,  ConfidenceLevel.L50, oid = "testOId")
-    val principal = Principal(name = Some("CT User"), accounts)
-    new AuthContext(user, principal, None, None, None, None)
-  }
-
-  def createDummyNonGatewayUser(userId : String) : AuthContext = {
-    val ctAccount = Some(CtAccount(utr = CtUtr(utr=""), link =""))
-    val accounts = Accounts(ct = ctAccount)
-    val authority = new Authority("", accounts,None,None, CredentialStrength.None, ConfidenceLevel.L50, None, None, None, legacyOid = "testOId")
-
-    val user = LoggedInUser(userId = userId, None, None, None, CredentialStrength.None, ConfidenceLevel.L50, oid = "testOId")
-    val principal = Principal(name = None, accounts)
-    new AuthContext(user, principal, None, None, None, None)
-  }
 }

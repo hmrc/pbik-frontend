@@ -19,52 +19,62 @@ package controllers
 import java.util.UUID
 
 import config._
-import connectors.{HmrcTierConnector, TierConnector}
+import connectors.HmrcTierConnector
+import javax.inject.Inject
 import models._
+import play.api.Mode.Mode
 import play.api.Play.current
 import play.api.data.Form
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.Result
+import play.api.{Configuration, Environment}
 import services.BikListService
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.frontend.controller.FrontendController
-import utils._
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import utils.{ControllersReferenceData, _}
 
-object WhatNextPageController extends WhatNextPageController with TierConnector {
-  val pbikAppConfig: AppConfig = PbikAppConfig
-  def bikListService: BikListService = BikListService
-  val tierConnector = new HmrcTierConnector
-}
+class WhatNextPageController @Inject()(implicit val pbikAppConfig: PbikAppConfig,
+                                       bikListService: BikListService,
+                                       val tierConnector: HmrcTierConnector,
+                                       val runModeConfiguration: Configuration,
+                                       environment: Environment,
+                                       taxDateUtils: TaxDateUtils,
+                                       controllersReferenceData: ControllersReferenceData,
+                                       implicit val externalURLs: ExternalUrls,
+                                       implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController {
 
-trait WhatNextPageController extends FrontendController
-  with URIInformation
-  with ControllersReferenceData
-  with SplunkLogger {
-  this: TierConnector =>
-
-  def bikListService: BikListService
+  val mode: Mode = environment.mode
 
   def calculateTaxYear(isCurrentTaxYear: Boolean): (Int, Int) = {
     val isCurrentYear = if (isCurrentTaxYear) FormMappingsConstants.CY else FormMappingsConstants.CYP1
     isCurrentYear match {
-      case FormMappingsConstants.CY => (YEAR_RANGE.cyminus1, YEAR_RANGE.cy)
-      case FormMappingsConstants.CYP1 => (YEAR_RANGE.cy, YEAR_RANGE.cyplus1)
+      case FormMappingsConstants.CY => (controllersReferenceData.YEAR_RANGE.cyminus1,
+        controllersReferenceData.YEAR_RANGE.cy)
+      case FormMappingsConstants.CYP1 => (controllersReferenceData.YEAR_RANGE.cy,
+        controllersReferenceData.YEAR_RANGE.cyplus1)
     }
   }
 
   def loadWhatNextRegisteredBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: AuthenticatedRequest[_], context: PbikContext): Result = {
-    val yearCalculated = calculateTaxYear(TaxDateUtils.isCurrentTaxYear(year))
+    val yearCalculated = calculateTaxYear(taxDateUtils.isCurrentTaxYear(year))
 
     Ok(views.html.registration.whatNextAddRemove(
-      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, additive = true, formRegisteredList, empRef = request.empRef))
-      .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+      taxDateUtils.isCurrentTaxYear(year),
+      controllersReferenceData.YEAR_RANGE,
+      additive = true,
+      formRegisteredList, empRef = request.empRef)
+    ).withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 
   def loadWhatNextRemovedBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: AuthenticatedRequest[_], context: PbikContext): Result = {
-    val yearCalculated = calculateTaxYear(TaxDateUtils.isCurrentTaxYear(year))
+    val yearCalculated = calculateTaxYear(taxDateUtils.isCurrentTaxYear(year))
 
     Ok(views.html.registration.whatNextAddRemove(
-      TaxDateUtils.isCurrentTaxYear(year), YEAR_RANGE, additive = false, formRegisteredList, empRef = request.empRef))
-      .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+      taxDateUtils.isCurrentTaxYear(year),
+      controllersReferenceData.YEAR_RANGE,
+      additive = false,
+      formRegisteredList,
+      empRef = request.empRef)
+    ).withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 }

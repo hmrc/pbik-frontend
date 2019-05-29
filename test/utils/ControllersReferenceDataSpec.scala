@@ -16,123 +16,54 @@
 
 package utils
 
-import java.util.Collections
-
-import config.{AppConfig, PbikAppConfig, RunModeConfig}
-import controllers.FakePBIKApplication
+import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import controllers.{ExternalUrls, FakePBIKApplication}
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import org.scalatestplus.play.PlaySpec
-import play.api.Play
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import support.TestAuthUser
+import support.{TestAuthUser, TestCYDisabledConfig, TestCYEnabledConfig}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.Upstream5xxResponse
-import uk.gov.hmrc.play.config.ServicesConfig
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 
 import scala.concurrent.{Future, Promise}
-import scala.util.Try
 
 class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
   with TestAuthUser with Results {
 
-
-  object StubPbikConfig extends AppConfig with ServicesConfig with RunModeConfig {
-
-    private def loadConfig(key: String): String = Play.current.configuration.getString(key).
-      getOrElse(throw new Exception(s"Missing key: $key"))
-
-    override lazy val contactFrontendService: String = Try {
-      baseUrl("contact-frontend")
-    }.getOrElse("contact-frontend-no-found")
-    override lazy val contactFormServiceIdentifier: String = ""
-
-    private val contactHost: String = Play.current.configuration.getString("microservice.services.contact-frontend.host").
-      getOrElse("contact-frontend-host-not-found")
-
-    override lazy val assetsPrefix: String = loadConfig("assets.url") + loadConfig("assets.version")
-    override lazy val reportAProblemPartialUrl: String = s"$contactFrontendService/contact/problem_reports?secure=true"
-    override lazy val betaFeedbackUrl: String = s"$contactHost/contact/beta-feedback"
-    override lazy val betaFeedbackUnauthenticatedUrl: String = s"$contactHost/contact/beta-feedback-unauthenticated"
-    override lazy val analyticsToken: String = Play.current.configuration.getString("google-analytics.token").getOrElse("n/a")
-    override lazy val analyticsHost: String = Play.current.configuration.getString("google-analytics.host").getOrElse("auto")
-    override lazy val cyEnabled: Boolean = Play.current.configuration.getBoolean("pbik.enabled.cy").getOrElse(false)
-    override lazy val biksNotSupported: List[Int] = Play.current.configuration.getIntList("pbik.unsupported.biks").
-      getOrElse(Collections.emptyList[Integer]()).
-      toArray(new Array[Integer](0)).toList.map(_.intValue())
-    override lazy val biksNotSupportedCY: List[Int] = Play.current.configuration.getIntList("pbik.unsupported.biks.cy").
-      getOrElse(Collections.emptyList[Integer]()).
-      toArray(new Array[Integer](0)).toList.map(_.intValue())
-    override lazy val biksDecommissioned: List[Int] = Play.current.configuration.getIntList("pbik.decommissioned.biks").
-      getOrElse(Collections.emptyList[Integer]()).
-      toArray(new Array[Integer](0)).toList.map(_.intValue())
-    override lazy val maximumExclusions: Int = 300
-
-    override lazy val urBannerLink: String = ""
-    override val serviceSignOut: String = ""
-  }
-
-  object TestCYEnabledConfig extends AppConfig {
-
-    override lazy val contactFrontendService: String = ""
-    override lazy val contactFormServiceIdentifier: String = ""
-    override lazy val assetsPrefix: String = ""
-    override lazy val reportAProblemPartialUrl: String = ""
-    override lazy val betaFeedbackUrl: String = ""
-    override lazy val betaFeedbackUnauthenticatedUrl: String = ""
-    override lazy val analyticsToken: String = ""
-    override lazy val analyticsHost: String = ""
-    override lazy val cyEnabled: Boolean = true
-    override lazy val biksNotSupported: List[Int] = List.empty[Int]
-    override lazy val biksNotSupportedCY: List[Int] = List.empty[Int]
-    override lazy val biksDecommissioned: List[Int] = List.empty[Int]
-    override lazy val maximumExclusions: Int = 300
-    override lazy val urBannerLink: String = ""
-    override val serviceSignOut: String = ""
-  }
-
-  object TestCYDisabledConfig extends AppConfig {
-
-    override lazy val contactFrontendService: String = ""
-    override lazy val contactFormServiceIdentifier: String = ""
-
-    override lazy val assetsPrefix: String = ""
-    override lazy val reportAProblemPartialUrl: String = ""
-    override lazy val betaFeedbackUrl: String = ""
-    override lazy val betaFeedbackUnauthenticatedUrl: String = ""
-    override lazy val analyticsToken: String = ""
-    override lazy val analyticsHost: String = ""
-    override lazy val cyEnabled: Boolean = false
-    override lazy val biksNotSupported: List[Int] = List.empty[Int]
-    override lazy val biksNotSupportedCY: List[Int] = List.empty[Int]
-    override lazy val biksDecommissioned: List[Int] = List.empty[Int]
-    override lazy val maximumExclusions: Int = 300
-    override lazy val urBannerLink: String = ""
-    override val serviceSignOut: String = ""
-  }
-
-  object MockCYEnabledControllersReferenceData extends ControllersReferenceData {
+  object MockCYEnabledControllersReferenceData extends ControllersReferenceData(
+    app.injector.instanceOf[TaxDateUtils],
+    app.injector.instanceOf[PbikContext],
+    app.injector.instanceOf[AppConfig],
+    app.injector.instanceOf[ExternalUrls],
+    app.injector.instanceOf[LocalFormPartialRetriever]
+  ) {
     override val pbikAppConfig: AppConfig = TestCYEnabledConfig
   }
 
-  object MockCYDisabledControllersReferenceData extends ControllersReferenceData {
+  object MockCYDisabledControllersReferenceData extends ControllersReferenceData(
+    app.injector.instanceOf[TaxDateUtils],
+    app.injector.instanceOf[PbikContext],
+    app.injector.instanceOf[AppConfig],
+    app.injector.instanceOf[ExternalUrls],
+    app.injector.instanceOf[LocalFormPartialRetriever]
+  ) {
     override val pbikAppConfig: AppConfig = TestCYDisabledConfig
   }
 
-  object MockControllersReferenceData extends ControllersReferenceData {
-    override val pbikAppConfig: AppConfig = PbikAppConfig
-  }
-
-  "When instantiating the ControllersReferenceData it" should {
-    "not have a null config" in {
-      val mockControllerConfig = ControllersReferenceData.pbikAppConfig
-      assert(mockControllerConfig != null)
-    }
+  object MockControllersReferenceData extends ControllersReferenceData(
+    app.injector.instanceOf[TaxDateUtils],
+    app.injector.instanceOf[PbikContext],
+    app.injector.instanceOf[AppConfig],
+    app.injector.instanceOf[ExternalUrls],
+    app.injector.instanceOf[LocalFormPartialRetriever]
+  ) {
+    override val pbikAppConfig: AppConfig = app.injector.instanceOf[PbikAppConfig]
   }
 
   "When CY mode is disabled the controller" should {

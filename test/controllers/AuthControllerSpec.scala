@@ -16,9 +16,6 @@
 
 package controllers
 
-import config.AppConfig
-import controllers.actions.MinimalAuthAction
-import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import org.specs2.mock.Mockito
 import play.api.libs.Crypto
@@ -26,7 +23,6 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.TestMinimalAuthAction
 
 import scala.concurrent.Future
 
@@ -42,16 +38,9 @@ class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication 
     def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken).withHeaders()
   }
 
-  class TestController extends AuthController {
-    override lazy val pbikAppConfig: AppConfig = mock[AppConfig]
-    override val authenticate: MinimalAuthAction = new TestMinimalAuthAction
-
-    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
-  }
-
   "When an valid user logs in, and their action is Authorised" should {
     "be status 200" in new SetUp {
-      val controller = new TestController()
+      val controller: AuthController = app.injector.instanceOf[AuthController]
       implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = fakeRequest
       val result: Future[Result] = controller.notAuthorised()(fakeRequest)
       status(result) must be(OK) // 200

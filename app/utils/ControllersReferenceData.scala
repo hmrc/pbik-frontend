@@ -16,40 +16,24 @@
 
 package utils
 
-import config.{AppConfig, PbikAppConfig, PbikContext, PbikContextImpl}
+import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
+import controllers.ExternalUrls
+import javax.inject.Inject
 import models._
 import play.api.Logger
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
-import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.http.Upstream5xxResponse
-import utils.BikListUtils.MandatoryRadioButton
+import utils.ControllersReferenceDataCodes._
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object ControllersReferenceData extends ControllersReferenceData {
-  val pbikAppConfig: AppConfig = PbikAppConfig
-}
-
-trait ControllersReferenceData extends FormMappings {
-
-  implicit val context: PbikContext = PbikContextImpl
-
-  implicit val bikFormats: OFormat[Bik] = Json.format[Bik]
-  implicit val eilFormats: OFormat[EiLPerson] = Json.format[EiLPerson]
-  implicit val eilListFormats: OFormat[EiLPersonList] = Json.format[EiLPersonList]
-  implicit val mandatoryDecisionFormats: OFormat[MandatoryRadioButton] = Json.format[MandatoryRadioButton]
-  implicit val addRemoveDecisionFormats: OFormat[BinaryRadioButton] = Json.format[BinaryRadioButton]
-  implicit val registrationItemsFormats: OFormat[RegistrationItem] = Json.format[RegistrationItem]
-
-  def YEAR_RANGE:TaxYearRange = TaxDateUtils.getTaxYearRange()
-  val pbikAppConfig: AppConfig
-
+object ControllersReferenceDataCodes {
   val CY_RESTRICTED = "ServiceMessage.10003"
   val FEATURE_RESTRICTED = "ServiceMessage.10002"
   val DEFAULT_ERROR = "ServiceMessage.10001"
@@ -61,7 +45,6 @@ trait ControllersReferenceData extends FormMappings {
   val SESSION_FROM_YTA = "fromYTA"
   val SESSION_LANG = "session_lang"
   val BIK_REMOVE_REASON_LIST = List("software", "guidance", "not-clear", "not-offering", "other")
-
 
   val EXCLUSION_TRACE_AND_MATCH_LIST_OF_PEOPLE = "trace-and-match-list-of-people"
   val EXCLUSION_TRACE_AND_MATCH_RADIO = "trace-and-match-radio"
@@ -91,6 +74,15 @@ trait ControllersReferenceData extends FormMappings {
   val EXLCUSIONS_RADIO_BUTTTON_SELECTION_CONFIRMATION_BACK_BUTTON_ERROR = "ErrorPage.backButtonNoCache"
   val AUTHORISATION_ERROR = "ErrorPage.authorisationError"
   val AUTHORISATION_TITLE = "ErrorPage.authorisationTitle"
+}
+
+class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
+                                         implicit val context: PbikContext,
+                                         implicit val pbikAppConfig: AppConfig,
+                                         implicit val externalURLs: ExternalUrls,
+                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FormMappings {
+
+  def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
 
   def generateListOfBiksBasedOnForm(bikStatus: Int)(implicit request: Request[AnyContent]): List[Bik] = {
     val persistentBiks: List[Bik] = objSelectedForm.bindFromRequest.fold(

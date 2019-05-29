@@ -18,30 +18,26 @@ package connectors
 
 import java.net.URLEncoder
 
+import javax.inject.Inject
 import models.{EmpRef, HeaderTags, PbikError}
 import play.api.Logger
 import play.api.libs.json
 import play.api.libs.json.{JsError, JsSuccess}
 import play.api.mvc.Request
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.Exceptions.GenericServerErrorException
 import utils.URIInformation
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait TierClient {
+class HmrcTierConnector @Inject()(client: HttpClient,
+                                  uriInformation: URIInformation) {
 
-}
+  val serviceUrl: String = uriInformation.baseUrl("government-gateway")
 
-object HmrcTierConnector extends HmrcTierConnector with ServicesConfig {
-  val serviceUrl = baseUrl("government-gateway")
-  lazy val http = WSHttp
-}
-
-class HmrcTierConnector extends URIInformation with TierClient {
-  var pbikHeaders = Map[String, String]()
+  var pbikHeaders: Map[String, String] = Map[String, String]()
 
   def encode(value: String): String = URLEncoder.encode(value, "UTF-8")
 
@@ -56,7 +52,7 @@ class HmrcTierConnector extends URIInformation with TierClient {
   def genericGetCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)
                        (implicit hc: HeaderCarrier, request: Request[_],
                         formats: json.Format[T], m: Manifest[T]): Future[T] = {
-    val resp = WSHttp.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
+    val resp = client.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
 
     resp.map { r =>
       val headers: Map[String, String] = Map(HeaderTags.ETAG -> r.header(HeaderTags.ETAG).getOrElse("0"), HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1"))
@@ -77,7 +73,6 @@ class HmrcTierConnector extends URIInformation with TierClient {
     s"$baseUrl/$orgIdentifierEncoded/$year/$URIExtension"
   }
 
-
   def genericPostCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int, data: T)
                         (implicit hc: HeaderCarrier, request: Request[_],
                          formats: json.Format[T]): Future[HttpResponse] = {
@@ -88,24 +83,22 @@ class HmrcTierConnector extends URIInformation with TierClient {
 
     Logger.info("POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession)
 
-    WSHttp.POST(createPostUrl(baseUrl, URIExtension, empRef, year), data, optMapped.toSeq).map { response: HttpResponse =>
+    client.POST(createPostUrl(baseUrl, URIExtension, empRef, year), data, optMapped.toSeq).map { response: HttpResponse =>
       processResponse(response)
     }
   }
 
   def processResponse(response: HttpResponse): HttpResponse = {
     response match {
-      case _ if (response.status >= 400) => throw new GenericServerErrorException(response.body)
-      case _ if (response.body.length <= 0) => response
-      case _ => {
+      case _ if response.status >= 400 => throw new GenericServerErrorException(response.body)
+      case _ if response.body.length <= 0 => response
+      case _ =>
         response.json.validate[PbikError].asOpt match {
-          case Some(pe) => {
+          case Some(pe) =>
             val error = pe.errorCode
             throw new GenericServerErrorException(error)
-          }
           case _ => response
         }
-      }
     }
   }
 }

@@ -16,8 +16,9 @@
 
 package services
 
-import config.{AppConfig, PbikAppConfig}
-import connectors.{HmrcTierConnector, TierConnector}
+import config.AppConfig
+import connectors.HmrcTierConnector
+import javax.inject.Inject
 import models.{AuthenticatedRequest, Bik, EmpRef}
 import play.api.mvc.Request
 import uk.gov.hmrc.http.HeaderCarrier
@@ -26,18 +27,16 @@ import utils.{ControllersReferenceData, URIInformation}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object BikListService extends BikListService {
-  val pbikAppConfig: AppConfig = PbikAppConfig
+class BikListService @Inject()(val pbikAppConfig: AppConfig,
+                               val tierConnector: HmrcTierConnector,
+                               controllersReferenceData: ControllersReferenceData,
+                               uriInformation: URIInformation) {
 
-  val tierConnector = new HmrcTierConnector
-}
-
-trait BikListService extends TierConnector with URIInformation with ControllersReferenceData {
   def pbikHeaders: Map[String, String] = Map[String, String]()
 
   def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {
-    val response = tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
-      request.empRef, YEAR_RANGE.cyminus1)
+    val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath,
+      request.empRef, controllersReferenceData.YEAR_RANGE.cyminus1)
 
     response.map { resultOption: List[Bik] =>
       (tierConnector.pbikHeaders, resultOption.distinct)
@@ -45,8 +44,8 @@ trait BikListService extends TierConnector with URIInformation with ControllersR
   }
 
   def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {
-    val response = tierConnector.genericGetCall[List[Bik]](baseUrl, getRegisteredPath,
-      request.empRef, YEAR_RANGE.cy)
+    val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath,
+      request.empRef, controllersReferenceData.YEAR_RANGE.cy)
 
     response.map { resultOption: List[Bik] =>
       (tierConnector.pbikHeaders, resultOption.distinct)
@@ -54,8 +53,8 @@ trait BikListService extends TierConnector with URIInformation with ControllersR
   }
 
   def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
-    val newPath = if (path == "") getRegisteredPath else path
-    val response = tierConnector.genericGetCall[List[Bik]](baseUrl, newPath, empRef, year)
+    val newPath = if (path == "") uriInformation.getRegisteredPath else path
+    val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, newPath, empRef, year)
     response
   }
 }

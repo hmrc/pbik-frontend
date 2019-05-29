@@ -16,28 +16,33 @@
 
 @import uk.gov.hmrc.play.views.html.helpers
 @import utils._
-@import utils.URIInformation._
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(taxYearRange: TaxYearRange,
   year: String, iabdType:String,
   individualsToRemove: Form[EiLPersonList],
 empRef: EmpRef)(implicit request: Request[_],
-                                            context: config.PbikContext, applicationMessages: Messages)
+                                            context: PbikContext, messages: Messages,
+                                            uriInformation: URIInformation, externalURLs: ExternalUrls,
+                                            config: AppConfig,
+                                            localFormPartialRetriever: LocalFormPartialRetriever)
 
 
-@parentTemplate(pageTitle = Messages("ExclusionRemovalConfirmation.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
+@parentTemplate(pageTitle = messages("ExclusionRemovalConfirmation.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
-    @includes.back_link(gaLabel = Messages("ExclusionRemovalConfirmation.title"))
+    @includes.back_link(gaLabel = messages("ExclusionRemovalConfirmation.title"))
 
     <header class="page-header">
         <h1 id="title">
-            @Messages("ExclusionRemovalConfirmation.title")
+            @messages("ExclusionRemovalConfirmation.title")
         </h1>
     </header>
 
     <section id="removal-confirmation">
         <p class="lede-para text">
-            @Messages("ExclusionRemovalConfirmation.intro", Messages("BenefitInKind.label."+iabdValueURLDeMapper(iabdType)), ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+            @messages("ExclusionRemovalConfirmation.intro", messages("BenefitInKind.label."+ uriInformation.iabdValueURLDeMapper(iabdType)), ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
 
            @helpers.form(action=routes.ExclusionListController.removeExclusionsCommit(iabdType),
             'onsubmit -> "gaEventConfirmRemoveExclusion()") {
@@ -53,11 +58,11 @@ empRef: EmpRef)(implicit request: Request[_],
             @if(listItem("status").value.isDefined) { <input type="hidden" name="individuals[@index].status" id="status" value='@listItem("status").value.get'/> }
             @if(listItem("perOptLock").value.isDefined) { <input type="hidden" name="individuals[@index].perOptLock" id="perOptLock" value='@listItem("perOptLock").value.get'/> }
 
-            <h2>@Messages("ExclusionRemovalConfirmation.caption")</h2>
+            <h2>@messages("ExclusionRemovalConfirmation.caption")</h2>
             <dl class="govuk-check-your-answers cya-questions-short">
                 <div>
                     <div class="cya-question">
-                        @Messages("Service.field.name")
+                        @messages("Service.field.name")
                     </div>
                     <div class="cya-answer" id="name">
                         @listItem("firstName").value.get
@@ -66,8 +71,8 @@ empRef: EmpRef)(implicit request: Request[_],
                     </div>
                 </div>
                 <div>
-                    <div class="cya-question">@Messages("Service.field.nino")<br>
-                        <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span>
+                    <div class="cya-question">@messages("Service.field.nino")<br>
+                        <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span>
                     </div>
                     <div class="cya-answer" id="nino">
                         @listItem("nino").value.get
@@ -77,13 +82,13 @@ empRef: EmpRef)(implicit request: Request[_],
                 </div>
                 @if((listItem("worksPayrollNumber").value.isDefined)) {
                 <div>
-                    <div class="cya-question">@Messages("Service.field.worksnumber")</div>
+                    <div class="cya-question">@messages("Service.field.worksnumber")</div>
                     <div class="cya-answer">@listItem("worksPayrollNumber").value.get</div>
                 </div>
                 }
                 @if((listItem("dateOfBirth").value.isDefined)) {
                 <div>
-                    <div class="cya-answer bold">@Messages("Service.field.dob")</div>
+                    <div class="cya-answer bold">@messages("Service.field.dob")</div>
                     <div class="cya-answer" id="dob">@DateUtils.NPSDateConversionFormat(listItem("dateOfBirth").value.get)</div>
                 </div>
                 }
@@ -93,19 +98,19 @@ empRef: EmpRef)(implicit request: Request[_],
             }
 
         <p>
-            <input type="submit" class="button" role="button" id="button-confirm" value="@Messages("Service.exclusion.add")">
+            <input type="submit" class="button" role="button" id="button-confirm" value="@messages("Service.exclusion.add")">
         </p>
         }
             <p>
                 <a id ="link-back" onclick="gaEvent('Click back to exclusion overview','From: Removal confirmation')"
                    href='@routes.ExclusionListController.performPageLoad(year,iabdType)'>
-                    @Messages("Service.back.excluded")</a></p>
+                    @messages("Service.back.excluded")</a></p>
 
     </section>
 
     <script>
         function gaEventConfirmRemoveExclusion() {
-          gaEvent("Remove Exclusion for @year", "@Messages("BenefitInKind.label." + iabdValueURLDeMapper(iabdType))");
+          gaEvent("Remove Exclusion for @year", "@messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType))");
         }
     </script>
 }

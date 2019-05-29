@@ -15,57 +15,63 @@
  *@
 
 @import uk.gov.hmrc.play.views.html.helpers
-@import utils.URIInformation._
-@import config.PbikAppConfig.maximumExclusions
+@import utils.URIInformation
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
 
 @(taxYearRange:TaxYearRange,
 isCurrentTaxYear:String,
 iabdType:String,
 current:List[EiLPerson],
 empRef: EmpRef)(implicit request:Request[_],
-context: config.PbikContext, applicationMessages: Messages)
+context: config.PbikContext,
+messages: Messages,
+uriInformation: URIInformation,
+appConfig: AppConfig,
+externalURLs: ExternalUrls,
+localFormPartialRetriever: LocalFormPartialRetriever)
 
-@parentTemplate(pageTitle = Messages("ExclusionOverview.title") + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
+@parentTemplate(pageTitle = messages("ExclusionOverview.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
 @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
 
-@includes.back_link(gaLabel = Messages("ExclusionOverview.title"))
+@includes.back_link(gaLabel = messages("ExclusionOverview.title"))
 
 <header class="page-header">
-    <h1 id="title" class="heading-with-border">@Messages("ExclusionOverview.title")</h1>
+    <h1 id="title" class="heading-with-border">@messages("ExclusionOverview.title")</h1>
 </header>
 <section id="exclusion-overview">
     @if(current.isEmpty) {
     <p class="lede-para text">
-        @Messages("ExclusionOverview.instruction.empty", Messages("BenefitInKind.label." + iabdType), yearvalue)
+        @messages("ExclusionOverview.instruction.empty", messages("BenefitInKind.label." + iabdType), yearvalue)
     </p>
 
     }else{
     <p class="lede-para text">
         @if(isCurrentTaxYear=="cy") {
-        @Messages("ExclusionOverview.instruction.cy.notempty", Messages("BenefitInKind.label." + iabdType))
+        @messages("ExclusionOverview.instruction.cy.notempty", messages("BenefitInKind.label." + iabdType))
         }else{
-        @Messages("ExclusionOverview.instruction.notempty", Messages("BenefitInKind.label." + iabdType), yearvalue)
+        @messages("ExclusionOverview.instruction.notempty", messages("BenefitInKind.label." + iabdType), yearvalue)
         }
     </p>
     }
 
     @if(!current.isEmpty) {
-    <h2>@Messages("ExclusionOverview.caption")</h2>
+    <h2>@messages("ExclusionOverview.caption")</h2>
 
     <dl class="govuk-check-your-answers cya-questions-short">
         <div>
-            <div class="cya-answer bold">@Messages("Service.field.name")</div>
-            <div class="cya-answer bold">@Messages("Service.field.nino")
+            <div class="cya-answer bold">@messages("Service.field.name")</div>
+            <div class="cya-answer bold">@messages("Service.field.nino")
                 <br>
-                <span class="nino-span">@Html(Messages("Service.nino.lastletter"))</span></div>
-            <div class="cya-answer bold">@Messages("Service.field.worksnumber")</div>
-            <div class="cya-answer bold" id="action">@Messages("Service.action")</div>
+                <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span></div>
+            <div class="cya-answer bold">@messages("Service.field.worksnumber")</div>
+            <div class="cya-answer bold" id="action">@messages("Service.action")</div>
         </div>
 
         @for( (c, index) <- current.zipWithIndex ) {
 
-        @helpers.form(action=routes.ExclusionListController.remove(isCurrentTaxYear, iabdValueURLMapper(iabdType))){
+        @helpers.form(action=routes.ExclusionListController.remove(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType))){
         <div>
             <div class="cya-answer" id='name-@c.nino'>@c.surname, @c.firstForename </div>
             <div class="cya-answer" class="nino" id = 'nino-@c.nino'>
@@ -74,14 +80,13 @@ context: config.PbikContext, applicationMessages: Messages)
             <div  class="cya-answer" id='dob-@c.nino'>@c.worksPayrollNumber</div>
             @if(isCurrentTaxYear!="cy"){
             <div class="cya-answer">
-                <button class="button--link-style" id='@c.nino-remove' data-journey-click="link - click:@Messages("ExclusionOverview.title"):@Messages("Service.removeexclusion")">
-                    @Messages("Service.removeexclusion")<span class="visuallyhidden">@Messages("Service.for") @c.firstForename @c.surname @c.nino</span>
+                <button class="button--link-style" id='@c.nino-remove' data-journey-click="link - click:@messages("ExclusionOverview.title"):@messages("Service.removeexclusion")">
+                    @messages("Service.removeexclusion")<span class="visuallyhidden">@messages("Service.for") @c.firstForename @c.surname @c.nino</span>
                 </button>
             </div>
             }
 
         </div>
-
 
         <input type="hidden" name="individuals[0].nino" value="@c.nino" />
         <input type="hidden" name="individuals[0].firstName" value="@c.firstForename" />
@@ -99,24 +104,24 @@ context: config.PbikContext, applicationMessages: Messages)
     }
 
     <div class="panel-indent panel-border-wide">
-        @Messages("ExclusionOverview.warning")
+        @messages("ExclusionOverview.warning")
     </div>
 
     <div style="margin-top: 10px;">
-        @if(current.size <= maximumExclusions ) {
+        @if(current.size <= appConfig.maximumExclusions ) {
         @defining( if(current.isEmpty){"Service.excludeanemployee"}else{"Service.excludeanotheremployee"}) { buttonlabel =>
-        <a class="button" role="button" role="button" id="button-exclude" data-journey-click="button - click:@Messages("ExclusionOverview.title"):@Messages(buttonlabel)"
-           href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdValueURLMapper(iabdType))'>
-            @Messages(buttonlabel)</a>
+        <a class="button" role="button" role="button" id="button-exclude" data-journey-click="button - click:@messages("ExclusionOverview.title"):@messages(buttonlabel)"
+           href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType))'>
+            @messages(buttonlabel)</a>
         }
         } else {
         <p class="text">
-            @Messages("ExclusionOverview.excludecount.exceeded")
+            @messages("ExclusionOverview.excludecount.exceeded")
         </p>
         }
 
         <p class="text"><a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad"
-                           id="link-back">@Messages("Service.back.overview")</a></p>
+                           id="link-back">@messages("Service.back.overview")</a></p>
     </div>
 </section>
 }

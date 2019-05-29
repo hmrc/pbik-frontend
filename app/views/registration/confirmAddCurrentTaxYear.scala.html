@@ -14,42 +14,48 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
+
 @(bikForm:Form[RegistrationList],
   taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_],
-                             context: config.PbikContext, applicationMessages: Messages)
-
-@import uk.gov.hmrc.play.views.html.helpers
+                             context: PbikContext, messages: Messages,
+                            externalURLs: ExternalUrls,
+                            config: AppConfig,
+                            localFormPartialRetriever: LocalFormPartialRetriever)
 
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
-@gaEventBiks = @{helper.repeat(bikForm("actives"), min=0) { activeField => Html(Messages("BenefitInKind.label." + activeField("uid").value.get) + " ,")} }
+@gaEventBiks = @{helper.repeat(bikForm("actives"), min=0) { activeField => Html(messages("BenefitInKind.label." + activeField("uid").value.get) + " ,")} }
 
-@screenReaderExclusionOpen = @{Messages("AddBenefits.Confirm.help.reveal.link.sr.open")}
-@screenReaderExclusionClosed = @{Messages("AddBenefits.Confirm.help.reveal.link.sr.closed")}
+@screenReaderExclusionOpen = @{messages("AddBenefits.Confirm.help.reveal.link.sr.open")}
+@screenReaderExclusionClosed = @{messages("AddBenefits.Confirm.help.reveal.link.sr.closed")}
 
-@title = @{if(singleBik) {Messages("AddBenefits.Confirm.Single.Title")}else {Messages("AddBenefits.Confirm.Multiple.Title")}}
+@title = @{if(singleBik) {messages("AddBenefits.Confirm.Single.Title")}else {messages("AddBenefits.Confirm.Multiple.Title")}}
 
-@parentTemplate(pageTitle = title + " - " + Messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
+@parentTemplate(pageTitle = title + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
     <span class="link-back-top-wrap">
         <a class="link-back" id="link-back-top" onclick="gaEventLinkSteps()"
            href='@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad'>
 
             <div class="arrow-back"></div>
-            @Messages("Service.back")
+            @messages("Service.back")
         </a>
     </span>
     <h1 id="title" class="h1-heading-margin">
         @if(!singleBik) {
-            @Messages("AddBenefits.Confirm.Multiple.Title")
+            @messages("AddBenefits.Confirm.Multiple.Title")
         }else{
-            @Messages("AddBenefits.Confirm.Single.Title")
+            @messages("AddBenefits.Confirm.Single.Title")
         }
     </h1>
 
     <p class="lede-para text" id="lede">
         @if(singleBik){
-            @Messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
+            @messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
         }else{
-            @Messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
+            @messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
         }
     </p>
 
@@ -60,9 +66,9 @@
             <table id="list-of-confirmation-benefits" role="presentation">
                 <caption>
                     @if(!singleBik) {
-                        @Messages("AddBenefits.Confirm.Multiple.Table.Heading")
+                        @messages("AddBenefits.Confirm.Multiple.Table.Heading")
                     }else {
-                        @Messages("AddBenefits.Confirm.Single.Table.Heading")
+                        @messages("AddBenefits.Confirm.Single.Table.Heading")
                     }
                 </caption>
 
@@ -74,7 +80,7 @@
                             @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
                             @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
                             <td role="gridcell" id='confirmation-row-confirmation-@activeField("uid").value.get'>
-                                @Messages("BenefitInKind.label." + activeField("uid").value.get )</td>
+                                @messages("BenefitInKind.label." + activeField("uid").value.get )</td>
                         </tr>
                     }
                 }
@@ -83,20 +89,20 @@
 
             <div class="panel-indent panel-border-wide" id="exclude-info">
                 @if(singleBik){
-                    @Messages("AddBenefits.Confirm.help.desc.Single")
+                    @messages("AddBenefits.Confirm.help.desc.Single")
                 }else{
-                    @Messages("AddBenefits.Confirm.help.desc")
+                    @messages("AddBenefits.Confirm.help.desc")
                 }
             </div>
 
             @if(singleBik) {
-            <input type="submit" role="button" class="button" id="button-confirm" value="@Messages("Service.register.single")">
+            <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.register.single")">
             }else {
-            <input type="submit" role="button" class="button" id="button-confirm" value="@Messages("Service.register.multiple")">
+            <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.register.multiple")">
             }
         }
         <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
-              href='@routes.HomePageController.onPageLoad'>@Messages("Service.back.cancel")</a></p>
+              href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a></p>
 
     </div>
     <script>
