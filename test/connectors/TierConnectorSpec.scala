@@ -30,15 +30,6 @@ import utils.Exceptions.GenericServerErrorException
 class TierConnectorSpec extends PlaySpec with FakePBIKApplication
                                          with TestAuthUser with Results {
 
-  val tierConnector: HmrcTierConnector = app.injector.instanceOf[HmrcTierConnector]
-
-  "When instantiating the TierConnector it" should {
-    "not have a null tierConnector reference" in {
-      val tc = tierConnector
-      assert(tc != null)
-    }
-  }
-
   class FakeResponse extends HttpResponse {
     override def status = 200
     override def body = ""
@@ -56,25 +47,25 @@ class TierConnectorSpec extends PlaySpec with FakePBIKApplication
     override def body = "A severe server error"
   }
 
-  val mockHmrcTierConnector  = mock(classOf[HmrcTierConnector])
+  val hmrcTierConnector  = app.injector.instanceOf[HmrcTierConnector]
 
   "When creating a GET URL with an orgainsation needing encoding it" should {
    " encode the slash properly" in {
-      val result:String = mockHmrcTierConnector.createGetUrl("theBaseUrl","theURIExtension", EmpRef("780", "MODES16"),2015)
+      val result:String = hmrcTierConnector.createGetUrl("theBaseUrl","theURIExtension", EmpRef("780", "MODES16"),2015)
       assert(result == "theBaseUrl/780%2FMODES16/2015/theURIExtension")
     }
   }
 
   "When creating a GET URL with no organisation it" should {
    " omit the organisation" in {
-      val result:String = mockHmrcTierConnector.createGetUrl("theBaseUrl","theURIExtension", EmpRef.empty,2015)
+      val result:String = hmrcTierConnector.createGetUrl("theBaseUrl","theURIExtension", EmpRef.empty,2015)
       assert(result == "theBaseUrl/2015/theURIExtension")
     }
   }
 
   "When creating a POST URL with an organisation which needs encoding it" should {
    " be properly formed with the %2F encoding" in {
-      val result:String = mockHmrcTierConnector.createPostUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), 2015)
+      val result:String = hmrcTierConnector.createPostUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), 2015)
       assert(result == "theBaseUrl/780%2FMODES16/2015/theURIExtension")
     }
   }
@@ -82,14 +73,14 @@ class TierConnectorSpec extends PlaySpec with FakePBIKApplication
   "When processing a response if the status is greater than 400 it" should {
    " throw a GenericServerErrorException" in {
       intercept[GenericServerErrorException] {
-        mockHmrcTierConnector.processResponse(new FakeSevereResponse)
+        hmrcTierConnector.processResponse(new FakeSevereResponse)
       }
     }
   }
 
   "When processing a response if the status is less than 400 it" should {
    " return the response" in {
-      val resp = mockHmrcTierConnector.processResponse(new FakeResponse)
+      val resp = hmrcTierConnector.processResponse(new FakeResponse)
       assert(resp.status == 200)
     }
   }
@@ -97,7 +88,7 @@ class TierConnectorSpec extends PlaySpec with FakePBIKApplication
   "When processing a response if there is a PBIK error code" should {
    " throw a GenericServerErrorException" in {
       intercept[GenericServerErrorException] {
-        mockHmrcTierConnector.processResponse(new FakeResponseWithError)
+        hmrcTierConnector.processResponse(new FakeResponseWithError)
       }
     }
   }

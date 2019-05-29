@@ -16,13 +16,13 @@
 
 package controllers
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.{AppConfig, PbikAppConfig}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import javax.inject.Inject
 import models._
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
+import play.api.Application
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
@@ -31,16 +31,12 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.{Application, Configuration, Environment}
 import services.BikListService
-import support.TestAuthUser
+import support.{CYEnabledSetup, StubbedBikListService, TestAuthUser, TestSplunkLogger}
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.model.DataEvent
 import utils._
 
-import scala.concurrent.Future
 import scala.concurrent.duration._
 
 class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
@@ -49,108 +45,16 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
   val timeoutValue: FiniteDuration = 10 seconds
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
-    .overrides(bind[AppConfig].toInstance(mock(classOf[PbikAppConfig])))
+    .overrides(bind[AppConfig].to(classOf[PbikAppConfig]))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
-    .overrides(bind[BikListService].to(classOf[StubBikListService]))
+    .overrides(bind[BikListService].to(classOf[StubbedBikListService]))
+    .overrides(bind[SplunkLogger].to(classOf[TestSplunkLogger]))
+    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()
 
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
-
-
-
-  class StubBikListService @Inject()(pbikAppConfig: PbikAppConfig,
-                                     tierConnector: HmrcTierConnector,
-                                     controllersReferenceData: ControllersReferenceData,
-                                     uRIInformation: URIInformation) extends BikListService(pbikAppConfig,
-                                                                                tierConnector,
-                                                                                controllersReferenceData,
-                                                                                uRIInformation) {
-
-    lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
-    /*(n => new Bik("" + (n + 1), 10))*/
-    override lazy val pbikHeaders: Map[String, String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
-
-    override def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
-    Future[(Map[String, String], List[Bik])] = {
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
-    }
-
-    override def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
-    Future[(Map[String, String], List[Bik])] = {
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
-    }
-
-    override def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)
-                              (implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
-      Future.successful(CYCache)
-    }
-
-  }
-
-
-  class MockHomePageController @Inject()(bikListService: BikListService,
-                                         pbikAppConfig: PbikAppConfig,
-                                         authAction: AuthAction,
-                                         noSessionCheckAction: NoSessionCheckAction,
-                                         runModeConfiguration: Configuration,
-                                         environment: Environment,
-                                         taxDateUtils: TaxDateUtils,
-                                         controllersReferenceData: ControllersReferenceData,
-                                         splunkLogger: SplunkLogger,
-                                         context: PbikContext,
-                                         uRIInformation: URIInformation,
-                                         externalURLs: ExternalUrls,
-                                         localFormPartialRetriever: LocalFormPartialRetriever) extends HomePageController(
-    bikListService,
-    authAction,
-    noSessionCheckAction,
-    runModeConfiguration,
-    environment,
-    controllersReferenceData,
-    splunkLogger)(
-    taxDateUtils,
-    pbikAppConfig,
-    context,
-    uRIInformation,
-    externalURLs,
-    localFormPartialRetriever
-  ) {
-
-    def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
-      Future.successful(AuditResult.Success)
-    }
-  }
-
-  class MockHomePageControllerCYEnabled @Inject()(bikListService: BikListService,
-    pbikAppConfig: PbikAppConfig,
-    authAction: AuthAction,
-    noSessionCheckAction: NoSessionCheckAction,
-    runModeConfiguration: Configuration,
-    environment: Environment,
-    taxDateUtils: TaxDateUtils,
-    controllersReferenceData: ControllersReferenceData,
-    splunkLogger: SplunkLogger,
-    context: PbikContext,
-    uRIInformation: URIInformation,
-    externalURLs: ExternalUrls,
-    localFormPartialRetriever: LocalFormPartialRetriever) extends MockHomePageController(bikListService,
-      pbikAppConfig,
-      authAction,
-      noSessionCheckAction,
-      runModeConfiguration,
-      environment,
-      taxDateUtils,
-      controllersReferenceData,
-      splunkLogger,
-      context,
-      uRIInformation,
-      externalURLs,
-      localFormPartialRetriever
-  ) {
-    when(pbikAppConfig.cyEnabled).thenReturn(true)
-    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
-  }
 
   "When checking if from YTA referer ends /account" in {
     val homePageController = app.injector.instanceOf[HomePageController]
@@ -181,7 +85,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
 
   "HomePageController" should {
     "show Unauthorised if the session is not authenticated" in {
-      val homePageController = app.injector.instanceOf[MockHomePageController]
+      val homePageController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> "hackmeister",
         SessionKeys.token -> "RANDOMTOKEN",
@@ -191,7 +95,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
     }
 
     "logout and redirect to feed back page" in {
-      val homePageController = app.injector.instanceOf[MockHomePageController]
+      val homePageController = app.injector.instanceOf[HomePageController]
       val result = homePageController.signout.apply(FakeRequest())
 
       status(result) mustBe SEE_OTHER
@@ -202,9 +106,9 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
 
   "When a valid user loads the CY warning but CY is disabled the HomePageController" should {
     "show the CY disabled error page" in {
-      val homePageController = app.injector.instanceOf[MockHomePageController]
+      val homePageController = app.injector.instanceOf[HomePageController]
+
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      //        implicit val ac: AuthContext = createDummyUser("VALID_ID")
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       val result = await(homePageController.loadCautionPageForCY.apply(request))
       result.header.status must be(OK)
@@ -214,10 +118,14 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
   }
 
   "When a valid user loads the CY warning page and CY mode is enabled the HomePageController" should {
-    "show the page" in {
-      val homePageController = app.injector.instanceOf[MockHomePageControllerCYEnabled]
+    "show the page" in new CYEnabledSetup {
+
+      val injector: Injector = new GuiceApplicationBuilder()
+        .overrides(GuiceTestModule)
+        .injector()
+
+      val homePageController = injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      //      implicit val ac: AuthContext = createDummyUser("VALID_ID")
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       val result = await(homePageController.loadCautionPageForCY.apply(request))
       result.header.status must be(OK)
@@ -227,7 +135,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
 
   "HomePageController" should {
     "display the navigation page" in {
-      val homePageController = app.injector.instanceOf[MockHomePageController]
+      val homePageController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> sessionId,
         SessionKeys.token -> "RANDOMTOKEN",

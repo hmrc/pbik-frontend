@@ -53,7 +53,7 @@ class StubbedBikListService @Inject()(pbikAppConfig: AppConfig,
 
     override def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)
                               (implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
-      Future(CYCache)(scala.concurrent.ExecutionContext.Implicits.global)
+      Future.successful(CYCache)
     }
 
   }

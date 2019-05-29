@@ -41,7 +41,7 @@ import play.api.test.Helpers._
 import play.api.{Application, Configuration, Environment}
 import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
-import support.TestAuthUser
+import support.{TestAuthUser, TestCYEnabledConfig}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -60,7 +60,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   ).configure(config)
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
-    .overrides(bind[AppConfig].toInstance(mock(classOf[AppConfig])))
+    .overrides(bind[AppConfig].toInstance(TestCYEnabledConfig))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
@@ -71,6 +71,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   val timeoutValue: FiniteDuration = 15 seconds
 
   def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
+
   class StubBikListService @Inject()(val pbikAppConfig: AppConfig,
                                      tierConnector: HmrcTierConnector,
                                      runModeConfiguration: Configuration,
@@ -93,10 +94,6 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
 
       Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) > 10 }))
     }
-
-    when(pbikAppConfig.cyEnabled).thenReturn(true)
-
-    when(pbikAppConfig.reportAProblemPartialUrl).thenReturn("")
 
     when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
       any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
@@ -240,7 +237,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     val mockRegistrationItemList = List.empty[RegistrationItem]
     val mockFormRegistrationList: Form[RegistrationList] = objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
 
-    implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+    implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
 
     override def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
@@ -291,6 +288,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   }
 
   val registrationController: ManageRegistrationController = {
+
+
     val r = app.injector.instanceOf[ManageRegistrationController]
 
     implicit val defaultPatience: ScalaFutures.PatienceConfig =
@@ -302,15 +301,11 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
 
 
 
-    implicit val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+    implicit lazy val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
 
     //val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
 
     val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
-
-    when(app.injector.instanceOf[PbikAppConfig].cyEnabled).thenReturn(true)
-
-    when(app.injector.instanceOf[PbikAppConfig].reportAProblemPartialUrl).thenReturn("")
 
     when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(""),
       any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
@@ -357,7 +352,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
 
   "When loading the next tax years on-remove data, the RegistrationController" should {
       "state the status is ok" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+        implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
         implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
           EmpRef("taxOfficeNumber", "taxOfficeReference"),
           UserName(Name(None, None)),
@@ -373,7 +368,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     "display the correct Biks on the removal screen" in {
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val title = Messages("RemoveBenefits.Heading").substring(0,44)
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createDummyUser(mockrequest)
+      implicit lazy val authenticatedRequest: AuthenticatedRequest[AnyContent] = createDummyUser(mockrequest)
 
       implicit val timeout: FiniteDuration = timeoutValue
       val result = await(registrationController.loadNextTaxYearOnRemoveData)(timeout)
@@ -392,7 +387,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val title = Messages("AddBenefits.Heading")
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(registrationController.currentTaxYearOnPageLoad.apply(mockrequest))(timeout)
+      val result = await(registrationController.currentTaxYearOnPageLoad(mockrequest))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.1"))

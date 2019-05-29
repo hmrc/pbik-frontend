@@ -17,21 +17,25 @@
 package support
 
 import com.google.inject.AbstractModule
+import config.AppConfig
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito.mock
 import org.specs2.specification.Scope
-import services.EiLListService
-import utils.{TestAuthAction, TestNoSessionCheckAction}
+import services.BikListService
+import utils.{SplunkLogger, TestAuthAction, TestNoSessionCheckAction}
 
-trait ServiceExclusionSetup extends Scope{
+trait CYEnabledSetup extends Scope {
 
   object GuiceTestModule extends AbstractModule {
     override def configure(): Unit = {
-      bind(classOf[EiLListService]).to(classOf[StubEiLListServiceOneExclusion])
+      bind(classOf[HmrcTierConnector]).toInstance(mock(classOf[HmrcTierConnector]))
+      bind(classOf[BikListService]).to(classOf[StubbedBikListService])
+      bind(classOf[SplunkLogger]).to(classOf[TestSplunkLogger])
+      bind(classOf[AppConfig]).toInstance(TestCYEnabledConfig)
       bind(classOf[AuthAction]).to(classOf[TestAuthAction])
       bind(classOf[NoSessionCheckAction]).to(classOf[TestNoSessionCheckAction])
-      bind(classOf[HmrcTierConnector]).toInstance(mock(classOf[HmrcTierConnector]))
     }
   }
+
 }

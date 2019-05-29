@@ -31,7 +31,8 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import support.TestAuthUser
+import services.HelpAndContactSubmissionService
+import support.{StubHelpAndContactSubmissionService, TestAuthUser}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
 import utils._
@@ -46,6 +47,7 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
     .overrides(bind[AppConfig].toInstance(mock(classOf[PbikAppConfig])))
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
+    .overrides(bind[HelpAndContactSubmissionService].to(classOf[StubHelpAndContactSubmissionService]))
     .build()
 
   val controller = app.injector.instanceOf[HelpAndContactController]
