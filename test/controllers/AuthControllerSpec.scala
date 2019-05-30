@@ -17,7 +17,6 @@
 package controllers
 
 import org.scalatestplus.play.PlaySpec
-import org.specs2.mock.Mockito
 import play.api.libs.Crypto
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -26,7 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class AuthControllerSpec extends PlaySpec with Mockito with FakePBIKApplication {
+class AuthControllerSpec extends PlaySpec with FakePBIKApplication {
 
   class SetUp {
     implicit val hc: HeaderCarrier = HeaderCarrier()
