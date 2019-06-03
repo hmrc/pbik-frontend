@@ -24,6 +24,7 @@ import uk.gov.hmrc.play.audit.model.DataEvent
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import SplunkLogger._
 
 object SplunkLogger {
 
@@ -53,47 +54,31 @@ object SplunkLogger {
 class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
                              val auditConnector: AuditConnector) {
 
-  object spTier extends Enumeration {
-    type spTier = Value
-    val FRONTEND, GATEWAY = Value
+  sealed trait SpTier
+  case object FRONTEND extends SpTier
+  case object GATEWAY extends SpTier
 
-    override def toString: String = Value.toString
-  }
+  sealed trait SpAction
+  case object LOGIN extends SpAction
+  case object VIEW extends SpAction
+  case object ADD extends SpAction
+  case object REMOVE extends SpAction
 
-  object spAction extends Enumeration {
-    type spAction = Value
-    val LOGIN, VIEW, ADD, REMOVE = Value
 
-    override def toString: String = Value.toString
-  }
+  sealed trait SpTarget
+  case object BIK extends SpTarget
+  case object EIL extends SpTarget
 
-  object spTarget extends Enumeration {
-    type spTarget = Value
-    val BIK, EIL = Value
+  sealed trait SpPeriod
+  case object CY extends SpPeriod
+  case object CYP1 extends SpPeriod
+  case object BOTH extends SpPeriod
 
-    override def toString: String = Value.toString
-  }
+  sealed trait SpError
+  case object SCHEDULED_OUTAGE extends SpError
+  case object EXCEPTION extends SpError
 
-  object spPeriod extends Enumeration {
-    type spPeriod = Value
-    val CY, CYP1, BOTH = Value
 
-    override def toString: String = Value.toString
-  }
-
-  object spError extends Enumeration {
-    type spError = Value
-    val SCHEDULED_OUTAGE, EXCEPTION = Value
-
-    override def toString: String = Value.toString
-  }
-
-  import SplunkLogger._
-  import spAction._
-  import spError._
-  import spPeriod._
-  import spTarget._
-  import spTier._
 
   /**
     * Method creates a PBIK Specific DataEvent which will be sent to splunk so product owners
@@ -111,10 +96,10 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
     * @param msg    - free text message. Note - ensure no personal or sensitive details are included )
     * @return - a properly formed PBIK DataEvent which may be sent using the logSplunkEvent method.
     */
-  def createDataEvent(tier: spTier,
-                      action: spAction,
-                      target: spTarget,
-                      period: spPeriod,
+  def createDataEvent(tier: SpTier,
+                      action: SpAction,
+                      target: SpTarget,
+                      period: SpPeriod,
                       msg: String,
                       nino: Option[String] = None,
                       iabd: Option[String] = None,
@@ -124,8 +109,8 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
                       empRef: Option[EmpRef]): DataEvent = {
 
     val derivedAuditType = target match {
-      case spTarget.BIK => pbik_benefit_type
-      case spTarget.EIL => pbik_exclude_type
+      case BIK => pbik_benefit_type
+      case EIL => pbik_exclude_type
     }
 
     val entityIABD = if (iabd.isDefined) Seq(key_iabd -> iabd.get) else Nil
@@ -156,7 +141,7 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
     * @param msg  - free text message. Note - ensure no personal or sensitive details are included )
     * @return A DataEvent with the PBIK specific error payload which may be sent using the logSplunkEvent method.
     */
-  def createErrorEvent(tier: spTier, error: spError, msg: String)(implicit request: AuthenticatedRequest[_]): DataEvent = {
+  def createErrorEvent(tier: SpTier, error: SpError, msg: String)(implicit request: AuthenticatedRequest[_]): DataEvent = {
 
     DataEvent(auditSource = pbik_audit_source, auditType = pbik_error_type,
       detail = Map(
@@ -181,9 +166,10 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
   }
 
   def taxYearToSpPeriod(year: Int) = {
-    taxDateUtils.isCurrentTaxYear(year) match {
-      case true => spPeriod.CY
-      case false => spPeriod.CYP1
+    if (taxDateUtils.isCurrentTaxYear(year)) {
+      CY
+    } else {
+      CYP1
     }
   }
 

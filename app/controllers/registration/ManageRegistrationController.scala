@@ -311,9 +311,9 @@ class ManageRegistrationController @Inject()(
     val derivedMsg = if (additive) "Benefit added to " + splunkLogger.taxYearToSpPeriod(year) else "Benefit removed from " + splunkLogger.taxYearToSpPeriod(year)
     for (bik <- persistentBiks) {
       splunkLogger.logSplunkEvent(splunkLogger.createDataEvent(
-        tier = splunkLogger.spTier.FRONTEND,
-        action = if (additive) splunkLogger.spAction.ADD else splunkLogger.spAction.REMOVE,
-        target = splunkLogger.spTarget.BIK,
+        tier = splunkLogger.FRONTEND,
+        action = if (additive) splunkLogger.ADD else splunkLogger.REMOVE,
+        target = splunkLogger.BIK,
         period = splunkLogger.taxYearToSpPeriod(year),
         msg = derivedMsg + " : " + bik.iabdType,
         nino = None,
