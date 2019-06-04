@@ -309,7 +309,7 @@ class ExclusionListController @Inject()(
   def commitExclusion(year: String, iabdType: String, taxYearRange: TaxYearRange, excludedIndividual: Option[EiLPerson])
                      (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent], context: PbikContext): Future[Result] = {
     val yearInt = if (year.equals(utils.FormMappingsConstants.CY)) taxYearRange.cyminus1 else taxYearRange.cy
-    val spYear = if (taxDateUtils.isCurrentTaxYear(yearInt)) splunkLogger.spPeriod.CY else splunkLogger.spPeriod.CYP1
+    val spYear = if (taxDateUtils.isCurrentTaxYear(yearInt)) splunkLogger.CY else splunkLogger.CYP1
     val registrationList: RegistrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = false, enabled = false)))
 
     Logger.info(s"Committing Exclusion for scheme ${request.empRef.toString} , with employees Optimisitic Lock: ${excludedIndividual.get.perOptLock}")
@@ -418,9 +418,9 @@ class ExclusionListController @Inject()(
   private def auditExclusion(exclusion: Boolean, year: Int, employee: String, iabdType: String)
                             (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]) = {
     splunkLogger.logSplunkEvent(splunkLogger.createDataEvent(
-      tier = splunkLogger.spTier.FRONTEND,
-      action = if (exclusion) splunkLogger.spAction.ADD else splunkLogger.spAction.REMOVE,
-      target = splunkLogger.spTarget.EIL,
+      tier = splunkLogger.FRONTEND,
+      action = if (exclusion) splunkLogger.ADD else splunkLogger.REMOVE,
+      target = splunkLogger.EIL,
       period = splunkLogger.taxYearToSpPeriod(year),
       msg = if (exclusion) "Employee excluded" else "Employee exclusion rescinded",
       nino = Some(employee),

@@ -47,10 +47,10 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     val pbikDataEvent = DataEvent(auditSource = SplunkLogger.pbik_audit_source, auditType = SplunkLogger.pbik_benefit_type, detail = Map(
       SplunkLogger.key_event_name -> SplunkLogger.pbik_event_name,
       SplunkLogger.key_gateway_user -> EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference = "taxOfficeReference").toString,
-      SplunkLogger.key_tier -> controller.spTier.FRONTEND.toString,
-      SplunkLogger.key_action -> controller.spAction.ADD.toString,
-      SplunkLogger.key_target -> controller.spTarget.BIK.toString,
-      SplunkLogger.key_period -> controller.spPeriod.CYP1.toString,
+      SplunkLogger.key_tier -> controller.FRONTEND.toString,
+      SplunkLogger.key_action -> controller.ADD.toString,
+      SplunkLogger.key_target -> controller.BIK.toString,
+      SplunkLogger.key_period -> controller.CYP1.toString,
       SplunkLogger.key_message -> msg
     ))
   }
@@ -59,33 +59,32 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
 
   "When logging events, the SplunkLogger" should {
     "return a properly formatted DataEvent for Pbik events" in new SetUp {
-        val d: DataEvent = controller.createDataEvent(controller.spTier.FRONTEND,
-          controller.spAction.ADD,
-          controller.spTarget.BIK,
-          controller.spPeriod.CYP1,
+        val d: DataEvent = controller.createDataEvent(controller.FRONTEND,
+          controller.ADD,
+          controller.BIK,
+          controller.CYP1,
           msg = "Employer Added Bik to CY Plus 1",
           name = Option(UserName(Name(Some("TEST_USER"), None))),
           empRef = Some(models.EmpRef("taxOfficeNumber", "taxOfficeReference")))
-
         assert(d.auditSource == SplunkLogger.pbik_audit_source)
         assert(d.detail.nonEmpty)
         assert(d.detail.contains(SplunkLogger.key_event_name))
         assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
         assert(d.detail.get(SplunkLogger.key_empref).get == "taxOfficeNumber/taxOfficeReference")
         assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
-        assert(d.detail.get(SplunkLogger.key_action).get == controller.spAction.ADD.toString)
-        assert(d.detail.get(SplunkLogger.key_tier).get == controller.spTier.FRONTEND.toString)
-        assert(d.detail.get(SplunkLogger.key_target).get == controller.spTarget.BIK.toString)
-        assert(d.detail.get(SplunkLogger.key_period).get == controller.spPeriod.CYP1.toString)
+        assert(d.detail.get(SplunkLogger.key_action).get == controller.ADD.toString)
+        assert(d.detail.get(SplunkLogger.key_tier).get == controller.FRONTEND.toString)
+        assert(d.detail.get(SplunkLogger.key_target).get == controller.BIK.toString)
+        assert(d.detail.get(SplunkLogger.key_period).get == controller.CYP1.toString)
     }
   }
 
   "When logging events, the SplunkLogger without a ePaye account" should {
     "return a properly formatted DataEvent with a empref default for Pbik events" in new SetUp {
-      val d: DataEvent = controller.createDataEvent(controller.spTier.FRONTEND,
-        controller.spAction.ADD,
-        controller.spTarget.BIK,
-        controller.spPeriod.CYP1,
+      val d: DataEvent = controller.createDataEvent(controller.FRONTEND,
+        controller.ADD,
+        controller.BIK,
+        controller.CYP1,
         msg = "Employer Added Bik to CY Plus 1",
         name = Option(UserName(Name(Some("TEST_USER"), None))),
         empRef = None)
@@ -96,10 +95,10 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
       assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
       assert(d.detail.get(SplunkLogger.key_empref).get == SplunkLogger.pbik_no_ref)
       assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
-      assert(d.detail.get(SplunkLogger.key_action).get == controller.spAction.ADD.toString)
-      assert(d.detail.get(SplunkLogger.key_tier).get == controller.spTier.FRONTEND.toString)
-      assert(d.detail.get(SplunkLogger.key_target).get == controller.spTarget.BIK.toString)
-      assert(d.detail.get(SplunkLogger.key_period).get == controller.spPeriod.CYP1.toString)
+      assert(d.detail.get(SplunkLogger.key_action).get == controller.ADD.toString)
+      assert(d.detail.get(SplunkLogger.key_tier).get == controller.FRONTEND.toString)
+      assert(d.detail.get(SplunkLogger.key_target).get == controller.BIK.toString)
+      assert(d.detail.get(SplunkLogger.key_period).get == controller.CYP1.toString)
     }
   }
 
@@ -135,8 +134,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
         FakeRequest()
       )
 
-      val d: DataEvent = controller.createErrorEvent(controller.spTier.FRONTEND,
-        controller.spError.EXCEPTION,
+      val d: DataEvent = controller.createErrorEvent(controller.FRONTEND,
+        controller.EXCEPTION,
         "No PAYE Scheme found for user")
 
       assert(d.auditSource == SplunkLogger.pbik_audit_source)
@@ -145,7 +144,7 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
       assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
       assert(d.detail.get(SplunkLogger.key_empref).get == EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference = "taxOfficeReference").toString)
       assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
-      assert(d.detail.get(SplunkLogger.key_error).get == controller.spError.EXCEPTION.toString)
+      assert(d.detail.get(SplunkLogger.key_error).get == controller.EXCEPTION.toString)
       assert(d.detail.get(SplunkLogger.key_message).get == "No PAYE Scheme found for user")
     }
   }
@@ -158,8 +157,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
         FakeRequest()
       )
 
-      val d: DataEvent = controller.createErrorEvent(controller.spTier.FRONTEND,
-        controller.spError.EXCEPTION,
+      val d: DataEvent = controller.createErrorEvent(controller.FRONTEND,
+        controller.EXCEPTION,
         msg = "No Empref")
 
       assert(d.auditSource == SplunkLogger.pbik_audit_source)
@@ -168,7 +167,7 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
       assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
       assert(d.detail.get(SplunkLogger.key_empref).get == SplunkLogger.pbik_no_ref)
       assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
-      assert(d.detail.get(SplunkLogger.key_error).get == controller.spError.EXCEPTION.toString)
+      assert(d.detail.get(SplunkLogger.key_error).get == controller.EXCEPTION.toString)
       assert(d.detail.get(SplunkLogger.key_message).get == "No Empref")
     }
   }

@@ -113,10 +113,10 @@ class HomePageController @Inject()(bikListService: BikListService,
 
   def auditHomePageView(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[AuditResult] = {
     splunkLogger.logSplunkEvent(splunkLogger.createDataEvent(
-      tier = splunkLogger.spTier.FRONTEND,
-      action = splunkLogger.spAction.VIEW,
-      target = splunkLogger.spTarget.BIK,
-      period = splunkLogger.spPeriod.BOTH,
+      tier = splunkLogger.FRONTEND,
+      action = splunkLogger.VIEW,
+      target = splunkLogger.BIK,
+      period = splunkLogger.BOTH,
       msg = "Home page view",
       nino = None,
       iabd = None,
