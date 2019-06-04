@@ -38,7 +38,7 @@ import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckActi
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
-class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
+class LanguageSupportSpec extends PlaySpec with TestAuthUser
   with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
@@ -52,6 +52,7 @@ class LanguageSupportSpec extends PlaySpec with FormMappings with TestAuthUser
 
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   implicit val context: PbikContext = mock(classOf[PbikContext])
+  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
 
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   val timeoutValue: FiniteDuration = 15 seconds

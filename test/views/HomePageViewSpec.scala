@@ -20,10 +20,12 @@ import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import controllers.ExternalUrls
 import models.{EmpRef, TaxYearRange}
 import play.twirl.api.Html
-import utils.{TaxDateUtils, URIInformation}
+import utils.{BikListUtils, TaxDateUtils, URIInformation}
 import views.helper.PBIKViewSpec
 
 class HomePageViewSpec extends PBIKViewSpec {
+
+  implicit val bikListUtils = app.injector.instanceOf[BikListUtils]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 

@@ -22,9 +22,8 @@ import controllers.ExternalUrls
 import javax.inject.Inject
 import models._
 import play.api.Mode.Mode
-import play.api.Play.current
 import play.api.data.Form
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{AnyContent, Result}
 import play.api.{Configuration, Environment}
 import play.twirl.api.HtmlFormat
@@ -34,7 +33,9 @@ import utils.{ControllersReferenceData, URIInformation, _}
 
 import scala.concurrent.Future
 
-class RegistrationService @Inject()(
+class RegistrationService @Inject()(val messagesApi: MessagesApi,
+                                    bikListUtils: BikListUtils,
+                                    formMappings: FormMappings,
                                     val tierConnector: HmrcTierConnector,
                                     val bikListService: BikListService,
                                     val runModeConfiguration: Configuration,
@@ -46,7 +47,7 @@ class RegistrationService @Inject()(
                                     implicit val context: PbikContext,
                                     implicit val externalURLs: ExternalUrls,
                                     implicit val localFormPartialRetriever: LocalFormPartialRetriever
-) extends FrontendController {
+) extends FrontendController with I18nSupport {
   val mode: Mode = environment.mode
 
   def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
@@ -90,8 +91,8 @@ class RegistrationService @Inject()(
       val pbikHeaders = bikListService.pbikHeaders
       val fetchFromCacheMapBiksValue = List.empty[RegistrationItem]
 
-      val mergedData: RegistrationList = utils.BikListUtils.removeMatches(hybridList, registeredListOption)
-      val sortedMegedData: RegistrationList = utils.BikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
+      val mergedData: RegistrationList = bikListUtils.removeMatches(hybridList, registeredListOption)
+      val sortedMegedData: RegistrationList = bikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
 
       if (sortedMegedData.active.isEmpty) {
         Ok(views.html.errorPage(ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
@@ -101,7 +102,7 @@ class RegistrationService @Inject()(
           pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING,
           empRef = Some(request.empRef)))
       } else {
-        Ok(generateViewBasedOnFormItems(uriInformation.objSelectedForm.fill(sortedMegedData),
+        Ok(generateViewBasedOnFormItems(formMappings.objSelectedForm.fill(sortedMegedData),
           fetchFromCacheMapBiksValue, registeredListOption, nonLegislationBiks, pbikAppConfig.biksDecommissioned, Some(biksListOption.size)))
       }
     }

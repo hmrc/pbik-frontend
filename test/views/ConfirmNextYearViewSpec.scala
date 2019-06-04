@@ -25,13 +25,15 @@ import play.twirl.api.Html
 import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
 
-class ConfirmNextYearViewSpec extends PBIKViewSpec with FormMappings {
+class ConfirmNextYearViewSpec extends PBIKViewSpec {
+
+  val formMappings = app.injector.instanceOf[FormMappings]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
   implicit val flash: Flash = new Flash
 
-  override def view: Html = viewWithForm(objSelectedForm)
+  override def view: Html = viewWithForm(formMappings.objSelectedForm)
 
   implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
   implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]

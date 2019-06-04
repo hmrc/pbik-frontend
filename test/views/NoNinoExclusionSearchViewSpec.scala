@@ -25,11 +25,13 @@ import utils.{FormMappings, URIInformation}
 import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
 
 
-class NoNinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
+class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
+
+  val formMappings = app.injector.instanceOf[FormMappings]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  override def view: Html = viewWithForm(exclusionSearchFormWithoutNino)
+  override def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
 
   implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
   implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
@@ -54,7 +56,7 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
 
   "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
 
-    val view = viewWithForm(exclusionSearchFormWithoutNino.bind(Map[String, String](("firstname", ""), ("surname", ""), ("dob.day", ""), ("dob.month", ""), ("dob.year", ""), ("gender-female", ""), ("gender-male", ""))))
+    val view = viewWithForm(formMappings.exclusionSearchFormWithoutNino.bind(Map[String, String](("firstname", ""), ("surname", ""), ("dob.day", ""), ("dob.month", ""), ("dob.year", ""), ("gender-female", ""), ("gender-male", ""))))
 
     doc must haveErrorSummary(messages("error.empty.firstname").replace(".", ""))
     doc must haveErrorNotification(messages("error.empty.firstname"))

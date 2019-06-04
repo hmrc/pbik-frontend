@@ -21,10 +21,8 @@ import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
 import models._
 import play.api.Mode.Mode
-import play.api.Play.current
-import play.api.i18n.Lang
-import play.api.i18n.Messages.Implicits._
-import play.api.mvc.{LegacyI18nSupport, Result, _}
+import play.api.i18n.{I18nSupport, Lang, MessagesApi}
+import play.api.mvc.{Result, _}
 import play.api.{Configuration, Environment, Logger}
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,7 +33,8 @@ import utils.{ControllersReferenceData, SplunkLogger, URIInformation, _}
 import scala.concurrent.Future
 import scala.util.{Success, Try}
 
-class HomePageController @Inject()(bikListService: BikListService,
+class HomePageController @Inject()(val messagesApi: MessagesApi,
+                                   bikListService: BikListService,
                                    authenticate: AuthAction,
                                    val noSessionCheck: NoSessionCheckAction,
                                    val runModeConfiguration: Configuration,
@@ -47,7 +46,8 @@ class HomePageController @Inject()(bikListService: BikListService,
                                    implicit val context: PbikContext,
                                    implicit val uRIInformation: URIInformation,
                                    implicit val externalURLs: ExternalUrls,
-                                   implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController with LegacyI18nSupport {
+                                   implicit val localFormPartialRetriever: LocalFormPartialRetriever,
+                                   implicit val bikListUtils: BikListUtils) extends FrontendController with I18nSupport {
 
   val mode: Mode = environment.mode
 

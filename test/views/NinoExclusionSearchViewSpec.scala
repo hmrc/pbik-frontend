@@ -25,11 +25,13 @@ import utils.{FormMappings, URIInformation}
 import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
 
 
-class NinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
+class NinoExclusionSearchViewSpec extends PBIKViewSpec {
+
+  val formMappings = app.injector.instanceOf[FormMappings]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  override def view: Html = viewWithForm(exclusionSearchFormWithoutNino)
+  override def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
 
   implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
   implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
@@ -51,7 +53,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
   }
   "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
 
-    val view: Html = viewWithForm(exclusionSearchFormWithNino.bind(Map[String, String](("nino", ""),("firstname", ""), ("surname", ""))))
+    val view: Html = viewWithForm(formMappings.exclusionSearchFormWithNino.bind(Map[String, String](("nino", ""),("firstname", ""), ("surname", ""))))
 
     doc must haveErrorSummary(messages("error.empty.nino").replace(".", ""))
     doc must haveErrorNotification(messages("error.empty.nino"))
@@ -63,7 +65,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
 
   "check the nino exclusion page for the already exist errors" in new PBIKViewBehaviours {
 
-    val view = viewWithForm(exclusionSearchFormWithNino.bind(Map[String, String](("nino", "AA111111"),("firstname", "John"), ("surname", "Smith")))
+    val view = viewWithForm(formMappings.exclusionSearchFormWithNino.bind(Map[String, String](("nino", "AA111111"),("firstname", "John"), ("surname", "Smith")))
       .withError("status", messages("ExclusionSearch.Fail.Exists.P")))
 
     doc must haveErrorSummary(messages("ExclusionSearch.Fail.Exists.P").replace(".", ""))
@@ -72,7 +74,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec with FormMappings {
 
   "check the nino exclusion page for incorrect details errors" in new PBIKViewBehaviours {
 
-    val view = viewWithForm(exclusionSearchFormWithNino.bind(Map[String, String](("nino", "AA123456"),("firstname", "John"), ("surname", "Smith")))     .withError("status", messages("ExclusionSearch.Fail.P")))
+    val view = viewWithForm(formMappings.exclusionSearchFormWithNino.bind(Map[String, String](("nino", "AA123456"),("firstname", "John"), ("surname", "Smith")))     .withError("status", messages("ExclusionSearch.Fail.P")))
 
     doc must haveErrorSummary(messages("ExclusionSearch.Fail.P").replace(".", ""))
     doc must haveErrorNotification(messages("ExclusionSearch.Fail.P"))

@@ -23,9 +23,8 @@ import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models._
 import play.api.Mode.Mode
-import play.api.Play.current
 import play.api.data.Form
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Result
 import play.api.{Configuration, Environment}
 import services.BikListService
@@ -33,15 +32,16 @@ import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{ControllersReferenceData, _}
 
-class WhatNextPageController @Inject()(implicit val pbikAppConfig: PbikAppConfig,
+class WhatNextPageController @Inject()(val messagesApi: MessagesApi,
                                        bikListService: BikListService,
                                        val tierConnector: HmrcTierConnector,
                                        val runModeConfiguration: Configuration,
                                        environment: Environment,
                                        taxDateUtils: TaxDateUtils,
-                                       controllersReferenceData: ControllersReferenceData,
+                                       controllersReferenceData: ControllersReferenceData)
+                                       (implicit val pbikAppConfig: PbikAppConfig,
                                        implicit val externalURLs: ExternalUrls,
-                                       implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController {
+                                       implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController with I18nSupport {
 
   val mode: Mode = environment.mode
 

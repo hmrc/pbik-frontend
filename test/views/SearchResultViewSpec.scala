@@ -25,7 +25,9 @@ import utils.{FormMappings, URIInformation}
 import views.helper.{PBIKBaseViewSpec, PBIKViewBehaviours}
 
 
-class SearchResultViewSpec extends PBIKBaseViewSpec with FormMappings {
+class SearchResultViewSpec extends PBIKBaseViewSpec {
+
+  val formMappings = app.injector.instanceOf[FormMappings]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
@@ -40,7 +42,7 @@ class SearchResultViewSpec extends PBIKBaseViewSpec with FormMappings {
 
   "exclusionNinoOrNoNinoForm" in new PBIKViewBehaviours {
 
-    override def view: Html = viewWithForm(individualsFormWithRadio)
+    override def view: Html = viewWithForm(formMappings.individualsFormWithRadio)
 
     behave like pageWithTitle(messages("ExclusionSearch.title"))
     behave like pageWithHeader(messages("ExclusionSearch.title"))
@@ -50,18 +52,12 @@ class SearchResultViewSpec extends PBIKBaseViewSpec with FormMappings {
 
   "check the nino search page for text validation" in new PBIKViewBehaviours {
 
-    override def view: Html = viewWithForm(individualsFormWithRadio.bind(Map[String, String](("nino", "AA111111"), ("firstname", "John"), ("surname", "Smith"), ("worksPayrollNumber", "123"))))
+    override def view: Html = viewWithForm(formMappings.individualsFormWithRadio.bind(Map[String, String](("nino", "AA111111"), ("firstname", "John"), ("surname", "Smith"), ("worksPayrollNumber", "123"))))
 
     behave like pageWithIdAndText("table-row-name", "John Smith")
     behave like pageWithIdAndText("table-row-nino", "AA111111")
     behave like pageWithIdAndText("table-row-dob", "123")
 
   }
-
-
-
-
-
-
 
 }

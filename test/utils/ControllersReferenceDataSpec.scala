@@ -16,17 +16,18 @@
 
 package utils
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
-import controllers.{ExternalUrls, FakePBIKApplication}
+import controllers.FakePBIKApplication
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+import play.api.inject.Injector
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import support.{TestAuthUser, TestCYDisabledConfig, TestCYEnabledConfig}
+import support.{CYDisabledSetup, CYEnabledSetup, TestAuthUser}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.Upstream5xxResponse
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
@@ -35,40 +36,16 @@ import scala.concurrent.{Future, Promise}
 
 class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
   with TestAuthUser with Results {
-
-  object MockCYEnabledControllersReferenceData extends ControllersReferenceData(
-    app.injector.instanceOf[TaxDateUtils],
-    app.injector.instanceOf[PbikContext],
-    app.injector.instanceOf[AppConfig],
-    app.injector.instanceOf[ExternalUrls],
-    app.injector.instanceOf[LocalFormPartialRetriever]
-  ) {
-    override val pbikAppConfig: AppConfig = TestCYEnabledConfig
-  }
-
-  object MockCYDisabledControllersReferenceData extends ControllersReferenceData(
-    app.injector.instanceOf[TaxDateUtils],
-    app.injector.instanceOf[PbikContext],
-    app.injector.instanceOf[AppConfig],
-    app.injector.instanceOf[ExternalUrls],
-    app.injector.instanceOf[LocalFormPartialRetriever]
-  ) {
-    override val pbikAppConfig: AppConfig = TestCYDisabledConfig
-  }
-
-  object MockControllersReferenceData extends ControllersReferenceData(
-    app.injector.instanceOf[TaxDateUtils],
-    app.injector.instanceOf[PbikContext],
-    app.injector.instanceOf[AppConfig],
-    app.injector.instanceOf[ExternalUrls],
-    app.injector.instanceOf[LocalFormPartialRetriever]
-  ) {
-    override val pbikAppConfig: AppConfig = app.injector.instanceOf[PbikAppConfig]
-  }
+  
+  val mockControllersReferenceData = app.injector.instanceOf[ControllersReferenceData]
 
   "When CY mode is disabled the controller" should {
-    "display the result passsed to it" in {
-      val mockController = MockCYDisabledControllersReferenceData
+    "display the result passsed to it" in new CYDisabledSetup {
+       val injector: Injector = new GuiceApplicationBuilder()
+        .overrides(GuiceTestModule)
+        .injector()
+      
+      val mockController = injector.instanceOf[ControllersReferenceData]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -84,8 +61,12 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
   }
 
   "When CY mode is enabled the controller" should {
-    "display the result passsed to it" in {
-      val mockController = MockCYEnabledControllersReferenceData
+    "display the result passsed to it" in new CYEnabledSetup {
+        val injector: Injector = new GuiceApplicationBuilder()
+        .overrides(GuiceTestModule)
+        .injector()
+
+      val mockController = injector.instanceOf[ControllersReferenceData]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -101,7 +82,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
 
   "When parsing the response in the responseErrorHandler the controller" should {
     "show an error page when the Future completes with a NoSuchElementException" in {
-      val mockController = MockControllersReferenceData
+      val mockController = mockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -117,7 +98,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
 
   "When parsing the response in the responseErrorHandler the controller" should {
     "show an error page when the Future completes with a InvalidYearURIException" in {
-      val mockController = MockControllersReferenceData
+      val mockController = mockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -133,7 +114,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
 
   "When parsing the response in the responseErrorHandler the controller" should {
     "show an error page when the Future completes with a InvalidBikTypeURIException" in {
-      val mockController = MockControllersReferenceData
+      val mockController = mockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -149,7 +130,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
 
   "When parsing the response in the responseErrorHandler the controller" should {
     "show an error page when the Future completes with a Upstream5xxResponse" in {
-      val mockController = MockControllersReferenceData
+      val mockController = mockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -169,7 +150,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
 
   "When parsing the response in the responseErrorHandler the controller" should {
     "show the default error page if the Upstream5xxResponse error message is null" in {
-      val mockController = MockControllersReferenceData
+      val mockController = mockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -189,7 +170,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
 
   "When parsing the response in the responseErrorHandler the controller" should {
     "show the default error page if the Upstream5xxResponse error has no number" in {
-      val mockController = MockControllersReferenceData
+      val mockController = mockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -209,7 +190,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
 
   "When parsing the response in the responseErrorHandler the controller" should {
     "show the default error page if the Upstream5xxResponse error omits the comma delimeter" in {
-      val mockController = MockControllersReferenceData
+      val mockController = mockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -229,7 +210,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
 
   "When parsing the response in the responseErrorHandler the controller" should {
     "show an error page when the Future completes with a GenericServerErrorException" in {
-      val mockController = MockControllersReferenceData
+      val mockController = mockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -245,7 +226,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
 
   "When parsing the response in the responseErrorHandler the controller" should {
     "show the default error page if the GenericServerErrorException cannot be parsed" in {
-      val mockController = MockControllersReferenceData
+      val mockController = mockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
@@ -263,7 +244,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
 
   "When parsing the response in the responseErrorHandler the controller" should {
     "show the default error page when exception is unknown" in {
-      val mockController = MockControllersReferenceData
+      val mockController = mockControllersReferenceData
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),

@@ -25,10 +25,8 @@ import controllers.{ExternalUrls, WhatNextPageController}
 import javax.inject.Inject
 import models._
 import play.api.Mode.Mode
-import play.api.Play.current
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.{Configuration, Environment}
 import play.twirl.api.HtmlFormat
@@ -40,8 +38,10 @@ import utils.{ControllersReferenceData, URIInformation, _}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ManageRegistrationController @Inject()(
+class ManageRegistrationController @Inject()(bikListUtils: BikListUtils,
                                              registrationService: RegistrationService,
+                                             formMappings: FormMappings,
+                                             val messagesApi: MessagesApi,
                                              val bikListService: BikListService,
                                              tierConnector: HmrcTierConnector,
                                              val authenticate: AuthAction,
@@ -57,7 +57,7 @@ class ManageRegistrationController @Inject()(
                                              implicit val uriInformation: URIInformation,
                                              implicit val externalURLs: ExternalUrls,
                                              implicit val localFormPartialRetriever: LocalFormPartialRetriever
-                                            ) extends FrontendController {
+                                            ) extends FrontendController with I18nSupport {
 
   val mode: Mode = environment.mode
 
@@ -97,7 +97,7 @@ class ManageRegistrationController @Inject()(
       val initialData = RegistrationList(None, registeredListOption.map { x =>
         RegistrationItem(x.iabdType, active = false, enabled = true)
       })
-      val sortedData = BikListUtils.sortRegistrationsAlphabeticallyByLabels(initialData)
+      val sortedData = bikListUtils.sortRegistrationsAlphabeticallyByLabels(initialData)
       if (sortedData.active.isEmpty) {
         Ok(views.html.errorPage(ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_REMOVE_CY1,
           taxYearRange,
@@ -109,7 +109,7 @@ class ManageRegistrationController @Inject()(
       }
       else {
         Ok(views.html.registration.nextTaxYear(
-          bikForm = uriInformation.objSelectedForm.fill(sortedData),
+          bikForm = formMappings.objSelectedForm.fill(sortedData),
           additive = false,
           taxYearRange = taxYearRange,
           previouslySelectedBenefits = fetchFromCacheMapBiksValue,
@@ -190,9 +190,9 @@ class ManageRegistrationController @Inject()(
   def confirmRemoveNextTaxYearNoForm(iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val registrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = true, enabled = false)), reason = None)
-      val form: Form[RegistrationList] = uriInformation.objSelectedForm.fill(registrationList)
+      val form: Form[RegistrationList] = formMappings.objSelectedForm.fill(registrationList)
       val resultFuture = Future.successful(
-        Ok(views.html.registration.confirmUpdateNextTaxYear(uriInformation.objSelectedForm.fill(form.get),
+        Ok(views.html.registration.confirmUpdateNextTaxYear(formMappings.objSelectedForm.fill(form.get),
           additive = false,
           controllersReferenceData.YEAR_RANGE,
           empRef = request.empRef)))
@@ -213,14 +213,14 @@ class ManageRegistrationController @Inject()(
     Result)(implicit hc: HeaderCarrier,
             request: Request[AnyContent]): Future[Result] = {
 
-    uriInformation.objSelectedForm.bindFromRequest.fold(
+    formMappings.objSelectedForm.bindFromRequest.fold(
       formWithErrors => Future.successful(viewToRedirect(formWithErrors))
       ,
       values => {
 
         val items: List[RegistrationItem] = values.active.filter(x => x.active)
         Future.successful(
-          Ok(generateViewBasedOnFormItems(uriInformation.objSelectedForm.fill(RegistrationList(None, items, None)))))
+          Ok(generateViewBasedOnFormItems(formMappings.objSelectedForm.fill(RegistrationList(None, items, None)))))
 
       }
     )
@@ -248,7 +248,7 @@ class ManageRegistrationController @Inject()(
     tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath,
       request.empRef, year).flatMap {
       registeredResponse =>
-        val form = uriInformation.objSelectedForm.bindFromRequest()
+        val form = formMappings.objSelectedForm.bindFromRequest()
 
         form.fold(
           formWithErrors => Future.successful(
@@ -258,7 +258,7 @@ class ManageRegistrationController @Inject()(
               empRef = request.empRef)))
           ,
           values => {
-            val changes = BikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
+            val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
             if (additive) {
               // Process registration
               val saveFuture = tierConnector.genericPostCall(uriInformation.baseUrl, uriInformation.updateBenefitTypesPath,

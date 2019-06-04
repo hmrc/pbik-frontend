@@ -28,11 +28,13 @@ import play.api.{Configuration, Environment}
 import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, URIInformation}
+import utils.{BikListUtils, ControllersReferenceData, FormMappings, TaxDateUtils, URIInformation}
 
 import scala.concurrent.Future
 
-class StubbedRegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
+class StubbedRegistrationService @Inject()(bikListUtils: BikListUtils,
+                                           formMappings: FormMappings,
+                                           pbikAppConfig: PbikAppConfig,
                                            tierConnector: HmrcTierConnector,
                                            bikListService: BikListService,
                                            runModeConfiguration: Configuration,
@@ -43,8 +45,10 @@ class StubbedRegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
                                            uRIInformation: URIInformation,
                                            externalURLs: ExternalUrls,
                                            localFormPartialRetriever: LocalFormPartialRetriever,
-                                           val messagesApi: MessagesApi) extends RegistrationService(
-
+                                           override val messagesApi: MessagesApi) extends RegistrationService(
+  messagesApi,
+  bikListUtils,
+  formMappings,
   tierConnector,
   bikListService,
   runModeConfiguration,
@@ -56,7 +60,7 @@ class StubbedRegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
   context,
   externalURLs,
   localFormPartialRetriever
-) with FormMappings with I18nSupport {
+) with I18nSupport {
 
   val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
@@ -64,7 +68,7 @@ class StubbedRegistrationService @Inject()(pbikAppConfig: PbikAppConfig,
   val registeredListOption = List.empty[Bik]
   val allRegisteredListOption: List[Bik] = CYCache
   val mockRegistrationItemList = List.empty[RegistrationItem]
-  val mockFormRegistrationList: Form[RegistrationList] = objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
+  val mockFormRegistrationList: Form[RegistrationList] = formMappings.objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
 
   override def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                                        generateViewBasedOnFormItems: (Form[RegistrationList],

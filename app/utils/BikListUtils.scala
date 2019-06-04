@@ -16,12 +16,11 @@
 
 package utils
 
+import javax.inject.Inject
 import models.{Bik, RegistrationItem, RegistrationList}
-import play.api.Play.current
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 
-object BikListUtils {
+class BikListUtils @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
 
   val STATUS_ADD = 30
   val STATUS_REMOVE = 40

@@ -36,7 +36,7 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
 
   class SetUp {
     implicit val hc: HeaderCarrier = HeaderCarrier()
-    val controller = app.injector.instanceOf[TestSplunkLogger]
+    val controller: TestSplunkLogger = app.injector.instanceOf[TestSplunkLogger]
     val msg = "Hello"
 
     def csrfToken: (String, String) = "csrfToken" -> Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken

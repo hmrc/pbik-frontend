@@ -25,7 +25,9 @@ import play.twirl.api.Html
 import utils.{FormMappings, TaxDateUtils, URIInformation}
 import views.helper.PBIKViewSpec
 
-class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec with FormMappings {
+class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
+
+  val formMappings = app.injector.instanceOf[FormMappings]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 

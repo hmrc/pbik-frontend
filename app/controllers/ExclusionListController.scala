@@ -24,10 +24,8 @@ import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
 import models._
 import play.api.Mode.Mode
-import play.api.Play.current
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger, Play}
 import services.{BikListService, EiLListService}
@@ -40,9 +38,9 @@ import utils.{ControllersReferenceData, SplunkLogger, _}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-
-class ExclusionListController @Inject()(
+class ExclusionListController @Inject()(formMappings: FormMappings,
                                         val authenticate: AuthAction,
+                                        val messagesApi: MessagesApi,
                                         val noSessionCheck: NoSessionCheckAction,
                                         val eiLListService: EiLListService,
                                         val bikListService: BikListService,
@@ -51,16 +49,17 @@ class ExclusionListController @Inject()(
                                         environment:Environment,
                                         taxDateUtils: TaxDateUtils,
                                         splunkLogger: SplunkLogger,
-                                        controllersReferenceData: ControllersReferenceData)(
-                                        implicit val pbikAppConfig: PbikAppConfig,
-                                        implicit val context: PbikContext,
-                                        implicit val uRIInformation: URIInformation,
-                                        implicit val externalURLs: ExternalUrls,
-                                        implicit val localFormPartialRetriever: LocalFormPartialRetriever
-                                       ) extends FrontendController {
+                                        controllersReferenceData: ControllersReferenceData,
+                                        configuration: Configuration)(
+                                         implicit val pbikAppConfig: PbikAppConfig,
+                                         implicit val context: PbikContext,
+                                         implicit val uriInformation: URIInformation,
+                                         implicit val externalURLs: ExternalUrls,
+                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever
+                                       ) extends FrontendController with I18nSupport {
   val mode: Mode = environment.mode
 
-  lazy val exclusionsAllowed: Boolean = Play.configuration.getBoolean("pbik.enabled.eil").getOrElse(false)
+  lazy val exclusionsAllowed: Boolean = configuration.getBoolean("pbik.enabled.eil").getOrElse(false)
 
   def mapYearStringToInt(URIYearString: String): Future[Int] = {
     URIYearString match {
@@ -73,9 +72,9 @@ class ExclusionListController @Inject()(
   def validateRequest(isCurrentYear: String, iabdType: String)(implicit request: AuthenticatedRequest[_]): Future[Int] = {
     for {
       year <- mapYearStringToInt(isCurrentYear)
-      registeredBenefits: List[Bik] <- bikListService.registeredBenefitsList(year, request.empRef)(uRIInformation.getRegisteredPath)
+      registeredBenefits: List[Bik] <- bikListService.registeredBenefitsList(year, request.empRef)(uriInformation.getRegisteredPath)
     } yield {
-      if (registeredBenefits.exists(_.iabdType.equals(uRIInformation.iabdValueURLDeMapper(iabdType)))) {
+      if (registeredBenefits.exists(_.iabdType.equals(uriInformation.iabdValueURLDeMapper(iabdType)))) {
         year
       } else {
         throw new InvalidBikTypeURIException()
@@ -87,7 +86,7 @@ class ExclusionListController @Inject()(
     implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
       if (exclusionsAllowed) {
-        val iabdTypeValue = uRIInformation.iabdValueURLDeMapper(iabdType)
+        val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
         val staticDataRequest = for {
           year <- validateRequest(isCurrentTaxYear, iabdType)
           currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
@@ -113,7 +112,7 @@ class ExclusionListController @Inject()(
 
   def withOrWithoutNinoOnPageLoad(isCurrentTaxYear: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val iabdTypeValue = uRIInformation.iabdValueURLDeMapper(iabdType)
+      val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       if (exclusionsAllowed) {
         val resultFuture = for {
           _ <- validateRequest(isCurrentTaxYear, iabdType)
@@ -129,10 +128,10 @@ class ExclusionListController @Inject()(
 
   def withOrWithoutNinoDecision(isCurrentTaxYear: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val iabdTypeValue = uRIInformation.iabdValueURLDeMapper(iabdType)
+      val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       if (exclusionsAllowed) {
         val taxYearRange = controllersReferenceData.YEAR_RANGE
-        val resultFuture = uRIInformation.binaryRadioButton.bindFromRequest().fold(
+        val resultFuture = formMappings.binaryRadioButton.bindFromRequest().fold(
           formWithErrors => Future(Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
             isCurrentTaxYear, iabdType)).flashing("error" -> Messages("ExclusionDecision.noselection.error")))
           ,
@@ -143,9 +142,9 @@ class ExclusionListController @Inject()(
             } yield {
               selectedValue match {
                 case ControllersReferenceDataCodes.FORM_TYPE_NINO => Ok(views.html.exclusion.ninoExclusionSearchForm(taxYearRange,
-                  isCurrentTaxYear, iabdTypeValue, uRIInformation.exclusionSearchFormWithNino, empRef = request.empRef))
+                  isCurrentTaxYear, iabdTypeValue, formMappings.exclusionSearchFormWithNino, empRef = request.empRef))
                 case ControllersReferenceDataCodes.FORM_TYPE_NONINO => Ok(views.html.exclusion.noNinoExclusionSearchForm(taxYearRange,
-                  isCurrentTaxYear, iabdTypeValue, uRIInformation.exclusionSearchFormWithoutNino, empRef = request.empRef))
+                  isCurrentTaxYear, iabdTypeValue, formMappings.exclusionSearchFormWithoutNino, empRef = request.empRef))
                 case "" => Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
                   isCurrentTaxYear, iabdTypeValue)).flashing("error" -> Messages("ExclusionDecision.noselection.error"))
               }
@@ -161,11 +160,11 @@ class ExclusionListController @Inject()(
   def searchResults(isCurrentTaxYear: String, iabdType: String, formType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-      val iabdTypeValue = uRIInformation.iabdValueURLDeMapper(iabdType)
+      val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       if (exclusionsAllowed) {
         val form = formType match {
-          case ControllersReferenceDataCodes.FORM_TYPE_NINO => uRIInformation.exclusionSearchFormWithNino
-          case ControllersReferenceDataCodes.FORM_TYPE_NONINO => uRIInformation.exclusionSearchFormWithoutNino
+          case ControllersReferenceDataCodes.FORM_TYPE_NINO => formMappings.exclusionSearchFormWithNino
+          case ControllersReferenceDataCodes.FORM_TYPE_NONINO => formMappings.exclusionSearchFormWithoutNino
         }
         val futureResult = form.bindFromRequest().fold(
           formWithErrors =>
@@ -173,7 +172,7 @@ class ExclusionListController @Inject()(
           validModel => {
             for {
               year <- validateRequest(isCurrentTaxYear, iabdType)
-              result <- tierConnector.genericPostCall(uRIInformation.baseUrl, uRIInformation.exclusionPostUpdatePath(iabdTypeValue),
+              result <- tierConnector.genericPostCall(uriInformation.baseUrl, uriInformation.exclusionPostUpdatePath(iabdTypeValue),
                 request.empRef, year, validModel)
               resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
 
@@ -213,7 +212,7 @@ class ExclusionListController @Inject()(
 
       case _ =>
         Logger.info("Exclusion search matched " + listOfMatches.size + " employees with Optimistic locks " + listOfMatches.map(x => x.perOptLock))
-        val filledListOfMatchesForm = uRIInformation.individualsFormWithRadio.fill((individualSelectionOption.getOrElse(""),
+        val filledListOfMatchesForm = formMappings.individualsFormWithRadio.fill((individualSelectionOption.getOrElse(""),
           EiLPersonList(listOfMatches)))
         Ok(views.html.exclusion.searchResults(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear, iabdTypeValue,
           filledListOfMatchesForm, formType, empRef = request.empRef))
@@ -241,11 +240,11 @@ class ExclusionListController @Inject()(
   def updateExclusions(year: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-      val iabdTypeValue = uRIInformation.iabdValueURLDeMapper(iabdType)
+      val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       if (exclusionsAllowed) {
         val taxYearRange = controllersReferenceData.YEAR_RANGE
 
-        val futureResult = processExclusionForm(uRIInformation.individualsForm.bindFromRequest, year, iabdTypeValue, taxYearRange)
+        val futureResult = processExclusionForm(formMappings.individualsForm.bindFromRequest, year, iabdTypeValue, taxYearRange)
         controllersReferenceData.responseErrorHandler(futureResult)
 
       } else {
@@ -256,10 +255,10 @@ class ExclusionListController @Inject()(
   def updateMultipleExclusions(year: String, iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-      val iabdTypeValue = uRIInformation.iabdValueURLDeMapper(iabdType)
+      val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       if (exclusionsAllowed) {
         val taxYearRange = controllersReferenceData.YEAR_RANGE
-        val form = uRIInformation.individualsFormWithRadio.bindFromRequest
+        val form = formMappings.individualsFormWithRadio.bindFromRequest
         val futureResult = processIndividualExclusionForm(form, year, iabdTypeValue, taxYearRange)
         controllersReferenceData.responseErrorHandler(futureResult)
       } else {
@@ -270,7 +269,7 @@ class ExclusionListController @Inject()(
   def processIndividualExclusionForm(form: Form[(String, EiLPersonList)], isCurrentTaxYear: String,
                                      iabdType: String, taxYearRange: TaxYearRange)
                                     (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    val iabdTypeValue = uRIInformation.iabdValueURLMapper(iabdType)
+    val iabdTypeValue = uriInformation.iabdValueURLMapper(iabdType)
     form.fold(
       formWithErrors =>
         for {
@@ -314,7 +313,7 @@ class ExclusionListController @Inject()(
 
     Logger.info(s"Committing Exclusion for scheme ${request.empRef.toString} , with employees Optimisitic Lock: ${excludedIndividual.get.perOptLock}")
 
-    tierConnector.genericPostCall(uRIInformation.baseUrl, uRIInformation.exclusionPostUpdatePath(iabdType),
+    tierConnector.genericPostCall(uriInformation.baseUrl, uriInformation.exclusionPostUpdatePath(iabdType),
       request.empRef, yearInt, excludedIndividual.get).map {
       response =>
         response.status match {
@@ -353,7 +352,7 @@ class ExclusionListController @Inject()(
     implicit request =>
       implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
       if (exclusionsAllowed) {
-        processRemoval(uRIInformation.individualsForm.bindFromRequest, year, iabdType, controllersReferenceData.YEAR_RANGE)
+        processRemoval(formMappings.individualsForm.bindFromRequest, year, iabdType, controllersReferenceData.YEAR_RANGE)
       } else {
         Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
       }
@@ -365,7 +364,7 @@ class ExclusionListController @Inject()(
     form.fold(
       formWithErrors => Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.INVALID_FORM_ERROR, taxYearRange, "", empRef = Some(request.empRef)))),
       values => Future.successful(Ok(views.html.exclusion.removalConfirmation(taxYearRange, year, iabdType,
-        uRIInformation.individualsForm.fill(values), empRef = request.empRef)))
+        formMappings.individualsForm.fill(values), empRef = request.empRef)))
     )
 
   }
@@ -373,10 +372,10 @@ class ExclusionListController @Inject()(
   def removeExclusionsCommit(iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-      val iabdTypeValue = uRIInformation.iabdValueURLDeMapper(iabdType)
+      val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       val taxYearRange = taxDateUtils.getTaxYearRange()
       if (exclusionsAllowed) {
-        processRemovalCommit(uRIInformation.individualsForm.bindFromRequest, iabdTypeValue, taxYearRange)
+        processRemovalCommit(formMappings.individualsForm.bindFromRequest, iabdTypeValue, taxYearRange)
       } else {
         Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxYearRange, empRef = Some(request.empRef))))
       }
@@ -395,8 +394,8 @@ class ExclusionListController @Inject()(
     val registrationList: RegistrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = false, enabled = false)))
 
     val individual = removalsList.head
-    val iabdTypeValue = uRIInformation.iabdValueURLMapper(iabdType)
-    val futureExclude = tierConnector.genericPostCall(uRIInformation.baseUrl, uRIInformation.exclusionPostRemovePath(iabdType),
+    val iabdTypeValue = uriInformation.iabdValueURLMapper(iabdType)
+    val futureExclude = tierConnector.genericPostCall(uriInformation.baseUrl, uriInformation.exclusionPostRemovePath(iabdType),
       request.empRef, year, individual).map {
       response =>
         response.status match {
