@@ -18,21 +18,8 @@ package config
 
 import connectors.SessionCookieCryptoFilterWrapper
 import javax.inject.Inject
-import play.api.Mode.Mode
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.audit.http.connector.{AuditConnector => Auditing}
-import uk.gov.hmrc.play.bootstrap.config.LoadAuditingConfig
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.partials.FormPartialRetriever
-
-class PbikFrontendAuditConnector @Inject()(configuration: Configuration,
-                                           environment: Environment) extends Auditing {
-  val mode: Mode = environment.mode
-  val runModeConfiguration: Configuration = configuration
-  override lazy val auditingConfig = LoadAuditingConfig(mode = mode,
-                                                        configuration = runModeConfiguration,
-                                                        key = s"auditing")
-}
 
 class LocalFormPartialRetriever @Inject()(val httpGet: HttpClient, cookieCrypto: SessionCookieCryptoFilterWrapper) extends FormPartialRetriever {
   override val crypto: String => String = cookieCrypto.encryptCookieString

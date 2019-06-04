@@ -27,7 +27,7 @@ import models._
 import play.api.Mode.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import play.api.{Configuration, Environment}
 import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
@@ -41,7 +41,8 @@ import scala.concurrent.Future
 class ManageRegistrationController @Inject()(bikListUtils: BikListUtils,
                                              registrationService: RegistrationService,
                                              formMappings: FormMappings,
-                                             val messagesApi: MessagesApi,
+                                             override val messagesApi: MessagesApi,
+                                             cc:MessagesControllerComponents,
                                              val bikListService: BikListService,
                                              tierConnector: HmrcTierConnector,
                                              val authenticate: AuthAction,
@@ -57,7 +58,7 @@ class ManageRegistrationController @Inject()(bikListUtils: BikListUtils,
                                              implicit val uriInformation: URIInformation,
                                              implicit val externalURLs: ExternalUrls,
                                              implicit val localFormPartialRetriever: LocalFormPartialRetriever
-                                            ) extends FrontendController with I18nSupport {
+                                            ) extends FrontendController(cc) with I18nSupport {
 
   val mode: Mode = environment.mode
 

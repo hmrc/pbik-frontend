@@ -32,9 +32,10 @@ import uk.gov.hmrc.http.{Request => _}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{ControllersReferenceData, _}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class HelpAndContactController @Inject()(val messagesApi: MessagesApi,
+class HelpAndContactController @Inject()(override val messagesApi: MessagesApi,
+                                         cc: MessagesControllerComponents,
                                          formPartialProvider: FormPartialProvider,
                                          bikListService: BikListService,
                                          helpAndContactSubmissionService: HelpAndContactSubmissionService,
@@ -44,13 +45,11 @@ class HelpAndContactController @Inject()(val messagesApi: MessagesApi,
                                          environment: Environment,
                                          controllersReferenceData: ControllersReferenceData,
                                          splunkLogger: SplunkLogger)
-                                         (implicit val pbikAppConfig: PbikAppConfig,
+                                        (implicit val pbikAppConfig: PbikAppConfig,
                                          implicit val context: PbikContext,
                                          implicit val externalURLs: ExternalUrls,
-                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController with I18nSupport {
-
-  val mode: Mode = environment.mode
-  val runModeConfiguration: Configuration = configuration
+                                         implicit val ec: ExecutionContext,
+                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController(cc) with I18nSupport {
 
   val contactFrontendPartialBaseUrl: String = pbikAppConfig.contactFrontendService
   val contactFormServiceIdentifier: String = pbikAppConfig.contactFormServiceIdentifier

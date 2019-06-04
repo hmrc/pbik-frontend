@@ -30,10 +30,11 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
 import utils.{ControllersReferenceData, SplunkLogger, URIInformation, _}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Success, Try}
 
-class HomePageController @Inject()(val messagesApi: MessagesApi,
+class HomePageController @Inject()(override val messagesApi: MessagesApi,
+                                   cc:MessagesControllerComponents,
                                    bikListService: BikListService,
                                    authenticate: AuthAction,
                                    val noSessionCheck: NoSessionCheckAction,
@@ -47,9 +48,8 @@ class HomePageController @Inject()(val messagesApi: MessagesApi,
                                    implicit val uRIInformation: URIInformation,
                                    implicit val externalURLs: ExternalUrls,
                                    implicit val localFormPartialRetriever: LocalFormPartialRetriever,
-                                   implicit val bikListUtils: BikListUtils) extends FrontendController with I18nSupport {
-
-  val mode: Mode = environment.mode
+                                   implicit val bikListUtils: BikListUtils,
+                                   implicit val ec: ExecutionContextExecutor) extends FrontendController(cc) with I18nSupport {
 
   def notAuthorised: Action[AnyContent] = authenticate {
     implicit request =>

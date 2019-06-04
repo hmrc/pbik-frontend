@@ -27,7 +27,7 @@ import play.api.Mode.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc._
-import play.api.{Configuration, Environment, Logger, Play}
+import play.api.{Configuration, Environment, Logger}
 import services.{BikListService, EiLListService}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.HeaderCarrierConverter
@@ -40,13 +40,12 @@ import scala.concurrent.Future
 
 class ExclusionListController @Inject()(formMappings: FormMappings,
                                         val authenticate: AuthAction,
-                                        val messagesApi: MessagesApi,
+                                        cc:MessagesControllerComponents,
+                                        override val messagesApi: MessagesApi,
                                         val noSessionCheck: NoSessionCheckAction,
                                         val eiLListService: EiLListService,
                                         val bikListService: BikListService,
                                         val tierConnector: HmrcTierConnector, //TODO: Why do we need this?,
-                                        val runModeConfiguration: Configuration,
-                                        environment:Environment,
                                         taxDateUtils: TaxDateUtils,
                                         splunkLogger: SplunkLogger,
                                         controllersReferenceData: ControllersReferenceData,
@@ -56,10 +55,9 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
                                          implicit val uriInformation: URIInformation,
                                          implicit val externalURLs: ExternalUrls,
                                          implicit val localFormPartialRetriever: LocalFormPartialRetriever
-                                       ) extends FrontendController with I18nSupport {
-  val mode: Mode = environment.mode
+                                       ) extends FrontendController(cc) with I18nSupport {
 
-  lazy val exclusionsAllowed: Boolean = configuration.getBoolean("pbik.enabled.eil").getOrElse(false)
+  lazy val exclusionsAllowed: Boolean = configuration.get[Boolean]("pbik.enabled.eil")
 
   def mapYearStringToInt(URIYearString: String): Future[Int] = {
     URIYearString match {

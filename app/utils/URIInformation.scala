@@ -16,18 +16,16 @@
 
 package utils
 
+import config.Service
 import javax.inject.Inject
 import play.api.Mode.Mode
 import play.api.{Configuration, Environment, Logger}
-import uk.gov.hmrc.play.config.ServicesConfig
 import utils.Exceptions.InvalidBikTypeURIException
 
 class URIInformation @Inject()(configuration: Configuration,
-                               environment: Environment) extends ServicesConfig with URIValues {
+                               environment: Environment) extends URIValues {
 
-  val mode: Mode = environment.mode
-  val runModeConfiguration: Configuration = configuration
-  val baseUrl: String = baseUrl("pbik") + "/epaye"
+  val baseUrl: String = configuration.get[Service]("pbik") + "/epaye"
 
   val urlMappedIABDValues = List(
     ("40", "assets-transferred"),

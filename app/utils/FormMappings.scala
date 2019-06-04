@@ -150,7 +150,7 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
     (RegistrationList.apply)(RegistrationList.unapply)
   )
 
-  def exclusionSearchFormWithNino(implicit lang: Lang):Form[EiLPerson] = Form(
+  def exclusionSearchFormWithNino:Form[EiLPerson] = Form(
     mapping(
       "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
           firstname.trim.length != 0)

@@ -28,8 +28,9 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import scala.concurrent.{ExecutionContext, Future}
 
 class MinimalAuthActionImpl @Inject()(override val authConnector: AuthConnector,
+                                      val parser: BodyParsers.Default,
                                       externalUrls: ExternalUrls)
-                              (implicit ec: ExecutionContext) extends MinimalAuthAction with AuthorisedFunctions {
+                              (implicit val executionContext: ExecutionContext) extends MinimalAuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -44,4 +45,4 @@ class MinimalAuthActionImpl @Inject()(override val authConnector: AuthConnector,
 }
 
 @ImplementedBy(classOf[MinimalAuthActionImpl])
-trait MinimalAuthAction extends ActionBuilder[Request] with ActionFunction[Request, Request]
+trait MinimalAuthAction extends ActionBuilder[Request, AnyContent] with ActionFunction[Request, Request]
