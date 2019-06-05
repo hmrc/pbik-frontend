@@ -23,6 +23,7 @@ import org.jsoup.nodes.Document
 import org.mockito.Mockito.mock
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
@@ -108,10 +109,11 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
   }
 }
 
-trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite {
+trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite with I18nSupport {
 
+  implicit val lang:Lang = Lang("en-GB")
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  implicit val messages: play.api.i18n.Messages = play.api.i18n.Messages.Implicits.applicationMessages
+  implicit val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val pbikContext: PbikContext = new PbikContext(mock(classOf[ContactFrontendConnector])) {
     override def getPageHelpPartial()(implicit hc: HeaderCarrier): Future[String] = Future.successful("")
   }

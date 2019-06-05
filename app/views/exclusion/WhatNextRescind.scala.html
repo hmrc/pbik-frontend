@@ -1,0 +1,82 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
+
+@this(parentTemplate: ParentTemplate,
+context: PbikContext,
+externalURLs: ExternalUrls,
+config: AppConfig,
+localFormPartialRetriever: LocalFormPartialRetriever,
+uriInformation: URIInformation)
+
+@(taxYearRange:TaxYearRange,
+  year:String, iabdType:String,
+  name:String,empRef: EmpRef)(implicit request:Request[_], messages: Messages)
+
+@parentTemplate(pageTitle = messages("whatNext.rescind.heading") + " - " + messages("Service.title"), None,  Some(empRef.toString)) {
+
+    <section id="print-section">
+        <div id="printContainer"></div>
+    </section>
+
+    <section id="what-next-rescind">
+
+        <div id="confirmation" class="govuk-box-highlight">
+            <h1 id="title" class="bold-large">
+                @messages("whatNext.rescind.heading")
+            </h1>
+            <p id="confirmation-p">
+                @messages("ExclusionRemoval.WhatNext.lede", name, messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)), taxYearRange.cy+"")
+            </p>
+        </div>
+
+        <h2 class="heading-24">
+            @messages("whatNext.subHeading")
+        </h2>
+        <ul class="list-bullet">
+            <li>
+                @Html(messages("ExclusionRescind.WhatNext.p1"))
+            </li>
+
+            <li>
+                @Html(messages("ExclusionRescind.WhatNext.p2"))
+            </li>
+
+            <li>
+                @Html(messages("ExclusionRescind.WhatNext.p3",messages("whatNext.exclude.heading")))
+            </li>
+
+            <li>
+                @Html(messages("ExclusionRescind.WhatNext.p4",messages("whatNext.exclude.heading")))
+            </li>
+        </ul>
+
+        <p class="text">
+            <a  onclick="gaEvent('Click back to exclusion overview','From: Employee removed What next page')"
+                href="@routes.ExclusionListController.performPageLoad(year,iabdType)" id="link-back-excluded">
+                @messages("Service.finish.rescinded")
+            </a>
+        </p>
+        <p class="text">
+            <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">@messages("Service.back.overview.whatNext")</a>
+        </p>
+    </section>
+}

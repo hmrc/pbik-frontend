@@ -19,6 +19,7 @@ package utils
 import javax.inject.Inject
 import models.{Bik, RegistrationItem, RegistrationList}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Request
 
 class BikListUtils @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
 
@@ -30,7 +31,7 @@ class BikListUtils @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
    * @param biks
    * @return
    */
-  def sortAlphabeticallyByLabels(biks: List[Bik]): List[Bik] = {
+  def sortAlphabeticallyByLabels[A](biks: List[Bik])(implicit request: Request[A]): List[Bik] = {
     val listOfIdLabelPairs: List[(Bik,String)] = biks.map(bik => (bik, Messages("BenefitInKind.label." + bik.iabdType)))
     val sortedListOfIdLabelPairs: List[(Bik,String)] = listOfIdLabelPairs.sortWith((bik1: (Bik,String), bik2:(Bik,String))=>bik1._2 < bik2._2)
     sortedListOfIdLabelPairs.map(pair => pair._1 )
@@ -42,7 +43,7 @@ class BikListUtils @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
    * @param registeredBiksList
    * @return
    */
-  def sortRegistrationsAlphabeticallyByLabels(registeredBiksList: RegistrationList): RegistrationList = {
+  def sortRegistrationsAlphabeticallyByLabels[A](registeredBiksList: RegistrationList)(implicit request: Request[A]): RegistrationList = {
     val listOfIdLabelPairs: List[(String,String)] = registeredBiksList.active.map(bik => (bik.id, Messages("BenefitInKind.label." + bik.id)))
     val sortedListOfIdLabelPairs: List[(String,String)] = listOfIdLabelPairs.sortWith((bik1: (String,String), bik2:(String,String))=>bik1._2 < bik2._2)
     val registrationItemList: List[RegistrationItem] = sortedListOfIdLabelPairs.map(bik => RegistrationItem(bik._1, false, true))

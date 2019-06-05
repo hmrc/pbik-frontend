@@ -19,14 +19,18 @@ package views
 import config.{AppConfig, LocalFormPartialRetriever}
 import controllers.ExternalUrls
 import models.{EmpRef, TaxYearRange}
+import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
+import views.html.exclusion.WhatNextExclusion
 
 
 class WhatNextExclusionViewSpec extends PBIKViewSpec {
 
-  val formMappings = app.injector.instanceOf[FormMappings]
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  val whatNextExclusionView: WhatNextExclusion = app.injector.instanceOf[WhatNextExclusion]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
@@ -35,7 +39,7 @@ class WhatNextExclusionViewSpec extends PBIKViewSpec {
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
-  override def view: Html = views.html.exclusion.whatNextExclusion(taxYearRange, "cyp1", "30", "",  EmpRef("", ""))
+  override def view: Html = whatNextExclusionView(taxYearRange, "cyp1", "30", "",  EmpRef("", ""))
 
   "whatNextAddRemove" must {
     behave like pageWithTitle(messages("whatNext.exclude.heading"))

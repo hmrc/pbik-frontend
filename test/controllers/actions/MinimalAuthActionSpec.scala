@@ -23,7 +23,7 @@ import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status._
-import play.api.mvc.Controller
+import play.api.mvc.{BodyParsers, Controller}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, status}
 import play.api.{Configuration, Environment}
@@ -52,9 +52,9 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
         val minimalAuthAction = new MinimalAuthActionImpl(
           new BrokenAuthConnector(new MissingBearerToken,
             mock[HttpClient],
-            app.injector.instanceOf[Configuration],
-            app.injector.instanceOf[Environment]
+            app.injector.instanceOf[Configuration]
           ),
+          app.injector.instanceOf[BodyParsers.Default],
           app.injector.instanceOf[ExternalUrls]
         )
         val controller = new Harness(minimalAuthAction)
@@ -68,10 +68,9 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
 
 }
 
-class BrokenAuthConnector @Inject()(exception: Throwable, httpClient:HttpClient, runModeConfiguration: Configuration, environment: Environment) extends AuthConnector(
+class BrokenAuthConnector @Inject()(exception: Throwable, httpClient:HttpClient, configuration: Configuration) extends AuthConnector(
   httpClient,
-  runModeConfiguration,
-  environment) {
+  configuration) {
   override val serviceUrl: String = ""
 
   override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =

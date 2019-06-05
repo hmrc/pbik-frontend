@@ -22,8 +22,7 @@ import play.api.Mode.Mode
 import play.api.{Configuration, Environment, Logger}
 import utils.Exceptions.InvalidBikTypeURIException
 
-class URIInformation @Inject()(configuration: Configuration,
-                               environment: Environment) extends URIValues {
+class URIInformation @Inject()(configuration: Configuration) extends URIValues {
 
   val baseUrl: String = configuration.get[Service]("pbik") + "/epaye"
 

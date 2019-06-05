@@ -16,35 +16,44 @@
 
 package support
 
-import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.PbikAppConfig
 import connectors.HmrcTierConnector
-import controllers.ExternalUrls
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
+import play.api.Configuration
 import play.api.i18n.MessagesApi
-import play.api.{Configuration, Environment}
+import play.api.mvc.MessagesControllerComponents
 import services.{BikListService, EiLListService}
-import utils.{ControllersReferenceData, FormMappings, SplunkLogger, TaxDateUtils, URIInformation}
+import utils._
+import views.html.ErrorPage
+import views.html.exclusion._
 
 class MockExclusionsDisallowedController @Inject()(formMappings: FormMappings,
                                                    messagesApi: MessagesApi,
                                                    pbikAppConfig: PbikAppConfig,
+                                                   cc: MessagesControllerComponents,
                                                    authenticate: AuthAction,
                                                    noSessionCheck: NoSessionCheckAction,
                                                    eiLListService: EiLListService,
                                                    bikListService: BikListService,
                                                    tierConnector: HmrcTierConnector,
                                                    runModeConfiguration: Configuration,
-                                                   environment:Environment,
-                                                   context: PbikContext,
                                                    taxDateUtils: TaxDateUtils,
                                                    splunkLogger: SplunkLogger,
                                                    controllersReferenceData: ControllersReferenceData,
                                                    uriInformation: URIInformation,
-                                                   externalURLs: ExternalUrls,
-                                                   localFormPartialRetriever: LocalFormPartialRetriever) extends MockExclusionListController(
+                                                   exclusionOverviewView: ExclusionOverview,
+                                                   errorPageView: ErrorPage,
+                                                   exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm,
+                                                   ninoExclusionSearchFormView: NinoExclusionSearchForm,
+                                                   noNinoExclusionSearchFormView: NoNinoExclusionSearchForm,
+                                                   searchResultsView: SearchResults,
+                                                   whatNextExclusionView: WhatNextExclusion,
+                                                   removalConfirmationView: RemovalConfirmation,
+                                                   whatNextRescindView: WhatNextRescind) extends MockExclusionListController(
   messagesApi,
   formMappings,
+  cc,
   pbikAppConfig,
   authenticate,
   noSessionCheck,
@@ -52,13 +61,18 @@ class MockExclusionsDisallowedController @Inject()(formMappings: FormMappings,
   bikListService,
   tierConnector,
   runModeConfiguration,
-  environment,
-  context,
   taxDateUtils,
   splunkLogger,
   controllersReferenceData,
   uriInformation,
-  externalURLs,
-  localFormPartialRetriever) {
+  exclusionOverviewView,
+  errorPageView,
+  exclusionNinoOrNoNinoFormView,
+  ninoExclusionSearchFormView,
+  noNinoExclusionSearchFormView,
+  searchResultsView,
+  whatNextExclusionView,
+  removalConfirmationView,
+  whatNextRescindView) {
   override lazy val exclusionsAllowed = false
 }

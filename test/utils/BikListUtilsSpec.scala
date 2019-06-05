@@ -19,13 +19,15 @@ package utils
 import controllers.FakePBIKApplication
 import models.Bik
 import org.scalatestplus.play.PlaySpec
-import play.api.test.FakeApplication
+import play.api.mvc.AnyContentAsEmpty
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
 
 class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   val bikListUtils = app.injector.instanceOf[BikListUtils]
+  implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   def fixture: Object {
     val alphaSorted: List[Int]
@@ -47,36 +49,29 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
   "The Biks, when sorted Alphabetically according to labels" should {
    " result in the correct order" in {
       val f = fixture
-      running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
-        assert(bikListUtils.sortAlphabeticallyByLabels(f.biks).map(x => x.iabdType.toInt) == f.alphaSorted)
-      }
+
+      assert(bikListUtils.sortAlphabeticallyByLabels(f.biks).map(x => x.iabdType.toInt) == f.alphaSorted)
     }
   }
 
   "The Biks, when sorted Alphabetically according to labels" should {
    "  be the same size as the original list" in {
       val f = fixture
-      running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
-        assert(bikListUtils.sortAlphabeticallyByLabels(f.biks).size == f.biks.size)
-      }
+      assert(bikListUtils.sortAlphabeticallyByLabels(f.biks).size == f.biks.size)
     }
   }
 
   "The Registration Items, when sorted Alphabetically according to labels" should {
    " result in the correct order" in {
       val f = fixture
-      running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
-        assert(bikListUtils.sortRegistrationsAlphabeticallyByLabels(bikListUtils.mergeSelected(f.biks, f.biks)).active.map(x => x.id.toInt) == f.alphaSorted)
-      }
+      assert(bikListUtils.sortRegistrationsAlphabeticallyByLabels(bikListUtils.mergeSelected(f.biks, f.biks)).active.map(x => x.id.toInt) == f.alphaSorted)
     }
   }
 
   "The Registration Items, when sorted Alphabetically according to labels" should {
    "  be the same size as the original list" in {
       val f = fixture
-      running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
-        assert(bikListUtils.sortRegistrationsAlphabeticallyByLabels(bikListUtils.mergeSelected(f.biks, f.biks)).active.size == f.biks.size)
-      }
+      assert(bikListUtils.sortRegistrationsAlphabeticallyByLabels(bikListUtils.mergeSelected(f.biks, f.biks)).active.size == f.biks.size)
     }
   }
 
@@ -138,21 +133,21 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
   "When merging selected lists  all of the results" should {
    " have their active flags set as false" in {
       val f = fixture
-      assert(bikListUtils.mergeSelected(f.biks, f.biks).active.map(x => x.active).filter(y => y).size == f.biks.size)
+      assert(bikListUtils.mergeSelected(f.biks, f.biks).active.map(x => x.active).count(identity) == f.biks.size)
     }
   }
 
   "When removing two identical lists , the size of the merge results" should {
    " equal zero" in {
       val f = fixture
-      assert(bikListUtils.removeMatches(f.biks, f.biks).active.size == 0)
+      assert(bikListUtils.removeMatches(f.biks, f.biks).active.isEmpty)
     }
   }
 
   "When removing lists where one list has different elements the size" should {
    " equal the size of the different elements" in {
       val f = fixture
-      assert(bikListUtils.removeMatches(f.biks, f.biks).active.size == 0)
+      assert(bikListUtils.removeMatches(f.biks, f.biks).active.isEmpty)
     }
   }
 

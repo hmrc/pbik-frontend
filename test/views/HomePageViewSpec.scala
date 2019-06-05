@@ -16,28 +16,22 @@
 
 package views
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
-import controllers.ExternalUrls
 import models.{EmpRef, TaxYearRange}
+import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import utils.{BikListUtils, TaxDateUtils, URIInformation}
+import utils.BikListUtils
 import views.helper.PBIKViewSpec
+import views.html.Overview
 
 class HomePageViewSpec extends PBIKViewSpec {
 
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val bikListUtils = app.injector.instanceOf[BikListUtils]
+  val overviewView = app.injector.instanceOf[Overview]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
-  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
-  implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
-  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
-  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
-
-  override def view: Html = views.html.overview(cyAllowed = true, taxYearRange, List(), List(), 200, 0, "", EmpRef("", ""))
+  override def view: Html = overviewView(cyAllowed = true, taxYearRange, List(), List(), 200, 0, "", EmpRef("", ""))
 
   "overview" must {
 

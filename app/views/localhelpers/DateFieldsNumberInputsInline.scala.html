@@ -1,0 +1,59 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.i18n._
+@import play.api.data
+@import uk.gov.hmrc.play.views.html.helpers
+
+@this()
+
+@(formItem:Form[_],label: Html, args: (Symbol,Any)*)(implicit messages: Messages)
+
+<div class="form-group form-group-day">
+@dayElem = @{"dob.day"}
+@helpers.input(
+Field(formItem,formItem(dayElem).name, formItem(dayElem).constraints, formItem(dayElem).format, Seq(), formItem(dayElem).value),
+'_label -> messages("Service.field.dob.day"),
+'_inputClass -> "form-control",
+'_type -> "text",
+'_dataAttributes -> "pattern=[0-9]* ",
+'_emptyValueText -> " "
+)
+ </div>
+
+<div class="form-group form-group-month">
+@monthElem = @{"dob.month"}
+@helpers.input(
+Field(formItem, formItem(monthElem).name, formItem(monthElem).constraints, formItem(monthElem).format, Seq(), formItem(monthElem).value),
+'_label -> messages("Service.field.dob.month"),
+'_inputClass -> "form-control",
+'_type -> "text",
+'_dataAttributes -> "pattern=[0-9]* ",
+'_emptyValueText -> " "
+)
+</div>
+
+<div class="form-group form-group-year">
+@yearElem = @{"dob.year"}
+@helpers.input(
+Field(formItem, formItem(yearElem).name, formItem(yearElem).constraints, formItem(yearElem).format, Seq(), formItem(yearElem).value),
+'_label -> messages("Service.field.dob.year"),
+'_inputClass -> "form-control",
+'_type -> "text",
+'_dataAttributes -> "pattern=[0-9]* ",
+'_emptyValueText -> " "
+)
+</div>

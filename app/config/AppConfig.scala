@@ -41,8 +41,7 @@ trait AppConfig {
   val ssoUrl:Option[String]
 }
 
-class PbikAppConfig @Inject()(configuration: Configuration,
-                               environment: Environment) extends AppConfig {
+class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
 
   override lazy val contactFrontendService: String = configuration.get[Service]("contact-frontend")
   override lazy val contactFormServiceIdentifier = "PayrollBIK"

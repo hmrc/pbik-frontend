@@ -84,7 +84,7 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser
         SessionKeys.userId -> userId).withCookies(Cookie("PLAY_LANG", "cy"))
 
       implicit val timeout: FiniteDuration = timeoutValue
-      implicit val lang: Lang = new Lang("cy")
+      implicit val lang: Lang = Lang("cy")
       val result = await(homePageController.onPageLoad(request))(timeout)
       result.header.status must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include("Cyfeirnod TWE y cyflogwr")

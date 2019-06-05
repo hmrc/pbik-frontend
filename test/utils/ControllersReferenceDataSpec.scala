@@ -20,7 +20,7 @@ import controllers.FakePBIKApplication
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.HttpEntity.Strict
-import play.api.i18n.Messages
+import play.api.i18n.{Lang, Messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -36,7 +36,8 @@ import scala.concurrent.{Future, Promise}
 
 class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
   with TestAuthUser with Results {
-  
+
+  implicit val lang = Lang("en-GB")
   val mockControllersReferenceData = app.injector.instanceOf[ControllersReferenceData]
 
   "When CY mode is disabled the controller" should {

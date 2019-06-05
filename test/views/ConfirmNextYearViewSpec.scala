@@ -20,14 +20,18 @@ import config.{AppConfig, LocalFormPartialRetriever}
 import controllers.ExternalUrls
 import models.{EmpRef, RegistrationList, TaxYearRange}
 import play.api.data.Form
+import play.api.i18n.MessagesApi
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
+import views.html.registration.ConfirmUpdateNextTaxYear
 
 class ConfirmNextYearViewSpec extends PBIKViewSpec {
 
-  val formMappings = app.injector.instanceOf[FormMappings]
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  val confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear = app.injector.instanceOf[ConfirmUpdateNextTaxYear]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
@@ -41,7 +45,7 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   def viewWithForm(form: Form[RegistrationList]): Html =
-    views.html.registration.confirmUpdateNextTaxYear(form, additive = true, taxYearRange, EmpRef("", ""))
+    confirmUpdateNextTaxYearView(form, additive = true, taxYearRange, EmpRef("", ""))
 
   "nextYearPage" must {
     behave like pageWithTitle(messages("AddBenefits.Confirm.Single.Title"))

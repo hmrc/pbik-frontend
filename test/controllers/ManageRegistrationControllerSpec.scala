@@ -29,7 +29,7 @@ import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.http.HttpEntity.Strict
-import play.api.i18n.Messages
+import play.api.i18n.{Lang, Messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -60,6 +60,7 @@ class ManageRegistrationControllerSpec extends PlaySpec
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
+  implicit val lang = Lang("en-GB")
   val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))

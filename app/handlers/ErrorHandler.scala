@@ -22,8 +22,13 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+import views.html.ErrorTemplate
 
-class ErrorHandler @Inject()(val messagesApi: MessagesApi, implicit val config:PbikAppConfig) extends FrontendErrorHandler with I18nSupport {
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-  views.html.error_template(pageTitle, heading, message)
+class ErrorHandler @Inject()(val messagesApi: MessagesApi,
+                            errorTemplateView: ErrorTemplate)(implicit val config:PbikAppConfig) extends FrontendErrorHandler with I18nSupport {
+
+  override def standardErrorTemplate(pageTitle: String,
+                                     heading: String,
+                                     message: String)(implicit request: Request[_]): Html =
+    errorTemplateView(pageTitle, heading, message)
 }

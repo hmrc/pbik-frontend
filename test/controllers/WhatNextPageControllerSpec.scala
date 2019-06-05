@@ -27,7 +27,7 @@ import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.data.Form
 import play.api.http.HttpEntity.Strict
-import play.api.i18n.Messages
+import play.api.i18n.{Lang, Messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -44,6 +44,7 @@ import uk.gov.hmrc.time.TaxYear
 import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, URIInformation}
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits._
 
 
 class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
@@ -56,6 +57,8 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     .overrides(bind[BikListService].toInstance(mock(classOf[StubBikListService])))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
+
+  implicit val lang = Lang("en-GB")
 
   val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
@@ -266,8 +269,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     }
 
     "(Remove a BIK)- state the status is ok and correct page is displayed" in {
-      import play.api.libs.concurrent.Execution.Implicits._
-
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),

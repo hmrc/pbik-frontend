@@ -16,26 +16,22 @@
 
 package views
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
-import controllers.ExternalUrls
 import models.{EmpRef, TaxYearRange}
+import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import utils.{FormMappings, URIInformation}
+import utils.FormMappings
 import views.helper.PBIKViewSpec
+import views.html.exclusion.ExclusionOverview
 
 class ExclusionOverviewViewSpec extends PBIKViewSpec {
 
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val formMappings = app.injector.instanceOf[FormMappings]
+  val exclusionOverviewView = app.injector.instanceOf[ExclusionOverview]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
-  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
-  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
-
-  override def view: Html = views.html.exclusion.exclusionOverview(taxYearRange, "cyp1", "30", List(),EmpRef("", ""))
+  override def view: Html = exclusionOverviewView(taxYearRange, "cyp1", "30", List(),EmpRef("", ""))
 
   "exclusionOverview" must {
     behave like pageWithTitle(messages("ExclusionOverview.title"))

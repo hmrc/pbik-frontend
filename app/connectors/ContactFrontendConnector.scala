@@ -28,7 +28,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ContactFrontendConnector @Inject()(val client: HttpClient,
                                          configuration: Configuration,
-                                         environment: Environment,
                                          pBIKHeaderCarrierForPartialsConverter: PBIKHeaderCarrierForPartialsConverter) {
 
   lazy val serviceBase = s"${configuration.get[Service]("contact-frontend")}/contact"

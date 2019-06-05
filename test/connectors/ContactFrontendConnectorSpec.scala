@@ -16,6 +16,7 @@
 
 package connectors
 
+import config.Service
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
@@ -28,16 +29,11 @@ import play.api.test.Helpers._
 import play.api.{Application, Configuration, Environment}
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with MockitoSugar
-  with BeforeAndAfterEach with ServicesConfig {
-
-  lazy val environment: Environment = app.injector.instanceOf[Environment]
-  override protected def mode: Mode = environment.mode
-  override protected def runModeConfiguration: Configuration = app.injector.instanceOf[Configuration]
+  with BeforeAndAfterEach {
 
   override val fakeApplication: Application = GuiceApplicationBuilder()
     .overrides(bind[HttpClient].toInstance(mock[HttpClient]))
@@ -47,6 +43,8 @@ class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with Moc
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
   val testConnector = app.injector.instanceOf[ContactFrontendConnector]
+  val testConfiguration = app.injector.instanceOf[Configuration]
+
 
   override def beforeEach(): Unit = {
     reset(testConnector.client)
@@ -55,7 +53,7 @@ class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with Moc
   "ContactFrontendConnector" must {
 
     val dummyResponseHtml = "<div id=\"contact-partial\"></div>"
-    lazy val serviceBase = s"${baseUrl("contact-frontend")}/contact"
+    lazy val serviceBase = s"${testConfiguration.get[Service]("contact-frontend")}/contact"
     lazy val serviceUrl = s"$serviceBase/problem_reports"
 
     "contact the front end service to download the 'get help' partial" in {

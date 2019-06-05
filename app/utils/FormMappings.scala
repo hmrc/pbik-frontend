@@ -23,7 +23,8 @@ import models._
 import org.joda.time.DateTimeConstants._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.{I18nSupport, Lang, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.mvc.Request
 import utils.FormMappingsConstants._
 
 import scala.util.Try
@@ -150,7 +151,7 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
     (RegistrationList.apply)(RegistrationList.unapply)
   )
 
-  def exclusionSearchFormWithNino:Form[EiLPerson] = Form(
+  def exclusionSearchFormWithNino[A](implicit request: Request[A]):Form[EiLPerson] = Form(
     mapping(
       "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
           firstname.trim.length != 0)
@@ -184,7 +185,7 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
     ninoTrimmedRegex.r.findFirstIn(nino).getOrElse("").mkString
   }
 
-  def exclusionSearchFormWithoutNino(implicit lang: Lang): Form[EiLPerson] = {
+  def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[EiLPerson] = {
     val dateRegex: String = "([0-9])|([0-9][0-9])"
     val dateDayRegex: String = "([0-9])"
     val dateMonthRegex: String = "([0-9])"

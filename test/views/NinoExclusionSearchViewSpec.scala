@@ -20,14 +20,18 @@ import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig}
 import controllers.ExternalUrls
 import models._
 import play.api.data.Form
+import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.{FormMappings, URIInformation}
 import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
+import views.html.exclusion.NinoExclusionSearchForm
 
 
 class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
+   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val formMappings = app.injector.instanceOf[FormMappings]
+  val ninoExclusionSearchFormView = app.injector.instanceOf[NinoExclusionSearchForm]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
@@ -40,7 +44,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   def viewWithForm(form: Form[EiLPerson]): Html =
-    views.html.exclusion.ninoExclusionSearchForm(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
+    ninoExclusionSearchFormView(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
 
 
   "ninoExclusionSearchPage" must {

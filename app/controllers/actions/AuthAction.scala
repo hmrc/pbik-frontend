@@ -72,8 +72,8 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector,
 trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 class AuthConnector @Inject()(val http: HttpClient,
-                              configuration: Configuration,
-                              val environment: Environment) extends PlayAuthConnector {
+                              configuration: Configuration) extends PlayAuthConnector {
+
   override val serviceUrl: String = configuration.get[Service]("auth")
 
 }

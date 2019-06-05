@@ -1,0 +1,171 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.play.views.html.helpers
+@import utils.BikListUtils
+@import utils.TaxDateUtils
+@import utils.URIInformation
+@import java.util.Calendar
+
+@import config.PbikAppConfig
+@import config.LocalFormPartialRetriever
+@import config.PbikContext
+@import views.html.sidebar.HelpAndContact
+
+@this(parentTemplate: ParentTemplate,
+context: PbikContext,
+externalURLs: ExternalUrls,
+localFormPartialRetriever: LocalFormPartialRetriever,
+taxDateUtils: TaxDateUtils,
+pbikAppConfig: PbikAppConfig,
+uriInformation: URIInformation,
+bikListUtils: BikListUtils,
+helpAndContact: HelpAndContact)
+
+@(cyAllowed: Boolean,
+taxYearRange:TaxYearRange,
+registeredBenefitsCurrentYear: List[Bik],
+registeredBenefitsNextYear: List[Bik],
+serviceBiksCountCY: Int,
+serviceBiksCountCYP1: Int,
+fromYTA: String,
+empRef: EmpRef)(implicit request:Request[_], messages: Messages)
+
+@sidebarLinks={
+<div class="sidebar-side-bar">
+    @helpAndContact()
+</div>
+}
+
+@parentTemplate(pageTitle = messages("Overview.heading") + " - " + messages("Service.title"), None, Some(empRef.toString),
+showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
+
+<h1 id="title">@messages("Overview.heading")</h1>
+
+<section id="what-to-do">
+
+    @if(taxDateUtils.dateWithinAnnualCodingRun(Calendar.getInstance.getTime)) {
+    <div id="latest-updates-message" class="panel-indent panel-border-wide">
+        <span>@messages("Service.news.banner.message")</span>
+    </div>
+    }
+
+    <h2 id="heading-cy1">
+        @messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")</h2>
+
+    @if(!registeredBenefitsNextYear.isEmpty) {
+    <p>
+        @messages("Overview.next.lead")
+    </p>
+
+    <h3 class="heading-medium">
+        @messages("Overview.table.heading.1")
+    </h3>
+    <dl class="govuk-check-your-answers cya-questions-long">
+        @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsNextYear).zipWithIndex ) {
+        <div>
+            <div class="cya-question" id="cy1-@n.iabdType">
+                @messages("BenefitInKind.label." + n.iabdType)
+            </div>
+            <div class="cya-answer">
+                <a id="cy1-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", uriInformation.iabdValueURLMapper(n.iabdType))'>
+                    @if(n.eilCount == 0) {@messages("Overview.table.exclude.none.link")} else {@messages("Overview.table.exclude.link")}
+                    @if(n.eilCount > 0) {(@n.eilCount)}
+                    <span class="visuallyhidden">@messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType)</span>
+                </a>
+            </div>
+            <div class="cya-change">
+                <a id="cy1-remove-@n.iabdType" href="@controllers.registration.routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(uriInformation.iabdValueURLMapper(n.iabdType))">
+                   <span aria-hidden="true">@messages("Overview.table.remove.link")</span>
+                    <span class="visuallyhidden">@messages("Overview.current.remove") @messages("BenefitInKind.label." + n.iabdType) @messages("Overview.current.from") @messages("Overview.current.payroll.p11d")</span>
+                </a>
+            </div>
+        </div>
+        }
+     </dl>
+    }else {
+    <p id="no-benefits">
+        @messages("Overview.next.lead.empty", taxYearRange.cy + "")
+    </p>
+    }
+
+    @if(registeredBenefitsNextYear.size < (serviceBiksCountCYP1 - pbikAppConfig.biksDecommissioned.size)) {
+    <a class="button" role="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
+        @if(registeredBenefitsNextYear.size > 0) {
+        @messages("Overview.table.add.link.more")
+        }else {
+        @messages("Overview.table.add.link")
+        }
+    </a>
+    }
+    <div style="clear:both"></div>
+
+
+    @if(cyAllowed || !registeredBenefitsCurrentYear.isEmpty) {
+    <h2>@messages("Overview.current.heading", taxYearRange.cyminus1 + "", taxYearRange.cy + "")</h2>
+
+    @if(!registeredBenefitsCurrentYear.isEmpty) {
+    <p>
+        @messages("Overview.current.lead")
+    </p>
+    }else {
+    <p>
+        @messages("Overview.current.lead.empty", taxYearRange.cyminus1 + "")
+    </p>
+    }
+    @if(!cyAllowed) {
+
+    }
+    @if(!registeredBenefitsCurrentYear.isEmpty) {
+
+    <dl class="govuk-check-your-answers cya-questions-short">
+        @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
+        <div>
+            <div class="cya-question" id="cy-@n.iabdType">
+                @messages("BenefitInKind.label." + n.iabdType)
+            </div>
+            <div class="cya-answer">
+                <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", uriInformation.iabdValueURLMapper(n.iabdType))'>
+                    @if(n.eilCount == 0) {@messages("Overview.table.exclude.none.link")} else {@messages("Overview.table.exclude.link")}
+                    @if(n.eilCount > 0) {(@n.eilCount)}
+                    <span class="visuallyhidden"> @messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType)</span>
+                </a>
+            </div>
+
+        </div>
+        }
+
+    </dl>
+    }
+
+    @if(cyAllowed) {
+    @if(registeredBenefitsCurrentYear.size < (serviceBiksCountCY - pbikAppConfig.biksDecommissioned.size)) {
+    <a class="button" role="button" id="add-next" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
+        @if(registeredBenefitsCurrentYear.size > 0) {
+        @messages("Overview.table.add.link.more")
+        }else {
+        @messages("Overview.table.add.link")
+        }
+    </a>
+    }
+    }
+    }
+
+    <div style="display:none" id="is-service-launched-indicator">@cyAllowed</div>
+
+</section>
+
+}

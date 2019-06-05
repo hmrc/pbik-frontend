@@ -19,6 +19,7 @@ package utils
 import controllers.FakePBIKApplication
 import models._
 import play.api.libs.Crypto
+import play.api.libs.crypto.CSRFTokenSigner
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import support.{TestAuthUser, TestSplunkLogger}
@@ -39,7 +40,8 @@ class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUs
     val controller: TestSplunkLogger = app.injector.instanceOf[TestSplunkLogger]
     val msg = "Hello"
 
-    def csrfToken: (String, String) = "csrfToken" -> Crypto.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+    val csrfTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
+    def csrfToken: (String, String) = "csrfToken" -> csrfTokenSigner.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
     def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
 
     def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken).withHeaders()

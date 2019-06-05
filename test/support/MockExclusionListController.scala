@@ -30,18 +30,21 @@ import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.i18n.MessagesApi
 import play.api.libs.json
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.Request
+import play.api.mvc.{MessagesControllerComponents, Request}
 import play.api.{Configuration, Environment}
 import services.{BikListService, EiLListService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import utils.{ControllersReferenceData, FormMappings, SplunkLogger, TaxDateUtils, URIInformation}
+import views.html.ErrorPage
+import views.html.exclusion.{ExclusionNinoOrNoNinoForm, ExclusionOverview, NinoExclusionSearchForm, NoNinoExclusionSearchForm, RemovalConfirmation, SearchResults, WhatNextExclusion, WhatNextRescind}
 
 import scala.concurrent.Future
 
 class MockExclusionListController @Inject()(messagesApi: MessagesApi,
                                             formMappings: FormMappings,
+                                            cc: MessagesControllerComponents,
                                             pbikAppConfig: PbikAppConfig,
                                             authenticate: AuthAction,
                                             noSessionCheck: NoSessionCheckAction,
@@ -49,33 +52,43 @@ class MockExclusionListController @Inject()(messagesApi: MessagesApi,
                                             bikListService: BikListService,
                                             tierConnector: HmrcTierConnector,
                                             runModeConfiguration: Configuration,
-                                            environment:Environment,
-                                            context: PbikContext,
                                             taxDateUtils: TaxDateUtils,
                                             splunkLogger: SplunkLogger,
                                             controllersReferenceData: ControllersReferenceData,
                                             uriInformation: URIInformation,
-                                            externalURLs: ExternalUrls,
-                                            localFormPartialRetriever: LocalFormPartialRetriever)
+                                            exclusionOverviewView: ExclusionOverview,
+                                            errorPageView: ErrorPage,
+                                            exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm,
+                                            ninoExclusionSearchFormView: NinoExclusionSearchForm,
+                                            noNinoExclusionSearchFormView: NoNinoExclusionSearchForm,
+                                            searchResultsView: SearchResults,
+                                            whatNextExclusionView: WhatNextExclusion,
+                                            removalConfirmationView: RemovalConfirmation,
+                                            whatNextRescindView: WhatNextRescind)
   extends ExclusionListController(
     formMappings,
     authenticate,
+    cc,
     messagesApi,
     noSessionCheck,
     eiLListService,
     bikListService,
     tierConnector,
-    runModeConfiguration,
-    environment,
     taxDateUtils,
     splunkLogger,
     controllersReferenceData,
-    runModeConfiguration)(
-    pbikAppConfig,
-    context,
+    runModeConfiguration,
     uriInformation,
-    externalURLs,
-    localFormPartialRetriever) with Futures {
+    exclusionOverviewView,
+    errorPageView,
+    exclusionNinoOrNoNinoFormView,
+    ninoExclusionSearchFormView,
+    noNinoExclusionSearchFormView,
+    searchResultsView,
+    whatNextExclusionView,
+    removalConfirmationView,
+    whatNextRescindView
+  ) with Futures {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
