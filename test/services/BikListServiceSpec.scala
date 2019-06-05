@@ -62,7 +62,7 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplica
       when(bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]], any[Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(listBiks))
 
       val result: (Map[String, String], List[Bik]) = Await.result(bikListService.currentYearList, 10 seconds)
-      result shouldBe(null, listBiks)
+      result._2 shouldBe listBiks
     }
 
     "Be able to get the BIKS for the current year - no biks returned" in {
@@ -81,7 +81,7 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplica
 
       val result = Await.result(bikListService.nextYearList, 10 seconds)
 
-      result shouldBe(null, listBiks)
+      result._2 shouldBe listBiks
     }
 
     "Be able to get the BIKS for the next year - no biks returned" in {

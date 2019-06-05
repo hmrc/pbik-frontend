@@ -21,9 +21,7 @@ import controllers.ExternalUrls
 import javax.inject.Inject
 import models._
 import play.api.Logger
-import play.api.Play.current
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.http.Upstream5xxResponse
@@ -77,10 +75,11 @@ object ControllersReferenceDataCodes {
 }
 
 class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
-                                         implicit val context: PbikContext,
+                                         override val messagesApi: MessagesApi)
+                                        (implicit val context: PbikContext,
                                          implicit val pbikAppConfig: AppConfig,
                                          implicit val externalURLs: ExternalUrls,
-                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FormMappings {
+                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FormMappings(messagesApi) with I18nSupport {
 
   def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
 

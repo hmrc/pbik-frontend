@@ -46,8 +46,7 @@ import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, URIInformati
 import scala.concurrent.Future
 
 
-class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
-  with FormMappings with TestAuthUser {
+class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
 
   // TODO The following needs refactoring as it similar to registrationcontrollertest, consider moving to utils
 
@@ -58,6 +57,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
+  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   implicit val pbikContext:PbikContext = app.injector.instanceOf[PbikContext]
 
@@ -68,7 +68,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
     EiLPerson("AE111111", "Alice", Some("In"), "Wonderland", Some("123"), Some("03/02/1978"), Some("female"), Some(10), 0),
     EiLPerson("AF111111", "Humpty", Some("Alexander"), "Dumpty", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0))
 
-  lazy val listOfPeopleForm: Form[EiLPersonList] = individualsForm.fill(EiLPersonList(listOfPeople))
+  lazy val listOfPeopleForm: Form[EiLPersonList] = formMappings.individualsForm.fill(EiLPersonList(listOfPeople))
   lazy val registrationList = RegistrationList(None, List(RegistrationItem("30", active = true, enabled = true)))
   lazy val registrationListMultiple = RegistrationList(None, List(RegistrationItem("30", active = true, enabled = true), RegistrationItem("8", true, true)))
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
@@ -220,7 +220,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
         UserName(Name(None, None)),
         request)
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      val formRegistrationList: Form[RegistrationList] = objSelectedForm
+      val formRegistrationList: Form[RegistrationList] = formMappings.objSelectedForm
       val formFilled = formRegistrationList.fill(registrationList)
       val year = TaxYear.taxYearFor(LocalDate.now).currentYear
       val result = whatNextPageController.loadWhatNextRegisteredBIK(formFilled, year)
@@ -237,7 +237,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
         UserName(Name(None, None)),
         request)
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      val formRegistrationList: Form[RegistrationList] = objSelectedForm
+      val formRegistrationList: Form[RegistrationList] = formMappings.objSelectedForm
       val formFilled = formRegistrationList.fill(registrationList)
       formRegistrationList.fill(registrationList)
       val result = whatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017)
@@ -255,7 +255,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
         UserName(Name(None, None)),
         request)
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationListMultiple)
+      val formRegistrationList: Form[RegistrationList] = formMappings.objSelectedForm.fill(registrationListMultiple)
       val result = await(Future {
         whatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016)
       })
@@ -276,7 +276,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication
       val whatNextRemoveMsg: String = Messages("whatNext.remove.p1")
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
 
-      val formRegistrationList: Form[RegistrationList] = objSelectedForm.fill(registrationList)
+      val formRegistrationList: Form[RegistrationList] = formMappings.objSelectedForm.fill(registrationList)
       val result = await(Future {
         whatNextPageController.loadWhatNextRemovedBIK(formRegistrationList, year = 2015)
       })

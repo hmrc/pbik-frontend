@@ -16,12 +16,16 @@
 
 package utils
 
+import controllers.FakePBIKApplication
 import models.Bik
+import org.scalatestplus.play.PlaySpec
 import play.api.test.FakeApplication
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
 
-class BikListUtilsSpec extends UnitSpec {
+class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
+
+  val bikListUtils = app.injector.instanceOf[BikListUtils]
 
   def fixture: Object {
     val alphaSorted: List[Int]
@@ -44,7 +48,7 @@ class BikListUtilsSpec extends UnitSpec {
    " result in the correct order" in {
       val f = fixture
       running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
-        assert(BikListUtils.sortAlphabeticallyByLabels(f.biks).map(x => x.iabdType.toInt) == f.alphaSorted)
+        assert(bikListUtils.sortAlphabeticallyByLabels(f.biks).map(x => x.iabdType.toInt) == f.alphaSorted)
       }
     }
   }
@@ -53,7 +57,7 @@ class BikListUtilsSpec extends UnitSpec {
    "  be the same size as the original list" in {
       val f = fixture
       running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
-        assert(BikListUtils.sortAlphabeticallyByLabels(f.biks).size == f.biks.size)
+        assert(bikListUtils.sortAlphabeticallyByLabels(f.biks).size == f.biks.size)
       }
     }
   }
@@ -62,7 +66,7 @@ class BikListUtilsSpec extends UnitSpec {
    " result in the correct order" in {
       val f = fixture
       running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
-        assert(BikListUtils.sortRegistrationsAlphabeticallyByLabels(BikListUtils.mergeSelected(f.biks, f.biks)).active.map(x => x.id.toInt) == f.alphaSorted)
+        assert(bikListUtils.sortRegistrationsAlphabeticallyByLabels(bikListUtils.mergeSelected(f.biks, f.biks)).active.map(x => x.id.toInt) == f.alphaSorted)
       }
     }
   }
@@ -71,7 +75,7 @@ class BikListUtilsSpec extends UnitSpec {
    "  be the same size as the original list" in {
       val f = fixture
       running(FakeApplication()) { // Note - we need FakeApplication as we need to read the Play Message file
-        assert(BikListUtils.sortRegistrationsAlphabeticallyByLabels(BikListUtils.mergeSelected(f.biks, f.biks)).active.size == f.biks.size)
+        assert(bikListUtils.sortRegistrationsAlphabeticallyByLabels(bikListUtils.mergeSelected(f.biks, f.biks)).active.size == f.biks.size)
       }
     }
   }
@@ -79,7 +83,7 @@ class BikListUtilsSpec extends UnitSpec {
   "When normalising additions and removals from a registered list of Biks, the remainder" should {
    " result in the correct values" in {
       val f = fixture
-      val ubinNormed = BikListUtils.normaliseSelectedBenefits(f.registered, f.modifications).map(x => x.iabdType.toInt).sorted
+      val ubinNormed = bikListUtils.normaliseSelectedBenefits(f.registered, f.modifications).map(x => x.iabdType.toInt).sorted
       assert(ubinNormed == f.normaliseResult)
     }
   }
@@ -87,7 +91,7 @@ class BikListUtilsSpec extends UnitSpec {
   "When normalising additions and removals from a registered list of Biks, the remainder" should {
    " not contain duplicates" in {
       val f = fixture
-      val normalised = BikListUtils.normaliseSelectedBenefits(f.registered, f.modifications)
+      val normalised = bikListUtils.normaliseSelectedBenefits(f.registered, f.modifications)
       assert(normalised.size == normalised.distinct.size)
     }
   }
@@ -95,7 +99,7 @@ class BikListUtilsSpec extends UnitSpec {
   "When removing matches is supplied the same list for the initial & checked lists, the remainder" should {
    " should be empty" in {
       val f = fixture
-      val shouldBeEmpty = BikListUtils.removeMatches(f.registered, f.registered)
+      val shouldBeEmpty = bikListUtils.removeMatches(f.registered, f.registered)
       assert(shouldBeEmpty.active.isEmpty)
     }
   }
@@ -103,8 +107,8 @@ class BikListUtilsSpec extends UnitSpec {
   "When removing matches the head element, the remainder" should {
    " should be the tail" in {
       val f = fixture
-      val expectedTail = BikListUtils.removeMatches(f.biks, List()).active.tail // manually remove an element
-      val shouldBeTail = BikListUtils.removeMatches(f.biks, List(f.biks.head)).active // check the function does the same
+      val expectedTail = bikListUtils.removeMatches(f.biks, List()).active.tail // manually remove an element
+      val shouldBeTail = bikListUtils.removeMatches(f.biks, List(f.biks.head)).active // check the function does the same
       assert(shouldBeTail == expectedTail)
     }
   }
@@ -112,14 +116,14 @@ class BikListUtilsSpec extends UnitSpec {
   "When merging the same list, the size of the matches" should {
    " equal the size of the list" in {
       val f = fixture
-      assert(BikListUtils.mergeSelected(f.biks, f.biks).active.size == f.biks.size)
+      assert(bikListUtils.mergeSelected(f.biks, f.biks).active.size == f.biks.size)
     }
   }
 
   "When merging a large list, with a subset of that list, the size of the merge results" should {
    " equal the size of the superset" in {
       val f = fixture
-      assert(BikListUtils.mergeSelected(f.biks, f.registered).active.size == f.biks.size)
+      assert(bikListUtils.mergeSelected(f.biks, f.registered).active.size == f.biks.size)
     }
   }
 
@@ -127,35 +131,35 @@ class BikListUtilsSpec extends UnitSpec {
    " equal the size of the original list as the unconnected elements wont be added" in {
       val f = fixture
       val unconnectedList = List(Bik("" + 100000, 40), Bik("" + 100001, 40))
-      assert(BikListUtils.mergeSelected(f.biks, unconnectedList).active.size == f.biks.size)
+      assert(bikListUtils.mergeSelected(f.biks, unconnectedList).active.size == f.biks.size)
     }
   }
 
   "When merging selected lists  all of the results" should {
    " have their active flags set as false" in {
       val f = fixture
-      assert(BikListUtils.mergeSelected(f.biks, f.biks).active.map(x => x.active).filter(y => y).size == f.biks.size)
+      assert(bikListUtils.mergeSelected(f.biks, f.biks).active.map(x => x.active).filter(y => y).size == f.biks.size)
     }
   }
 
   "When removing two identical lists , the size of the merge results" should {
    " equal zero" in {
       val f = fixture
-      assert(BikListUtils.removeMatches(f.biks, f.biks).active.size == 0)
+      assert(bikListUtils.removeMatches(f.biks, f.biks).active.size == 0)
     }
   }
 
   "When removing lists where one list has different elements the size" should {
    " equal the size of the different elements" in {
       val f = fixture
-      assert(BikListUtils.removeMatches(f.biks, f.biks).active.size == 0)
+      assert(bikListUtils.removeMatches(f.biks, f.biks).active.size == 0)
     }
   }
 
   "When removing lists where both list have unique elements the size" should {
    " of the result should equal the total number of differences" in {
       val f = fixture
-      assert(BikListUtils.removeMatches(f.biks, f.registered).active.size == f.biks.size - f.registered.size)
+      assert(bikListUtils.removeMatches(f.biks, f.registered).active.size == f.biks.size - f.registered.size)
     }
   }
 

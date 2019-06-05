@@ -26,11 +26,13 @@ import utils.FormMappings
 import views.helper.PBIKViewSpec
 
 
-class NextYearViewSpec extends PBIKViewSpec with FormMappings {
+class NextYearViewSpec extends PBIKViewSpec {
+
+  val formMappings = app.injector.instanceOf[FormMappings]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  override def view: Html = viewWithForm(objSelectedForm)
+  override def view: Html = viewWithForm(formMappings.objSelectedForm)
 
   implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
   implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
@@ -46,7 +48,7 @@ class NextYearViewSpec extends PBIKViewSpec with FormMappings {
     behave like pageWithContinueButtonForm("/payrollbik/cy1/add-benefit-expense", "Continue")
 
     "check the add benefit page for the errors" in {
-      val view = viewWithForm(objSelectedForm.bind(Map[String, String]()))
+      val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))
       val doc  = Jsoup.parse(view.toString())
 
       doc must haveErrorSummary(messages("AddBenefits.noselection.error"))

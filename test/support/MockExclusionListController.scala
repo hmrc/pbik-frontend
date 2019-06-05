@@ -27,6 +27,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.Futures
 import org.scalatest.time.{Millis, Seconds, Span}
+import play.api.i18n.MessagesApi
 import play.api.libs.json
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Request
@@ -35,11 +36,13 @@ import services.{BikListService, EiLListService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
-import utils.{ControllersReferenceData, SplunkLogger, TaxDateUtils, URIInformation}
+import utils.{ControllersReferenceData, FormMappings, SplunkLogger, TaxDateUtils, URIInformation}
 
 import scala.concurrent.Future
 
-class MockExclusionListController @Inject()(pbikAppConfig: PbikAppConfig,
+class MockExclusionListController @Inject()(messagesApi: MessagesApi,
+                                            formMappings: FormMappings,
+                                            pbikAppConfig: PbikAppConfig,
                                             authenticate: AuthAction,
                                             noSessionCheck: NoSessionCheckAction,
                                             eiLListService: EiLListService,
@@ -55,7 +58,9 @@ class MockExclusionListController @Inject()(pbikAppConfig: PbikAppConfig,
                                             externalURLs: ExternalUrls,
                                             localFormPartialRetriever: LocalFormPartialRetriever)
   extends ExclusionListController(
+    formMappings,
     authenticate,
+    messagesApi,
     noSessionCheck,
     eiLListService,
     bikListService,
@@ -64,7 +69,8 @@ class MockExclusionListController @Inject()(pbikAppConfig: PbikAppConfig,
     environment,
     taxDateUtils,
     splunkLogger,
-    controllersReferenceData)(
+    controllersReferenceData,
+    runModeConfiguration)(
     pbikAppConfig,
     context,
     uriInformation,

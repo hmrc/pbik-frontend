@@ -21,11 +21,14 @@ import connectors.HmrcTierConnector
 import controllers.ExternalUrls
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
+import play.api.i18n.MessagesApi
 import play.api.{Configuration, Environment}
 import services.{BikListService, EiLListService}
-import utils.{ControllersReferenceData, SplunkLogger, TaxDateUtils, URIInformation}
+import utils.{ControllersReferenceData, FormMappings, SplunkLogger, TaxDateUtils, URIInformation}
 
-class MockExclusionsDisallowedController @Inject()(pbikAppConfig: PbikAppConfig,
+class MockExclusionsDisallowedController @Inject()(formMappings: FormMappings,
+                                                   messagesApi: MessagesApi,
+                                                   pbikAppConfig: PbikAppConfig,
                                                    authenticate: AuthAction,
                                                    noSessionCheck: NoSessionCheckAction,
                                                    eiLListService: EiLListService,
@@ -39,7 +42,10 @@ class MockExclusionsDisallowedController @Inject()(pbikAppConfig: PbikAppConfig,
                                                    controllersReferenceData: ControllersReferenceData,
                                                    uriInformation: URIInformation,
                                                    externalURLs: ExternalUrls,
-                                                   localFormPartialRetriever: LocalFormPartialRetriever) extends MockExclusionListController(pbikAppConfig,
+                                                   localFormPartialRetriever: LocalFormPartialRetriever) extends MockExclusionListController(
+  messagesApi,
+  formMappings,
+  pbikAppConfig,
   authenticate,
   noSessionCheck,
   eiLListService,

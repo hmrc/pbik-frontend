@@ -24,8 +24,7 @@ import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.http.HttpEntity.Strict
-import play.api.i18n.Messages
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
@@ -40,8 +39,10 @@ import utils._
 import scala.concurrent.duration._
 
 class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
-  with TestAuthUser with FormMappings {
+  with TestAuthUser with I18nSupport {
 
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   val timeoutValue: FiniteDuration = 10 seconds
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()

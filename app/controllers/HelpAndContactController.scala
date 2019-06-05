@@ -23,8 +23,7 @@ import connectors._
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
 import play.api.Mode.Mode
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import play.twirl.api.Html
@@ -35,19 +34,20 @@ import utils.{ControllersReferenceData, _}
 
 import scala.concurrent.Future
 
-class HelpAndContactController @Inject()(formPartialProvider: FormPartialProvider,
+class HelpAndContactController @Inject()(val messagesApi: MessagesApi,
+                                         formPartialProvider: FormPartialProvider,
                                          bikListService: BikListService,
                                          helpAndContactSubmissionService: HelpAndContactSubmissionService,
                                          val authenticate: AuthAction,
                                          val noSessionCheck: NoSessionCheckAction,
-                                         implicit val pbikAppConfig: PbikAppConfig,
                                          configuration: Configuration,
                                          environment: Environment,
                                          controllersReferenceData: ControllersReferenceData,
-                                         splunkLogger: SplunkLogger,
+                                         splunkLogger: SplunkLogger)
+                                         (implicit val pbikAppConfig: PbikAppConfig,
                                          implicit val context: PbikContext,
                                          implicit val externalURLs: ExternalUrls,
-                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController {
+                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController with I18nSupport {
 
   val mode: Mode = environment.mode
   val runModeConfiguration: Configuration = configuration

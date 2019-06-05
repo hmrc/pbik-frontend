@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.play.views.html.helpers
-@import utils.BikListUtils._
+@import utils.BikListUtils
 @import utils.TaxDateUtils
 @import utils.URIInformation
 @import java.util.Calendar
@@ -36,9 +36,8 @@ taxDateUtils: TaxDateUtils,
 pbikAppConfig: PbikAppConfig,
 uriInformation: URIInformation,
 externalURLs: ExternalUrls,
-localFormPartialRetriever: LocalFormPartialRetriever)
-
-
+localFormPartialRetriever: LocalFormPartialRetriever,
+bikListUtils: BikListUtils)
 
 @sidebarLinks={
 <div class="sidebar-side-bar">
@@ -71,7 +70,7 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
         @messages("Overview.table.heading.1")
     </h3>
     <dl class="govuk-check-your-answers cya-questions-long">
-        @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsNextYear).zipWithIndex ) {
+        @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsNextYear).zipWithIndex ) {
         <div>
             <div class="cya-question" id="cy1-@n.iabdType">
                 @messages("BenefitInKind.label." + n.iabdType)
@@ -128,7 +127,7 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
     @if(!registeredBenefitsCurrentYear.isEmpty) {
 
     <dl class="govuk-check-your-answers cya-questions-short">
-        @for( (n, index) <- sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
+        @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
         <div>
             <div class="cya-question" id="cy-@n.iabdType">
                 @messages("BenefitInKind.label." + n.iabdType)

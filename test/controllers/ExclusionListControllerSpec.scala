@@ -32,7 +32,8 @@ import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
-import play.api.libs.{Crypto, json}
+import play.api.libs.crypto.CSRFTokenSigner
+import play.api.libs.json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -51,7 +52,6 @@ import scala.language.postfixOps
 class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with FakePBIKApplication
   with TestAuthUser {
 
-
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
@@ -60,7 +60,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     .overrides(bind[EiLListService].to(classOf[StubEiLListService]))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
-
 
   val controllersReferenceData: ControllersReferenceData = app.injector.instanceOf[ControllersReferenceData]
   val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
@@ -71,19 +70,12 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     models.TaxYearRange(date.getYear, date.getYear + 1, date.getYear + 2)
   }
 
-  // implicit val user: AuthContext = createDummyUser("testid")
   lazy val ListOfPeople: List[EiLPerson] = List(EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
     EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
     EiLPerson("AC111111", "Humpty", Some("Alexander"), "Dumpty", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
     EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None, 0),
     EiLPerson("AE111111", "Alice", Some("In"), "Wonderland", Some("123"), Some("03/02/1978"), Some("female"), Some(10), 0),
     EiLPerson("AF111111", "Humpty", Some("Alexander"), "Dumpty", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0))
-
-  //  //TODO
-  //  class MockNoRegisteredBiksExclusionListController extends MockExclusionListController {
-  //    override val  bikListService: BikListService = new StubNoRegisteredBikListService
-  //  }
-
 
   val mockExclusionListController: MockExclusionListController = {
     val melc: MockExclusionListController = app.injector.instanceOf[MockExclusionListController]
@@ -342,7 +334,9 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     "see the NINO specific fields" in {
       val title = Messages("ExclusionSearch.form.title")
 
-      def csrfToken = "csrfToken" -> Crypto.generateToken
+      val csrfTokenSigner: CSRFTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
+
+      def csrfToken: (String, String) = "csrfToken" -> csrfTokenSigner.generateToken
 
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 10 seconds
@@ -718,7 +712,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionListController.processIndividualExclusionForm(controllersReferenceData.individualsFormWithRadio.fill("", EiLPersonList(ListOfPeople)), TEST_YEAR_CODE, TEST_IABD_VALUE, controllersReferenceData.YEAR_RANGE))(timeout)
+      val result = await(mockExclusionListController.processIndividualExclusionForm(controllersReferenceData.individualsFormWithRadio.fill(("", EiLPersonList(ListOfPeople))), TEST_YEAR_CODE, TEST_IABD_VALUE, controllersReferenceData.YEAR_RANGE))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(excludedText)

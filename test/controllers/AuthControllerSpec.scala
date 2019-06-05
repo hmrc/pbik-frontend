@@ -17,7 +17,7 @@
 package controllers
 
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.Crypto
+import play.api.libs.crypto.CSRFTokenSigner
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -30,7 +30,9 @@ class AuthControllerSpec extends PlaySpec with FakePBIKApplication {
   class SetUp {
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
-    def csrfToken: (String, String) = "csrfToken" -> Crypto.generateToken
+    val csrfTokenSigner: CSRFTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
+
+    def csrfToken: (String, String) = "csrfToken" -> csrfTokenSigner.generateToken
 
     def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
 

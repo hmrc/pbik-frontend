@@ -16,11 +16,10 @@
 
 package controllers
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.AppConfig
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
-import javax.inject.Inject
 import models._
 import org.mockito.Matchers.{eq => mockEq, _}
 import org.mockito.Mockito._
@@ -28,31 +27,28 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.concurrent.ScalaFutures._
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.PlaySpec
-import play.api.data.Form
+import play.api.Application
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
-import play.api.mvc.{Result, _}
+import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.{Application, Configuration, Environment}
-import play.twirl.api.HtmlFormat
-import services.{BikListService, RegistrationService}
 import support.{TestAuthUser, TestCYEnabledConfig}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
-import utils.{ControllersReferenceData, _}
+import utils._
 
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
-class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
+class ManageRegistrationControllerSpec extends PlaySpec
   with TestAuthUser with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
@@ -64,7 +60,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
-
+  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n=> RegistrationItem("" + (n + 1), active = true, enabled = true))
@@ -254,7 +250,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   "When loading the updateRegisteredBenefitTypes, an authorised user" should {
     "persist their changes and be redirected to the what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("software", None)))
-      val form = objSelectedForm.fill(mockRegistrationList)
+      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
@@ -290,7 +286,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   "When a user removes a benefit" should {
     "selecting 'software' should redirect to what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("software", None)))
-      val form = objSelectedForm.fill(mockRegistrationList)
+      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
@@ -304,7 +300,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   "When a user removes a benefit" should {
     "selecting 'guidance' should redirect to what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("guidance", None)))
-      val form = objSelectedForm.fill(mockRegistrationList)
+      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
@@ -318,7 +314,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   "When a user removes a benefit" should {
     "selecting 'not-clear' should redirect to what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("not-clear", None)))
-      val form = objSelectedForm.fill(mockRegistrationList)
+      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
@@ -332,7 +328,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   "When a user removes a benefit" should {
     "selecting 'not-offering' should redirect to what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("not-offering", None)))
-      val form = objSelectedForm.fill(mockRegistrationList)
+      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
@@ -346,7 +342,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   "When a user removes a benefit" should {
     "selecting 'other' & providing 'info' should redirect to what next page" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("other", Some("other info here"))))
-      val form = objSelectedForm.fill(mockRegistrationList)
+      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val title = Messages("whatNext.subHeading")
@@ -360,7 +356,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
   "When a user removes a benefit" should {
     "selecting 'other' & not providing 'info' should redirect with error" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("other", None)))
-      val form = objSelectedForm.fill(mockRegistrationList)
+      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       val errorMsg = Messages("RemoveBenefits.reason.other.required")
@@ -374,7 +370,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
     "selecting no reason should redirect with error" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)), None)
       val bikList = List(Bik("8", 10))
-      val form = objSelectedForm.fill(mockRegistrationList)
+      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -393,7 +389,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
         val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("other", Some(""))))
         val bikList = List(Bik("8", 10))
-        val form = objSelectedForm.fill(mockRegistrationList)
+        val form = formMappings.objSelectedForm.fill(mockRegistrationList)
         val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -412,7 +408,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", true, true)),
         Some(BinaryRadioButtonWithDesc("other", Some("bla bla other reason text"))))
       val bikList = List(Bik("8", 10))
-      val form = objSelectedForm.fill(mockRegistrationList)
+      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
@@ -429,7 +425,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FormMappings
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
         Some(BinaryRadioButtonWithDesc("software", None)))
       val bikList = List(Bik("8", 10))
-      val form = objSelectedForm.fill(mockRegistrationList)
+      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(

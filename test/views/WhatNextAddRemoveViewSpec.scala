@@ -25,11 +25,13 @@ import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
 
 
-class WhatNextAddRemoveViewSpec extends PBIKViewSpec with FormMappings {
+class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
+
+  val formMappings = app.injector.instanceOf[FormMappings]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  override def view: Html = viewWithForm(objSelectedForm)
+  override def view: Html = viewWithForm(formMappings.objSelectedForm)
 
   implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
   implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]

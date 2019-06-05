@@ -24,7 +24,9 @@ import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
 
 
-class WhatNextExclusionViewSpec extends PBIKViewSpec with FormMappings {
+class WhatNextExclusionViewSpec extends PBIKViewSpec {
+
+  val formMappings = app.injector.instanceOf[FormMappings]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 

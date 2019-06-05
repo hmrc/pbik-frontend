@@ -34,12 +34,12 @@ import services.HelpAndContactSubmissionService
 import support.{StubHelpAndContactSubmissionService, TestAuthUser}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
-import utils._
+import utils.{FormMappings, _}
 
 import scala.concurrent.Future
 
 class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
-  with TestAuthUser with FormMappings {
+  with TestAuthUser {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(config)
@@ -48,6 +48,8 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[HelpAndContactSubmissionService].to(classOf[StubHelpAndContactSubmissionService]))
     .build()
+
+  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
 
   val controller = app.injector.instanceOf[HelpAndContactController]
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
@@ -69,7 +71,7 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = await(mockHelpController.submitContactHmrcForm(request))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      result.body.asInstanceOf[Strict].data.utf8String must include("")//TODO - Does this do anything?
+      result.body.asInstanceOf[Strict].data.utf8String must include("") //TODO - Does this do anything?
     }
 
     "be able to submit the contact form successfully" in {
