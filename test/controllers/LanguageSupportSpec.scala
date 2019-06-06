@@ -42,7 +42,7 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser
   with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
-    .overrides(bind[AppConfig].toInstance(mock(classOf[PbikAppConfig])))
+    .overrides(bind[AppConfig].to(classOf[PbikAppConfig]))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .overrides(bind[BikListService].to(classOf[StubbedBikListService]))
     .overrides(bind[RegistrationService].to(classOf[StubbedRegistrationService]))
