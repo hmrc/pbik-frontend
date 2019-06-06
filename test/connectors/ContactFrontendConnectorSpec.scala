@@ -53,7 +53,7 @@ class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with Moc
   "ContactFrontendConnector" must {
 
     val dummyResponseHtml = "<div id=\"contact-partial\"></div>"
-    lazy val serviceBase = s"${testConfiguration.get[Service]("contact-frontend")}/contact"
+    lazy val serviceBase = s"${testConfiguration.get[Service]("microservice.services.contact-frontend")}/contact"
     lazy val serviceUrl = s"$serviceBase/problem_reports"
 
     "contact the front end service to download the 'get help' partial" in {

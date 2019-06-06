@@ -43,14 +43,14 @@ trait AppConfig {
 
 class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
 
-  override lazy val contactFrontendService: String = configuration.get[Service]("contact-frontend")
+  override lazy val contactFrontendService: String = configuration.get[Service]("microservice.services.contact-frontend")
   override lazy val contactFormServiceIdentifier = "PayrollBIK"
   override lazy val maximumExclusions:Int = configuration.get[Int]("pbik.exclusions.maximum")
 
   private lazy val contactHost = configuration.get[String]("contact-frontend.host")
 
   override lazy val assetsPrefix: String = configuration.get[String]("assets.url") + configuration.get[String]("assets.version")
-  override lazy val reportAProblemPartialUrl = s"${configuration.get[Service]("contact-frontend")}/contact/problem_reports"
+  override lazy val reportAProblemPartialUrl = s"${configuration.get[Service]("microservice.services.contact-frontend")}/contact/problem_reports"
 
   override lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"

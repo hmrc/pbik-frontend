@@ -18,13 +18,12 @@ package utils
 
 import config.Service
 import javax.inject.Inject
-import play.api.Mode.Mode
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Logger}
 import utils.Exceptions.InvalidBikTypeURIException
 
 class URIInformation @Inject()(configuration: Configuration) extends URIValues {
 
-  val baseUrl: String = configuration.get[Service]("pbik") + "/epaye"
+  val baseUrl: String = configuration.get[Service]("microservice.services.pbik") + "/epaye"
 
   val urlMappedIABDValues = List(
     ("40", "assets-transferred"),

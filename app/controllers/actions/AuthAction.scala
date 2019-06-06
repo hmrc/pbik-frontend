@@ -74,6 +74,6 @@ trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with Ac
 class AuthConnector @Inject()(val http: HttpClient,
                               configuration: Configuration) extends PlayAuthConnector {
 
-  override val serviceUrl: String = configuration.get[Service]("auth")
+  override val serviceUrl: String = configuration.get[Service]("microservice.services.auth")
 
 }

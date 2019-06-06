@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class HmrcTierConnector @Inject()(client: HttpClient,
                                   configuration: Configuration) {
 
-  val serviceUrl: String = configuration.get[Service]("government-gateway")
+  val serviceUrl: String = configuration.get[Service]("microservice.services.government-gateway")
 
   var pbikHeaders: Map[String, String] = Map[String, String]()
 

@@ -30,7 +30,7 @@ class ContactFrontendConnector @Inject()(val client: HttpClient,
                                          configuration: Configuration,
                                          pBIKHeaderCarrierForPartialsConverter: PBIKHeaderCarrierForPartialsConverter) {
 
-  lazy val serviceBase = s"${configuration.get[Service]("contact-frontend")}/contact"
+  lazy val serviceBase = s"${configuration.get[Service]("microservice.services.contact-frontend")}/contact"
 
   def getHelpPartial(implicit hc: HeaderCarrier): Future[String] = {
 
