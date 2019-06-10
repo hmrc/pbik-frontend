@@ -16,22 +16,22 @@
 
 package controllers
 
-import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.PbikAppConfig
 import controllers.actions.{AuthAction, NoSessionCheckAction, UnauthorisedAction}
 import javax.inject.Inject
 import models._
+import play.api.Logger
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.{Result, _}
-import play.api.{Configuration, Environment, Logger}
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{ControllersReferenceData, SplunkLogger, URIInformation, _}
-import views.html.{ErrorPage, Overview}
 import views.html.registration.CautionAddCurrentTaxYear
+import views.html.{ErrorPage, Overview}
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
 
 class HomePageController @Inject()(override val messagesApi: MessagesApi,
@@ -47,7 +47,7 @@ class HomePageController @Inject()(override val messagesApi: MessagesApi,
                                    uriInformation: URIInformation,
                                    errorPageView: ErrorPage,
                                    cautionAddCurrentTaxYearView: CautionAddCurrentTaxYear,
-                                   overviewView: Overview)(implicit val ec: ExecutionContextExecutor) extends FrontendController(cc) with I18nSupport {
+                                   overviewView: Overview)(implicit val ec: ExecutionContext) extends FrontendController(cc) with I18nSupport {
 
   def notAuthorised: Action[AnyContent] = authenticate {
     implicit request =>
