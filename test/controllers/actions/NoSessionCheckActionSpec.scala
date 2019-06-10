@@ -28,10 +28,10 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.SessionKeys
 
+import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import scala.concurrent.ExecutionContext.Implicits._
 
 class NoSessionCheckActionSpec extends PlaySpec
   with ScalaFutures
@@ -71,8 +71,6 @@ class NoSessionCheckActionSpec extends PlaySpec
               case Left(callResult) =>
                 val headers: Map[String, String] = callResult.header.headers
                 headers.getOrElse("Location", "") must include("/payrollbik/payrolled-benefits-expenses")
-                headers.getOrElse("Set-Cookie", "") must include("mdtp=")
-                headers.getOrElse("Set-Cookie", "") must include("Path=/; HTTPOnly")
               case Right(_) => fail("Result not a Left")
             }
         }

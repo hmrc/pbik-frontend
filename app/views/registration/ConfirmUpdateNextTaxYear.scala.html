@@ -147,9 +147,9 @@ back_link: BackLink)
                 'onsubmit -> "gaEventConfirmRemoveBenefits()", 'id -> "form-remove") {
                     <ul  id="list-of-confirmation-benefits" class="list-bullet text" style="display:none">
                         @helper.repeat(bikForm("actives"), min=0) { activeField =>
-                            @helper.inputText(activeField("uid").copy(value=Some(uriInformation.iabdValueURLDeMapper(activeField("uid").value.get))), '_label -> null, 'style -> "display: none")
-                            @helper.inputText(activeField("pbik_seq"), '_label -> null, 'style -> "display: none" )
-                            @helper.inputText(activeField("active"), '_label -> null, 'style -> "display: none" )
+                            @helper.inputText(activeField("uid").copy(value=Some(uriInformation.iabdValueURLDeMapper(activeField("uid").value.get))), 'style -> "display: none")
+                            @helper.inputText(activeField("pbik_seq"), 'style -> "display: none" )
+                            @helper.inputText(activeField("active"), 'style -> "display: none" )
                             <li id='confirmation-row-confirmation-@uriInformation.iabdValueURLDeMapper(activeField("uid").value.get)'>
                                 @messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(activeField("uid").value.get) )</li>
                         }

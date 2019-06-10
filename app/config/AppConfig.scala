@@ -16,11 +16,8 @@
 
 package config
 
-import java.util.Collections
-
 import javax.inject.Inject
-import play.api.Mode.Mode
-import play.api.{Configuration, Environment}
+import play.api.Configuration
 
 trait AppConfig {
   val assetsPrefix: String
@@ -47,7 +44,7 @@ class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
   override lazy val contactFormServiceIdentifier = "PayrollBIK"
   override lazy val maximumExclusions:Int = configuration.get[Int]("pbik.exclusions.maximum")
 
-  private lazy val contactHost = configuration.get[String]("contact-frontend.host")
+  private lazy val contactHost: Service = configuration.get[Service]("microservice.services.contact-frontend")
 
   override lazy val assetsPrefix: String = configuration.get[String]("assets.url") + configuration.get[String]("assets.version")
   override lazy val reportAProblemPartialUrl = s"${configuration.get[Service]("microservice.services.contact-frontend")}/contact/problem_reports"

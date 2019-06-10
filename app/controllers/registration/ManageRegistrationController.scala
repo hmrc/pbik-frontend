@@ -18,10 +18,10 @@ package controllers.registration
 
 import java.util.UUID
 
-import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.PbikAppConfig
 import connectors.HmrcTierConnector
+import controllers.WhatNextPageController
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import controllers.{ExternalUrls, WhatNextPageController}
 import javax.inject.Inject
 import models._
 import play.api.data.Form
@@ -198,7 +198,6 @@ class ManageRegistrationController @Inject()(bikListUtils: BikListUtils,
       controllersReferenceData.responseErrorHandler(resultFuture)
   }
 
-
   def removeNextYearRegisteredBenefitTypes: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val persistentBiks: List[Bik] = controllersReferenceData.generateListOfBiksBasedOnForm(ControllersReferenceDataCodes.BIK_REMOVE_STATUS)
@@ -283,8 +282,9 @@ class ManageRegistrationController @Inject()(bikListUtils: BikListUtils,
       case Some(reasonValue) if ControllersReferenceDataCodes.BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue) => {
         reasonValue.info match {
           case _ if reasonValue.selectionValue.equals("other") && reasonValue.info.getOrElse("").trim.isEmpty => {
+            val message: Flash = Flash(Map(("error", Messages("RemoveBenefits.reason.other.required")), ("test", "test")))
             Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(uriInformation.iabdValueURLMapper(persistentBiks.head.iabdType)
-            )).flashing("error" -> Messages("RemoveBenefits.reason.other.required"))
+            )).flashing(message)
           }
           case Some(info) => {
             tierConnector.genericPostCall(uriInformation.baseUrl, uriInformation.updateBenefitTypesPath,
@@ -300,8 +300,10 @@ class ManageRegistrationController @Inject()(bikListUtils: BikListUtils,
           }
         }
       }
-      case _ => Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(uriInformation.iabdValueURLMapper(persistentBiks.head.iabdType)
-      )).flashing("error" -> Messages("RemoveBenefits.reason.no.selection"))
+      case _ => {
+        Redirect(routes.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(uriInformation.iabdValueURLMapper(persistentBiks.head.iabdType)
+        )).flashing("error" -> Messages("RemoveBenefits.reason.no.selection"))
+      }
     }
   }
 

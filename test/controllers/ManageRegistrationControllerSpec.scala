@@ -29,8 +29,8 @@ import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.http.HttpEntity.Strict
-import play.api.i18n.{Lang, Messages}
 import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{Lang, Messages}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
@@ -60,21 +60,20 @@ class ManageRegistrationControllerSpec extends PlaySpec
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
-  implicit val lang = Lang("en-GB")
+  implicit val lang: Lang = Lang("en-GB")
   val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
-  lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n=> RegistrationItem("" + (n + 1), active = true, enabled = true))
+  lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
   val timeoutValue: FiniteDuration = 15 seconds
 
-  def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
+  def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   class FakeResponse extends HttpResponse {
     override def status = 200
   }
 
   val registrationController: ManageRegistrationController = {
-
 
     val r = app.injector.instanceOf[ManageRegistrationController]
 
@@ -84,8 +83,6 @@ class ManageRegistrationControllerSpec extends PlaySpec
     def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
       Future.successful(AuditResult.Success)
     }
-
-
 
     implicit lazy val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
 
@@ -137,23 +134,23 @@ class ManageRegistrationControllerSpec extends PlaySpec
   }
 
   "When loading the next tax years on-remove data, the RegistrationController" should {
-      "state the status is ok" in {
-        implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-        implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-          EmpRef("taxOfficeNumber", "taxOfficeReference"),
-          UserName(Name(None, None)),
-          request)
-        implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-        implicit val timeout: FiniteDuration = timeoutValue
-        val result = await(registrationController.loadNextTaxYearOnRemoveData)(timeout)
-        result.header.status must be(OK) // 200
-      }
+    "state the status is ok" in {
+      implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+        EmpRef("taxOfficeNumber", "taxOfficeReference"),
+        UserName(Name(None, None)),
+        request)
+      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
+      implicit val timeout: FiniteDuration = timeoutValue
+      val result = await(registrationController.loadNextTaxYearOnRemoveData)(timeout)
+      result.header.status must be(OK) // 200
     }
+  }
 
   "The Registration Controller" should {
     "display the correct Biks on the removal screen" in {
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      val title = Messages("RemoveBenefits.Heading").substring(0,44)
+      val title = Messages("RemoveBenefits.Heading").substring(0, 44)
       implicit lazy val authenticatedRequest: AuthenticatedRequest[AnyContent] = createDummyUser(mockrequest)
 
       implicit val timeout: FiniteDuration = timeoutValue
@@ -194,7 +191,6 @@ class ManageRegistrationControllerSpec extends PlaySpec
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("AddBenefits.ChooseBenefitsLabel.1", "" + YEAR_RANGE.cy, "" + YEAR_RANGE.cyplus1))
     }
   }
-
 
   "When loading the nextTaxYearRemoveOnPageLoad, an authorised user" should {
     "be directed to the cy + 1 remove page with biks to remove" in {
@@ -380,64 +376,72 @@ class ManageRegistrationControllerSpec extends PlaySpec
         request)
       val errorMsg = Messages("RemoveBenefits.reason.no.selection")
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(Future{registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
-      result.header.status must be(SEE_OTHER) // 303
-      result.header.headers.getOrElse("Location","") must be("/payrollbik/services/remove-benefit-expense")
-      result.header.headers.getOrElse("Set-Cookie","").replace("+"," ").replace("%27", "'") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
+      val result = Future {
+        registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)
+      }(scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result) must be(Some("/payrollbik/services/remove-benefit-expense"))
+      flash(result).get("error") must be(Some(errorMsg))
     }
 
     "selecting 'other' reason but no explanation should redirect with error" in {
-        val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
-          Some(BinaryRadioButtonWithDesc("other", Some(""))))
-        val bikList = List(Bik("8", 10))
-        val form = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
-        val errorMsg = Messages("RemoveBenefits.reason.other.required")
-        implicit val timeout: FiniteDuration = timeoutValue
-        val result = await(Future{registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
-        result.header.status must be(SEE_OTHER) // 303
-        result.header.headers.getOrElse("Location","") must be("/payrollbik/services/remove-benefit-expense")
-        result.header.headers.getOrElse("Set-Cookie","").replace("+"," ").replace("%E2%80%99", "’") must be("PLAY_FLASH=error=" + errorMsg + "; Path=/; HTTPOnly")
-    }
-
-    "selecting 'other' reason but and providing explanation should redirect to what-next" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", true, true)),
-        Some(BinaryRadioButtonWithDesc("other", Some("bla bla other reason text"))))
-      val bikList = List(Bik("8", 10))
-      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
-      implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(Future{registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
-      result.header.status must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
-    }
-
-    "selecting 'software' reason should redirect to what-next" in {
       val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None)))
+        Some(BinaryRadioButtonWithDesc("other", Some(""))))
       val bikList = List(Bik("8", 10))
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
-      implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
         UserName(Name(None, None)),
         request)
+      val errorMsg = Messages("RemoveBenefits.reason.other.required")
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(Future{registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)}(scala.concurrent.ExecutionContext.Implicits.global))
-      result.header.status must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
+      val result = Future {
+        registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)
+      }(scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result) must be(Some("/payrollbik/services/remove-benefit-expense"))
+      flash(result).get("error") must be(Some(errorMsg))
     }
+  }
+
+  "selecting 'other' reason but and providing explanation should redirect to what-next" in {
+    val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", true, true)),
+      Some(BinaryRadioButtonWithDesc("other", Some("bla bla other reason text"))))
+    val bikList = List(Bik("8", 10))
+    val form = formMappings.objSelectedForm.fill(mockRegistrationList)
+    val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+      EmpRef("taxOfficeNumber", "taxOfficeReference"),
+      UserName(Name(None, None)),
+      request)
+    implicit val timeout: FiniteDuration = timeoutValue
+    val result = await(Future {
+      registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)
+    }(scala.concurrent.ExecutionContext.Implicits.global))
+    result.header.status must be(OK) // 200
+    result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
+  }
+
+  "selecting 'software' reason should redirect to what-next" in {
+    val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
+      Some(BinaryRadioButtonWithDesc("software", None)))
+    val bikList = List(Bik("8", 10))
+    val form = formMappings.objSelectedForm.fill(mockRegistrationList)
+    val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+    implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
+    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
+      EmpRef("taxOfficeNumber", "taxOfficeReference"),
+      UserName(Name(None, None)),
+      request)
+    implicit val timeout: FiniteDuration = timeoutValue
+    val result = await(Future {
+      registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)
+    }(scala.concurrent.ExecutionContext.Implicits.global))
+    result.header.status must be(OK) // 200
+    result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
   }
 
 }
