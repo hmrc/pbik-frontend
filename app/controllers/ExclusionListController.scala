@@ -23,43 +23,47 @@ import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
 import models._
-import play.api.Mode.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc._
-import play.api.{Configuration, Environment, Logger, Play}
+import play.api.{Configuration, Logger}
 import services.{BikListService, EiLListService}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils.{ControllersReferenceData, SplunkLogger, _}
+import views.html.ErrorPage
+import views.html.exclusion._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ExclusionListController @Inject()(formMappings: FormMappings,
                                         val authenticate: AuthAction,
-                                        val messagesApi: MessagesApi,
+                                        cc: MessagesControllerComponents,
+                                        override val messagesApi: MessagesApi,
                                         val noSessionCheck: NoSessionCheckAction,
                                         val eiLListService: EiLListService,
                                         val bikListService: BikListService,
                                         val tierConnector: HmrcTierConnector, //TODO: Why do we need this?,
-                                        val runModeConfiguration: Configuration,
-                                        environment:Environment,
                                         taxDateUtils: TaxDateUtils,
                                         splunkLogger: SplunkLogger,
                                         controllersReferenceData: ControllersReferenceData,
-                                        configuration: Configuration)(
-                                         implicit val pbikAppConfig: PbikAppConfig,
-                                         implicit val context: PbikContext,
-                                         implicit val uriInformation: URIInformation,
-                                         implicit val externalURLs: ExternalUrls,
-                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever
-                                       ) extends FrontendController with I18nSupport {
-  val mode: Mode = environment.mode
+                                        configuration: Configuration,
+                                        uriInformation: URIInformation,
+                                        exclusionOverviewView: ExclusionOverview,
+                                        errorPageView: ErrorPage,
+                                        exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm,
+                                        ninoExclusionSearchFormView: NinoExclusionSearchForm,
+                                        noNinoExclusionSearchFormView: NoNinoExclusionSearchForm,
+                                        searchResultsView: SearchResults,
+                                        whatNextExclusionView: WhatNextExclusion,
+                                        removalConfirmationView: RemovalConfirmation,
+                                        whatNextRescindView: WhatNextRescind
+                                       ) extends FrontendController(cc) with I18nSupport {
 
-  lazy val exclusionsAllowed: Boolean = configuration.getBoolean("pbik.enabled.eil").getOrElse(false)
+  lazy val exclusionsAllowed: Boolean = configuration.get[Boolean]("pbik.enabled.eil")
 
   def mapYearStringToInt(URIYearString: String): Future[Int] = {
     URIYearString match {
@@ -93,7 +97,7 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
           nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
           currentYearEIL: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
         } yield {
-          Ok(views.html.exclusion.exclusionOverview(controllersReferenceData.YEAR_RANGE,
+          Ok(exclusionOverviewView(controllersReferenceData.YEAR_RANGE,
             isCurrentTaxYear,
             iabdTypeValue,
             currentYearEIL.sortWith(_.surname < _.surname),
@@ -104,7 +108,7 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
         controllersReferenceData.responseErrorHandler(staticDataRequest)
 
       } else {
-        Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.FEATURE_RESTRICTED,
+        Future.successful(Ok(errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED,
           taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
       }
 
@@ -117,11 +121,11 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
         val resultFuture = for {
           _ <- validateRequest(isCurrentTaxYear, iabdType)
         } yield {
-          Ok(views.html.exclusion.exclusionNinoOrNoNinoForm(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, empRef = request.empRef))
+          Ok(exclusionNinoOrNoNinoFormView(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear, iabdTypeValue, empRef = request.empRef))
         }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
-        Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.FEATURE_RESTRICTED,
+        Future.successful(Ok(errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED,
           taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
       }
   }
@@ -141,9 +145,9 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
               _ <- validateRequest(isCurrentTaxYear, iabdType)
             } yield {
               selectedValue match {
-                case ControllersReferenceDataCodes.FORM_TYPE_NINO => Ok(views.html.exclusion.ninoExclusionSearchForm(taxYearRange,
+                case ControllersReferenceDataCodes.FORM_TYPE_NINO => Ok(ninoExclusionSearchFormView(taxYearRange,
                   isCurrentTaxYear, iabdTypeValue, formMappings.exclusionSearchFormWithNino, empRef = request.empRef))
-                case ControllersReferenceDataCodes.FORM_TYPE_NONINO => Ok(views.html.exclusion.noNinoExclusionSearchForm(taxYearRange,
+                case ControllersReferenceDataCodes.FORM_TYPE_NONINO => Ok(noNinoExclusionSearchFormView(taxYearRange,
                   isCurrentTaxYear, iabdTypeValue, formMappings.exclusionSearchFormWithoutNino, empRef = request.empRef))
                 case "" => Redirect(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(
                   isCurrentTaxYear, iabdTypeValue)).flashing("error" -> Messages("ExclusionDecision.noselection.error"))
@@ -153,7 +157,7 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
         )
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
-        Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+        Future.successful(Ok(errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
       }
   }
 
@@ -186,7 +190,7 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
         )
         controllersReferenceData.responseErrorHandler(futureResult)
       } else {
-        Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+        Future.successful(Ok(errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
       }
   }
 
@@ -204,9 +208,9 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
         val message = if (existsAlready) Messages("ExclusionSearch.Fail.Exists.P") else Messages("ExclusionSearch.Fail.P")
 
         formType match {
-          case ControllersReferenceDataCodes.FORM_TYPE_NINO => Ok(views.html.exclusion.ninoExclusionSearchForm(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear,
+          case ControllersReferenceDataCodes.FORM_TYPE_NINO => Ok(ninoExclusionSearchFormView(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear,
             iabdTypeValue, form.bindFromRequest().withError("status", message), existsAlready, empRef = request.empRef))
-          case _ => Ok(views.html.exclusion.noNinoExclusionSearchForm(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear,
+          case _ => Ok(noNinoExclusionSearchFormView(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear,
             iabdTypeValue, form.bindFromRequest().withError("status", message), existsAlready, empRef = request.empRef))
         }
 
@@ -214,7 +218,7 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
         Logger.info("Exclusion search matched " + listOfMatches.size + " employees with Optimistic locks " + listOfMatches.map(x => x.perOptLock))
         val filledListOfMatchesForm = formMappings.individualsFormWithRadio.fill((individualSelectionOption.getOrElse(""),
           EiLPersonList(listOfMatches)))
-        Ok(views.html.exclusion.searchResults(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear, iabdTypeValue,
+        Ok(searchResultsView(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear, iabdTypeValue,
           filledListOfMatchesForm, formType, empRef = request.empRef))
 
     }
@@ -229,9 +233,9 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
                                    (implicit request: AuthenticatedRequest[_]): Future[Result] = {
     Future {
       formType match {
-        case ControllersReferenceDataCodes.FORM_TYPE_NINO => Ok(views.html.exclusion.ninoExclusionSearchForm(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear,
+        case ControllersReferenceDataCodes.FORM_TYPE_NINO => Ok(ninoExclusionSearchFormView(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear,
           iabdTypeValue, formWithErrors, empRef = request.empRef))
-        case ControllersReferenceDataCodes.FORM_TYPE_NONINO => Ok(views.html.exclusion.noNinoExclusionSearchForm(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear,
+        case ControllersReferenceDataCodes.FORM_TYPE_NONINO => Ok(noNinoExclusionSearchFormView(controllersReferenceData.YEAR_RANGE, isCurrentTaxYear,
           iabdTypeValue, formWithErrors, empRef = request.empRef))
       }
     }
@@ -248,7 +252,7 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
         controllersReferenceData.responseErrorHandler(futureResult)
 
       } else {
-        Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+        Future.successful(Ok(errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
       }
   }
 
@@ -262,7 +266,7 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
         val futureResult = processIndividualExclusionForm(form, year, iabdTypeValue, taxYearRange)
         controllersReferenceData.responseErrorHandler(futureResult)
       } else {
-        Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+        Future.successful(Ok(errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
       }
   }
 
@@ -275,7 +279,7 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
         for {
           _ <- validateRequest(isCurrentTaxYear, iabdTypeValue)
         } yield {
-          Ok(views.html.exclusion.searchResults(taxYearRange, isCurrentTaxYear, iabdType,
+          Ok(searchResultsView(taxYearRange, isCurrentTaxYear, iabdType,
             formWithErrors, ControllersReferenceDataCodes.FORM_TYPE_NONINO, empRef = request.empRef))
         },
       values => {
@@ -292,12 +296,12 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
                           (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     form.fold(
       formWithErrors => Future {
-        Ok(views.html.errorPage(ControllersReferenceDataCodes.INVALID_FORM_ERROR, taxYearRange, year, empRef = Some(request.empRef)))
+        Ok(errorPageView(ControllersReferenceDataCodes.INVALID_FORM_ERROR, taxYearRange, year, empRef = Some(request.empRef)))
       },
       values => {
         val excludedIndividual = extractExcludedIndividual("", values)
         if (excludedIndividual.isEmpty) {
-          Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.INVALID_FORM_ERROR, taxYearRange, year, empRef = Some(request.empRef))))
+          Future.successful(Ok(errorPageView(ControllersReferenceDataCodes.INVALID_FORM_ERROR, taxYearRange, year, empRef = Some(request.empRef))))
         } else {
           commitExclusion(year, iabdType, taxYearRange, excludedIndividual)
         }
@@ -306,7 +310,7 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
   }
 
   def commitExclusion(year: String, iabdType: String, taxYearRange: TaxYearRange, excludedIndividual: Option[EiLPerson])
-                     (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent], context: PbikContext): Future[Result] = {
+                     (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     val yearInt = if (year.equals(utils.FormMappingsConstants.CY)) taxYearRange.cyminus1 else taxYearRange.cy
     val spYear = if (taxDateUtils.isCurrentTaxYear(yearInt)) splunkLogger.CY else splunkLogger.CYP1
     val registrationList: RegistrationList = RegistrationList(None, List(RegistrationItem(iabdType, active = false, enabled = false)))
@@ -319,10 +323,10 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
         response.status match {
           case OK => {
             auditExclusion(exclusion = true, yearInt, excludedIndividual.get.nino, iabdType)
-            Ok(views.html.exclusion.whatNextExclusion(taxDateUtils.getTaxYearRange(), year,
+            Ok(whatNextExclusionView(taxDateUtils.getTaxYearRange(), year,
               iabdType, excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname, request.empRef))
           }
-          case _ => Ok(views.html.errorPage("Could not perform update operation",
+          case _ => Ok(errorPageView("Could not perform update operation",
             controllersReferenceData.YEAR_RANGE,
             isCurrentTaxYear = "",
             empRef = Some(request.empRef))).
@@ -354,7 +358,7 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
       if (exclusionsAllowed) {
         processRemoval(formMappings.individualsForm.bindFromRequest, year, iabdType, controllersReferenceData.YEAR_RANGE)
       } else {
-        Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
+        Future.successful(Ok(errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef))))
       }
   }
 
@@ -362,8 +366,8 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
                      iabdType: String, taxYearRange: TaxYearRange)
                     (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     form.fold(
-      formWithErrors => Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.INVALID_FORM_ERROR, taxYearRange, "", empRef = Some(request.empRef)))),
-      values => Future.successful(Ok(views.html.exclusion.removalConfirmation(taxYearRange, year, iabdType,
+      formWithErrors => Future.successful(Ok(errorPageView(ControllersReferenceDataCodes.INVALID_FORM_ERROR, taxYearRange, "", empRef = Some(request.empRef)))),
+      values => Future.successful(Ok(removalConfirmationView(taxYearRange, year, iabdType,
         formMappings.individualsForm.fill(values), empRef = request.empRef)))
     )
 
@@ -377,13 +381,13 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
       if (exclusionsAllowed) {
         processRemovalCommit(formMappings.individualsForm.bindFromRequest, iabdTypeValue, taxYearRange)
       } else {
-        Future.successful(Ok(views.html.errorPage(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxYearRange, empRef = Some(request.empRef))))
+        Future.successful(Ok(errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxYearRange, empRef = Some(request.empRef))))
       }
   }
 
   def processRemovalCommit(form: Form[EiLPersonList],
                            iabdType: String, taxYearRange: TaxYearRange)
-                          (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent], context: PbikContext): Future[Result] = {
+                          (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     val year = taxYearRange.cy
     val removalsList = form.fold(
       formWithErrors => List.empty[EiLPerson],
@@ -402,12 +406,12 @@ class ExclusionListController @Inject()(formMappings: FormMappings,
 
           case OK => {
             auditExclusion(exclusion = false, year, splunkLogger.extractListNino(removalsList), iabdType)
-            Ok(views.html.exclusion.whatNextRescind(taxDateUtils.getTaxYearRange(), ControllersReferenceDataCodes.NEXT_TAX_YEAR,
+            Ok(whatNextRescindView(taxDateUtils.getTaxYearRange(), ControllersReferenceDataCodes.NEXT_TAX_YEAR,
               iabdTypeValue, individual.firstForename + " " + individual.surname, request.empRef))
               .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
 
           }
-          case _ => Ok(views.html.errorPage("Could not perform update operation", controllersReferenceData.YEAR_RANGE, "", empRef = Some(request.empRef)))
+          case _ => Ok(errorPageView("Could not perform update operation", controllersReferenceData.YEAR_RANGE, "", empRef = Some(request.empRef)))
             .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
         }
     }

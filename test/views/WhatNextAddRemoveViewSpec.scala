@@ -20,27 +20,26 @@ import config.{AppConfig, LocalFormPartialRetriever}
 import controllers.ExternalUrls
 import models.{EmpRef, RegistrationList, TaxYearRange}
 import play.api.data.Form
+import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
+import views.html.registration.WhatNextAddRemove
 
 
 class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
 
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val formMappings = app.injector.instanceOf[FormMappings]
+  val whatNextAddRemoveView = app.injector.instanceOf[WhatNextAddRemove]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = viewWithForm(formMappings.objSelectedForm)
 
-  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
-  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
-  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
-
   def viewWithForm(form: Form[RegistrationList]): Html = {
     val boundForm = form.bind(Map("actives[0].uid" -> "abc"))
-    views.html.registration.whatNextAddRemove(isCurrentYear = true, taxYearRange, additive = true, boundForm, EmpRef("", ""))
+    whatNextAddRemoveView(isCurrentYear = true, taxYearRange, additive = true, boundForm, EmpRef("", ""))
   }
 
   "whatNextAddRemove" must {

@@ -29,6 +29,12 @@ lazy val microservice = Project(appName, file("."))
     routesGenerator := InjectedRoutesGenerator,
     unmanagedResourceDirectories in Assets += baseDirectory.value / "app" / "assets",
     excludeFilter in Assets := "js*" || "sass*",
+    TwirlKeys.templateImports ++= Seq(
+      "play.twirl.api.HtmlFormat",
+      "play.twirl.api.HtmlFormat._",
+      "uk.gov.hmrc.play.views.html.helpers._",
+      "uk.gov.hmrc.play.views.html.layouts._"
+    ),
     resolvers := Seq(
       Resolver.bintrayRepo("hmrc", "releases"),
       "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",

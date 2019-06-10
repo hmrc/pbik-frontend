@@ -16,13 +16,8 @@
 
 package config
 
-import java.util.Collections
-
 import javax.inject.Inject
-import play.api.Mode.Mode
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.config.ServicesConfig
-
+import play.api.Configuration
 
 trait AppConfig {
   val assetsPrefix: String
@@ -33,9 +28,9 @@ trait AppConfig {
   val contactFormServiceIdentifier: String
   val cyEnabled:Boolean
   val maximumExclusions:Int
-  val biksNotSupported: List[Int]
-  val biksNotSupportedCY: List[Int]
-  val biksDecommissioned: List[Int]
+  val biksNotSupported: Seq[Int]
+  val biksNotSupportedCY: Seq[Int]
+  val biksDecommissioned: Seq[Int]
   val urBannerLink: String
   val serviceSignOut : String
   val analyticsToken:Option[String]
@@ -43,36 +38,30 @@ trait AppConfig {
   val ssoUrl:Option[String]
 }
 
-class PbikAppConfig @Inject()(configuration: Configuration,
-                               environment: Environment) extends AppConfig with ServicesConfig {
+class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
 
-  val mode: Mode = environment.mode
-  val runModeConfiguration: Configuration = configuration
-  private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing key: $key"))
-
-  override lazy val contactFrontendService: String = baseUrl("contact-frontend")
+  override lazy val contactFrontendService: String = configuration.get[Service]("microservice.services.contact-frontend")
   override lazy val contactFormServiceIdentifier = "PayrollBIK"
-  override lazy val maximumExclusions:Int = configuration.getInt("pbik.exclusions.maximum").getOrElse(300)
+  override lazy val maximumExclusions:Int = configuration.get[Int]("pbik.exclusions.maximum")
 
-  private lazy val contactHost = configuration.getString("contact-frontend.host").getOrElse("")
+  private lazy val contactHost: Service = configuration.get[Service]("microservice.services.contact-frontend")
 
-  override lazy val assetsPrefix: String = loadConfig("assets.url") + loadConfig("assets.version")
-  override lazy val reportAProblemPartialUrl = s"${baseUrl("contact-frontend")}/contact/problem_reports"
+  override lazy val assetsPrefix: String = configuration.get[String]("assets.url") + configuration.get[String]("assets.version")
+  override lazy val reportAProblemPartialUrl = s"${configuration.get[Service]("microservice.services.contact-frontend")}/contact/problem_reports"
 
   override lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
   override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
-  override lazy val cyEnabled: Boolean = configuration.getBoolean("pbik.enabled.cy").getOrElse(false)
-  override lazy val biksNotSupported:List[Int] = configuration.getIntList("pbik.unsupported.biks.cy1").getOrElse(Collections.emptyList[Integer]()).toArray(new Array[Integer](0)).toList.map(_.intValue())
-  override lazy val biksNotSupportedCY:List[Int] = configuration.getIntList("pbik.unsupported.biks.cy").getOrElse(Collections.emptyList[Integer]()).toArray(new Array[Integer](0)).toList.map(_.intValue())
-  override lazy val biksDecommissioned:List[Int] = configuration.getIntList("pbik.decommissioned.biks").getOrElse(Collections.emptyList[Integer]()).toArray(new Array[Integer](0)).toList.map(_.intValue())
+  override lazy val cyEnabled: Boolean = configuration.get[Boolean]("pbik.enabled.cy")
+  override lazy val biksNotSupported:Seq[Int] = configuration.get[Seq[Int]]("pbik.unsupported.biks.cy1")
+  override lazy val biksNotSupportedCY:Seq[Int] = configuration.get[Seq[Int]]("pbik.unsupported.biks.cy")
+  override lazy val biksDecommissioned:Seq[Int] = configuration.get[Seq[Int]]("pbik.decommissioned.biks")
+  lazy val urBannerToggle:Boolean =  configuration.get[Boolean]("urBanner.toggle")
+  override lazy val urBannerLink: String =  configuration.get[String]("urBanner.link")
+  override lazy val serviceSignOut: String =  configuration.get[String]("service-signout.url")
 
-  lazy val urBannerToggle:Boolean = loadConfig("urBanner.toggle").toBoolean
-  override lazy val urBannerLink: String = loadConfig("urBanner.link")
-  override lazy val serviceSignOut: String = loadConfig("service-signout.url")
-
-  override val analyticsToken:Option[String] = configuration.getString("google-analytics.token")
-  override val analyticsHost:String = configuration.getString("google-analytics.host").getOrElse("service.gov.uk")
-  override val ssoUrl:Option[String] = configuration.getString("portal.ssoUrl")
+  override val analyticsToken:Option[String] = configuration.getOptional[String]("google-analytics.token")
+  override val analyticsHost:String = configuration.getOptional[String]("google-analytics.host").getOrElse("service.gov.uk")
+  override val ssoUrl:Option[String] = configuration.getOptional[String]("portal.ssoUrl")
 
 }

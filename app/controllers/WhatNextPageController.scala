@@ -18,32 +18,25 @@ package controllers
 
 import java.util.UUID
 
-import config._
 import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models._
-import play.api.Mode.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Result
-import play.api.{Configuration, Environment}
+import play.api.mvc.{MessagesControllerComponents, Result}
 import services.BikListService
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{ControllersReferenceData, _}
+import views.html.registration.WhatNextAddRemove
 
-class WhatNextPageController @Inject()(val messagesApi: MessagesApi,
+class WhatNextPageController @Inject()(override val messagesApi: MessagesApi,
                                        bikListService: BikListService,
                                        val tierConnector: HmrcTierConnector,
-                                       val runModeConfiguration: Configuration,
-                                       environment: Environment,
                                        taxDateUtils: TaxDateUtils,
-                                       controllersReferenceData: ControllersReferenceData)
-                                       (implicit val pbikAppConfig: PbikAppConfig,
-                                       implicit val externalURLs: ExternalUrls,
-                                       implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController with I18nSupport {
-
-  val mode: Mode = environment.mode
+                                       controllersReferenceData: ControllersReferenceData,
+                                       cc: MessagesControllerComponents,
+                                       whatNextAddRemoveView: WhatNextAddRemove) extends FrontendController(cc) with I18nSupport {
 
   def calculateTaxYear(isCurrentTaxYear: Boolean): (Int, Int) = {
     val isCurrentYear = if (isCurrentTaxYear) FormMappingsConstants.CY else FormMappingsConstants.CYP1
@@ -55,10 +48,10 @@ class WhatNextPageController @Inject()(val messagesApi: MessagesApi,
     }
   }
 
-  def loadWhatNextRegisteredBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: AuthenticatedRequest[_], context: PbikContext): Result = {
+  def loadWhatNextRegisteredBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: AuthenticatedRequest[_]): Result = {
     val yearCalculated = calculateTaxYear(taxDateUtils.isCurrentTaxYear(year))
 
-    Ok(views.html.registration.whatNextAddRemove(
+    Ok(whatNextAddRemoveView(
       taxDateUtils.isCurrentTaxYear(year),
       controllersReferenceData.YEAR_RANGE,
       additive = true,
@@ -66,10 +59,10 @@ class WhatNextPageController @Inject()(val messagesApi: MessagesApi,
     ).withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
   }
 
-  def loadWhatNextRemovedBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: AuthenticatedRequest[_], context: PbikContext): Result = {
+  def loadWhatNextRemovedBIK(formRegisteredList: Form[RegistrationList], year: Int)(implicit request: AuthenticatedRequest[_]): Result = {
     val yearCalculated = calculateTaxYear(taxDateUtils.isCurrentTaxYear(year))
 
-    Ok(views.html.registration.whatNextAddRemove(
+    Ok(whatNextAddRemoveView(
       taxDateUtils.isCurrentTaxYear(year),
       controllersReferenceData.YEAR_RANGE,
       additive = false,

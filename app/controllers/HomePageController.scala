@@ -16,47 +16,45 @@
 
 package controllers
 
-import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
-import controllers.actions.{AuthAction, NoSessionCheckAction}
+import config.PbikAppConfig
+import controllers.actions.{AuthAction, NoSessionCheckAction, UnauthorisedAction}
 import javax.inject.Inject
 import models._
-import play.api.Mode.Mode
+import play.api.Logger
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.{Result, _}
-import play.api.{Configuration, Environment, Logger}
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.bootstrap.controller.{FrontendController, UnauthorisedAction}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{ControllersReferenceData, SplunkLogger, URIInformation, _}
+import views.html.registration.CautionAddCurrentTaxYear
+import views.html.{ErrorPage, Overview}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
 
-class HomePageController @Inject()(val messagesApi: MessagesApi,
+class HomePageController @Inject()(override val messagesApi: MessagesApi,
+                                   cc: MessagesControllerComponents,
                                    bikListService: BikListService,
                                    authenticate: AuthAction,
                                    val noSessionCheck: NoSessionCheckAction,
-                                   val runModeConfiguration: Configuration,
-                                   environment: Environment,
+                                   unauthorisedAction: UnauthorisedAction,
                                    controllersReferenceData: ControllersReferenceData,
-                                   splunkLogger: SplunkLogger)(
-                                   implicit val taxDateUtils: TaxDateUtils,
-                                   implicit val pbikAppConfig: PbikAppConfig,
-                                   implicit val context: PbikContext,
-                                   implicit val uRIInformation: URIInformation,
-                                   implicit val externalURLs: ExternalUrls,
-                                   implicit val localFormPartialRetriever: LocalFormPartialRetriever,
-                                   implicit val bikListUtils: BikListUtils) extends FrontendController with I18nSupport {
-
-  val mode: Mode = environment.mode
+                                   splunkLogger: SplunkLogger,
+                                   taxDateUtils: TaxDateUtils,
+                                   pbikAppConfig: PbikAppConfig,
+                                   uriInformation: URIInformation,
+                                   errorPageView: ErrorPage,
+                                   cautionAddCurrentTaxYearView: CautionAddCurrentTaxYear,
+                                   overviewView: Overview)(implicit val ec: ExecutionContext) extends FrontendController(cc) with I18nSupport {
 
   def notAuthorised: Action[AnyContent] = authenticate {
     implicit request =>
-      Ok(views.html.errorPage(ControllersReferenceDataCodes.AUTHORISATION_ERROR, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef)))
+      Ok(errorPageView(ControllersReferenceDataCodes.AUTHORISATION_ERROR, taxDateUtils.getTaxYearRange(), empRef = Some(request.empRef)))
   }
 
-  def signout: Action[AnyContent] = UnauthorisedAction {
+  def signout: Action[AnyContent] = unauthorisedAction {
     implicit request =>
       Redirect(pbikAppConfig.serviceSignOut).withNewSession
   }
@@ -67,12 +65,12 @@ class HomePageController @Inject()(val messagesApi: MessagesApi,
       Logger.info("Language from request query is " + lang)
       val newLang = Lang(lang)
       Logger.info("New language set to " + newLang.code)
-      Redirect(routes.HomePageController.onPageLoad()).withLang(newLang)
+      Redirect(routes.HomePageController.onPageLoad()).withLang(newLang)(messagesApi)
   }
 
   def loadCautionPageForCY: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val staticDataRequest: Future[Result] = Future.successful(Ok(views.html.registration.cautionAddCurrentTaxYear(controllersReferenceData.YEAR_RANGE, empRef = request.empRef)))
+      val staticDataRequest: Future[Result] = Future.successful(Ok(cautionAddCurrentTaxYearView(controllersReferenceData.YEAR_RANGE, empRef = request.empRef)))
       controllersReferenceData.responseCheckCYEnabled(staticDataRequest)
   }
 
@@ -81,8 +79,8 @@ class HomePageController @Inject()(val messagesApi: MessagesApi,
       val taxYearRange = taxDateUtils.getTaxYearRange()
       val pageLoadFuture = for {
         // Get the available count of biks available for each tax year
-        biksListOptionCY: List[Bik] <- bikListService.registeredBenefitsList(controllersReferenceData.YEAR_RANGE.cyminus1, EmpRef("", ""))(uRIInformation.getBenefitTypesPath)
-        biksListOptionCYP1: List[Bik] <- bikListService.registeredBenefitsList(controllersReferenceData.YEAR_RANGE.cy, EmpRef("", ""))(uRIInformation.getBenefitTypesPath)
+        biksListOptionCY: List[Bik] <- bikListService.registeredBenefitsList(controllersReferenceData.YEAR_RANGE.cyminus1, EmpRef("", ""))(uriInformation.getBenefitTypesPath)
+        biksListOptionCYP1: List[Bik] <- bikListService.registeredBenefitsList(controllersReferenceData.YEAR_RANGE.cy, EmpRef("", ""))(uriInformation.getBenefitTypesPath)
         currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
         nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
       } yield {
@@ -92,8 +90,8 @@ class HomePageController @Inject()(val messagesApi: MessagesApi,
         else {
           isFromYTA
         }
-        auditHomePageView
-        Ok(views.html.overview(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2,
+        auditHomePageView()
+        Ok(overviewView(pbikAppConfig.cyEnabled, taxYearRange, currentYearList._2, nextYearList._2,
           biksListOptionCY.size, biksListOptionCYP1.size, fromYTA.toString, empRef = request.empRef))
           .addingToSession(nextYearList._1.toSeq: _*)
           .addingToSession(ControllersReferenceDataCodes.SESSION_FROM_YTA -> fromYTA.toString)
@@ -111,7 +109,7 @@ class HomePageController @Inject()(val messagesApi: MessagesApi,
     }
   }
 
-  def auditHomePageView(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[AuditResult] = {
+  def auditHomePageView()(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[AuditResult] = {
     splunkLogger.logSplunkEvent(splunkLogger.createDataEvent(
       tier = splunkLogger.FRONTEND,
       action = splunkLogger.VIEW,

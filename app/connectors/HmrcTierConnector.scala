@@ -18,24 +18,24 @@ package connectors
 
 import java.net.URLEncoder
 
+import config.Service
 import javax.inject.Inject
 import models.{EmpRef, HeaderTags, PbikError}
-import play.api.Logger
 import play.api.libs.json
 import play.api.libs.json.{JsError, JsSuccess}
 import play.api.mvc.Request
+import play.api.{Configuration, Logger}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import utils.Exceptions.GenericServerErrorException
-import utils.URIInformation
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class HmrcTierConnector @Inject()(client: HttpClient,
-                                  uriInformation: URIInformation) {
+                                  configuration: Configuration) {
 
-  val serviceUrl: String = uriInformation.baseUrl("government-gateway")
+  val serviceUrl: String = configuration.get[Service]("microservice.services.government-gateway")
 
   var pbikHeaders: Map[String, String] = Map[String, String]()
 

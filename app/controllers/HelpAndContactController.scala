@@ -18,39 +18,36 @@ package controllers
 
 import java.net.URLEncoder
 
-import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.PbikAppConfig
 import connectors._
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
-import play.api.Mode.Mode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Logger}
 import play.twirl.api.Html
 import services.{BikListService, HelpAndContactSubmissionService}
 import uk.gov.hmrc.http.{Request => _}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{ControllersReferenceData, _}
+import views.html.helpcontact.{ConfirmHelpContact, HelpContact}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class HelpAndContactController @Inject()(val messagesApi: MessagesApi,
+class HelpAndContactController @Inject()(override val messagesApi: MessagesApi,
+                                         cc: MessagesControllerComponents,
                                          formPartialProvider: FormPartialProvider,
                                          bikListService: BikListService,
                                          helpAndContactSubmissionService: HelpAndContactSubmissionService,
                                          val authenticate: AuthAction,
                                          val noSessionCheck: NoSessionCheckAction,
                                          configuration: Configuration,
-                                         environment: Environment,
+                                         pbikAppConfig: PbikAppConfig,
                                          controllersReferenceData: ControllersReferenceData,
-                                         splunkLogger: SplunkLogger)
-                                         (implicit val pbikAppConfig: PbikAppConfig,
-                                         implicit val context: PbikContext,
-                                         implicit val externalURLs: ExternalUrls,
-                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FrontendController with I18nSupport {
-
-  val mode: Mode = environment.mode
-  val runModeConfiguration: Configuration = configuration
+                                         splunkLogger: SplunkLogger,
+                                         helpContactView: HelpContact,
+                                         confirmHelpContactView: ConfirmHelpContact)
+                                        (implicit val ec: ExecutionContext) extends FrontendController(cc) with I18nSupport {
 
   val contactFrontendPartialBaseUrl: String = pbikAppConfig.contactFrontendService
   val contactFormServiceIdentifier: String = pbikAppConfig.contactFormServiceIdentifier
@@ -65,14 +62,14 @@ class HelpAndContactController @Inject()(val messagesApi: MessagesApi,
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck) {
     implicit request =>
-      Ok(views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, None, empRef = request.empRef, formPartialProvider = formPartialProvider))
+      Ok(helpContactView(contactHmrcFormPartialUrl, None, empRef = request.empRef, formPartialProvider = formPartialProvider))
   }
 
   def submitContactHmrcForm: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
 
       val successRedirect = routes.HelpAndContactController.confirmationContactHmrc()
-      val failedValidationResponseContent = (body: Html) => views.html.helpcontact.helpContact(contactHmrcFormPartialUrl, Some(body), empRef = request.empRef, formPartialProvider = formPartialProvider)
+      val failedValidationResponseContent = (body: Html) => helpContactView(contactHmrcFormPartialUrl, Some(body), empRef = request.empRef, formPartialProvider = formPartialProvider)
       request.body.asFormUrlEncoded.map {
         formData =>
           helpAndContactSubmissionService.submitContactHmrc(contactHmrcSubmitPartialUrl, formData).map {
@@ -96,7 +93,7 @@ class HelpAndContactController @Inject()(val messagesApi: MessagesApi,
 
   def confirmationContactHmrc: Action[AnyContent] = (authenticate andThen noSessionCheck) {
     implicit request =>
-      Ok(views.html.helpcontact.confirmHelpContact(empRef = request.empRef))
+      Ok(confirmHelpContactView(empRef = request.empRef))
   }
 
 }

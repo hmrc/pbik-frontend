@@ -28,7 +28,7 @@ import org.mockito.Mockito._
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
 import play.api.Application
 import play.api.http.HttpEntity.Strict
-import play.api.i18n.Messages
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
@@ -60,6 +60,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     .overrides(bind[EiLListService].to(classOf[StubEiLListService]))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
+
+  implicit val lang = Lang("en-GB")
 
   val controllersReferenceData: ControllersReferenceData = app.injector.instanceOf[ControllersReferenceData]
   val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
@@ -240,6 +242,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     "show the restriction page" in {
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
       //UnsignedTokenProvider.generateToken
+
+
       implicit val timeout: akka.util.Timeout = 10 seconds
       val result = await(mockExclusionController.performPageLoad("cy", "car").apply(mockrequest))(timeout)
       result.header.status must be(OK)
@@ -367,12 +371,13 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   "When loading the searchResults page for a NINO search, an authorised user" must {
     "see the NON-NINO specific fields" in {
       val ninoSearchPerson = EiLPerson("AB111111", "Adam", None, "Smith", None, None, None, None, 0)
+      implicit val request = FakeRequest()
       val f = controllersReferenceData.exclusionSearchFormWithNino.fill(ninoSearchPerson)
-      implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
+      val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
       //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionListController.searchResults("cy", "car", ControllersReferenceDataCodes.FORM_TYPE_NINO).apply(formrequest))(timeout)
+      val result = await(mockExclusionListController.searchResults("cy", "car", ControllersReferenceDataCodes.FORM_TYPE_NINO)(formrequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include("Search for an employee")
       result.body.asInstanceOf[Strict].data.utf8String must include("Adam")
@@ -539,7 +544,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionListController.processRemovalCommit(controllersReferenceData.individualsForm
         .fill(EiLPersonList(ListOfPeople)), TEST_IABD, controllersReferenceData.YEAR_RANGE)
-      (hc, authenticatedRequest, mock(classOf[PbikContext])))(timeout)
+      (hc, authenticatedRequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }

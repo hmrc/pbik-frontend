@@ -1,0 +1,50 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import utils.FormMappingsConstants._
+@import config.PbikContext
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
+
+@this(parentTemplate: ParentTemplate,
+context: PbikContext,
+externalURLs: ExternalUrls,
+config: AppConfig,
+localFormPartialRetriever: LocalFormPartialRetriever)
+
+@(empRef: Option[EmpRef])(implicit request:Request[_], messages: Messages)
+
+
+@parentTemplate(pageTitle = messages("Service.notEnrolled.title") + " - " + messages("Service.title"), None, empRef.map(_.toString)) {
+    <h1 id="title">@messages("Service.notEnrolled.title")</h1>
+
+    <p class="lede-para">@messages("Service.notEnrolled.text1")</p>
+
+    <p>@messages("Service.notEnrolled.text2")</p>
+
+    <ul class="list-bullet">
+        <li>@messages("Service.enrollmentLoop.list1")</li>
+        <li>@messages("Service.enrollmentLoop.list2")</li>
+    </ul>
+
+    <p>@messages("Service.notEnrolled.text3")</p>
+
+    <p>@messages("Service.notEnrolled.text4")</p>
+
+    <p>
+        <a href='https://www.gov.uk/paye-online/enrol' class="button" role="button">@messages("Service.notEnrolled.button")</a>
+    </p>
+}

@@ -27,6 +27,7 @@ import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.http.Upstream5xxResponse
 import utils.ControllersReferenceDataCodes._
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
+import views.html.{ErrorPage, MaintenancePage}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -64,10 +65,10 @@ object ControllersReferenceDataCodes {
   val NO_MORE_BENEFITS_TO_ADD_HEADING = "AddBenefits.Heading"
   val NO_MORE_BENEFITS_TO_ADD = "ErrorPage.noBenefitsToAdd"
   val NO_MORE_BENEFITS_TO_REMOVE_CY1 = "ErrorPage.noCY1BenefitsToRemove"
-  val INVALID_YEAR_REFERENCE="ErrorPage.invalidYear"
-  val INVALID_BIK_TYPE_REFERENCE="ErrorPage.invalidBikType"
-  val NO_BENEFITS_REGISTERED="ErrorPage.noBenefitsRegistered"
-  val NO_BENEFITS_REGISTERED_VIEW="ErrorPage.noBenefitsRegisteredView"
+  val INVALID_YEAR_REFERENCE = "ErrorPage.invalidYear"
+  val INVALID_BIK_TYPE_REFERENCE = "ErrorPage.invalidBikType"
+  val NO_BENEFITS_REGISTERED = "ErrorPage.noBenefitsRegistered"
+  val NO_BENEFITS_REGISTERED_VIEW = "ErrorPage.noBenefitsRegisteredView"
   val INVALID_FORM_ERROR = "ErrorPage.invalidForm"
   val EXLCUSIONS_RADIO_BUTTTON_SELECTION_CONFIRMATION_BACK_BUTTON_ERROR = "ErrorPage.backButtonNoCache"
   val AUTHORISATION_ERROR = "ErrorPage.authorisationError"
@@ -75,13 +76,15 @@ object ControllersReferenceDataCodes {
 }
 
 class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
-                                         override val messagesApi: MessagesApi)
+                                         override val messagesApi: MessagesApi,
+                                         errorPageView: ErrorPage,
+                                         maintenancePageView: MaintenancePage)
                                         (implicit val context: PbikContext,
                                          implicit val pbikAppConfig: AppConfig,
                                          implicit val externalURLs: ExternalUrls,
                                          implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FormMappings(messagesApi) with I18nSupport {
 
-  def YEAR_RANGE:TaxYearRange = taxDateUtils.getTaxYearRange()
+  def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   def generateListOfBiksBasedOnForm(bikStatus: Int)(implicit request: Request[AnyContent]): List[Bik] = {
     val persistentBiks: List[Bik] = objSelectedForm.bindFromRequest.fold(
@@ -94,11 +97,11 @@ class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
   }
 
   def responseCheckCYEnabled(staticDataRequest: Future[Result])(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    if(pbikAppConfig.cyEnabled) {
+    if (pbikAppConfig.cyEnabled) {
       responseErrorHandler(staticDataRequest)
     } else {
       Logger.info("Cy is disabled")
-      Future(Ok(views.html.errorPage(CY_RESTRICTED, YEAR_RANGE, "", 10003, empRef = Some(request.empRef))))
+      Future(Ok(errorPageView(CY_RESTRICTED, YEAR_RANGE, "", 10003, empRef = Some(request.empRef))))
     }
   }
 
@@ -106,36 +109,36 @@ class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
     staticDataRequest.recover {
       case e0: NoSuchElementException => {
         Logger.warn("ResponseErrorHandler. A NoSuchElementException was handled :  " + e0)
-        Ok(views.html.errorPage(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
+        Ok(errorPageView(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e1: InvalidYearURIException => {
         Logger.warn("ResponseErrorHandler. An InvalidYearURIException was handled :  " + e1)
-        Ok(views.html.errorPage(INVALID_YEAR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
+        Ok(errorPageView(INVALID_YEAR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e2: InvalidBikTypeURIException => {
         Logger.warn("ResponseErrorHandler. An InvalidBikTypeURIException was handled :  " + e2)
-        Ok(views.html.errorPage(INVALID_BIK_TYPE_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
+        Ok(errorPageView(INVALID_BIK_TYPE_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
-      case e3:Upstream5xxResponse => {
-          Logger.warn("ResponseErrorHandler. An Upstream5xxResponse was handled :  " + e3.message)
-          Ok(views.html.maintenancePage(empRef = Some(request.empRef)))
+      case e3: Upstream5xxResponse => {
+        Logger.warn("ResponseErrorHandler. An Upstream5xxResponse was handled :  " + e3.message)
+        Ok(maintenancePageView(empRef = Some(request.empRef)))
       }
       case e4: GenericServerErrorException => {
         try {
           Logger.warn("ResponseErrorHandler. A GenericServerErrorException was handled :  " + e4.message)
           val msgValue = e4.message
-          if(Messages("ServiceMessage." + msgValue) == ("ServiceMessage." + msgValue)) throw new Exception(msgValue)
-          else Ok(views.html.errorPage(Messages("ServiceMessage." + msgValue), YEAR_RANGE, "", msgValue.toInt, empRef = Some(request.empRef)))
+          if (Messages("ServiceMessage." + msgValue) == ("ServiceMessage." + msgValue)) throw new Exception(msgValue)
+          else Ok(errorPageView(Messages("ServiceMessage." + msgValue), YEAR_RANGE, "", msgValue.toInt, empRef = Some(request.empRef)))
         } catch {
           case e: Exception => {
             Logger.warn("Could not parse GenericServerError System Error number: " + e4.message + " .Showing default error page instead")
-            Ok(views.html.maintenancePage(empRef = Some(request.empRef)))
+            Ok(maintenancePageView(empRef = Some(request.empRef)))
           }
         }
       }
       case e5 => {
         Logger.warn("ResponseErrorHandler. An exception was handled : " + e5.getMessage)
-        Ok(views.html.maintenancePage(empRef = Some(request.empRef)))
+        Ok(maintenancePageView(empRef = Some(request.empRef)))
       }
     }
   }

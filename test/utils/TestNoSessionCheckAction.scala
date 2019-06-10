@@ -17,12 +17,14 @@
 package utils
 
 import controllers.actions.NoSessionCheckAction
+import javax.inject.Inject
 import models.AuthenticatedRequest
-import play.api.mvc.Result
+import play.api.mvc.{BodyParsers, Result}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class TestNoSessionCheckAction extends NoSessionCheckAction {
+class TestNoSessionCheckAction @Inject()(val parser: BodyParsers.Default)
+                                        (implicit val executionContext: ExecutionContext) extends NoSessionCheckAction {
   override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
       Future.successful(Right(request))
   }

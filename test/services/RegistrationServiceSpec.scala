@@ -36,6 +36,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{TaxDateUtils, TestMinimalAuthAction}
+import views.html.registration.NextTaxYear
 
 import scala.concurrent.Future
 
@@ -84,6 +85,7 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
   "When generating a page which allows registrations, the service" should {
    "return the selection page" in {
       val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      val nextTaxYearView = app.injector.instanceOf[NextTaxYear]
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
         UserName(Name(None, None)),
@@ -99,7 +101,7 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
 
 
       val result = await(registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cyminus1,
-        "add", views.html.registration.nextTaxYear(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty)))
+        "add", nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty)))
       status(result) shouldBe 200
       bodyOf(result) should include(Messages("AddBenefits.Heading"))
       bodyOf(result) should include(Messages("BenefitInKind.label.37"))

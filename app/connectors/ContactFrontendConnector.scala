@@ -16,27 +16,21 @@
 
 package connectors
 
+import config.Service
 import javax.inject.Inject
-import play.api.Mode.Mode
-import play.api.mvc.{AnyContent, Request, Results}
+import play.api.mvc.{AnyContent, Request}
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpReads, HttpResponse, Request => _}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class ContactFrontendConnector @Inject()(val client: HttpClient,
                                          configuration: Configuration,
-                                         environment: Environment,
-                                         pBIKHeaderCarrierForPartialsConverter: PBIKHeaderCarrierForPartialsConverter) extends ServicesConfig
-  with Results {
+                                         pBIKHeaderCarrierForPartialsConverter: PBIKHeaderCarrierForPartialsConverter) {
 
-  val mode: Mode = environment.mode
-  val runModeConfiguration: Configuration = configuration
-
-  lazy val serviceBase = s"${baseUrl("contact-frontend")}/contact"
+  lazy val serviceBase = s"${configuration.get[Service]("microservice.services.contact-frontend")}/contact"
 
   def getHelpPartial(implicit hc: HeaderCarrier): Future[String] = {
 

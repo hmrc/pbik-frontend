@@ -16,47 +16,41 @@
 
 package services
 
-import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.PbikAppConfig
 import connectors.HmrcTierConnector
-import controllers.ExternalUrls
 import javax.inject.Inject
 import models._
-import play.api.Mode.Mode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
-import play.api.{Configuration, Environment}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{ControllersReferenceData, URIInformation, _}
+import views.html.ErrorPage
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class RegistrationService @Inject()(val messagesApi: MessagesApi,
+class RegistrationService @Inject()(override val messagesApi: MessagesApi,
                                     bikListUtils: BikListUtils,
                                     formMappings: FormMappings,
                                     val tierConnector: HmrcTierConnector,
                                     val bikListService: BikListService,
-                                    val runModeConfiguration: Configuration,
-                                    environment: Environment,
                                     taxDateUtils: TaxDateUtils,
                                     controllersReferenceData: ControllersReferenceData,
-                                    uriInformation: URIInformation)(
-                                    implicit val pbikAppConfig: PbikAppConfig,
-                                    implicit val context: PbikContext,
-                                    implicit val externalURLs: ExternalUrls,
-                                    implicit val localFormPartialRetriever: LocalFormPartialRetriever
-) extends FrontendController with I18nSupport {
-  val mode: Mode = environment.mode
+                                    uriInformation: URIInformation,
+                                    pbikAppConfig: PbikAppConfig,
+                                    errorPageView: ErrorPage)(implicit val executionContext: ExecutionContext) extends I18nSupport {
 
+
+  //TODO: This should be in a controller
   def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
                                               generateViewBasedOnFormItems: (Form[RegistrationList],
-                                                List[RegistrationItem], List[Bik], List[Int], List[Int], Option[Int]) => HtmlFormat.Appendable)
+                                                Seq[RegistrationItem], Seq[Bik], Seq[Int], Seq[Int], Option[Int]) => HtmlFormat.Appendable)
                                              (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
 
-    val decommissionedBikIds: List[Int] = pbikAppConfig.biksDecommissioned
-    val nonLegislationBiks: List[Int] = if (taxDateUtils.isCurrentTaxYear(year)) {
+    val decommissionedBikIds: Seq[Int] = pbikAppConfig.biksDecommissioned
+    val nonLegislationBiks: Seq[Int] = if (taxDateUtils.isCurrentTaxYear(year)) {
       pbikAppConfig.biksNotSupportedCY
     } else {
       pbikAppConfig.biksNotSupported
@@ -85,7 +79,7 @@ class RegistrationService @Inject()(val messagesApi: MessagesApi,
       // During transition, we have to ensure we handle the existing decommissioned IABDs (e.g 47 ) being sent by the server
       // and after the NPS R38 config release, when it wont be. Therefore, aas this is a list, we remove the
       // decommissioned values ( if they exist ) and then add them back in
-      hybridList = biksListOption.filterNot(y => decommissionedBikIds.contains(y.iabdType.toInt)) ::: nonLegislationList ::: decommissionedBikList
+      hybridList = biksListOption.filterNot(y => decommissionedBikIds.contains(y.iabdType.toInt)) ++ nonLegislationList ++ decommissionedBikList
 
     } yield {
       val pbikHeaders = bikListService.pbikHeaders
@@ -95,7 +89,7 @@ class RegistrationService @Inject()(val messagesApi: MessagesApi,
       val sortedMegedData: RegistrationList = bikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
 
       if (sortedMegedData.active.isEmpty) {
-        Ok(views.html.errorPage(ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
+        Ok(errorPageView(ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
           controllersReferenceData.YEAR_RANGE,
           isCurrentYear,
           code = -1,

@@ -16,10 +16,11 @@
 
 package controllers
 
-import play.api.mvc.{Action, AnyContent}
+import javax.inject.Inject
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
-class RedirectController extends FrontendController {
+class RedirectController @Inject()(cc: MessagesControllerComponents) extends FrontendController(cc) {
 
   def redirectIfFromStart(): Action[AnyContent] = Action {
     implicit request =>

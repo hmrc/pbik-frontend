@@ -17,10 +17,10 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
+import config.Service
 import controllers.ExternalUrls
 import javax.inject.Inject
 import models.{AuthenticatedRequest, EmpRef, UserName}
-import play.api.Mode.Mode
 import play.api.mvc.Results._
 import play.api.mvc._
 import play.api.{Configuration, Environment}
@@ -30,13 +30,13 @@ import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionImpl @Inject()(override val authConnector: AuthConnector,
+                               val parser: BodyParsers.Default,
                                externalUrls: ExternalUrls)
-  (implicit ec: ExecutionContext) extends AuthAction with AuthorisedFunctions {
+  (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
@@ -69,12 +69,11 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector,
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction extends ActionBuilder[AuthenticatedRequest] with ActionFunction[Request, AuthenticatedRequest]
+trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
 class AuthConnector @Inject()(val http: HttpClient,
-                              val runModeConfiguration: Configuration,
-                              val environment: Environment) extends PlayAuthConnector with ServicesConfig {
-  override val serviceUrl: String = baseUrl("auth")
+                              configuration: Configuration) extends PlayAuthConnector {
 
-  override protected def mode: Mode = environment.mode
+  override val serviceUrl: String = configuration.get[Service]("microservice.services.auth")
+
 }

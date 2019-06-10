@@ -19,13 +19,14 @@ package controllers.actions
 import java.util.UUID
 
 import com.google.inject.ImplementedBy
+import javax.inject.Inject
 import models.AuthenticatedRequest
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class NoSessionCheckActionImpl extends NoSessionCheckAction {
+class NoSessionCheckActionImpl @Inject()()(implicit val executionContext: ExecutionContext) extends NoSessionCheckAction {
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
 
     val sessionId = request.session.get(SessionKeys.sessionId)

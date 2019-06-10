@@ -21,11 +21,11 @@ import controllers.ExternalUrls
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Configuration
 import play.api.http.Status._
-import play.api.mvc.{Action, AnyContent, Controller}
+import play.api.mvc.{Action, AnyContent, BodyParsers, Controller}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{redirectLocation, status}
-import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
@@ -39,17 +39,17 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
     def onPageLoad(): Action[AnyContent] = authAction { request => Ok }
   }
 
-  implicit val timeout:Timeout = 5 seconds
+  implicit val timeout: Timeout = 5 seconds
 
   "Auth Action" when {
     "the user is not logged in" must {
       "redirect the user to log in" in {
         val authAction = new AuthActionImpl(
           new BrokenAuthConnector(new MissingBearerToken,
-                                    mock[HttpClient],
-                                    app.injector.instanceOf[Configuration],
-                                    app.injector.instanceOf[Environment]
-                                  ),
+            mock[HttpClient],
+            app.injector.instanceOf[Configuration]
+          ),
+          app.injector.instanceOf[BodyParsers.Default],
           app.injector.instanceOf[ExternalUrls])
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
@@ -62,10 +62,10 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
       "redirect the user to a page to enroll" in {
         val authAction = new AuthActionImpl(
           new BrokenAuthConnector(new InsufficientEnrolments,
-                                    mock[HttpClient],
-                                    app.injector.instanceOf[Configuration],
-                                    app.injector.instanceOf[Environment]
-                                  ),
+            mock[HttpClient],
+            app.injector.instanceOf[Configuration]
+          ),
+          app.injector.instanceOf[BodyParsers.Default],
           app.injector.instanceOf[ExternalUrls])
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))

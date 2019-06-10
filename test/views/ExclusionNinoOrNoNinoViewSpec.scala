@@ -20,14 +20,18 @@ import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import controllers.ExternalUrls
 import models.{EmpRef, TaxYearRange}
 import org.jsoup.Jsoup
+import play.api.i18n.MessagesApi
 import play.api.mvc.Flash
 import play.twirl.api.Html
 import utils.{FormMappings, TaxDateUtils, URIInformation}
 import views.helper.PBIKViewSpec
+import views.html.exclusion.ExclusionNinoOrNoNinoForm
 
 class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val formMappings = app.injector.instanceOf[FormMappings]
+  val exclusionNinoOrNoNinoFormView = app.injector.instanceOf[ExclusionNinoOrNoNinoForm]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
@@ -41,15 +45,8 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
-  def viewWithForm(flash: Flash): Html =
-    views.html.exclusion.exclusionNinoOrNoNinoForm(taxYearRange, "cyp1", "30", "",EmpRef("", ""))(implicitly,
-                                                                                                  flash,
-                                                                                                  context,
-                                                                                                  implicitly,
-                                                                                                  uriInformation,
-                                                                                                  externalURLs,
-                                                                                                  appConfig,
-                                                                                                  localFormPartialRetriever)
+  def viewWithForm(implicit flash: Flash): Html =
+    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "30", "",EmpRef("", ""))
 
   "exclusionNinoOrNoNinoPage" must {
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))

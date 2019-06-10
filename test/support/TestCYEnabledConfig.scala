@@ -23,7 +23,7 @@ object TestCYEnabledConfig extends AppConfig {
     override lazy val contactFrontendService: String = ""
     override lazy val contactFormServiceIdentifier: String = ""
     override lazy val assetsPrefix: String = ""
-    override lazy val reportAProblemPartialUrl: String = ""
+    override lazy val reportAProblemPartialUrl: String = "http://localhost:9250/contact/problem_reports"
     override lazy val betaFeedbackUrl: String = ""
     override lazy val betaFeedbackUnauthenticatedUrl: String = ""
     override lazy val analyticsToken: Option[String] = Some("")
