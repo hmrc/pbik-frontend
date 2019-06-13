@@ -311,7 +311,7 @@ Prioritised.Benefits = 30,31
 # Service Messages
 #*************************************************************
 
-ServiceMessage.0.h1 = Rhowch gynnig arall arni nes ymlaen
+ServiceMessage.0.h1 = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth
 ServiceMessage.0 = Rydym yn gwneud gwaith cynnal a chadw ar y gwasanaeth hwn ac nid yw ar gael ar hyn o bryd. Rydym yn gweithio ar gywiro’r problemau a dylem fod yn ôl yn fuan.
 
 ServiceMessage.10001.h1 = Rhowch gynnig arall arni nes ymlaen
@@ -425,7 +425,10 @@ ErrorPage.authorisationError = Mae’n ddrwg gennym, ynddengys nad ydych wedi ei
 ErrorPage.heading.invalidYear = Blwyddyn annilys wedi’i dangos
 
 ErrorPage.validationError = Mae’n ddrwg gennym, mae gwall technegol wedi digwydd. Rhowch gynnig arall arni nes ymlaen.
-ErrorPage.connectionProblem = Mae’r gwasanaeth Talu buddiannau a threuliau drwy’r gyflogres ar gael rhwng 07:00 a 22:00, dydd Llun i ddydd Gwener, ac 08:00 i 20:00, dydd Sadwrn a dydd Sul.
+ErrorPage.try.later = Rhowch gynnig arall arni yn nes ymlaen.
+ErrorPage.contact.link = https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines
+ErrorPage.contact.helpline = Cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM
+ErrorPage.if.you.need.to.speak.to.someone = os ydych am siarad â rhywun am eich treuliau a buddiannau.
 ErrorPage.connectionAction = Os ydych yn defnyddio’r gwasanaeth y tu allan i’r oriau hyn, rhowch gynnig arall arni nes ymlaen.
 ErrorPage.connectionStatus = Os ydych yn defnyddio’r gwasanaeth yn ystod yr oriau hyn, edrychwch os oes gwybodaeth am waith cynnal sydd wedi’i drefnu yn <a href = "https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">safle argaeledd gwasanaethau CThEM</a>
 ErrorPage.serviceNotLaunched = Ni allwch gofrestru buddiannau ar gyfer y flwyddyn hon gan nad yw’r gwasanaeth wedi’i lansio hyd yn hyn.

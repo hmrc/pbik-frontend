@@ -317,7 +317,7 @@ Prioritised.Benefits = 30,31
 # Service messages
 #*************************************************************
 
-ServiceMessage.0.h1 = Please try again later
+ServiceMessage.0.h1 = Sorry, there is a problem with the service
 ServiceMessage.0 = We’re doing maintenance on this service and it’s temporarily unavailable. We’re working to fix the problem and it should be back soon.
 
 ServiceMessage.10001.h1 = Please try again later
@@ -430,7 +430,10 @@ ErrorPage.authorisationError = You aren’t authorised to use the payrolling ben
 ErrorPage.heading.invalidYear = Invalid year specified
 
 ErrorPage.validationError = We’re sorry a technical error has occurred. Please try again later.
-ErrorPage.connectionProblem = The payrolling benefits and expenses service is available between 7am to 10pm, Monday to Friday and 8am to 8pm, Saturday and Sunday.
+ErrorPage.try.later = Try again later.
+ErrorPage.contact.link = https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries
+ErrorPage.contact.helpline = Contact the Employers helpline
+ErrorPage.if.you.need.to.speak.to.someone = if you need to speak to someone about your expenses and benefits.
 ErrorPage.connectionAction = If you’re accessing the service outside of these hours, please try again later.
 ErrorPage.connectionStatus = If you’re accessing the service within these hours, please check for scheduled maintenance information at the <a href = "https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">HMRC service availability site</a>
 ErrorPage.serviceNotLaunched = You can’t register Biks for this year as the service is yet to launch
