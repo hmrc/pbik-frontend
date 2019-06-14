@@ -16,7 +16,7 @@
 
 package views
 
-import models.{EmpRef, TaxYearRange}
+import models.EmpRef
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
@@ -26,18 +26,14 @@ class MaintenancePageViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val MaintenancePageView = app.injector.instanceOf[MaintenancePage]
-
-  def taxYearRange = TaxYearRange(2018, 2019, 2020)
-
   override def view: Html = MaintenancePageView("", Some(EmpRef("", "")))
 
-  "MaintenancePageView" must {
+  "MaintenancePageView Welsh" must {
 
     behave like pageWithHeader(messages("ServiceMessage.0.h1"))
     behave like pageWithIdAndText(messages("ErrorPage.try.later"), "tryLater")
     behave like pageWithIdAndText(messages("ErrorPage.contact.helpline") + " " + messages("ErrorPage.if.you.need.to.speak.to.someone"), "contactHelpLine")
-    behave like pageWithLink(messages("ErrorPage.contact.helpline"), "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries")
+    behave like pageWithLink(messages("ErrorPage.contact.helpline"), messages("ErrorPage.contact.link"))
 
   }
-
 }
