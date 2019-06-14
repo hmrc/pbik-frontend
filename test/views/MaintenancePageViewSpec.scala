@@ -30,7 +30,7 @@ class MaintenancePageViewSpec extends PBIKViewSpec {
 
   "MaintenancePageView Welsh" must {
 
-    behave like pageWithHeader(messages("ServiceMessage.0.h1"))
+    behave like pageWithHeader(messages("ErrorPage.title"))
     behave like pageWithIdAndText(messages("ErrorPage.try.later"), "tryLater")
     behave like pageWithIdAndText(messages("ErrorPage.contact.helpline") + " " + messages("ErrorPage.if.you.need.to.speak.to.someone"), "contactHelpLine")
     behave like pageWithLink(messages("ErrorPage.contact.helpline"), messages("ErrorPage.contact.link"))
