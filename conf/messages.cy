@@ -437,6 +437,11 @@ ErrorPage.invalidBikType = <p>Rydym yn credu eich bod yn ceisio cofrestru buddia
 ErrorPage.noBenefitsRegistered = Nid ydych wedi cofrestru buddiannau ar gyfer y flwyddyn dreth hon – ewch yn ôl i’r <a href = "/payrollbik/payrolled-benefits-expenses">hafan</a> a chofrestru buddiannau cyn ceisio ychwanegu eithriadau.
 ErrorPage.backButtonNoCache = Nid ydych wedi chwilio hyd yn hyn. Ewch yn ôl i’r hafan ac ailadrodd taith y defnyddiwr.
 
+ErrorPage.title = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth
+ErrorPage.try.later = Rhowch gynnig arall arni yn nes ymlaen.
+ErrorPage.contact.link = https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines
+ErrorPage.contact.helpline = Cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM
+ErrorPage.if.you.need.to.speak.to.someone = os ydych am siarad â rhywun am eich treuliau a buddiannau.
 
 #*************************************************************
 # Error- validation Messages

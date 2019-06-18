@@ -142,10 +142,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
       p.failure(Upstream5xxResponse("""{appStatusMessage=10002,}""", 100, 100))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.0.h1"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionProblem"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionAction"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionStatus"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
     }
   }
 
@@ -162,10 +160,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
       p.failure(Upstream5xxResponse(null, 100, 100))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.0.h1"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionProblem"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionAction"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionStatus"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
     }
   }
 
@@ -182,10 +178,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
       p.failure(Upstream5xxResponse("NO ERROR NUMBER TO PARSE", 100, 100))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.0.h1"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionProblem"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionAction"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionStatus"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
     }
   }
 
@@ -202,10 +196,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
       p.failure(Upstream5xxResponse("""{appStatusMessage=10002}""", 100, 100))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.0.h1"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionProblem"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionAction"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionStatus"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
     }
   }
 
@@ -237,9 +229,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
       p.failure(new GenericServerErrorException("NO JSON"))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionProblem"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionStatus"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionAction"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
     }
   }
 
@@ -255,7 +246,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
       p.failure(new RuntimeException)
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.connectionProblem"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
     }
   }
 

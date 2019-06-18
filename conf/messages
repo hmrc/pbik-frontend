@@ -442,6 +442,12 @@ ErrorPage.invalidBikType = <p>We think you’re trying to register a benefit or 
 ErrorPage.noBenefitsRegistered = You haven’t registered any benefits for this tax year, please return to the <a href = "/payrollbik/payrolled-benefits-expenses">home</a> screen and register benefits before trying to add exclusions.
 ErrorPage.backButtonNoCache = You haven’t performed a search yet. Please go back to the home page and repeat the user journey.
 
+ErrorPage.title = Sorry, there is a problem with the service
+ErrorPage.try.later = Try again later.
+ErrorPage.contact.link = https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries
+ErrorPage.contact.helpline = Contact the Employers helpline
+ErrorPage.if.you.need.to.speak.to.someone = if you need to speak to someone about your expenses and benefits.
+
 #*************************************************************
 # Error- validation messages
 #*************************************************************
