@@ -28,12 +28,10 @@ class MaintenancePageViewSpec extends PBIKViewSpec {
   val MaintenancePageView = app.injector.instanceOf[MaintenancePage]
   override def view: Html = MaintenancePageView("", Some(EmpRef("", "")))
 
-  "MaintenancePageView Welsh" must {
+  "MaintenancePageView" must {
 
     behave like pageWithHeader(messages("ErrorPage.title"))
     behave like pageWithIdAndText(messages("ErrorPage.try.later"), "tryLater")
-    behave like pageWithIdAndText(messages("ErrorPage.contact.helpline") + " " + messages("ErrorPage.if.you.need.to.speak.to.someone"), "contactHelpLine")
-    behave like pageWithLink(messages("ErrorPage.contact.helpline"), messages("ErrorPage.contact.link"))
 
   }
 }

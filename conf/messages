@@ -444,9 +444,6 @@ ErrorPage.backButtonNoCache = You haven’t performed a search yet. Please go ba
 
 ErrorPage.title = Sorry, there is a problem with the service
 ErrorPage.try.later = Try again later.
-ErrorPage.contact.link = https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries
-ErrorPage.contact.helpline = Contact the Employers helpline
-ErrorPage.if.you.need.to.speak.to.someone = if you need to speak to someone about your expenses and benefits.
 
 #*************************************************************
 # Error- validation messages
