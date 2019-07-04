@@ -213,7 +213,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication
       p.failure(new GenericServerErrorException("10003"))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.h1"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
     }
   }
 

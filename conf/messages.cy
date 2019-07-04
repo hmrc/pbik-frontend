@@ -439,9 +439,6 @@ ErrorPage.backButtonNoCache = Nid ydych wedi chwilio hyd yn hyn. Ewch yn ôl i�
 
 ErrorPage.title = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth
 ErrorPage.try.later = Rhowch gynnig arall arni yn nes ymlaen.
-ErrorPage.contact.link = https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines
-ErrorPage.contact.helpline = Cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM
-ErrorPage.if.you.need.to.speak.to.someone = os ydych am siarad â rhywun am eich treuliau a buddiannau.
 
 #*************************************************************
 # Error- validation Messages
