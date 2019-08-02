@@ -31,23 +31,32 @@ import views.html.ErrorPage
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RegistrationService @Inject()(override val messagesApi: MessagesApi,
-                                    bikListUtils: BikListUtils,
-                                    formMappings: FormMappings,
-                                    val tierConnector: HmrcTierConnector,
-                                    val bikListService: BikListService,
-                                    taxDateUtils: TaxDateUtils,
-                                    controllersReferenceData: ControllersReferenceData,
-                                    uriInformation: URIInformation,
-                                    pbikAppConfig: PbikAppConfig,
-                                    errorPageView: ErrorPage)(implicit val executionContext: ExecutionContext) extends I18nSupport {
-
+class RegistrationService @Inject()(
+  override val messagesApi: MessagesApi,
+  bikListUtils: BikListUtils,
+  formMappings: FormMappings,
+  val tierConnector: HmrcTierConnector,
+  val bikListService: BikListService,
+  taxDateUtils: TaxDateUtils,
+  controllersReferenceData: ControllersReferenceData,
+  uriInformation: URIInformation,
+  pbikAppConfig: PbikAppConfig,
+  errorPageView: ErrorPage)(implicit val executionContext: ExecutionContext)
+    extends I18nSupport {
 
   //TODO: This should be in a controller
-  def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
-                                              generateViewBasedOnFormItems: (Form[RegistrationList],
-                                                Seq[RegistrationItem], Seq[Bik], Seq[Int], Seq[Int], Option[Int]) => HtmlFormat.Appendable)
-                                             (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+  def generateViewForBikRegistrationSelection(
+    year: Int,
+    cachingSuffix: String,
+    generateViewBasedOnFormItems: (
+      Form[RegistrationList],
+      Seq[RegistrationItem],
+      Seq[Bik],
+      Seq[Int],
+      Seq[Int],
+      Option[Int]) => HtmlFormat.Appendable)(
+    implicit hc: HeaderCarrier,
+    request: AuthenticatedRequest[AnyContent]): Future[Result] = {
 
     val decommissionedBikIds: Seq[Int] = pbikAppConfig.biksDecommissioned
     val nonLegislationBiks: Seq[Int] = if (taxDateUtils.isCurrentTaxYear(year)) {
@@ -64,11 +73,13 @@ class RegistrationService @Inject()(override val messagesApi: MessagesApi,
     }
 
     for {
-      biksListOption: List[Bik] <- bikListService.registeredBenefitsList(year, EmpRef.empty)(uriInformation.getBenefitTypesPath)
-      registeredListOption <- tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl,
-        uriInformation.getRegisteredPath,
-        request.empRef,
-        year)
+      biksListOption: List[Bik] <- bikListService.registeredBenefitsList(year, EmpRef.empty)(
+                                    uriInformation.getBenefitTypesPath)
+      registeredListOption <- tierConnector.genericGetCall[List[Bik]](
+                               uriInformation.baseUrl,
+                               uriInformation.getRegisteredPath,
+                               request.empRef,
+                               year)
       nonLegislationList = nonLegislationBiks.map { x =>
         Bik("" + x, 30, 0)
       }
@@ -89,15 +100,25 @@ class RegistrationService @Inject()(override val messagesApi: MessagesApi,
       val sortedMegedData: RegistrationList = bikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
 
       if (sortedMegedData.active.isEmpty) {
-        Ok(errorPageView(ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
-          controllersReferenceData.YEAR_RANGE,
-          isCurrentYear,
-          code = -1,
-          pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING,
-          empRef = Some(request.empRef)))
+        Ok(
+          errorPageView(
+            ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
+            controllersReferenceData.YEAR_RANGE,
+            isCurrentYear,
+            code = -1,
+            pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING,
+            empRef = Some(request.empRef)
+          ))
       } else {
-        Ok(generateViewBasedOnFormItems(formMappings.objSelectedForm.fill(sortedMegedData),
-          fetchFromCacheMapBiksValue, registeredListOption, nonLegislationBiks, pbikAppConfig.biksDecommissioned, Some(biksListOption.size)))
+        Ok(
+          generateViewBasedOnFormItems(
+            formMappings.objSelectedForm.fill(sortedMegedData),
+            fetchFromCacheMapBiksValue,
+            registeredListOption,
+            nonLegislationBiks,
+            pbikAppConfig.biksDecommissioned,
+            Some(biksListOption.size)
+          ))
       }
     }
   }

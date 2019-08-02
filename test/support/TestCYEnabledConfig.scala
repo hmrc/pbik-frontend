@@ -20,40 +20,40 @@ import config.AppConfig
 
 object TestCYEnabledConfig extends AppConfig {
 
-    override lazy val contactFrontendService: String = ""
-    override lazy val contactFormServiceIdentifier: String = ""
-    override lazy val assetsPrefix: String = ""
-    override lazy val reportAProblemPartialUrl: String = "http://localhost:9250/contact/problem_reports"
-    override lazy val betaFeedbackUrl: String = ""
-    override lazy val betaFeedbackUnauthenticatedUrl: String = ""
-    override lazy val analyticsToken: Option[String] = Some("")
-    override lazy val analyticsHost: String = ""
-    override lazy val cyEnabled: Boolean = true
-    override lazy val biksNotSupported: List[Int] = List.empty[Int]
-    override lazy val biksNotSupportedCY: List[Int] = List.empty[Int]
-    override lazy val biksDecommissioned: List[Int] = List.empty[Int]
-    override lazy val maximumExclusions: Int = 300
-    override lazy val urBannerLink: String = ""
-    override val serviceSignOut: String = ""
-    override val ssoUrl: Option[String] = None
-  }
+  override lazy val contactFrontendService: String = ""
+  override lazy val contactFormServiceIdentifier: String = ""
+  override lazy val assetsPrefix: String = ""
+  override lazy val reportAProblemPartialUrl: String = "http://localhost:9250/contact/problem_reports"
+  override lazy val betaFeedbackUrl: String = ""
+  override lazy val betaFeedbackUnauthenticatedUrl: String = ""
+  override lazy val analyticsToken: Option[String] = Some("")
+  override lazy val analyticsHost: String = ""
+  override lazy val cyEnabled: Boolean = true
+  override lazy val biksNotSupported: List[Int] = List.empty[Int]
+  override lazy val biksNotSupportedCY: List[Int] = List.empty[Int]
+  override lazy val biksDecommissioned: List[Int] = List.empty[Int]
+  override lazy val maximumExclusions: Int = 300
+  override lazy val urBannerLink: String = ""
+  override val serviceSignOut: String = ""
+  override val ssoUrl: Option[String] = None
+}
 
-  object TestCYDisabledConfig extends AppConfig {
+object TestCYDisabledConfig extends AppConfig {
 
-    override lazy val contactFrontendService: String = ""
-    override lazy val contactFormServiceIdentifier: String = ""
-    override lazy val assetsPrefix: String = ""
-    override lazy val reportAProblemPartialUrl: String = "http://localhost:9250/contact/problem_reports"
-    override lazy val betaFeedbackUrl: String = ""
-    override lazy val betaFeedbackUnauthenticatedUrl: String = ""
-    override lazy val analyticsToken: Option[String] = Some("")
-    override lazy val analyticsHost: String = ""
-    override lazy val cyEnabled: Boolean = false
-    override lazy val biksNotSupported: List[Int] = List.empty[Int]
-    override lazy val biksNotSupportedCY: List[Int] = List.empty[Int]
-    override lazy val biksDecommissioned: List[Int] = List.empty[Int]
-    override lazy val maximumExclusions: Int = 300
-    override lazy val urBannerLink: String = ""
-    override val serviceSignOut: String = ""
-    override val ssoUrl: Option[String] = None
-  }
+  override lazy val contactFrontendService: String = ""
+  override lazy val contactFormServiceIdentifier: String = ""
+  override lazy val assetsPrefix: String = ""
+  override lazy val reportAProblemPartialUrl: String = "http://localhost:9250/contact/problem_reports"
+  override lazy val betaFeedbackUrl: String = ""
+  override lazy val betaFeedbackUnauthenticatedUrl: String = ""
+  override lazy val analyticsToken: Option[String] = Some("")
+  override lazy val analyticsHost: String = ""
+  override lazy val cyEnabled: Boolean = false
+  override lazy val biksNotSupported: List[Int] = List.empty[Int]
+  override lazy val biksNotSupportedCY: List[Int] = List.empty[Int]
+  override lazy val biksDecommissioned: List[Int] = List.empty[Int]
+  override lazy val maximumExclusions: Int = 300
+  override lazy val urBannerLink: String = ""
+  override val serviceSignOut: String = ""
+  override val ssoUrl: Option[String] = None
+}

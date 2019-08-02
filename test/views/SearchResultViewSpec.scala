@@ -24,7 +24,6 @@ import utils.FormMappings
 import views.helper.{PBIKBaseViewSpec, PBIKViewBehaviours}
 import views.html.exclusion.SearchResults
 
-
 class SearchResultViewSpec extends PBIKBaseViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
@@ -48,7 +47,14 @@ class SearchResultViewSpec extends PBIKBaseViewSpec {
 
   "check the nino search page for text validation" in new PBIKViewBehaviours {
 
-    override def view: Html = viewWithForm(formMappings.individualsFormWithRadio.bind(Map[String, String](("nino", "AA111111"), ("firstname", "John"), ("surname", "Smith"), ("worksPayrollNumber", "123"))))
+    override def view: Html =
+      viewWithForm(
+        formMappings.individualsFormWithRadio.bind(
+          Map[String, String](
+            ("nino", "AA111111"),
+            ("firstname", "John"),
+            ("surname", "Smith"),
+            ("worksPayrollNumber", "123"))))
 
     behave like pageWithIdAndText("table-row-name", "John Smith")
     behave like pageWithIdAndText("table-row-nino", "AA111111")

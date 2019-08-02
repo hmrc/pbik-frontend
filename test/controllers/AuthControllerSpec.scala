@@ -36,7 +36,8 @@ class AuthControllerSpec extends PlaySpec with FakePBIKApplication {
 
     def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
 
-    def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken).withHeaders()
+    def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] =
+      FakeRequest().withSession(csrfToken).withHeaders()
   }
 
   "When an valid user logs in, and their action is Authorised" should {
@@ -47,11 +48,13 @@ class AuthControllerSpec extends PlaySpec with FakePBIKApplication {
       status(result) must be(OK) // 200
       val bodyText: String = contentAsString(result)
       assert(bodyText.contains("Enrol to use this service"))
-      assert(bodyText.contains("You’re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue."))
+      assert(bodyText.contains(
+        "You’re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue."))
       assert(bodyText.contains("To enrol you’ll need:"))
       assert(bodyText.contains("employer PAYE reference"))
       assert(bodyText.contains("Accounts office reference"))
-      assert(bodyText.contains("You’ll then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment."))
+      assert(bodyText.contains(
+        "You’ll then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment."))
       assert(bodyText.contains("You’ll then be able to use payrolling benefits and expenses."))
     }
   }

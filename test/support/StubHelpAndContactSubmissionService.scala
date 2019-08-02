@@ -25,7 +25,10 @@ import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class StubHelpAndContactSubmissionService @Inject()(contactFrontendConnector: ContactFrontendConnector) extends HelpAndContactSubmissionService(contactFrontendConnector) {
-  override def submitContactHmrc(contactHmrcSubmitPartialUrl: String, formData: Map[String, Seq[String]])(implicit request: Request[AnyContent], ec: ExecutionContext): Future[HttpResponse] =
+class StubHelpAndContactSubmissionService @Inject()(contactFrontendConnector: ContactFrontendConnector)
+    extends HelpAndContactSubmissionService(contactFrontendConnector) {
+  override def submitContactHmrc(contactHmrcSubmitPartialUrl: String, formData: Map[String, Seq[String]])(
+    implicit request: Request[AnyContent],
+    ec: ExecutionContext): Future[HttpResponse] =
     Future.successful(HttpResponse(200, Some(Json.obj())))
 }

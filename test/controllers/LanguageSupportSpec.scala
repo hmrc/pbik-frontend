@@ -38,8 +38,7 @@ import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckActi
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
-class LanguageSupportSpec extends PlaySpec with TestAuthUser
-  with FakePBIKApplication {
+class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .overrides(bind[AppConfig].to(classOf[PbikAppConfig]))
@@ -68,7 +67,9 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser
       val mockController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshrequest
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      val additions = CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) > 15 }
+      val additions = CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) > 15
+      }
       implicit val timeout: FiniteDuration = timeoutValue
       val result = await(mockController.setLanguage(request))(timeout)
       result.header.status must be(SEE_OTHER) // 303
@@ -78,10 +79,12 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser
   "HomePageController" should {
     "display the navigation page" in {
       val homePageController = app.injector.instanceOf[HomePageController]
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-        SessionKeys.sessionId -> sessionId,
-        SessionKeys.token -> "RANDOMTOKEN",
-        SessionKeys.userId -> userId).withCookies(Cookie("PLAY_LANG", "cy"))
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+        .withSession(
+          SessionKeys.sessionId -> sessionId,
+          SessionKeys.token     -> "RANDOMTOKEN",
+          SessionKeys.userId    -> userId)
+        .withCookies(Cookie("PLAY_LANG", "cy"))
 
       implicit val timeout: FiniteDuration = timeoutValue
       implicit val lang: Lang = Lang("cy")

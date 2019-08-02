@@ -49,24 +49,32 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplica
   implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockrequest)
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(bikListService.tierConnector)
-  }
 
   "The BIK service" should {
-
 
     "Be able to get the BIKS for the current year - 2 returned" in {
       val listBiks = List(Bik("Car & Car Fuel", 30, 10), Bik("Van Fuel", 40, 10))
 
-      when(bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]], any[Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(listBiks))
+      when(
+        bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(
+          any[HeaderCarrier],
+          any[Request[_]],
+          any[Format[List[Bik]]],
+          any[Manifest[List[Bik]]])).thenReturn(Future.successful(listBiks))
 
       val result: (Map[String, String], List[Bik]) = Await.result(bikListService.currentYearList, 10 seconds)
       result._2 shouldBe listBiks
     }
 
     "Be able to get the BIKS for the current year - no biks returned" in {
-      when(bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]], any[Format[List[Bik]]], any[Manifest[List[Bik]]])).thenThrow(new IllegalStateException())
+      when(
+        bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(
+          any[HeaderCarrier],
+          any[Request[_]],
+          any[Format[List[Bik]]],
+          any[Manifest[List[Bik]]])).thenThrow(new IllegalStateException())
       // Intercept exception
       intercept[IllegalStateException] {
         bikListService.currentYearList
@@ -76,7 +84,12 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplica
     "Be able to get the BIKS for the next year - 2 returned" in {
       val listBiks = List(Bik("Car & Car Fuel", 30, 10), Bik("Van Fuel", 40, 10))
 
-      when(bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]], any[Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(listBiks))
+      when(
+        bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(
+          any[HeaderCarrier],
+          any[Request[_]],
+          any[Format[List[Bik]]],
+          any[Manifest[List[Bik]]])).thenReturn(Future.successful(listBiks))
       implicit val hc: HeaderCarrier = HeaderCarrier()
 
       val result = Await.result(bikListService.nextYearList, 10 seconds)
@@ -85,10 +98,15 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplica
     }
 
     "Be able to get the BIKS for the next year - no biks returned" in {
-      when(bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]], any[Format[List[Bik]]], any[Manifest[List[Bik]]])).thenThrow(new IllegalStateException())
+      when(
+        bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(
+          any[HeaderCarrier],
+          any[Request[_]],
+          any[Format[List[Bik]]],
+          any[Manifest[List[Bik]]])).thenThrow(new IllegalStateException())
 
       intercept[IllegalStateException] {
-          bikListService.nextYearList
+        bikListService.nextYearList
       }
     }
 

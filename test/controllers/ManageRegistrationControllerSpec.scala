@@ -48,8 +48,7 @@ import utils._
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
-class ManageRegistrationControllerSpec extends PlaySpec
-  with TestAuthUser with FakePBIKApplication {
+class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -64,7 +63,8 @@ class ManageRegistrationControllerSpec extends PlaySpec
   val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
-  lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
+  lazy val CYRegistrationItems: List[RegistrationItem] =
+    List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
   val timeoutValue: FiniteDuration = 15 seconds
 
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
@@ -80,9 +80,8 @@ class ManageRegistrationControllerSpec extends PlaySpec
     implicit val defaultPatience: ScalaFutures.PatienceConfig =
       PatienceConfig(timeout = Span(7, Seconds), interval = Span(600, Millis))
 
-    def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+    def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] =
       Future.successful(AuditResult.Success)
-    }
 
     implicit lazy val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
 
@@ -90,45 +89,95 @@ class ManageRegistrationControllerSpec extends PlaySpec
 
     val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(""),
-      any[EmpRef], mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    when(
+      app.injector
+        .instanceOf[HmrcTierConnector]
+        .genericGetCall[List[Bik]](anyString, mockEq(""), any[EmpRef], mockEq(YEAR_RANGE.cy))(
+          any[HeaderCarrier],
+          any[Request[_]],
+          any[json.Format[List[Bik]]],
+          any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-      mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    when(
+      app.injector
+        .instanceOf[HmrcTierConnector]
+        .genericGetCall[List[Bik]](
+          anyString,
+          mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+          mockEq(EmpRef.empty),
+          mockEq(YEAR_RANGE.cy))(
+          any[HeaderCarrier],
+          any[Request[_]],
+          any[json.Format[List[Bik]]],
+          any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-      mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    when(
+      app.injector
+        .instanceOf[HmrcTierConnector]
+        .genericGetCall[List[Bik]](
+          anyString,
+          mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+          mockEq(EmpRef.empty),
+          mockEq(YEAR_RANGE.cyminus1))(
+          any[HeaderCarrier],
+          any[Request[_]],
+          any[json.Format[List[Bik]]],
+          any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-      mockEq(EmpRef.empty), mockEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    when(
+      app.injector
+        .instanceOf[HmrcTierConnector]
+        .genericGetCall[List[Bik]](
+          anyString,
+          mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+          mockEq(EmpRef.empty),
+          mockEq(YEAR_RANGE.cyplus1))(
+          any[HeaderCarrier],
+          any[Request[_]],
+          any[json.Format[List[Bik]]],
+          any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(2020))(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    when(
+      app.injector
+        .instanceOf[HmrcTierConnector]
+        .genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], mockEq(2020))(
+          any[HeaderCarrier],
+          any[Request[_]],
+          any[json.Format[List[Bik]]],
+          any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 5
     }))
 
-    when(app.injector.instanceOf[HmrcTierConnector].genericPostCall(anyString, mockEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
-      any[EmpRef], anyInt, any)(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
+    when(
+      app.injector
+        .instanceOf[HmrcTierConnector]
+        .genericPostCall(
+          anyString,
+          mockEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
+          any[EmpRef],
+          anyInt,
+          any)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(new FakeResponse()))
 
-    when(app.injector.instanceOf[HmrcTierConnector].genericGetCall[List[Bik]](anyString, mockEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
-      any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) >= 15
-    }))
+    when(
+      app.injector
+        .instanceOf[HmrcTierConnector]
+        .genericGetCall[List[Bik]](
+          anyString,
+          mockEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
+          any[EmpRef],
+          anyInt)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) >= 15
+      }))
 
     r
   }
@@ -136,10 +185,8 @@ class ManageRegistrationControllerSpec extends PlaySpec
   "When loading the next tax years on-remove data, the RegistrationController" should {
     "state the status is ok" in {
       implicit lazy val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: FiniteDuration = timeoutValue
       val result = await(registrationController.loadNextTaxYearOnRemoveData)(timeout)
@@ -188,7 +235,8 @@ class ManageRegistrationControllerSpec extends PlaySpec
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.1"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.3"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("AddBenefits.ChooseBenefitsLabel.1", "" + YEAR_RANGE.cy, "" + YEAR_RANGE.cyplus1))
+      result.body.asInstanceOf[Strict].data.utf8String must include(
+        Messages("AddBenefits.ChooseBenefitsLabel.1", "" + YEAR_RANGE.cy, "" + YEAR_RANGE.cyplus1))
     }
   }
 
@@ -246,7 +294,10 @@ class ManageRegistrationControllerSpec extends PlaySpec
 
   "When loading the updateRegisteredBenefitTypes, an authorised user" should {
     "persist their changes and be redirected to the what next page" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("software", None)))
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(RegistrationItem("31", active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("software", None)))
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
@@ -265,7 +316,8 @@ class ManageRegistrationControllerSpec extends PlaySpec
       implicit val timeout: FiniteDuration = timeoutValue
       val result = await(registrationController.addNextYearRegisteredBenefitTypes.apply(noSessionIdRequest))(timeout)
       result.header.status must be(UNAUTHORIZED)
-      result.body.asInstanceOf[Strict].data.utf8String must include("Request was not authenticated user should be redirected")
+      result.body.asInstanceOf[Strict].data.utf8String must include(
+        "Request was not authenticated user should be redirected")
     }
   }
 
@@ -276,13 +328,17 @@ class ManageRegistrationControllerSpec extends PlaySpec
       implicit val timeout: FiniteDuration = timeoutValue
       val result = await(registrationController.removeNextYearRegisteredBenefitTypes.apply(noSessionIdRequest))(timeout)
       result.header.status must be(UNAUTHORIZED)
-      result.body.asInstanceOf[Strict].data.utf8String must include("Request was not authenticated user should be redirected")
+      result.body.asInstanceOf[Strict].data.utf8String must include(
+        "Request was not authenticated user should be redirected")
     }
   }
 
   "When a user removes a benefit" should {
     "selecting 'software' should redirect to what next page" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("software", None)))
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(RegistrationItem("31", active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("software", None)))
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
@@ -296,7 +352,10 @@ class ManageRegistrationControllerSpec extends PlaySpec
 
   "When a user removes a benefit" should {
     "selecting 'guidance' should redirect to what next page" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("guidance", None)))
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(RegistrationItem("31", active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("guidance", None)))
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
@@ -310,7 +369,10 @@ class ManageRegistrationControllerSpec extends PlaySpec
 
   "When a user removes a benefit" should {
     "selecting 'not-clear' should redirect to what next page" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("not-clear", None)))
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(RegistrationItem("31", active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("not-clear", None)))
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
@@ -324,7 +386,10 @@ class ManageRegistrationControllerSpec extends PlaySpec
 
   "When a user removes a benefit" should {
     "selecting 'not-offering' should redirect to what next page" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("not-offering", None)))
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(RegistrationItem("31", active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("not-offering", None)))
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
@@ -338,7 +403,10 @@ class ManageRegistrationControllerSpec extends PlaySpec
 
   "When a user removes a benefit" should {
     "selecting 'other' & providing 'info' should redirect to what next page" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("other", Some("other info here"))))
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(RegistrationItem("31", active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("other", Some("other info here"))))
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
@@ -352,7 +420,10 @@ class ManageRegistrationControllerSpec extends PlaySpec
 
   "When a user removes a benefit" should {
     "selecting 'other' & not providing 'info' should redirect with error" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), Some(BinaryRadioButtonWithDesc("other", None)))
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(RegistrationItem("31", active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("other", None)))
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
@@ -365,15 +436,18 @@ class ManageRegistrationControllerSpec extends PlaySpec
 
   "When a user removes a benefit" should {
     "selecting no reason should redirect with error" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)), None)
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(
+          RegistrationItem("31", active = true, enabled = true),
+          RegistrationItem("8", active = true, enabled = true)),
+        None)
       val bikList = List(Bik("8", 10))
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val errorMsg = Messages("RemoveBenefits.reason.no.selection")
       implicit val timeout: FiniteDuration = timeoutValue
       val result = Future {
@@ -385,16 +459,19 @@ class ManageRegistrationControllerSpec extends PlaySpec
     }
 
     "selecting 'other' reason but no explanation should redirect with error" in {
-      val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("other", Some(""))))
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(
+          RegistrationItem("31", active = true, enabled = true),
+          RegistrationItem("8", active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("other", Some("")))
+      )
       val bikList = List(Bik("8", 10))
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val errorMsg = Messages("RemoveBenefits.reason.other.required")
       implicit val timeout: FiniteDuration = timeoutValue
       val result = Future {
@@ -407,16 +484,17 @@ class ManageRegistrationControllerSpec extends PlaySpec
   }
 
   "selecting 'other' reason but and providing explanation should redirect to what-next" in {
-    val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", true, true)),
-      Some(BinaryRadioButtonWithDesc("other", Some("bla bla other reason text"))))
+    val mockRegistrationList = RegistrationList(
+      None,
+      List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", true, true)),
+      Some(BinaryRadioButtonWithDesc("other", Some("bla bla other reason text")))
+    )
     val bikList = List(Bik("8", 10))
     val form = formMappings.objSelectedForm.fill(mockRegistrationList)
     val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-      EmpRef("taxOfficeNumber", "taxOfficeReference"),
-      UserName(Name(None, None)),
-      request)
+    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+      AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
     implicit val timeout: FiniteDuration = timeoutValue
     val result = await(Future {
       registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)
@@ -426,16 +504,17 @@ class ManageRegistrationControllerSpec extends PlaySpec
   }
 
   "selecting 'software' reason should redirect to what-next" in {
-    val mockRegistrationList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
-      Some(BinaryRadioButtonWithDesc("software", None)))
+    val mockRegistrationList = RegistrationList(
+      None,
+      List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
+      Some(BinaryRadioButtonWithDesc("software", None))
+    )
     val bikList = List(Bik("8", 10))
     val form = formMappings.objSelectedForm.fill(mockRegistrationList)
     val mockRequestForm = mockrequest.withFormUrlEncodedBody(form.data.toSeq: _*)
     implicit val request: FakeRequest[AnyContentAsFormUrlEncoded] = mockRequestForm
-    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-      EmpRef("taxOfficeNumber", "taxOfficeReference"),
-      UserName(Name(None, None)),
-      request)
+    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+      AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
     implicit val timeout: FiniteDuration = timeoutValue
     val result = await(Future {
       registrationController.removeBenefitReasonValidation(mockRegistrationList, form, 2017, bikList, bikList)

@@ -39,38 +39,32 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
 
   def doc(view: Html): Document = Jsoup.parse(view.toString())
 
-  def pageWithTitle(titleText: String): Unit = {
+  def pageWithTitle(titleText: String): Unit =
     "have a static title" in {
       doc.title must include(titleText)
     }
-  }
 
-  def pageWithHeader(headerText: String): Unit = {
+  def pageWithHeader(headerText: String): Unit =
     "have a static h1 header" in {
       doc must haveHeadingWithText(headerText)
     }
-  }
 
-  def pageWithHeaderH2(headerText: String): Unit = {
+  def pageWithHeaderH2(headerText: String): Unit =
     "have a static h2 header" in {
       doc must haveHeadingH2WithText(headerText)
     }
-  }
 
-  def pageWithBackLink: Unit = {
+  def pageWithBackLink: Unit =
     "have a back link" in {
       doc must haveBackLink
     }
-  }
 
-  def pageWithIdAndText(pageText: String, id: String): Unit = {
+  def pageWithIdAndText(pageText: String, id: String): Unit =
     s"have a static text ($pageText) with id ($id)" in {
-      doc must haveElementWithIdAndText (pageText, id)
+      doc must haveElementWithIdAndText(pageText, id)
     }
-  }
 
-
-  def pageWithYesNoRadioButton(idYes: String, idNo:String){
+  def pageWithYesNoRadioButton(idYes: String, idNo: String) {
     "have a yes/no radio button" in {
 
       doc.getElementById(idYes) must not be null
@@ -79,23 +73,20 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
     }
   }
 
-  def pageWithTextBox (id:String, label: String): Unit = {
+  def pageWithTextBox(id: String, label: String): Unit =
     s"have  a text box with label $label" in {
-      doc must haveInputLabelWithText (id , label)
+      doc must haveInputLabelWithText(id, label)
     }
-  }
 
-  def pageWithLink(text: String, href: String): Unit = {
+  def pageWithLink(text: String, href: String): Unit =
     s"have a link with url $href and text $text" in {
       val a = doc.select(s"a[href=$href]").first()
       a must not be null
       a.text.trim mustBe text.trim
     }
-  }
 
-  def pageWithContinueButtonForm(submitUrl: String, buttonText: String): Unit = {
+  def pageWithContinueButtonForm(submitUrl: String, buttonText: String): Unit =
     pageWithButtonForm(submitUrl, buttonText)
-  }
 
   def nonBreakable(string: String): String = string.replace(" ", "\u00A0")
 
@@ -111,7 +102,7 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
 
 trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite with I18nSupport {
 
-  implicit val lang:Lang = Lang("en-GB")
+  implicit val lang: Lang = Lang("en-GB")
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val pbikContext: PbikContext = new PbikContext(mock(classOf[ContactFrontendConnector])) {
@@ -120,4 +111,3 @@ trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite with I18nSuppor
 }
 
 trait PBIKViewSpec extends PBIKBaseViewSpec with PBIKViewBehaviours
-

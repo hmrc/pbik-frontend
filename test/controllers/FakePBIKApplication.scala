@@ -33,34 +33,37 @@ import utils.TestMinimalAuthAction
 
 import scala.reflect.ClassTag
 
-
 trait FakePBIKApplication extends OneAppPerSuite {
 
   this: TestSuite =>
 
-  val config: Map[String, Any] = Map("application.secret" -> "Its secret",
-                    "csrf.sign.tokens" -> false,
-                    "microservice.services.contact-frontend.host" -> "localhost",
-                    "microservice.services.contact-frontend.port" -> "9250",
-                    "auditing.enabled" -> false,
-                    "sessionId" -> "a-session-id")
+  val config: Map[String, Any] = Map(
+    "application.secret"                          -> "Its secret",
+    "csrf.sign.tokens"                            -> false,
+    "microservice.services.contact-frontend.host" -> "localhost",
+    "microservice.services.contact-frontend.port" -> "9250",
+    "auditing.enabled"                            -> false,
+    "sessionId"                                   -> "a-session-id"
+  )
 
   val sessionId = s"session-${UUID.randomUUID}"
   val userId = s"user-${UUID.randomUUID}"
 
-  def mockrequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-    SessionKeys.sessionId -> sessionId,
-    SessionKeys.token -> "RANDOMTOKEN",
-    SessionKeys.userId -> userId,
-    HeaderTags.ETAG -> "0",
-    HeaderTags.X_TXID -> "0")
+  def mockrequest: FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token     -> "RANDOMTOKEN",
+      SessionKeys.userId    -> userId,
+      HeaderTags.ETAG       -> "0",
+      HeaderTags.X_TXID     -> "0")
 
-  def mockWelshrequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "?lang=cy").withSession(
-    SessionKeys.sessionId -> sessionId,
-    SessionKeys.token -> "RANDOMTOKEN",
-    SessionKeys.userId -> userId,
-    HeaderTags.ETAG -> "0",
-    HeaderTags.X_TXID -> "0")
+  def mockWelshrequest: FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest("GET", "?lang=cy").withSession(
+      SessionKeys.sessionId -> sessionId,
+      SessionKeys.token     -> "RANDOMTOKEN",
+      SessionKeys.userId    -> userId,
+      HeaderTags.ETAG       -> "0",
+      HeaderTags.X_TXID     -> "0")
 
   def noSessionIdRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(SessionKeys.userId -> userId)
 

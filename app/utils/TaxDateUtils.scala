@@ -26,7 +26,7 @@ import org.joda.time.{DateTime, LocalDate}
 import play.api.Configuration
 import uk.gov.hmrc.time.TaxYear
 
-class TaxDateUtils @Inject()(configuration:Configuration) extends PayrollBikDefaults {
+class TaxDateUtils @Inject()(configuration: Configuration) extends PayrollBikDefaults {
 
   val overridedDateFromConfig: Option[util.List[Integer]] = configuration.getIntList("pbik.date.override")
 
@@ -34,38 +34,34 @@ class TaxDateUtils @Inject()(configuration:Configuration) extends PayrollBikDefa
   val startDateBanner: Date = sdf.parse(configuration.getString("pbik.banner.date.start").getOrElse(""))
   val endDateBanner: Date = sdf.parse(configuration.getString("pbik.banner.date.end").getOrElse(""))
 
-  def getDefaultDate: LocalDate = {
-    if(overridedDateFromConfig.isDefined) {
-      new LocalDate(overridedDateFromConfig.get.get(0), overridedDateFromConfig.get.get(1), overridedDateFromConfig.get.get(2))
+  def getDefaultDate: LocalDate =
+    if (overridedDateFromConfig.isDefined) {
+      new LocalDate(
+        overridedDateFromConfig.get.get(0),
+        overridedDateFromConfig.get.get(1),
+        overridedDateFromConfig.get.get(2))
     } else new LocalDate()
-  }
 
-  def getDefaultYear: Int = {
-    if(overridedDateFromConfig.isDefined) new DateTime().getYear + 1 else new DateTime().getYear
-  }
+  def getDefaultYear: Int =
+    if (overridedDateFromConfig.isDefined) new DateTime().getYear + 1 else new DateTime().getYear
 
-  def getTaxYearRange(year:Int = getCurrentTaxYear(getDefaultDate)):TaxYearRange = generateTaxYearRange(year)
+  def getTaxYearRange(year: Int = getCurrentTaxYear(getDefaultDate)): TaxYearRange = generateTaxYearRange(year)
 
-  def getCurrentTaxYear(dateToCheck:LocalDate = getDefaultDate):Int = {
-      TaxYear.taxYearFor(dateToCheck).currentYear
-  }
+  def getCurrentTaxYear(dateToCheck: LocalDate = getDefaultDate): Int =
+    TaxYear.taxYearFor(dateToCheck).currentYear
 
-  def isCurrentTaxYear(yearToCheck:Int = getDefaultYear, dateToCheck:LocalDate = getDefaultDate):Boolean = {
+  def isCurrentTaxYear(yearToCheck: Int = getDefaultYear, dateToCheck: LocalDate = getDefaultDate): Boolean =
     yearToCheck == TaxYear.taxYearFor(dateToCheck).currentYear
+
+  def isServiceLaunched(year: Int = getCurrentTaxYear()): Boolean = {
+    val launched = year >= TAX_YEAR_OF_LAUNCH
+    launched
   }
 
-  def isServiceLaunched(year:Int = getCurrentTaxYear()):Boolean = {
-      val launched = year >= TAX_YEAR_OF_LAUNCH
-      launched
-  }
+  private def generateTaxYearRange(year: Int): TaxYearRange =
+    TaxYearRange(year, year + 1, year + 2)
 
-  private def generateTaxYearRange(year:Int):TaxYearRange = {
-      TaxYearRange(year, year + 1, year + 2)
-  }
-
-  def dateWithinAnnualCodingRun(today:Date):Boolean = {
-
+  def dateWithinAnnualCodingRun(today: Date): Boolean =
     today.getTime >= startDateBanner.getTime && today.getTime <= endDateBanner.getTime
-  }
 
 }

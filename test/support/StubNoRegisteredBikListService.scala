@@ -30,20 +30,21 @@ import utils.{ControllersReferenceData, URIInformation}
 
 import scala.concurrent.Future
 
-class StubNoRegisteredBikListService @Inject()(pbikAppConfig: AppConfig,
-                                               tierConnector: HmrcTierConnector,
-                                               controllersReferenceData: ControllersReferenceData,
-                                               uriInformation: URIInformation) extends BikListService(
+class StubNoRegisteredBikListService @Inject()(
   pbikAppConfig: AppConfig,
-  tierConnector,
-  controllersReferenceData,
-  uriInformation) {
+  tierConnector: HmrcTierConnector,
+  controllersReferenceData: ControllersReferenceData,
+  uriInformation: URIInformation)
+    extends BikListService(pbikAppConfig: AppConfig, tierConnector, controllersReferenceData, uriInformation) {
 
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
 
-  when(tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-    any[EmpRef], anyInt)(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+  when(
+    tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(
+      any[HeaderCarrier],
+      any[Request[_]],
+      any[json.Format[List[Bik]]],
+      any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
     Integer.parseInt(x.iabdType) > 50
   }))
 }

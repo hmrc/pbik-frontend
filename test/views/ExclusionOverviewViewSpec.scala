@@ -31,7 +31,7 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  override def view: Html = exclusionOverviewView(taxYearRange, "cyp1", "30", List(),EmpRef("", ""))
+  override def view: Html = exclusionOverviewView(taxYearRange, "cyp1", "30", List(), EmpRef("", ""))
 
   "exclusionOverview" must {
     behave like pageWithTitle(messages("ExclusionOverview.title"))

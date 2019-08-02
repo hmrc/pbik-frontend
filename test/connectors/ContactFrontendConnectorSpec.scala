@@ -32,23 +32,19 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with MockitoSugar
-  with BeforeAndAfterEach {
+class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   override val fakeApplication: Application = GuiceApplicationBuilder()
     .overrides(bind[HttpClient].toInstance(mock[HttpClient]))
     .build()
-
 
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
   val testConnector = app.injector.instanceOf[ContactFrontendConnector]
   val testConfiguration = app.injector.instanceOf[Configuration]
 
-
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     reset(testConnector.client)
-  }
 
   "ContactFrontendConnector" must {
 
@@ -60,7 +56,8 @@ class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with Moc
 
       val response = HttpResponse(200, responseString = Some(dummyResponseHtml))
 
-      when(testConnector.client.GET[HttpResponse](meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])) thenReturn Future.successful(response)
+      when(testConnector.client.GET[HttpResponse](meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])) thenReturn Future
+        .successful(response)
 
       await(testConnector.getHelpPartial)
 

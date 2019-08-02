@@ -42,72 +42,83 @@ import views.html.exclusion.{ExclusionNinoOrNoNinoForm, ExclusionOverview, NinoE
 
 import scala.concurrent.Future
 
-class MockExclusionListController @Inject()(messagesApi: MessagesApi,
-                                            formMappings: FormMappings,
-                                            cc: MessagesControllerComponents,
-                                            pbikAppConfig: PbikAppConfig,
-                                            authenticate: AuthAction,
-                                            noSessionCheck: NoSessionCheckAction,
-                                            eiLListService: EiLListService,
-                                            bikListService: BikListService,
-                                            tierConnector: HmrcTierConnector,
-                                            runModeConfiguration: Configuration,
-                                            taxDateUtils: TaxDateUtils,
-                                            splunkLogger: SplunkLogger,
-                                            controllersReferenceData: ControllersReferenceData,
-                                            uriInformation: URIInformation,
-                                            exclusionOverviewView: ExclusionOverview,
-                                            errorPageView: ErrorPage,
-                                            exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm,
-                                            ninoExclusionSearchFormView: NinoExclusionSearchForm,
-                                            noNinoExclusionSearchFormView: NoNinoExclusionSearchForm,
-                                            searchResultsView: SearchResults,
-                                            whatNextExclusionView: WhatNextExclusion,
-                                            removalConfirmationView: RemovalConfirmation,
-                                            whatNextRescindView: WhatNextRescind)
-  extends ExclusionListController(
-    formMappings,
-    authenticate,
-    cc,
-    messagesApi,
-    noSessionCheck,
-    eiLListService,
-    bikListService,
-    tierConnector,
-    taxDateUtils,
-    splunkLogger,
-    controllersReferenceData,
-    runModeConfiguration,
-    uriInformation,
-    exclusionOverviewView,
-    errorPageView,
-    exclusionNinoOrNoNinoFormView,
-    ninoExclusionSearchFormView,
-    noNinoExclusionSearchFormView,
-    searchResultsView,
-    whatNextExclusionView,
-    removalConfirmationView,
-    whatNextRescindView
-  ) with Futures {
+class MockExclusionListController @Inject()(
+  messagesApi: MessagesApi,
+  formMappings: FormMappings,
+  cc: MessagesControllerComponents,
+  pbikAppConfig: PbikAppConfig,
+  authenticate: AuthAction,
+  noSessionCheck: NoSessionCheckAction,
+  eiLListService: EiLListService,
+  bikListService: BikListService,
+  tierConnector: HmrcTierConnector,
+  runModeConfiguration: Configuration,
+  taxDateUtils: TaxDateUtils,
+  splunkLogger: SplunkLogger,
+  controllersReferenceData: ControllersReferenceData,
+  uriInformation: URIInformation,
+  exclusionOverviewView: ExclusionOverview,
+  errorPageView: ErrorPage,
+  exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm,
+  ninoExclusionSearchFormView: NinoExclusionSearchForm,
+  noNinoExclusionSearchFormView: NoNinoExclusionSearchForm,
+  searchResultsView: SearchResults,
+  whatNextExclusionView: WhatNextExclusion,
+  removalConfirmationView: RemovalConfirmation,
+  whatNextRescindView: WhatNextRescind)
+    extends ExclusionListController(
+      formMappings,
+      authenticate,
+      cc,
+      messagesApi,
+      noSessionCheck,
+      eiLListService,
+      bikListService,
+      tierConnector,
+      taxDateUtils,
+      splunkLogger,
+      controllersReferenceData,
+      runModeConfiguration,
+      uriInformation,
+      exclusionOverviewView,
+      errorPageView,
+      exclusionNinoOrNoNinoFormView,
+      ninoExclusionSearchFormView,
+      noNinoExclusionSearchFormView,
+      searchResultsView,
+      whatNextExclusionView,
+      removalConfirmationView,
+      whatNextRescindView
+    ) with Futures {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
-  def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] =
     Future.successful(AuditResult.Success)
-  }
 
-  when(tierConnector.genericPostCall[EiLPerson](anyString, Matchers.eq("31/exclusion/update"),
-    any[EmpRef], anyInt, any[EiLPerson])(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
+  when(
+    tierConnector
+      .genericPostCall[EiLPerson](anyString, Matchers.eq("31/exclusion/update"), any[EmpRef], anyInt, any[EiLPerson])(
+        any[HeaderCarrier],
+        any[Request[_]],
+        any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
 
-  when(tierConnector.genericPostCall[EiLPerson](anyString, Matchers.eq("31/exclusion/remove"),
-    any[EmpRef], anyInt, any[EiLPerson])(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
+  when(
+    tierConnector
+      .genericPostCall[EiLPerson](anyString, Matchers.eq("31/exclusion/remove"), any[EmpRef], anyInt, any[EiLPerson])(
+        any[HeaderCarrier],
+        any[Request[_]],
+        any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
 
-  when(tierConnector.genericPostCall(anyString, Matchers.eq(uriInformation.updateBenefitTypesPath),
-    any[EmpRef], anyInt, any[List[Bik]])(any[HeaderCarrier], any[Request[_]],
-    any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
+  when(
+    tierConnector.genericPostCall(
+      anyString,
+      Matchers.eq(uriInformation.updateBenefitTypesPath),
+      any[EmpRef],
+      anyInt,
+      any[List[Bik]])(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]]))
+    .thenReturn(Future.successful(new FakeResponse()))
 
   override lazy val exclusionsAllowed = true
 }
@@ -115,8 +126,7 @@ class MockExclusionListController @Inject()(messagesApi: MessagesApi,
 class FakeResponse extends HttpResponse {
   override def status = 200
 
-  override val json: JsValue = Json.parse(
-    """[
+  override val json: JsValue = Json.parse("""[
                  {
                      "nino": "AB111111",
                      "firstForename": "Adam",

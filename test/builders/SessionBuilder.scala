@@ -26,19 +26,15 @@ object SessionBuilder {
 
   val TOKEN = "token"
 
-  def updateRequestWithSession(fakeRequest: FakeRequest[AnyContentAsJson], userId: String): FakeRequest[AnyContentAsJson] = {
+  def updateRequestWithSession(
+    fakeRequest: FakeRequest[AnyContentAsJson],
+    userId: String): FakeRequest[AnyContentAsJson] = {
     val sessionId = s"session-${UUID.randomUUID}"
-    fakeRequest.withSession(
-      SessionKeys.sessionId -> sessionId,
-      TOKEN -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId)
+    fakeRequest.withSession(SessionKeys.sessionId -> sessionId, TOKEN -> "RANDOMTOKEN", SessionKeys.userId -> userId)
   }
 
   def buildRequestWithSession(userId: String) = {
     val sessionId = s"session-${UUID.randomUUID}"
-    FakeRequest().withSession(
-      SessionKeys.sessionId -> sessionId,
-      TOKEN -> "RANDOMTOKEN",
-      SessionKeys.userId -> userId)
+    FakeRequest().withSession(SessionKeys.sessionId -> sessionId, TOKEN -> "RANDOMTOKEN", SessionKeys.userId -> userId)
   }
 }

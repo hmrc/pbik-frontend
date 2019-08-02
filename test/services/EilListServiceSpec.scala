@@ -47,36 +47,41 @@ class EilListServiceSpec extends UnitSpec with FakePBIKApplication with TestAuth
 
     val els = app.injector.instanceOf[EiLListService]
 
-      when(els.tierConnector.genericGetCall[List[EiLPerson]](anyString,
-        anyString,any[EmpRef], anyInt)(any[HeaderCarrier],any[Request[_]],
-          any[json.Format[List[EiLPerson]]], any[Manifest[List[EiLPerson]]])).thenReturn(List.empty[EiLPerson])
+    when(
+      els.tierConnector.genericGetCall[List[EiLPerson]](anyString, anyString, any[EmpRef], anyInt)(
+        any[HeaderCarrier],
+        any[Request[_]],
+        any[json.Format[List[EiLPerson]]],
+        any[Manifest[List[EiLPerson]]])).thenReturn(List.empty[EiLPerson])
 
     els
   }
 
   "When calling the EILService it" should {
     "return an empty list" in {
-        val eilService: EiLListService =  MockEiLListService
-        implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-        implicit val authenicatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-        val result = await(eilService.currentYearEiL("5", 2015))
-        result.size shouldBe 0
+      val eilService: EiLListService = MockEiLListService
+      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val authenicatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
+        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+      val result = await(eilService.currentYearEiL("5", 2015))
+      result.size shouldBe 0
     }
 
     "return a subset of List(EiL) search results - already excluded" in {
-        val eilService =  MockEiLListService
-        implicit val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockrequest)
-        implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-        val eiL1 = new EiLPerson("QQ123456", "Humpty", None, "Dumpty", Some("123"), Some("01/01/1980"), None, None)
-        val eiL2 = new EiLPerson("QQ123457", "Humpty", None, "Dumpty", Some("789"), Some("01/01/1980"), None, None)
-        val searchResultsEiL: List[EiLPerson] = List(eiL1,eiL2)
-        val alreadyExcludedEiL: List[EiLPerson] = List(eiL1)
+      val eilService = MockEiLListService
+      implicit val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockrequest)
+      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+      val eiL1 = new EiLPerson("QQ123456", "Humpty", None, "Dumpty", Some("123"), Some("01/01/1980"), None, None)
+      val eiL2 = new EiLPerson("QQ123457", "Humpty", None, "Dumpty", Some("789"), Some("01/01/1980"), None, None)
+      val searchResultsEiL: List[EiLPerson] = List(eiL1, eiL2)
+      val alreadyExcludedEiL: List[EiLPerson] = List(eiL1)
 
-        val result: immutable.Seq[EiLPerson] = eilService.searchResultsRemoveAlreadyExcluded(alreadyExcludedEiL, searchResultsEiL)
-        result.size shouldBe 1
-        result.head shouldBe eiL2
-      }
+      val result: immutable.Seq[EiLPerson] =
+        eilService.searchResultsRemoveAlreadyExcluded(alreadyExcludedEiL, searchResultsEiL)
+      result.size shouldBe 1
+      result.head shouldBe eiL2
+    }
   }
 
 }

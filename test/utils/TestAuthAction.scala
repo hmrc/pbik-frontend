@@ -24,14 +24,15 @@ import play.api.mvc.{BodyParsers, Request, Result}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import scala.concurrent.{ExecutionContext, Future}
 
-class TestAuthAction @Inject()(val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext) extends AuthAction {
-  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
+class TestAuthAction @Inject()(val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
+    extends AuthAction {
+  override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
     if (request.session.get("sessionId").getOrElse("").startsWith("session")) {
-      implicit val authenticatedRequest: AuthenticatedRequest[A] = AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+      implicit val authenticatedRequest: AuthenticatedRequest[A] =
+        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       block(authenticatedRequest)
     } else {
       Future(Unauthorized("Request was not authenticated user should be redirected"))
     }
 
-  }
 }

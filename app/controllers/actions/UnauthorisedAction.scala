@@ -27,12 +27,13 @@ import scala.concurrent.{ExecutionContext, Future}
 @ImplementedBy(classOf[UnauthorisedActionImpl])
 trait UnauthorisedAction extends ActionBuilder[Request, AnyContent] with ActionFunction[Request, Request]
 
-class UnauthorisedActionImpl @Inject()(val parser: BodyParsers.Default)
-                                      (implicit val executionContext: ExecutionContext) extends UnauthorisedAction {
+class UnauthorisedActionImpl @Inject()(val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
+    extends UnauthorisedAction {
 
-    override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
+  override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-     block(request)
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    block(request)
   }
 }

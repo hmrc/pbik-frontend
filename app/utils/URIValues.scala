@@ -19,14 +19,14 @@ package utils
 trait URIValues {
 
   val getBenefitTypesPath = "getbenefittypes"
-  val getRegisteredPath =  ""
+  val getRegisteredPath = ""
   val updateBenefitTypesPath = "updatebenefittypes"
   val addExclusionPath = "exclusion/update"
   val exclusionPath = "exclusion"
   val addExclusionRemovePath = "exclusion/remove"
 
-  def exclusionGetPath(iabdType: String):String = s"$iabdType/$exclusionPath"
-  def exclusionPostUpdatePath(iabdType: String):String = s"$iabdType/$addExclusionPath"
-  def exclusionPostRemovePath (iabdType: String):String = s"$iabdType/$addExclusionRemovePath"
+  def exclusionGetPath(iabdType: String): String = s"$iabdType/$exclusionPath"
+  def exclusionPostUpdatePath(iabdType: String): String = s"$iabdType/$addExclusionPath"
+  def exclusionPostRemovePath(iabdType: String): String = s"$iabdType/$addExclusionRemovePath"
 
 }

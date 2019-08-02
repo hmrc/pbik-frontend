@@ -33,9 +33,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class NoSessionCheckActionSpec extends PlaySpec
-  with ScalaFutures
-  with GuiceOneAppPerSuite {
+class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneAppPerSuite {
 
   class Harness() extends NoSessionCheckActionImpl {
     def callTransform[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
@@ -47,7 +45,8 @@ class NoSessionCheckActionSpec extends PlaySpec
   "No Session Check Action" when {
     "there is a session" must {
       "leave the request unfiltered" in {
-        val requestWithSessionID = AuthenticatedRequest(EmpRef.empty,
+        val requestWithSessionID = AuthenticatedRequest(
+          EmpRef.empty,
           UserName(Name(None, None)),
           FakeRequest("", "")
             .withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
@@ -60,19 +59,16 @@ class NoSessionCheckActionSpec extends PlaySpec
 
     "the session is not set" must {
       "redirect user to home page controller " in {
-        val request = AuthenticatedRequest(EmpRef.empty,
-          UserName(Name(None, None)),
-          FakeRequest("", ""))
+        val request = AuthenticatedRequest(EmpRef.empty, UserName(Name(None, None)), FakeRequest("", ""))
         val result = new Harness().callTransform(request)
 
-        whenReady(result) {
-          call: Either[Result, AuthenticatedRequest[_]] =>
-            call match {
-              case Left(callResult) =>
-                val headers: Map[String, String] = callResult.header.headers
-                headers.getOrElse("Location", "") must include("/payrollbik/payrolled-benefits-expenses")
-              case Right(_) => fail("Result not a Left")
-            }
+        whenReady(result) { call: Either[Result, AuthenticatedRequest[_]] =>
+          call match {
+            case Left(callResult) =>
+              val headers: Map[String, String] = callResult.header.headers
+              headers.getOrElse("Location", "") must include("/payrollbik/payrolled-benefits-expenses")
+            case Right(_) => fail("Result not a Left")
+          }
         }
       }
     }

@@ -24,7 +24,9 @@ import uk.gov.hmrc.http.HttpResponse
 import scala.concurrent.{ExecutionContext, Future}
 
 class HelpAndContactSubmissionService @Inject()(contactFrontendConnector: ContactFrontendConnector) {
-  def submitContactHmrc(contactHmrcSubmitPartialUrl: String, formData: Map[String, Seq[String]])(implicit request: Request[AnyContent], ec: ExecutionContext): Future[HttpResponse] =
+  def submitContactHmrc(contactHmrcSubmitPartialUrl: String, formData: Map[String, Seq[String]])(
+    implicit request: Request[AnyContent],
+    ec: ExecutionContext): Future[HttpResponse] =
     contactFrontendConnector.submitContactHmrc(contactHmrcSubmitPartialUrl, formData)
 
 }

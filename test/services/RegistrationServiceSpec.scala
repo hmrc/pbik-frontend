@@ -44,7 +44,6 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
 
   override val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
@@ -52,7 +51,6 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
     .overrides(bind[BikListService].toInstance(mock(classOf[BikListService])))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
-
 
   val registrationService: RegistrationService = {
 
@@ -62,20 +60,34 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
 
     when(r.bikListService.pbikHeaders).thenReturn(Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1"))
 
-    when(r.bikListService.registeredBenefitsList(anyInt,any[EmpRef])(anyString)
-    (any[HeaderCarrier], any[Request[_]])).thenReturn(Future.successful(CYCache))
+    when(r.bikListService.registeredBenefitsList(anyInt, any[EmpRef])(anyString)(any[HeaderCarrier], any[Request[_]]))
+      .thenReturn(Future.successful(CYCache))
 
     // Return instance where not all Biks have been registered for CY
-    when(r.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(injected[TaxDateUtils].getCurrentTaxYear()) )(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    when(
+      r.tierConnector.genericGetCall[List[Bik]](
+        anyString,
+        anyString,
+        any[EmpRef],
+        mockEq(injected[TaxDateUtils].getCurrentTaxYear()))(
+        any[HeaderCarrier],
+        any[Request[_]],
+        any[json.Format[List[Bik]]],
+        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 3
     }))
 
     // Return instance where not all Biks have been registered for CYP1
-    when(r.tierConnector.genericGetCall[List[Bik]](anyString, anyString,
-      any[EmpRef], mockEq(injected[TaxDateUtils].getCurrentTaxYear()+1) )(any[HeaderCarrier], any[Request[_]],
-      any[json.Format[List[Bik]]], any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    when(
+      r.tierConnector.genericGetCall[List[Bik]](
+        anyString,
+        anyString,
+        any[EmpRef],
+        mockEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(
+        any[HeaderCarrier],
+        any[Request[_]],
+        any[json.Format[List[Bik]]],
+        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 5
     }))
 
@@ -83,13 +95,11 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
   }
 
   "When generating a page which allows registrations, the service" should {
-   "return the selection page" in {
+    "return the selection page" in {
       val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       val nextTaxYearView = app.injector.instanceOf[NextTaxYear]
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
-        request)
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       val taxDateUtils = injected[TaxDateUtils]
       val YEAR_RANGE = taxDateUtils.getTaxYearRange()
@@ -99,14 +109,15 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
       implicit val config: AppConfig = injected[AppConfig]
       implicit val localFormPartialRetriever: LocalFormPartialRetriever = injected[LocalFormPartialRetriever]
 
-
-      val result = await(registrationService.generateViewForBikRegistrationSelection(YEAR_RANGE.cyminus1,
-        "add", nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty)))
+      val result = await(
+        registrationService.generateViewForBikRegistrationSelection(
+          YEAR_RANGE.cyminus1,
+          "add",
+          nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty)))
       status(result) shouldBe 200
       bodyOf(result) should include(Messages("AddBenefits.Heading"))
       bodyOf(result) should include(Messages("BenefitInKind.label.37"))
     }
   }
-
 
 }

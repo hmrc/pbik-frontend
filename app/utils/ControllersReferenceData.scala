@@ -75,14 +75,16 @@ object ControllersReferenceDataCodes {
   val AUTHORISATION_TITLE = "ErrorPage.authorisationTitle"
 }
 
-class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
-                                         override val messagesApi: MessagesApi,
-                                         errorPageView: ErrorPage,
-                                         maintenancePageView: MaintenancePage)
-                                        (implicit val context: PbikContext,
-                                         implicit val pbikAppConfig: AppConfig,
-                                         implicit val externalURLs: ExternalUrls,
-                                         implicit val localFormPartialRetriever: LocalFormPartialRetriever) extends FormMappings(messagesApi) with I18nSupport {
+class ControllersReferenceData @Inject()(
+  taxDateUtils: TaxDateUtils,
+  override val messagesApi: MessagesApi,
+  errorPageView: ErrorPage,
+  maintenancePageView: MaintenancePage)(
+  implicit val context: PbikContext,
+  implicit val pbikAppConfig: AppConfig,
+  implicit val externalURLs: ExternalUrls,
+  implicit val localFormPartialRetriever: LocalFormPartialRetriever)
+    extends FormMappings(messagesApi) with I18nSupport {
 
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
@@ -96,16 +98,17 @@ class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
     persistentBiks
   }
 
-  def responseCheckCYEnabled(staticDataRequest: Future[Result])(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+  def responseCheckCYEnabled(staticDataRequest: Future[Result])(
+    implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     if (pbikAppConfig.cyEnabled) {
       responseErrorHandler(staticDataRequest)
     } else {
       Logger.info("Cy is disabled")
       Future(Ok(errorPageView(CY_RESTRICTED, YEAR_RANGE, "", 10003, empRef = Some(request.empRef))))
     }
-  }
 
-  def responseErrorHandler(staticDataRequest: Future[Result])(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+  def responseErrorHandler(staticDataRequest: Future[Result])(
+    implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     staticDataRequest.recover {
       case e0: NoSuchElementException => {
         Logger.warn("ResponseErrorHandler. A NoSuchElementException was handled :  " + e0)
@@ -128,10 +131,18 @@ class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
           Logger.warn("ResponseErrorHandler. A GenericServerErrorException was handled :  " + e4.message)
           val msgValue = e4.message
           if (Messages("ServiceMessage." + msgValue) == ("ServiceMessage." + msgValue)) throw new Exception(msgValue)
-          else Ok(errorPageView(Messages("ServiceMessage." + msgValue), YEAR_RANGE, "", msgValue.toInt, empRef = Some(request.empRef)))
+          else
+            Ok(
+              errorPageView(
+                Messages("ServiceMessage." + msgValue),
+                YEAR_RANGE,
+                "",
+                msgValue.toInt,
+                empRef = Some(request.empRef)))
         } catch {
           case e: Exception => {
-            Logger.warn("Could not parse GenericServerError System Error number: " + e4.message + " .Showing default error page instead")
+            Logger.warn(
+              "Could not parse GenericServerError System Error number: " + e4.message + " .Showing default error page instead")
             Ok(maintenancePageView(empRef = Some(request.empRef)))
           }
         }
@@ -141,6 +152,5 @@ class ControllersReferenceData @Inject()(taxDateUtils: TaxDateUtils,
         Ok(maintenancePageView(empRef = Some(request.empRef)))
       }
     }
-  }
 
 }

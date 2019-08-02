@@ -21,7 +21,6 @@ import config.{AppConfig, PbikAppConfig}
 
 class Module extends AbstractModule {
 
-  override def configure(): Unit = {
+  override def configure(): Unit =
     bind(classOf[AppConfig]).to(classOf[PbikAppConfig])
-  }
 }

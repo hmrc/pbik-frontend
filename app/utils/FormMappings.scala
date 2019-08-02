@@ -55,24 +55,21 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
   private val ninoTrimmedRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
   private val yearRegEx = generateYearString(YEAR_LENGTH_VALUE)
 
-  def generateYearString(length: Int): String = {
+  def generateYearString(length: Int): String =
     if (length > 0) {
       "[0-9]" + generateYearString(length - 1)
-    }
-    else {
+    } else {
       ""
     }
-  }
 
-  def addZeroIfNeeded(date: String):String = {
+  def addZeroIfNeeded(date: String): String =
     if (date.length == 1) {
       "0" + date
     } else {
       date
     }
-  }
 
-  def isValidDate(dob: (String, String, String)): Boolean = {
+  def isValidDate(dob: (String, String, String)): Boolean =
     try {
       val monthToInt: Int = dob._2.toInt
       val dayToInt: Int = dob._1.toInt
@@ -81,22 +78,23 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
         case month if JANUARY to DECEMBER contains month => {
           monthToInt match {
             case JANUARY => RANGE_31_DAYS.contains(dayToInt)
-            case FEBRUARY => if (yearToInt % LEAP_YEAR_FREQ == 0) {
-              RANGE_29_DAYS.contains(dayToInt)
-            } else {
-              RANGE_28_DAYS.contains(dayToInt)
-            }
-            case MARCH => RANGE_31_DAYS.contains(dayToInt)
-            case APRIL => RANGE_30_DAYS.contains(dayToInt)
-            case MAY => RANGE_31_DAYS.contains(dayToInt)
-            case JUNE => RANGE_30_DAYS.contains(dayToInt)
-            case JULY => RANGE_31_DAYS.contains(dayToInt)
-            case AUGUST => RANGE_31_DAYS.contains(dayToInt)
+            case FEBRUARY =>
+              if (yearToInt % LEAP_YEAR_FREQ == 0) {
+                RANGE_29_DAYS.contains(dayToInt)
+              } else {
+                RANGE_28_DAYS.contains(dayToInt)
+              }
+            case MARCH     => RANGE_31_DAYS.contains(dayToInt)
+            case APRIL     => RANGE_30_DAYS.contains(dayToInt)
+            case MAY       => RANGE_31_DAYS.contains(dayToInt)
+            case JUNE      => RANGE_30_DAYS.contains(dayToInt)
+            case JULY      => RANGE_31_DAYS.contains(dayToInt)
+            case AUGUST    => RANGE_31_DAYS.contains(dayToInt)
             case SEPTEMBER => RANGE_30_DAYS.contains(dayToInt)
-            case OCTOBER => RANGE_31_DAYS.contains(dayToInt)
-            case NOVEMBER => RANGE_30_DAYS.contains(dayToInt)
-            case DECEMBER => RANGE_31_DAYS.contains(dayToInt)
-            case _ => throw new NumberFormatException()
+            case OCTOBER   => RANGE_31_DAYS.contains(dayToInt)
+            case NOVEMBER  => RANGE_30_DAYS.contains(dayToInt)
+            case DECEMBER  => RANGE_31_DAYS.contains(dayToInt)
+            case _         => throw new NumberFormatException()
           }
         }
         case _ => false
@@ -104,86 +102,86 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
     } catch {
       case e: NumberFormatException => false
     }
-  }
 
   def isDateYearInFuture(dob: (String, String, String)): Boolean = {
-    val currentYear=Calendar.getInstance().get(Calendar.YEAR)
+    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val dobYear = Try(dob._3.toInt).getOrElse(0)
 
-    if(dobYear < currentYear) true
+    if (dobYear < currentYear) true
     else false
   }
 
   def isDateYearInPastValid(dob: (String, String, String)): Boolean = {
-    val currentYear=Calendar.getInstance().get(Calendar.YEAR)
+    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val dobYear = Try(dob._3.toInt).getOrElse(0)
 
-    if((dobYear + 130) < currentYear) false
+    if ((dobYear + 130) < currentYear) false
     else true
   }
 
-  val binaryRadioButton:Form[MandatoryRadioButton] = Form(
+  val binaryRadioButton: Form[MandatoryRadioButton] = Form(
     mapping(
       "confirmation" -> nonEmptyText(1) //  must contain minimum characters for supported biks 1-99
     )(MandatoryRadioButton.apply)(MandatoryRadioButton.unapply)
   )
 
-  val navigationRadioButton:Form[MandatoryRadioButton] = Form(
+  val navigationRadioButton: Form[MandatoryRadioButton] = Form(
     mapping(
       "navigation" -> nonEmptyText(2) //  must contain minimum characters for cy or cyp1
     )(MandatoryRadioButton.apply)(MandatoryRadioButton.unapply)
   )
 
-  val objSelectedForm:Form[RegistrationList] = Form(
+  val objSelectedForm: Form[RegistrationList] = Form(
     mapping(
       "select-all" -> optional(text),
       "actives" -> list(
         mapping(
-          "uid" -> text,
-          "active" -> boolean,
+          "uid"     -> text,
+          "active"  -> boolean,
           "enabled" -> boolean
-        )(RegistrationItem.apply)(RegistrationItem.unapply)).verifying("Error message goes here",
+        )(RegistrationItem.apply)(RegistrationItem.unapply)).verifying(
+        "Error message goes here",
         selectionList => !selectionList.filter(listItem => listItem.active).isEmpty),
-        "reason" -> optional(mapping(
+      "reason" -> optional(
+        mapping(
           "selectionValue" -> text,
-          "info" -> optional(text)
-        )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply)))
-    (RegistrationList.apply)(RegistrationList.unapply)
+          "info"           -> optional(text)
+        )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply))
+    )(RegistrationList.apply)(RegistrationList.unapply)
   )
 
-  def exclusionSearchFormWithNino[A](implicit request: Request[A]):Form[EiLPerson] = Form(
+  def exclusionSearchFormWithNino[A](implicit request: Request[A]): Form[EiLPerson] = Form(
     mapping(
-      "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
-          firstname.trim.length != 0)
-        .verifying(Messages("error.incorrect.firstname"), firstname =>
-          firstname.matches(nameValidationRegex)),
-
-      "surname" -> text.verifying(Messages("error.empty.lastname"),
-          lastname => lastname.trim.length != 0)
-        .verifying(Messages("error.incorrect.lastname"),
-          lastname => lastname.matches(nameValidationRegex)),
-
-      "nino" -> text.verifying(Messages("error.empty.nino"),
-          nino => nino.trim.length != 0)
-        .verifying(Messages("error.incorrect.nino"),
-          nino => (nino.trim.length == 0 || nino.replaceAll(" ", "").matches(ninoValidationRegex)))
-      ,
-
-      "status" -> optional(number),
+      "firstname" -> text
+        .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.length != 0)
+        .verifying(Messages("error.incorrect.firstname"), firstname => firstname.matches(nameValidationRegex)),
+      "surname" -> text
+        .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.length != 0)
+        .verifying(Messages("error.incorrect.lastname"), lastname => lastname.matches(nameValidationRegex)),
+      "nino" -> text
+        .verifying(Messages("error.empty.nino"), nino => nino.trim.length != 0)
+        .verifying(
+          Messages("error.incorrect.nino"),
+          nino => (nino.trim.length == 0 || nino.replaceAll(" ", "").matches(ninoValidationRegex))),
+      "status"     -> optional(number),
       "perOptLock" -> default(number, 0)
-    )((firstname, surname, nino, status, perOptLock) => EiLPerson(stripTrailingNinoCharacterForNPS(nino.replaceAll(" ", "").toUpperCase),
-                                                                  firstname.trim, EiLPerson.defaultSecondName,
-                                                                  surname.trim, EiLPerson.defaultWorksPayrollNumber,
-                                                                  EiLPerson.defaultDateOfBirth, EiLPerson.defaultGender,
-                                                                  status, perOptLock))
-      ((eilPerson: EiLPerson) => Some((eilPerson.firstForename,
-                                      eilPerson.surname, eilPerson.nino,
-                                      eilPerson.status, eilPerson.perOptLock)))
+    )((firstname, surname, nino, status, perOptLock) =>
+      EiLPerson(
+        stripTrailingNinoCharacterForNPS(nino.replaceAll(" ", "").toUpperCase),
+        firstname.trim,
+        EiLPerson.defaultSecondName,
+        surname.trim,
+        EiLPerson.defaultWorksPayrollNumber,
+        EiLPerson.defaultDateOfBirth,
+        EiLPerson.defaultGender,
+        status,
+        perOptLock
+    ))((eilPerson: EiLPerson) =>
+      Some((eilPerson.firstForename, eilPerson.surname, eilPerson.nino, eilPerson.status, eilPerson.perOptLock)))
   )
 
-  def stripTrailingNinoCharacterForNPS(nino: String):String = {
+  def stripTrailingNinoCharacterForNPS(nino: String): String =
     ninoTrimmedRegex.r.findFirstIn(nino).getOrElse("").mkString
-  }
 
   def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[EiLPerson] = {
     val dateRegex: String = "([0-9])|([0-9][0-9])"
@@ -201,86 +199,87 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
 
     Form(
       mapping(
-        "firstname" -> text.verifying(Messages("error.empty.firstname"), firstname =>
-          firstname.trim.length != 0)
-          .verifying(Messages("error.incorrect.firstname"), firstname =>
-            firstname.matches(nameValidationRegex)),
-
-        "surname" -> text.verifying(Messages("error.empty.lastname"),
-          lastname => lastname.trim.length != 0)
-          .verifying(Messages("error.incorrect.lastname"),
-            lastname => lastname.matches(nameValidationRegex)),
-
+        "firstname" -> text
+          .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.length != 0)
+          .verifying(Messages("error.incorrect.firstname"), firstname => firstname.matches(nameValidationRegex)),
+        "surname" -> text
+          .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.length != 0)
+          .verifying(Messages("error.incorrect.lastname"), lastname => lastname.matches(nameValidationRegex)),
         "dob" -> mapping(
-          "day" -> text,
+          "day"   -> text,
           "month" -> text,
-          "year" -> text
-        )((day, month, year) => (day, month, year))((dob: (String, String, String)) =>
-                                                              Some((dob._1, dob._2, dob._3))).
-                                                              verifying(emptyDateError, dob =>
-                                                              !(dob._1.isEmpty && dob._2.isEmpty && dob._3.isEmpty))
-        .verifying(invalidYearFutureDateError, dob => isDateYearInFuture(dob))
-        .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
-        .verifying(invalidDayDateError, dob =>
-          !(addZeroIfNeeded(dob._1).matches(dateDayRegex)) )
-        .verifying(invalidMonthDateError, dob =>
-          !(addZeroIfNeeded(dob._2).matches(dateMonthRegex)) )
-        .verifying(invalidYearDateError, dob =>
-          (dob._3.matches(dateYearRegex)) )
-
-        .verifying(invalidDateError, dob => isValidDate(dob)),
-
-        "gender" -> text.verifying("Error message goes here", gender => !gender.isEmpty),
-        "status" -> optional(number),
+          "year"  -> text
+        )((day, month, year) => (day, month, year))((dob: (String, String, String)) => Some((dob._1, dob._2, dob._3)))
+          .verifying(emptyDateError, dob => !(dob._1.isEmpty && dob._2.isEmpty && dob._3.isEmpty))
+          .verifying(invalidYearFutureDateError, dob => isDateYearInFuture(dob))
+          .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
+          .verifying(invalidDayDateError, dob => !(addZeroIfNeeded(dob._1).matches(dateDayRegex)))
+          .verifying(invalidMonthDateError, dob => !(addZeroIfNeeded(dob._2).matches(dateMonthRegex)))
+          .verifying(invalidYearDateError, dob => (dob._3.matches(dateYearRegex)))
+          .verifying(invalidDateError, dob => isValidDate(dob)),
+        "gender"     -> text.verifying("Error message goes here", gender => !gender.isEmpty),
+        "status"     -> optional(number),
         "perOptLock" -> default(number, 0)
-      )((firstname, surname, dob, gender, status, perOptLock) => EiLPerson(EiLPerson.defaultNino, firstname.trim,
-                                                                            EiLPerson.defaultSecondName, surname.trim,
-                                                                            EiLPerson.defaultWorksPayrollNumber,
-                                                                            Some(addZeroIfNeeded(dob._1) + "/" +
-                                                                            addZeroIfNeeded(dob._2) + "/" + dob._3),
-                                                                            Some(gender), status, perOptLock))
-        ((eilPerson: EiLPerson) => Some((eilPerson.firstForename, eilPerson.surname,
-                                                                            (eilPerson.dateOfBirth.get.split('/')(0),
-                                                                             eilPerson.dateOfBirth.get.split('/')(1),
-                                                                             eilPerson.dateOfBirth.get.split('/')(2)),
-                                                                             eilPerson.gender.get, eilPerson.status,
-                                                                             eilPerson.perOptLock)))
+      )((firstname, surname, dob, gender, status, perOptLock) =>
+        EiLPerson(
+          EiLPerson.defaultNino,
+          firstname.trim,
+          EiLPerson.defaultSecondName,
+          surname.trim,
+          EiLPerson.defaultWorksPayrollNumber,
+          Some(addZeroIfNeeded(dob._1) + "/" +
+            addZeroIfNeeded(dob._2) + "/" + dob._3),
+          Some(gender),
+          status,
+          perOptLock
+      ))(
+        (eilPerson: EiLPerson) =>
+          Some(
+            (
+              eilPerson.firstForename,
+              eilPerson.surname,
+              (
+                eilPerson.dateOfBirth.get.split('/')(0),
+                eilPerson.dateOfBirth.get.split('/')(1),
+                eilPerson.dateOfBirth.get.split('/')(2)),
+              eilPerson.gender.get,
+              eilPerson.status,
+              eilPerson.perOptLock)))
     )
   }
 
-  val individualsForm:Form[EiLPersonList] = Form(
+  val individualsForm: Form[EiLPersonList] = Form(
     mapping(
-      "individuals" -> list(
-        mapping(
-          "nino" -> text,
-          "firstName" -> text,
-          "secondName" -> optional(text),
-          "surname" -> text,
-          "worksPayrollNumber" -> optional(text),
-          "dateOfBirth" -> optional(text),
-          "gender" -> optional(text),
-          "status" -> optional(number),
-          "perOptLock" -> default(number, 0)
-        )(EiLPerson.apply)(EiLPerson.unapply)))(EiLPersonList.apply)(EiLPersonList.unapply)
+      "individuals" -> list(mapping(
+        "nino"               -> text,
+        "firstName"          -> text,
+        "secondName"         -> optional(text),
+        "surname"            -> text,
+        "worksPayrollNumber" -> optional(text),
+        "dateOfBirth"        -> optional(text),
+        "gender"             -> optional(text),
+        "status"             -> optional(number),
+        "perOptLock"         -> default(number, 0)
+      )(EiLPerson.apply)(EiLPerson.unapply)))(EiLPersonList.apply)(EiLPersonList.unapply)
   )
 
-  val individualsFormWithRadio:Form[(String,EiLPersonList)] = Form(
+  val individualsFormWithRadio: Form[(String, EiLPersonList)] = Form(
     mapping(
       "individualSelection" -> text,
       "individuals" -> list(
         mapping(
-          "nino" -> text,
-          "firstName" -> text,
-          "secondName" -> optional(text),
-          "surname" -> text,
+          "nino"               -> text,
+          "firstName"          -> text,
+          "secondName"         -> optional(text),
+          "surname"            -> text,
           "worksPayrollNumber" -> optional(text),
-          "dateOfBirth" -> optional(text),
-          "gender" -> optional(text),
-          "status" -> optional(number),
-          "perOptLock" -> default(number, 0)
-        )(EiLPerson.apply)(EiLPerson.unapply)))
-      ((individualSelection, individuals) => ((individualSelection, EiLPersonList(individuals))))
-      ((individualsTuple: (String, EiLPersonList)) => Some((individualsTuple._1, individualsTuple._2.active)))
+          "dateOfBirth"        -> optional(text),
+          "gender"             -> optional(text),
+          "status"             -> optional(number),
+          "perOptLock"         -> default(number, 0)
+        )(EiLPerson.apply)(EiLPerson.unapply))
+    )((individualSelection, individuals) => ((individualSelection, EiLPersonList(individuals))))(
+      (individualsTuple: (String, EiLPersonList)) => Some((individualsTuple._1, individualsTuple._2.active)))
   )
 
 }

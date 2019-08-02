@@ -22,9 +22,9 @@ case class EmpRef(taxOfficeNumber: String, taxOfficeReference: String) {
 
   override def toString: String = unencodedEmpRef.toString
 
-  def getOrElse(default:String):String = (taxOfficeNumber, taxOfficeReference) match{
+  def getOrElse(default: String): String = (taxOfficeNumber, taxOfficeReference) match {
     case ("", "") => default
-    case _ => toString
+    case _        => toString
   }
 }
 

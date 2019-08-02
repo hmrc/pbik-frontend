@@ -26,7 +26,6 @@ import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
 import views.html.registration.WhatNextAddRemove
 
-
 class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]

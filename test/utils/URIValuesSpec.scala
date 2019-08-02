@@ -18,52 +18,52 @@ package utils
 
 import uk.gov.hmrc.play.test.UnitSpec
 
-class URIValuesSpec extends UnitSpec with URIValues{
+class URIValuesSpec extends UnitSpec with URIValues {
 
   "The Get Benefit Types path" should {
-     " be equal to getbenefittypes" in {
-          assert(getBenefitTypesPath == "getbenefittypes")
-      }
+    " be equal to getbenefittypes" in {
+      assert(getBenefitTypesPath == "getbenefittypes")
+    }
   }
 
   "The Update Benefit Types path" should {
-   " be equal to updatebenefittypes" in {
+    " be equal to updatebenefittypes" in {
       assert(updateBenefitTypesPath == "updatebenefittypes")
     }
   }
 
   "The Add Exclusion path" should {
-   " be equal to exclusion/update" in {
+    " be equal to exclusion/update" in {
       assert(addExclusionPath == "exclusion/update")
     }
   }
 
   "The Exclusion path" should {
-   " be equal to exclusion" in {
+    " be equal to exclusion" in {
       assert(exclusionPath == "exclusion")
     }
   }
 
   "The Remove Exclusion path" should {
-   " be equal to exclusion/remove" in {
+    " be equal to exclusion/remove" in {
       assert(addExclusionRemovePath == "exclusion/remove")
     }
   }
 
   "The construction of the Exclusion path given the test IABD Value 12345" should {
-   " be equal to /12345/exclusion" in {
+    " be equal to /12345/exclusion" in {
       assert(exclusionGetPath("12345") == "12345/exclusion")
     }
   }
 
   "The construction of the Exclusion Post Update path given the test IABD Value 12345" should {
-   " be equal to /12345/exclusion/update" in {
+    " be equal to /12345/exclusion/update" in {
       assert(exclusionPostUpdatePath("12345") == "12345/exclusion/update")
     }
   }
 
   "The construction of the Exclusion Post Remove path given the test IABD Value 12345" should {
-   " be equal to /12345/exclusion/remove" in {
+    " be equal to /12345/exclusion/remove" in {
       assert(exclusionPostRemovePath("12345") == "12345/exclusion/remove")
     }
   }

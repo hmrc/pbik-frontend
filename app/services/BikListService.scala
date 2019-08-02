@@ -27,32 +27,44 @@ import utils.{ControllersReferenceData, URIInformation}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class BikListService @Inject()(val pbikAppConfig: AppConfig,
-                               val tierConnector: HmrcTierConnector,
-                               controllersReferenceData: ControllersReferenceData,
-                               uriInformation: URIInformation) {
+class BikListService @Inject()(
+  val pbikAppConfig: AppConfig,
+  val tierConnector: HmrcTierConnector,
+  controllersReferenceData: ControllersReferenceData,
+  uriInformation: URIInformation) {
 
   def pbikHeaders: Map[String, String] = Map[String, String]()
 
-  def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {
-    val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath,
-      request.empRef, controllersReferenceData.YEAR_RANGE.cyminus1)
+  def currentYearList(
+    implicit hc: HeaderCarrier,
+    request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {
+    val response = tierConnector.genericGetCall[List[Bik]](
+      uriInformation.baseUrl,
+      uriInformation.getRegisteredPath,
+      request.empRef,
+      controllersReferenceData.YEAR_RANGE.cyminus1)
 
     response.map { resultOption: List[Bik] =>
       (tierConnector.pbikHeaders, resultOption.distinct)
     }
   }
 
-  def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {
-    val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath,
-      request.empRef, controllersReferenceData.YEAR_RANGE.cy)
+  def nextYearList(
+    implicit hc: HeaderCarrier,
+    request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] = {
+    val response = tierConnector.genericGetCall[List[Bik]](
+      uriInformation.baseUrl,
+      uriInformation.getRegisteredPath,
+      request.empRef,
+      controllersReferenceData.YEAR_RANGE.cy)
 
     response.map { resultOption: List[Bik] =>
       (tierConnector.pbikHeaders, resultOption.distinct)
     }
   }
 
-  def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
+  def registeredBenefitsList(year: Int, empRef: EmpRef)(
+    path: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
     val newPath = if (path == "") uriInformation.getRegisteredPath else path
     val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, newPath, empRef, year)
     response

@@ -46,7 +46,13 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication {
 
   "A Valid date" should {
     "be valid in all cases when the days in the year are greater than 0 and less than 29" in {
-      RANGE_28_DAYS.map { i => formMappings.addZeroIfNeeded(i.toString) }.foreach { a => assert(formMappings.isValidDate((a, "01", "2014"))) }
+      RANGE_28_DAYS
+        .map { i =>
+          formMappings.addZeroIfNeeded(i.toString)
+        }
+        .foreach { a =>
+          assert(formMappings.isValidDate((a, "01", "2014")))
+        }
     }
   }
 
@@ -73,7 +79,13 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication {
 
   "A day greater than 31" should {
     "not be valid in any month" in {
-      (JANUARY to DECEMBER).map { i => formMappings.addZeroIfNeeded(i.toString) }.foreach { a => assert(!formMappings.isValidDate(("32", a, "2014"))) }
+      (JANUARY to DECEMBER)
+        .map { i =>
+          formMappings.addZeroIfNeeded(i.toString)
+        }
+        .foreach { a =>
+          assert(!formMappings.isValidDate(("32", a, "2014")))
+        }
     }
   }
 
@@ -93,29 +105,41 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication {
     "not be valid in a month" in {
       (-1 to 0).foreach { i =>
         val day = formMappings.addZeroIfNeeded(i.toString)
-          assert(!formMappings.isValidDate((day, "01", "2014")))
-        }
+        assert(!formMappings.isValidDate((day, "01", "2014")))
       }
     }
+  }
 
   "A month value less than 1" should {
     "not be valid in a year" in {
       (-1 to 0).foreach { i =>
         val month = formMappings.addZeroIfNeeded(i.toString)
-          assert(!formMappings.isValidDate(("01", month, "2014")))
-        }
+        assert(!formMappings.isValidDate(("01", month, "2014")))
       }
     }
+  }
 
   "A month value greater than 12" should {
     "not be valid in a year" in {
-      (DECEMBER + 1 to DECEMBER + 20).map { i => formMappings.addZeroIfNeeded(i.toString) }.foreach { a => assert(!formMappings.isValidDate(("01", a, "2014"))) }
+      (DECEMBER + 1 to DECEMBER + 20)
+        .map { i =>
+          formMappings.addZeroIfNeeded(i.toString)
+        }
+        .foreach { a =>
+          assert(!formMappings.isValidDate(("01", a, "2014")))
+        }
     }
   }
 
   "A month value less than 12" should {
     "not be valid in a year" in {
-      (-5 to 0).map { i => formMappings.addZeroIfNeeded(i.toString) }.foreach { a => assert(!formMappings.isValidDate(("01", a, "2014"))) }
+      (-5 to 0)
+        .map { i =>
+          formMappings.addZeroIfNeeded(i.toString)
+        }
+        .foreach { a =>
+          assert(!formMappings.isValidDate(("01", a, "2014")))
+        }
     }
   }
 

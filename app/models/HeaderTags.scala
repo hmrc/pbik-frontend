@@ -16,7 +16,6 @@
 
 package models
 
-
 /**
   * The Header Tags are used between the PBIK gateway and NPS to control the optimistic locks.
   * Each time a call is made to NPS on an employer specific URL, NPS returns the current value of the optimistic lock for the employer record

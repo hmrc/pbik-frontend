@@ -36,70 +36,85 @@ import views.html.registration.{CurrentTaxYear, NextTaxYear}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits._
 
-class StubbedRegistrationService @Inject()(bikListUtils: BikListUtils,
-                                           formMappings: FormMappings,
-                                           pbikAppConfig: PbikAppConfig,
-                                           tierConnector: HmrcTierConnector,
-                                           bikListService: BikListService,
-                                           taxDateUtils: TaxDateUtils,
-                                           controllersReferenceData: ControllersReferenceData,
-                                           uRIInformation: URIInformation,
-                                           override val messagesApi: MessagesApi,
-                                           errorPageView: ErrorPage,
-                                          currentTaxYearView: CurrentTaxYear,
-                                          nextTaxYearView: NextTaxYear
-                                          ) extends RegistrationService(
-  messagesApi,
-  bikListUtils,
-  formMappings,
-  tierConnector,
-  bikListService,
-  taxDateUtils,
-  controllersReferenceData,
-  uRIInformation,
-  pbikAppConfig,
-  errorPageView
-) with I18nSupport {
+class StubbedRegistrationService @Inject()(
+  bikListUtils: BikListUtils,
+  formMappings: FormMappings,
+  pbikAppConfig: PbikAppConfig,
+  tierConnector: HmrcTierConnector,
+  bikListService: BikListService,
+  taxDateUtils: TaxDateUtils,
+  controllersReferenceData: ControllersReferenceData,
+  uRIInformation: URIInformation,
+  override val messagesApi: MessagesApi,
+  errorPageView: ErrorPage,
+  currentTaxYearView: CurrentTaxYear,
+  nextTaxYearView: NextTaxYear)
+    extends RegistrationService(
+      messagesApi,
+      bikListUtils,
+      formMappings,
+      tierConnector,
+      bikListService,
+      taxDateUtils,
+      controllersReferenceData,
+      uRIInformation,
+      pbikAppConfig,
+      errorPageView
+    ) with I18nSupport {
 
   val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
-  lazy val CYRegistrationItems: List[RegistrationItem] = List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
+  lazy val CYRegistrationItems: List[RegistrationItem] =
+    List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
   val registeredListOption = List.empty[Bik]
   val allRegisteredListOption: List[Bik] = CYCache
   val mockRegistrationItemList = List.empty[RegistrationItem]
-  val mockFormRegistrationList: Form[RegistrationList] = formMappings.objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
-
+  val mockFormRegistrationList: Form[RegistrationList] =
+    formMappings.objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
 
   //TODO: Why is this test returning different views to the real code?
-  override def generateViewForBikRegistrationSelection(year: Int, cachingSuffix: String,
-                                                       generateViewBasedOnFormItems: (Form[RegistrationList],
-                                                         Seq[RegistrationItem], Seq[Bik], Seq[Int], Seq[Int], Option[Int]) => HtmlFormat.Appendable)
-                                                      (implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]):
-  Future[Result] = {
+  override def generateViewForBikRegistrationSelection(
+    year: Int,
+    cachingSuffix: String,
+    generateViewBasedOnFormItems: (
+      Form[RegistrationList],
+      Seq[RegistrationItem],
+      Seq[Bik],
+      Seq[Int],
+      Seq[Int],
+      Option[Int]) => HtmlFormat.Appendable)(
+    implicit hc: HeaderCarrier,
+    request: AuthenticatedRequest[AnyContent]): Future[Result] =
     year match {
       case dateRange.cyminus1 => {
-        Future.successful(Ok(currentTaxYearView(mockFormRegistrationList,
-          dateRange,
-          mockRegistrationItemList,
-          allRegisteredListOption,
-          nonLegislationBiks = List(0),
-          decommissionedBiks = List(0),
-          biksAvailableCount = Some(17),
-          empRef = request.empRef)))
+        Future.successful(
+          Ok(
+            currentTaxYearView(
+              mockFormRegistrationList,
+              dateRange,
+              mockRegistrationItemList,
+              allRegisteredListOption,
+              nonLegislationBiks = List(0),
+              decommissionedBiks = List(0),
+              biksAvailableCount = Some(17),
+              empRef = request.empRef
+            )))
       }
       case _ => {
-        Future.successful(Ok(nextTaxYearView(mockFormRegistrationList,
-          additive = true,
-          dateRange,
-          mockRegistrationItemList,
-          registeredListOption,
-          nonLegislationBiks = List(0),
-          decommissionedBiks = List(0),
-          biksAvailableCount = Some(17),
-          empRef = request.empRef))
-        )
+        Future.successful(
+          Ok(
+            nextTaxYearView(
+              mockFormRegistrationList,
+              additive = true,
+              dateRange,
+              mockRegistrationItemList,
+              registeredListOption,
+              nonLegislationBiks = List(0),
+              decommissionedBiks = List(0),
+              biksAvailableCount = Some(17),
+              empRef = request.empRef
+            )))
       }
     }
-  }
 
 }

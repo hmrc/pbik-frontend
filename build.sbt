@@ -2,10 +2,12 @@ import sbt.Def
 import scoverage.ScoverageSbtPlugin._
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import com.lucidchart.sbt.scalafmt.ScalafmtCorePlugin.autoImport.scalafmtOnCompile
 
 val appName = "pbik-frontend"
 
-lazy val plugins: Seq[Plugins] = Seq(SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb, SbtArtifactory)
+lazy val plugins: Seq[Plugins] =
+  Seq(SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb, SbtArtifactory)
 lazy val scoverageSettings: Seq[Def.Setting[_]] =
   Seq(
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;views.*;config.*;models.*;" +
@@ -23,6 +25,7 @@ lazy val microservice = Project(appName, file("."))
     publishingSettings,
     defaultSettings(),
     majorVersion := 7,
+    scalafmtOnCompile := true,
     PlayKeys.playDefaultPort := 9233,
     libraryDependencies ++= AppDependencies.all,
     retrieveManaged := true,
