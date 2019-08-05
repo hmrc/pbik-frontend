@@ -27,7 +27,8 @@ trait JsoupMatchers {
   class TagWithTextMatcher(expectedContent: String, tag: String) extends Matcher[Document] {
     def apply(left: Document): MatchResult = {
       val elements: List[String] =
-        left.getElementsByTag(tag)
+        left
+          .getElementsByTag(tag)
           .toList
           .map(_.text)
 
@@ -57,7 +58,8 @@ trait JsoupMatchers {
   class CssSelectorWithTextMatcher(expectedContent: String, selector: String) extends Matcher[Document] {
     def apply(left: Document): MatchResult = {
       val elements: List[String] =
-        left.select(selector)
+        left
+          .select(selector)
           .toList
           .map(_.text)
 
@@ -71,10 +73,12 @@ trait JsoupMatchers {
     }
   }
 
-  class CssSelectorWithAttributeValueMatcher(attributeName: String, attributeValue: String, selector: String) extends Matcher[Document] {
+  class CssSelectorWithAttributeValueMatcher(attributeName: String, attributeValue: String, selector: String)
+      extends Matcher[Document] {
     def apply(left: Document): MatchResult = {
       val attributes: List[Attributes] =
-        left.select(selector)
+        left
+          .select(selector)
           .toList
           .map(_.attributes())
 
@@ -91,7 +95,8 @@ trait JsoupMatchers {
   class CssSelectorWithClassMatcher(className: String, selector: String) extends Matcher[Document] {
     def apply(left: Document): MatchResult = {
       val classes: List[String] =
-        left.select(selector)
+        left
+          .select(selector)
           .toList
           .map(_.className())
 
@@ -137,29 +142,34 @@ trait JsoupMatchers {
 
   def haveHeadingH2WithText(expectedText: String) = new TagWithTextMatcher(expectedText, "h2")
 
-  def haveElementWithIdAndText(expectedText: String, id: String) = new CssSelectorWithTextMatcher(expectedText, s"#${id}")
+  def haveElementWithIdAndText(expectedText: String, id: String) = new CssSelectorWithTextMatcher(expectedText, s"#$id")
 
-  def haveElementWithId(id: String) = new CssSelector(s"#${id}")
+  def haveElementWithId(id: String) = new CssSelector(s"#$id")
 
   def haveBackLink = new CssSelector("a[id=backLinkHref]")
 
-  def haveSubmitButton(expectedText: String) = new CssSelectorWithAttributeValueMatcher("value", expectedText, "input[type=submit]")
+  def haveSubmitButton(expectedText: String) =
+    new CssSelectorWithAttributeValueMatcher("value", expectedText, "input[type=submit]")
 
   def haveFormWithSubmitUrl(url: String) = new CssSelectorWithAttributeValueMatcher("action", url, "form[method=POST]")
 
-  def haveInputLabelWithText(id: String, expectedText: String) = new CssSelectorWithTextMatcher(expectedText, s"label[for=$id]")
+  def haveInputLabelWithText(id: String, expectedText: String) =
+    new CssSelectorWithTextMatcher(expectedText, s"label[for=$id]")
 
-  def haveElementAtPathWithText(elementSelector: String, expectedText: String) = new CssSelectorWithTextMatcher(expectedText, elementSelector)
+  def haveElementAtPathWithText(elementSelector: String, expectedText: String) =
+    new CssSelectorWithTextMatcher(expectedText, elementSelector)
 
-  def haveElementAtPathWithClass(elementSelector: String, className: String) = new CssSelectorWithClassMatcher(className, elementSelector)
+  def haveElementAtPathWithClass(elementSelector: String, className: String) =
+    new CssSelectorWithClassMatcher(className, elementSelector)
 
   def haveErrorSummary(expectedText: String) = new CssSelectorWithTextMatcher(expectedText, ".error-summary-pbik-list")
 
   def haveErrorNotification(expectedText: String) = new CssSelectorWithTextMatcher(expectedText, ".error-notification")
 
-  def haveClassWithText(expectedText: String, className: String) = new CssSelectorWithTextMatcher(expectedText, s".$className")
+  def haveClassWithText(expectedText: String, className: String) =
+    new CssSelectorWithTextMatcher(expectedText, s".$className")
 
   def haveLinkWithUrlWithID(id: String, expectedURL: String) = new IdSelectorWithUrlMatcher(expectedURL, id)
 
-  def haveValueElement(id:String, value: String) = new IdSelectorWithUrlAndTextMatcher(id, value)
+  def haveValueElement(id: String, value: String) = new IdSelectorWithUrlAndTextMatcher(id, value)
 }

@@ -27,7 +27,6 @@ import utils.FormMappings
 import views.helper.PBIKViewSpec
 import views.html.registration.NextTaxYear
 
-
 class NextYearViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
@@ -53,7 +52,7 @@ class NextYearViewSpec extends PBIKViewSpec {
 
     "check the add benefit page for the errors" in {
       val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))
-      val doc  = Jsoup.parse(view.toString())
+      val doc = Jsoup.parse(view.toString())
 
       doc must haveErrorSummary(messages("AddBenefits.noselection.error"))
       doc must haveErrorNotification(messages("AddBenefits.noselection.error"))

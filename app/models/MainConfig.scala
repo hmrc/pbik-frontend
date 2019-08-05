@@ -22,8 +22,7 @@ private object HtmlConst {
   val empty = Html("")
 }
 
-case class MainConfig(maybeMainClass: Option[String] = None,
-                      maybeMainDataAttributes: Option[Html] = None) {
+case class MainConfig(maybeMainClass: Option[String] = None, maybeMainDataAttributes: Option[Html] = None) {
 
   def mainClass: Html = maybeMainClass.map(asClassAttr).getOrElse(HtmlConst.empty)
 

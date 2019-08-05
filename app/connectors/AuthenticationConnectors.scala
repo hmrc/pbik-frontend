@@ -22,18 +22,19 @@ import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import uk.gov.hmrc.play.partials.{FormPartialRetriever, HeaderCarrierForPartialsConverter}
 
-class FormPartialProvider @Inject()(val httpGet: HttpClient, cookieCrypto: SessionCookieCryptoFilterWrapper) extends FormPartialRetriever {
+class FormPartialProvider @Inject()(val httpGet: HttpClient, cookieCrypto: SessionCookieCryptoFilterWrapper)
+    extends FormPartialRetriever {
 
   override val crypto: String => String = cookieCrypto.encryptCookieString _
 }
 
-class PBIKHeaderCarrierForPartialsConverter @Inject()(cookieCrypto: SessionCookieCryptoFilterWrapper) extends HeaderCarrierForPartialsConverter {
+class PBIKHeaderCarrierForPartialsConverter @Inject()(cookieCrypto: SessionCookieCryptoFilterWrapper)
+    extends HeaderCarrierForPartialsConverter {
   override val crypto: String => String = cookieCrypto.encryptCookieString _
 }
 
-class SessionCookieCryptoFilterWrapper @Inject() (sessionCookieCrypto: SessionCookieCrypto) {
+class SessionCookieCryptoFilterWrapper @Inject()(sessionCookieCrypto: SessionCookieCrypto) {
 
-  def encryptCookieString(cookie: String) : String = {
+  def encryptCookieString(cookie: String): String =
     sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value
-  }
 }

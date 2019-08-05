@@ -16,4 +16,7 @@
 
 package models
 
-case class RegistrationList(selectAll: Option[String] = None, active: List[RegistrationItem], reason: Option[BinaryRadioButtonWithDesc] = None)
+case class RegistrationList(
+  selectAll: Option[String] = None,
+  active: List[RegistrationItem],
+  reason: Option[BinaryRadioButtonWithDesc] = None)

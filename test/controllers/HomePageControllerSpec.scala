@@ -38,8 +38,7 @@ import utils._
 
 import scala.concurrent.duration._
 
-class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
-  with TestAuthUser with I18nSupport {
+class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser with I18nSupport {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
@@ -89,8 +88,8 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
       val homePageController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> "hackmeister",
-        SessionKeys.token -> "RANDOMTOKEN",
-        SessionKeys.userId -> userId)
+        SessionKeys.token     -> "RANDOMTOKEN",
+        SessionKeys.userId    -> userId)
       val result = homePageController.onPageLoad.apply(request)
       status(result) must be(UNAUTHORIZED) //401
     }
@@ -139,16 +138,19 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication
       val homePageController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
         SessionKeys.sessionId -> sessionId,
-        SessionKeys.token -> "RANDOMTOKEN",
-        SessionKeys.userId -> userId)
+        SessionKeys.token     -> "RANDOMTOKEN",
+        SessionKeys.userId    -> userId)
       implicit val timeout: akka.util.Timeout = timeoutValue
       val result = await(homePageController.onPageLoad(request))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.heading"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.next.heading", "" + YEAR_RANGE.cy, "" + YEAR_RANGE.cyplus1))
+      result.body.asInstanceOf[Strict].data.utf8String must include(
+        Messages("Overview.next.heading", "" + YEAR_RANGE.cy, "" + YEAR_RANGE.cyplus1))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.table.heading.1"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.current.heading", "" + YEAR_RANGE.cyminus1, "" + YEAR_RANGE.cy))
-      result.body.asInstanceOf[Strict].data.utf8String must include("Help improve digital services by joining the HMRC user panel <span class=\"visuallyhidden\">(opens in new window)</span></a>")
+      result.body.asInstanceOf[Strict].data.utf8String must include(
+        Messages("Overview.current.heading", "" + YEAR_RANGE.cyminus1, "" + YEAR_RANGE.cy))
+      result.body.asInstanceOf[Strict].data.utf8String must include(
+        "Help improve digital services by joining the HMRC user panel <span class=\"visuallyhidden\">(opens in new window)</span></a>")
       result.body.asInstanceOf[Strict].data.utf8String must include("No thanks")
     }
   }

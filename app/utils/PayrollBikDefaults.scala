@@ -17,11 +17,11 @@
 package utils
 
 /**
- * Some defaults which are useful for setting when the application goes live
- * and allows the current year to be overridden by the OVERRIDE_YEAR_VALUE.
- *
- * Clients can override these values and mixin or specify the values as system properties
- */
+  * Some defaults which are useful for setting when the application goes live
+  * and allows the current year to be overridden by the OVERRIDE_YEAR_VALUE.
+  *
+  * Clients can override these values and mixin or specify the values as system properties
+  */
 trait PayrollBikDefaults extends SystemPropertiesHelper {
 
   lazy val TAX_YEAR_OF_LAUNCH = taxYearOfLaunch
@@ -29,8 +29,7 @@ trait PayrollBikDefaults extends SystemPropertiesHelper {
   val DEFAULT_LAUNCH_YEAR = 2015
   val DEFAULT_YEAR_DIGITS = 4
 
-  def taxYearOfLaunch:Int = getIntProperty("TAX_YEAR_OF_LAUNCH", DEFAULT_LAUNCH_YEAR)
-  def yearLengthValue:Int = getIntProperty("YEAR_LENGTH_VALUE", DEFAULT_YEAR_DIGITS)
-
+  def taxYearOfLaunch: Int = getIntProperty("TAX_YEAR_OF_LAUNCH", DEFAULT_LAUNCH_YEAR)
+  def yearLengthValue: Int = getIntProperty("YEAR_LENGTH_VALUE", DEFAULT_YEAR_DIGITS)
 
 }

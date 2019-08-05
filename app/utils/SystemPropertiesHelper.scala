@@ -21,14 +21,14 @@ import play.api.Logger
 import scala.sys.SystemProperties
 
 /**
- * Helper to check for System properties and marshal them to the correct types
- * or return the supplied default values
- */
+  * Helper to check for System properties and marshal them to the correct types
+  * or return the supplied default values
+  */
 trait SystemPropertiesHelper {
 
   lazy val sysprop = new SystemProperties()
 
-  def getIntProperty(key:String, defaultValue:Int):Int = {
+  def getIntProperty(key: String, defaultValue: Int): Int =
     try {
       if (sysprop.get(key).isDefined) {
         sysprop.get(key).get.toInt
@@ -36,11 +36,10 @@ trait SystemPropertiesHelper {
         doesntExist(key, defaultValue)
       }
     } catch {
-      case t:Throwable => doesntParse(key,defaultValue,t.getMessage)
+      case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
-  }
 
-  def getStringProperty(key:String, defaultValue:String):String = {
+  def getStringProperty(key: String, defaultValue: String): String =
     try {
       if (sysprop.get(key).isDefined) {
         sysprop.get(key).getOrElse(defaultValue)
@@ -48,11 +47,10 @@ trait SystemPropertiesHelper {
         doesntExist(key, defaultValue)
       }
     } catch {
-      case t:Throwable => doesntParse(key,defaultValue,t.getMessage)
+      case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
-  }
 
-  def getBooleanProperty(key:String, defaultValue:Boolean):Boolean = {
+  def getBooleanProperty(key: String, defaultValue: Boolean): Boolean =
     try {
       if (sysprop.get(key).isDefined) {
         sysprop.get(key).get.toBoolean
@@ -60,19 +58,18 @@ trait SystemPropertiesHelper {
         doesntExist(key, defaultValue)
       }
     } catch {
-      case t:Throwable => doesntParse(key,defaultValue,t.getMessage)
+      case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
-  }
 
-  def doesntExist[T](key:String, defaultvalue:T):T = {
+  def doesntExist[T](key: String, defaultvalue: T): T = {
     Logger.info(s"No system property $key defined. Using default value: $defaultvalue")
     defaultvalue
   }
 
-  def doesntParse[T](key:String, defaultvalue:T, errorMsg:String):T = {
-    Logger.warn(s"System property $key exists but could not be parsed to the correct type. Please check the value: $defaultvalue. Error was $errorMsg")
+  def doesntParse[T](key: String, defaultvalue: T, errorMsg: String): T = {
+    Logger.warn(
+      s"System property $key exists but could not be parsed to the correct type. Please check the value: $defaultvalue. Error was $errorMsg")
     defaultvalue
   }
-
 
 }

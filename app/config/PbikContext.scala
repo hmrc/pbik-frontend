@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class PbikContext @Inject() (contactFrontendConnector: ContactFrontendConnector) {
+class PbikContext @Inject()(contactFrontendConnector: ContactFrontendConnector) {
 
   def getPageHelpPartial()(implicit hc: HeaderCarrier): Future[String] =
     contactFrontendConnector.getHelpPartial

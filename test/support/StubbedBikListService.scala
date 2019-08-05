@@ -27,33 +27,38 @@ import utils.{ControllersReferenceData, URIInformation}
 
 import scala.concurrent.Future
 
-class StubbedBikListService @Inject()(pbikAppConfig: AppConfig,
-                                      tierConnector: HmrcTierConnector,
-                                      controllersReferenceData: ControllersReferenceData,
-                                      uriInformation: URIInformation) extends BikListService (
-  pbikAppConfig,
-  tierConnector,
-  controllersReferenceData,
-  uriInformation
-  ) {
+class StubbedBikListService @Inject()(
+  pbikAppConfig: AppConfig,
+  tierConnector: HmrcTierConnector,
+  controllersReferenceData: ControllersReferenceData,
+  uriInformation: URIInformation)
+    extends BikListService(
+      pbikAppConfig,
+      tierConnector,
+      controllersReferenceData,
+      uriInformation
+    ) {
 
-    lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
-    /*(n => new Bik("" + (n + 1), 10))*/
-    override lazy val pbikHeaders: Map[String, String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
+  lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
+  /*(n => new Bik("" + (n + 1), 10))*/
+  override lazy val pbikHeaders: Map[String, String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
 
-    override def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
-    Future[(Map[String, String], List[Bik])] = {
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
-    }
+  override def currentYearList(
+    implicit hc: HeaderCarrier,
+    request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] =
+    Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) == 31
+    }))
 
-    override def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]):
-    Future[(Map[String, String], List[Bik])] = {
-      Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik => Integer.parseInt(x.iabdType) == 31 }))
-    }
+  override def nextYearList(
+    implicit hc: HeaderCarrier,
+    request: AuthenticatedRequest[_]): Future[(Map[String, String], List[Bik])] =
+    Future.successful((Map(HeaderTags.ETAG -> "1"), CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) == 31
+    }))
 
-    override def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)
-                              (implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
-      Future.successful(CYCache)
-    }
+  override def registeredBenefitsList(year: Int, empRef: EmpRef)(
+    path: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] =
+    Future.successful(CYCache)
 
-  }
+}

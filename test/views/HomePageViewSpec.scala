@@ -37,7 +37,8 @@ class HomePageViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("Overview.heading"))
     behave like pageWithHeader(messages("Overview.heading"))
-    behave like pageWithHeaderH2(messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString))
+    behave like pageWithHeaderH2(
+      messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString))
     behave like pageWithIdAndText(messages("Overview.next.lead.empty"), "no-benefits")
     behave like pageWithLink("Register a benefit or expense", "/payrollbik/cy/choose-benefit-expense")
 

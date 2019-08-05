@@ -36,7 +36,9 @@ import scala.language.postfixOps
 class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
   class Harness(authAction: AuthAction) extends Controller {
-    def onPageLoad(): Action[AnyContent] = authAction { request => Ok }
+    def onPageLoad(): Action[AnyContent] = authAction { request =>
+      Ok
+    }
   }
 
   implicit val timeout: Timeout = 5 seconds
@@ -45,28 +47,25 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
     "the user is not logged in" must {
       "redirect the user to log in" in {
         val authAction = new AuthActionImpl(
-          new BrokenAuthConnector(new MissingBearerToken,
-            mock[HttpClient],
-            app.injector.instanceOf[Configuration]
-          ),
+          new BrokenAuthConnector(new MissingBearerToken, mock[HttpClient], app.injector.instanceOf[Configuration]),
           app.injector.instanceOf[BodyParsers.Default],
-          app.injector.instanceOf[ExternalUrls])
+          app.injector.instanceOf[ExternalUrls]
+        )
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must endWith("sign-in?continue=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fpayrolled-benefits-expenses&origin=pbik-frontend")
+        redirectLocation(result).get must endWith(
+          "sign-in?continue=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fpayrolled-benefits-expenses&origin=pbik-frontend")
 
       }
     }
     "the user has an Insufficient Enrolments " must {
       "redirect the user to a page to enroll" in {
         val authAction = new AuthActionImpl(
-          new BrokenAuthConnector(new InsufficientEnrolments,
-            mock[HttpClient],
-            app.injector.instanceOf[Configuration]
-          ),
+          new BrokenAuthConnector(new InsufficientEnrolments, mock[HttpClient], app.injector.instanceOf[Configuration]),
           app.injector.instanceOf[BodyParsers.Default],
-          app.injector.instanceOf[ExternalUrls])
+          app.injector.instanceOf[ExternalUrls]
+        )
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER

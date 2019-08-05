@@ -22,7 +22,10 @@ import uk.gov.hmrc.auth.core.retrieve.Name
 
 trait TestAuthUser {
 
-  def createDummyUser[A](request:Request[A]):AuthenticatedRequest[A] =
-  AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(Some("EPaye User"), None)), request)
+  def createDummyUser[A](request: Request[A]): AuthenticatedRequest[A] =
+    AuthenticatedRequest(
+      EmpRef("taxOfficeNumber", "taxOfficeReference"),
+      UserName(Name(Some("EPaye User"), None)),
+      request)
 
 }

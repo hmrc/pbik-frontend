@@ -25,7 +25,6 @@ import utils.{FormMappings, URIInformation}
 import views.helper.PBIKViewSpec
 import views.html.exclusion.WhatNextExclusion
 
-
 class WhatNextExclusionViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
@@ -39,7 +38,7 @@ class WhatNextExclusionViewSpec extends PBIKViewSpec {
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
-  override def view: Html = whatNextExclusionView(taxYearRange, "cyp1", "30", "",  EmpRef("", ""))
+  override def view: Html = whatNextExclusionView(taxYearRange, "cyp1", "30", "", EmpRef("", ""))
 
   "whatNextAddRemove" must {
     behave like pageWithTitle(messages("whatNext.exclude.heading"))

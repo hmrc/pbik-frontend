@@ -51,8 +51,7 @@ object SplunkLogger {
 
 }
 
-class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
-                             val auditConnector: AuditConnector) {
+class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils, val auditConnector: AuditConnector) {
 
   sealed trait SpTier
   case object FRONTEND extends SpTier
@@ -63,7 +62,6 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
   case object VIEW extends SpAction
   case object ADD extends SpAction
   case object REMOVE extends SpAction
-
 
   sealed trait SpTarget
   case object BIK extends SpTarget
@@ -77,8 +75,6 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
   sealed trait SpError
   case object SCHEDULED_OUTAGE extends SpError
   case object EXCEPTION extends SpError
-
-
 
   /**
     * Method creates a PBIK Specific DataEvent which will be sent to splunk so product owners
@@ -96,37 +92,39 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
     * @param msg    - free text message. Note - ensure no personal or sensitive details are included )
     * @return - a properly formed PBIK DataEvent which may be sent using the logSplunkEvent method.
     */
-  def createDataEvent(tier: SpTier,
-                      action: SpAction,
-                      target: SpTarget,
-                      period: SpPeriod,
-                      msg: String,
-                      nino: Option[String] = None,
-                      iabd: Option[String] = None,
-                      removeReason: Option[String] = None,
-                      removeReasonDesc: Option[String] = None,
-                      name: Option[UserName],
-                      empRef: Option[EmpRef]): DataEvent = {
+  def createDataEvent(
+    tier: SpTier,
+    action: SpAction,
+    target: SpTarget,
+    period: SpPeriod,
+    msg: String,
+    nino: Option[String] = None,
+    iabd: Option[String] = None,
+    removeReason: Option[String] = None,
+    removeReasonDesc: Option[String] = None,
+    name: Option[UserName],
+    empRef: Option[EmpRef]): DataEvent = {
 
     val derivedAuditType = target match {
       case BIK => pbik_benefit_type
       case EIL => pbik_exclude_type
     }
 
-    val entityIABD = if (iabd.isDefined) Seq(key_iabd -> iabd.get) else Nil
-    val entityNINO = if (nino.isDefined) Seq(key_nino -> nino.get) else Nil
+    val entityIABD = if (iabd.isDefined) Seq(key_iabd                          -> iabd.get) else Nil
+    val entityNINO = if (nino.isDefined) Seq(key_nino                          -> nino.get) else Nil
     val entityRemoveReason = if (removeReason.isDefined) Seq(key_remove_reason -> removeReason.get) else Nil
-    val entityRemoveReasonDesc = if (removeReasonDesc.isDefined) Seq(key_remove_reason_desc -> removeReasonDesc.get) else Nil
+    val entityRemoveReasonDesc =
+      if (removeReasonDesc.isDefined) Seq(key_remove_reason_desc -> removeReasonDesc.get) else Nil
 
-    val entities = Seq(key_event_name -> pbik_event_name,
+    val entities = Seq(
+      key_event_name   -> pbik_event_name,
       key_gateway_user -> name.map(_.toString).getOrElse(pbik_no_ref),
-      key_empref -> empRef.map(_.toString).getOrElse(pbik_no_ref),
-      key_tier -> tier.toString,
-      key_action -> action.toString,
-      key_target -> target.toString,
-      key_period -> period.toString,
-      key_message -> msg
-
+      key_empref       -> empRef.map(_.toString).getOrElse(pbik_no_ref),
+      key_tier         -> tier.toString,
+      key_action       -> action.toString,
+      key_target       -> target.toString,
+      key_period       -> period.toString,
+      key_message      -> msg
     ) ++ entityIABD ++ entityNINO ++ entityRemoveReason ++ entityRemoveReasonDesc
 
     DataEvent(auditSource = pbik_audit_source, auditType = derivedAuditType, detail = Map(entities: _*))
@@ -141,18 +139,20 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
     * @param msg  - free text message. Note - ensure no personal or sensitive details are included )
     * @return A DataEvent with the PBIK specific error payload which may be sent using the logSplunkEvent method.
     */
-  def createErrorEvent(tier: SpTier, error: SpError, msg: String)(implicit request: AuthenticatedRequest[_]): DataEvent = {
-
-    DataEvent(auditSource = pbik_audit_source, auditType = pbik_error_type,
+  def createErrorEvent(tier: SpTier, error: SpError, msg: String)(
+    implicit request: AuthenticatedRequest[_]): DataEvent =
+    DataEvent(
+      auditSource = pbik_audit_source,
+      auditType = pbik_error_type,
       detail = Map(
-        key_event_name -> pbik_event_name,
+        key_event_name   -> pbik_event_name,
         key_gateway_user -> request.name.getOrElse(pbik_no_ref),
-        key_empref -> request.empRef.getOrElse(pbik_no_ref),
-        key_tier -> tier.toString,
-        key_error -> error.toString,
-        key_message -> msg
-      ))
-  }
+        key_empref       -> request.empRef.getOrElse(pbik_no_ref),
+        key_tier         -> tier.toString,
+        key_error        -> error.toString,
+        key_message      -> msg
+      )
+    )
 
   /**
     * This sends explicit DataEvents to Splunk for auditing specific actions or events
@@ -161,34 +161,29 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils,
     * @param hc        HeaderCarrier infomration
     * @return an AuditResult which will determine if the auditing was successful or not
     */
-  def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] = {
+  def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] =
     auditConnector.sendEvent(dataEvent)
-  }
 
-  def taxYearToSpPeriod(year: Int) = {
+  def taxYearToSpPeriod(year: Int) =
     if (taxDateUtils.isCurrentTaxYear(year)) {
       CY
     } else {
       CYP1
     }
-  }
 
-  def extractPersonListNino(headlist: EiLPersonList): String = {
+  def extractPersonListNino(headlist: EiLPersonList): String =
     headlist.active.headOption match {
       case Some(x) => x.nino
-      case None => SplunkLogger.pbik_no_ref
+      case None    => SplunkLogger.pbik_no_ref
     }
-  }
 
-  def extractListNino(headlist: List[EiLPerson]): String = {
+  def extractListNino(headlist: List[EiLPerson]): String =
     headlist.headOption match {
       case Some(x) => x.nino
-      case None => SplunkLogger.pbik_no_ref
+      case None    => SplunkLogger.pbik_no_ref
     }
-  }
 
-  def extractGovernmentGatewayString(implicit request: AuthenticatedRequest[_]): String = {
+  def extractGovernmentGatewayString(implicit request: AuthenticatedRequest[_]): String =
     request.name.getOrElse(pbik_no_ref)
-  }
 
 }

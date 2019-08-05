@@ -18,4 +18,5 @@ package models
 
 import play.api.mvc.{Request, WrappedRequest}
 
-case class AuthenticatedRequest[A](empRef: EmpRef, name: UserName, request:Request[A]) extends WrappedRequest[A](request)
+case class AuthenticatedRequest[A](empRef: EmpRef, name: UserName, request: Request[A])
+    extends WrappedRequest[A](request)

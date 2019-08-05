@@ -22,8 +22,9 @@ import play.api.data.Forms._
 case class Questionnaire(satisfactionLevel: Option[Int], howCanWeImprove: Option[String])
 
 object Questionnaire {
-  val form = Form(mapping(
-    "satisfactionLevel" -> optional(number(0, 4)),
-    "howCanWeImprove" -> optional(text(maxLength = 1200))
-  )(Questionnaire.apply)(Questionnaire.unapply))
+  val form = Form(
+    mapping(
+      "satisfactionLevel" -> optional(number(0, 4)),
+      "howCanWeImprove"   -> optional(text(maxLength = 1200))
+    )(Questionnaire.apply)(Questionnaire.unapply))
 }

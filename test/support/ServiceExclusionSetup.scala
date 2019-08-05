@@ -24,7 +24,7 @@ import org.specs2.specification.Scope
 import services.EiLListService
 import utils.{TestAuthAction, TestNoSessionCheckAction}
 
-trait ServiceExclusionSetup extends Scope{
+trait ServiceExclusionSetup extends Scope {
 
   object GuiceTestModule extends AbstractModule {
     override def configure(): Unit = {

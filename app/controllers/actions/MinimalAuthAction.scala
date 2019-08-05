@@ -27,19 +27,22 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class MinimalAuthActionImpl @Inject()(override val authConnector: AuthConnector,
-                                      val parser: BodyParsers.Default,
-                                      externalUrls: ExternalUrls)
-                              (implicit val executionContext: ExecutionContext) extends MinimalAuthAction with AuthorisedFunctions {
+class MinimalAuthActionImpl @Inject()(
+  override val authConnector: AuthConnector,
+  val parser: BodyParsers.Default,
+  externalUrls: ExternalUrls)(implicit val executionContext: ExecutionContext)
+    extends MinimalAuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
     authorised(ConfidenceLevel.L50) {
-     block(request)
-    }recover {
-        case ex: NoActiveSession =>
-          Redirect(externalUrls.signIn, Map("continue" -> Seq(externalUrls.loginCallback),
-                                               "origin" -> Seq("pbik-frontend")))
+      block(request)
+    } recover {
+      case ex: NoActiveSession =>
+        Redirect(
+          externalUrls.signIn,
+          Map("continue" -> Seq(externalUrls.loginCallback), "origin" -> Seq("pbik-frontend")))
     }
   }
 }

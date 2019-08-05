@@ -26,7 +26,6 @@ import utils.{FormMappings, URIInformation}
 import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
 import views.html.exclusion.NoNinoExclusionSearchForm
 
-
 class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
@@ -54,7 +53,16 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
 
-    val view = viewWithForm(formMappings.exclusionSearchFormWithoutNino.bind(Map[String, String](("firstname", ""), ("surname", ""), ("dob.day", ""), ("dob.month", ""), ("dob.year", ""), ("gender-female", ""), ("gender-male", ""))))
+    val view = viewWithForm(
+      formMappings.exclusionSearchFormWithoutNino.bind(
+        Map[String, String](
+          ("firstname", ""),
+          ("surname", ""),
+          ("dob.day", ""),
+          ("dob.month", ""),
+          ("dob.year", ""),
+          ("gender-female", ""),
+          ("gender-male", ""))))
 
     doc must haveErrorSummary(messages("error.empty.firstname").replace(".", ""))
     doc must haveErrorNotification(messages("error.empty.firstname"))
@@ -65,6 +73,5 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
     doc must haveErrorSummary(messages("error.required").replace(".", ""))
     doc must haveErrorNotification(messages("error.required"))
   }
-
 
 }

@@ -28,8 +28,8 @@ class ExternalUrls @Inject()(configuration: Configuration) {
   val signOutPath: String = configuration.get[String]("microservice.auth.signout_path")
 
   val continue: String = loginCallback
-  val signIn          = s"$companyAuthHost/gg/$loginPath"
-  val signInLocal     = s"$companyAuthHost/gg/$loginLocalPath"
-  val signOut         = s"$companyAuthHost/gg/$signOutPath"
+  val signIn = s"$companyAuthHost/gg/$loginPath"
+  val signInLocal = s"$companyAuthHost/gg/$loginLocalPath"
+  val signOut = s"$companyAuthHost/gg/$signOutPath"
 
 }

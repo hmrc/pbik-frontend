@@ -22,7 +22,7 @@ import java.util.Date
 object DateUtils extends PayrollBikDefaults {
 
   def NPSDateConversionFormat(dateAsString: String): String = {
-    val sourceFormat: DateFormat  = new SimpleDateFormat("dd/MM/yyyy")
+    val sourceFormat: DateFormat = new SimpleDateFormat("dd/MM/yyyy")
     val date: Date = sourceFormat.parse(dateAsString)
 
     val outputFormat: String = "d MMMMM yyyy"

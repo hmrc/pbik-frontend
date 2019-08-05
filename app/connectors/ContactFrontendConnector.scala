@@ -26,9 +26,10 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class ContactFrontendConnector @Inject()(val client: HttpClient,
-                                         configuration: Configuration,
-                                         pBIKHeaderCarrierForPartialsConverter: PBIKHeaderCarrierForPartialsConverter) {
+class ContactFrontendConnector @Inject()(
+  val client: HttpClient,
+  configuration: Configuration,
+  pBIKHeaderCarrierForPartialsConverter: PBIKHeaderCarrierForPartialsConverter) {
 
   lazy val serviceBase = s"${configuration.get[Service]("microservice.services.contact-frontend")}/contact"
 
@@ -43,9 +44,13 @@ class ContactFrontendConnector @Inject()(val client: HttpClient,
     }
   }
 
-  def submitContactHmrc(formUrl: String, formData: Map[String, Seq[String]])(implicit request: Request[AnyContent], ec: ExecutionContext): Future[HttpResponse] = {
-    client.POSTForm[HttpResponse](formUrl, formData)(rds = PartialsFormReads.readPartialsForm, hc = partialsReadyHeaderCarrier, ec = ec)
-  }
+  def submitContactHmrc(formUrl: String, formData: Map[String, Seq[String]])(
+    implicit request: Request[AnyContent],
+    ec: ExecutionContext): Future[HttpResponse] =
+    client.POSTForm[HttpResponse](formUrl, formData)(
+      rds = PartialsFormReads.readPartialsForm,
+      hc = partialsReadyHeaderCarrier,
+      ec = ec)
 
   private def partialsReadyHeaderCarrier(implicit request: Request[_]): HeaderCarrier = {
     val hc1 = pBIKHeaderCarrierForPartialsConverter.headerCarrierEncryptingSessionCookieFromRequest(request)

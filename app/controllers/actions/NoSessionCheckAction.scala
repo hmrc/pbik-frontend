@@ -26,15 +26,19 @@ import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class NoSessionCheckActionImpl @Inject()()(implicit val executionContext: ExecutionContext) extends NoSessionCheckAction {
-  override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
+class NoSessionCheckActionImpl @Inject()()(implicit val executionContext: ExecutionContext)
+    extends NoSessionCheckAction {
+  override protected def refine[A](
+    request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
 
     val sessionId = request.session.get(SessionKeys.sessionId)
     sessionId match {
-      case None => Future.successful( Left(
-        Results.Redirect(controllers.routes.HomePageController.onPageLoad()).withSession(
-                          request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}")))
-      )
+      case None =>
+        Future.successful(
+          Left(
+            Results
+              .Redirect(controllers.routes.HomePageController.onPageLoad())
+              .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))))
 
       case _ => Future.successful(Right(request))
     }

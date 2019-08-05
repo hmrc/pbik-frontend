@@ -46,7 +46,7 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   def viewWithForm(implicit flash: Flash): Html =
-    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "30", "",EmpRef("", ""))
+    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "30", "", EmpRef("", ""))
 
   "exclusionNinoOrNoNinoPage" must {
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))
@@ -57,7 +57,7 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
     "check the add benefit page for the errors" in {
 
       val view = viewWithForm(new Flash(Map("error" -> messages("ExclusionDecision.noselection.error"))))
-      val doc  = Jsoup.parse(view.toString())
+      val doc = Jsoup.parse(view.toString())
 
       doc must haveErrorSummary(messages("ExclusionDecision.noselection.error"))
       doc must haveErrorNotification(messages("ExclusionDecision.noselection.error"))

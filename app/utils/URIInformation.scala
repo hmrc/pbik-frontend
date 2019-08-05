@@ -50,7 +50,7 @@ class URIInformation @Inject()(configuration: Configuration) extends URIValues {
   )
 
   def iabdValueURLMapper(iabd: String): String = {
-    val value = urlMappedIABDValues.find(x=> x._1 == iabd)
+    val value = urlMappedIABDValues.find(x => x._1 == iabd)
     value match {
       case Some(_) => value.get._2
       case None => {
@@ -61,7 +61,7 @@ class URIInformation @Inject()(configuration: Configuration) extends URIValues {
   }
 
   def iabdValueURLDeMapper(iabdMappedURL: String): String = {
-    val value = urlMappedIABDValues.find(x=> x._2 == iabdMappedURL)
+    val value = urlMappedIABDValues.find(x => x._2 == iabdMappedURL)
     value match {
       case Some(_) => value.get._1
       case None =>

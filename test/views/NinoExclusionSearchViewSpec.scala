@@ -26,10 +26,9 @@ import utils.{FormMappings, URIInformation}
 import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
 import views.html.exclusion.NinoExclusionSearchForm
 
-
 class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
-   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val formMappings = app.injector.instanceOf[FormMappings]
   val ninoExclusionSearchFormView = app.injector.instanceOf[NinoExclusionSearchForm]
 
@@ -46,7 +45,6 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   def viewWithForm(form: Form[EiLPerson]): Html =
     ninoExclusionSearchFormView(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
 
-
   "ninoExclusionSearchPage" must {
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     behave like pageWithHeader(messages("ExclusionSearch.form.title"))
@@ -57,7 +55,9 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   }
   "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
 
-    val view: Html = viewWithForm(formMappings.exclusionSearchFormWithNino.bind(Map[String, String](("nino", ""),("firstname", ""), ("surname", ""))))
+    val view: Html = viewWithForm(
+      formMappings.exclusionSearchFormWithNino.bind(
+        Map[String, String](("nino", ""), ("firstname", ""), ("surname", ""))))
 
     doc must haveErrorSummary(messages("error.empty.nino").replace(".", ""))
     doc must haveErrorNotification(messages("error.empty.nino"))
@@ -69,8 +69,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   "check the nino exclusion page for the already exist errors" in new PBIKViewBehaviours {
 
-    val view = viewWithForm(formMappings.exclusionSearchFormWithNino.bind(Map[String, String](("nino", "AA111111"),("firstname", "John"), ("surname", "Smith")))
-      .withError("status", messages("ExclusionSearch.Fail.Exists.P")))
+    val view = viewWithForm(
+      formMappings.exclusionSearchFormWithNino
+        .bind(Map[String, String](("nino", "AA111111"), ("firstname", "John"), ("surname", "Smith")))
+        .withError("status", messages("ExclusionSearch.Fail.Exists.P")))
 
     doc must haveErrorSummary(messages("ExclusionSearch.Fail.Exists.P").replace(".", ""))
     doc must haveErrorNotification(messages("ExclusionSearch.Fail.Exists.P"))
@@ -78,7 +80,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   "check the nino exclusion page for incorrect details errors" in new PBIKViewBehaviours {
 
-    val view = viewWithForm(formMappings.exclusionSearchFormWithNino.bind(Map[String, String](("nino", "AA123456"),("firstname", "John"), ("surname", "Smith")))     .withError("status", messages("ExclusionSearch.Fail.P")))
+    val view = viewWithForm(
+      formMappings.exclusionSearchFormWithNino
+        .bind(Map[String, String](("nino", "AA123456"), ("firstname", "John"), ("surname", "Smith")))
+        .withError("status", messages("ExclusionSearch.Fail.P")))
 
     doc must haveErrorSummary(messages("ExclusionSearch.Fail.P").replace(".", ""))
     doc must haveErrorNotification(messages("ExclusionSearch.Fail.P"))

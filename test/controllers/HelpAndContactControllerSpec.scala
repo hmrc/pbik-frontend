@@ -38,8 +38,7 @@ import utils.{FormMappings, _}
 
 import scala.concurrent.Future
 
-class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
-  with TestAuthUser {
+class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(config)
@@ -58,8 +57,8 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication
 
   val helpForm = Form(
     tuple(
-      a1 = "contact-name" -> text,
-      a2 = "contact-email" -> text,
+      a1 = "contact-name"     -> text,
+      a2 = "contact-email"    -> text,
       a3 = "contact-comments" -> text
     )
   )

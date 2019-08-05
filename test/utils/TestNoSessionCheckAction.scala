@@ -23,9 +23,9 @@ import play.api.mvc.{BodyParsers, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TestNoSessionCheckAction @Inject()(val parser: BodyParsers.Default)
-                                        (implicit val executionContext: ExecutionContext) extends NoSessionCheckAction {
-  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
-      Future.successful(Right(request))
-  }
+class TestNoSessionCheckAction @Inject()(val parser: BodyParsers.Default)(
+  implicit val executionContext: ExecutionContext)
+    extends NoSessionCheckAction {
+  override def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
+    Future.successful(Right(request))
 }

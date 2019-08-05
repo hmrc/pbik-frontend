@@ -33,34 +33,42 @@ import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector,
-                               val parser: BodyParsers.Default,
-                               externalUrls: ExternalUrls)
-  (implicit val executionContext: ExecutionContext) extends AuthAction with AuthorisedFunctions {
+class AuthActionImpl @Inject()(
+  override val authConnector: AuthConnector,
+  val parser: BodyParsers.Default,
+  externalUrls: ExternalUrls)(implicit val executionContext: ExecutionContext)
+    extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE")).retrieve(Retrievals.authorisedEnrolments and Retrievals.name) {
-      case Enrolments(enrolments) ~ name => {
-        enrolments.find(_.key == "IR-PAYE").map {
-          enrolment =>
-            val taxOfficeNumber = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
-            val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
+    authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE"))
+      .retrieve(Retrievals.authorisedEnrolments and Retrievals.name) {
+        case Enrolments(enrolments) ~ name => {
+          enrolments
+            .find(_.key == "IR-PAYE")
+            .map { enrolment =>
+              val taxOfficeNumber = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
+              val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
 
-            (taxOfficeNumber, taxOfficeReference) match {
-              case (Some(number), Some(reference)) => block(AuthenticatedRequest(
-                EmpRef(number, reference),
-                UserName(name.getOrElse(Name(None, None))),
-                request))
-              case _ => Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad()))
+              (taxOfficeNumber, taxOfficeReference) match {
+                case (Some(number), Some(reference)) =>
+                  block(
+                    AuthenticatedRequest(
+                      EmpRef(number, reference),
+                      UserName(name.getOrElse(Name(None, None))),
+                      request))
+                case _ => Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad()))
+              }
             }
-        }.getOrElse(Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad())))
-      }
-    } recover {
+            .getOrElse(Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad())))
+        }
+      } recover {
       case ex: NoActiveSession =>
-        Redirect(externalUrls.signIn, Map("continue" -> Seq(externalUrls.loginCallback),
-                                             "origin" -> Seq("pbik-frontend")))
+        Redirect(
+          externalUrls.signIn,
+          Map("continue" -> Seq(externalUrls.loginCallback), "origin" -> Seq("pbik-frontend")))
       case ex: InsufficientEnrolments =>
         Results.Redirect(controllers.routes.AuthController.notAuthorised())
 
@@ -69,10 +77,10 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector,
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
-trait AuthAction extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
+trait AuthAction
+    extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
 
-class AuthConnector @Inject()(val http: HttpClient,
-                              configuration: Configuration) extends PlayAuthConnector {
+class AuthConnector @Inject()(val http: HttpClient, configuration: Configuration) extends PlayAuthConnector {
 
   override val serviceUrl: String = configuration.get[Service]("microservice.services.auth")
 
