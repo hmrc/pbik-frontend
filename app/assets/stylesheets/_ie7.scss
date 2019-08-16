@@ -1,0 +1,12 @@
+$is-ie: false !default;
+
+@if ($is-ie and $ie-version == 7) {
+
+  .block-label {
+      white-space: nowrap
+  }
+
+  .fieldset {
+    display: block
+  }
+}
