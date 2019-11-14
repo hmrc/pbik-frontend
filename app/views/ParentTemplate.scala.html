@@ -58,11 +58,12 @@ contactSupportLinkEnabled: Boolean = true
 }
 
 @serviceInfo = {
+@if(empref) {
 <div class="service-info__help">
     <p> @messages("Service.paye.label") @empref<br>
     </p>
 </div>
-
+}
 <div style="clear:both"></div>
 
 <div class="pbik-banner-links">
@@ -89,7 +90,7 @@ contactSupportLinkEnabled: Boolean = true
 @main(
     title = pageTitle,
     headerNav = Some(views.helpers.HeaderNav(
-    title = Some(messages("Service.title")),
+    title = Some(messages("pbik.service.title")),
     titleLink = None,
     links = Some(genericLinks),
     showBetaLink = false)),
