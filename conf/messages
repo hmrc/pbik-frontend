@@ -4,6 +4,7 @@
 
 common.feedback.get.help = Contact us for support using this service
 Service.title = Payrolling benefits and expenses - GOV.UK
+pbik.service.title = Payrolling benefits and expenses
 
 Service.news.banner.message = Any changes you make will affect your employees’ tax codes for the next tax year and may result in them receiving more than one coding notice.
 
@@ -547,3 +548,10 @@ urbanner.message.text = Help improve digital services by joining the HMRC user p
 urbanner.message.ga.text = homepage UR banner
 urbanner.message.open.new.window = (opens in new window)
 urbanner.message.reject = No thanks
+
+global.page.not.found.error.title=Page not found
+global.page.not.found.error.check.web.address.correct=If you typed the web address, check it is correct.
+global.page.not.found.error.check.web.address.full=If you pasted the web address, check you copied the entire address.
+global.page.not.found.error.contact=If the web address is correct or you selected a link or button, {0} if you need to speak to someone about the benefits and expenses you manage through your payroll.
+global.page.not.found.error.contact.link.text=contact the employers helpline
+global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries
