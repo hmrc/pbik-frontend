@@ -1,5 +1,5 @@
 @*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,11 +54,17 @@
   scriptElement: Option[Html] = None,
   mainConfig: MainConfig = MainConfig(),
   includeGridWrapper: Boolean = false,
+  optimizelyUserType: String = "Other user",
   gaCalls: Option[(String,String) => Html] = None,
   isUserResearchBannerVisible: Boolean = true)(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
+
+@headScripts = {
+    <script src="https://cdn.optimizely.com/js/17437780408.js"></script>
+}
+
 @headBlock = {
-  @head(linkElement, headScripts)
+  @head(linkElement, Some(headScripts))
 }
 
 @insideHeader = {
@@ -141,6 +147,7 @@
 <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/pbik.css")' media="screen" type="text/css" />
 <script type="text/javascript" src='@routes.Assets.versioned("javascripts/pbik.js")'></script>
 <script type="text/javascript" src='@routes.Assets.versioned("javascripts/urBanner.js")'></script>
+<script type="text/javascript" src='@routes.Assets.versioned("javascripts/")'></script>
 }
 
 @govuk_template(Some(title), None)(headBlock, bodyEnd, insideHeader, afterHeader, footerTop, Some(footer_links()), headerNav.isDefined)(content)
