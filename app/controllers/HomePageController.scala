@@ -60,7 +60,7 @@ class HomePageController @Inject()(
   }
 
   def signout: Action[AnyContent] = unauthorisedAction { implicit request =>
-    Redirect(pbikAppConfig.serviceSignOut).withNewSession
+    Redirect(pbikAppConfig.signOut)
   }
 
   def setLanguage: Action[AnyContent] = (authenticate andThen noSessionCheck) { implicit request =>
