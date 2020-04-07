@@ -100,7 +100,6 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with Test
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result).get must include("/feedback/PBIK")
-
     }
   }
 

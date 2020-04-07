@@ -32,7 +32,8 @@ trait AppConfig {
   val biksNotSupportedCY: Seq[Int]
   val biksDecommissioned: Seq[Int]
   val urBannerLink: String
-  val serviceSignOut: String
+  val feedbackUrl: String
+  val signOut: String
   val analyticsToken: Option[String]
   val analyticsHost: String
   val ssoUrl: Option[String]
@@ -40,6 +41,7 @@ trait AppConfig {
 
 class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
 
+  private lazy val companyAuthHost: String = configuration.get[String]("microservice.auth.company-auth.host")
   override lazy val contactFrontendService: String =
     configuration.get[Service]("microservice.services.contact-frontend")
   override lazy val contactFormServiceIdentifier = "PayrollBIK"
@@ -62,7 +64,8 @@ class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
   override lazy val biksDecommissioned: Seq[Int] = configuration.get[Seq[Int]]("pbik.decommissioned.biks")
   lazy val urBannerToggle: Boolean = configuration.get[Boolean]("urBanner.toggle")
   override lazy val urBannerLink: String = configuration.get[String]("urBanner.link")
-  override lazy val serviceSignOut: String = configuration.get[String]("service-signout.url")
+  override lazy val feedbackUrl: String = configuration.get[String]("feedback.url")
+  override lazy val signOut = s"$companyAuthHost/gg/sign-out/?continue=$feedbackUrl"
 
   override val analyticsToken: Option[String] = configuration.getOptional[String]("google-analytics.token")
   override val analyticsHost: String =
