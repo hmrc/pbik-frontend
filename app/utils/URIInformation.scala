@@ -54,7 +54,7 @@ class URIInformation @Inject()(configuration: Configuration) extends URIValues {
     value match {
       case Some(_) => value.get._2
       case None => {
-        Logger.info("invalid bik passed to map url: " + iabd)
+        Logger.info("[URIInformation][iabdValueURLMapper] Invalid bik passed to map url: " + iabd)
         throw new InvalidBikTypeURIException
       }
     }
@@ -65,7 +65,7 @@ class URIInformation @Inject()(configuration: Configuration) extends URIValues {
     value match {
       case Some(_) => value.get._1
       case None =>
-        Logger.info("invalid bik passed to de-map url: " + iabdMappedURL)
+        Logger.info("[URIInformation][iabdValueURLDeMapper] Invalid bik passed to de-map url: " + iabdMappedURL)
         throw new InvalidBikTypeURIException
     }
   }

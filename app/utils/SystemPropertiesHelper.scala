@@ -62,13 +62,16 @@ trait SystemPropertiesHelper {
     }
 
   def doesntExist[T](key: String, defaultvalue: T): T = {
-    Logger.info(s"No system property $key defined. Using default value: $defaultvalue")
+    Logger.warn(
+      s"[SystemPropertiesHelper][doesntExist] No system property $key defined. Using default value: $defaultvalue")
     defaultvalue
   }
 
   def doesntParse[T](key: String, defaultvalue: T, errorMsg: String): T = {
     Logger.warn(
-      s"System property $key exists but could not be parsed to the correct type. Please check the value: $defaultvalue. Error was $errorMsg")
+      s"[SystemPropertiesHelper][doesntParse] System property $key exists but could not be parsed to the correct type." +
+        s" Please check the value: $defaultvalue. Error was $errorMsg"
+    )
     defaultvalue
   }
 

@@ -103,7 +103,7 @@ class ControllersReferenceData @Inject()(
     if (pbikAppConfig.cyEnabled) {
       responseErrorHandler(staticDataRequest)
     } else {
-      Logger.info("Cy is disabled")
+      Logger.info("[ControllersReferenceData][responseCheckCYEnabled] Cy is disabled")
       Future(Ok(errorPageView(CY_RESTRICTED, YEAR_RANGE, "", 10003, empRef = Some(request.empRef))))
     }
 
@@ -111,24 +111,28 @@ class ControllersReferenceData @Inject()(
     implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     staticDataRequest.recover {
       case e0: NoSuchElementException => {
-        Logger.warn("ResponseErrorHandler. A NoSuchElementException was handled :  " + e0)
+        Logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled : $e0")
         Ok(errorPageView(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e1: InvalidYearURIException => {
-        Logger.warn("ResponseErrorHandler. An InvalidYearURIException was handled :  " + e1)
+        Logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
         Ok(errorPageView(INVALID_YEAR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e2: InvalidBikTypeURIException => {
-        Logger.warn("ResponseErrorHandler. An InvalidBikTypeURIException was handled :  " + e2)
+        Logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeURIException was handled : $e2")
         Ok(errorPageView(INVALID_BIK_TYPE_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e3: Upstream5xxResponse => {
-        Logger.warn("ResponseErrorHandler. An Upstream5xxResponse was handled :  " + e3.message)
+        Logger.error(
+          s"[ControllersReferenceData][responseErrorHandler] An Upstream5xxResponse was handled : ${e3.message}",
+          e3)
         Ok(maintenancePageView(empRef = Some(request.empRef)))
       }
       case e4: GenericServerErrorException => {
         try {
-          Logger.warn("ResponseErrorHandler. A GenericServerErrorException was handled :  " + e4.message)
+          Logger.warn(
+            s"[ControllersReferenceData][responseErrorHandler] A GenericServerErrorException was handled : ${e4.message}",
+            e4)
           val msgValue = e4.message
           if (Messages("ServiceMessage." + msgValue) == ("ServiceMessage." + msgValue)) throw new Exception(msgValue)
           else
@@ -140,15 +144,18 @@ class ControllersReferenceData @Inject()(
                 msgValue.toInt,
                 empRef = Some(request.empRef)))
         } catch {
-          case e: Exception => {
+          case ex: Exception => {
             Logger.warn(
-              "Could not parse GenericServerError System Error number: " + e4.message + " .Showing default error page instead")
+              s"[ControllersReferenceData][responseErrorHandler] Could not parse GenericServerError System Error number: ${e4.message}." +
+                s" Showing default error page instead",
+              ex
+            )
             Ok(maintenancePageView(empRef = Some(request.empRef)))
           }
         }
       }
       case e5 => {
-        Logger.warn("ResponseErrorHandler. An exception was handled : " + e5.getMessage)
+        Logger.warn("[ControllersReferenceData][responseErrorHandler]. An exception was handled : ${e5.getMessage}", e5)
         Ok(maintenancePageView(empRef = Some(request.empRef)))
       }
     }

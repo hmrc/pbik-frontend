@@ -38,10 +38,11 @@ object FormMappingsConstants {
   val MONTH_31_DAYS = 31
   val LEAP_YEAR_FREQ = 4
 
-  val RANGE_28_DAYS = Range(START_OF_MONTH, MONTH_28_DAYS + 1) // Note - scala range syntax needs extra one added
-  val RANGE_29_DAYS = Range(START_OF_MONTH, MONTH_29_DAYS + 1) // Note - scala range syntax needs extra one added
-  val RANGE_30_DAYS = Range(START_OF_MONTH, MONTH_30_DAYS + 1) // Note - scala range syntax needs extra one added
-  val RANGE_31_DAYS = Range(START_OF_MONTH, MONTH_31_DAYS + 1) // Note - scala range syntax needs extra one added
+  // Note - scala range syntax needs extra one added
+  val RANGE_28_DAYS = Range(START_OF_MONTH, MONTH_28_DAYS + 1)
+  val RANGE_29_DAYS = Range(START_OF_MONTH, MONTH_29_DAYS + 1)
+  val RANGE_30_DAYS = Range(START_OF_MONTH, MONTH_30_DAYS + 1)
+  val RANGE_31_DAYS = Range(START_OF_MONTH, MONTH_31_DAYS + 1)
 
   val CY = "cy"
   val CYP1 = "cyp1"
@@ -100,7 +101,7 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
         case _ => false
       }
     } catch {
-      case e: NumberFormatException => false
+      case ex: NumberFormatException => false
     }
 
   def isDateYearInFuture(dob: (String, String, String)): Boolean = {

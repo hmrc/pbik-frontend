@@ -93,10 +93,9 @@ class ExclusionListController @Inject()(
       if (exclusionsAllowed) {
         val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
         val staticDataRequest = for {
-          year                                              <- validateRequest(isCurrentTaxYear, iabdType)
-          currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
-          nextYearList: (Map[String, String], List[Bik])    <- bikListService.nextYearList
-          currentYearEIL: List[EiLPerson]                   <- eiLListService.currentYearEiL(iabdTypeValue, year)
+          year                                           <- validateRequest(isCurrentTaxYear, iabdType)
+          nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
+          currentYearEIL: List[EiLPerson]                <- eiLListService.currentYearEiL(iabdTypeValue, year)
         } yield {
           Ok(
             exclusionOverviewView(
@@ -264,7 +263,7 @@ class ExclusionListController @Inject()(
     individualSelectionOption: Option[String])(implicit request: AuthenticatedRequest[_]): Result =
     listOfMatches.size match {
       case 0 =>
-        Logger.error("Matches are zero size")
+        Logger.error("[ExclusionListController][searchResultsHandleValidResult] List of mathces is empty")
         val existsAlready = resultAlreadyExcluded.contains(form.bindFromRequest().get)
         val message =
           if (existsAlready) Messages("ExclusionSearch.Fail.Exists.P") else Messages("ExclusionSearch.Fail.P")
@@ -294,8 +293,8 @@ class ExclusionListController @Inject()(
 
       case _ =>
         Logger.info(
-          "Exclusion search matched " + listOfMatches.size + " employees with Optimistic locks " + listOfMatches.map(
-            x => x.perOptLock))
+          s"[ExclusionListController][searchResultsHandleValidResult] Exclusion search matched ${listOfMatches.size}" +
+            s" employees with Optimistic locks ${listOfMatches.map(x => x.perOptLock)}")
         val filledListOfMatchesForm = formMappings.individualsFormWithRadio.fill(
           (individualSelectionOption.getOrElse(""), EiLPersonList(listOfMatches)))
         Ok(
@@ -454,7 +453,9 @@ class ExclusionListController @Inject()(
       RegistrationList(None, List(RegistrationItem(iabdType, active = false, enabled = false)))
 
     Logger.info(
-      s"Committing Exclusion for scheme ${request.empRef.toString} , with employees Optimisitic Lock: ${excludedIndividual.get.perOptLock}")
+      s"[ExclusionListController][searchResultsHandleValidResult] Committing Exclusion for scheme ${request.empRef.toString}" +
+        s", with employees Optimisitic Lock: ${excludedIndividual.get.perOptLock}"
+    )
 
     tierConnector
       .genericPostCall(

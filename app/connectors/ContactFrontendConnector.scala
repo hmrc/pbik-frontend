@@ -38,8 +38,10 @@ class ContactFrontendConnector @Inject()(
     val url = s"$serviceBase/problem_reports"
 
     client.GET[String](url) recover {
-      case e: BadGatewayException =>
-        Logger.error(s"[ContactFrontendConnector] ${e.message}", e)
+      case ex: BadGatewayException =>
+        Logger.error(
+          s"[ContactFrontendConnector][getHelpPartial] an exception occurred ${ex.message} when calling $url",
+          ex)
         ""
     }
   }
