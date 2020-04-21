@@ -104,7 +104,6 @@ class ManageRegistrationController @Inject()(
                                controllersReferenceData.YEAR_RANGE.cy)
     } yield {
       val fetchFromCacheMapBiksValue = List.empty[RegistrationItem]
-      val fetchFromCacheMapSelectAllValue = ""
       val initialData = RegistrationList(None, registeredListOption.map { x =>
         RegistrationItem(x.iabdType, active = false, enabled = true)
       })

@@ -88,7 +88,8 @@ class HelpAndContactController @Inject()(
             case 200 => Redirect(successRedirect).withSession(request.session + (TICKET_ID -> resp.body))
             case 400 => BadRequest(failedValidationResponseContent(Html(resp.body)))
             case 500 => {
-              Logger.warn("submit contact form internal error 500, " + resp.body)
+              Logger.error(
+                s"[HelpAndContactController][submitContactHmrcForm] Submit contact form internal error 500, ${resp.body}")
               InternalServerError(Html(resp.body))
             }
             case status => throw new Exception(s"Unexpected status code from contact HMRC form: $status")
@@ -96,7 +97,7 @@ class HelpAndContactController @Inject()(
         }
       }
       .getOrElse {
-        Logger.warn("Trying to submit an empty contact form")
+        Logger.warn("[HelpAndContactController][submitContactHmrcForm] Trying to submit an empty contact form")
         Future.successful(InternalServerError)
       }
   }

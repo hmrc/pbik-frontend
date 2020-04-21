@@ -65,9 +65,7 @@ class HomePageController @Inject()(
 
   def setLanguage: Action[AnyContent] = (authenticate andThen noSessionCheck) { implicit request =>
     val lang = request.getQueryString("lang").getOrElse("en")
-    Logger.info("Language from request query is " + lang)
     val newLang = Lang(lang)
-    Logger.info("New language set to " + newLang.code)
     Redirect(routes.HomePageController.onPageLoad()).withLang(newLang)(messagesApi)
   }
 

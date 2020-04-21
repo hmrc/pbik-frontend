@@ -61,11 +61,14 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
         HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1"))
 
       pbikHeaders = headers
-      Logger.info("GET etag/xtxid headers: " + pbikHeaders)
+      Logger.info("[HmrcTierConnector][genericGetCall] GET etag/xtxid headers: " + pbikHeaders)
 
       r.json.validate[PbikError] match {
-        case s: JsSuccess[PbikError] => throw new GenericServerErrorException(s.value.errorCode)
-        case e: JsError              => r.json.as[T]
+        case s: JsSuccess[PbikError] =>
+          Logger.error(
+            s"[HmrcTierConnector][genericGetCall] a pbik error code was returned. Error Code: ${s.value.errorCode}")
+          throw new GenericServerErrorException(s.value.errorCode)
+        case e: JsError => r.json.as[T]
       }
 
     }
@@ -85,7 +88,8 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
     val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")
     val optMapped = Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession)
 
-    Logger.info("POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession)
+    Logger.info(
+      "[HmrcTierConnector][genericPostCall] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession)
 
     client.POST(createPostUrl(baseUrl, URIExtension, empRef, year), data, optMapped.toSeq).map {
       response: HttpResponse =>
@@ -95,13 +99,16 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
 
   def processResponse(response: HttpResponse): HttpResponse =
     response match {
-      case _ if response.status >= 400    => throw new GenericServerErrorException(response.body)
+      case _ if response.status >= 400 =>
+        Logger.error(s"[HmrcTierConnector][processResponse] An unexpected status was returned: ${response.status}")
+        throw new GenericServerErrorException(response.body)
       case _ if response.body.length <= 0 => response
       case _ =>
         response.json.validate[PbikError].asOpt match {
-          case Some(pe) =>
-            val error = pe.errorCode
-            throw new GenericServerErrorException(error)
+          case Some(pbikError) =>
+            Logger.error(
+              s"[HmrcTierConnector][processResponse] A pbik error code was returned. Error Code: ${pbikError.errorCode}")
+            throw new GenericServerErrorException(pbikError.errorCode)
           case _ => response
         }
     }
