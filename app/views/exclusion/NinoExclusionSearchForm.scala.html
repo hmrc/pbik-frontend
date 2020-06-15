@@ -20,7 +20,7 @@
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.html.includes.BackLink
-@import views.html.localhelpers.Input
+@import views.html.localhelpers.TextInput
 
 
 @this(parentTemplate: ParentTemplate,
@@ -30,7 +30,7 @@ config: AppConfig,
 localFormPartialRetriever: LocalFormPartialRetriever,
 uriInformation: URIInformation,
 back_link: BackLink,
-input: Input)
+input: TextInput)
 
 @(taxYearRange:TaxYearRange,
   isCurrentTaxYear:String,
@@ -45,85 +45,82 @@ input: Input)
 
     @back_link(Some(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))), messages("ExclusionSearch.form.title"))
 
-    <header class="page-header">
-        <h1 id="title" class="h1-heading-margin">
-            @messages("ExclusionSearch.form.title")
-        </h1>
-    </header>
+    @if(searchForm("status").hasErrors){
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+                @messages("Service.errorSummary.heading")
+            </h2>
+
+            @if(alreadyExists) {
+                @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages("BenefitInKind.label." + iabdType), excludedEmployeesLink , "</a>"))
+            }else { @Html(messages("ExclusionSearch.Fail.Desc")) }
+
+            <ul class="error-summary-list">
+                <li><a href="#error-list-1">@searchForm.error("status").get.message</a></li>
+            </ul>
+
+        </div>
+    }
+
+    @if(searchForm("nino").hasErrors || searchForm("firstname").hasErrors || searchForm("surname").hasErrors) {
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+            @messages("Service.errorSummary.heading")
+            </h2>
+
+            <ul class="error-summary-list">
+                @if(searchForm("nino").hasErrors) {
+                    <li><a href="#ninoContainer">@searchForm.error("nino").get.message.dropRight(1)</a></li>
+                }
+                @if(searchForm("firstname").hasErrors) {
+                    <li><a href="#firstnameContainer">@searchForm.error("firstname").get.message.dropRight(1)</a></li>
+                }
+                @if(searchForm("surname").hasErrors) {
+                    <li><a href="#surnameContainer">@searchForm.error("surname").get.message.dropRight(1)</a></li>
+                }
+            </ul>
+
+        </div>
+    }
+
+    <h1 id="title" class="heading-xlarge">
+        @messages("ExclusionSearch.form.title")
+    </h1>
+
     <section id="nino-exclusion-form">
-
-        @if(searchForm("status").hasErrors){
-            <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-
-                <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
-                    @messages("Service.errorSummary.heading")
-                </h1>
-
-                @if(alreadyExists) {
-                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages("BenefitInKind.label." + iabdType), excludedEmployeesLink , "</a>"))
-                }else { @Html(messages("ExclusionSearch.Fail.Desc"))}
-
-                <ul class="error-summary-pbik-list">
-                    <li><a href="#error-list-1">@searchForm.error("status").get.message</a></li>
-                </ul>
-
-            </div>
-        }
-
         @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), "nino"), 'autocomplete -> "off") {
 
         <div class='form-group @if(searchForm("status").hasErrors) {error}' id="search-form">
             @if(searchForm("status").hasErrors){
-                <span class="error-notification" id="error-list-1">
+                <span class="error-message" id="error-list-1">
                     @searchForm.error("status").get.message
                 </span>
             }
 
-            @if(searchForm("nino").hasErrors || searchForm("firstname").hasErrors || searchForm("surname").hasErrors) {
-                <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-
-                    <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
-                        @messages("Service.errorSummary.heading")
-                    </h1>
-
-                    <ul class="error-summary-pbik-list">
-                        @if(searchForm("nino").hasErrors) {
-                            <li><a href="#ninoContainer">@searchForm.error("nino").get.message.dropRight(1)</a></li>
-                        }
-                        @if(searchForm("firstname").hasErrors) {
-                            <li><a href="#firstnameContainer">@searchForm.error("firstname").get.message.dropRight(1)</a></li>
-                        }
-                        @if(searchForm("surname").hasErrors) {
-                            <li><a href="#surnameContainer">@searchForm.error("surname").get.message.dropRight(1)</a></li>
-                        }
-                    </ul>
-
-                </div>
-            }
-
             <fieldset>
-                <legend>@messages("ExclusionSearch.nino.caption")</legend>
-                <div class='form-group' id="ninoContainer">
-                    @input(searchForm("nino"), '_label -> messages("Service.field.nino"), '_inputClass -> "form-control", '_inputHint ->  messages("Service.field.ninohint"))
-                </div>
-                <div class='form-group' id="firstnameContainer">
-                    @helpers.input(searchForm("firstname"), '_label -> messages("Service.field.firstname"), '_inputClass -> "form-control")
-                </div>
-                <div class='form-group' id="surnameContainer">
-                    @helpers.input(searchForm("surname"), '_label -> messages("Service.field.surname"), '_inputClass -> "form-control")
-                </div>
+                <legend><p>@messages("ExclusionSearch.nino.caption")</p></legend>
+
+                @input(searchForm("nino"), '_label -> messages("Service.field.nino"), '_inputHint ->  messages("Service.field.ninohint"))
+
+                @input(searchForm("firstname"), '_label -> messages("Service.field.firstname"), '_inputClass -> "form-control")
+
+                @input(searchForm("surname"), '_label -> messages("Service.field.surname"), '_inputClass -> "form-control")
             </fieldset>
         </div>
 
-            <input type="hidden" name="status" id="status" value="10"/>
-            <input type="hidden" name="perOptLock" id="perOptLock"/>
+        <input type="hidden" name="status" id="status" value="10"/>
+        <input type="hidden" name="perOptLock" id="perOptLock"/>
 
-            <input type="submit" class="button" role="button" id="button-search" value="@messages("Service.continue")">
+        <input type="submit" class="button" role="button" id="button-search" value="@messages("Service.continue")"
 
-
-            <p><a class="button-link" id="link-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Nino search form')"
-                  href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
-                @messages("Service.back.excluded")</a></p>
+        <p>
+            <a class="button-link" id="link-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Nino search form')"
+              href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
+                @messages("Service.back.excluded")
+            </a>
+        </p>
 
         }
     </section>

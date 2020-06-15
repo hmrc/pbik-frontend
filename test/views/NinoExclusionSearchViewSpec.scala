@@ -53,6 +53,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
     behave like pageWithTextBox("surname", messages("Service.field.surname"))
   }
+
   "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
 
     val view: Html = viewWithForm(

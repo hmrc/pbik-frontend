@@ -29,13 +29,13 @@ localFormPartialRetriever: LocalFormPartialRetriever)
 
 
 @parentTemplate(pageTitle = messages("Service.notEnrolled.title") + " - " + messages("Service.title"), None, empRef.map(_.toString)) {
-    <h1 id="title">@messages("Service.notEnrolled.title")</h1>
+    <h1 id="title" class="heading-xlarge">@messages("Service.notEnrolled.title")</h1>
 
-    <p class="lede-para">@messages("Service.notEnrolled.text1")</p>
+    <p class="lede">@messages("Service.notEnrolled.text1")</p>
 
     <p>@messages("Service.notEnrolled.text2")</p>
 
-    <ul class="list-bullet">
+    <ul class="list list-bullet">
         <li>@messages("Service.enrollmentLoop.list1")</li>
         <li>@messages("Service.enrollmentLoop.list2")</li>
     </ul>

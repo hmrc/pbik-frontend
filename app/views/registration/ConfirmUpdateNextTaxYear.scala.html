@@ -36,79 +36,76 @@ back_link: BackLink)
   additive: Boolean,
   taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_], flash: Flash, messages: Messages)
 
-@benefitLabel = @{messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(bikForm("actives[0].uid").value.get ))}
-@singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
-@gaEventBiks = @{helper.repeat(bikForm("actives"), min=0) { activeField => Html(messages("BenefitInKind.label." + activeField("uid").value.get) + " ,")} }
-@gaEventRemoveBiks = @{if(!additive){helper.repeat(bikForm("actives"), min=0) { activeField => Html(messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(activeField("uid").value.get)) + " ,")} } }
+@benefitLabel = @{ messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(bikForm("actives[0].uid").value.get )) }
+@singleBik = @{ if(bikForm("actives").indexes.size > 1 ) { false } else { true } }
+@gaEventBiks = @{ helper.repeat(bikForm("actives"), min=0) { activeField => Html(messages("BenefitInKind.label." + activeField("uid").value.get) + " ,") } }
+@gaEventRemoveBiks = @{ if(!additive) { helper.repeat(bikForm("actives"), min=0) { activeField => Html(messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(activeField("uid").value.get)) + " ,") } } }
 
-@screenReaderExclusionOpen = @{messages("AddBenefits.Confirm.help.reveal.link.sr.open")}
-@screenReaderExclusionClosed = @{messages("AddBenefits.Confirm.help.reveal.link.sr.closed")}
+@screenReaderExclusionOpen = @{ messages("AddBenefits.Confirm.help.reveal.link.sr.open") }
+@screenReaderExclusionClosed = @{ messages("AddBenefits.Confirm.help.reveal.link.sr.closed") }
 
-@title = @{if(additive && singleBik) {messages("AddBenefits.Confirm.Single.Title")}else if(additive && !singleBik){messages("AddBenefits.Confirm.Multiple.Title")}else {messages("RemoveBenefits.Confirm.Title")}}
+@title = @{ if(additive && singleBik) { messages("AddBenefits.Confirm.Single.Title") } else if(additive && !singleBik) { messages("AddBenefits.Confirm.Multiple.Title") } else {messages("RemoveBenefits.Confirm.Title") } }
 
 @parentTemplate(pageTitle = title + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
-        @if(additive) {
+    @if(additive) {
 
-            @back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad), messages("AddBenefits.Confirm.Single.Title"))
+        @back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad), messages("AddBenefits.Confirm.Single.Title"))
 
-            <h1 id="title" class="title">
-                @if(!singleBik) {
-                    @messages("AddBenefits.Confirm.Multiple.Title")
-                }else{
-                    @messages("AddBenefits.Confirm.Single.Title")
-                }
-            </h1>
-        } else {
-
-            @back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad), messages("RemoveBenefits.Confirm.Title"))
-
-            <h1 id="title" class="title">
-                @messages("RemoveBenefits.Confirm.Title")
-            </h1>
-        }
-
-
-        @if(additive) {
-            <p class="lede-para text" id="lede">
-                @if(singleBik){
-                    @messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
-                }else{
-                    @messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
-                }
-            </p>
-        } else {
-            @if(flash.get("error")){
-                <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-
-                    <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
-                        @messages("Service.errorSummary.heading")
-                    </h1>
-
-                    <ul class="error-summary-pbik-list">
-                        <li><a href="#error-list-1">@flash.get("error")</a></li>
-                    </ul>
-
-                </div>
+        <h1 id="title" class="heading-xlarge">
+            @if(!singleBik) {
+                @messages("AddBenefits.Confirm.Multiple.Title")
+            }else{
+                @messages("AddBenefits.Confirm.Single.Title")
             }
+        </h1>
+    } else {
+        @back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad), messages("RemoveBenefits.Confirm.Title"))
 
-            <p class="lede-para text" id="lede"> @messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+        @if(flash.get("error")){
+            <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
+
+                <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+                @messages("Service.errorSummary.heading")
+                </h2>
+
+                <ul class="error-summary-list">
+                    <li><a href="#error-list-1">@flash.get("error")</a></li>
+                </ul>
+
+            </div>
         }
 
-        <div class="data">
-            @if(additive) {
-                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes(),
-                'onsubmit -> "gaEventConfirmAddBenefits()") {
+        <h1 id="title" class="heading-xlarge">
+            @messages("RemoveBenefits.Confirm.Title")
+        </h1>
+    }
 
+    @if(additive) {
+        <p class="lede" id="lede">
+            @if(singleBik){
+                @messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+            }else{
+                @messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+            }
+        </p>
+    } else {
+        <p class="lede" id="lede"> @messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
+    }
+
+    <div class="data">
+        @if(additive) {
+            @helpers.form(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes(),
+            'onsubmit -> "gaEventConfirmAddBenefits()") {
                 <h2>
                     @if(!singleBik) {
-                    @messages("AddBenefits.Confirm.Multiple.Table.Heading")
+                        @messages("AddBenefits.Confirm.Multiple.Table.Heading")
                     }else {
-                    @messages("AddBenefits.Confirm.Single.Table.Heading")
+                        @messages("AddBenefits.Confirm.Single.Table.Heading")
                     }
                 </h2>
-                <dl class="govuk-check-your-answers cya-questions-short">
-                    @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
+                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
+                    <dl class="govuk-check-your-answers cya-questions-short">
                         @helper.repeat(bikForm("actives"), min=0) { activeField =>
                         <div>
                             <div class="cya-answer" id='confirmation-row-confirmation-@activeField("uid").value.get'>
@@ -120,10 +117,9 @@ back_link: BackLink)
                             </div>
                         </div>
                         }
+                    </dl>
 
-                </dl>
-
-                    <div class="panel-indent panel-border-wide" id="exclude-info">
+                    <div class="panel panel-border-wide" id="exclude-info">
                         @if(singleBik){
                             @messages("AddBenefits.Confirm.help.desc.Single")
                         }else{
@@ -132,90 +128,81 @@ back_link: BackLink)
                     </div>
 
                     @if(singleBik) {
-                    <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.register.single")">
+                        <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.register.single")">
                     }else {
-                    <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.register.multiple")">
+                        <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.register.multiple")">
                     }
                 }
             }
 
-            <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
-                      href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a></p>
-            } else {
+            <p>
+                <a class="button-link" id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a
+            </p>
+        } else {
 
-                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(),
-                'onsubmit -> "gaEventConfirmRemoveBenefits()", 'id -> "form-remove") {
-                    <ul  id="list-of-confirmation-benefits" class="list-bullet text" style="display:none">
-                        @helper.repeat(bikForm("actives"), min=0) { activeField =>
-                            @helper.inputText(activeField("uid").copy(value=Some(uriInformation.iabdValueURLDeMapper(activeField("uid").value.get))), 'style -> "display: none")
-                            @helper.inputText(activeField("pbik_seq"), 'style -> "display: none" )
-                            @helper.inputText(activeField("active"), 'style -> "display: none" )
-                            <li id='confirmation-row-confirmation-@uriInformation.iabdValueURLDeMapper(activeField("uid").value.get)'>
-                                @messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(activeField("uid").value.get) )</li>
+            @helpers.form(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(),
+            'onsubmit -> "gaEventConfirmRemoveBenefits()", 'id -> "form-remove") {
+                <ul id="list-of-confirmation-benefits" class="list list-bullet" style="display:none">
+                    @helper.repeat(bikForm("actives"), min=0) { activeField =>
+                        @helper.inputText(activeField("uid").copy(value=Some(uriInformation.iabdValueURLDeMapper(activeField("uid").value.get))), 'style -> "display: none")
+                        @helper.inputText(activeField("pbik_seq"), 'style -> "display: none" )
+                        @helper.inputText(activeField("active"), 'style -> "display: none" )
+                        <li id='confirmation-row-confirmation-@uriInformation.iabdValueURLDeMapper(activeField("uid").value.get)'>
+                            @messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(activeField("uid").value.get) )
+                        </li>
+                    }
+                </ul>
+
+                <div class='form-group @if(flash.get("error")) {form-group-error}'>
+                    <fieldset>
+                        @if(flash.get("error")) {
+                            <span id="error-list-1" class="error-message"> @flash.get("error")</span>
                         }
-                    </ul>
+                        <legend>
+                            <p>@messages("RemoveBenefits.reason.desc")</p>
+                        </legend>
+                        <div class="multiple-choice" onclick="RemoveBenefitRadioButton('software')">
+                            <input id="radio-software" type="radio" name="reason.selectionValue" value="software" >
+                            <label for="radio-software">@messages("RemoveBenefits.reason.software")</label>
+                        </div>
+                        <div class="multiple-choice" onclick="RemoveBenefitRadioButton('guidance')">
+                            <input id="radio-guidance" type="radio" name="reason.selectionValue" value="guidance" >
+                            <label for="radio-guidance">@messages("RemoveBenefits.reason.guidance")</label>
+                        </div>
+                        <div class="multiple-choice" onclick="RemoveBenefitRadioButton('not-clear')">
+                            <input id="radio-not-clear" type="radio" name="reason.selectionValue" value="not-clear" >
+                            <label for="radio-not-clear">@messages("RemoveBenefits.reason.not-clear")</label>
+                        </div>
+                        <div class="multiple-choice" onclick="RemoveBenefitRadioButton('not-offering')">
+                            <input id="radio-not-offering" type="radio" name="reason.selectionValue" value="not-offering" >
+                            <label for="radio-not-offering">@messages("RemoveBenefits.reason.not-offering")</label>
+                        </div>
+                        <div class="multiple-choice" onclick="RemoveBenefitRadioButton('other')">
+                            <input id="radio-other" type="radio" name="reason.selectionValue" value="other" >
+                            <label for="radio-other">@messages("RemoveBenefits.reason.other")</label>
+                        </div>
+                        <div id="other-desc" class="other-desc panel" style="display:none">
+                            <label for="radio-other-desc">@messages("RemoveBenefits.reason.other.label")</label>
+                            <textarea id="radio-other-desc" class="form-control" cols="50" rows="4" name="reason.info"></textarea>
+                        </div>
+                    </fieldset>
+                </div>
 
-                    <div class='form-group @if(flash.get("error")) {error}'>
+                <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.confirm")">
 
-                        <fieldset class="inline">
-                            @if(flash.get("error")) {
-                                <span id="error-list-1" class="error-notification" style="display:block; margin-left: 0">
-                                @flash.get("error")
-                                </span>
-                            }
-
-                            <legend>@messages("RemoveBenefits.reason.desc")</legend>
-
-                            <label for="radio-software" class="block-label" onclick="RemoveBenefitRadioButton('software')">
-                                <input id="radio-software" type="radio" name="reason.selectionValue" value="software" >
-                                @messages("RemoveBenefits.reason.software")
-                            </label>
-
-                            <label for="radio-guidance" class="block-label" onclick="RemoveBenefitRadioButton('guidance')">
-                                <input id="radio-guidance" type="radio" name="reason.selectionValue" value="guidance" >
-                                @messages("RemoveBenefits.reason.guidance")
-                            </label>
-
-                            <label for="radio-not-clear" class="block-label" onclick="RemoveBenefitRadioButton('not-clear')">
-                                <input id="radio-not-clear" type="radio" name="reason.selectionValue" value="not-clear" >
-                                @messages("RemoveBenefits.reason.not-clear")
-                            </label>
-
-                            <label for="radio-not-offering" class="block-label" onclick="RemoveBenefitRadioButton('not-offering')">
-                                <input id="radio-not-offering" type="radio" name="reason.selectionValue" value="not-offering" >
-                                @messages("RemoveBenefits.reason.not-offering")
-                            </label>
-
-                            <label for="radio-other" class="block-label" onclick="RemoveBenefitRadioButton('other')">
-                                <input id="radio-other" type="radio" name="reason.selectionValue" value="other" >
-                                @messages("RemoveBenefits.reason.other")
-                            </label>
-
-                            <div style="clear:both"></div>
-
-                            <div id="other-desc" class="other-desc panel-indent  " style="display:none">
-                                <label for="radio-other-desc">@messages("RemoveBenefits.reason.other.label")</label>
-                                <textarea id="radio-other-desc" class="form-control" cols="50" rows="4" name="reason.info"></textarea>
-                            </div>
-
-                        </fieldset>
-                    </div>
-
-                    <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.confirm")">
-
-                    <noscript>
-                        <style type="text/css">
-                            .other-desc {display:block !important;}
-                        </style>
-                    </noscript>
-                }
-                <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
-                      href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a></p>
+                <noscript>
+                    <style type="text/css">
+                        .other-desc {display:block !important;}
+                    </style>
+                </noscript>
+            }
+            <p>
+                <a class="button-link" id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a>
+            </p>
         }
+    </div>
 
-        </div>
-
-        <script>
+    <script>
         function gaEventConfirmAddBenefits() {
           gaEvent("Benefit(s) Added for Next Year", "@gaEventBiks");
         }
@@ -224,5 +211,5 @@ back_link: BackLink)
           var reason = capitalise(RemoveBenefitRadioButtonValue().split('-').join(' '));
           gaEvent("Benefit Removed for Next Year (Reason)", (reason + " (" + document.getElementById("radio-other-desc").value + ")"));
         }
-        </script>
+    </script>
 }

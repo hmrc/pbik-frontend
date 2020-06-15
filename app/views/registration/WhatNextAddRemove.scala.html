@@ -38,7 +38,9 @@ localFormPartialRetriever: LocalFormPartialRetriever)
 @cyplus1 = @{""+taxYearRange.cyplus1}
 @metaTitleAdditive = @{if(singleBik){messages("whatNext.add.heading.singular")}else {messages("whatNext.add.heading")}}
 
-@parentTemplate(pageTitle = if(additive) {metaTitleAdditive + " - " + messages("Service.title")}else{messages("whatNext.remove.heading") + " - " + messages("Service.title")},
+@title = @{if(additive) {metaTitleAdditive + " - " + messages("Service.title")}else{messages("whatNext.remove.heading") + " - " + messages("Service.title")}}
+
+@parentTemplate(pageTitle = title,
                 None, Some(empRef.toString)) {
 
     <section id="print-section">
@@ -47,7 +49,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
 
     <section id="what-next-update-benefit">
         <div id="confirmation" class="govuk-box-highlight">
-            <h1 id="title" class="bold-large">
+            <h1 id="title" class="heading-xlarge">
                 @if(additive) {
                     @if(singleBik){
                         @messages("whatNext.add.heading.singular")
@@ -104,7 +106,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
 
             @if(isCurrentYear) {
                 <!-- CY content will go here when enabled-->
-                <ul class="list-bullet" id="next-steps">
+                <ul class="list list-bullet" id="next-steps">
                     <li>@Html(messages("whatNext.add.p1", cyminus1))</li>
                     @if(singleBik) {
                         <li>@Html(messages("whatNext.add.p2.singular"))</li>
@@ -116,7 +118,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
                     <li>@Html(messages("whatNext.add.p4"))</li>
                 </ul>
             }else {
-                <ul class="list-bullet" id="next-steps">
+                <ul class="list list-bullet" id="next-steps">
                     <li>@Html(messages("whatNext.add.p1", cy))</li>
                     @if(singleBik) {
                         <li>@Html(messages("whatNext.add.p2.singular"))</li>
@@ -136,7 +138,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
                 @messages("whatNext.subHeading")
             </h2>
 
-            <p class="text">
+            <p >
                 @messages("whatNext.remove.p1") <a data-journey-click='@messages("whatNext.remove.link.a-z-ga-track-EventCategory"):
                                                 @if(additive) {
                                                                     @if(singleBik){
@@ -152,7 +154,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
             </p>
         }
 
-        <p class="text">
+        <p >
             <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">
                 @messages("Service.back.overview.whatNext")
             </a>

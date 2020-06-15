@@ -45,7 +45,8 @@ localFormPartialRetriever: LocalFormPartialRetriever)
             @messages("Service.back")
         </a>
     </span>
-    <h1 id="title" class="h1-heading-margin">
+
+    <h1 id="title" class="heading-xlarge">
         @if(!singleBik) {
             @messages("AddBenefits.Confirm.Multiple.Title")
         }else{
@@ -53,7 +54,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
         }
     </h1>
 
-    <p class="lede-para text" id="lede">
+    <p class="lede" id="lede">
         @if(singleBik){
             @messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
         }else{
@@ -89,7 +90,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
                 </tbody>
             </table>
 
-            <div class="panel-indent panel-border-wide" id="exclude-info">
+            <div class="panel panel-border-wide" id="exclude-info">
                 @if(singleBik){
                     @messages("AddBenefits.Confirm.help.desc.Single")
                 }else{
@@ -104,7 +105,8 @@ localFormPartialRetriever: LocalFormPartialRetriever)
             }
         }
         <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
-              href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a></p>
+              href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a>
+        </p>
 
     </div>
     <script>

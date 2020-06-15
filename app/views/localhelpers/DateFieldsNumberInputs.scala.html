@@ -37,24 +37,25 @@
 @invalidYearFutureDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.future.year")}}
 @invalidYearPastDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.past.year")}}
 
+<div class="form-group @if(dateErrors.length>0) {form-group-error}">
+    <fieldset class="@argsMap.get('_groupClass)">
 
-<fieldset class="@argsMap.get('_groupClass) @if(dateErrors.length>0) {form-field--error}">
-
-    @if(allFieldsEmpty){<span class="error-notification">@messages("error.empty.dob")</span>}
-    @if(invalidDate && !allFieldsEmpty){<span class="error-notification">@messages("error.invaliddate")</span>}
-    @if(invalidDayDate && !allFieldsEmpty){<span class="error-notification">@messages("error.invaliddate.day")</span>}
-    @if(invalidMonthDate && !allFieldsEmpty){<span class="error-notification">@messages("error.invaliddate.month")</span>}
-    @if(invalidYearDate && !allFieldsEmpty){<span class="error-notification">@messages("error.invaliddate.year")</span>}
-    @if(invalidYearFutureDate && !allFieldsEmpty){<span class="error-notification">@messages("error.invaliddate.future.year")</span>}
-    @if(invalidYearPastDate && !allFieldsEmpty){<span class="error-notification">@messages("error.invaliddate.past.year")</span>}
+        @if(allFieldsEmpty){<span class="error-message">@messages("error.empty.dob")</span>}
+        @if(invalidDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate")</span>}
+        @if(invalidDayDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate.day")</span>}
+        @if(invalidMonthDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate.month")</span>}
+        @if(invalidYearDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate.year")</span>}
+        @if(invalidYearFutureDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate.future.year")</span>}
+        @if(invalidYearPastDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate.past.year")</span>}
 
     <legend class="form-label fieldset-legend-error">@label</legend>
-    <div class="date-of-birth" id="dob">
-    @if(argsMap.get('_hintText).isDefined) {
-    <p class="form-hint">@argsMap.get('_hintText)</p>
-    }
-    @dateFieldsNumberInputsInline(formItem, label, args : _*)
+    <div class="form-date" id="dob">
+        @if(argsMap.get('_hintText).isDefined) {
+            <p class="form-hint">@argsMap.get('_hintText)</p>
+        }
+        @dateFieldsNumberInputsInline(formItem, label, args : _*)
     </div>
-</fieldset>
+    </fieldset>
+</div>
 
 

@@ -20,6 +20,7 @@
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.html.includes.BackLink
+@import views.html.localhelpers.TextInput
 @import views.html.localhelpers.DateFieldsNumberInputs
 
 @this(parentTemplate: ParentTemplate,
@@ -29,7 +30,9 @@ config: AppConfig,
 localFormPartialRetriever: LocalFormPartialRetriever,
 uriInformation: URIInformation,
 back_link: BackLink,
-dateFieldsNumberInputs: DateFieldsNumberInputs)
+dateFieldsNumberInputs: DateFieldsNumberInputs,
+input: TextInput,
+radioInput: InputRadioGroup)
 
 @(taxYearRange:TaxYearRange,
   isCurrentTaxYear:String,
@@ -43,100 +46,109 @@ dateFieldsNumberInputs: DateFieldsNumberInputs)
 @parentTemplate(pageTitle = messages("ExclusionSearch.form.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString) ) {
     @back_link(Some(routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))), messages("ExclusionSearch.form.title"))
 
-    <header class="page-header">
-        <h1 id="title" class="h1-heading-margin">
-            @messages("ExclusionSearch.form.title")
-        </h1>
-    </header>
+    @if(searchForm("status").hasErrors){
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+            @messages("Service.errorSummary.heading")
+            </h2>
+
+            @if(alreadyExists) {
+                @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages("BenefitInKind.label." + iabdType), excludedEmployeesLink , "</a>"))
+            }else { @Html(messages("ExclusionSearch.Fail.Desc"))}
+
+            <ul class="error-summary-list">
+                <li><a href="#error-list-1">@searchForm.error("status").get.message</a></li>
+            </ul>
+
+        </div>
+    }
+
+    @if(searchForm("firstname").hasErrors || searchForm("surname").hasErrors || searchForm("dob").hasErrors || searchForm("gender").hasErrors) {
+        <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
+            @messages("Service.errorSummary.heading")
+            </h2>
+
+            <ul class="error-summary-list">
+                @if(searchForm("firstname").hasErrors) {
+                    <li><a href="#firstnameContainer">@searchForm.error("firstname").get.message.dropRight(1)</a></li>
+                }
+                @if(searchForm("surname").hasErrors) {
+                    <li><a href="#surnameContainer">@searchForm.error("surname").get.message.dropRight(1)</a></li>
+                }
+                @if(searchForm("dob").hasErrors) {
+
+                    @if(searchForm.error("dob").get.message.equals("error.empty.dob")){
+                        <li><a href="#dob">@messages("error.empty.dob").dropRight(1)</a></li>
+                    }
+                    @if(searchForm.error("dob").get.message.equals("error.invaliddate")){
+                        <li><a href="#dob">@messages("error.invaliddate").dropRight(1)</a></li>
+                    }
+                    @if(searchForm.error("dob").get.message.equals("error.invaliddate.day")){
+                        <li><a href="#dob">@messages("error.invaliddate.day").dropRight(1)</a></li>
+                    }
+                    @if(searchForm.error("dob").get.message.equals("error.invaliddate.month")){
+                        <li><a href="#dob">@messages("error.invaliddate.month").dropRight(1)</a></li>
+                    }
+                    @if(searchForm.error("dob").get.message.equals("error.invaliddate.year")){
+                        <li><a href="#dob">@messages("error.invaliddate.year").dropRight(1)</a></li>
+                    }
+                    @if(searchForm.error("dob").get.message.equals("error.invaliddate.future.year")){
+                        <li><a href="#dob">@messages("error.invaliddate.future.year").dropRight(1)</a></li>
+                    }
+                    @if(searchForm.error("dob").get.message.equals("error.invaliddate.past.year")){
+                        <li><a href="#dob">@messages("error.invaliddate.past.year").dropRight(1)</a></li>
+                    }
+
+                }
+                @if(searchForm("gender").hasErrors) {
+                    <li><a href="#gender">@messages("error.required").dropRight(1)</a></li>
+                }
+            </ul>
+
+        </div>
+    }
+
+    <h1 id="title" class="heading-xlarge">
+        @messages("ExclusionSearch.form.title")
+    </h1>
 
     <section id="non-nino-exclusion-form">
 
-        @if(searchForm("status").hasErrors){
-            <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-
-                <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
-                    @messages("Service.errorSummary.heading")
-                </h1>
-
-                @if(alreadyExists) {
-                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages("BenefitInKind.label." + iabdType), excludedEmployeesLink , "</a>"))
-                }else { @Html(messages("ExclusionSearch.Fail.Desc"))}
-
-                <ul class="error-summary-pbik-list">
-                    <li><a href="#error-list-1">@searchForm.error("status").get.message</a></li>
-                </ul>
-
-            </div>
-        }
-
-        <div class='form-group @if(searchForm("status").hasErrors) {error}' id="search-form">
+        <div class='form-group @if(searchForm("status").hasErrors) {form-group-error}' id="search-form">
             @if(searchForm("status").hasErrors){
-                <span class="error-notification">
+                <span class="error-message">
                     @searchForm.error("status").get.message
                 </span>
             }
 
-            @if(searchForm("firstname").hasErrors || searchForm("surname").hasErrors || searchForm("dob").hasErrors || searchForm("gender").hasErrors) {
-                <div class="error-summary-pbik" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
-
-                    <h1 class="heading-medium error-summary-pbik-heading" id="error-summary-heading-1">
-                        @messages("Service.errorSummary.heading")
-                    </h1>
-
-                    <ul class="error-summary-pbik-list">
-                        @if(searchForm("firstname").hasErrors) {
-                            <li><a href="#firstnameContainer">@searchForm.error("firstname").get.message.dropRight(1)</a></li>
-                        }
-                        @if(searchForm("surname").hasErrors) {
-                            <li><a href="#surnameContainer">@searchForm.error("surname").get.message.dropRight(1)</a></li>
-                        }
-                        @if(searchForm("dob").hasErrors) {
-
-                            @if(searchForm.error("dob").get.message.equals("error.empty.dob")){
-                                <li><a href="#dob">@messages("error.empty.dob").dropRight(1)</a></li>
-                            }
-                            @if(searchForm.error("dob").get.message.equals("error.invaliddate")){
-                                <li><a href="#dob">@messages("error.invaliddate").dropRight(1)</a></li>
-                            }
-                            @if(searchForm.error("dob").get.message.equals("error.invaliddate.day")){
-                                <li><a href="#dob">@messages("error.invaliddate.day").dropRight(1)</a></li>
-                            }
-                            @if(searchForm.error("dob").get.message.equals("error.invaliddate.month")){
-                                <li><a href="#dob">@messages("error.invaliddate.month").dropRight(1)</a></li>
-                            }
-                            @if(searchForm.error("dob").get.message.equals("error.invaliddate.year")){
-                                <li><a href="#dob">@messages("error.invaliddate.year").dropRight(1)</a></li>
-                            }
-                            @if(searchForm.error("dob").get.message.equals("error.invaliddate.future.year")){
-                                <li><a href="#dob">@messages("error.invaliddate.future.year").dropRight(1)</a></li>
-                            }
-                            @if(searchForm.error("dob").get.message.equals("error.invaliddate.past.year")){
-                                <li><a href="#dob">@messages("error.invaliddate.past.year").dropRight(1)</a></li>
-                            }
-
-                        }
-                        @if(searchForm("gender").hasErrors) {
-                        <li><a href="#gender">@messages("error.required").dropRight(1)</a></li>
-                        }
-                    </ul>
-
-                </div>
-            }
-
             <fieldset>
-                <legend>@messages("ExclusionSearch.no-nino.caption")</legend>
+                <legend><p>@messages("ExclusionSearch.no-nino.caption")</p></legend>
                 @helpers.form(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), "no-nino"), 'autocomplete -> "off", 'novalidate -> "true") {
-                <div class="form-group" id="firstnameContainer">
-                @helpers.input(searchForm("firstname"), '_label -> messages("Service.field.firstname"), '_inputClass -> "form-control")
-                </div>
-                <div class="form-group" id="surnameContainer">
-                    @helpers.input(searchForm("surname"), '_label -> messages("Service.field.surname"), '_inputClass -> "form-control")
-                </div>
+
+                @input(searchForm("firstname"), '_label -> messages("Service.field.firstname"), '_inputClass -> "form-control")
+
+                @input(searchForm("surname"), '_label -> messages("Service.field.surname"), '_inputClass -> "form-control")
 
                 @dateFieldsNumberInputs(searchForm, "dob","dob-day", "dob-month", "dob-year", new Html(messages("Service.field.dob")), '_hintText->messages("Service.field.dobhint"), '_groupClass -> "form-group")
 
-                <div class="form-group inline" id="gender">
-                    @helpers.input_radio_group(searchForm("gender"), Seq(("female", messages("Service.field.gender.female")), ("male",messages("Service.field.gender.male"))), '_labelClass -> "block-label", '_legend -> messages("Service.field.gender"), '_legendClass -> "form-label fieldset-legend-error")
+                <div class="form-group @if(searchForm("gender").hasErrors){form-group-error}" id="gender">
+                    <fieldset class="inline">
+                        <legend class="form-label"> @messages("Service.field.gender") </legend>
+                        @if(searchForm("gender").hasErrors){
+                            <span class="error-message">@messages("error.required")</span>
+                        }
+                        <div class="multiple-choice">
+                            <input type="radio" id="gender-female" name="gender" value="female" @if(searchForm("gender").value.getOrElse("")=="female"){ checked }>
+                            <label for="gender-female" class="block-label"> @messages("Service.field.gender.female") </label>
+                        </div>
+                        <div class="multiple-choice">
+                            <input type="radio" id="gender-male" name="gender" value="male" @if(searchForm("gender").value.getOrElse("")=="male"){ checked }>
+                            <label for="gender-male" class="block-label"> @messages("Service.field.gender.male") </label>
+                        </div>
+                    </fieldset>
                 </div>
             </fieldset>
         </div>
@@ -148,13 +160,15 @@ dateFieldsNumberInputs: DateFieldsNumberInputs)
         <div class="form-group">
             <input type="submit" class="button" role="button" id="button-search" value="@messages("Service.continue")">
 
-            <p><a class="button-link" id="link-exlusion-back"  onclick="gaEvent('Click back to exclusion overview','From: No-nino search form')"
-                  href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
-                @messages("Service.back.excluded")</a></p>
+            <p>
+                <a class="button-link" id="link-exlusion-back"  onclick="gaEvent('Click back to exclusion overview','From: No-nino search form')"
+                href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
+                    @messages("Service.back.excluded")
+                </a>
+            </p>
 
         </div>
 
         }
     </section>
-
 }

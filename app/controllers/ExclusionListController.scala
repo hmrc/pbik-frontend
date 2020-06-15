@@ -263,7 +263,7 @@ class ExclusionListController @Inject()(
     individualSelectionOption: Option[String])(implicit request: AuthenticatedRequest[_]): Result =
     listOfMatches.size match {
       case 0 =>
-        Logger.error("[ExclusionListController][searchResultsHandleValidResult] List of mathces is empty")
+        Logger.warn("[ExclusionListController][searchResultsHandleValidResult] List of matches is empty")
         val existsAlready = resultAlreadyExcluded.contains(form.bindFromRequest().get)
         val message =
           if (existsAlready) Messages("ExclusionSearch.Fail.Exists.P") else Messages("ExclusionSearch.Fail.P")

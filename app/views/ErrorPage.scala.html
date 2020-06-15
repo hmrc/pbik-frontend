@@ -35,13 +35,13 @@ localFormPartialRetriever: LocalFormPartialRetriever)
 @parentTemplate(pageTitle = messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
     @isCurrentTaxYear match {
-        case utils.FormMappingsConstants.CY => {<h1 id="title">@messages(pageHeading,taxYearRange.cyminus1.toString, taxYearRange.cy.toString)</h1>}
-        case utils.FormMappingsConstants.CYP1 => {<h1 id="title">@messages(pageHeading, taxYearRange.cy.toString, taxYearRange.cyplus1.toString)</h1>}
-        case _ if(code >= 0) => {<h1 id="title">@messages("ServiceMessage." + (code) + ".h1")</h1>}
-        case _ => {<h1 id="title">@messages(errorMessage + "", "", "")</h1>}
+        case utils.FormMappingsConstants.CY => {<h1 id="title" class="heading-xlarge">@messages(pageHeading,taxYearRange.cyminus1.toString, taxYearRange.cy.toString)</h1>}
+        case utils.FormMappingsConstants.CYP1 => {<h1 id="title" class="heading-xlarge">@messages(pageHeading, taxYearRange.cy.toString, taxYearRange.cyplus1.toString)</h1>}
+        case _ if(code >= 0) => {<h1 id="title" class="heading-xlarge">@messages("ServiceMessage." + (code) + ".h1")</h1>}
+        case _ => {<h1 id="title" class="heading-xlarge">@messages(errorMessage + "", "", "")</h1>}
     }
 
-    <p class="lede-para text">
+    <p class="lede">
      @isCurrentTaxYear match {
             case utils.FormMappingsConstants.CY => {@Html(messages(errorMessage + isCurrentTaxYear , taxYearRange.cyminus1.toString, taxYearRange.cy.toString))}
             case utils.FormMappingsConstants.CYP1 => {@Html(messages(errorMessage + isCurrentTaxYear , taxYearRange.cy.toString, taxYearRange.cyplus1.toString))}
@@ -59,7 +59,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
         }
     </p>
 
-    <p class="text">
+    <p>
         @if(code == 63088 || code == 64989 || code == 10003) {
 
             @Html(messages("ServiceMessage." + (code) + ".2"))
