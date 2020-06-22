@@ -58,7 +58,6 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
       val view = viewWithForm(new Flash(Map("error" -> messages("ExclusionDecision.noselection.error"))))
       val doc = Jsoup.parse(view.toString())
-
       doc must haveErrorSummary(messages("ExclusionDecision.noselection.error"))
       doc must haveErrorNotification(messages("ExclusionDecision.noselection.error"))
     }

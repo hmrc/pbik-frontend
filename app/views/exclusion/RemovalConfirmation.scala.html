@@ -41,14 +41,12 @@ empRef: EmpRef)(implicit request: Request[_], messages: Messages)
 
     @back_link(gaLabel = messages("ExclusionRemovalConfirmation.title"))
 
-    <header class="page-header">
-        <h1 id="title">
-            @messages("ExclusionRemovalConfirmation.title")
-        </h1>
-    </header>
+    <h1 id="title" class="heading-xlarge">
+        @messages("ExclusionRemovalConfirmation.title")
+    </h1>
 
     <section id="removal-confirmation">
-        <p class="lede-para text">
+        <p class="lede">
             @messages("ExclusionRemovalConfirmation.intro", messages("BenefitInKind.label."+ uriInformation.iabdValueURLDeMapper(iabdType)), ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
 
            @helpers.form(action=routes.ExclusionListController.removeExclusionsCommit(iabdType),
@@ -83,9 +81,7 @@ empRef: EmpRef)(implicit request: Request[_], messages: Messages)
                     </div>
                     <div class="cya-answer" id="nino">
                         @listItem("nino").value.get
-
                     </div>
-
                 </div>
                 @if((listItem("worksPayrollNumber").value.isDefined)) {
                 <div>
@@ -101,8 +97,8 @@ empRef: EmpRef)(implicit request: Request[_], messages: Messages)
                 }
             </dl>
 
-            </fieldset>
-            }
+        </fieldset>
+        }
 
         <p>
             <input type="submit" class="button" role="button" id="button-confirm" value="@messages("Service.exclusion.add")">
@@ -111,7 +107,9 @@ empRef: EmpRef)(implicit request: Request[_], messages: Messages)
             <p>
                 <a id ="link-back" onclick="gaEvent('Click back to exclusion overview','From: Removal confirmation')"
                    href='@routes.ExclusionListController.performPageLoad(year,iabdType)'>
-                    @messages("Service.back.excluded")</a></p>
+                    @messages("Service.back.excluded")
+                </a>
+            </p>
 
     </section>
 

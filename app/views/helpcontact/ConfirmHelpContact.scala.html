@@ -30,15 +30,15 @@ uriInformation: URIInformation)
 
 @parentTemplate(pageTitle = messages("ConfirmationHelpAndContact.title") + " - " + messages("Service.title"), None, Some(empRef.toString), contactSupportLinkEnabled = false){
 
-    <h1 id="title">
+    <h1 id="title" class="heading-xlarge">
         @messages("ConfirmationHelpAndContact.title")
     </h1>
 
-    <p class="text">
+    <p>
         @messages("ConfirmationHelpAndContact.p1")
     </p>
 
-    <p class="text">
+    <p>
         <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">
             @messages("Service.back.overview")
         </a>

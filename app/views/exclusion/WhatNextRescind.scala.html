@@ -40,7 +40,7 @@ uriInformation: URIInformation)
     <section id="what-next-rescind">
 
         <div id="confirmation" class="govuk-box-highlight">
-            <h1 id="title" class="bold-large">
+            <h1 id="title" class="heading-xlarge">
                 @messages("whatNext.rescind.heading")
             </h1>
             <p id="confirmation-p">
@@ -48,10 +48,10 @@ uriInformation: URIInformation)
             </p>
         </div>
 
-        <h2 class="heading-24">
+        <h2 class="heading-medium">
             @messages("whatNext.subHeading")
         </h2>
-        <ul class="list-bullet">
+        <ul class="list list-bullet">
             <li>
                 @Html(messages("ExclusionRescind.WhatNext.p1"))
             </li>
@@ -69,13 +69,13 @@ uriInformation: URIInformation)
             </li>
         </ul>
 
-        <p class="text">
-            <a  onclick="gaEvent('Click back to exclusion overview','From: Employee removed What next page')"
+        <p >
+            <a onclick="gaEvent('Click back to exclusion overview','From: Employee removed What next page')"
                 href="@routes.ExclusionListController.performPageLoad(year,iabdType)" id="link-back-excluded">
                 @messages("Service.finish.rescinded")
             </a>
         </p>
-        <p class="text">
+        <p>
             <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">@messages("Service.back.overview.whatNext")</a>
         </p>
     </section>
