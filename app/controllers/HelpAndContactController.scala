@@ -85,14 +85,20 @@ class HelpAndContactController @Inject()(
         helpAndContactSubmissionService.submitContactHmrc(contactHmrcSubmitPartialUrl, formData).map { resp =>
           //TODO: Clean up via exceptions?
           resp.status match {
-            case 200 => Redirect(successRedirect).withSession(request.session + (TICKET_ID -> resp.body))
-            case 400 => BadRequest(failedValidationResponseContent(Html(resp.body)))
-            case 500 => {
+            case OK => Redirect(successRedirect).withSession(request.session + (TICKET_ID -> resp.body))
+            case BAD_REQUEST =>
+              Logger.warn(
+                "[HelpAndContactController][submitContactHmrcForm] Submit contact form: received bad request response")
+              BadRequest(failedValidationResponseContent(Html(resp.body)))
+            case INTERNAL_SERVER_ERROR => {
               Logger.error(
                 s"[HelpAndContactController][submitContactHmrcForm] Submit contact form internal error 500, ${resp.body}")
               InternalServerError(Html(resp.body))
             }
-            case status => throw new Exception(s"Unexpected status code from contact HMRC form: $status")
+            case status =>
+              Logger.error(
+                s"[HelpAndContactController][submitContactHmrcForm] Unexpected status code received when submitting contact HMRC form: $status")
+              throw new Exception(s"Unexpected status code from contact HMRC form: $status")
           }
         }
       }

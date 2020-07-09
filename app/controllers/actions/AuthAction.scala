@@ -23,7 +23,7 @@ import javax.inject.Inject
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.{Configuration, Environment}
+import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
@@ -59,17 +59,25 @@ class AuthActionImpl @Inject()(
                       EmpRef(number, reference),
                       UserName(name.getOrElse(Name(None, None))),
                       request))
-                case _ => Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad()))
+                case _ =>
+                  Logger.warn(
+                    "[AuthAction][invokeBlock] Authentication failed: invalid taxOfficeNumber and/or taxOfficeReference")
+                  Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad()))
               }
             }
-            .getOrElse(Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad())))
+            .getOrElse {
+              Logger.warn("[AuthAction][invokeBlock] Authentication failed - IR-PAYE key not found")
+              Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad()))
+            }
         }
       } recover {
       case ex: NoActiveSession =>
+        Logger.warn("[AuthAction][invokeBlock] Bearer token missing or invalid")
         Redirect(
           externalUrls.signIn,
           Map("continue" -> Seq(externalUrls.loginCallback), "origin" -> Seq("pbik-frontend")))
       case ex: InsufficientEnrolments =>
+        Logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
         Results.Redirect(controllers.routes.AuthController.notAuthorised())
 
     }

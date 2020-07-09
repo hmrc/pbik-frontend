@@ -40,7 +40,7 @@ class ContactFrontendConnector @Inject()(
     client.GET[String](url) recover {
       case ex: BadGatewayException =>
         Logger.error(
-          s"[ContactFrontendConnector][getHelpPartial] an exception occurred ${ex.message} when calling $url",
+          s"[ContactFrontendConnector][getHelpPartial] A bad gateway exception occurred when calling $url - ${ex.message}",
           ex)
         ""
     }

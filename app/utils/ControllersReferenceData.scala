@@ -131,7 +131,7 @@ class ControllersReferenceData @Inject()(
       case e4: GenericServerErrorException => {
         try {
           Logger.warn(
-            s"[ControllersReferenceData][responseErrorHandler] A GenericServerErrorException was handled : ${e4.message}",
+            s"[ControllersReferenceData][responseErrorHandler] A GenericServerErrorException was handled: ${e4.message}",
             e4)
           val msgValue = e4.message
           if (Messages("ServiceMessage." + msgValue) == ("ServiceMessage." + msgValue)) throw new Exception(msgValue)
@@ -146,8 +146,7 @@ class ControllersReferenceData @Inject()(
         } catch {
           case ex: Exception => {
             Logger.warn(
-              s"[ControllersReferenceData][responseErrorHandler] Could not parse GenericServerError System Error number: ${e4.message}." +
-                s" Showing default error page instead",
+              s"[ControllersReferenceData][responseErrorHandler] Could not parse GenericServerError System Error number: ${if (!e4.message.isEmpty) e4.message else "<no error code>"}. Showing default error page instead",
               ex
             )
             Ok(maintenancePageView(empRef = Some(request.empRef)))
@@ -155,7 +154,9 @@ class ControllersReferenceData @Inject()(
         }
       }
       case e5 => {
-        Logger.warn("[ControllersReferenceData][responseErrorHandler]. An exception was handled : ${e5.getMessage}", e5)
+        Logger.warn(
+          s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e5.getMessage}. Showing default error page",
+          e5)
         Ok(maintenancePageView(empRef = Some(request.empRef)))
       }
     }
