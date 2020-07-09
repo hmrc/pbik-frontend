@@ -454,7 +454,7 @@ class ExclusionListController @Inject()(
 
     Logger.info(
       s"[ExclusionListController][searchResultsHandleValidResult] Committing Exclusion for scheme ${request.empRef.toString}" +
-        s", with employees Optimisitic Lock: ${excludedIndividual.get.perOptLock}"
+        s", with employees Optimistic Lock: ${excludedIndividual.map(eiLPerson => eiLPerson.perOptLock).getOrElse(0)}"
     )
 
     tierConnector
@@ -476,7 +476,9 @@ class ExclusionListController @Inject()(
                 excludedIndividual.get.firstForename + " " + excludedIndividual.get.surname,
                 request.empRef))
           }
-          case _ =>
+          case unexpectedStatus =>
+            Logger.warn(
+              s"[ExclusionListController][commitExclusion] Exclusion list update operation was unable to be executed successfully: received $unexpectedStatus response")
             Ok(
               errorPageView(
                 "Could not perform update operation",
@@ -583,7 +585,6 @@ class ExclusionListController @Inject()(
         individual)
       .map { response =>
         response.status match {
-
           case OK => {
             auditExclusion(exclusion = false, year, splunkLogger.extractListNino(removalsList), iabdType)
             Ok(
@@ -595,9 +596,11 @@ class ExclusionListController @Inject()(
                 request.empRef
               ))
               .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
-
           }
-          case _ =>
+          case unexpectedStatus =>
+            Logger.warn(
+              s"[ExclusionListController][processRemovalCommit] Exclusion list update operation was unable to be executed successfully:" +
+                s" received $unexpectedStatus response")
             Ok(
               errorPageView(
                 "Could not perform update operation",

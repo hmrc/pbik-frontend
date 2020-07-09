@@ -21,6 +21,7 @@ import java.util.UUID
 import com.google.inject.ImplementedBy
 import javax.inject.Inject
 import models.AuthenticatedRequest
+import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 
@@ -34,6 +35,7 @@ class NoSessionCheckActionImpl @Inject()()(implicit val executionContext: Execut
     val sessionId = request.session.get(SessionKeys.sessionId)
     sessionId match {
       case None =>
+        Logger.warn("[NoSessionCheckAction][refine] No session ID found in request")
         Future.successful(
           Left(
             Results
