@@ -8,7 +8,7 @@ addSbtPlugin("uk.gov.hmrc" % "sbt-git-versioning" % "1.19.0")
 
 addSbtPlugin("uk.gov.hmrc" % "sbt-distributables" % "1.5.0")
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.20")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.25")
 
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "1.3.0")
 
