@@ -67,16 +67,12 @@
   }
 }
 
-@urToggle = @{
-  true
+@afterHeader = @{
+HtmlFormat.empty
 }
 
-@afterHeader = @{
-  if(isUserResearchBannerVisible && urToggle) {
-    fullWidthBanner(
-    messages("urbanner.message.text"),
-    config.urBannerLink)
-  } else HtmlFormat.empty
+@urToggle = @{
+  true
 }
 
 @actingAttorneyBanner = {
@@ -88,6 +84,15 @@
 }
 
 @serviceInfoBlock = {
+
+@{
+if(isUserResearchBannerVisible && urToggle) {
+fullWidthBanner(
+messages("urbanner.message.text"),
+config.urBannerLink)
+  }
+}
+
   @serviceInfo(betaBanner,
     includeGridWrapper,
     serviceInfoContent,
