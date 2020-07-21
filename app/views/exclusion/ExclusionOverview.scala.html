@@ -62,18 +62,18 @@ empRef: EmpRef)(implicit request:Request[_], messages: Messages)
         @if(!current.isEmpty) {
         <h2>@messages("ExclusionOverview.caption")</h2>
 
-        <dl class="govuk-check-your-answers cya-questions-short">
-            <div>
+        <ol class="govuk-check-your-answers cya-questions-short">
+            <li>
                 <div class="cya-answer bold">@messages("Service.field.name")</div>
                 <div class="cya-answer bold">@messages("Service.field.nino")
                     <br>
                     <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span></div>
                 <div class="cya-answer bold">@messages("Service.field.worksnumber")</div>
                 <div class="cya-answer bold" id="action">@messages("Service.action")</div>
-            </div>
+            </li>
 
             @for( (c, index) <- current.zipWithIndex ) {
-
+            <li>
             @helpers.form(action=routes.ExclusionListController.remove(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType))){
             <div>
                 <div class="cya-answer" id='name-@c.nino'>@c.surname, @c.firstForename </div>
@@ -102,8 +102,8 @@ empRef: EmpRef)(implicit request:Request[_], messages: Messages)
             <input type="hidden" name="individuals[0].status" value="30" />
             }
             }
-            </tbody>
-        </dl>
+            </li>
+        </ol>
         }
 
         <div class="panel panel-border-wide">

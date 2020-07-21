@@ -82,10 +82,10 @@ localFormPartialRetriever: LocalFormPartialRetriever)
             @if(!singleBik){
                 <h2>@messages("whatNext.cy1.add.table.header")</h2>
                     @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
-                    <dl class="govuk-check-your-answers cya-questions-short" id="list-of-confirmation-benefits">
+                    <ol class="govuk-check-your-answers cya-questions-short" id="list-of-confirmation-benefits">
 
                     @helper.repeat(bikForm("actives"), min=0) { activeField =>
-                        <div>
+                        <li>
                             <div class="cya-answer">
                                 <div class="hidden">
                                     @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
@@ -94,9 +94,9 @@ localFormPartialRetriever: LocalFormPartialRetriever)
                                 </div>
                                 <span id='li-@activeField("uid").value.get'> @messages("BenefitInKind.label." + activeField("uid").value.get )</span>
                             </div>
-                        </div>
+                        </li>
                         }
-                    </dl>
+                    </ol>
                 }
             }
 

@@ -1,47 +1,47 @@
 # microservice specific routes
 
-GET         /public/*file                           controllers.Assets.versioned(path="/public", file: Asset)
-GET         /assets/*file                           controllers.Assets.versioned(path="/public", file: Asset)
+GET         /public/*file                                         controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                         controllers.Assets.versioned(path="/public", file: Asset)
 
 ## point old urls to new dashboard url
-GET         /                                       controllers.RedirectController.redirectIfFromRoot
-GET         /start                                  controllers.RedirectController.redirectIfFromStart
-GET         /overview                               controllers.RedirectController.redirectIfFromOldOverview
-GET         /help-and-contact                       controllers.HelpAndContactController.onPageLoad
-POST        /help-and-contact                       controllers.HelpAndContactController.submitContactHmrcForm
-GET         /help-and-contact-confirmed             controllers.HelpAndContactController.confirmationContactHmrc
+GET         /                                                    controllers.RedirectController.redirectIfFromRoot
+GET         /start                                               controllers.RedirectController.redirectIfFromStart
+GET         /overview                                            controllers.RedirectController.redirectIfFromOldOverview
+GET         /help-and-contact                                    controllers.HelpAndContactController.onPageLoad
+POST        /help-and-contact                                    controllers.HelpAndContactController.submitContactHmrcForm
+GET         /help-and-contact-confirmed                           controllers.HelpAndContactController.confirmationContactHmrc
 
-GET         /not-authorised                         controllers.AuthController.notAuthorised
+GET         /not-authorised                                      controllers.AuthController.notAuthorised
 
-GET         /signout                                controllers.HomePageController.signout
+GET         /signout                                             controllers.HomePageController.signout
 
-GET         /setLanguage                            controllers.HomePageController.setLanguage
+GET         /setLanguage                                         controllers.HomePageController.setLanguage
 
-GET         /payrolled-benefits-expenses            controllers.HomePageController.onPageLoad
+GET         /payrolled-benefits-expenses                          controllers.HomePageController.onPageLoad
 
 ## Add remove Registrations
-GET         /cy1/choose-benefit-expense             controllers.registration.ManageRegistrationController.nextTaxYearAddOnPageLoad
-POST        /cy1/add-benefit-expense                controllers.registration.ManageRegistrationController.confirmAddNextTaxYear
-GET         /cy/choose-benefit-expense              controllers.registration.ManageRegistrationController.currentTaxYearOnPageLoad
-POST        /cy/add-benefit-expense                 controllers.registration.ManageRegistrationController.confirmAddCurrentTaxYear
+GET         /cy1/choose-benefit-expense                           controllers.registration.ManageRegistrationController.nextTaxYearAddOnPageLoad
+POST        /cy1/add-benefit-expense                              controllers.registration.ManageRegistrationController.confirmAddNextTaxYear
+GET         /cy/choose-benefit-expense                            controllers.registration.ManageRegistrationController.currentTaxYearOnPageLoad
+POST        /cy/add-benefit-expense                               controllers.registration.ManageRegistrationController.confirmAddCurrentTaxYear
 
-POST        /update-registrations                   controllers.registration.ManageRegistrationController.updateRegisteredBenefitTypes
+POST        /update-registrations                                controllers.registration.ManageRegistrationController.updateRegisteredBenefitTypes
 
-POST        /cy1/add-benefit-expense-confirmed      controllers.registration.ManageRegistrationController.addNextYearRegisteredBenefitTypes
+POST        /cy1/add-benefit-expense-confirmed                     controllers.registration.ManageRegistrationController.addNextYearRegisteredBenefitTypes
 
-GET         /:iabdType/remove-benefit-expense       controllers.registration.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdType: String)
-POST        /cy1/remove-benefit-expense             controllers.registration.ManageRegistrationController.confirmRemoveNextTaxYear
-POST        /cy1/remove-benefit-expense-next        controllers.registration.ManageRegistrationController.removeNextYearRegisteredBenefitTypes
+GET         /:iabdType/remove-benefit-expense                     controllers.registration.ManageRegistrationController.confirmRemoveNextTaxYearNoForm(iabdType: String)
+POST        /cy1/remove-benefit-expense                           controllers.registration.ManageRegistrationController.confirmRemoveNextTaxYear
+POST        /cy1/remove-benefit-expense-next                      controllers.registration.ManageRegistrationController.removeNextYearRegisteredBenefitTypes
 
 ## manage exclusion list
-GET         /:year/:iabdType/excluded-employees      controllers.ExclusionListController.performPageLoad(year:String,iabdType:String)
+GET         /:year/:iabdType/excluded-employees                  controllers.ExclusionListController.performPageLoad(year:String,iabdType:String)
 
-GET         /:year/:iabdType/exclude-employee-search            controllers.ExclusionListController.withOrWithoutNinoOnPageLoad(year:String, iabdType:String)
-POST        /:year/:iabdType/exclude-employee-search       controllers.ExclusionListController.withOrWithoutNinoDecision(year:String, iabdType: String)
+GET         /:year/:iabdType/exclude-employee-search             controllers.ExclusionListController.withOrWithoutNinoOnPageLoad(year:String, iabdType:String)
+POST        /:year/:iabdType/exclude-employee-search             controllers.ExclusionListController.withOrWithoutNinoDecision(year:String, iabdType: String)
 POST        /:year/:iabdType/:formType/exclude-employee-results  controllers.ExclusionListController.searchResults(year:String, iabdType: String, formType: String)
 POST        /:year/:iabdType/exclude-match                       controllers.ExclusionListController.updateExclusions(year: String, iabdType: String)
-POST        /:year/:iabdType/exclude-selected          controllers.ExclusionListController.updateMultipleExclusions(year: String, iabdType: String)
+POST        /:year/:iabdType/exclude-selected                    controllers.ExclusionListController.updateMultipleExclusions(year: String, iabdType: String)
 
-POST        /:year/:iabdType/exclude-employee-remove                         controllers.ExclusionListController.remove(year:String, iabdType:String)
-POST        /:iabdType/remove-commit                  controllers.ExclusionListController.removeExclusionsCommit(iabdType:String)
+POST        /:year/:iabdType/exclude-employee-remove             controllers.ExclusionListController.remove(year:String, iabdType:String)
+POST        /:iabdType/remove-commit                             controllers.ExclusionListController.removeExclusionsCommit(iabdType:String)
 
