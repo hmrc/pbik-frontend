@@ -64,8 +64,8 @@ empRef: EmpRef)(implicit request: Request[_], messages: Messages)
             @if(listItem("perOptLock").value.isDefined) { <input type="hidden" name="individuals[@index].perOptLock" id="perOptLock" value='@listItem("perOptLock").value.get'/> }
 
             <h2>@messages("ExclusionRemovalConfirmation.caption")</h2>
-            <dl class="govuk-check-your-answers cya-questions-short">
-                <div>
+            <ol class="govuk-check-your-answers cya-questions-short">
+                <li>
                     <div class="cya-question">
                         @messages("Service.field.name")
                     </div>
@@ -74,28 +74,28 @@ empRef: EmpRef)(implicit request: Request[_], messages: Messages)
                         @if(listItem("secondName").value.isDefined) { @listItem("secondName").value.get }
                         @listItem("surname").value.get
                     </div>
-                </div>
-                <div>
+                </li>
+                <li>
                     <div class="cya-question">@messages("Service.field.nino")<br>
                         <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span>
                     </div>
                     <div class="cya-answer" id="nino">
                         @listItem("nino").value.get
                     </div>
-                </div>
+                </li>
                 @if((listItem("worksPayrollNumber").value.isDefined)) {
-                <div>
+                <li>
                     <div class="cya-question">@messages("Service.field.worksnumber")</div>
                     <div class="cya-answer">@listItem("worksPayrollNumber").value.get</div>
-                </div>
+                </li>
                 }
                 @if((listItem("dateOfBirth").value.isDefined)) {
-                <div>
+                <li>
                     <div class="cya-answer bold">@messages("Service.field.dob")</div>
                     <div class="cya-answer" id="dob">@DateUtils.NPSDateConversionFormat(listItem("dateOfBirth").value.get)</div>
-                </div>
+                </li>
                 }
-            </dl>
+            </ol>
 
         </fieldset>
         }

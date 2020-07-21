@@ -74,9 +74,9 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
         <h3 class="heading-medium">
             @messages("Overview.table.heading.1")
         </h3>
-        <dl class="govuk-check-your-answers cya-questions-long">
+        <ol class="govuk-check-your-answers cya-questions-long">
             @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsNextYear).zipWithIndex ) {
-            <div>
+            <li>
                 <div class="cya-question" id="cy1-@n.iabdType">
                     @messages("BenefitInKind.label." + n.iabdType)
                 </div>
@@ -93,9 +93,9 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
                         <span class="visuallyhidden">@messages("Overview.current.remove") @messages("BenefitInKind.label." + n.iabdType) @messages("Overview.current.from") @messages("Overview.current.payroll.p11d")</span>
                     </a>
                 </div>
-            </div>
+            </li>
             }
-         </dl>
+         </ol>
         }else {
             <p id="no-benefits">
             @messages("Overview.next.lead.empty", taxYearRange.cy + "")
@@ -131,9 +131,9 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
     }
     @if(!registeredBenefitsCurrentYear.isEmpty) {
 
-    <dl class="govuk-check-your-answers cya-questions-short">
+    <ol class="govuk-check-your-answers cya-questions-short">
         @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
-        <div>
+        <li>
             <div class="cya-question" id="cy-@n.iabdType">
                 @messages("BenefitInKind.label." + n.iabdType)
             </div>
@@ -145,10 +145,10 @@ showYTAlink = true, sidebarLinks = Some(sidebarLinks)) {
                 </a>
             </div>
 
-        </div>
+        </li>
         }
 
-    </dl>
+    </ol>
     }
 
     @if(cyAllowed) {
