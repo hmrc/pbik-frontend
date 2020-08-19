@@ -52,7 +52,7 @@ empRef: EmpRef)(implicit request:Request[_], messages: Messages)
         }else{
         <p class="lede">
             @if(isCurrentTaxYear=="cy") {
-                @messages("ExclusionOverview.instruction.cy.notempty", messages("BenefitInKind.label." + iabdType))
+                @messages("ExclusionOverview.instruction.cy.notempty", messages("BenefitInKind.label." + iabdType), yearvalue)
             }else{
                 @messages("ExclusionOverview.instruction.notempty", messages("BenefitInKind.label." + iabdType), yearvalue)
             }
