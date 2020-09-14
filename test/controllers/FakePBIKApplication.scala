@@ -47,25 +47,15 @@ trait FakePBIKApplication extends OneAppPerSuite {
   )
 
   val sessionId = s"session-${UUID.randomUUID}"
-  val userId = s"user-${UUID.randomUUID}"
 
   def mockrequest: FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest().withSession(
-      SessionKeys.sessionId -> sessionId,
-      SessionKeys.token     -> "RANDOMTOKEN",
-      SessionKeys.userId    -> userId,
-      HeaderTags.ETAG       -> "0",
-      HeaderTags.X_TXID     -> "0")
+    FakeRequest().withSession(SessionKeys.sessionId -> sessionId, HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "0")
 
   def mockWelshrequest: FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest("GET", "?lang=cy").withSession(
-      SessionKeys.sessionId -> sessionId,
-      SessionKeys.token     -> "RANDOMTOKEN",
-      SessionKeys.userId    -> userId,
-      HeaderTags.ETAG       -> "0",
-      HeaderTags.X_TXID     -> "0")
+    FakeRequest("GET", "?lang=cy")
+      .withSession(SessionKeys.sessionId -> sessionId, HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "0")
 
-  def noSessionIdRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(SessionKeys.userId -> userId)
+  def noSessionIdRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession()
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])

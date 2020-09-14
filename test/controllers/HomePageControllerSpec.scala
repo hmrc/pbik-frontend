@@ -86,10 +86,8 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with Test
   "HomePageController" should {
     "show Unauthorised if the session is not authenticated" in {
       val homePageController = app.injector.instanceOf[HomePageController]
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-        SessionKeys.sessionId -> "hackmeister",
-        SessionKeys.token     -> "RANDOMTOKEN",
-        SessionKeys.userId    -> userId)
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+        FakeRequest().withSession(SessionKeys.sessionId -> "hackmeister")
       val result = homePageController.onPageLoad.apply(request)
       status(result) must be(UNAUTHORIZED) //401
     }
@@ -135,10 +133,8 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with Test
   "HomePageController" should {
     "display the navigation page" in {
       val homePageController = app.injector.instanceOf[HomePageController]
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(
-        SessionKeys.sessionId -> sessionId,
-        SessionKeys.token     -> "RANDOMTOKEN",
-        SessionKeys.userId    -> userId)
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+        FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
       implicit val timeout: akka.util.Timeout = timeoutValue
       val result = await(homePageController.onPageLoad(request))(timeout)
       result.header.status must be(OK)

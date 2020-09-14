@@ -24,17 +24,14 @@ import uk.gov.hmrc.http.SessionKeys
 
 object SessionBuilder {
 
-  val TOKEN = "token"
-
   def updateRequestWithSession(
-    fakeRequest: FakeRequest[AnyContentAsJson],
-    userId: String): FakeRequest[AnyContentAsJson] = {
+    fakeRequest: FakeRequest[AnyContentAsJson]): FakeRequest[AnyContentAsJson] = {
     val sessionId = s"session-${UUID.randomUUID}"
-    fakeRequest.withSession(SessionKeys.sessionId -> sessionId, TOKEN -> "RANDOMTOKEN", SessionKeys.userId -> userId)
+    fakeRequest.withSession(SessionKeys.sessionId -> sessionId)
   }
 
-  def buildRequestWithSession(userId: String) = {
+  def buildRequestWithSession() = {
     val sessionId = s"session-${UUID.randomUUID}"
-    FakeRequest().withSession(SessionKeys.sessionId -> sessionId, TOKEN -> "RANDOMTOKEN", SessionKeys.userId -> userId)
+    FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
   }
 }

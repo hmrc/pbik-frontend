@@ -80,10 +80,7 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
     "display the navigation page" in {
       val homePageController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-        .withSession(
-          SessionKeys.sessionId -> sessionId,
-          SessionKeys.token     -> "RANDOMTOKEN",
-          SessionKeys.userId    -> userId)
+        .withSession(SessionKeys.sessionId -> sessionId)
         .withCookies(Cookie("PLAY_LANG", "cy"))
 
       implicit val timeout: FiniteDuration = timeoutValue
