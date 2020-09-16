@@ -8,7 +8,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "tax-year" % "1.1.0",
     "uk.gov.hmrc" %% "auth-client" % "2.35.0-play-26",
     "uk.gov.hmrc" %% "bootstrap-play-26" % "1.8.0",
-    "uk.gov.hmrc" %% "play-ui" % "8.11.0-play-26",
+    "uk.gov.hmrc" %% "play-ui" % "8.12.0-play-26",
     "uk.gov.hmrc" %% "govuk-template" % "5.55.0-play-26"
   )
 

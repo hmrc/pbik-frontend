@@ -19,10 +19,11 @@
 @import config.PbikAppConfig
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
+@import play.api.mvc.RequestHeader
 
 @this()
 
-@(pageTitle: String, heading: String, message: String)(implicit messages: Messages, config: PbikAppConfig)
+@(pageTitle: String, heading: String, message: String)(implicit messages: Messages, config: PbikAppConfig, request: RequestHeader)
 
 @contentHeader = {
 <h1 id="title" class="heading-xlarge">@heading</h1>
