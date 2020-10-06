@@ -77,9 +77,9 @@ contactSupportLinkEnabled: Boolean = true
     }
     <div class="toggle-lang" style="text-align: right">
         @if(messages.lang.language.toLowerCase == "cy") {
-        <a href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">@messages("service.lang.english")</a><span> | @messages("service.lang.cymraeg")</span>
+        <a id="language-toggle" href="@routes.HomePageController.setLanguage?lang=en" onclick="gaEvent('Set language to English')">@messages("service.lang.english")</a><span> | @messages("service.lang.cymraeg")</span>
         } else {
-        <span>@messages("service.lang.english") | </span><a href="@routes.HomePageController.setLanguage?lang=cy"
+        <span>@messages("service.lang.english") | </span><a id="language-toggle" href="@routes.HomePageController.setLanguage?lang=cy"
                                                             onclick="gaEvent('Set language to Welsh')">@messages("service.lang.cymraeg")</a>
         }
     </div>

@@ -29,15 +29,16 @@ class SearchResultViewSpec extends PBIKBaseViewSpec {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val formMappings = app.injector.instanceOf[FormMappings]
   val searchResultsView = app.injector.instanceOf[SearchResults]
+  val listOfMatches = EiLPersonList(List.empty[EiLPerson])
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  def viewWithForm(form: Form[(String, EiLPersonList)]): Html =
-    searchResultsView(taxYearRange, "cyp1", "30", form, "", EmpRef("", ""))
+  def viewWithForm(form: Form[ExclusionNino]): Html =
+    searchResultsView(taxYearRange, "cyp1", "30", listOfMatches, form, "", EmpRef("", ""))
 
   "exclusionNinoOrNoNinoForm" in new PBIKViewBehaviours {
 
-    override def view: Html = viewWithForm(formMappings.individualsFormWithRadio)
+    override def view: Html = viewWithForm(formMappings.individualSelectionForm)
 
     behave like pageWithTitle(messages("ExclusionSearch.title"))
     behave like pageWithHeader(messages("ExclusionSearch.title"))
@@ -49,9 +50,9 @@ class SearchResultViewSpec extends PBIKBaseViewSpec {
 
     override def view: Html =
       viewWithForm(
-        formMappings.individualsFormWithRadio.bind(
+        formMappings.individualSelectionForm.bind(
           Map[String, String](
-            ("nino", "AA111111"),
+            ("individualSelection", "AA111111"),
             ("firstname", "John"),
             ("surname", "Smith"),
             ("worksPayrollNumber", "123"))))

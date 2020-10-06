@@ -33,7 +33,7 @@ repeatWithIndex: RepeatWithIndex)
 
 @(taxYearRange: TaxYearRange,
   year: String, iabdType:String,
-  individualsToRemove: Form[EiLPersonList],
+  individualsToRemove: EiLPersonList,
 empRef: EmpRef)(implicit request: Request[_], messages: Messages)
 
 
@@ -51,17 +51,8 @@ empRef: EmpRef)(implicit request: Request[_], messages: Messages)
 
            @helpers.form(action=routes.ExclusionListController.removeExclusionsCommit(iabdType),
             'onsubmit -> "gaEventConfirmRemoveExclusion()") {
-            @repeatWithIndex(individualsToRemove("individuals"), min=1) { (listItem,index) =>
+            @for(index <- 0 until individualsToRemove.active.length) {
         <fieldset>
-            <input type="hidden" id='individuals_@{index}_nino' name='individuals[@index].nino' value='@listItem("nino").value.getOrElse("")' />
-            <input type="hidden" id='individuals_@{index}_firstName' name='individuals[@index].firstName' value='@listItem("firstName").value.get' />
-            @if(listItem("secondName").value.isDefined) {<input type="hidden" id='individuals_@{index}_secondName' name='individuals[@index].secondName' value='@listItem("secondName").value.get' /> }
-            <input type="hidden" id='individuals_@{index}_surname' name='individuals[@index].surname' value='@listItem("surname").value.get' />
-            @if(listItem("worksPayrollNumber").value.isDefined) {<input type="hidden" id='individuals_@{index}_worksPayrollNumber' name='individuals[@index].worksPayrollNumber' value='@listItem("worksPayrollNumber").value.get' /> }
-            @if(listItem("dateOfBirth").value.isDefined) { <input type="hidden" id='individuals_@{index}_dateOfBirth' name='individuals[@index].dateOfBirth' value='@listItem("dateOfBirth").value.get' /> }
-            @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
-            @if(listItem("status").value.isDefined) { <input type="hidden" name="individuals[@index].status" id="status" value='@listItem("status").value.get'/> }
-            @if(listItem("perOptLock").value.isDefined) { <input type="hidden" name="individuals[@index].perOptLock" id="perOptLock" value='@listItem("perOptLock").value.get'/> }
 
             <h2>@messages("ExclusionRemovalConfirmation.caption")</h2>
             <ol class="govuk-check-your-answers cya-questions-short">
@@ -70,9 +61,9 @@ empRef: EmpRef)(implicit request: Request[_], messages: Messages)
                         @messages("Service.field.name")
                     </div>
                     <div class="cya-answer" id="name">
-                        @listItem("firstName").value.get
-                        @if(listItem("secondName").value.isDefined) { @listItem("secondName").value.get }
-                        @listItem("surname").value.get
+                        @individualsToRemove.active(index).firstForename
+                        @if(individualsToRemove.active(index).secondForename.isDefined) { @individualsToRemove.active(index).secondForename.get }
+                        @individualsToRemove.active(index).surname
                     </div>
                 </li>
                 <li>
@@ -80,19 +71,19 @@ empRef: EmpRef)(implicit request: Request[_], messages: Messages)
                         <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span>
                     </div>
                     <div class="cya-answer" id="nino">
-                        @listItem("nino").value.get
+                        @individualsToRemove.active(index).nino
                     </div>
                 </li>
-                @if((listItem("worksPayrollNumber").value.isDefined)) {
+                @if(individualsToRemove.active(index).worksPayrollNumber.isDefined) {
                 <li>
                     <div class="cya-question">@messages("Service.field.worksnumber")</div>
-                    <div class="cya-answer">@listItem("worksPayrollNumber").value.get</div>
+                    <div class="cya-answer">@individualsToRemove.active(index).worksPayrollNumber.get</div>
                 </li>
                 }
-                @if((listItem("dateOfBirth").value.isDefined)) {
+                @if(individualsToRemove.active(index).dateOfBirth.isDefined) {
                 <li>
                     <div class="cya-answer bold">@messages("Service.field.dob")</div>
-                    <div class="cya-answer" id="dob">@DateUtils.NPSDateConversionFormat(listItem("dateOfBirth").value.get)</div>
+                    <div class="cya-answer" id="dob">@DateUtils.NPSDateConversionFormat(individualsToRemove.active(index).dateOfBirth.get)</div>
                 </li>
                 }
             </ol>

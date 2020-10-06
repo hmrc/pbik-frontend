@@ -16,23 +16,23 @@
 
 package controllers
 
-import java.util.UUID
-
 import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models._
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{MessagesControllerComponents, Result}
-import services.BikListService
-import uk.gov.hmrc.http.SessionKeys
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{ControllersReferenceData, _}
 import views.html.registration.WhatNextAddRemove
+import controllers.actions.{AuthAction, NoSessionCheckAction}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class WhatNextPageController @Inject()(
   override val messagesApi: MessagesApi,
-  bikListService: BikListService,
+  val cachingService: SessionService,
+  authenticate: AuthAction,
   val tierConnector: HmrcTierConnector,
   taxDateUtils: TaxDateUtils,
   controllersReferenceData: ControllersReferenceData,
@@ -50,31 +50,41 @@ class WhatNextPageController @Inject()(
     }
   }
 
-  def loadWhatNextRegisteredBIK(formRegisteredList: Form[RegistrationList], year: Int)(
-    implicit request: AuthenticatedRequest[_]): Result = {
-    val yearCalculated = calculateTaxYear(taxDateUtils.isCurrentTaxYear(year))
+  def showWhatNextRegisteredBik(year: String): Action[AnyContent] =
+    (authenticate).async { implicit request =>
+      val yearInt = year match {
+        case "cy1" => controllersReferenceData.YEAR_RANGE.cy
+        case "cy"  => controllersReferenceData.YEAR_RANGE.cyminus1
+      }
+      val resultFuture = cachingService.fetchPbikSession().map { session =>
+        val addedBiksAsList: RegistrationList =
+          RegistrationList(active = session.get.registrations.get.active.filter(item => item.active))
+        Ok(
+          whatNextAddRemoveView(
+            taxDateUtils.isCurrentTaxYear(yearInt),
+            controllersReferenceData.YEAR_RANGE,
+            additive = true,
+            addedBiksAsList,
+            empRef = request.empRef
+          ))
+      }
+      controllersReferenceData.responseErrorHandler(resultFuture)
+    }
 
-    Ok(
-      whatNextAddRemoveView(
-        taxDateUtils.isCurrentTaxYear(year),
-        controllersReferenceData.YEAR_RANGE,
-        additive = true,
-        formRegisteredList,
-        empRef = request.empRef))
-      .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
-  }
-
-  def loadWhatNextRemovedBIK(formRegisteredList: Form[RegistrationList], year: Int)(
-    implicit request: AuthenticatedRequest[_]): Result = {
-    val yearCalculated = calculateTaxYear(taxDateUtils.isCurrentTaxYear(year))
-
-    Ok(
-      whatNextAddRemoveView(
-        taxDateUtils.isCurrentTaxYear(year),
-        controllersReferenceData.YEAR_RANGE,
-        additive = false,
-        formRegisteredList,
-        empRef = request.empRef))
-      .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
-  }
+  def showWhatNextRemovedBik: Action[AnyContent] =
+    (authenticate).async { implicit request =>
+      val resultFuture = cachingService.fetchPbikSession().map { session =>
+        val removedBikAsList: RegistrationList =
+          RegistrationList(active = List(session.get.bikRemoved.get))
+        Ok(
+          whatNextAddRemoveView(
+            taxDateUtils.isCurrentTaxYear(controllersReferenceData.YEAR_RANGE.cyplus1),
+            controllersReferenceData.YEAR_RANGE,
+            additive = false,
+            removedBikAsList,
+            empRef = request.empRef
+          ))
+      }
+      controllersReferenceData.responseErrorHandler(resultFuture)
+    }
 }

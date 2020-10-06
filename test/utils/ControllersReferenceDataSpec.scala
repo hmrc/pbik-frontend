@@ -52,7 +52,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       val result = await(mockController.responseCheckCYEnabled(Future {
         Ok("Passed Test")
       }(scala.concurrent.ExecutionContext.Implicits.global))(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(FORBIDDEN) // 403
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.1"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.2"))
     }
@@ -85,7 +85,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       val p = Promise[Result]()
       p.failure(new NoSuchElementException("NoSuchElement"))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.validationError"))
     }
   }
@@ -99,7 +99,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       val p = Promise[Result]()
       p.failure(new InvalidYearURIException)
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(BAD_REQUEST) // 400
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.invalidYear"))
     }
   }
@@ -113,7 +113,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       val p = Promise[Result]()
       p.failure(new InvalidBikTypeURIException)
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(BAD_REQUEST) // 400
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.invalidBikType"))
     }
   }
@@ -128,7 +128,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       // TODO - check the NPS error message format used below
       p.failure(Upstream5xxResponse("""{appStatusMessage=10002,}""", 100, 100))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
     }
@@ -144,7 +144,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       // TODO - check the NPS error message format used below
       p.failure(Upstream5xxResponse(null, 100, 100))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
     }
@@ -160,7 +160,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       // Note - invalid error message number will not parse
       p.failure(Upstream5xxResponse("NO ERROR NUMBER TO PARSE", 100, 100))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
     }
@@ -176,7 +176,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       // Note - missing comma will prevent message being parsed
       p.failure(Upstream5xxResponse("""{appStatusMessage=10002}""", 100, 100))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
     }
@@ -191,7 +191,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       val p = Promise[Result]()
       p.failure(new GenericServerErrorException("10003"))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
     }
   }
@@ -205,7 +205,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       val p = Promise[Result]()
       p.failure(new GenericServerErrorException("NO JSON"))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
     }
@@ -220,7 +220,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       val p = Promise[Result]()
       p.failure(new RuntimeException)
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(OK) // 200
+      result.header.status must be(INTERNAL_SERVER_ERROR) // 500
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
     }
   }

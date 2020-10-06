@@ -21,7 +21,6 @@ import controllers.ExternalUrls
 import models.{EmpRef, TaxYearRange}
 import org.jsoup.Jsoup
 import play.api.i18n.MessagesApi
-import play.api.mvc.Flash
 import play.twirl.api.Html
 import utils.{FormMappings, TaxDateUtils, URIInformation}
 import views.helper.PBIKViewSpec
@@ -35,7 +34,7 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  override def view: Html = viewWithForm(new Flash)
+  override def view: Html = viewWithForm()
 
   implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
@@ -45,8 +44,17 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
-  def viewWithForm(implicit flash: Flash): Html =
-    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "30", "", EmpRef("", ""))
+  def viewWithForm(): Html =
+    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "30", "", formMappings.binaryRadioButton, EmpRef("", ""))
+
+  def viewWithFormWithErrors(): Html =
+    exclusionNinoOrNoNinoFormView(
+      taxYearRange,
+      "cyp1",
+      "30",
+      "",
+      formMappings.binaryRadioButton.withError("test", "error"),
+      EmpRef("", ""))
 
   "exclusionNinoOrNoNinoPage" must {
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))
@@ -56,8 +64,7 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
     "check the add benefit page for the errors" in {
 
-      val view = viewWithForm(new Flash(Map("error" -> messages("ExclusionDecision.noselection.error"))))
-      val doc = Jsoup.parse(view.toString())
+      val doc = Jsoup.parse(viewWithFormWithErrors().toString())
       doc must haveErrorSummary(messages("ExclusionDecision.noselection.error"))
       doc must haveErrorNotification(messages("ExclusionDecision.noselection.error"))
     }

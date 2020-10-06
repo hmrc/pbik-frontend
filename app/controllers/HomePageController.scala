@@ -23,7 +23,7 @@ import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.{Result, _}
-import services.BikListService
+import services.{BikListService, SessionService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
@@ -38,6 +38,7 @@ class HomePageController @Inject()(
   override val messagesApi: MessagesApi,
   cc: MessagesControllerComponents,
   bikListService: BikListService,
+  cachingService: SessionService,
   authenticate: AuthAction,
   val noSessionCheck: NoSessionCheckAction,
   unauthorisedAction: UnauthorisedAction,
@@ -52,7 +53,7 @@ class HomePageController @Inject()(
     extends FrontendController(cc) with I18nSupport {
 
   def notAuthorised: Action[AnyContent] = authenticate { implicit request =>
-    Ok(
+    Unauthorized(
       errorPageView(
         ControllersReferenceDataCodes.AUTHORISATION_ERROR,
         taxDateUtils.getTaxYearRange(),
@@ -67,7 +68,12 @@ class HomePageController @Inject()(
     val lang = request.getQueryString("lang").getOrElse("en")
     Logger.info(s"[HomePageController][setLanguage] Request received: set language to $lang")
     val newLang = Lang(lang)
-    Redirect(routes.HomePageController.onPageLoad()).withLang(newLang)(messagesApi)
+    Redirect(
+      request.headers.toMap
+        .getOrElse("Referer", List("https://www.tax.service.gov.uk/payrollbik/payrolled-benefits-expenses"))
+        .asInstanceOf[List[String]]
+        .head)
+      .withLang(newLang)(messagesApi)
   }
 
   def loadCautionPageForCY: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
@@ -77,6 +83,7 @@ class HomePageController @Inject()(
   }
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
+    cachingService.resetAll()
     val taxYearRange = taxDateUtils.getTaxYearRange()
     val pageLoadFuture = for {
       // Get the available count of biks available for each tax year
@@ -89,6 +96,8 @@ class HomePageController @Inject()(
       currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
       nextYearList: (Map[String, String], List[Bik])    <- bikListService.nextYearList
     } yield {
+      cachingService.cacheCYRegisteredBiks(currentYearList._2)
+      cachingService.cacheNYRegisteredBiks(nextYearList._2)
       val fromYTA = if (request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).isDefined) {
         request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).get
       } else {
@@ -135,4 +144,5 @@ class HomePageController @Inject()(
         name = Option(request.name),
         empRef = Some(request.empRef)
       ))
+
 }

@@ -16,6 +16,7 @@
 
 @import utils.FormMappingsConstants._
 @import uk.gov.hmrc.play.views.html.helpers
+@import utils.URIInformation
 @import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
@@ -24,28 +25,31 @@
 context: PbikContext,
 externalURLs: ExternalUrls,
 config: AppConfig,
+uriInformation: URIInformation,
 localFormPartialRetriever: LocalFormPartialRetriever)
 
-@(errorMessage:String,
- taxYearRange:TaxYearRange,
- isCurrentTaxYear:String= "", code:Int = 0,
- pageHeading:String ="An error has occurred",
- backLink:String= "overview", empRef: Option[EmpRef])(implicit request:Request[_], messages: Messages)
+@(errorMessage: String,
+ taxYearRange: TaxYearRange,
+ isCurrentTaxYear: String= "",
+ code: Int = 0,
+ pageHeading: String ="An error has occurred",
+ backLink: String= "overview",
+ empRef: Option[EmpRef],
+ iabdType: String = ""
+)(implicit request:Request[_], messages: Messages)
 
 @parentTemplate(pageTitle = messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
     @isCurrentTaxYear match {
+        case _ if(code >= 0) => {<h1 id="title" class="heading-xlarge">@messages("ServiceMessage." + (code) + ".h1")</h1>}
         case utils.FormMappingsConstants.CY => {<h1 id="title" class="heading-xlarge">@messages(pageHeading,taxYearRange.cyminus1.toString, taxYearRange.cy.toString)</h1>}
         case utils.FormMappingsConstants.CYP1 => {<h1 id="title" class="heading-xlarge">@messages(pageHeading, taxYearRange.cy.toString, taxYearRange.cyplus1.toString)</h1>}
-        case _ if(code >= 0) => {<h1 id="title" class="heading-xlarge">@messages("ServiceMessage." + (code) + ".h1")</h1>}
         case _ => {<h1 id="title" class="heading-xlarge">@messages(errorMessage + "", "", "")</h1>}
     }
 
     <p class="lede">
      @isCurrentTaxYear match {
-            case utils.FormMappingsConstants.CY => {@Html(messages(errorMessage + isCurrentTaxYear , taxYearRange.cyminus1.toString, taxYearRange.cy.toString))}
-            case utils.FormMappingsConstants.CYP1 => {@Html(messages(errorMessage + isCurrentTaxYear , taxYearRange.cy.toString, taxYearRange.cyplus1.toString))}
-            case _ if(code == 63091) => {
+            case _ if(code == 63091 || code == 65127 || code == 63085) => {
 
                 @Html(messages("ServiceMessage." + (code)))
 
@@ -55,36 +59,50 @@ localFormPartialRetriever: LocalFormPartialRetriever)
                 @Html(messages("ServiceMessage." + (code) + ".1"))
 
             }
+
+            case utils.FormMappingsConstants.CY => {@Html(messages(errorMessage + isCurrentTaxYear , taxYearRange.cyminus1.toString, taxYearRange.cy.toString))}
+
+            case utils.FormMappingsConstants.CYP1 => {@Html(messages(errorMessage + isCurrentTaxYear , taxYearRange.cy.toString, taxYearRange.cyplus1.toString))}
+
             case _ => {@Html(messages(errorMessage))}
+
         }
     </p>
 
-    <p>
+
         @if(code == 63088 || code == 64989 || code == 10003) {
-
-            @Html(messages("ServiceMessage." + (code) + ".2"))
+            <p>
+                @Html(messages("ServiceMessage." + (code) + ".2"))
+            </p>
         }
-    </p>
-
 
     @code match {
         case 63082 => {<a id="link-try-again" href='javascript: window.history.go(-1)'>@messages("Service.tryagain")</a>}
-        case 63085 => {<a id="link-add-another" href='javascript: window.history.go(-1)'>@messages("Service.excludeanotheremployee")</a>}
         case 63090 => {<a id="link-add-another" href='javascript: window.history.go(-1)'>@messages("Service.excludeanotheremployee")</a>}
         case 63092 => {<a id="link-add-another" href='javascript: window.history.go(-1)'>@messages("Service.excludeanotheremployee")</a>}
         case _ => {}
     }
 
+    @if(iabdType != "") {
+    <p>
+        <a class="button-link" id="link-exclusion-back" onclick="gaEvent('Click back to exclusion overview','From: Nino search form')"
+           href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
+            @messages("Service.back.excluded")
+        </a>
+    </p>
+    }
+
     <p>
         @backLink match {
             case _ if(code != 0 && code != 10001 && code != 65176 && code!=65355)=>{
-                <a id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>
+                <a id="link-back-summary" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>
                     @messages("Service.back.overview")</a>}
             case _ => {
-                <a id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>
+                <a id="link-back-summary" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>
                     @messages("Service.back.overview")</a>
             }
         }
     </p>
+
 
 }

@@ -18,6 +18,7 @@ package controllers
 
 import config.{AppConfig, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
+import controllers.Assets.Ok
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models.{Bik, TaxYearRange}
 import org.mockito.Mockito._
@@ -63,16 +64,17 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
   }
 
   "The Homepage Controller" should {
-    "set the request language and redirect to the homepage" in {
+    "set the request language and reload page based on referer header" in {
       val mockController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshrequest
+        .withHeaders("Referer" -> "/payrollbik/payrolled-benefits-expenses")
+
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      val additions = CYCache.filter { x: Bik =>
-        Integer.parseInt(x.iabdType) > 15
-      }
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(mockController.setLanguage(request))(timeout)
-      result.header.status must be(SEE_OTHER) // 303
+      val result = mockController.setLanguage(request)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be("/payrollbik/payrolled-benefits-expenses")
     }
   }
 
@@ -85,9 +87,10 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
 
       implicit val timeout: FiniteDuration = timeoutValue
       implicit val lang: Lang = Lang("cy")
-      val result = await(homePageController.onPageLoad(request))(timeout)
-      result.header.status must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include("Cyfeirnod TWE y cyflogwr")
+      val result = homePageController.onPageLoad(request)
+
+      status(result) must be(OK) // 200
+      contentAsString(result) must include("Cyfeirnod TWE y cyflogwr")
     }
   }
 

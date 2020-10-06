@@ -84,6 +84,17 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with Test
   }
 
   "HomePageController" should {
+
+    "show unauthorised if the method is called" in {
+      val homePageController = app.injector.instanceOf[HomePageController]
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+
+      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+      val result = homePageController.notAuthorised().apply(request)
+      status(result) must be(UNAUTHORIZED)
+      contentAsString(result) must include(Messages("ErrorPage.authorisationError"))
+    }
+
     "show Unauthorised if the session is not authenticated" in {
       val homePageController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] =
@@ -108,7 +119,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with Test
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       val result = await(homePageController.loadCautionPageForCY.apply(request))
-      result.header.status must be(OK)
+      result.header.status must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.1"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.2"))
     }

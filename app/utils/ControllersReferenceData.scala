@@ -36,6 +36,7 @@ object ControllersReferenceDataCodes {
   val CY_RESTRICTED = "ServiceMessage.10003"
   val FEATURE_RESTRICTED = "ServiceMessage.10002"
   val DEFAULT_ERROR = "ServiceMessage.10001"
+  val EXCLUSION_ADD_STATUS = 20
   val BIK_REMOVE_STATUS = 40
   val BIK_ADD_STATUS = 30
   val FORM_TYPE_NINO = "nino"
@@ -88,23 +89,13 @@ class ControllersReferenceData @Inject()(
 
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-  def generateListOfBiksBasedOnForm(bikStatus: Int)(implicit request: Request[AnyContent]): List[Bik] = {
-    val persistentBiks: List[Bik] = objSelectedForm.bindFromRequest.fold(
-      formWithErrors => List[Bik](),
-      values => {
-        values.active.filter(x => x.active).map(x => Bik(x.id, bikStatus))
-      }
-    )
-    persistentBiks
-  }
-
   def responseCheckCYEnabled(staticDataRequest: Future[Result])(
     implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     if (pbikAppConfig.cyEnabled) {
       responseErrorHandler(staticDataRequest)
     } else {
       Logger.info("[ControllersReferenceData][responseCheckCYEnabled] Cy is disabled")
-      Future(Ok(errorPageView(CY_RESTRICTED, YEAR_RANGE, "", 10003, empRef = Some(request.empRef))))
+      Future(Forbidden(errorPageView(CY_RESTRICTED, YEAR_RANGE, "", 10003, empRef = Some(request.empRef))))
     }
 
   def responseErrorHandler(staticDataRequest: Future[Result])(
@@ -112,21 +103,21 @@ class ControllersReferenceData @Inject()(
     staticDataRequest.recover {
       case e0: NoSuchElementException => {
         Logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled : $e0")
-        Ok(errorPageView(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
+        InternalServerError(errorPageView(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e1: InvalidYearURIException => {
         Logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
-        Ok(errorPageView(INVALID_YEAR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
+        BadRequest(errorPageView(INVALID_YEAR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e2: InvalidBikTypeURIException => {
         Logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeURIException was handled : $e2")
-        Ok(errorPageView(INVALID_BIK_TYPE_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
+        BadRequest(errorPageView(INVALID_BIK_TYPE_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e3: Upstream5xxResponse => {
         Logger.error(
           s"[ControllersReferenceData][responseErrorHandler] An Upstream5xxResponse was handled : ${e3.message}",
           e3)
-        Ok(maintenancePageView(empRef = Some(request.empRef)))
+        InternalServerError(maintenancePageView(empRef = Some(request.empRef)))
       }
       case e4: GenericServerErrorException => {
         try {
@@ -136,7 +127,7 @@ class ControllersReferenceData @Inject()(
           val msgValue = e4.message
           if (Messages("ServiceMessage." + msgValue) == ("ServiceMessage." + msgValue)) throw new Exception(msgValue)
           else
-            Ok(
+            InternalServerError(
               errorPageView(
                 Messages("ServiceMessage." + msgValue),
                 YEAR_RANGE,
@@ -149,7 +140,7 @@ class ControllersReferenceData @Inject()(
               s"[ControllersReferenceData][responseErrorHandler] Could not parse GenericServerError System Error number: ${if (!e4.message.isEmpty) e4.message else "<no error code>"}. Showing default error page instead",
               ex
             )
-            Ok(maintenancePageView(empRef = Some(request.empRef)))
+            InternalServerError(maintenancePageView(empRef = Some(request.empRef)))
           }
         }
       }
@@ -157,7 +148,7 @@ class ControllersReferenceData @Inject()(
         Logger.warn(
           s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e5.getMessage}. Showing default error page",
           e5)
-        Ok(maintenancePageView(empRef = Some(request.empRef)))
+        InternalServerError(maintenancePageView(empRef = Some(request.empRef)))
       }
     }
 

@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package builders
+package models
 
-import java.util.UUID
+import play.api.libs.json.{Json, OFormat}
 
-import play.api.mvc.AnyContentAsJson
-import play.api.test.FakeRequest
-import uk.gov.hmrc.http.SessionKeys
+case class PbikSession(
+  registrations: Option[RegistrationList],
+  bikRemoved: Option[RegistrationItem],
+  listOfMatches: Option[List[EiLPerson]],
+  eiLPerson: Option[EiLPerson],
+  currentExclusions: Option[List[EiLPerson]],
+  cyRegisteredBiks: Option[List[Bik]],
+  nyRegisteredBiks: Option[List[Bik]])
 
-object SessionBuilder {
-
-  def updateRequestWithSession(fakeRequest: FakeRequest[AnyContentAsJson]): FakeRequest[AnyContentAsJson] = {
-    val sessionId = s"session-${UUID.randomUUID}"
-    fakeRequest.withSession(SessionKeys.sessionId -> sessionId)
-  }
-
-  def buildRequestWithSession() = {
-    val sessionId = s"session-${UUID.randomUUID}"
-    FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
-  }
+object PbikSession {
+  implicit val PbikSessionFormats: OFormat[PbikSession] = Json.format[PbikSession]
 }

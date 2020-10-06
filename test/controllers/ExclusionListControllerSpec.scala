@@ -37,7 +37,7 @@ import play.api.libs.json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.EiLListService
+import services.{EiLListService, SessionService}
 import support._
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.HeaderCarrier
@@ -58,6 +58,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[EiLListService].to(classOf[StubEiLListService]))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
   implicit val lang = Lang("en-GB")
@@ -225,6 +226,10 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
         Integer.parseInt(x.iabdType) >= 15
       }))
 
+    when(melc.cachingService.cacheEiLPerson(any())(any[HeaderCarrier])).thenReturn(
+      Future.successful(None)
+    )
+
     melc
   }
 
@@ -236,7 +241,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
   "When mapping the CY string, the date returned by the controller" must {
     "be the first year in the CY pair (e.g CY in range 15/16-16/17 would be 15 )" in {
-      //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result: Int = await(mockExclusionListController.mapYearStringToInt("cy"))
       result must be(dateRange.cyminus1)
@@ -245,7 +249,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
   "When mapping the CY+1 string, the date returned by the controller" must {
     "be the first year in the CYP1 pair (e.g CYP1 in range 15/16-16/17 would be 16 ) " in {
-      //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = await(mockExclusionListController.mapYearStringToInt("cyp1"))
       result must be(dateRange.cy)
@@ -254,7 +257,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
   "When mapping an unknown string, the controller" must {
     "throw an InvalidYearURIException" in {
-      //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       intercept[InvalidYearURIException] {
         await(mockExclusionListController.mapYearStringToInt("ceeewhyploosWon"))
@@ -264,7 +266,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
   "When checking the Bik's IABD value is valid for CY the ExclusionListController" must {
     "return the start year of the CY pair, when the IABD value is valid" in {
-      //UnsignedTokenProvider.generateToken
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
@@ -276,7 +277,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
   "When checking the Bik's IABD value is invalid for CY the ExclusionListController" must {
     "throw a InvalidBikTypeURIException" in {
-      //UnsignedTokenProvider.generateToken
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
@@ -288,39 +288,24 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When loading the performPageLoad, an unauthorised user" should {
-    "see the users already excluded" in {
+    "be taken to an error page" in {
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionListController.performPageLoad("cy", "car").apply(mockrequest))(timeout)
-      result.header.status must be(OK)
-
-      //TODO: Work on this
-      //result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ExclusionOverview.title"))
-      //result.body.asInstanceOf[Strict].data.utf8String must include(Messages("AF111111"))
-      //result.body.asInstanceOf[Strict].data.utf8String must include("Humpty Dumpty")
+      result.header.status must be(INTERNAL_SERVER_ERROR)
     }
   }
 
-  "When loading the performPageLoad without nacigating from the overview page, an unauthorised user" should {
-    "see the users already excluded" in {
+  "When loading the performPageLoad without navigating from the overview page, an unauthorised user" should {
+    "be taken to an error page" in {
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionListController.performPageLoad("cy", "car").apply(mockrequest))(timeout)
-      result.header.status must be(OK)
-
-      // TODO: Should work on this
-      /*       result.body.asInstanceOf[Strict].data.utf8String must include("Humpty Dumpty")
-             result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Service.excludeanotheremployee"))
-             result.body.asInstanceOf[Strict].data.utf8String must include("Humpty")
-             result.body.asInstanceOf[Strict].data.utf8String must include("Alexander")
-             result.body.asInstanceOf[Strict].data.utf8String must include("Dumpty")
-             result.body.asInstanceOf[Strict].data.utf8String must include("123")
-             result.body.asInstanceOf[Strict].data.utf8String must include("01/01/1980")*/
+      result.header.status must be(INTERNAL_SERVER_ERROR)
     }
   }
 
   "When loading the performPageLoad when exclusions are disallowed the controller" must {
     "show the restriction page" in {
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
-      //UnsignedTokenProvider.generateToken
 
       implicit val timeout: akka.util.Timeout = 10 seconds
       val result = await(mockExclusionController.performPageLoad("cy", "car").apply(mockrequest))(timeout)
@@ -332,7 +317,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   "When loading the withOrWithoutNinoOnPageLoad the controller" must {
     "show the page in order to make a decision" in {
       val title = Messages("ExclusionNinoDecision.title").substring(0, 10)
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 10 seconds
       val result =
         await(mockExclusionListController.withOrWithoutNinoOnPageLoad("cy", "car").apply(mockrequest))(timeout)
@@ -349,26 +333,34 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     "display the error page" in {
       val title = Messages("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionController.withOrWithoutNinoOnPageLoad("cy", "car").apply(mockrequest))(timeout)
-      result.header.status must be(OK)
+      result.header.status must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
   }
 
   "When loading the withOrWithoutNinoDecision page with the form omitted, an authorised user" must {
     "see the page in order to confirm their decision" in {
-      val title = Messages("ExclusionNinoDecision.title").substring(0, 10)
-      //UnsignedTokenProvider.generateToken
-      val result =
-        await(mockExclusionListController.withOrWithoutNinoDecision("cy", "car").apply(mockrequest))(5 seconds)
-      result.header.status must be(303)
-      val nextUrl = redirectLocation(Future(result)(scala.concurrent.ExecutionContext.Implicits.global)) match {
-        case Some(s: String) => s
-        case _               => ""
-      }
-      nextUrl must include("/exclude-employee-search")
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(PbikSession(
+          None,
+          None,
+          Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+          Some(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None)),
+          Some(List(EiLPerson("AA111111B", "Jane", None, "Doe", Some("456"), None, None, None))),
+          None,
+          None
+        ))))
+      val title = Messages("ExclusionNinoDecision.title")
+      val message = Messages("ExclusionNinoDecision.question")
+      val result = mockExclusionListController
+        .withOrWithoutNinoDecision("cyp1", "car")
+        .apply(mockrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(OK)
+      contentAsString(result) must include(title)
+      contentAsString(result) must include(message)
     }
   }
 
@@ -376,54 +368,80 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     "show an error page" in {
       val title = Messages("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionController.withOrWithoutNinoDecision("cy", "car").apply(mockrequest))(timeout)
-      result.header.status must be(OK)
+      val result = await(mockExclusionController.withOrWithoutNinoDecision("cy1", "car").apply(mockrequest))(timeout)
+      result.header.status must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
   }
 
-  "When loading the withOrWithoutNinoDecision page with a nino form, an authorised user" must {
-    "see the page in order to confirm their decision" in {
-      val title = Messages("ExclusionSearch.form.title")
-      //UnsignedTokenProvider.generateToken
-      implicit val timeout: Timeout = 5 seconds
-      implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(
-        "confirmation" -> ControllersReferenceDataCodes.FORM_TYPE_NINO
-      )
-
-      val result = await(mockExclusionListController.withOrWithoutNinoDecision("cy", "car").apply(formrequest))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
-      result.body.asInstanceOf[Strict].data.utf8String must include("National Insurance number")
+  "When loading the withOrWithoutNinoDecision with valid form selecting nino" must {
+    "proceed to nino form page" in {
+      lazy val formData =
+        controllersReferenceData.binaryRadioButton.fill(MandatoryRadioButton("nino"))
+      implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+        mockrequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
+      val result = mockExclusionListController
+        .withOrWithoutNinoDecision("cyp1", "car")
+        .apply(formrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be("/payrollbik/cyp1/car/nino/exclude-employee-form")
     }
   }
 
-  "When loading the withOrWithoutNinoDecision page with a non-nino form, an authorised user" must {
-    "see the page in order to confirm their decision" in {
-      val title = Messages("ExclusionSearch.form.title")
-      //UnsignedTokenProvider.generateToken
-      implicit val timeout: Timeout = 5 seconds
-      implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(
-        "confirmation" -> ControllersReferenceDataCodes.FORM_TYPE_NONINO
-      )
-      val result = await(mockExclusionListController.withOrWithoutNinoDecision("cy", "car").apply(formrequest))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
-      result.body.asInstanceOf[Strict].data.utf8String must include("dob")
+  "When loading the withOrWithoutNinoDecision with valid form selecting no-nino" must {
+    "proceed to no-nino form page" in {
+      lazy val formData =
+        controllersReferenceData.binaryRadioButton.fill(MandatoryRadioButton("no-nino"))
+      implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+        mockrequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
+      val result = mockExclusionListController
+        .withOrWithoutNinoDecision("cyp1", "car")
+        .apply(formrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be("/payrollbik/cyp1/car/no-nino/exclude-employee-form")
     }
+  }
+
+  "When loading showExclusionSearchForm, an authorised user" must {
+    "see the nino form in order to search for a person" in {
+      val formType = "nino"
+      val title = Messages("ExclusionSearch.form.title")
+      val ninoHint = Messages("Service.field.ninohint")
+      val result = mockExclusionListController.showExclusionSearchForm("cyp1", "car", formType).apply(mockrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(OK)
+      contentAsString(result) must include(title)
+      contentAsString(result) must include(ninoHint)
+    }
+
+    "see the no-nino form in order to search for a person" in {
+      val formType = "no-nino"
+      val title = Messages("ExclusionSearch.form.title")
+      val dobHint = Messages("Service.field.dobhint")
+      val result = mockExclusionListController.showExclusionSearchForm("cyp1", "car", formType).apply(mockrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(OK)
+      contentAsString(result) must include(title)
+      contentAsString(result) must include(dobHint)
+    }
+
+    "see an error page if neither nino or no-nino are chosen" in {
+      val formType = "nothing"
+      val title = Messages("ErrorPage.invalidForm")
+      val result = mockExclusionListController.showExclusionSearchForm("cyp1", "car", formType).apply(mockrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(INTERNAL_SERVER_ERROR)
+      contentAsString(result) must include(title)
+    }
+
   }
 
   "When loading the searchResults page for an unpopulated NINO search, an authorised user" must {
     "see the NINO specific fields" in {
       val title = Messages("ExclusionSearch.form.title")
-
-      val csrfTokenSigner: CSRFTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
-
-      def csrfToken: (String, String) = "csrfToken" -> csrfTokenSigner.generateToken
-
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 10 seconds
       val result = await(
         mockExclusionListController
@@ -438,9 +456,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When loading the searchResults page for an unpopulated non-NINO search, an authorised user" must {
-    "see the NON-NINO specific fields" in {
+    "see the NO-NINO specific fields" in {
       val title = Messages("ExclusionSearch.form.title")
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result = await(
         mockExclusionListController
@@ -456,21 +473,32 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When loading the searchResults page for a NINO search, an authorised user" must {
-    "see the NON-NINO specific fields" in {
-      val ninoSearchPerson = EiLPerson("AB111111", "Adam", None, "Smith", None, None, None, None, 0)
-      implicit val request = FakeRequest()
-      val f = controllersReferenceData.exclusionSearchFormWithNino.fill(ninoSearchPerson)
-      val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] = mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val mockExclusionListController = app.injector.instanceOf[MockExclusionListController]
-      //UnsignedTokenProvider.generateToken
-      implicit val timeout: Timeout = 5 seconds
-      val result = await(
-        mockExclusionListController.searchResults("cy", "car", ControllersReferenceDataCodes.FORM_TYPE_NINO)(
-          formrequest))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include("Search for an employee")
-      result.body.asInstanceOf[Strict].data.utf8String must include("Adam")
-      result.body.asInstanceOf[Strict].data.utf8String must include("AB111111")
+    "see the NINO results page" in {
+      when(mockExclusionListController.cachingService.cacheListOfMatches(any())(any[HeaderCarrier]))
+        .thenReturn(Future.successful(None))
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                None,
+                None,
+                Some(List(EiLPerson("", "", None, "", None, None, None, None))),
+                None,
+                None,
+                None,
+                None))))
+      lazy val ninoSearchPerson = EiLPerson("AB111111", "Adam", None, "Smith", None, None, None, None, 0)
+      lazy val formData =
+        controllersReferenceData.exclusionSearchFormWithNino(request = mockrequest).fill(ninoSearchPerson)
+      implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+        mockrequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
+      val result = mockExclusionListController
+        .searchResults("cyp1", "car", ControllersReferenceDataCodes.FORM_TYPE_NINO)
+        .apply(formrequest)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be("/payrollbik/cyp1/car/nino/exclude-employee-results")
+
     }
   }
 
@@ -603,23 +631,17 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
         melc
       }
 
-      val ninoSearchPerson =
+      val noNinoSearchPerson =
         EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0)
-      val f = controllersReferenceData.exclusionSearchFormWithoutNino.fill(ninoSearchPerson)
+      val formData = controllersReferenceData.exclusionSearchFormWithoutNino.fill(noNinoSearchPerson)
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-        mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      //UnsignedTokenProvider.generateToken
-      implicit val timeout: Timeout = 5 seconds
-      val result = await(
-        mockExclusionListServiceExclusionController
-          .searchResults("cy", "car", ControllersReferenceDataCodes.FORM_TYPE_NONINO)
-          .apply(formrequest))(timeout)
-      result.header.status must be(OK)
-
-      result.body.asInstanceOf[Strict].data.utf8String must include("Search results")
-      result.body.asInstanceOf[Strict].data.utf8String must include("Adam")
-      result.body.asInstanceOf[Strict].data.utf8String must include("01/01/1980")
-      result.body.asInstanceOf[Strict].data.utf8String must include("male")
+        mockrequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
+      val result = mockExclusionListServiceExclusionController
+        .searchResults("cyp1", "car", ControllersReferenceDataCodes.FORM_TYPE_NONINO)
+        .apply(formrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be("/payrollbik/cyp1/car/no-nino/exclude-employee-results")
     }
   }
 
@@ -627,85 +649,212 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     "show an error page" in {
       val title = Messages("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result = await(
         mockExclusionController
           .searchResults("cy", "car", ControllersReferenceDataCodes.FORM_TYPE_NONINO)
           .apply(mockrequest))(timeout)
-      result.header.status must be(OK)
+      result.header.status must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
+    }
+  }
+
+  "When handling a valid search result, the controller" must {
+    "show an error page if the list of matches contains only already excluded individuals" in {
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(PbikSession(
+          None,
+          None,
+          Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+          None,
+          Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+          None,
+          None
+        ))))
+      val result = mockExclusionListController.showResults("cyp1", "car", "nino").apply(mockrequest)
+      status(result) must be(OK)
+      contentAsString(result) must include(Messages("ServiceMessage.63085.h1"))
+    }
+  }
+
+  "When handling a valid search result, the controller" must {
+    "show an error page if the list of matches is empty" in {
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                None,
+                None,
+                None,
+                None,
+                Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+                None,
+                None
+              ))))
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+      val result = Future.successful(
+        mockExclusionListController
+          .searchResultsHandleValidResult(List.empty[EiLPerson], "car", "nino", "31", List.empty[EiLPerson]))
+      status(result) must be(NOT_FOUND)
+      contentAsString(result) must include(Messages("ServiceMessage.65127.h1"))
+    }
+  }
+
+  "When loading the searchResults page, the controller" must {
+    "show the search results if they are present in the cache" in {
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(PbikSession(
+          None,
+          None,
+          Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+          Some(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None)),
+          Some(List(EiLPerson("AA111111B", "Jane", None, "Doe", Some("456"), None, None, None))),
+          None,
+          None
+        ))))
+      val result = mockExclusionListController.showResults("cyp1", "car", "nino").apply(mockrequest)
+      status(result) must be(OK)
+      contentAsString(result) must include("AA111111")
+      contentAsString(result) must include("John")
+      contentAsString(result) must include("Smith")
+    }
+  }
+
+  "When loading the searchResults page directly, the controller" must {
+    "show an error page if no results are present in the cache" in {
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None
+              ))))
+      val result = mockExclusionListController.showResults("cyp1", "car", "nino").apply(mockrequest)
+      status(result) must be(INTERNAL_SERVER_ERROR)
+      contentAsString(result) must include("We’re sorry a technical error has occurred")
     }
   }
 
   "When updating exclusions, an authorised user" must {
     "see the page in order to review their result" in {
-      val TEST_YEAR_CODE = "cy"
-      val TEST_IABD_VALUE = "31"
-      val FROM_OVERVIEW = "false"
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(PbikSession(
+          None,
+          None,
+          Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+          Some(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None)),
+          Some(List(EiLPerson("AA111111B", "Jane", None, "Doe", Some("456"), None, None, None))),
+          None,
+          None
+        ))))
+      val TEST_YEAR_CODE = "cyp1"
+      val TEST_IABD = "car"
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      val title = Messages("whatNext.exclude.heading")
-      //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      implicit val timeout: Timeout = 5 seconds
-      val result = await(
-        mockExclusionListController.processExclusionForm(
-          controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople)),
-          TEST_YEAR_CODE,
-          TEST_IABD_VALUE,
-          controllersReferenceData.YEAR_RANGE))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
+      val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD).apply(mockrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-confirmation")
     }
   }
 
   "When removing an excluded individual, with an error free form, an authorised user" must {
     "see the removal confirmation screen" in {
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(PbikSession(
+          None,
+          None,
+          Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+          Some(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None)),
+          Some(List(EiLPerson("AA111111B", "Jane", None, "Doe", Some("456"), None, None, None))),
+          None,
+          None
+        ))))
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val TEST_IABD = "car"
-      val TEST_YEAR_CODE = "cy"
+      val TEST_YEAR_CODE = "cyp1"
+      val TEST_NINO = "AA111111B"
       val title = Messages("ExclusionRemovalConfirmation.title")
-      //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      implicit val timeout: Timeout = 5 seconds
-      val result = await(
-        mockExclusionListController.processRemoval(
-          controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople)),
-          TEST_YEAR_CODE,
-          TEST_IABD,
-          controllersReferenceData.YEAR_RANGE))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
-      result.body.asInstanceOf[Strict].data.utf8String must include(
-        Messages("ExclusionRemovalConfirmation.intro").substring(0, 31))
-      result.body.asInstanceOf[Strict].data.utf8String must include("Humpty")
-      result.body.asInstanceOf[Strict].data.utf8String must include("AB111111")
+      val result = mockExclusionListController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(mockrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-employee-remove")
     }
   }
 
   "When confirming the removal of an excluded individual, an authorised user" must {
     "see the removal confirmation screen" in {
-      val TEST_IABD = "31"
+      val TEST_IABD = "car"
       val TEST_YEAR_CODE = "cyp1"
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val title = Messages("whatNext.rescind.heading")
-      //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      implicit val timeout: Timeout = 5 seconds
-      val result = await(
-        mockExclusionListController.processRemovalCommit(
-          controllersReferenceData.individualsForm
-            .fill(EiLPersonList(ListOfPeople)),
-          TEST_IABD,
-          controllersReferenceData.YEAR_RANGE)(hc, authenticatedRequest))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
+      val result = mockExclusionListController.removeExclusionsCommit(TEST_IABD)(mockrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be("/payrollbik/car/remove-commit")
+    }
+  }
+
+  "When loading the removal check your answers screen with valid data in the cache, the controller" must {
+    "show the removal check your answers screen" in {
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                None,
+                None,
+                None,
+                Some(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None)),
+                None,
+                None,
+                None
+              ))))
+      val result = mockExclusionListController.showRemovalConfirmation("cyp1", "car").apply(mockrequest)
+      status(result) must be(OK)
+      contentAsString(result) must include(
+        "The following employee will have Car and car fuel taxed through your payroll")
+      contentAsString(result) must include("John")
+      contentAsString(result) must include("Smith")
+    }
+  }
+
+  "When loading the removal what next screen with valid data in the cache, the controller" must {
+    "show the removal what next screen" in {
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                None,
+                None,
+                None,
+                Some(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None)),
+                None,
+                None,
+                None
+              ))))
+      val result = mockExclusionListController.showRemovalWhatsNext("car").apply(mockrequest)
+      status(result) must be(OK)
+      contentAsString(result) must include(
+        "You’ve told us that John Smith will be having Car and car fuel taxed through your payroll from 6 April")
     }
   }
 
@@ -714,7 +863,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionListController.validateRequest("cy", "car"))(timeout)
@@ -725,7 +873,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       intercept[InvalidBikTypeURIException] {
         await(mockExclusionListController.validateRequest("cy", "1"))
@@ -741,12 +888,11 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val title = Messages("whatNext.rescind.heading")
-      //UnsignedTokenProvider.generateToken
-      implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionListController.removeExclusionsCommit(TEST_IABD)(formrequest))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
+
+      val result = mockExclusionListController.removeExclusionsCommit(TEST_IABD)(formrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_IABD/remove-commit")
     }
   }
 
@@ -758,27 +904,35 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionController.removeExclusionsCommit(TEST_IABD).apply(formrequest))(timeout)
-      result.header.status must be(OK)
+      result.header.status must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
   }
 
   "When remove is called the controller" must {
     " show the confirmation page" in {
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(PbikSession(
+          None,
+          None,
+          Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+          Some(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None)),
+          Some(List(EiLPerson("AA111111A", "Jane", None, "Doe", Some("456"), None, None, None))),
+          None,
+          None
+        ))))
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
+      val TEST_NINO = "AA111111A"
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val title = Messages("ExclusionRemovalConfirmation.title")
-      //UnsignedTokenProvider.generateToken
-      implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionListController.remove(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
+      val result = mockExclusionListController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(formrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-employee-remove")
     }
   }
 
@@ -786,15 +940,15 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     " should show an error page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
+      val TEST_NINO = "AA111111A"
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionController.remove(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
-      result.header.status must be(OK)
+      val result = await(mockExclusionController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(formrequest))(timeout)
+      result.header.status must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
   }
@@ -806,28 +960,26 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val title = Messages("whatNext.exclude.heading")
-      //UnsignedTokenProvider.generateToken
-      implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
+      val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-confirmation")
     }
   }
 
   "When updateExclusions is called but exclusions are disabled the controller" must {
     " redirect back to the overview page" in {
       val TEST_YEAR_CODE = "cyp1"
-      val TEST_IABD = "car"
+      val TEST_IABD = "31"
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
-      val result = await(mockExclusionController.updateExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
-      result.header.status must be(OK)
+      val result =
+        await(mockExclusionController.updateExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
+      result.header.status must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
   }
@@ -835,12 +987,11 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   "When updateMultipleExclusions is called the controller" must {
     " redirect to the what next page" in {
       val TEST_YEAR_CODE = "cyp1"
-      val TEST_IABD = "car"
+      val TEST_IABD = "31"
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("ExclusionSearch.title")
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result =
         await(mockExclusionListController.updateMultipleExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
@@ -849,47 +1000,58 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }
   }
 
+  "When the what next page is loaded, the controller" must {
+    "display the the what next confirmation screen" in {
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                None,
+                None,
+                Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+                None,
+                None,
+                None,
+                None
+              ))))
+      val result = mockExclusionListController.showExclusionConfirmation("cyp1", "car").apply(mockrequest)
+      status(result) must be(OK)
+      contentAsString(result) must include(
+        "You’ve told us that John Smith won’t be having Car and car fuel taxed through your payroll from 6 April")
+
+    }
+  }
+
   "When updateMultipleExclusions is called but exclusions are disabled the controller" must {
     " redirect back to the overview page" in {
-      val TEST_YEAR_CODE = "cyp1"
-      val TEST_IABD = "car"
+      val TEST_YEAR_CODE = "cy"
+      val TEST_IABD = "31"
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
-      //UnsignedTokenProvider.generateToken
       implicit val timeout: Timeout = 5 seconds
       val result =
         await(mockExclusionController.updateMultipleExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
-      result.header.status must be(OK)
+      result.header.status must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
   }
 
   "When updating individual exclusions, an authorised user" must {
-    "see the page in order to review their result" in {
-      val TEST_YEAR_CODE = "cy"
-      val TEST_IABD_VALUE = "31"
-      val FROM_OVERVIEW = "false"
+    "see the page what's next page in order to review their result" in {
+      val TEST_YEAR_CODE = "cyp1"
+      val TEST_IABD_VALUE = "car"
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      val title = Messages("whatNext.exclude.heading")
-      val excludedText = Messages("whatNext.exclude.p1", "Exclusion complete")
-      //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      implicit val timeout: Timeout = 5 seconds
-      val result = await(
-        mockExclusionListController.processIndividualExclusionForm(
-          controllersReferenceData.individualsFormWithRadio.fill(("", EiLPersonList(ListOfPeople))),
-          TEST_YEAR_CODE,
-          TEST_IABD_VALUE,
-          controllersReferenceData.YEAR_RANGE
-        ))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
-      result.body.asInstanceOf[Strict].data.utf8String must include(excludedText)
+      val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD_VALUE).apply(mockrequest)
+      (scala.concurrent.ExecutionContext.Implicits.global)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD_VALUE/exclude-confirmation")
     }
   }
 
@@ -904,8 +1066,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val title = Messages("ExclusionSearch.form.title")
-      val excludedText = Messages("whatNext.exclude.p1")
-      //UnsignedTokenProvider.generateToken
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 5 seconds
       val result =
@@ -915,4 +1075,5 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       result.body.asInstanceOf[Strict].data.utf8String must include("Search for an employee to exclude")
     }
   }
+
 }

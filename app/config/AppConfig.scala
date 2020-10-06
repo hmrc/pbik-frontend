@@ -72,4 +72,7 @@ class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
     configuration.getOptional[String]("google-analytics.host").getOrElse("service.gov.uk")
   override val ssoUrl: Option[String] = configuration.getOptional[String]("portal.ssoUrl")
 
+  lazy val sessionCacheBaseUri: String = configuration.get[String]("microservice.services.keystore.host")
+  lazy val sessionCacheDomain: String =
+    configuration.get[String](s"microservice.services.cachable.session-cache.domain")
 }

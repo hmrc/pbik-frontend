@@ -21,7 +21,7 @@ import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito.mock
 import org.specs2.specification.Scope
-import services.EiLListService
+import services.{EiLListService, SessionService}
 import utils.{TestAuthAction, TestNoSessionCheckAction}
 
 trait ServiceExclusionSetup extends Scope {
@@ -32,6 +32,7 @@ trait ServiceExclusionSetup extends Scope {
       bind(classOf[AuthAction]).to(classOf[TestAuthAction])
       bind(classOf[NoSessionCheckAction]).to(classOf[TestNoSessionCheckAction])
       bind(classOf[HmrcTierConnector]).toInstance(mock(classOf[HmrcTierConnector]))
+      bind(classOf[SessionService]).toInstance(mock(classOf[SessionService]))
     }
   }
 }

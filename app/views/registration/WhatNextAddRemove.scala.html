@@ -29,10 +29,11 @@ localFormPartialRetriever: LocalFormPartialRetriever)
 @(isCurrentYear: Boolean,
   taxYearRange:TaxYearRange,
   additive: Boolean,
-  bikForm:Form[RegistrationList], empRef: EmpRef)(implicit request:Request[_], messages: Messages)
+  bikList: RegistrationList,
+  empRef: EmpRef)(implicit request:Request[_], messages: Messages)
 
-@benefitLabel = @{messages("BenefitInKind.label." + bikForm("actives[0].uid").value.get )}
-@singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
+@benefitLabel = @{messages("BenefitInKind.label." + bikList.active.head.id )}
+@singleBik = @{ if(bikList.active.length > 1 ) { false } else { true } }
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @cyplus1 = @{""+taxYearRange.cyplus1}
@@ -67,7 +68,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
                             @messages("whatNext.cy1.add.lede", cy)
                         }
                     }else {
-                        @Html(messages("whatNext.remove.lede", benefitLabel, cy, cyplus1, bikForm("actives[0].uid").value.get))}
+                        @Html(messages("whatNext.remove.lede", benefitLabel, cy, cyplus1, bikList.active.head.id))}
                 }else {
                     @if(singleBik){
                         @messages("whatNext.cy1.add.lede.singular", benefitLabel, cyminus1)
@@ -81,24 +82,17 @@ localFormPartialRetriever: LocalFormPartialRetriever)
         @if(additive) {
             @if(!singleBik){
                 <h2>@messages("whatNext.cy1.add.table.header")</h2>
-                    @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
                     <ol class="govuk-check-your-answers cya-questions-short" id="list-of-confirmation-benefits">
 
-                    @helper.repeat(bikForm("actives"), min=0) { activeField =>
+                        @for(item <- 0 until bikList.active.length) {
                         <li>
                             <div class="cya-answer">
-                                <div class="hidden">
-                                    @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
-                                    @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
-                                    @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
-                                </div>
-                                <span id='li-@activeField("uid").value.get'> @messages("BenefitInKind.label." + activeField("uid").value.get )</span>
+                                <span id='li-@bikList.active(item).id.toString'>@messages("BenefitInKind.label." + bikList.active(item).id.toString)</span>
                             </div>
                         </li>
                         }
                     </ol>
                 }
-            }
 
             <h2>
                 @messages("whatNext.subHeading")
