@@ -283,4 +283,20 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
       (individualsTuple: (String, EiLPersonList)) => Some((individualsTuple._1, individualsTuple._2.active)))
   )
 
+  val individualSelectionForm: Form[ExclusionNino] = Form(
+    mapping(
+      "individualNino" -> nonEmptyText
+    )(ExclusionNino.apply)(ExclusionNino.unapply)
+  )
+
+  val removalReasonForm: Form[BinaryRadioButtonWithDesc] = {
+    val noReasonError = "RemoveBenefits.reason.no.selection"
+    Form(
+      mapping(
+        "selectionValue" -> text.verifying(noReasonError, selectionValue => selectionValue.trim.length != 0),
+        "info"           -> optional(text)
+      )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply))
+
+  }
+
 }

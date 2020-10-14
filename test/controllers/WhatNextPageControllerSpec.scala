@@ -18,6 +18,7 @@ package controllers
 
 import config._
 import connectors.HmrcTierConnector
+import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
 import models._
 import org.joda.time.LocalDate
@@ -35,16 +36,17 @@ import play.api.libs.json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.BikListService
+import services.{BikListService, SessionService}
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.logging.SessionId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys, Token}
 import uk.gov.hmrc.time.TaxYear
-import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, URIInformation}
+import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction, URIInformation}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits._
+import scala.concurrent.duration.DurationInt
 
 class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
 
@@ -53,8 +55,11 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)
+    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[BikListService].toInstance(mock(classOf[StubBikListService])))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
   implicit val lang = Lang("en-GB")
@@ -246,7 +251,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
   }
 
   val whatNextPageController: WhatNextPageController = {
-    val w = injected[WhatNextPageController]
+    val w = app.injector.instanceOf[WhatNextPageController]
 
     val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
@@ -323,74 +328,100 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) >= 15
       }))
-
     w
   }
 
-  "When loading the what next page" must {
-    "(Register a BIK current year) Single benefit- state the status is ok and correct page is displayed" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      val formRegistrationList: Form[RegistrationList] = formMappings.objSelectedForm
-      val formFilled = formRegistrationList.fill(registrationList)
-      val year = TaxYear.taxYearFor(LocalDate.now).currentYear
-      val result = whatNextPageController.loadWhatNextRegisteredBIK(formFilled, year)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
-      result.body.asInstanceOf[Strict].data.utf8String must include(
-        s"Now tax Private medical treatment or insurance through your payroll from 6 April $year.")
+  "(Register a BIK next year) Single benefit - state the status is ok and correct page is displayed" in {
+    when(whatNextPageController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+      .thenReturn(
+        Future.successful(
+          Some(
+            PbikSession(
+              Some(RegistrationList(active = List(RegistrationItem("30", true, true)))),
+              None,
+              None,
+              None,
+              None,
+              None,
+              None
+            ))))
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+      AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
+    val result = whatNextPageController.showWhatNextRegisteredBik("cy1").apply(authenticatedRequest)
+    (scala.concurrent.ExecutionContext.Implicits.global)
+    status(result) must be(OK)
+    contentAsString(result) must include("Registration complete")
+    contentAsString(result) must include(
+      "Now tax Private medical treatment or insurance through your payroll from 6 April")
+  }
+
+  "(Register a BIK next year) Multiple benefits - state the status is ok and correct page is displayed" in {
+    when(whatNextPageController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+      .thenReturn(
+        Future.successful(
+          Some(
+            PbikSession(
+              Some(
+                RegistrationList(active = List(RegistrationItem("30", true, true), RegistrationItem("8", true, true)))),
+              None,
+              None,
+              None,
+              None,
+              None,
+              None
+            ))))
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+      AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session002")))
+    val result = whatNextPageController.showWhatNextRegisteredBik("cy1").apply(authenticatedRequest)
+    (scala.concurrent.ExecutionContext.Implicits.global)
+    status(result) must be(OK)
+    contentAsString(result) must include("Registration complete")
+    contentAsString(result) must include("Private medical treatment or insurance")
+    contentAsString(result) must include("Services supplied")
+  }
+
+  "(Remove a BIK)- state the status is ok and correct page is displayed" in {
+    when(whatNextPageController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+      .thenReturn(
+        Future.successful(
+          Some(
+            PbikSession(
+              None,
+              Some(RegistrationItem("30", true, true)),
+              None,
+              None,
+              None,
+              None,
+              None
+            ))))
+    implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+      AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+    val whatNextRemoveMsg: String = Messages("whatNext.remove.p1")
+    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
+    val result = whatNextPageController.showWhatNextRemovedBik().apply(authenticatedRequest)
+    (scala.concurrent.ExecutionContext.Implicits.global)
+    status(result) must be(OK)
+    contentAsString(result) must include("Benefit removed")
+    contentAsString(result) must include(whatNextRemoveMsg)
+  }
+
+  "The calculateTaxYear method" should {
+    "return this year and next year if given true" in {
+      val result = whatNextPageController.calculateTaxYear(true)
+      assert(result._1 == LocalDate.now().getYear)
+      assert(result._2 == (LocalDate.now().getYear + 1))
     }
 
-    "(Register a BIK next year) Single benefit - state the status is ok and correct page is displayed" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      val formRegistrationList: Form[RegistrationList] = formMappings.objSelectedForm
-      val formFilled = formRegistrationList.fill(registrationList)
-      formRegistrationList.fill(registrationList)
-      val result = whatNextPageController.loadWhatNextRegisteredBIK(formFilled, 2017)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
-      result.body.asInstanceOf[Strict].data.utf8String must include(
-        "Now tax Private medical treatment or insurance through your payroll from 6 April")
+    "return next year and the year after if given false" in {
+      val result = whatNextPageController.calculateTaxYear(false)
+      assert(result._1 == (LocalDate.now().getYear + 1))
+      assert(result._2 == (LocalDate.now().getYear + 2))
     }
-
-    "(Register a BIK next year) Multiple benefits - state the status is ok and correct page is displayed" in {
-      import play.api.libs.concurrent.Execution.Implicits._
-
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-      val formRegistrationList: Form[RegistrationList] = formMappings.objSelectedForm.fill(registrationListMultiple)
-      val result = await(Future {
-        whatNextPageController.loadWhatNextRegisteredBIK(formRegistrationList, 2016)
-      })
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include("Registration complete")
-      result.body.asInstanceOf[Strict].data.utf8String must include("Private medical treatment or insurance")
-      result.body.asInstanceOf[Strict].data.utf8String must include("Services supplied")
-    }
-
-    "(Remove a BIK)- state the status is ok and correct page is displayed" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      val whatNextRemoveMsg: String = Messages("whatNext.remove.p1")
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
-
-      val formRegistrationList: Form[RegistrationList] = formMappings.objSelectedForm.fill(registrationList)
-      val result = await(Future {
-        whatNextPageController.loadWhatNextRemovedBIK(formRegistrationList, year = 2015)
-      })
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include("Benefit removed")
-      result.body.asInstanceOf[Strict].data.utf8String must include(whatNextRemoveMsg)
-    }
-
   }
 
 }

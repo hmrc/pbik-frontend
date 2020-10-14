@@ -19,16 +19,20 @@ package controllers
 import java.util.UUID
 
 import akka.stream.Materializer
+import config.{PbikAppConfig, PbikSessionCache}
 import controllers.actions.MinimalAuthAction
-import models.HeaderTags
+import models.{Bik, EiLPerson, HeaderTags, PbikSession, RegistrationItem, RegistrationList}
 import org.scalatest.TestSuite
+import org.scalatest.mockito.MockitoSugar.mock
 import org.scalatestplus.play.OneAppPerSuite
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import services.SessionService
 import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 import utils.TestMinimalAuthAction
 
 import scala.reflect.ClassTag
@@ -67,5 +71,25 @@ trait FakePBIKApplication extends OneAppPerSuite {
 
   def injected[T](c: Class[T]): T = app.injector.instanceOf(c)
   def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T]
+
+  val mockSessionService: SessionService = mock[SessionService]
+  val mockHttp: DefaultHttpClient = mock[DefaultHttpClient]
+  val mockPbikSessionCache: PbikSessionCache = mock[PbikSessionCache]
+  val mockAppConfig: PbikAppConfig = mock[PbikAppConfig]
+
+  val cleanRegistrationList: Option[RegistrationList] = Some(RegistrationList(None, List.empty[RegistrationItem], None))
+  val cleanBikRemoved: Option[RegistrationItem] = Some(RegistrationItem("", false, false))
+  val cleanListOfMatches: Option[List[EiLPerson]] = Some(List.empty[EiLPerson])
+  val cleanEiLPerson: Option[EiLPerson] = Some(EiLPerson("", "", None, "", None, None, None, None))
+  val cleanBikList: Option[List[Bik]] = Some(List.empty[Bik])
+  val cleanSession: PbikSession =
+    PbikSession(
+      cleanRegistrationList,
+      cleanBikRemoved,
+      cleanListOfMatches,
+      cleanEiLPerson,
+      cleanListOfMatches,
+      cleanBikList,
+      cleanBikList)
 
 }

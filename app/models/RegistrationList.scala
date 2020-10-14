@@ -16,7 +16,13 @@
 
 package models
 
+import play.api.libs.json.{Json, OFormat}
+
 case class RegistrationList(
   selectAll: Option[String] = None,
   active: List[RegistrationItem],
   reason: Option[BinaryRadioButtonWithDesc] = None)
+
+object RegistrationList {
+  implicit val RegistrationListFormats: OFormat[RegistrationList] = Json.format[RegistrationList]
+}

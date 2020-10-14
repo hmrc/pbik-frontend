@@ -23,7 +23,7 @@ import javax.inject.Inject
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.mvc.MessagesControllerComponents
-import services.{BikListService, EiLListService}
+import services.{BikListService, EiLListService, SessionService}
 import utils._
 import views.html.ErrorPage
 import views.html.exclusion._
@@ -37,6 +37,7 @@ class MockExclusionsDisallowedController @Inject()(
   noSessionCheck: NoSessionCheckAction,
   eiLListService: EiLListService,
   bikListService: BikListService,
+  cachingService: SessionService,
   tierConnector: HmrcTierConnector,
   runModeConfiguration: Configuration,
   taxDateUtils: TaxDateUtils,
@@ -61,6 +62,7 @@ class MockExclusionsDisallowedController @Inject()(
       noSessionCheck,
       eiLListService,
       bikListService,
+      cachingService,
       tierConnector,
       runModeConfiguration,
       taxDateUtils,

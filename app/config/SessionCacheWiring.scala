@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package builders
+package config
 
-import java.util.UUID
+import javax.inject.Inject
+import uk.gov.hmrc.http.cache.client.SessionCache
+import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
-import play.api.mvc.AnyContentAsJson
-import play.api.test.FakeRequest
-import uk.gov.hmrc.http.SessionKeys
+class PbikSessionCache @Inject()(val http: DefaultHttpClient, appConfig: PbikAppConfig) extends SessionCache {
 
-object SessionBuilder {
-
-  def updateRequestWithSession(fakeRequest: FakeRequest[AnyContentAsJson]): FakeRequest[AnyContentAsJson] = {
-    val sessionId = s"session-${UUID.randomUUID}"
-    fakeRequest.withSession(SessionKeys.sessionId -> sessionId)
-  }
-
-  def buildRequestWithSession() = {
-    val sessionId = s"session-${UUID.randomUUID}"
-    FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
-  }
+  lazy val defaultSource = "pbik-frontend"
+  lazy val baseUri: String = appConfig.sessionCacheBaseUri
+  lazy val domain: String = appConfig.sessionCacheDomain
 }

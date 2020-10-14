@@ -16,4 +16,11 @@
 
 package models
 
+import play.api.libs.json.{Json, OFormat}
+
 case class BinaryRadioButtonWithDesc(selectionValue: String, info: Option[String])
+
+object BinaryRadioButtonWithDesc {
+  implicit val binaryRadioButtonWithDescFormats: OFormat[BinaryRadioButtonWithDesc] =
+    Json.format[BinaryRadioButtonWithDesc]
+}

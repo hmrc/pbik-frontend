@@ -48,7 +48,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   "ninoExclusionSearchPage" must {
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     behave like pageWithHeader(messages("ExclusionSearch.form.title"))
-    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/nino/exclude-employee-results", "Continue")
+    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/nino/exclude-employee-form", "Continue")
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
     behave like pageWithTextBox("surname", messages("Service.field.surname"))

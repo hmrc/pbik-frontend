@@ -30,9 +30,12 @@ uriInformation: URIInformation,
 repeatWithIndex: RepeatWithIndex)
 
 @(taxYearRange: TaxYearRange,
-  year: String, iabdType: String,
-  listOfMatchesForm: Form[(String,EiLPersonList)],
-  formType: String, empRef: EmpRef)(implicit request: Request[_], messages: Messages)
+  year: String,
+  iabdType: String,
+  listOfMatches: EiLPersonList,
+  listOfMatchesForm: Form[ExclusionNino],
+  formType: String,
+  empRef: EmpRef)(implicit request: Request[_], messages: Messages)
 
 @parentTemplate( pageTitle=messages("ExclusionSearch.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
 
@@ -67,7 +70,7 @@ repeatWithIndex: RepeatWithIndex)
 
         <section id="search-results">
 
-         @if(listOfMatchesForm("individuals").indexes.length > 1) {
+         @if(listOfMatches.active.length > 1) {
 
                 <p class="lede">
                     @if(year=="cy"){
@@ -104,40 +107,21 @@ repeatWithIndex: RepeatWithIndex)
                             <div class="cya-question">@messages("Service.field.worksnumber")</div>
                         </li>
 
-
-                      @repeatWithIndex(listOfMatchesForm("individuals"), min=1) { (listItem,index) =>
-
-                              <li onclick=selectRadioButtonTable('@listItem("nino").value.get-radio')>
-
-                                <div class="cya-answer input">
-                                   @if(listItem("nino").value.get.equals(listOfMatchesForm("individualSelection").value.getOrElse(""))){
-                                        <input class="radio-indent" id ='@listItem("nino").value.get-radio' type="radio" name="individualSelection" value='@listItem("nino").value.get' checked>
-                                    }else{
-                                        <input class="radio-indent" id ='@listItem("nino").value.get-radio' type="radio" name="individualSelection" value='@listItem("nino").value.get'>
-                                    }
+                      @for(index <- 0 until listOfMatches.active.length) {
+                        <li onclick=selectRadioButtonTable('@listOfMatches.active(index).nino-radio')>
+                            <div class="cya-answer input">
+                                <input class="radio-indent" id ='@listOfMatches.active(index).nino-radio' type="radio" name="individualNino" value='@listOfMatches.active(index).nino'>
+                            </div>
+                                <div class="cya-answer" id='table-row-name-@listOfMatches.active(index).surname@index' >
+                                    @listOfMatches.active(index).surname, @listOfMatches.active(index).firstForename
                                 </div>
-                                <input type="hidden" id='individuals_@{index}_nino' name='individuals[@index].nino' value='@listItem("nino").value.getOrElse("")' />
-                                <input type="hidden" id='individuals_@{index}_firstName' name='individuals[@index].firstName' value='@listItem("firstName").value.get' />
-                                @if(listItem("secondName").value.isDefined) { <input type="hidden" id='individuals_@{index}_secondName' name='individuals[@index].secondName' value='@listItem("secondName").value.get' /> }
-                                <input type="hidden" id='individuals_@{index}_surname' name='individuals[@index].surname' value='@listItem("surname").value.get' />
-                                @if(listItem("worksPayrollNumber").value.isDefined) { <input type="hidden" id='individuals_@{index}_worksPayrollNumber' name='individuals[@index].worksPayrollNumber' value='@listItem("worksPayrollNumber").value.get' /> }
-                                @if(listItem("dateOfBirth").value.isDefined) { <input type="hidden" id='individuals_@{index}_dateOfBirth' name='individuals[@index].dateOfBirth' value='@listItem("dateOfBirth").value.get' /> }
-                                @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
-                                <input type="hidden" id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
-                                <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
-                                <div class="cya-answer" id='table-row-name-@listItem("nino").value.get' >
-                                    @listItem("surname").value.get, @listItem("firstName").value.get
+                                <div class="cya-answer" id='table-row-nino-@listOfMatches.active(index).nino'>
+                                    @listOfMatches.active(index).nino
                                 </div>
-                                <div class="cya-answer" id='table-row-nino-@listItem("nino").value.get'>
-                                  @listItem("nino").value.get
+                                <div class="cya-answer" id='table-row-wpn-@listOfMatches.active(index).worksPayrollNumber'>
+                                    @listOfMatches.active(index).worksPayrollNumber.getOrElse("")
                                 </div>
-                                <div class="cya-answer" id='table-row-dob-@listItem("nino").value.get'>
-                                  @listItem("worksPayrollNumber").value.getOrElse("")
-                                </div>
-
-                             </li>
-
-                      }
+                        }
                     </ol>
                 <div style="clear:both"></div>
                 <p class="panel panel-border-wide">
@@ -146,12 +130,12 @@ repeatWithIndex: RepeatWithIndex)
                 <input type="submit" class="button" role="button" id="button-confirm" value="@messages("Service.confirm")">
             }
 
-            <p><a class="button-link" id="multi-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
+            <p><a class="button-link" id="multi-exclusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
                   href="@routes.ExclusionListController.performPageLoad(year, uriInformation.iabdValueURLMapper(iabdType))">
                 @messages("Service.back.excluded")</a></p>
 
          } else {
-           @if(listOfMatchesForm("individuals").indexes.length == 1) {
+           @if(listOfMatches.active.length == 1) {
 
                  <p class="lede">
                   @if(year=="cy"){
@@ -161,48 +145,27 @@ repeatWithIndex: RepeatWithIndex)
                   }
                  </p>
 
-                    @helpers.form(action = routes.ExclusionListController.updateExclusions(year, uriInformation.iabdValueURLMapper(iabdType)),
-                    'onsubmit -> "gaEventConfirmExclude()") {
-                     @repeatWithIndex(listOfMatchesForm("individuals"), min=1) { (listItem,index) =>
-                         <fieldset class="form-group">
-
-                             <input type="hidden" id='individuals_@{index}_nino' name='individuals[@index].nino' value='@listItem("nino").value.get' />
-                             <input type="hidden" id='individuals_@{index}_firstName' name='individuals[@index].firstName' value='@listItem("firstName").value.get' />
-                             @if(listItem("secondName").value.isDefined) { <input type="hidden" id='individuals_@{index}_secondName' name='individuals[@index].secondName' value='@listItem("secondName").value.get' /> }
-                             <input type="hidden" id='individuals_@{index}_surname' name='individuals[@index].surname' value='@listItem("surname").value.get' />
-                             @if(listItem("worksPayrollNumber").value.isDefined) { <input type="hidden" id='individuals_@{index}_worksPayrollNumber' name='individuals[@index].worksPayrollNumber' value='@listItem("worksPayrollNumber").value.get' /> }
-                             @if(listItem("dateOfBirth").value.isDefined) { <input type="hidden" id='individuals_@{index}_dateOfBirth' name='individuals[@index].dateOfBirth' value='@listItem("dateOfBirth").value.get' /> }
-                             @if(listItem("gender").value.isDefined) { <input type="hidden" id='individuals_@{index}_gender' name='individuals[@index].gender' value='@listItem("gender").value.get' /> }
-                             <input type="hidden"  id="individuals_@{index}_perOptLock" name="individuals[@index].perOptLock" value='@listItem("perOptLock").value.get'/>
-                             <input type="hidden" name="individuals[@index].status" id="status" value="20"/>
-                              <h2>@messages("ExclusionSearch.caption")</h2>
-                              <ol class="govuk-check-your-answers cya-questions-short">
-                                <li>
-                                  <div class="cya-question">@messages("Service.field.name")</div>
-                                  <div class="cya-answer" id="table-row-name">
-                                    @listItem("firstName").value.get
-                                    @listItem("surname").value.get
-                                  </div>
-                                </li>
-                                <li>
-                                  <div class="cya-question">@Html(messages("Service.field.nino.2lines"))
-                                      <br>
-                                      <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span>
-                                  </div>
-                                  <div class="cya-answer" id="table-row-nino">@listItem("nino").value.get</div>
-                                </li>
-                                @if(listItem("gender").value.isDefined) {
-                                <li>
-                                  <div class="cya-question">@messages("Service.field.worksnumber")</div>
-                                  <div class="cya-answer" id="table-row-dob">@listItem("worksPayrollNumber").value.getOrElse("")</div>
-                                </li>
-                                }
-                              </ol>
-
-
-                         </fieldset>
-
-                      }
+                        <h2>@messages("ExclusionSearch.caption")</h2>
+                        <ol class="govuk-check-your-answers cya-questions-short">
+                            <li>
+                                <div class="cya-question">@messages("Service.field.name")</div>
+                                <div class="cya-answer" id="table-row-name">
+                                    @listOfMatches.active.head.firstForename
+                                    @listOfMatches.active.head.surname
+                                </div>
+                            </li>
+                            <li>
+                                <div class="cya-question">@Html(messages("Service.field.nino.2lines"))
+                                    <br>
+                                    <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span>
+                                </div>
+                                <div class="cya-answer" id="table-row-nino">@listOfMatches.active.head.nino</div>
+                            </li>
+                            <li>
+                                <div class="cya-question">@messages("Service.field.worksnumber")</div>
+                                <div class="cya-answer" id="table-row-wpn">@listOfMatches.active.head.worksPayrollNumber.getOrElse("")</div>
+                            </li>
+                        </ol>
 
                 <div style="clear:both"></div>
                 <div class="panel panel-border-wide">
@@ -210,25 +173,13 @@ repeatWithIndex: RepeatWithIndex)
                 </div>
 
                 <p>
-                    <input type="submit" class="button" role="button" id="button-confirm" value="@messages("Service.confirm")">
-                    <p><a class="button-link" id="link-exlusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
+                    <a href="@routes.ExclusionListController.updateExclusions(year, uriInformation.iabdValueURLMapper(iabdType))" type="submit" class="button" onclick="gaEventConfirmExclude()" role="button" id="button-confirm">@messages("Service.confirm")</a>
+                    <p><a class="button-link" id="link-exclusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
                           href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))">
                         @messages("Service.back.excluded")</a></p>
                 </p>
-                }
 
-           } else {
-                @if(listOfMatchesForm("individuals").indexes.length < 1) {
-
-                        @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, uriInformation.iabdValueURLMapper(iabdType))) {
-                            <input type="hidden" id="button-nino"  name="confirmation" value="@formType">
-                            <p >@Html(messages("ExclusionSearch.Fail.P", "#"))</p>
-                        }
-                        <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
-                              href="@routes.HomePageController.onPageLoad">@messages("Service.back")</a></p>
-
-                }
-            }
+           }
 
         }
         </section>

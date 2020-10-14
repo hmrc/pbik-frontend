@@ -198,7 +198,7 @@ ExclusionRescind.WhatNext.p3 = Stop sending us a <a target = "_blank" href = "ht
 ExclusionRescind.WhatNext.p4 = Continue sending a <a target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D(b)">P11D(b)</a> to report Class 1A National Insurance contributions.
 
 #*************************************************************
-# Benifits messages
+# Benefits messages
 #*************************************************************
 
 BenefitInKind.label.40 = Assets transferred (cars, property, goods or other assets)

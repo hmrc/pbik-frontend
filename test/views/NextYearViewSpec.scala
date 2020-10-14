@@ -48,7 +48,7 @@ class NextYearViewSpec extends PBIKViewSpec {
   "nextYearPage" must {
     behave like pageWithTitle(messages("AddBenefits.Heading"))
     behave like pageWithHeader(messages("AddBenefits.Heading"))
-    behave like pageWithContinueButtonForm("/payrollbik/cy1/add-benefit-expense", "Continue")
+    behave like pageWithContinueButtonForm("/payrollbik/cy1/choose-benefit-expense", "Continue")
 
     "check the add benefit page for the errors" in {
       val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))

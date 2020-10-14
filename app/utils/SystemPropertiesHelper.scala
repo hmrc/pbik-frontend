@@ -62,7 +62,7 @@ trait SystemPropertiesHelper {
     }
 
   def doesntExist[T](key: String, defaultvalue: T): T = {
-    Logger.warn(
+    Logger.info(
       s"[SystemPropertiesHelper][doesntExist] No system property $key defined. Using default value: $defaultvalue")
     defaultvalue
   }

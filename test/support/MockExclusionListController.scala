@@ -32,7 +32,7 @@ import play.api.libs.json
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{MessagesControllerComponents, Request}
 import play.api.{Configuration, Environment}
-import services.{BikListService, EiLListService}
+import services.{BikListService, EiLListService, SessionService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
@@ -51,6 +51,7 @@ class MockExclusionListController @Inject()(
   noSessionCheck: NoSessionCheckAction,
   eiLListService: EiLListService,
   bikListService: BikListService,
+  cachingService: SessionService,
   tierConnector: HmrcTierConnector,
   runModeConfiguration: Configuration,
   taxDateUtils: TaxDateUtils,
@@ -74,6 +75,7 @@ class MockExclusionListController @Inject()(
       noSessionCheck,
       eiLListService,
       bikListService,
+      cachingService,
       tierConnector,
       taxDateUtils,
       splunkLogger,

@@ -18,7 +18,7 @@ package views
 
 import config.{AppConfig, LocalFormPartialRetriever}
 import controllers.ExternalUrls
-import models.{EmpRef, RegistrationList, TaxYearRange}
+import models.{EmpRef, RegistrationItem, RegistrationList, TaxYearRange}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
@@ -34,11 +34,9 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  override def view: Html = viewWithForm(formMappings.objSelectedForm)
-
-  def viewWithForm(form: Form[RegistrationList]): Html = {
-    val boundForm = form.bind(Map("actives[0].uid" -> "abc"))
-    whatNextAddRemoveView(isCurrentYear = true, taxYearRange, additive = true, boundForm, EmpRef("", ""))
+  override def view: Html = {
+    val regList = RegistrationList(active = List(RegistrationItem("30", true, true)))
+    whatNextAddRemoveView(isCurrentYear = true, taxYearRange, additive = true, regList, EmpRef("", ""))
   }
 
   "whatNextAddRemove" must {

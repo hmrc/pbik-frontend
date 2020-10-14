@@ -63,7 +63,7 @@ Some(taxYearRange), Some(empRef.toString), sidebarLinks = Some(sidebarLinks)) {
 
     <h1 id="title" class="heading-xlarge">@messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)</h1>
 
-    @helpers.form(action = controllers.registration.routes.ManageRegistrationController.confirmAddCurrentTaxYear()) {
+    @helpers.form(action = controllers.registration.routes.ManageRegistrationController.checkYourAnswersAddCurrentTaxYear()) {
 
         @if(registeredBiks.size == biksAvailableCount.get) {
             <p class="panel">

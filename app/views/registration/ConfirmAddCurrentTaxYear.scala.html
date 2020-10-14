@@ -63,7 +63,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
     </p>
 
     <div class="data">
-        @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes(),
+        @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes(),
         'onsubmit -> "gaEventConfirmAddBenefits()") {
 
             <table id="list-of-confirmation-benefits" role="presentation">
@@ -76,7 +76,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
                 </caption>
 
                 <tbody>
-                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateRegisteredBenefitTypes()) {
+                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes()) {
                     @helper.repeat(bikForm("actives"), min=0) { activeField =>
                         <tr role="row">
                             @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )

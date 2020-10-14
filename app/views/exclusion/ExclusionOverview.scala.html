@@ -29,10 +29,10 @@ localFormPartialRetriever: LocalFormPartialRetriever,
 uriInformation: URIInformation,
 back_link: BackLink)
 
-@(taxYearRange:TaxYearRange,
-isCurrentTaxYear:String,
-iabdType:String,
-current:List[EiLPerson],
+@(taxYearRange: TaxYearRange,
+isCurrentTaxYear: String,
+iabdType: String,
+current: List[EiLPerson],
 empRef: EmpRef)(implicit request:Request[_], messages: Messages)
 
 @parentTemplate(pageTitle = messages("ExclusionOverview.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
@@ -72,35 +72,21 @@ empRef: EmpRef)(implicit request:Request[_], messages: Messages)
                 <div class="cya-answer bold" id="action">@messages("Service.action")</div>
             </li>
 
-            @for( (c, index) <- current.zipWithIndex ) {
+            @for( (person, index) <- current.zipWithIndex ) {
             <li>
-            @helpers.form(action=routes.ExclusionListController.remove(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType))){
             <div>
-                <div class="cya-answer" id='name-@c.nino'>@c.surname, @c.firstForename </div>
-                <div class="cya-answer" class="nino" id = 'nino-@c.nino'>
-                    @c.nino
-                </div>
-                <div  class="cya-answer" id='dob-@c.nino'>@c.worksPayrollNumber</div>
+                <div class="cya-answer" id='name-@person.nino'>@person.surname, @person.firstForename </div>
+                <div class="cya-answer" id='nino-@person.nino'>@person.nino</div>
+                <div class="cya-answer" id='wpn-@person.nino'>@person.worksPayrollNumber</div>
                 @if(isCurrentTaxYear!="cy"){
                 <div class="cya-answer">
-                    <button class="button--link-style" id='@c.nino-remove' data-journey-click="link - click:@messages("ExclusionOverview.title"):@messages("Service.removeexclusion")">
-                        @messages("Service.removeexclusion")<span class="visuallyhidden">@messages("Service.for") @c.firstForename @c.surname @c.nino</span>
-                    </button>
+                    <a class="button--link-style" id='@person.nino-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), person.nino)" data-journey-click="link - click:@messages("ExclusionOverview.title"):@messages("Service.removeexclusion")">
+                        @messages("Service.removeexclusion")<span class="visuallyhidden">@messages("Service.for") @person.firstForename @person.surname @person.nino</span>
+                    </a>
                 </div>
                 }
 
             </div>
-
-            <input type="hidden" name="individuals[0].nino" value="@c.nino" />
-            <input type="hidden" name="individuals[0].firstName" value="@c.firstForename" />
-            <input type="hidden" name="individuals[0].secondName" value="@c.secondForename" />
-            <input type="hidden" name="individuals[0].surname"    value="@c.surname" />
-            <input type="hidden" name="individuals[0].worksPayrollNumber" value ="@c.worksPayrollNumber" />
-            <input type="hidden" name="individuals[0].dateOfBirth" value="@c.dateOfBirth" />
-            <input type="hidden" name="individuals[0].gender" value="@c.gender" />
-            <input type="hidden" name="individuals[0].perOptLock" value="@c.perOptLock" />
-            <input type="hidden" name="individuals[0].status" value="30" />
-            }
             }
             </li>
         </ol>
