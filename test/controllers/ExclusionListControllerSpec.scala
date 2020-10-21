@@ -473,7 +473,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When loading the searchResults page for a NINO search, an authorised user" must {
-    "see the NINO results page" in {
+    "see the expected search results page" in {
       when(mockExclusionListController.cachingService.cacheListOfMatches(any())(any[HeaderCarrier]))
         .thenReturn(Future.successful(None))
       when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
@@ -503,140 +503,15 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   }
 
   "When loading the searchResults page for a non-NINO search, an authorised user" must {
-    "see the NON-NINO specific fields" in new ServiceExclusionSetup {
-
-      val injector: Injector = new GuiceApplicationBuilder()
-        .bindings(GuiceTestModule)
-        .injector()
-
-      val mockExclusionListServiceExclusionController: MockExclusionListController = {
-
-        val melc: MockExclusionListController = injector.instanceOf[MockExclusionListController]
-
-        lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
-
-        when(
-          melc.tierConnector.genericGetCall[List[Bik]](
-            anyString,
-            anyString,
-            any[EmpRef],
-            Matchers.eq(controllersReferenceData.YEAR_RANGE.cy))(
-            any[HeaderCarrier],
-            any[Request[_]],
-            any[json.Format[List[Bik]]],
-            any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-          Integer.parseInt(x.iabdType) <= 10
-        }))
-
-        when(
-          melc.tierConnector.genericGetCall[List[Bik]](
-            anyString,
-            anyString,
-            any[EmpRef],
-            Matchers.eq(controllersReferenceData.YEAR_RANGE.cyminus1))(
-            any[HeaderCarrier],
-            any[Request[_]],
-            any[json.Format[List[Bik]]],
-            any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-          Integer.parseInt(x.iabdType) <= 10
-        }))
-
-        when(
-          melc.tierConnector.genericGetCall[List[Bik]](
-            anyString,
-            anyString,
-            any[EmpRef],
-            Matchers.eq(controllersReferenceData.YEAR_RANGE.cyplus1))(
-            any[HeaderCarrier],
-            any[Request[_]],
-            any[json.Format[List[Bik]]],
-            any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-          Integer.parseInt(x.iabdType) <= 10
-        }))
-
-        when(
-          melc.tierConnector.genericGetCall[List[Bik]](
-            anyString,
-            Matchers.eq(""),
-            any[EmpRef],
-            Matchers.eq(controllersReferenceData.YEAR_RANGE.cy))(
-            any[HeaderCarrier],
-            any[Request[_]],
-            any[json.Format[List[Bik]]],
-            any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-          Integer.parseInt(x.iabdType) <= 10
-        }))
-
-        when(
-          melc.tierConnector.genericGetCall[List[Bik]](
-            anyString,
-            Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-            Matchers.eq(EmpRef.empty),
-            Matchers.eq(controllersReferenceData.YEAR_RANGE.cy)
-          )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
-          .thenReturn(Future.successful(CYCache.filter { x: Bik =>
-            Integer.parseInt(x.iabdType) <= 10
-          }))
-
-        when(
-          melc.tierConnector.genericGetCall[List[Bik]](
-            anyString,
-            Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-            Matchers.eq(EmpRef.empty),
-            Matchers.eq(controllersReferenceData.YEAR_RANGE.cyminus1)
-          )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
-          .thenReturn(Future.successful(CYCache.filter { x: Bik =>
-            Integer.parseInt(x.iabdType) <= 10
-          }))
-
-        when(
-          melc.tierConnector.genericGetCall[List[Bik]](
-            anyString,
-            Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-            Matchers.eq(EmpRef.empty),
-            Matchers.eq(controllersReferenceData.YEAR_RANGE.cyplus1)
-          )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
-          .thenReturn(Future.successful(CYCache.filter { x: Bik =>
-            Integer.parseInt(x.iabdType) <= 10
-          }))
-
-        when(
-          melc.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], Matchers.eq(2020))(
-            any[HeaderCarrier],
-            any[Request[_]],
-            any[json.Format[List[Bik]]],
-            any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-          Integer.parseInt(x.iabdType) <= 5
-        }))
-
-        when(
-          melc.tierConnector.genericPostCall(
-            anyString,
-            Matchers.eq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
-            any[EmpRef],
-            anyInt,
-            any)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]]))
-          .thenReturn(Future.successful(new FakeResponse()))
-
-        when(
-          melc.tierConnector.genericGetCall[List[Bik]](
-            anyString,
-            Matchers.eq(app.injector.instanceOf[URIInformation].getRegisteredPath),
-            any[EmpRef],
-            anyInt)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
-          .thenReturn(Future.successful(CYCache.filter { x: Bik =>
-            Integer.parseInt(x.iabdType) >= 15
-          }))
-
-        melc
-      }
+    "see the expected search results page" in {
 
       val noNinoSearchPerson =
         EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0)
-      val formData = controllersReferenceData.exclusionSearchFormWithoutNino.fill(noNinoSearchPerson)
+      val formData =
+        controllersReferenceData.exclusionSearchFormWithoutNino(request = mockrequest).fill(noNinoSearchPerson)
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
-      val result = mockExclusionListServiceExclusionController
+      val result = mockExclusionListController
         .searchResults("cyp1", "car", ControllersReferenceDataCodes.FORM_TYPE_NONINO)
         .apply(formrequest)
       (scala.concurrent.ExecutionContext.Implicits.global)
