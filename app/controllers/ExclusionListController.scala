@@ -252,9 +252,8 @@ class ExclusionListController @Inject()(
                 resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
               } yield {
                 val listOfMatches: List[EiLPerson] = result.json.validate[List[EiLPerson]].asOpt.get
-                val session = cachingService.cacheListOfMatches(listOfMatches).map { res =>
-                  res.get
-                }
+                cachingService.cacheListOfMatches(listOfMatches)
+                Thread.sleep(3000) // Add 3 second wait after caching to see if that helps with jenkins tests
                 Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdType, formType))
               }
             }
