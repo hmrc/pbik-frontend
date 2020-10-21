@@ -85,7 +85,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
 
     @if(iabdType != "") {
     <p>
-        <a class="button-link" id="link-exclusion-back" onclick="gaEvent('Click back to exclusion overview','From: Nino search form')"
+        <a class="button-link" id="link-exclusion-back" onclick="gaEvent('Click back to excluded employees','From: Search error page')"
            href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
             @messages("Service.back.excluded")
         </a>

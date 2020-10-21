@@ -252,7 +252,9 @@ class ExclusionListController @Inject()(
                 resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
               } yield {
                 val listOfMatches: List[EiLPerson] = result.json.validate[List[EiLPerson]].asOpt.get
-                cachingService.cacheListOfMatches(listOfMatches)
+                val session = cachingService.cacheListOfMatches(listOfMatches).map { res =>
+                  res.get
+                }
                 Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdType, formType))
               }
             }
@@ -320,7 +322,7 @@ class ExclusionListController @Inject()(
               errorMessage = message,
               taxYearRange = controllersReferenceData.YEAR_RANGE,
               isCurrentTaxYear = isCurrentTaxYear,
-              code = 65127,
+              code = 63082,
               empRef = Some(request.empRef),
               iabdType = iabdTypeValue
             ))
