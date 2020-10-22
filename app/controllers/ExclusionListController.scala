@@ -299,7 +299,7 @@ class ExclusionListController @Inject()(
     iabdTypeValue: String,
     currentExclusions: List[EiLPerson],
     retryNumber: Int = 0)(implicit request: AuthenticatedRequest[_]): Result = {
-    if (listOfMatches.isEmpty && retryNumber < pbikAppConfig.retryAmount) {
+    if (listOfMatches.isEmpty && retryNumber <= pbikAppConfig.retryAmount) {
       Thread.sleep(pbikAppConfig.retryDelay)
       searchResultsHandleValidResult(
         listOfMatches,
