@@ -252,9 +252,8 @@ class ExclusionListController @Inject()(
                            year,
                            validModel)
                 resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
+                cache <- cachingService.cacheListOfMatches(result.json.validate[List[EiLPerson]].asOpt.get)
               } yield {
-                val listOfMatches: List[EiLPerson] = result.json.validate[List[EiLPerson]].asOpt.get
-                cachingService.cacheListOfMatches(listOfMatches)
                 Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdType, formType))
               }
             }
@@ -297,18 +296,7 @@ class ExclusionListController @Inject()(
     isCurrentTaxYear: String,
     formType: String,
     iabdTypeValue: String,
-    currentExclusions: List[EiLPerson],
-    retryNumber: Int = 0)(implicit request: AuthenticatedRequest[_]): Result = {
-    if (listOfMatches.isEmpty && retryNumber <= pbikAppConfig.retryAmount) {
-      Thread.sleep(pbikAppConfig.retryDelay)
-      searchResultsHandleValidResult(
-        listOfMatches,
-        isCurrentTaxYear,
-        formType,
-        iabdTypeValue,
-        currentExclusions,
-        retryNumber + 1)
-    }
+    currentExclusions: List[EiLPerson])(implicit request: AuthenticatedRequest[_]): Result = {
     val uniqueListOfMatches: List[EiLPerson] =
       eiLListService.searchResultsRemoveAlreadyExcluded(currentExclusions, listOfMatches)
     uniqueListOfMatches.size match {
