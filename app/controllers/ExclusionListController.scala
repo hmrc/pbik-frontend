@@ -36,7 +36,8 @@ import views.html.ErrorPage
 import views.html.exclusion._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.duration.{Duration, DurationInt}
+import scala.concurrent.{Await, Future}
 
 class ExclusionListController @Inject()(
   formMappings: FormMappings,
@@ -252,8 +253,7 @@ class ExclusionListController @Inject()(
                 resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
               } yield {
                 val listOfMatches: List[EiLPerson] = result.json.validate[List[EiLPerson]].asOpt.get
-                cachingService.cacheListOfMatches(listOfMatches)
-                Thread.sleep(3000) // Add 3 second wait after caching to see if that helps with jenkins tests
+                Await.result(cachingService.cacheListOfMatches(listOfMatches), 10.seconds) // Add 10 second wait for cache result to see if that helps with jenkins tests
                 Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdType, formType))
               }
             }
