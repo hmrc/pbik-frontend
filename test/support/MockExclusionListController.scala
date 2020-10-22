@@ -77,6 +77,7 @@ class MockExclusionListController @Inject()(
       bikListService,
       cachingService,
       tierConnector,
+      pbikAppConfig,
       taxDateUtils,
       splunkLogger,
       controllersReferenceData,

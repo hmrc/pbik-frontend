@@ -507,7 +507,8 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
       val noNinoSearchPerson =
         EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0)
-      val formData = controllersReferenceData.exclusionSearchFormWithoutNino(request = mockrequest).fill(noNinoSearchPerson)
+      val formData =
+        controllersReferenceData.exclusionSearchFormWithoutNino(request = mockrequest).fill(noNinoSearchPerson)
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
       val result = mockExclusionListController

@@ -75,4 +75,8 @@ class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
   lazy val sessionCacheBaseUri: String = configuration.get[Service]("microservice.services.keystore")
   lazy val sessionCacheDomain: String =
     configuration.get[String](s"microservice.services.cachable.session-cache.domain")
+
+  lazy val retryAmount: Int = configuration.get[Int]("retry.amount")
+  lazy val retryDelay: Int = configuration.get[Int]("retry.delay")
+
 }

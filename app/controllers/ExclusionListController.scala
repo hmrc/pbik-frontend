@@ -18,6 +18,7 @@ package controllers
 
 import java.util.UUID
 
+import config.PbikAppConfig
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
@@ -36,8 +37,7 @@ import views.html.ErrorPage
 import views.html.exclusion._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration.{Duration, DurationInt}
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Future
 
 class ExclusionListController @Inject()(
   formMappings: FormMappings,
@@ -49,6 +49,7 @@ class ExclusionListController @Inject()(
   val bikListService: BikListService,
   val cachingService: SessionService,
   val tierConnector: HmrcTierConnector, //TODO: Why do we need this?,
+  val pbikAppConfig: PbikAppConfig,
   taxDateUtils: TaxDateUtils,
   splunkLogger: SplunkLogger,
   controllersReferenceData: ControllersReferenceData,
@@ -253,7 +254,7 @@ class ExclusionListController @Inject()(
                 resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
               } yield {
                 val listOfMatches: List[EiLPerson] = result.json.validate[List[EiLPerson]].asOpt.get
-                Await.result(cachingService.cacheListOfMatches(listOfMatches), 10.seconds) // Add 10 second wait for cache result to see if that helps with jenkins tests
+                cachingService.cacheListOfMatches(listOfMatches)
                 Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdType, formType))
               }
             }
@@ -296,7 +297,18 @@ class ExclusionListController @Inject()(
     isCurrentTaxYear: String,
     formType: String,
     iabdTypeValue: String,
-    currentExclusions: List[EiLPerson])(implicit request: AuthenticatedRequest[_]): Result = {
+    currentExclusions: List[EiLPerson],
+    retryNumber: Int = 0)(implicit request: AuthenticatedRequest[_]): Result = {
+    if (listOfMatches.isEmpty && retryNumber < pbikAppConfig.retryAmount) {
+      Thread.sleep(pbikAppConfig.retryDelay)
+      searchResultsHandleValidResult(
+        listOfMatches,
+        isCurrentTaxYear,
+        formType,
+        iabdTypeValue,
+        currentExclusions,
+        retryNumber + 1)
+    }
     val uniqueListOfMatches: List[EiLPerson] =
       eiLListService.searchResultsRemoveAlreadyExcluded(currentExclusions, listOfMatches)
     uniqueListOfMatches.size match {
