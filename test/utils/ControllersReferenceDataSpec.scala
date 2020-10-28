@@ -85,7 +85,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       val p = Promise[Result]()
       p.failure(new NoSuchElementException("NoSuchElement"))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status must be(INTERNAL_SERVER_ERROR) // 500
+      result.header.status must be(NOT_FOUND) // 404
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.validationError"))
     }
   }

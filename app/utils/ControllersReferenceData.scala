@@ -103,7 +103,7 @@ class ControllersReferenceData @Inject()(
     staticDataRequest.recover {
       case e0: NoSuchElementException => {
         Logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled : $e0")
-        InternalServerError(errorPageView(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
+        NotFound(errorPageView(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e1: InvalidYearURIException => {
         Logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
