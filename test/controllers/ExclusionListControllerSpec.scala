@@ -614,7 +614,7 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
                 None
               ))))
       val result = mockExclusionListController.showResults("cyp1", "car", "nino").apply(mockrequest)
-      status(result) must be(INTERNAL_SERVER_ERROR)
+      status(result) must be(NOT_FOUND)
       contentAsString(result) must include("We’re sorry a technical error has occurred")
     }
   }
