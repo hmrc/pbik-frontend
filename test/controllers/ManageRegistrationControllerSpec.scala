@@ -73,6 +73,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
 
   class FakeResponse extends HttpResponse {
     override def status = 200
+    override def allHeaders: Map[String, Seq[String]] = Map()
+    override def body: String = "empty"
   }
 
   val registrationController: ManageRegistrationController = {

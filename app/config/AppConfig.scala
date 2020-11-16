@@ -41,7 +41,7 @@ trait AppConfig {
 
 class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
 
-  private lazy val companyAuthHost: String = configuration.get[String]("microservice.auth.company-auth.host")
+  private lazy val basGatewayHost: String = configuration.get[String]("microservice.auth.bas-gateway.host")
   override lazy val contactFrontendService: String =
     configuration.get[Service]("microservice.services.contact-frontend")
   override lazy val contactFormServiceIdentifier = "PayrollBIK"
@@ -65,7 +65,7 @@ class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
   lazy val urBannerToggle: Boolean = configuration.get[Boolean]("urBanner.toggle")
   override lazy val urBannerLink: String = configuration.get[String]("urBanner.link")
   override lazy val feedbackUrl: String = configuration.get[String]("feedback.url")
-  override lazy val signOut = s"$companyAuthHost/gg/sign-out/?continue=$feedbackUrl"
+  override lazy val signOut = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
 
   override val analyticsToken: Option[String] = configuration.getOptional[String]("google-analytics.token")
   override val analyticsHost: String =

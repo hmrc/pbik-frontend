@@ -30,6 +30,7 @@ class TierConnectorSpec extends PlaySpec with FakePBIKApplication with TestAuthU
   class FakeResponse extends HttpResponse {
     override def status = 200
     override def body = ""
+    override def allHeaders: Map[String, Seq[String]] = Map()
   }
 
   class FakeResponseWithError extends HttpResponse {
@@ -37,11 +38,13 @@ class TierConnectorSpec extends PlaySpec with FakePBIKApplication with TestAuthU
     val jsonValue: JsValue = Json.toJson(new PbikError("64990"))
     override def body: String = jsonValue.toString()
     override def json: JsValue = jsonValue
+    override def allHeaders: Map[String, Seq[String]] = Map()
   }
 
   class FakeSevereResponse extends HttpResponse {
     override def status = 500
     override def body = "A severe server error"
+    override def allHeaders: Map[String, Seq[String]] = Map()
   }
 
   val hmrcTierConnector = app.injector.instanceOf[HmrcTierConnector]

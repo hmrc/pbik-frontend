@@ -59,10 +59,6 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
 
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-  class FakeResponse extends HttpResponse {
-    override def status = 200
-  }
-
   "The Homepage Controller" should {
     "set the request language and reload page based on referer header" in {
       val mockController = app.injector.instanceOf[HomePageController]
