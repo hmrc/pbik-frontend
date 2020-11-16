@@ -22,14 +22,12 @@ import play.api.Configuration
 class ExternalUrls @Inject()(configuration: Configuration) {
 
   val loginCallback: String = configuration.get[String]("microservice.auth.login-callback.url")
-  val companyAuthHost: String = configuration.get[String]("microservice.auth.company-auth.host")
-  val loginLocalPath: String = configuration.get[String]("microservice.auth.login_local_path")
+  val basGatewayHost: String = configuration.get[String]("microservice.auth.bas-gateway.host")
   val loginPath: String = configuration.get[String]("microservice.auth.login_path")
   val signOutPath: String = configuration.get[String]("microservice.auth.signout_path")
 
   val continue: String = loginCallback
-  val signIn = s"$companyAuthHost/gg/$loginPath"
-  val signInLocal = s"$companyAuthHost/gg/$loginLocalPath"
-  val signOut = s"$companyAuthHost/gg/$signOutPath"
+  val signIn = s"$basGatewayHost/bas-gateway/$loginPath"
+  val signOut = s"$basGatewayHost/bas-gateway/$signOutPath"
 
 }

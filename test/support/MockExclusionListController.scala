@@ -127,7 +127,8 @@ class MockExclusionListController @Inject()(
 
 class FakeResponse extends HttpResponse {
   override def status = 200
-
+  override def allHeaders: Map[String, Seq[String]] = Map()
+  override def body: String = "empty"
   override val json: JsValue = Json.parse("""[
                  {
                      "nino": "AB111111",

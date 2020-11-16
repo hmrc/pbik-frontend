@@ -3,13 +3,13 @@ import sbt._
 object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc" %% "play-partials" % "6.11.0-play-26",
-    "uk.gov.hmrc" %% "url-builder" % "3.1.0",
+    "uk.gov.hmrc" %% "play-partials" % "7.0.0-play-26",
+    "uk.gov.hmrc" %% "url-builder" % "3.4.0-play-26",
     "uk.gov.hmrc" %% "tax-year" % "1.1.0",
     "uk.gov.hmrc" %% "auth-client" % "3.2.0-play-26",
-    "uk.gov.hmrc" %% "bootstrap-play-26" % "1.8.0",
-    "uk.gov.hmrc" %% "play-ui" % "8.13.0-play-26",
-    "uk.gov.hmrc" %% "govuk-template" % "5.57.0-play-26",
+    "uk.gov.hmrc" %% "bootstrap-play-26" % "2.1.0",
+    "uk.gov.hmrc" %% "play-ui" % "8.15.0-play-26",
+    "uk.gov.hmrc" %% "govuk-template" % "5.59.0-play-26",
     "uk.gov.hmrc" %% "http-caching-client" % "9.1.0-play-26"
   )
 

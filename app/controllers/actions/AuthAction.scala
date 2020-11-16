@@ -75,7 +75,7 @@ class AuthActionImpl @Inject()(
         Logger.warn("[AuthAction][invokeBlock] Bearer token missing or invalid")
         Redirect(
           externalUrls.signIn,
-          Map("continue" -> Seq(externalUrls.loginCallback), "origin" -> Seq("pbik-frontend")))
+          Map("continue_url" -> Seq(externalUrls.loginCallback), "origin" -> Seq("pbik-frontend")))
       case ex: InsufficientEnrolments =>
         Logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
         Results.Redirect(controllers.routes.AuthController.notAuthorised())

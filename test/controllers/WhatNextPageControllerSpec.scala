@@ -40,7 +40,7 @@ import services.{BikListService, SessionService}
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.logging.SessionId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys, Token}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
 import uk.gov.hmrc.time.TaxYear
 import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction, URIInformation}
 
@@ -248,6 +248,8 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
 
   class FakeResponse extends HttpResponse {
     override def status = 200
+    override def allHeaders: Map[String, Seq[String]] = Map()
+    override def body: String = "empty"
   }
 
   val whatNextPageController: WhatNextPageController = {
