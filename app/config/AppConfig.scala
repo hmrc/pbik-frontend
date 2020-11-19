@@ -36,6 +36,8 @@ trait AppConfig {
   val signOut: String
   val analyticsToken: Option[String]
   val analyticsHost: String
+  val googleTagManager: Option[String]
+  val googleTagManagerEnabled: Boolean
   val ssoUrl: Option[String]
 }
 
@@ -68,6 +70,8 @@ class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
   override lazy val signOut = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
 
   override val analyticsToken: Option[String] = configuration.getOptional[String]("google-analytics.token")
+  override val googleTagManager: Option[String] = configuration.getOptional[String]("google-tag-manager.id")
+  override val googleTagManagerEnabled: Boolean = configuration.get[Boolean]("google-tag-manager.enabled")
   override val analyticsHost: String =
     configuration.getOptional[String]("google-analytics.host").getOrElse("service.gov.uk")
   override val ssoUrl: Option[String] = configuration.getOptional[String]("portal.ssoUrl")

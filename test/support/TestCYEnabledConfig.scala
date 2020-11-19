@@ -37,6 +37,8 @@ object TestCYEnabledConfig extends AppConfig {
   override lazy val feedbackUrl: String = ""
   override lazy val signOut: String = ""
   override val ssoUrl: Option[String] = None
+  override val googleTagManager: Option[String] = Some("")
+  override val googleTagManagerEnabled: Boolean = false
 }
 
 object TestCYDisabledConfig extends AppConfig {
@@ -58,4 +60,6 @@ object TestCYDisabledConfig extends AppConfig {
   override lazy val feedbackUrl: String = ""
   override lazy val signOut: String = ""
   override val ssoUrl: Option[String] = None
+  override val googleTagManager: Option[String] = Some("")
+  override val googleTagManagerEnabled: Boolean = true
 }
