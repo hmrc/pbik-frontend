@@ -1,11 +1,10 @@
-import sbt.Def
-import scoverage.ScoverageSbtPlugin._
+import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import com.lucidchart.sbt.scalafmt.ScalafmtCorePlugin.autoImport.scalafmtOnCompile
 
 val appName = "pbik-frontend"
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.12"
 
 lazy val plugins: Seq[Plugins] =
   Seq(SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb, SbtArtifactory)

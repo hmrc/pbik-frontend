@@ -19,10 +19,11 @@ package utils
 import java.text.SimpleDateFormat
 import java.util
 import java.util.Date
+import java.time.LocalDate
 
 import javax.inject.Inject
 import models.TaxYearRange
-import org.joda.time.{DateTime, LocalDate}
+import org.joda.time.DateTime
 import play.api.Configuration
 import uk.gov.hmrc.time.TaxYear
 
@@ -36,11 +37,9 @@ class TaxDateUtils @Inject()(configuration: Configuration) extends PayrollBikDef
 
   def getDefaultDate: LocalDate =
     if (overridedDateFromConfig.isDefined) {
-      new LocalDate(
-        overridedDateFromConfig.get.get(0),
-        overridedDateFromConfig.get.get(1),
-        overridedDateFromConfig.get.get(2))
-    } else new LocalDate()
+      LocalDate
+        .of(overridedDateFromConfig.get.get(0), overridedDateFromConfig.get.get(1), overridedDateFromConfig.get.get(2))
+    } else LocalDate.now()
 
   def getDefaultYear: Int =
     if (overridedDateFromConfig.isDefined) new DateTime().getYear + 1 else new DateTime().getYear
