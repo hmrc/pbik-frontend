@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +34,6 @@ trait AppConfig {
   val urBannerLink: String
   val feedbackUrl: String
   val signOut: String
-  val analyticsToken: Option[String]
-  val analyticsHost: String
-  val googleTagManager: Option[String]
-  val googleTagManagerEnabled: Boolean
   val ssoUrl: Option[String]
 }
 
@@ -68,12 +64,6 @@ class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
   override lazy val urBannerLink: String = configuration.get[String]("urBanner.link")
   override lazy val feedbackUrl: String = configuration.get[String]("feedback.url")
   override lazy val signOut = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
-
-  override val analyticsToken: Option[String] = configuration.getOptional[String]("google-analytics.token")
-  override val googleTagManager: Option[String] = configuration.getOptional[String]("google-tag-manager.id")
-  override val googleTagManagerEnabled: Boolean = configuration.get[Boolean]("google-tag-manager.enabled")
-  override val analyticsHost: String =
-    configuration.getOptional[String]("google-analytics.host").getOrElse("service.gov.uk")
   override val ssoUrl: Option[String] = configuration.getOptional[String]("portal.ssoUrl")
 
   lazy val sessionCacheBaseUri: String = configuration.get[Service]("microservice.services.keystore")

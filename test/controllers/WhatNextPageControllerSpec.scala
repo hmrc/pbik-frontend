@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -413,16 +413,18 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
   }
 
   "The calculateTaxYear method" should {
-    "return this year and next year if given true" in {
+    val startYear = TaxYear(new LocalDate().getYear)
+
+    "return this tax year and next year if given true" in {
       val result = whatNextPageController.calculateTaxYear(true)
-      assert(result._1 == LocalDate.now().getYear)
-      assert(result._2 == (LocalDate.now().getYear + 1))
+      assert(result._1 == startYear.startYear - 1)
+      assert(result._2 == startYear.startYear)
     }
 
     "return next year and the year after if given false" in {
       val result = whatNextPageController.calculateTaxYear(false)
-      assert(result._1 == (LocalDate.now().getYear + 1))
-      assert(result._2 == (LocalDate.now().getYear + 2))
+      assert(result._1 == startYear.startYear)
+      assert(result._2 == startYear.startYear + 1)
     }
   }
 

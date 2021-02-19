@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,6 @@ object TestCYEnabledConfig extends AppConfig {
   override lazy val reportAProblemPartialUrl: String = "http://localhost:9250/contact/problem_reports"
   override lazy val betaFeedbackUrl: String = ""
   override lazy val betaFeedbackUnauthenticatedUrl: String = ""
-  override lazy val analyticsToken: Option[String] = Some("")
-  override lazy val analyticsHost: String = ""
   override lazy val cyEnabled: Boolean = true
   override lazy val biksNotSupported: List[Int] = List.empty[Int]
   override lazy val biksNotSupportedCY: List[Int] = List.empty[Int]
@@ -37,8 +35,6 @@ object TestCYEnabledConfig extends AppConfig {
   override lazy val feedbackUrl: String = ""
   override lazy val signOut: String = ""
   override val ssoUrl: Option[String] = None
-  override val googleTagManager: Option[String] = Some("")
-  override val googleTagManagerEnabled: Boolean = false
 }
 
 object TestCYDisabledConfig extends AppConfig {
@@ -49,8 +45,6 @@ object TestCYDisabledConfig extends AppConfig {
   override lazy val reportAProblemPartialUrl: String = "http://localhost:9250/contact/problem_reports"
   override lazy val betaFeedbackUrl: String = ""
   override lazy val betaFeedbackUnauthenticatedUrl: String = ""
-  override lazy val analyticsToken: Option[String] = Some("")
-  override lazy val analyticsHost: String = ""
   override lazy val cyEnabled: Boolean = false
   override lazy val biksNotSupported: List[Int] = List.empty[Int]
   override lazy val biksNotSupportedCY: List[Int] = List.empty[Int]
@@ -60,6 +54,4 @@ object TestCYDisabledConfig extends AppConfig {
   override lazy val feedbackUrl: String = ""
   override lazy val signOut: String = ""
   override val ssoUrl: Option[String] = None
-  override val googleTagManager: Option[String] = Some("")
-  override val googleTagManagerEnabled: Boolean = true
 }
