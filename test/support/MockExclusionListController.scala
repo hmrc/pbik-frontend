@@ -19,7 +19,7 @@ package support
 import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import controllers.{ExclusionListController, ExternalUrls}
+import controllers.ExclusionListController
 import javax.inject.Inject
 import models.{Bik, EiLPerson, EmpRef}
 import org.mockito.Matchers

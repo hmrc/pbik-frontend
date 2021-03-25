@@ -35,6 +35,12 @@ trait AppConfig {
   val feedbackUrl: String
   val signOut: String
   val ssoUrl: Option[String]
+  val timeout: Int
+  val timeoutCountdown: Int
+  val loginCallbackUrl: String
+  val authSignIn: String
+  val authSignOut: String
+  val timedOutUrl: String
 }
 
 class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
@@ -64,9 +70,21 @@ class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
   override lazy val urBannerLink: String = configuration.get[String]("urBanner.link")
   override lazy val feedbackUrl: String = configuration.get[String]("feedback.url")
   override lazy val signOut = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
+  private lazy val timedOutRedirectUrl: String = configuration.get[String]("timedOutUrl")
+  lazy val timedOutUrl = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$timedOutRedirectUrl"
+
   override val ssoUrl: Option[String] = configuration.getOptional[String]("portal.ssoUrl")
 
   lazy val sessionCacheBaseUri: String = configuration.get[Service]("microservice.services.keystore")
   lazy val sessionCacheDomain: String =
     configuration.get[String](s"microservice.services.cachable.session-cache.domain")
+
+  lazy val timeout: Int = configuration.get[Int]("timeout.timeout")
+  lazy val timeoutCountdown: Int = configuration.get[Int]("timeout.countdown")
+
+  lazy val loginCallbackUrl: String = configuration.get[String]("microservice.auth.login-callback.url")
+  private lazy val loginPath: String = configuration.get[String]("microservice.auth.login_path")
+  private lazy val signOutPath: String = configuration.get[String]("microservice.auth.signout_path")
+  lazy val authSignIn = s"$basGatewayHost/bas-gateway/$loginPath"
+  lazy val authSignOut = s"$basGatewayHost/bas-gateway/$signOutPath"
 }

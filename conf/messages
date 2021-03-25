@@ -555,3 +555,13 @@ global.page.not.found.error.check.web.address.full=If you pasted the web address
 global.page.not.found.error.contact=If the web address is correct or you selected a link or button, {0} if you need to speak to someone about the benefits and expenses you manage through your payroll.
 global.page.not.found.error.contact.link.text=contact the employers helpline
 global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries
+
+#********************************************************************
+# timeout text
+#********************************************************************
+timeout.message = For your security, we will sign you out in
+timeout.keepAlive = Stay signed in
+timeout.signOut = Sign out
+
+signedOut.title = For your security, we signed you out
+signedOut.signIn = Sign in

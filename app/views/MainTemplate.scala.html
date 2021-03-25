@@ -33,7 +33,7 @@
   main_content_header: MainContentHeader,
   main_content: MainContent,
   govuk_template: GovUkTemplate,
-  footer: Footer,
+  footer: uk.gov.hmrc.play.views.html.layouts.Footer,
   footer_links: FooterLinks,
   headWithTrackingConsent: HeadWithTrackingConsent,
   header_nav: HeaderNav,
@@ -55,7 +55,9 @@
   mainConfig: MainConfig = MainConfig(),
   includeGridWrapper: Boolean = false,
   gaCalls: Option[(String,String) => Html] = None,
-  isUserResearchBannerVisible: Boolean = true)(mainContent: Html)(implicit request: Request[_], messages: Messages)
+  isUserResearchBannerVisible: Boolean = true,
+  timeoutActive: Boolean
+)(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headBlock = {
   @headWithTrackingConsent(linkElement, headScripts)
@@ -141,11 +143,28 @@ config.urBannerLink)
     analyticsHost = "",
     ssoUrl = config.ssoUrl,
     scriptElem = scriptElement,
-    gaCalls = None)
+    gaCalls = None
+  )
 
-<link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/pbik.css")' media="screen" type="text/css" />
-<script type="text/javascript" src='@routes.Assets.versioned("javascripts/pbik.js")'></script>
-<script type="text/javascript" src='@routes.Assets.versioned("javascripts/urBanner.js")'></script>
+    <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/pbik.css")' media="screen" type="text/css" />
+    <script type="text/javascript" src='@routes.Assets.versioned("javascripts/pbik.js")'></script>
+    <script type="text/javascript" src='@routes.Assets.versioned("javascripts/urBanner.js")'></script>
+    @if(timeoutActive) {
+        <script type="text/javascript" src='@routes.Assets.versioned("javascripts/timeout.js")'></script>
+        <script>
+                timeoutDialog({
+                    title: '@messages("timeout.title")',
+                    message: '@messages("timeout.message")',
+                    keepAliveButtonText: '@messages("timeout.keepAlive")',
+                    signOutButtonText: '@messages("timeout.signOut")',
+                    timeout: @{config.timeout},
+                    countdown: @{config.timeoutCountdown},
+                    keepAliveUrl: '@routes.SignedOutController.keepAlive()',
+                    signOutUrl: '@routes.HomePageController.signout()',
+                    signedYouOutUrl: '@{config.timedOutUrl}'
+                });
+        </script>
+    }
 }
 
 @govuk_template(Some(title), None)(headBlock, bodyEnd, insideHeader, afterHeader, footerTop, Some(footer_links()), headerNav.isDefined)(content)

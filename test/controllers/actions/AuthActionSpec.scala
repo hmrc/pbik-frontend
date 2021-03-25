@@ -17,7 +17,7 @@
 package controllers.actions
 
 import akka.util.Timeout
-import controllers.ExternalUrls
+import config.AppConfig
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -49,7 +49,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
         val authAction = new AuthActionImpl(
           new BrokenAuthConnector(new MissingBearerToken, mock[HttpClient], app.injector.instanceOf[Configuration]),
           app.injector.instanceOf[BodyParsers.Default],
-          app.injector.instanceOf[ExternalUrls]
+          app.injector.instanceOf[AppConfig]
         )
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
@@ -64,13 +64,12 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
         val authAction = new AuthActionImpl(
           new BrokenAuthConnector(new InsufficientEnrolments, mock[HttpClient], app.injector.instanceOf[Configuration]),
           app.injector.instanceOf[BodyParsers.Default],
-          app.injector.instanceOf[ExternalUrls]
+          app.injector.instanceOf[AppConfig]
         )
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.AuthController.notAuthorised().url)
-
       }
     }
   }

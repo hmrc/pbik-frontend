@@ -552,3 +552,13 @@ global.page.not.found.error.check.web.address.full=Os gwnaethoch ludo’r cyfeir
 global.page.not.found.error.contact=Os yw’r cyfeiriad gwe yn gywir neu os ydych wedi dewis cysylltiad neu fotwm, {0} os oes angen i chi siarad â rhywun am y buddiannau a’r treuliau rydych yn eu rheoli drwy’ch cyflogres.
 global.page.not.found.error.contact.link.text=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM
 global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines
+
+#********************************************************************
+# timeout text
+#********************************************************************
+timeout.message = Er eich diogelwch, byddwn yn eich allgofnodi cyn pen
+timeout.keepAlive = Parhau i fod wedi’ch mewngofnodi
+timeout.signOut = Allgofnodi
+
+signedOut.title = Er eich diogelwch, gwnaethom eich allgofnodi
+signedOut.signIn = Mewngofnodi

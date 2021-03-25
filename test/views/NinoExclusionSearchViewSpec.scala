@@ -17,7 +17,6 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig}
-import controllers.ExternalUrls
 import models._
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -38,7 +37,6 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
   implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
-  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 

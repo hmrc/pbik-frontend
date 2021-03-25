@@ -17,7 +17,6 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever}
-import controllers.ExternalUrls
 import models.{EmpRef, RegistrationItem, RegistrationList, TaxYearRange}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -37,7 +36,6 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
   override def view: Html = viewWithForm(formMappings.objSelectedForm)
 
   implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
-  implicit val externalURLs: ExternalUrls = app.injector.instanceOf[ExternalUrls]
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
   val bikList = RegistrationList(active = List.empty[RegistrationItem])

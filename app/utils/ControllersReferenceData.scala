@@ -17,13 +17,12 @@
 package utils
 
 import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
-import controllers.ExternalUrls
 import javax.inject.Inject
 import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results._
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.http.Upstream5xxResponse
 import utils.ControllersReferenceDataCodes._
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
@@ -83,7 +82,6 @@ class ControllersReferenceData @Inject()(
   maintenancePageView: MaintenancePage)(
   implicit val context: PbikContext,
   implicit val pbikAppConfig: AppConfig,
-  implicit val externalURLs: ExternalUrls,
   implicit val localFormPartialRetriever: LocalFormPartialRetriever)
     extends FormMappings(messagesApi) with I18nSupport {
 
