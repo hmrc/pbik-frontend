@@ -14,22 +14,23 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
+@import uk.gov.hmrc.play.views.html.helpers
 @import config.PbikContext
-@import utils.FormMappingsConstants._
+@import config.AppConfig
 @import config.LocalFormPartialRetriever
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever)
+@this(
+    parentTemplate: ParentTemplate
+)
 
-@(backLink:String= "payrolled-benefits-expenses", empRef: Option[EmpRef])(implicit request:Request[_], messages: Messages)
+@()(implicit request:Request[_], messages: Messages)
 
-@parentTemplate(pageTitle = messages("Service.title"), None, Some(empRef.toString)) {
+@parentTemplate(pageTitle = messages("signedOut.title") + " - " + messages("Service.title"), None, None, timeoutActive = false, signedIn = false) {
 
-    <h1 class="heading-xlarge" id="title">@messages("ErrorPage.title")</h1>
-    <p id="tryLater">
-        @Html(messages("ErrorPage.try.later"))
-    </p>
+    <h1 class="heading-xlarge">@messages("signedOut.title")</h1>
+
+    <div>
+        <a class="button" role="button" href="@routes.HomePageController.onPageLoad()">@messages("signedOut.signIn")</a>
+    </div>
+
 }

@@ -17,7 +17,6 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
-import controllers.ExternalUrls
 import models._
 import play.api.data.Form
 import play.api.i18n.MessagesApi

@@ -60,3 +60,6 @@ GET         /:year/:iabdType/exclude-employee-remove             controllers.Exc
 GET         /:year/:iabdType/exclude-employee-remove/:nino       controllers.ExclusionListController.remove(year: String, iabdType: String, nino: String)
 GET         /:iabdType/remove-commit                             controllers.ExclusionListController.showRemovalWhatsNext(iabdType: String)
 POST        /:iabdType/remove-commit                             controllers.ExclusionListController.removeExclusionsCommit(iabdType: String)
+
+GET         /keep-alive                                          controllers.SignedOutController.keepAlive()
+GET         /we-signed-you-out                                   controllers.SignedOutController.signedOut()

@@ -17,7 +17,8 @@
 package controllers.actions
 
 import akka.util.Timeout
-import controllers.ExternalUrls
+import config.AppConfig
+
 import javax.inject.Inject
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -54,7 +55,7 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
         val minimalAuthAction = new MinimalAuthActionImpl(
           new BrokenAuthConnector(new MissingBearerToken, mock[HttpClient], app.injector.instanceOf[Configuration]),
           app.injector.instanceOf[BodyParsers.Default],
-          app.injector.instanceOf[ExternalUrls]
+          app.injector.instanceOf[AppConfig]
         )
         val controller = new Harness(minimalAuthAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))

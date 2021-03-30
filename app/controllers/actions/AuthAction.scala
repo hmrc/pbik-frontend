@@ -17,13 +17,13 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
-import config.Service
-import controllers.ExternalUrls
+import config.{AppConfig, Service}
+
 import javax.inject.Inject
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Logger}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default,
-  externalUrls: ExternalUrls)(implicit val executionContext: ExecutionContext)
+  config: AppConfig)(implicit val executionContext: ExecutionContext)
     extends AuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
@@ -74,8 +74,8 @@ class AuthActionImpl @Inject()(
       case ex: NoActiveSession =>
         Logger.warn("[AuthAction][invokeBlock] Bearer token missing or invalid")
         Redirect(
-          externalUrls.signIn,
-          Map("continue_url" -> Seq(externalUrls.loginCallback), "origin" -> Seq("pbik-frontend")))
+          config.authSignIn,
+          Map("continue_url" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend")))
       case ex: InsufficientEnrolments =>
         Logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
         Results.Redirect(controllers.routes.AuthController.notAuthorised())

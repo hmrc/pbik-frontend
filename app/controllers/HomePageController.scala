@@ -64,7 +64,7 @@ class HomePageController @Inject()(
     Redirect(pbikAppConfig.signOut)
   }
 
-  def setLanguage: Action[AnyContent] = (authenticate andThen noSessionCheck) { implicit request =>
+  def setLanguage: Action[AnyContent] = Action { implicit request =>
     val lang = request.getQueryString("lang").getOrElse("en")
     Logger.info(s"[HomePageController][setLanguage] Request received: set language to $lang")
     val newLang = Lang(lang)

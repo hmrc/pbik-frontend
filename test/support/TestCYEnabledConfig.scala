@@ -35,6 +35,12 @@ object TestCYEnabledConfig extends AppConfig {
   override lazy val feedbackUrl: String = ""
   override lazy val signOut: String = ""
   override val ssoUrl: Option[String] = None
+  override val authSignIn: String = ""
+  override val authSignOut: String = ""
+  override val loginCallbackUrl: String = ""
+  override val timedOutUrl: String = ""
+  override val timeout: Int = 900
+  override val timeoutCountdown: Int = 123
 }
 
 object TestCYDisabledConfig extends AppConfig {
@@ -54,4 +60,10 @@ object TestCYDisabledConfig extends AppConfig {
   override lazy val feedbackUrl: String = ""
   override lazy val signOut: String = ""
   override val ssoUrl: Option[String] = None
+  override val authSignIn: String = ""
+  override val authSignOut: String = ""
+  override val loginCallbackUrl: String = ""
+  override val timedOutUrl: String = ""
+  override val timeout: Int = 900
+  override val timeoutCountdown: Int = 123
 }

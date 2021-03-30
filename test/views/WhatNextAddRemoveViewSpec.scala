@@ -17,7 +17,6 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever}
-import controllers.ExternalUrls
 import models.{EmpRef, RegistrationItem, RegistrationList, TaxYearRange}
 import play.api.data.Form
 import play.api.i18n.MessagesApi

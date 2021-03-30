@@ -19,7 +19,7 @@ package services
 import config._
 import connectors.HmrcTierConnector
 import controllers.actions.MinimalAuthAction
-import controllers.{ExternalUrls, FakePBIKApplication}
+import controllers.FakePBIKApplication
 import models._
 import org.mockito.Matchers.{eq => mockEq, _}
 import org.mockito.Mockito._
@@ -105,7 +105,6 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
       val YEAR_RANGE = taxDateUtils.getTaxYearRange()
 
       implicit val context: PbikContext = injected[PbikContext]
-      implicit val externalURLs: ExternalUrls = injected[ExternalUrls]
       implicit val config: AppConfig = injected[AppConfig]
       implicit val localFormPartialRetriever: LocalFormPartialRetriever = injected[LocalFormPartialRetriever]
 

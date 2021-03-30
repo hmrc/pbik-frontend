@@ -17,7 +17,8 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
-import controllers.ExternalUrls
+import config.AppConfig
+
 import javax.inject.Inject
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -30,7 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class MinimalAuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default,
-  externalUrls: ExternalUrls)(implicit val executionContext: ExecutionContext)
+  config: AppConfig
+)(implicit val executionContext: ExecutionContext)
     extends MinimalAuthAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
@@ -40,9 +42,7 @@ class MinimalAuthActionImpl @Inject()(
       block(request)
     } recover {
       case ex: NoActiveSession =>
-        Redirect(
-          externalUrls.signIn,
-          Map("continue" -> Seq(externalUrls.loginCallback), "origin" -> Seq("pbik-frontend")))
+        Redirect(config.authSignIn, Map("continue" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend")))
     }
   }
 }
