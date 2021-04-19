@@ -18,11 +18,14 @@
 @import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
+@import scala.concurrent.ExecutionContext
 
 @this(parentTemplate: ParentTemplate,
 context: PbikContext,
 config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever)
+localFormPartialRetriever: LocalFormPartialRetriever,
+implicit val ec: ExecutionContext
+)
 
 @(partialUrl: String,
   formBody: Option[Html],empRef: EmpRef, formPartialProvider: FormPartialProvider)(implicit request:Request[_], messages: Messages)

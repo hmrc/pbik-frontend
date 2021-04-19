@@ -18,7 +18,8 @@ package services
 
 import config.PbikAppConfig
 import connectors.HmrcTierConnector
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -31,6 +32,7 @@ import views.html.ErrorPage
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class RegistrationService @Inject()(
   override val messagesApi: MessagesApi,
   bikListUtils: BikListUtils,

@@ -18,7 +18,8 @@ package services
 
 import config.AppConfig
 import connectors.HmrcTierConnector
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import models.{AuthenticatedRequest, Bik, EmpRef}
 import play.api.mvc.Request
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,6 +28,7 @@ import utils.{ControllersReferenceData, URIInformation}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class BikListService @Inject()(
   val pbikAppConfig: AppConfig,
   val tierConnector: HmrcTierConnector,

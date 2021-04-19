@@ -18,7 +18,7 @@ package utils
 
 import java.util.Calendar
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTimeConstants._
 import play.api.data.Form
@@ -49,6 +49,7 @@ object FormMappingsConstants {
 
 }
 
+@Singleton
 class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDefaults with I18nSupport {
 
   private val nameValidationRegex = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"

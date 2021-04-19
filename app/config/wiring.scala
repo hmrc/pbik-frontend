@@ -17,11 +17,16 @@
 package config
 
 import connectors.SessionCookieCryptoFilterWrapper
-import javax.inject.Inject
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.partials.FormPartialRetriever
 
-class LocalFormPartialRetriever @Inject()(val httpGet: HttpClient, cookieCrypto: SessionCookieCryptoFilterWrapper)
-    extends FormPartialRetriever {
-  override val crypto: String => String = cookieCrypto.encryptCookieString
-}
+import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.play.partials.{FormPartialRetriever, HeaderCarrierForPartialsConverter}
+
+import scala.concurrent.ExecutionContext
+
+@Singleton
+class LocalFormPartialRetriever @Inject()(
+  val httpGet: HttpClient,
+  val headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter,
+  implicit val ec: ExecutionContext)
+    extends FormPartialRetriever {}

@@ -17,10 +17,12 @@
 package utils
 
 import config.Service
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import play.api.{Configuration, Logger}
 import utils.Exceptions.InvalidBikTypeURIException
 
+@Singleton
 class URIInformation @Inject()(configuration: Configuration) extends URIValues {
 
   val baseUrl: String = configuration.get[Service]("microservice.services.pbik") + "/epaye"

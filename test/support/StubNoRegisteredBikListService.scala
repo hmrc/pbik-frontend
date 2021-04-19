@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models.{Bik, EmpRef}
-import org.mockito.Matchers.{any, anyInt, anyString}
+import org.mockito.ArgumentMatchers.{any}
 import org.mockito.Mockito.when
 import play.api.libs.json
 import play.api.mvc.Request
@@ -40,7 +40,7 @@ class StubNoRegisteredBikListService @Inject()(
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
 
   when(
-    tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(
+    tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
       any[HeaderCarrier],
       any[Request[_]],
       any[json.Format[List[Bik]]],

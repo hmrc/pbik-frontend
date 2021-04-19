@@ -19,19 +19,20 @@ package connectors
 import java.net.URLEncoder
 
 import config.Service
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import models.{EmpRef, HeaderTags, PbikError}
 import play.api.libs.json
 import play.api.libs.json.{JsError, JsSuccess}
 import play.api.mvc.Request
 import play.api.{Configuration, Logger}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.Exceptions.GenericServerErrorException
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configuration) {
 
   val serviceUrl: String = configuration.get[Service]("microservice.services.government-gateway")

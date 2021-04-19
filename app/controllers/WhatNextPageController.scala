@@ -17,18 +17,20 @@
 package controllers
 
 import connectors.HmrcTierConnector
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{ControllersReferenceData, _}
 import views.html.registration.WhatNextAddRemove
-import controllers.actions.{AuthAction, NoSessionCheckAction}
+import controllers.actions.AuthAction
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
+@Singleton
 class WhatNextPageController @Inject()(
   override val messagesApi: MessagesApi,
   val cachingService: SessionService,

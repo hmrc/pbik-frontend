@@ -32,8 +32,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.HelpAndContactSubmissionService
 import support.{StubHelpAndContactSubmissionService, TestAuthUser}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import utils.{FormMappings, _}
 
 import scala.concurrent.Future

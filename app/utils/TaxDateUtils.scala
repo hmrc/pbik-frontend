@@ -21,14 +21,16 @@ import java.util
 import java.util.Date
 import java.time.LocalDate
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.TaxYearRange
 import org.joda.time.DateTime
 import play.api.Configuration
 import uk.gov.hmrc.time.TaxYear
 
+@Singleton
 class TaxDateUtils @Inject()(configuration: Configuration) extends PayrollBikDefaults {
 
+  //TODO move the congif to app config
   val overridedDateFromConfig: Option[util.List[Integer]] = configuration.getIntList("pbik.date.override")
 
   val sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss")

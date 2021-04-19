@@ -19,7 +19,7 @@ package controllers.actions
 import com.google.inject.ImplementedBy
 import config.{AppConfig, Service}
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -27,12 +27,12 @@ import play.api.{Configuration, Logger}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class AuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default,
@@ -41,7 +41,7 @@ class AuthActionImpl @Inject()(
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE"))
       .retrieve(Retrievals.authorisedEnrolments and Retrievals.name) {

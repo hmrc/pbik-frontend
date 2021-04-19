@@ -20,7 +20,7 @@ import connectors.HmrcTierConnector
 import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
 import models._
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers.{eq => argEq, any}
 import org.mockito.Mockito.{reset, when, _}
 import org.scalatest.BeforeAndAfterEach
 import play.api.Application
@@ -58,7 +58,7 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplica
       val listBiks = List(Bik("Car & Car Fuel", 30, 10), Bik("Van Fuel", 40, 10))
 
       when(
-        bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(
+        bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
           any[HeaderCarrier],
           any[Request[_]],
           any[Format[List[Bik]]],
@@ -70,7 +70,7 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplica
 
     "Be able to get the BIKS for the current year - no biks returned" in {
       when(
-        bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(
+        bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
           any[HeaderCarrier],
           any[Request[_]],
           any[Format[List[Bik]]],
@@ -85,7 +85,7 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplica
       val listBiks = List(Bik("Car & Car Fuel", 30, 10), Bik("Van Fuel", 40, 10))
 
       when(
-        bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(
+        bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
           any[HeaderCarrier],
           any[Request[_]],
           any[Format[List[Bik]]],
@@ -99,7 +99,7 @@ class BikListServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplica
 
     "Be able to get the BIKS for the next year - no biks returned" in {
       when(
-        bikListService.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], anyInt)(
+        bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
           any[HeaderCarrier],
           any[Request[_]],
           any[Format[List[Bik]]],

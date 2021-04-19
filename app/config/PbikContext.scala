@@ -17,11 +17,13 @@
 package config
 
 import connectors.ContactFrontendConnector
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
+@Singleton
 class PbikContext @Inject()(contactFrontendConnector: ContactFrontendConnector) {
 
   def getPageHelpPartial()(implicit hc: HeaderCarrier): Future[String] =

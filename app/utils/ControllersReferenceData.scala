@@ -17,7 +17,8 @@
 package utils
 
 import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -75,6 +76,7 @@ object ControllersReferenceDataCodes {
   val AUTHORISATION_TITLE = "ErrorPage.authorisationTitle"
 }
 
+@Singleton
 class ControllersReferenceData @Inject()(
   taxDateUtils: TaxDateUtils,
   override val messagesApi: MessagesApi,

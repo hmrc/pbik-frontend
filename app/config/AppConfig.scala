@@ -16,7 +16,7 @@
 
 package config
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 
 trait AppConfig {
@@ -43,6 +43,7 @@ trait AppConfig {
   val timedOutUrl: String
 }
 
+@Singleton
 class PbikAppConfig @Inject()(configuration: Configuration) extends AppConfig {
 
   private lazy val basGatewayHost: String = configuration.get[String]("microservice.auth.bas-gateway.host")

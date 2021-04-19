@@ -32,8 +32,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.BikListService
 import support.{CYEnabledSetup, StubbedBikListService, TestAuthUser, TestSplunkLogger}
-import uk.gov.hmrc.http.logging.SessionId
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
 import utils._
 
 import scala.concurrent.duration._

@@ -16,7 +16,7 @@
 
 package utils
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -51,6 +51,7 @@ object SplunkLogger {
 
 }
 
+@Singleton
 class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils, val auditConnector: AuditConnector) {
 
   sealed trait SpTier

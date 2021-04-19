@@ -19,7 +19,8 @@ package controllers.actions
 import java.util.UUID
 
 import com.google.inject.ImplementedBy
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import models.AuthenticatedRequest
 import play.api.Logger
 import play.api.mvc._
@@ -27,6 +28,7 @@ import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class NoSessionCheckActionImpl @Inject()()(implicit val executionContext: ExecutionContext)
     extends NoSessionCheckAction {
   override protected def refine[A](

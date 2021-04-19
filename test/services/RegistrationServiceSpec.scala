@@ -21,7 +21,7 @@ import connectors.HmrcTierConnector
 import controllers.actions.MinimalAuthAction
 import controllers.FakePBIKApplication
 import models._
-import org.mockito.Matchers.{eq => mockEq, _}
+import org.mockito.ArgumentMatchers.{eq => argEq, any}
 import org.mockito.Mockito._
 import play.api.Application
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -32,8 +32,7 @@ import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.{TaxDateUtils, TestMinimalAuthAction}
 import views.html.registration.NextTaxYear
@@ -60,16 +59,17 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
 
     when(r.bikListService.pbikHeaders).thenReturn(Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1"))
 
-    when(r.bikListService.registeredBenefitsList(anyInt, any[EmpRef])(anyString)(any[HeaderCarrier], any[Request[_]]))
+    when(
+      r.bikListService.registeredBenefitsList(any[Int], any[EmpRef])(any[String])(any[HeaderCarrier], any[Request[_]]))
       .thenReturn(Future.successful(CYCache))
 
     // Return instance where not all Biks have been registered for CY
     when(
       r.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        anyString,
+        any[String],
+        any[String],
         any[EmpRef],
-        mockEq(injected[TaxDateUtils].getCurrentTaxYear()))(
+        argEq(injected[TaxDateUtils].getCurrentTaxYear()))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -80,10 +80,10 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
     // Return instance where not all Biks have been registered for CYP1
     when(
       r.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        anyString,
+        any[String],
+        any[String],
         any[EmpRef],
-        mockEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(
+        argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],

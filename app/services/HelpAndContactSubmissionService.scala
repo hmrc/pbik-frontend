@@ -17,12 +17,14 @@
 package services
 
 import connectors.ContactFrontendConnector
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class HelpAndContactSubmissionService @Inject()(contactFrontendConnector: ContactFrontendConnector) {
   def submitContactHmrc(contactHmrcSubmitPartialUrl: String, formData: Map[String, Seq[String]])(
     implicit request: Request[AnyContent],

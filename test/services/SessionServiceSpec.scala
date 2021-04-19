@@ -16,22 +16,20 @@
 
 package services
 
-import config.{PbikAppConfig, PbikSessionCache}
+import config.PbikSessionCache
 import controllers.FakePBIKApplication
-import models.{AuthenticatedRequest, Bik, EiLPerson, EmpRef, PbikSession, RegistrationItem, RegistrationList}
-import org.mockito.Matchers.any
+import models.{Bik, EiLPerson, PbikSession, RegistrationItem, RegistrationList}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.mvc._
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.logging.SessionId
-import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future

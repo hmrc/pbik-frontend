@@ -18,7 +18,8 @@ package controllers
 
 import config.PbikAppConfig
 import controllers.actions.{AuthAction, NoSessionCheckAction, UnauthorisedAction}
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import models._
 import play.api.Logger
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
@@ -26,7 +27,7 @@ import play.api.mvc.{Result, _}
 import services.{BikListService, SessionService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{ControllersReferenceData, SplunkLogger, URIInformation, _}
 import views.html.registration.CautionAddCurrentTaxYear
 import views.html.{ErrorPage, Overview}
@@ -34,6 +35,7 @@ import views.html.{ErrorPage, Overview}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
 
+@Singleton
 class HomePageController @Inject()(
   override val messagesApi: MessagesApi,
   cc: MessagesControllerComponents,

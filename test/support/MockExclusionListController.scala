@@ -16,30 +16,29 @@
 
 package support
 
-import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.PbikAppConfig
 import connectors.HmrcTierConnector
-import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.ExclusionListController
-import javax.inject.Inject
+import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models.{Bik, EiLPerson, EmpRef}
-import org.mockito.Matchers
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.Futures
 import org.scalatest.time.{Millis, Seconds, Span}
+import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.libs.json
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{MessagesControllerComponents, Request}
-import play.api.{Configuration, Environment}
 import services.{BikListService, EiLListService, SessionService}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
-import utils.{ControllersReferenceData, FormMappings, SplunkLogger, TaxDateUtils, URIInformation}
+import utils._
 import views.html.ErrorPage
-import views.html.exclusion.{ExclusionNinoOrNoNinoForm, ExclusionOverview, NinoExclusionSearchForm, NoNinoExclusionSearchForm, RemovalConfirmation, SearchResults, WhatNextExclusion, WhatNextRescind}
+import views.html.exclusion._
 
+import javax.inject.Inject
 import scala.concurrent.Future
 
 class MockExclusionListController @Inject()(
@@ -101,24 +100,24 @@ class MockExclusionListController @Inject()(
 
   when(
     tierConnector
-      .genericPostCall[EiLPerson](anyString, Matchers.eq("31/exclusion/update"), any[EmpRef], anyInt, any[EiLPerson])(
+      .genericPostCall[EiLPerson](any[String], argEq("31/exclusion/update"), any[EmpRef], any[Int], any[EiLPerson])(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
 
   when(
     tierConnector
-      .genericPostCall[EiLPerson](anyString, Matchers.eq("31/exclusion/remove"), any[EmpRef], anyInt, any[EiLPerson])(
+      .genericPostCall[EiLPerson](any[String], argEq("31/exclusion/remove"), any[EmpRef], any[Int], any[EiLPerson])(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
 
   when(
     tierConnector.genericPostCall(
-      anyString,
-      Matchers.eq(uriInformation.updateBenefitTypesPath),
+      any[String],
+      argEq(uriInformation.updateBenefitTypesPath),
       any[EmpRef],
-      anyInt,
+      any[Int],
       any[List[Bik]])(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]]))
     .thenReturn(Future.successful(new FakeResponse()))
 
