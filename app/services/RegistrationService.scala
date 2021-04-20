@@ -46,7 +46,6 @@ class RegistrationService @Inject()(
   errorPageView: ErrorPage)(implicit val executionContext: ExecutionContext)
     extends I18nSupport {
 
-  //TODO: This should be in a controller
   def generateViewForBikRegistrationSelection(
     year: Int,
     cachingSuffix: String,

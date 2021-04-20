@@ -48,8 +48,6 @@ import scala.concurrent.ExecutionContext.Implicits._
 
 class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
 
-  // TODO The following needs refactoring as it similar to registrationcontrollertest, consider moving to utils
-
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(config)

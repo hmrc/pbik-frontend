@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import play.api.Play
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 @import config.AppConfig
 @import config.PbikContext
@@ -60,7 +59,6 @@
   timeoutActive: Boolean
 )(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
-@import scala.concurrent.ExecutionContext
 @headBlock = {
   @headWithTrackingConsent(linkElement, headScripts)
 }

@@ -16,7 +16,6 @@
 
 package services
 
-import config.PbikSessionCache
 import controllers.FakePBIKApplication
 import models.{Bik, EiLPerson, PbikSession, RegistrationItem, RegistrationList}
 import org.mockito.ArgumentMatchers.any
@@ -27,15 +26,17 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.mvc._
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import play.api.test.Helpers.await
 
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
-class SessionServiceSpec extends UnitSpec with FakePBIKApplication with BeforeAndAfterEach with MockitoSugar {
+class SessionServiceSpec
+    extends WordSpecLike with Matchers with OptionValues with FakePBIKApplication with BeforeAndAfterEach
+    with MockitoSugar {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -60,7 +61,6 @@ class SessionServiceSpec extends UnitSpec with FakePBIKApplication with BeforeAn
         .thenReturn(Future.successful(CacheMap("sessionValue", Map("pbik_session" -> json))))
       val result = await(TestSessionService.cacheRegistrationList(regList))(timeout)
       result shouldBe Some(pbikSession.copy(registrations = Some(regList)))
-      println(result)
     }
 
     "cache a bik to remove" in {

@@ -125,7 +125,6 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p = Promise[Result]()
-      // TODO - check the NPS error message format used below
       p.failure(Upstream5xxResponse("""{appStatusMessage=10002,}""", 100, 100))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
@@ -141,7 +140,6 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p = Promise[Result]()
-      // TODO - check the NPS error message format used below
       p.failure(Upstream5xxResponse(null, 100, 100))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500

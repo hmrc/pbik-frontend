@@ -55,7 +55,6 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
   private val nameValidationRegex = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
   private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
   private val ninoTrimmedRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
-  private val yearRegEx = generateYearString(YEAR_LENGTH_VALUE)
 
   def generateYearString(length: Int): String =
     if (length > 0) {
@@ -186,11 +185,9 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
     ninoTrimmedRegex.r.findFirstIn(nino).getOrElse("").mkString
 
   def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[EiLPerson] = {
-    val dateRegex: String = "([0-9])|([0-9][0-9])"
     val dateDayRegex: String = "([0-9])"
     val dateMonthRegex: String = "([0-9])"
     val dateYearRegex: String = "([0-9]){4}"
-    val fieldRequiredErrorMessage = "error.required"
     val emptyDateError = "error.empty.dob"
     val invalidDateError = "error.invaliddate"
     val invalidDayDateError = "error.invaliddate.day"

@@ -7,7 +7,7 @@ val appName = "pbik-frontend"
 scalaVersion := "2.12.12"
 
 lazy val plugins: Seq[Plugins] =
-  Seq(SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb, SbtArtifactory)
+  Seq(SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb)
 lazy val scoverageSettings: Seq[Def.Setting[_]] =
   Seq(
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;views.*;config.*;models.*;" +

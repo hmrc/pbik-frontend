@@ -18,12 +18,11 @@ package utils
 
 import controllers.FakePBIKApplication
 import org.mockito.Mockito._
-import org.scalatest.Matchers
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
 import scala.sys.SystemProperties
 
-class SystemPropertiesHelperSpec extends UnitSpec with FakePBIKApplication with Matchers {
+class SystemPropertiesHelperSpec extends WordSpecLike with Matchers with OptionValues with FakePBIKApplication {
 
   class StubSystemProperties extends SystemPropertiesHelper {
 

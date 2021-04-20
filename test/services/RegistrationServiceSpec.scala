@@ -21,7 +21,7 @@ import connectors.HmrcTierConnector
 import controllers.actions.MinimalAuthAction
 import controllers.FakePBIKApplication
 import models._
-import org.mockito.ArgumentMatchers.{eq => argEq, any}
+import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
 import play.api.Application
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -33,13 +33,15 @@ import play.api.test.FakeRequest
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
 import utils.{TaxDateUtils, TestMinimalAuthAction}
 import views.html.registration.NextTaxYear
 
 import scala.concurrent.Future
 
-class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplication with I18nSupport {
+class RegistrationServiceSpec
+    extends WordSpecLike with Matchers with OptionValues with TestAuthUser with FakePBIKApplication with I18nSupport {
 
   override val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
@@ -108,14 +110,14 @@ class RegistrationServiceSpec extends UnitSpec with TestAuthUser with FakePBIKAp
       implicit val config: AppConfig = injected[AppConfig]
       implicit val localFormPartialRetriever: LocalFormPartialRetriever = injected[LocalFormPartialRetriever]
 
-      val result = await(
+      val result =
         registrationService.generateViewForBikRegistrationSelection(
           YEAR_RANGE.cyminus1,
           "add",
-          nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty)))
+          nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty))
       status(result) shouldBe 200
-      bodyOf(result) should include(Messages("AddBenefits.Heading"))
-      bodyOf(result) should include(Messages("BenefitInKind.label.37"))
+      contentAsString(result) should include(Messages("AddBenefits.Heading"))
+      contentAsString(result) should include(Messages("BenefitInKind.label.37"))
     }
   }
 

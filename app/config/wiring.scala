@@ -16,8 +16,6 @@
 
 package config
 
-import connectors.SessionCookieCryptoFilterWrapper
-
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.play.partials.{FormPartialRetriever, HeaderCarrierForPartialsConverter}

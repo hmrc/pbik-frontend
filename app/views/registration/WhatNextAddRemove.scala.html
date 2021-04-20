@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import utils.URIInformation
 @import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
@@ -28,7 +27,8 @@ localFormPartialRetriever: LocalFormPartialRetriever)
   taxYearRange:TaxYearRange,
   additive: Boolean,
   bikList: RegistrationList,
-  empRef: EmpRef)(implicit request:Request[_], messages: Messages)
+  empRef: EmpRef
+)(implicit request:Request[_], messages: Messages)
 
 @benefitLabel = @{messages("BenefitInKind.label." + bikList.active.head.id )}
 @singleBik = @{ if(bikList.active.length > 1 ) { false } else { true } }

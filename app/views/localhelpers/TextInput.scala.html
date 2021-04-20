@@ -32,6 +32,6 @@
     @if(elements.args.contains('_inputHint) ){
         <span class="form-hint">@elements.args.get('_inputHint)</span>
     }
-    @elements.errors.map { error => <span class="error-message">@messages(error)</span>}
+    @elements.field.errors.map { error => <span class="error-message">@messages(error.messages)</span>}
     <input class="form-control @if(hasErrors){form-control-error}" type="text" value="@value" name="@fieldName" id="@fieldName"/>
 </div>

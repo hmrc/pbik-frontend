@@ -80,7 +80,6 @@ class HelpAndContactController @Inject()(
     request.body.asFormUrlEncoded
       .map { formData =>
         helpAndContactSubmissionService.submitContactHmrc(contactHmrcSubmitPartialUrl, formData).map { resp =>
-          //TODO: Clean up via exceptions?
           resp.status match {
             case OK => Redirect(successRedirect).withSession(request.session + (TICKET_ID -> resp.body))
             case BAD_REQUEST =>

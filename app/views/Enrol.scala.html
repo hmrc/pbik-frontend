@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import utils.FormMappingsConstants._
 @import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
@@ -22,7 +21,8 @@
 @this(parentTemplate: ParentTemplate,
 context: PbikContext,
 config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever)
+localFormPartialRetriever: LocalFormPartialRetriever
+)
 
 @(empRef: Option[EmpRef])(implicit request:Request[_], messages: Messages)
 

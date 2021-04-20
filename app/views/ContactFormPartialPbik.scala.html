@@ -21,8 +21,7 @@
 @(actionUrl: String,
  csrfToken: Option[String],
  service: String,
- supportLinkEnabled: Boolean)(implicit request : Request[_],
-                              context: config.PbikContext, messages: Messages)
+ supportLinkEnabled: Boolean)(implicit request : Request[_], messages: Messages)
 
 @if(supportLinkEnabled) {
     <div class="report-error">

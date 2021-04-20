@@ -30,7 +30,6 @@ import uk.gov.hmrc.time.TaxYear
 @Singleton
 class TaxDateUtils @Inject()(configuration: Configuration) extends PayrollBikDefaults {
 
-  //TODO move the congif to app config
   val overridedDateFromConfig: Option[util.List[Integer]] = configuration.getIntList("pbik.date.override")
 
   val sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss")

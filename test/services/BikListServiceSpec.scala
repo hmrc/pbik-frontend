@@ -30,13 +30,15 @@ import play.api.libs.json.Format
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import support.{StubBikListService, TestAuthUser}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import utils.TestMinimalAuthAction
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-class BikListServiceSpec extends UnitSpec with TestAuthUser with FakePBIKApplication with BeforeAndAfterEach {
+class BikListServiceSpec
+    extends WordSpecLike with Matchers with OptionValues with TestAuthUser with FakePBIKApplication
+    with BeforeAndAfterEach {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])

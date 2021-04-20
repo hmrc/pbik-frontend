@@ -69,7 +69,7 @@ class HelpAndContactControllerSpec extends PlaySpec with FakePBIKApplication wit
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = await(mockHelpController.submitContactHmrcForm(request))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      result.body.asInstanceOf[Strict].data.utf8String must include("") //TODO - Does this do anything?
+      result.body.asInstanceOf[Strict].data.utf8String must include("")
     }
 
     "be able to submit the contact form successfully" in {

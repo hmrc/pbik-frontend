@@ -16,12 +16,10 @@
 
 package views
 
-import config.{AppConfig, LocalFormPartialRetriever}
 import models.{EmpRef, RegistrationItem, RegistrationList, TaxYearRange}
-import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import utils.{FormMappings, URIInformation}
+import utils.FormMappings
 import views.helper.PBIKViewSpec
 import views.html.registration.WhatNextAddRemove
 

@@ -21,8 +21,6 @@ import models.Bik
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.UnitSpec
 
 class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
