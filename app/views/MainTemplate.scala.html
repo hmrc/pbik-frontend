@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import play.api.Play
-@import layouts.govuk_template
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 @import config.AppConfig
 @import config.PbikContext
 @import config.LocalFormPartialRetriever
 @import views.html.layouts.GovUkTemplate
 @import views.html.helpers.FullWidthBanner
+@import scala.concurrent.ExecutionContext
 
 @this(
   context: PbikContext,
@@ -33,11 +32,12 @@
   main_content_header: MainContentHeader,
   main_content: MainContent,
   govuk_template: GovUkTemplate,
-  footer: uk.gov.hmrc.play.views.html.layouts.Footer,
+  footer: uiLayouts.Footer,
   footer_links: FooterLinks,
   headWithTrackingConsent: HeadWithTrackingConsent,
   header_nav: HeaderNav,
   fullWidthBanner: FullWidthBanner,
+  ec: ExecutionContext
 )
 
 @(title: String,
@@ -103,7 +103,7 @@ config.urBannerLink)
 }
 
 @getHelpForm = {
-  @localFormPartialRetriever.getPartialContent(config.reportAProblemPartialUrl)(request)
+  @localFormPartialRetriever.getPartialContent(config.reportAProblemPartialUrl)(ec, request)
 }
 
 

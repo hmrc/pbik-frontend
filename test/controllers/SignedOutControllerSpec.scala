@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import org.scalatestplus.play.PlaySpec
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._

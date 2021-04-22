@@ -22,10 +22,10 @@ import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import org.joda.time.LocalDate
-import org.mockito.Matchers
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.{Lang, Messages, MessagesApi}
@@ -34,14 +34,14 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
 import play.api.libs.crypto.CSRFTokenSigner
 import play.api.libs.json
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{EiLListService, SessionService}
 import support._
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionId}
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils.{ControllersReferenceData, URIInformation, _}
 
@@ -49,7 +49,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 
-class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with FakePBIKApplication with TestAuthUser {
+class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -115,10 +115,10 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
     when(
       melc.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        anyString,
+        any[String],
+        any[String],
         any[EmpRef],
-        Matchers.eq(controllersReferenceData.YEAR_RANGE.cy))(
+        argEq(controllersReferenceData.YEAR_RANGE.cy))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -128,10 +128,10 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
     when(
       melc.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        anyString,
+        any[String],
+        any[String],
         any[EmpRef],
-        Matchers.eq(controllersReferenceData.YEAR_RANGE.cyminus1))(
+        argEq(controllersReferenceData.YEAR_RANGE.cyminus1))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -141,10 +141,10 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
     when(
       melc.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        anyString,
+        any[String],
+        any[String],
         any[EmpRef],
-        Matchers.eq(controllersReferenceData.YEAR_RANGE.cyplus1))(
+        argEq(controllersReferenceData.YEAR_RANGE.cyplus1))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -153,24 +153,21 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
     }))
 
     when(
-      melc.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        Matchers.eq(""),
-        any[EmpRef],
-        Matchers.eq(controllersReferenceData.YEAR_RANGE.cy))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      melc.tierConnector
+        .genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(controllersReferenceData.YEAR_RANGE.cy))(
+          any[HeaderCarrier],
+          any[Request[_]],
+          any[json.Format[List[Bik]]],
+          any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
     when(
       melc.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-        Matchers.eq(EmpRef.empty),
-        Matchers.eq(controllersReferenceData.YEAR_RANGE.cy)
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+        argEq(EmpRef.empty),
+        argEq(controllersReferenceData.YEAR_RANGE.cy)
       )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
@@ -178,10 +175,10 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
     when(
       melc.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-        Matchers.eq(EmpRef.empty),
-        Matchers.eq(controllersReferenceData.YEAR_RANGE.cyminus1)
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+        argEq(EmpRef.empty),
+        argEq(controllersReferenceData.YEAR_RANGE.cyminus1)
       )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
@@ -189,17 +186,17 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
     when(
       melc.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        Matchers.eq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-        Matchers.eq(EmpRef.empty),
-        Matchers.eq(controllersReferenceData.YEAR_RANGE.cyplus1)
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+        argEq(EmpRef.empty),
+        argEq(controllersReferenceData.YEAR_RANGE.cyplus1)
       )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
       }))
 
     when(
-      melc.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], Matchers.eq(2020))(
+      melc.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -209,19 +206,19 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
     when(
       melc.tierConnector.genericPostCall(
-        anyString,
-        Matchers.eq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
         any[EmpRef],
-        anyInt,
+        any[Int],
         any)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(new FakeResponse()))
 
     when(
       melc.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        Matchers.eq(app.injector.instanceOf[URIInformation].getRegisteredPath),
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
         any[EmpRef],
-        anyInt)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+        any[Int])(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) >= 15
       }))
@@ -662,7 +659,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       val TEST_IABD = "car"
       val TEST_YEAR_CODE = "cyp1"
       val TEST_NINO = "AA111111B"
-      val title = Messages("ExclusionRemovalConfirmation.title")
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = mockExclusionListController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(mockrequest)
       (scala.concurrent.ExecutionContext.Implicits.global)
@@ -674,11 +670,9 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
   "When confirming the removal of an excluded individual, an authorised user" must {
     "see the removal confirmation screen" in {
       val TEST_IABD = "car"
-      val TEST_YEAR_CODE = "cyp1"
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      val title = Messages("whatNext.rescind.heading")
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = mockExclusionListController.removeExclusionsCommit(TEST_IABD)(mockrequest)
       (scala.concurrent.ExecutionContext.Implicits.global)
@@ -758,7 +752,6 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
 
   "When remove exclusions are committed the controller" must {
     " show the what next page" in {
-      val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -950,5 +943,4 @@ class ExclusionListControllerSpec extends PlaySpec with OneAppPerSuite with Fake
       result.body.asInstanceOf[Strict].data.utf8String must include("Search for an employee to exclude")
     }
   }
-
 }

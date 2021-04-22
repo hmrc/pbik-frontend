@@ -21,31 +21,28 @@ import java.net.URLEncoder
 import config.PbikAppConfig
 import connectors._
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import play.api.{Configuration, Logger}
+import play.api.Logger
 import play.twirl.api.Html
-import services.{BikListService, HelpAndContactSubmissionService}
+import services.HelpAndContactSubmissionService
 import uk.gov.hmrc.http.{Request => _}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
-import utils.{ControllersReferenceData, _}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.helpcontact.{ConfirmHelpContact, HelpContact}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class HelpAndContactController @Inject()(
   override val messagesApi: MessagesApi,
   cc: MessagesControllerComponents,
   formPartialProvider: FormPartialProvider,
-  bikListService: BikListService,
   helpAndContactSubmissionService: HelpAndContactSubmissionService,
   val authenticate: AuthAction,
   val noSessionCheck: NoSessionCheckAction,
-  configuration: Configuration,
   pbikAppConfig: PbikAppConfig,
-  controllersReferenceData: ControllersReferenceData,
-  splunkLogger: SplunkLogger,
   helpContactView: HelpContact,
   confirmHelpContactView: ConfirmHelpContact)(implicit val ec: ExecutionContext)
     extends FrontendController(cc) with I18nSupport {
@@ -83,7 +80,6 @@ class HelpAndContactController @Inject()(
     request.body.asFormUrlEncoded
       .map { formData =>
         helpAndContactSubmissionService.submitContactHmrc(contactHmrcSubmitPartialUrl, formData).map { resp =>
-          //TODO: Clean up via exceptions?
           resp.status match {
             case OK => Redirect(successRedirect).withSession(request.session + (TICKET_ID -> resp.body))
             case BAD_REQUEST =>

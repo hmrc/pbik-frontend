@@ -16,10 +16,10 @@
 
 package utils
 
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import utils.DateUtils._
 
-class DateUtilsSpec extends UnitSpec {
+class DateUtilsSpec extends WordSpecLike with Matchers with OptionValues {
 
   "NPS date conversion" should {
     " output 1 January 1980" in {

@@ -16,24 +16,23 @@
 
 package support
 
-import config.{LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.PbikAppConfig
 import connectors.HmrcTierConnector
-import javax.inject.Inject
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{AnyContent, Result}
 import play.api.mvc.Results._
-import play.api.{Configuration, Environment}
+import play.api.mvc.{AnyContent, Result}
 import play.twirl.api.HtmlFormat
 import services.{BikListService, RegistrationService}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{BikListUtils, ControllersReferenceData, FormMappings, TaxDateUtils, URIInformation}
+import utils._
 import views.html.ErrorPage
 import views.html.registration.{CurrentTaxYear, NextTaxYear}
 
-import scala.concurrent.Future
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits._
+import scala.concurrent.Future
 
 class StubbedRegistrationService @Inject()(
   bikListUtils: BikListUtils,

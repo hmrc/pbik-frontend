@@ -19,7 +19,7 @@ package services
 import connectors.HmrcTierConnector
 import controllers.FakePBIKApplication
 import models.{AuthenticatedRequest, EiLPerson, EmpRef, UserName}
-import org.mockito.Matchers._
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
@@ -29,13 +29,15 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.logging.SessionId
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 
 import scala.collection.immutable
+import scala.concurrent.Future
 
-class EilListServiceSpec extends UnitSpec with FakePBIKApplication with TestAuthUser {
+class EilListServiceSpec
+    extends WordSpecLike with Matchers with OptionValues with FakePBIKApplication with TestAuthUser {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -48,11 +50,11 @@ class EilListServiceSpec extends UnitSpec with FakePBIKApplication with TestAuth
     val els = app.injector.instanceOf[EiLListService]
 
     when(
-      els.tierConnector.genericGetCall[List[EiLPerson]](anyString, anyString, any[EmpRef], anyInt)(
+      els.tierConnector.genericGetCall[List[EiLPerson]](any[String], any[String], any[EmpRef], any[Int])(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[EiLPerson]]],
-        any[Manifest[List[EiLPerson]]])).thenReturn(List.empty[EiLPerson])
+        any[Manifest[List[EiLPerson]]])).thenReturn(Future.successful(List.empty[EiLPerson]))
 
     els
   }

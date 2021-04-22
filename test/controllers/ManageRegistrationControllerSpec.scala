@@ -21,7 +21,7 @@ import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
 import models._
-import org.mockito.Matchers.{eq => mockEq, _}
+import org.mockito.ArgumentMatchers.{eq => argEq, any}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.concurrent.ScalaFutures._
@@ -40,7 +40,6 @@ import play.api.test.Helpers._
 import services.SessionService
 import support.{TestAuthUser, TestCYEnabledConfig}
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.logging.SessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
@@ -96,7 +95,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     when(
       app.injector
         .instanceOf[HmrcTierConnector]
-        .genericGetCall[List[Bik]](anyString, mockEq(""), any[EmpRef], mockEq(YEAR_RANGE.cy))(
+        .genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(YEAR_RANGE.cy))(
           any[HeaderCarrier],
           any[Request[_]],
           any[json.Format[List[Bik]]],
@@ -108,10 +107,10 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       app.injector
         .instanceOf[HmrcTierConnector]
         .genericGetCall[List[Bik]](
-          anyString,
-          mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-          mockEq(EmpRef.empty),
-          mockEq(YEAR_RANGE.cy))(
+          any[String],
+          argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+          argEq(EmpRef.empty),
+          argEq(YEAR_RANGE.cy))(
           any[HeaderCarrier],
           any[Request[_]],
           any[json.Format[List[Bik]]],
@@ -123,10 +122,10 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       app.injector
         .instanceOf[HmrcTierConnector]
         .genericGetCall[List[Bik]](
-          anyString,
-          mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-          mockEq(EmpRef.empty),
-          mockEq(YEAR_RANGE.cyminus1))(
+          any[String],
+          argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+          argEq(EmpRef.empty),
+          argEq(YEAR_RANGE.cyminus1))(
           any[HeaderCarrier],
           any[Request[_]],
           any[json.Format[List[Bik]]],
@@ -138,10 +137,10 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       app.injector
         .instanceOf[HmrcTierConnector]
         .genericGetCall[List[Bik]](
-          anyString,
-          mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-          mockEq(EmpRef.empty),
-          mockEq(YEAR_RANGE.cyplus1))(
+          any[String],
+          argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+          argEq(EmpRef.empty),
+          argEq(YEAR_RANGE.cyplus1))(
           any[HeaderCarrier],
           any[Request[_]],
           any[json.Format[List[Bik]]],
@@ -152,7 +151,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     when(
       app.injector
         .instanceOf[HmrcTierConnector]
-        .genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], mockEq(2020))(
+        .genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
           any[HeaderCarrier],
           any[Request[_]],
           any[json.Format[List[Bik]]],
@@ -164,10 +163,10 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       app.injector
         .instanceOf[HmrcTierConnector]
         .genericPostCall(
-          anyString,
-          mockEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
+          any[String],
+          argEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
           any[EmpRef],
-          anyInt,
+          any[Int],
           any)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(new FakeResponse()))
 
@@ -175,10 +174,10 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       app.injector
         .instanceOf[HmrcTierConnector]
         .genericGetCall[List[Bik]](
-          anyString,
-          mockEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
+          any[String],
+          argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
           any[EmpRef],
-          anyInt)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+          any[Int])(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) >= 15
       }))

@@ -16,10 +16,11 @@
 
 package config
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
+@Singleton
 class PbikSessionCache @Inject()(val http: DefaultHttpClient, appConfig: PbikAppConfig) extends SessionCache {
 
   lazy val defaultSource = "pbik-frontend"

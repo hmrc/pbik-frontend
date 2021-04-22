@@ -17,7 +17,8 @@
 package services
 
 import config.PbikSessionCache
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import models.{Bik, EiLPerson, PbikSession, RegistrationItem, RegistrationList}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
@@ -26,6 +27,7 @@ import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class SessionService @Inject()(val http: DefaultHttpClient, val sessionCache: PbikSessionCache) {
 
   private object CacheKeys extends Enumeration {

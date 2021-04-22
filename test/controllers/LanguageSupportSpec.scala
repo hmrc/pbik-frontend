@@ -18,13 +18,11 @@ package controllers
 
 import config.{AppConfig, PbikAppConfig, PbikContext}
 import connectors.HmrcTierConnector
-import controllers.Assets.Ok
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models.{Bik, TaxYearRange}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
-import play.api.http.HttpEntity.Strict
 import play.api.i18n.Lang
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -33,8 +31,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, RegistrationService}
 import support.{StubbedBikListService, StubbedRegistrationService, TestAuthUser}
-import uk.gov.hmrc.http.logging.SessionId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
 import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}

@@ -17,19 +17,20 @@
 package connectors
 
 import config.Service
-import javax.inject.Inject
 import play.api.mvc.{AnyContent, Request}
-import play.api.{Configuration, Environment, Logger}
-import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpReads, HttpResponse, Request => _}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import play.api.{Configuration, Logger}
+import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpClient, HttpReads, HttpResponse, Request => _}
+import uk.gov.hmrc.play.partials.HeaderCarrierForPartialsConverter
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class ContactFrontendConnector @Inject()(
   val client: HttpClient,
   configuration: Configuration,
-  pBIKHeaderCarrierForPartialsConverter: PBIKHeaderCarrierForPartialsConverter) {
+  headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter) {
 
   lazy val serviceBase = s"${configuration.get[Service]("microservice.services.contact-frontend")}/contact"
 
@@ -55,8 +56,8 @@ class ContactFrontendConnector @Inject()(
       ec = ec)
 
   private def partialsReadyHeaderCarrier(implicit request: Request[_]): HeaderCarrier = {
-    val hc1 = pBIKHeaderCarrierForPartialsConverter.headerCarrierEncryptingSessionCookieFromRequest(request)
-    pBIKHeaderCarrierForPartialsConverter.headerCarrierForPartialsToHeaderCarrier(hc1)
+    val hc1 = headerCarrierForPartialsConverter.headerCarrierEncryptingSessionCookieFromRequest(request)
+    headerCarrierForPartialsConverter.headerCarrierForPartialsToHeaderCarrier(hc1)
   }
 
 }

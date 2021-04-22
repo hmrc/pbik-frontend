@@ -19,15 +19,16 @@ package controllers.actions
 import com.google.inject.ImplementedBy
 import config.AppConfig
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
+@Singleton
 class MinimalAuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default,
@@ -37,7 +38,7 @@ class MinimalAuthActionImpl @Inject()(
 
   override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     authorised(ConfidenceLevel.L50) {
       block(request)
     } recover {

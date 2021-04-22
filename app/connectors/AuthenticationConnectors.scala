@@ -16,23 +16,20 @@
 
 package connectors
 
-import javax.inject.Inject
 import uk.gov.hmrc.crypto.PlainText
-import uk.gov.hmrc.play.bootstrap.filters.frontend.crypto.SessionCookieCrypto
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.play.bootstrap.frontend.filters.crypto.SessionCookieCrypto
 import uk.gov.hmrc.play.partials.{FormPartialRetriever, HeaderCarrierForPartialsConverter}
 
-class FormPartialProvider @Inject()(val httpGet: HttpClient, cookieCrypto: SessionCookieCryptoFilterWrapper)
-    extends FormPartialRetriever {
+import javax.inject.{Inject, Singleton}
 
-  override val crypto: String => String = cookieCrypto.encryptCookieString _
-}
+@Singleton
+class FormPartialProvider @Inject()(
+  val httpGet: HttpClient,
+  val headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter)
+    extends FormPartialRetriever {}
 
-class PBIKHeaderCarrierForPartialsConverter @Inject()(cookieCrypto: SessionCookieCryptoFilterWrapper)
-    extends HeaderCarrierForPartialsConverter {
-  override val crypto: String => String = cookieCrypto.encryptCookieString _
-}
-
+@Singleton
 class SessionCookieCryptoFilterWrapper @Inject()(sessionCookieCrypto: SessionCookieCrypto) {
 
   def encryptCookieString(cookie: String): String =

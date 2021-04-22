@@ -17,22 +17,22 @@
 package connectors
 
 import config.Service
-import org.mockito.Matchers.{eq => meq, _}
+
+import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.mockito.MockitoSugar
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
-import play.api.Mode.Mode
+import org.scalatestplus.mockito.MockitoSugar
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatestplus.play.PlaySpec
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
-import play.api.{Application, Configuration, Environment}
-import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import play.api.{Application, Configuration}
+import uk.gov.hmrc.http._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with MockitoSugar with BeforeAndAfterEach {
+class ContactFrontendConnectorSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with BeforeAndAfterEach {
 
   override val fakeApplication: Application = GuiceApplicationBuilder()
     .overrides(bind[HttpClient].toInstance(mock[HttpClient]))
@@ -40,33 +40,33 @@ class ContactFrontendConnectorSpec extends PlaySpec with OneAppPerSuite with Moc
 
   implicit val headerCarrier: HeaderCarrier = HeaderCarrier()
 
-  val testConnector = app.injector.instanceOf[ContactFrontendConnector]
-  val testConfiguration = app.injector.instanceOf[Configuration]
+  val testConnector: ContactFrontendConnector = app.injector.instanceOf[ContactFrontendConnector]
+  val testConfiguration: Configuration = app.injector.instanceOf[Configuration]
 
   override def beforeEach(): Unit =
     reset(testConnector.client)
 
   "ContactFrontendConnector" must {
 
-    val dummyResponseHtml = "<div id=\"contact-partial\"></div>"
+    val dummyResponseHtml: String = """<div id=\"contact-partial\"></div>"""
     lazy val serviceBase = s"${testConfiguration.get[Service]("microservice.services.contact-frontend")}/contact"
     lazy val serviceUrl = s"$serviceBase/problem_reports"
 
     "contact the front end service to download the 'get help' partial" in {
+      when(
+        testConnector.client.GET[String](argEq(serviceUrl), any(), any())(
+          any(),
+          any[HeaderCarrier](),
+          any[ExecutionContext]())) thenReturn Future.successful(dummyResponseHtml)
 
-      val response = HttpResponse(200, responseString = Some(dummyResponseHtml))
+      val result = await(testConnector.getHelpPartial)
 
-      when(testConnector.client.GET[HttpResponse](meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])) thenReturn Future
-        .successful(response)
-
-      await(testConnector.getHelpPartial)
-
-      verify(testConnector.client).GET(meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])
+      result mustBe dummyResponseHtml
     }
 
     "return an empty string if a BadGatewayException is encountered" in {
 
-      when(testConnector.client.GET[HttpResponse](meq(serviceUrl))(any(), any[HeaderCarrier], any[ExecutionContext])) thenReturn
+      when(testConnector.client.GET[String](any(), any(), any())(any(), any[HeaderCarrier](), any[ExecutionContext]())) thenReturn
         Future.failed(new BadGatewayException("Phony exception"))
 
       val result = await(testConnector.getHelpPartial)

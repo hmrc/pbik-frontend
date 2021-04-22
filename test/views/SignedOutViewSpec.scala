@@ -18,7 +18,7 @@ package views
 
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
+import views.helper.PBIKViewSpec
 import views.html.SignedOut
 
 class SignedOutViewSpec extends PBIKViewSpec {

@@ -23,8 +23,8 @@ import config.{PbikAppConfig, PbikSessionCache}
 import controllers.actions.MinimalAuthAction
 import models.{Bik, EiLPerson, HeaderTags, PbikSession, RegistrationItem, RegistrationList}
 import org.scalatest.TestSuite
-import org.scalatest.mockito.MockitoSugar.mock
-import org.scalatestplus.play.OneAppPerSuite
+import org.scalatestplus.mockito.MockitoSugar.mock
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -37,7 +37,7 @@ import utils.TestMinimalAuthAction
 
 import scala.reflect.ClassTag
 
-trait FakePBIKApplication extends OneAppPerSuite {
+trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   this: TestSuite =>
 
@@ -90,6 +90,6 @@ trait FakePBIKApplication extends OneAppPerSuite {
       cleanEiLPerson,
       cleanListOfMatches,
       cleanBikList,
-      cleanBikList)
-
+      cleanBikList
+    )
 }

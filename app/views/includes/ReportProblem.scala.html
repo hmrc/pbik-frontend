@@ -14,10 +14,9 @@
  * limitations under the License.
  *@
 
-@import connectors._
 @import scala.concurrent.Await
 @import scala.concurrent.duration._
-@import uk.gov.hmrc.play.HeaderCarrierConverter
+@import uk.gov.hmrc.play.http.HeaderCarrierConverter
 @import config.PbikContext
 
 @this(context: PbikContext)
@@ -25,5 +24,5 @@
 @(supportLinkEnabled: Boolean)(implicit request: Request[_], context: config.PbikContext, messages: Messages)
 
 @if(supportLinkEnabled) {
-    @Html(Await.result(context.getPageHelpPartial()(HeaderCarrierConverter.fromHeadersAndSession(request.headers)), 5 seconds))
+    @Html(Await.result(context.getPageHelpPartial()(HeaderCarrierConverter.fromRequest(request)), 5 seconds))
 }

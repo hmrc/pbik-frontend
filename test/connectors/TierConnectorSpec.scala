@@ -19,7 +19,7 @@ package connectors
 import controllers.FakePBIKApplication
 import models.{EmpRef, PbikError}
 import org.scalatestplus.play.PlaySpec
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import play.api.mvc.Results
 import support.TestAuthUser
 import uk.gov.hmrc.http._
@@ -27,25 +27,12 @@ import utils.Exceptions.GenericServerErrorException
 
 class TierConnectorSpec extends PlaySpec with FakePBIKApplication with TestAuthUser with Results {
 
-  class FakeResponse extends HttpResponse {
-    override def status = 200
-    override def body = ""
-    override def allHeaders: Map[String, Seq[String]] = Map()
-  }
+  val fakeResponse: HttpResponse = HttpResponse(200, "")
 
-  class FakeResponseWithError extends HttpResponse {
-    override def status = 200
-    val jsonValue: JsValue = Json.toJson(new PbikError("64990"))
-    override def body: String = jsonValue.toString()
-    override def json: JsValue = jsonValue
-    override def allHeaders: Map[String, Seq[String]] = Map()
-  }
+  val fakeResponseWithError: HttpResponse =
+    HttpResponse(200, Json.toJson(new PbikError("64990")), Map.empty[String, Seq[String]])
 
-  class FakeSevereResponse extends HttpResponse {
-    override def status = 500
-    override def body = "A severe server error"
-    override def allHeaders: Map[String, Seq[String]] = Map()
-  }
+  val fakeSevereResponse: HttpResponse = HttpResponse(500, "A severe server error")
 
   val hmrcTierConnector = app.injector.instanceOf[HmrcTierConnector]
 
@@ -75,14 +62,14 @@ class TierConnectorSpec extends PlaySpec with FakePBIKApplication with TestAuthU
   "When processing a response if the status is greater than 400 it" should {
     " throw a GenericServerErrorException" in {
       intercept[GenericServerErrorException] {
-        hmrcTierConnector.processResponse(new FakeSevereResponse)
+        hmrcTierConnector.processResponse(fakeSevereResponse)
       }
     }
   }
 
   "When processing a response if the status is less than 400 it" should {
     " return the response" in {
-      val resp = hmrcTierConnector.processResponse(new FakeResponse)
+      val resp = hmrcTierConnector.processResponse(fakeResponse)
       assert(resp.status == 200)
     }
   }
@@ -90,7 +77,7 @@ class TierConnectorSpec extends PlaySpec with FakePBIKApplication with TestAuthU
   "When processing a response if there is a PBIK error code" should {
     " throw a GenericServerErrorException" in {
       intercept[GenericServerErrorException] {
-        hmrcTierConnector.processResponse(new FakeResponseWithError)
+        hmrcTierConnector.processResponse(fakeResponseWithError)
       }
     }
   }

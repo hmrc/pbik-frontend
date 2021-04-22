@@ -16,9 +16,9 @@
 
 package utils
 
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class URIValuesSpec extends UnitSpec with URIValues {
+class URIValuesSpec extends WordSpecLike with Matchers with OptionValues with URIValues {
 
   "The Get Benefit Types path" should {
     " be equal to getbenefittypes" in {

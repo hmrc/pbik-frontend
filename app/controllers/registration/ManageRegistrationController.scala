@@ -20,19 +20,22 @@ import config.PbikAppConfig
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import services.{BikListService, RegistrationService, SessionService}
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{ControllersReferenceData, URIInformation, _}
 import views.html.registration.{ConfirmAddCurrentTaxYear, ConfirmUpdateNextTaxYear, CurrentTaxYear, NextTaxYear}
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class ManageRegistrationController @Inject()(
   bikListUtils: BikListUtils,
   registrationService: RegistrationService,

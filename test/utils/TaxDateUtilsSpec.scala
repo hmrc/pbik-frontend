@@ -20,9 +20,9 @@ import java.time.LocalDate
 
 import controllers.FakePBIKApplication
 import org.joda.time.DateTimeConstants._
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 
-class TaxDateUtilsSpec extends UnitSpec with FakePBIKApplication {
+class TaxDateUtilsSpec extends WordSpecLike with Matchers with OptionValues with FakePBIKApplication {
 
   val taxDateUtils = app.injector.instanceOf[TaxDateUtils]
 

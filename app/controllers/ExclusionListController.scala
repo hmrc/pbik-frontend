@@ -20,7 +20,8 @@ import java.util.UUID
 
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import javax.inject.Inject
+
+import javax.inject.{Inject, Singleton}
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -28,8 +29,8 @@ import play.api.mvc._
 import play.api.{Configuration, Logger}
 import services.{BikListService, EiLListService, SessionService}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
-import uk.gov.hmrc.play.HeaderCarrierConverter
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils.{ControllersReferenceData, SplunkLogger, _}
 import views.html.ErrorPage
@@ -38,6 +39,7 @@ import views.html.exclusion._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class ExclusionListController @Inject()(
   formMappings: FormMappings,
   val authenticate: AuthAction,
@@ -89,7 +91,7 @@ class ExclusionListController @Inject()(
   def performPageLoad(isCurrentTaxYear: String, iabdType: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       implicit val hc: HeaderCarrier =
-        HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+        HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       if (exclusionsAllowed) {
         val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
         val staticDataRequest = for {
@@ -229,7 +231,7 @@ class ExclusionListController @Inject()(
   def searchResults(isCurrentTaxYear: String, iabdType: String, formType: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       implicit val hc: HeaderCarrier =
-        HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+        HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       if (exclusionsAllowed) {
         val form = formType match {
@@ -430,7 +432,7 @@ class ExclusionListController @Inject()(
   def updateExclusions(year: String, iabdType: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       implicit val hc: HeaderCarrier =
-        HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+        HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       if (exclusionsAllowed) {
         val resultFuture = cachingService.fetchPbikSession().flatMap { session =>
           val individualsDetails = session.get.listOfMatches.get.head
@@ -481,7 +483,6 @@ class ExclusionListController @Inject()(
     implicit hc: HeaderCarrier,
     request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     val yearInt = if (year.equals(utils.FormMappingsConstants.CY)) taxYearRange.cyminus1 else taxYearRange.cy
-    val spYear = if (taxDateUtils.isCurrentTaxYear(yearInt)) splunkLogger.CY else splunkLogger.CYP1
     Logger.info(
       s"[ExclusionListController][commitExclusion] Committing Exclusion for scheme ${request.empRef.toString}" +
         s", with employees Optimistic Lock: ${excludedIndividual.map(eiLPerson => eiLPerson.perOptLock).getOrElse(0)}"
@@ -533,7 +534,7 @@ class ExclusionListController @Inject()(
 
   def remove(year: String, iabdType: String, nino: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
-      implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      implicit val hc = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       if (exclusionsAllowed) {
         val resultFuture = cachingService.fetchPbikSession().flatMap { session =>
           val selectedPerson: EiLPerson = session.get.currentExclusions.get.filter(person => person.nino == nino).head
@@ -570,7 +571,7 @@ class ExclusionListController @Inject()(
 
   def removeExclusionsCommit(iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+      implicit val hc = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       val taxYearRange = taxDateUtils.getTaxYearRange()
       if (exclusionsAllowed) {

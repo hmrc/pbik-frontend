@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, NoSessionCheckAction}
 import javax.inject.Inject
 import models._
 import org.joda.time.LocalDate
-import org.mockito.Matchers.{eq => mockEq, _}
+import org.mockito.ArgumentMatchers.{eq => argEq, any}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
@@ -39,18 +39,14 @@ import play.api.test.Helpers._
 import services.{BikListService, SessionService}
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.logging.SessionId
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionKeys}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionId, SessionKeys}
 import uk.gov.hmrc.time.TaxYear
 import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction, URIInformation}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits._
-import scala.concurrent.duration.DurationInt
 
 class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
-
-  // TODO The following needs refactoring as it similar to registrationcontrollertest, consider moving to utils
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -142,7 +138,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       }))
 
     when(
-      tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], mockEq(YEAR_RANGE.cy))(
+      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(YEAR_RANGE.cy))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -151,7 +147,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     }))
 
     when(
-      tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], mockEq(YEAR_RANGE.cyminus1))(
+      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(YEAR_RANGE.cyminus1))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -160,7 +156,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     }))
 
     when(
-      tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], mockEq(YEAR_RANGE.cyplus1))(
+      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(YEAR_RANGE.cyplus1))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -169,7 +165,29 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     }))
 
     when(
-      tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""), any[EmpRef], mockEq(YEAR_RANGE.cy))(
+      tierConnector.genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(YEAR_RANGE.cy))(
+        any[HeaderCarrier],
+        any[Request[_]],
+        any[json.Format[List[Bik]]],
+        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) <= 10
+    }))
+
+    when(tierConnector.genericGetCall[List[Bik]](
+      any[String],
+      argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+      argEq(EmpRef.empty),
+      argEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 10
+      }))
+
+    when(
+      tierConnector.genericGetCall[List[Bik]](
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+        argEq(EmpRef.empty),
+        argEq(YEAR_RANGE.cyminus1))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -179,10 +197,10 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
 
     when(
       tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-        mockEq(EmpRef.empty),
-        mockEq(YEAR_RANGE.cy))(
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+        argEq(EmpRef.empty),
+        argEq(YEAR_RANGE.cyplus1))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -191,33 +209,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     }))
 
     when(
-      tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-        mockEq(EmpRef.empty),
-        mockEq(YEAR_RANGE.cyminus1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(
-      tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        mockEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-        mockEq(EmpRef.empty),
-        mockEq(YEAR_RANGE.cyplus1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(
-      tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], mockEq(2020))(
+      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -227,19 +219,19 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
 
     when(
       tierConnector.genericPostCall(
-        anyString,
-        mockEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
         any[EmpRef],
-        anyInt,
+        any[Int],
         any)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(new FakeResponse()))
 
     when(
       tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        mockEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
         any[EmpRef],
-        anyInt)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+        any[Int])(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) >= 15
       }))
@@ -258,7 +250,29 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
     when(
-      w.tierConnector.genericGetCall[List[Bik]](anyString, mockEq(""), any[EmpRef], mockEq(YEAR_RANGE.cy))(
+      w.tierConnector.genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(YEAR_RANGE.cy))(
+        any[HeaderCarrier],
+        any[Request[_]],
+        any[json.Format[List[Bik]]],
+        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      Integer.parseInt(x.iabdType) <= 10
+    }))
+
+    when(w.tierConnector.genericGetCall[List[Bik]](
+      any[String],
+      argEq(injected[URIInformation].getBenefitTypesPath),
+      argEq(EmpRef.empty),
+      argEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 10
+      }))
+
+    when(
+      w.tierConnector.genericGetCall[List[Bik]](
+        any[String],
+        argEq(injected[URIInformation].getBenefitTypesPath),
+        argEq(EmpRef.empty),
+        argEq(YEAR_RANGE.cyminus1))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -268,10 +282,10 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
 
     when(
       w.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        mockEq(injected[URIInformation].getBenefitTypesPath),
-        mockEq(EmpRef.empty),
-        mockEq(YEAR_RANGE.cy))(
+        any[String],
+        argEq(injected[URIInformation].getBenefitTypesPath),
+        argEq(EmpRef.empty),
+        argEq(YEAR_RANGE.cyplus1))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -280,33 +294,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     }))
 
     when(
-      w.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        mockEq(injected[URIInformation].getBenefitTypesPath),
-        mockEq(EmpRef.empty),
-        mockEq(YEAR_RANGE.cyminus1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(
-      w.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        mockEq(injected[URIInformation].getBenefitTypesPath),
-        mockEq(EmpRef.empty),
-        mockEq(YEAR_RANGE.cyplus1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(
-      w.tierConnector.genericGetCall[List[Bik]](anyString, anyString, any[EmpRef], mockEq(2020))(
+      w.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
         any[HeaderCarrier],
         any[Request[_]],
         any[json.Format[List[Bik]]],
@@ -316,17 +304,20 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
 
     when(
       w.tierConnector
-        .genericPostCall(anyString, mockEq(injected[URIInformation].updateBenefitTypesPath), any[EmpRef], anyInt, any)(
-          any[HeaderCarrier],
-          any[Request[_]],
-          any[json.Format[List[Bik]]])).thenReturn(Future.successful(new FakeResponse()))
+        .genericPostCall(
+          any[String],
+          argEq(injected[URIInformation].updateBenefitTypesPath),
+          any[EmpRef],
+          any[Int],
+          any)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(new FakeResponse()))
 
     when(
       w.tierConnector.genericGetCall[List[Bik]](
-        anyString,
-        mockEq(injected[URIInformation].getRegisteredPath),
+        any[String],
+        argEq(injected[URIInformation].getRegisteredPath),
         any[EmpRef],
-        anyInt)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+        any[Int])(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) >= 15
       }))
@@ -417,14 +408,14 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
 
     "return this tax year and next year if given true" in {
       val result = whatNextPageController.calculateTaxYear(true)
-      assert(result._1 == startYear.startYear - 1)
-      assert(result._2 == startYear.startYear)
+      assert(result._1 == startYear.startYear)
+      assert(result._2 == startYear.startYear + 1)
     }
 
     "return next year and the year after if given false" in {
       val result = whatNextPageController.calculateTaxYear(false)
-      assert(result._1 == startYear.startYear)
-      assert(result._2 == startYear.startYear + 1)
+      assert(result._1 == startYear.startYear + 1)
+      assert(result._2 == startYear.startYear + 2)
     }
   }
 

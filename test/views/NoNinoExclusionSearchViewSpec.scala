@@ -16,12 +16,11 @@
 
 package views
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
 import models._
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import utils.{FormMappings, URIInformation}
+import utils.FormMappings
 import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
 import views.html.exclusion.NoNinoExclusionSearchForm
 

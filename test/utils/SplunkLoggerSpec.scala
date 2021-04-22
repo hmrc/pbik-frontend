@@ -18,7 +18,6 @@ package utils
 
 import controllers.FakePBIKApplication
 import models._
-import play.api.libs.Crypto
 import play.api.libs.crypto.CSRFTokenSigner
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
@@ -28,9 +27,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.DataEvent
-import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 
-class SplunkLoggerSpec extends UnitSpec with FakePBIKApplication with TestAuthUser {
+class SplunkLoggerSpec extends WordSpecLike with Matchers with OptionValues with FakePBIKApplication with TestAuthUser {
 
   val testList: List[EiLPerson] =
     List[EiLPerson](new EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0))

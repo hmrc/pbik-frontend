@@ -16,11 +16,12 @@
 
 package utils
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.{Bik, RegistrationItem, RegistrationList}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Request
 
+@Singleton
 class BikListUtils @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
 
   val STATUS_ADD = 30
