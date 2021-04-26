@@ -39,7 +39,6 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.play.views.html.layouts._"
     ),
     resolvers := Seq(
-      Resolver.bintrayRepo("hmrc", "releases"),
       "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",
       Resolver.typesafeRepo("releases"),
       Resolver.jcenterRepo
