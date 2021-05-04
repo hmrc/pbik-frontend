@@ -31,7 +31,7 @@ object TestCYEnabledConfig extends AppConfig {
   override lazy val biksNotSupportedCY: List[Int] = List.empty[Int]
   override lazy val biksDecommissioned: List[Int] = List.empty[Int]
   override lazy val maximumExclusions: Int = 300
-  override lazy val urBannerLink: String = ""
+  override lazy val urBannerLink: String = "#"
   override lazy val feedbackUrl: String = ""
   override lazy val signOut: String = ""
   override val ssoUrl: Option[String] = None
@@ -56,7 +56,7 @@ object TestCYDisabledConfig extends AppConfig {
   override lazy val biksNotSupportedCY: List[Int] = List.empty[Int]
   override lazy val biksDecommissioned: List[Int] = List.empty[Int]
   override lazy val maximumExclusions: Int = 300
-  override lazy val urBannerLink: String = ""
+  override lazy val urBannerLink: String = "#"
   override lazy val feedbackUrl: String = ""
   override lazy val signOut: String = ""
   override val ssoUrl: Option[String] = None

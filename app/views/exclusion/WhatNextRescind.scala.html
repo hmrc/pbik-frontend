@@ -15,41 +15,43 @@
  *@
 
 @import utils.URIInformation
-@import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever,
-uriInformation: URIInformation)
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        ocalFormPartialRetriever: LocalFormPartialRetriever,
+        uriInformation: URIInformation
+)
 
-@(taxYearRange:TaxYearRange,
-  year:String, iabdType:String,
-  name:String,empRef: EmpRef)(implicit request:Request[_], messages: Messages)
+@(
+        taxYearRange:TaxYearRange,
+        year:String, iabdType:String,
+        name:String,
+        empRef: EmpRef
+)(implicit request:Request[_], messages: Messages)
 
-@parentTemplate(pageTitle = messages("whatNext.rescind.heading") + " - " + messages("Service.title"), None,  Some(empRef.toString)) {
+@govukLayoutWrapper(pageTitle = messages("whatNext.rescind.heading") + " - " + messages("Service.title"), showBackLink = false,  empRef =Some(empRef.toString)) {
 
     <section id="print-section">
         <div id="printContainer"></div>
     </section>
 
-    <section id="what-next-rescind">
+    <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
+        <h1 id="title" class="govuk-panel__title">
+            @messages("whatNext.rescind.heading")
+        </h1>
+        <p id="confirmation-p">
+            @messages("ExclusionRemoval.WhatNext.lede", name, messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)), taxYearRange.cy+"")
+        </p>
+    </div>
 
-        <div id="confirmation" class="govuk-box-highlight">
-            <h1 id="title" class="heading-xlarge">
-                @messages("whatNext.rescind.heading")
-            </h1>
-            <p id="confirmation-p">
-                @messages("ExclusionRemoval.WhatNext.lede", name, messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)), taxYearRange.cy+"")
-            </p>
-        </div>
-
-        <h2 class="heading-medium">
-            @messages("whatNext.subHeading")
-        </h2>
-        <ul class="list list-bullet">
+    <h2 class="govuk-heading-m">
+        @messages("whatNext.subHeading")
+    </h2>
+    <div class="govuk-form-group" >
+        <ul class="govuk-list govuk-list--bullet">
             <li>
                 @Html(messages("ExclusionRescind.WhatNext.p1"))
             </li>
@@ -66,15 +68,13 @@ uriInformation: URIInformation)
                 @Html(messages("ExclusionRescind.WhatNext.p4",messages("whatNext.exclude.heading")))
             </li>
         </ul>
+    </div>
 
-        <p >
-            <a onclick="gaEvent('Click back to exclusion overview','From: Employee removed What next page')"
-                href="@routes.ExclusionListController.performPageLoad(year,iabdType)" id="link-back-excluded">
-                @messages("Service.finish.rescinded")
-            </a>
-        </p>
-        <p>
-            <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">@messages("Service.back.overview.whatNext")</a>
-        </p>
-    </section>
+    <div class="govuk-form-group" >
+        <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year,iabdType)" id="link-back-excluded">
+            @messages("Service.finish.rescinded")
+        </a>
+    </div>
+
+    <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">@messages("Service.back.overview.whatNext")</a>
 }

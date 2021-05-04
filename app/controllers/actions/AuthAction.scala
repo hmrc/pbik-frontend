@@ -23,12 +23,13 @@ import javax.inject.{Inject, Singleton}
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.{Configuration, Logger}
+import play.api.Configuration
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,7 +38,7 @@ class AuthActionImpl @Inject()(
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default,
   config: AppConfig)(implicit val executionContext: ExecutionContext)
-    extends AuthAction with AuthorisedFunctions {
+    extends AuthAction with AuthorisedFunctions with Logging {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier =
@@ -60,24 +61,24 @@ class AuthActionImpl @Inject()(
                       UserName(name.getOrElse(Name(None, None))),
                       request))
                 case _ =>
-                  Logger.warn(
+                  logger.warn(
                     "[AuthAction][invokeBlock] Authentication failed: invalid taxOfficeNumber and/or taxOfficeReference")
                   Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad()))
               }
             }
             .getOrElse {
-              Logger.warn("[AuthAction][invokeBlock] Authentication failed - IR-PAYE key not found")
+              logger.warn("[AuthAction][invokeBlock] Authentication failed - IR-PAYE key not found")
               Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad()))
             }
         }
       } recover {
       case ex: NoActiveSession =>
-        Logger.warn("[AuthAction][invokeBlock] Bearer token missing or invalid")
+        logger.warn("[AuthAction][invokeBlock] Bearer token missing or invalid")
         Redirect(
           config.authSignIn,
           Map("continue_url" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend")))
       case ex: InsufficientEnrolments =>
-        Logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
+        logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
         Results.Redirect(controllers.routes.AuthController.notAuthorised())
 
     }

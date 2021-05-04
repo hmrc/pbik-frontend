@@ -17,7 +17,6 @@
 package controllers
 
 import akka.util.Timeout
-import config.PbikContext
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
@@ -46,6 +45,7 @@ import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils.{ControllersReferenceData, URIInformation, _}
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 
@@ -354,7 +354,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController
         .withOrWithoutNinoDecision("cyp1", "car")
         .apply(mockrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(OK)
       contentAsString(result) must include(title)
       contentAsString(result) must include(message)
@@ -381,7 +381,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController
         .withOrWithoutNinoDecision("cyp1", "car")
         .apply(formrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result).get must be("/payrollbik/cyp1/car/nino/exclude-employee-form")
     }
@@ -396,7 +396,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController
         .withOrWithoutNinoDecision("cyp1", "car")
         .apply(formrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result).get must be("/payrollbik/cyp1/car/no-nino/exclude-employee-form")
     }
@@ -408,7 +408,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val title = Messages("ExclusionSearch.form.title")
       val ninoHint = Messages("Service.field.ninohint")
       val result = mockExclusionListController.showExclusionSearchForm("cyp1", "car", formType).apply(mockrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(OK)
       contentAsString(result) must include(title)
       contentAsString(result) must include(ninoHint)
@@ -419,7 +419,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val title = Messages("ExclusionSearch.form.title")
       val dobHint = Messages("Service.field.dobhint")
       val result = mockExclusionListController.showExclusionSearchForm("cyp1", "car", formType).apply(mockrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(OK)
       contentAsString(result) must include(title)
       contentAsString(result) must include(dobHint)
@@ -429,7 +429,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val formType = "nothing"
       val title = Messages("ErrorPage.invalidForm")
       val result = mockExclusionListController.showExclusionSearchForm("cyp1", "car", formType).apply(mockrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(INTERNAL_SERVER_ERROR)
       contentAsString(result) must include(title)
     }
@@ -511,7 +511,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController
         .searchResults("cyp1", "car", ControllersReferenceDataCodes.FORM_TYPE_NONINO)
         .apply(formrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result).get must be("/payrollbik/cyp1/car/no-nino/exclude-employee-results")
     }
@@ -635,7 +635,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD).apply(mockrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-confirmation")
     }
@@ -661,7 +661,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val TEST_NINO = "AA111111B"
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = mockExclusionListController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(mockrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-employee-remove")
     }
@@ -675,7 +675,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = mockExclusionListController.removeExclusionsCommit(TEST_IABD)(mockrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result).get must be("/payrollbik/car/remove-commit")
     }
@@ -758,7 +758,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
 
       val result = mockExclusionListController.removeExclusionsCommit(TEST_IABD)(formrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result).get must be(s"/payrollbik/$TEST_IABD/remove-commit")
     }
@@ -798,7 +798,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val result = mockExclusionListController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(formrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-employee-remove")
     }
@@ -826,19 +826,55 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(PbikSession(
+          None,
+          None,
+          Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+          None,
+          Some(List.empty[EiLPerson]),
+          None,
+          Some(List(Bik("31", 30)))
+        ))))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
       val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-confirmation")
+    }
+  }
+
+  "When updateExclusions is called but theres no session data present" must {
+    "return a 500" in {
+      val TEST_YEAR_CODE = "cyp1"
+      val TEST_IABD = "car"
+      val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                None,
+                None,
+                None,
+                None,
+                Some(List.empty[EiLPerson]),
+                None,
+                Some(List(Bik("31", 30)))
+              ))))
+      implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+        mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
+      val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest)
+
+      status(result) must be(INTERNAL_SERVER_ERROR)
     }
   }
 
   "When updateExclusions is called but exclusions are disabled the controller" must {
     " redirect back to the overview page" in {
       val TEST_YEAR_CODE = "cyp1"
-      val TEST_IABD = "31"
+      val TEST_IABD = "car"
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
@@ -855,16 +891,33 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
   "When updateMultipleExclusions is called the controller" must {
     " redirect to the what next page" in {
       val TEST_YEAR_CODE = "cyp1"
-      val TEST_IABD = "31"
+      val TEST_IABD = "car"
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-        mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
+        mockrequest.withFormUrlEncodedBody("individualNino" -> "AA111111A")
       val title = Messages("ExclusionSearch.title")
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(PbikSession(
+          None,
+          None,
+          Some(List(
+            EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None),
+            EiLPerson("BB222222B", "John", None, "Smith", Some("456"), None, None, None)
+          )),
+          None,
+          Some(List.empty[EiLPerson]),
+          None,
+          Some(List(Bik("31", 30)))
+        ))))
       implicit val timeout: Timeout = 5 seconds
+
       val result =
-        await(mockExclusionListController.updateMultipleExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
+        await(
+          mockExclusionListController
+            .updateMultipleExclusions(TEST_YEAR_CODE, TEST_IABD, ControllersReferenceDataCodes.FORM_TYPE_NINO)(
+              formrequest))(timeout)
+      result.header.status must be(SEE_OTHER)
+      result.header.headers("Location") mustBe "/payrollbik/cyp1/car/exclude-confirmation"
     }
   }
 
@@ -894,7 +947,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
   "When updateMultipleExclusions is called but exclusions are disabled the controller" must {
     " redirect back to the overview page" in {
       val TEST_YEAR_CODE = "cy"
-      val TEST_IABD = "31"
+      val TEST_IABD = "car"
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
@@ -902,7 +955,10 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
       implicit val timeout: Timeout = 5 seconds
       val result =
-        await(mockExclusionController.updateMultipleExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest))(timeout)
+        await(
+          mockExclusionController
+            .updateMultipleExclusions(TEST_YEAR_CODE, TEST_IABD, ControllersReferenceDataCodes.FORM_TYPE_NINO)(
+              formrequest))(timeout)
       result.header.status must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -916,8 +972,18 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
+      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(Future.successful(Some(PbikSession(
+          None,
+          None,
+          Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
+          None,
+          Some(List.empty[EiLPerson]),
+          None,
+          Some(List(Bik("31", 30)))
+        ))))
       val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD_VALUE).apply(mockrequest)
-      (scala.concurrent.ExecutionContext.Implicits.global)
+
       status(result) must be(SEE_OTHER)
       redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD_VALUE/exclude-confirmation")
     }

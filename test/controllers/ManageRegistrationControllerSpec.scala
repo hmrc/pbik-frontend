@@ -41,8 +41,6 @@ import services.SessionService
 import support.{TestAuthUser, TestCYEnabledConfig}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.model.DataEvent
 import utils._
 
 import scala.concurrent.Future
@@ -83,14 +81,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     implicit val defaultPatience: ScalaFutures.PatienceConfig =
       PatienceConfig(timeout = Span(7, Seconds), interval = Span(600, Millis))
 
-    def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] =
-      Future.successful(AuditResult.Success)
-
     implicit lazy val mr: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-
-    //val tierConnector: HmrcTierConnector = mock[HmrcTierConnector]
-
-    val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
     when(
       app.injector
@@ -214,8 +205,6 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.1"))
       result.body.asInstanceOf[Strict].data.utf8String must include(Messages("BenefitInKind.label.3"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(
-        Messages("AddBenefits.ChooseBenefitsLabel.1", "" + YEAR_RANGE.cy, "" + YEAR_RANGE.cyplus1))
     }
   }
 
@@ -268,7 +257,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val result = registrationController.showCheckYourAnswersAddCurrentTaxYear().apply(mockrequest)
 
       status(result) must be(OK)
-      contentAsString(result) must include(Messages("AddBenefits.Confirm.Single.Table.Heading"))
+      contentAsString(result) must include(Messages("AddBenefits.Confirm.Single.Title"))
       contentAsString(result) must include(Messages("BenefitInKind.label.30"))
     }
   }

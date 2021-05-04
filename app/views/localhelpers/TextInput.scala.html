@@ -26,12 +26,20 @@
 @value = @{ field.value match { case Some(x) => x case None => "" case x => x }}
 @hasErrors = @{ elements.errors.nonEmpty }
 @fieldName = @{ elements.field.name }
-
-<div class="form-group @if(hasErrors){form-group-error}">
-    <label class="form-label" for="@elements.field.name">@elements.label</label>
-    @if(elements.args.contains('_inputHint) ){
-        <span class="form-hint">@elements.args.get('_inputHint)</span>
+@ariaDescribedByFields = @{
+    (elements.args.contains('_inputHint), hasErrors) match {
+        case (true, true) => Some(s"$fieldName-hint $fieldName-error")
+        case (true, false) => Some(s"$fieldName-hint")
+        case (false, true) => Some(s"$fieldName-error")
+        case _ => None
     }
-    @elements.field.errors.map { error => <span class="error-message">@messages(error.messages)</span>}
-    <input class="form-control @if(hasErrors){form-control-error}" type="text" value="@value" name="@fieldName" id="@fieldName"/>
+}
+
+<div class="govuk-form-group @if(hasErrors){govuk-form-group--error}">
+    <label class="govuk-label" for="@elements.field.name">@elements.label</label>
+    @if(elements.args.contains('_inputHint) ){
+        <span class="govuk-hint" id="@fieldName-hint">@elements.args.get('_inputHint)</span>
+    }
+    @elements.field.errors.map { error => <span class="govuk-error-message" id="@fieldName-error">@messages(error.messages)</span>}
+    <input class="govuk-input @if(hasErrors){govuk-input--error}" type="text" value="@value" name="@fieldName" id="@fieldName" @if(ariaDescribedByFields){aria-describedby="@ariaDescribedByFields.get"}/>
 </div>

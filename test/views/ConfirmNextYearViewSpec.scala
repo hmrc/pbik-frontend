@@ -44,15 +44,16 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
   def viewWithForm(form: Form[RegistrationList]): Html =
     confirmUpdateNextTaxYearView(
       bikList,
-      removalBik,
-      additive = true,
       taxYearRange,
-      Some(formMappings.removalReasonForm),
-      EmpRef("", ""))
+      EmpRef("", "")
+    )
 
   "nextYearPage" must {
     behave like pageWithTitle(messages("AddBenefits.Confirm.Single.Title"))
-    behave like pageWithHeader(messages("AddBenefits.Confirm.Single.Title"))
+    behave like pageWithHeader(
+      messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
+        + " " + messages("AddBenefits.Confirm.Single.Title")
+    )
     behave like pageWithContinueButtonForm("/payrollbik/cy1/add-benefit-expense", "Register this benefit")
 
   }

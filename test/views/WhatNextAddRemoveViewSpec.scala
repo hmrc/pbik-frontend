@@ -21,19 +21,19 @@ import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
-import views.html.registration.WhatNextAddRemove
+import views.html.registration.AddBenefitConfirmationNextTaxYear
 
 class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val formMappings = app.injector.instanceOf[FormMappings]
-  val whatNextAddRemoveView = app.injector.instanceOf[WhatNextAddRemove]
+  val addBenefitConfirmationNextTaxYearView = app.injector.instanceOf[AddBenefitConfirmationNextTaxYear]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = {
     val regList = RegistrationList(active = List(RegistrationItem("30", true, true)))
-    whatNextAddRemoveView(isCurrentYear = true, taxYearRange, additive = true, regList, EmpRef("", ""))
+    addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList, EmpRef("", ""))
   }
 
   "whatNextAddRemove" must {

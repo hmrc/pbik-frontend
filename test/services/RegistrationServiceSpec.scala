@@ -106,7 +106,6 @@ class RegistrationServiceSpec
       val taxDateUtils = injected[TaxDateUtils]
       val YEAR_RANGE = taxDateUtils.getTaxYearRange()
 
-      implicit val context: PbikContext = injected[PbikContext]
       implicit val config: AppConfig = injected[AppConfig]
       implicit val localFormPartialRetriever: LocalFormPartialRetriever = injected[LocalFormPartialRetriever]
 
@@ -117,7 +116,7 @@ class RegistrationServiceSpec
           nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty))
       status(result) shouldBe 200
       contentAsString(result) should include(Messages("AddBenefits.Heading"))
-      contentAsString(result) should include(Messages("BenefitInKind.label.37"))
+      contentAsString(result) should include(Messages("BenefitInKind.label.4"))
     }
   }
 

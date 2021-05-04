@@ -16,15 +16,13 @@
 
 package utils
 
-import play.api.Logger
-
 import scala.sys.SystemProperties
 
 /**
   * Helper to check for System properties and marshal them to the correct types
   * or return the supplied default values
   */
-trait SystemPropertiesHelper {
+trait SystemPropertiesHelper extends Logging {
 
   lazy val sysprop = new SystemProperties()
 
@@ -62,13 +60,13 @@ trait SystemPropertiesHelper {
     }
 
   def doesntExist[T](key: String, defaultvalue: T): T = {
-    Logger.info(
+    logger.info(
       s"[SystemPropertiesHelper][doesntExist] No system property $key defined. Using default value: $defaultvalue")
     defaultvalue
   }
 
   def doesntParse[T](key: String, defaultvalue: T, errorMsg: String): T = {
-    Logger.warn(
+    logger.warn(
       s"[SystemPropertiesHelper][doesntParse] System property $key exists but could not be parsed to the correct type." +
         s" Please check the value: $defaultvalue. Error was $errorMsg"
     )

@@ -12,7 +12,7 @@ lazy val scoverageSettings: Seq[Def.Setting[_]] =
   Seq(
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;views.*;config.*;models.*;" +
       ".*(AuthService|BuildInfo|Routes).*",
-    ScoverageKeys.coverageMinimum := 85,
+    ScoverageKeys.coverageMinimum := 87,
     ScoverageKeys.coverageFailOnMinimum := false,
     ScoverageKeys.coverageHighlighting := true
   )
@@ -33,10 +33,10 @@ lazy val microservice = Project(appName, file("."))
     unmanagedResourceDirectories in Assets += baseDirectory.value / "app" / "assets",
     excludeFilter in Assets := "js*" || "sass*",
     TwirlKeys.templateImports ++= Seq(
-      "play.twirl.api.HtmlFormat",
-      "play.twirl.api.HtmlFormat._",
-      "uk.gov.hmrc.play.views.html.helpers._",
-      "uk.gov.hmrc.play.views.html.layouts._"
+      "uk.gov.hmrc.govukfrontend.views.html.components._",
+      "uk.gov.hmrc.govukfrontend.views.html.helpers._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
     ),
     resolvers := Seq(
       "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",

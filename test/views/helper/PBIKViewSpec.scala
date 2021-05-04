@@ -16,8 +16,6 @@
 
 package views.helper
 
-import config.PbikContext
-import connectors.ContactFrontendConnector
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.mock
@@ -51,6 +49,7 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
 
   def pageWithHeaderH2(headerText: String): Unit =
     "have a static h2 header" in {
+
       doc must haveHeadingH2WithText(headerText)
     }
 
@@ -105,9 +104,6 @@ trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite with I18nSuppor
   implicit val lang: Lang = Lang("en-GB")
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val pbikContext: PbikContext = new PbikContext(mock(classOf[ContactFrontendConnector])) {
-    override def getPageHelpPartial()(implicit hc: HeaderCarrier): Future[String] = Future.successful("")
-  }
 }
 
 trait PBIKViewSpec extends PBIKBaseViewSpec with PBIKViewBehaviours

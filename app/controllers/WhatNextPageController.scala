@@ -25,8 +25,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{ControllersReferenceData, _}
-import views.html.registration.WhatNextAddRemove
 import controllers.actions.AuthAction
+import views.html.registration.{AddBenefitConfirmationNextTaxYear, RemoveBenefitConfirmationNextTaxYear}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -39,18 +39,16 @@ class WhatNextPageController @Inject()(
   taxDateUtils: TaxDateUtils,
   controllersReferenceData: ControllersReferenceData,
   cc: MessagesControllerComponents,
-  whatNextAddRemoveView: WhatNextAddRemove)
-    extends FrontendController(cc) with I18nSupport {
+  addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear,
+  removeBenefitConfirmationNextTaxYearView: RemoveBenefitConfirmationNextTaxYear
+) extends FrontendController(cc) with I18nSupport {
 
-  def calculateTaxYear(isCurrentTaxYear: Boolean): (Int, Int) = {
-    val isCurrentYear = if (isCurrentTaxYear) FormMappingsConstants.CY else FormMappingsConstants.CYP1
-    isCurrentYear match {
-      case FormMappingsConstants.CY =>
-        (controllersReferenceData.YEAR_RANGE.cyminus1, controllersReferenceData.YEAR_RANGE.cy)
-      case FormMappingsConstants.CYP1 =>
-        (controllersReferenceData.YEAR_RANGE.cy, controllersReferenceData.YEAR_RANGE.cyplus1)
+  def calculateTaxYear(isCurrentTaxYear: Boolean): (Int, Int) =
+    if (isCurrentTaxYear) {
+      (controllersReferenceData.YEAR_RANGE.cyminus1, controllersReferenceData.YEAR_RANGE.cy)
+    } else {
+      (controllersReferenceData.YEAR_RANGE.cy, controllersReferenceData.YEAR_RANGE.cyplus1)
     }
-  }
 
   def showWhatNextRegisteredBik(year: String): Action[AnyContent] =
     (authenticate).async { implicit request =>
@@ -62,10 +60,9 @@ class WhatNextPageController @Inject()(
         val addedBiksAsList: RegistrationList =
           RegistrationList(active = session.get.registrations.get.active.filter(item => item.active))
         Ok(
-          whatNextAddRemoveView(
+          addBenefitConfirmationNextTaxYearView(
             taxDateUtils.isCurrentTaxYear(yearInt),
             controllersReferenceData.YEAR_RANGE,
-            additive = true,
             addedBiksAsList,
             empRef = request.empRef
           ))
@@ -79,10 +76,9 @@ class WhatNextPageController @Inject()(
         val removedBikAsList: RegistrationList =
           RegistrationList(active = List(session.get.bikRemoved.get))
         Ok(
-          whatNextAddRemoveView(
+          removeBenefitConfirmationNextTaxYearView(
             taxDateUtils.isCurrentTaxYear(controllersReferenceData.YEAR_RANGE.cyplus1),
             controllersReferenceData.YEAR_RANGE,
-            additive = false,
             removedBikAsList,
             empRef = request.empRef
           ))

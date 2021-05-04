@@ -14,190 +14,76 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation
-@import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
-@import views.html.includes.BackLink
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever,
-uriInformation: URIInformation,
-back_link: BackLink)
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever,
+        uriInformation: URIInformation,
+        formWithCSRF: FormWithCSRF
+)
 
-@(bikList: RegistrationList,
-  removalBik: Option[RegistrationItem],
-  additive: Boolean,
-  taxYearRange:TaxYearRange,
-  formOp: Option[Form[BinaryRadioButtonWithDesc]],
-  empRef: EmpRef)(implicit request:Request[_], messages: Messages)
+@(
+        bikList: RegistrationList,
+        taxYearRange:TaxYearRange,
+        empRef: EmpRef
+)(implicit request:Request[_], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(bikList.active.head.id )) }
 @singleBik = @{ if(bikList.active.length > 1 ) { false } else { true } }
-@gaEventBiks = @{ for (item <- 0 until bikList.active.length) { Html(messages("BenefitInKind.label." + bikList.active(item)) + " ,") } }
-@gaEventRemoveBiks = @{ if(!additive) for (item <- 0 until bikList.active.length) { Html(messages("BenefitInKind.label." + bikList.active(item)) + " ,") } }
 
 @screenReaderExclusionOpen = @{ messages("AddBenefits.Confirm.help.reveal.link.sr.open") }
 @screenReaderExclusionClosed = @{ messages("AddBenefits.Confirm.help.reveal.link.sr.closed") }
 
-@title = @{ if(additive && singleBik) { messages("AddBenefits.Confirm.Single.Title") } else if(additive && !singleBik) { messages("AddBenefits.Confirm.Multiple.Title") } else {messages("RemoveBenefits.Confirm.Title") } }
+@title = @{ if(singleBik) { messages("AddBenefits.Confirm.Single.Title") } else { messages("AddBenefits.Confirm.Multiple.Title") }}
 
-@parentTemplate(pageTitle = title + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
+@govukLayoutWrapper(pageTitle = title + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString), empRef = Some(empRef.toString)) {
 
-    @if(additive) {
-
-        @back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad), messages("AddBenefits.Confirm.Single.Title"))
-
-        <h1 id="title" class="heading-xlarge">
-            @if(!singleBik) {
-                @messages("AddBenefits.Confirm.Multiple.Title")
-            }else{
-                @messages("AddBenefits.Confirm.Single.Title")
-            }
-        </h1>
-    } else {
-
-        @back_link(Some(controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad), messages("RemoveBenefits.Confirm.Title"))
-
-        @if(formOp.get.hasErrors){
-            <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
-
-                <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-                @messages("Service.errorSummary.heading")
-                </h2>
-
-                <ul class="error-summary-list">
-                    <li><a href="#error-list-1">
-                        @if(formOp.get.errors.head.message == "error.required") {@Messages("RemoveBenefits.reason.no.selection")
-                        } else {
-                        @formOp.get.errors.head.message
-                        }
-
-                    </a></li>
-                </ul>
-
-            </div>
+    <h1 id="title" class="govuk-heading-xl">
+        <span class="govuk-caption-xl">@messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")</span>
+        @if(!singleBik) {
+            @messages("AddBenefits.Confirm.Multiple.Title")
+        }else{
+            @messages("AddBenefits.Confirm.Single.Title")
         }
+    </h1>
 
-        <h1 id="title" class="heading-xlarge">
-            @messages("RemoveBenefits.Confirm.Title")
-        </h1>
-    }
-
-    @if(additive) {
-        <p class="lede" id="lede">
-            @if(singleBik){
-                @messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
-            }else{
-                @messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
-            }
-        </p>
-    } else {
-        <p class="lede" id="lede"> @messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
-    }
+    <p class="govuk-body-l" id="lede">
+        @if(singleBik){
+            @messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+        }else{
+            @messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+        }
+    </p>
 
     <div class="data">
-        @if(additive) {
-        @helpers.form(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes(),
-        'onsubmit -> "gaEventConfirmAddBenefits()") {
-        <ol class="govuk-check-your-answers cya-questions-short">
-            @for(item <- 0 until bikList.active.length) {
-            <li>
-                <div class="cya-answer" id='confirmation-row-confirmation-@bikList.active(item).id.toString'>
-                    @messages("BenefitInKind.label." + bikList.active(item).id.toString)
-                </div>
-            </li>
-            }
-        </ol>
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes(), 'onsubmit -> "gaEventConfirmAddBenefits()") {
 
-        <div class="panel panel-border-wide" id="exclude-info">
-            @if(singleBik){
-                @messages("AddBenefits.Confirm.help.desc.Single")
+            <dl class="govuk-summary-list">
+                    @for(item <- bikList.active.indices) {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key" id="benefit-@bikList.active(item).id.toString">
+                                @messages("BenefitInKind.label." + bikList.active(item).id.toString)
+                            </dt>
+                        </div>
+                    }
+            </dl>
+
+            <div class="govuk-inset-text" id="exclude-info">
+                @if(singleBik){
+                    @messages("AddBenefits.Confirm.help.desc.Single")
                 }else{
-                @messages("AddBenefits.Confirm.help.desc")
+                    @messages("AddBenefits.Confirm.help.desc")
                 }
-        </div>
+            </div>
 
-        @if(singleBik) {
-            <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.register.single")">
-            } else {
-            <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.register.multiple")">
-            }
+            <input type="submit" role="button" class="govuk-button" id="button-confirm" value='@if(singleBik){@messages("Service.register.single")}else{@messages("Service.register.multiple")}'>
         }
-
         <p>
-            <a class="button-link" id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a>
+            <a class="govuk-link" id="link-back" href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a>
         </p>
-
-        } else {
-
-            @helpers.form(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.id),
-            'onsubmit -> "gaEventConfirmRemoveBenefits()", 'id -> "form-remove") {
-                <div class='form-group @if(formOp.get.hasErrors) {form-group-error}'>
-                    <fieldset>
-                        @if(formOp.get.hasErrors) {
-                            <span id="error-list-1" class="error-message">
-                                @if(formOp.get.errors.head.message == "error.required") {@Messages("RemoveBenefits.reason.no.selection")
-                                } else {
-                                @formOp.get.errors.head.message
-                                }
-                            </span>
-                        }
-                        <legend>
-                            <p>@messages("RemoveBenefits.reason.desc")</p>
-                        </legend>
-                        <div class="multiple-choice" onclick="RemoveBenefitRadioButton('software')">
-                            <input id="radio-software" type="radio" name="selectionValue" value="software" >
-                            <label for="radio-software">@messages("RemoveBenefits.reason.software")</label>
-                        </div>
-                        <div class="multiple-choice" onclick="RemoveBenefitRadioButton('guidance')">
-                            <input id="radio-guidance" type="radio" name="selectionValue" value="guidance" >
-                            <label for="radio-guidance">@messages("RemoveBenefits.reason.guidance")</label>
-                        </div>
-                        <div class="multiple-choice" onclick="RemoveBenefitRadioButton('not-clear')">
-                            <input id="radio-not-clear" type="radio" name="selectionValue" value="not-clear" >
-                            <label for="radio-not-clear">@messages("RemoveBenefits.reason.not-clear")</label>
-                        </div>
-                        <div class="multiple-choice" onclick="RemoveBenefitRadioButton('not-offering')">
-                            <input id="radio-not-offering" type="radio" name="selectionValue" value="not-offering" >
-                            <label for="radio-not-offering">@messages("RemoveBenefits.reason.not-offering")</label>
-                        </div>
-                        <div class="multiple-choice" onclick="RemoveBenefitRadioButton('other')">
-                            <input id="radio-other" type="radio" name="selectionValue" value="other" >
-                            <label for="radio-other">@messages("RemoveBenefits.reason.other")</label>
-                        </div>
-                        <div id="other-desc" class="other-desc panel" style="display:none">
-                            <label for="radio-other-desc">@messages("RemoveBenefits.reason.other.label")</label>
-                            <textarea id="radio-other-desc" class="form-control" cols="50" rows="4" name="info"></textarea>
-                        </div>
-                    </fieldset>
-                </div>
-
-                <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.confirm")">
-
-                <noscript>
-                    <style type="text/css">
-                        .other-desc {display:block !important;}
-                    </style>
-                </noscript>
-            }
-            <p>
-                <a class="button-link" id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a>
-            </p>
-        }
     </div>
-
-    <script>
-        function gaEventConfirmAddBenefits() {
-          gaEvent("Benefit(s) Added for Next Year", "@gaEventBiks");
-        }
-        function gaEventConfirmRemoveBenefits() {
-          gaEvent("Benefit Removed for Next Year", "@gaEventRemoveBiks");
-          var reason = capitalise(RemoveBenefitRadioButtonValue().split('-').join(' '));
-          gaEvent("Benefit Removed for Next Year (Reason)", (reason + " (" + document.getElementById("radio-other-desc").value + ")"));
-        }
-    </script>
 }

@@ -20,15 +20,15 @@ import config.PbikSessionCache
 
 import javax.inject.{Inject, Singleton}
 import models.{Bik, EiLPerson, PbikSession, RegistrationItem, RegistrationList}
-import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
+import utils.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class SessionService @Inject()(val http: DefaultHttpClient, val sessionCache: PbikSessionCache) {
+class SessionService @Inject()(val http: DefaultHttpClient, val sessionCache: PbikSessionCache) extends Logging {
 
   private object CacheKeys extends Enumeration {
     val RegistrationList, BikRemoved, ListOfMatches, EiLPerson, CurrentExclusions, CYRegisteredBiks, NYRegisteredBiks =
@@ -61,7 +61,7 @@ class SessionService @Inject()(val http: DefaultHttpClient, val sessionCache: Pb
       }
       .recover {
         case ex: Exception =>
-          Logger.warn(s"[SessionService][fetchPbikSession] Fetch failed due to: $ex")
+          logger.warn(s"[SessionService][fetchPbikSession] Fetch failed due to: $ex")
           Some(cleanSession)
       }
 
@@ -130,7 +130,7 @@ class SessionService @Inject()(val http: DefaultHttpClient, val sessionCache: Pb
         case CacheKeys.CYRegisteredBiks => session.copy(cyRegisteredBiks = Some(value.get.asInstanceOf[List[Bik]]))
         case CacheKeys.NYRegisteredBiks => session.copy(nyRegisteredBiks = Some(value.get.asInstanceOf[List[Bik]]))
         case _ =>
-          Logger.warn(s"[SessionService][cache] No matching keys found - returning clean session")
+          logger.warn(s"[SessionService][cache] No matching keys found - returning clean session")
           cleanSession
       }
     for {

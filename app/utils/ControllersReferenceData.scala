@@ -16,11 +16,10 @@
 
 package utils
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
+import config.{AppConfig, LocalFormPartialRetriever}
 
 import javax.inject.{Inject, Singleton}
 import models._
-import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
@@ -32,7 +31,7 @@ import views.html.{ErrorPage, MaintenancePage}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object ControllersReferenceDataCodes {
+object ControllersReferenceDataCodes extends Logging {
   val CY_RESTRICTED = "ServiceMessage.10003"
   val FEATURE_RESTRICTED = "ServiceMessage.10002"
   val DEFAULT_ERROR = "ServiceMessage.10001"
@@ -82,7 +81,6 @@ class ControllersReferenceData @Inject()(
   override val messagesApi: MessagesApi,
   errorPageView: ErrorPage,
   maintenancePageView: MaintenancePage)(
-  implicit val context: PbikContext,
   implicit val pbikAppConfig: AppConfig,
   implicit val localFormPartialRetriever: LocalFormPartialRetriever)
     extends FormMappings(messagesApi) with I18nSupport {
@@ -94,7 +92,7 @@ class ControllersReferenceData @Inject()(
     if (pbikAppConfig.cyEnabled) {
       responseErrorHandler(staticDataRequest)
     } else {
-      Logger.info("[ControllersReferenceData][responseCheckCYEnabled] Cy is disabled")
+      logger.info("[ControllersReferenceData][responseCheckCYEnabled] Cy is disabled")
       Future(Forbidden(errorPageView(CY_RESTRICTED, YEAR_RANGE, "", 10003, empRef = Some(request.empRef))))
     }
 
@@ -102,26 +100,26 @@ class ControllersReferenceData @Inject()(
     implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     staticDataRequest.recover {
       case e0: NoSuchElementException => {
-        Logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled : $e0")
+        logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled : $e0")
         NotFound(errorPageView(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e1: InvalidYearURIException => {
-        Logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
+        logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
         BadRequest(errorPageView(INVALID_YEAR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e2: InvalidBikTypeURIException => {
-        Logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeURIException was handled : $e2")
+        logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeURIException was handled : $e2")
         BadRequest(errorPageView(INVALID_BIK_TYPE_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
       }
       case e3: Upstream5xxResponse => {
-        Logger.error(
+        logger.error(
           s"[ControllersReferenceData][responseErrorHandler] An Upstream5xxResponse was handled : ${e3.message}",
           e3)
         InternalServerError(maintenancePageView(empRef = Some(request.empRef)))
       }
       case e4: GenericServerErrorException => {
         try {
-          Logger.warn(
+          logger.warn(
             s"[ControllersReferenceData][responseErrorHandler] A GenericServerErrorException was handled: ${e4.message}",
             e4)
           val msgValue = e4.message
@@ -136,7 +134,7 @@ class ControllersReferenceData @Inject()(
                 empRef = Some(request.empRef)))
         } catch {
           case ex: Exception => {
-            Logger.warn(
+            logger.warn(
               s"[ControllersReferenceData][responseErrorHandler] Could not parse GenericServerError System Error number: ${if (!e4.message.isEmpty) e4.message else "<no error code>"}. Showing default error page instead",
               ex
             )
@@ -145,7 +143,7 @@ class ControllersReferenceData @Inject()(
         }
       }
       case e5 => {
-        Logger.warn(
+        logger.warn(
           s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e5.getMessage}. Showing default error page",
           e5)
         InternalServerError(maintenancePageView(empRef = Some(request.empRef)))

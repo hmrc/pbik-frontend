@@ -17,7 +17,7 @@
 package support
 
 import com.google.inject.AbstractModule
-import config.AppConfig
+import config.{AppConfig, PbikAppConfig}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito.mock

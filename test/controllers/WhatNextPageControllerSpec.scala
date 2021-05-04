@@ -62,7 +62,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
 
   val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
-  implicit val pbikContext: PbikContext = app.injector.instanceOf[PbikContext]
 
   lazy val listOfPeople: List[EiLPerson] = List(
     EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),

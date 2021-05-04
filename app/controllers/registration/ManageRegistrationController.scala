@@ -25,12 +25,11 @@ import javax.inject.{Inject, Singleton}
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{ControllersReferenceData, URIInformation, _}
-import views.html.registration.{ConfirmAddCurrentTaxYear, ConfirmUpdateNextTaxYear, CurrentTaxYear, NextTaxYear}
+import views.html.registration.{ConfirmAddCurrentTaxYear, ConfirmUpdateNextTaxYear, CurrentTaxYear, NextTaxYear, RemoveBenefitNextTaxYear}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -54,8 +53,9 @@ class ManageRegistrationController @Inject()(
   nextTaxYearView: NextTaxYear,
   currentTaxYearView: CurrentTaxYear,
   confirmAddCurrentTaxYearView: ConfirmAddCurrentTaxYear,
-  confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear)
-    extends FrontendController(cc) with I18nSupport {
+  confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear,
+  removeBenefitNextTaxYearView: RemoveBenefitNextTaxYear)
+    extends FrontendController(cc) with I18nSupport with Logging {
 
   def nextTaxYearAddOnPageLoad: Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
@@ -129,7 +129,7 @@ class ManageRegistrationController @Inject()(
                    formWithErrors =>
                      Future.successful(
                        BadRequest(nextTaxYearView(
-                         bikForm = formWithErrors,
+                         form = formWithErrors,
                          additive = true,
                          taxYearRange = controllersReferenceData.YEAR_RANGE,
                          nonLegislationBiks = pbikAppConfig.biksNotSupported,
@@ -152,15 +152,8 @@ class ManageRegistrationController @Inject()(
     implicit request =>
       val resultFuture = cachingService.fetchPbikSession().flatMap { session =>
         val registrationList = RegistrationList(None, session.get.registrations.get.active.filter(_.active), None)
-        Future.successful(
-          Ok(
-            confirmUpdateNextTaxYearView(
-              registrationList,
-              None,
-              additive = true,
-              controllersReferenceData.YEAR_RANGE,
-              None,
-              empRef = request.empRef)))
+        Future.successful(Ok(
+          confirmUpdateNextTaxYearView(registrationList, controllersReferenceData.YEAR_RANGE, empRef = request.empRef)))
       }
       controllersReferenceData.responseErrorHandler(resultFuture)
   }
@@ -179,12 +172,11 @@ class ManageRegistrationController @Inject()(
     cachingService.cacheBikRemoved(RegistrationItem(uriInformation.iabdValueURLDeMapper(iabdType), false, true))
     Future.successful(
       Ok(
-        confirmUpdateNextTaxYearView(
+        removeBenefitNextTaxYearView(
           registrationList,
           Some(bikToRemove),
-          additive = false,
           controllersReferenceData.YEAR_RANGE,
-          Some(form),
+          form,
           empRef = request.empRef
         )))
   }
@@ -250,7 +242,7 @@ class ManageRegistrationController @Inject()(
               .bindFromRequest()
               .fold(
                 formWithErrors => {
-                  Logger.warn("[ManageRegistrationController][updateBiksFutureAction] No removal reason selected")
+                  logger.warn("[ManageRegistrationController][updateBiksFutureAction] No removal reason selected")
                   showCheckYourAnswersRemoveNextTaxYear(
                     uriInformation.iabdValueURLMapper(persistentBiks.head.iabdType),
                     formWithErrors)
@@ -309,7 +301,7 @@ class ManageRegistrationController @Inject()(
         }
       }
       case _ => {
-        Logger.warn(
+        logger.warn(
           s"[ManageRegistrationController][removeBenefitReasonValidation] Couldn't find reason from request form")
         showCheckYourAnswersRemoveNextTaxYear(
           uriInformation.iabdValueURLMapper(persistentBiks.head.iabdType),

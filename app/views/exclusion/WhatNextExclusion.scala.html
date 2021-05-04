@@ -15,59 +15,54 @@
  *@
 
 @import utils.URIInformation
-@import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever,
-uriInformation: URIInformation)
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever,
+        uriInformation: URIInformation
+)
 
 @(taxYearRange:TaxYearRange,
   year:String, iabdType:String,
   name:String,
 empRef: EmpRef)(implicit request:Request[_], messages: Messages)
 
-@parentTemplate(pageTitle = messages("whatNext.exclude.heading") + " - " + messages("Service.title"), None,  Some(empRef.toString)) {
+@govukLayoutWrapper(pageTitle = messages("whatNext.exclude.heading") + " - " + messages("Service.title"), showBackLink = false, empRef = Some(empRef.toString)) {
 
     <section id="print-section">
         <div id="printContainer"></div>
     </section>
 
-    <section id="what-next-exclusion">
-
-        <div id="confirmation" class="govuk-box-highlight">
-            <h1 id="title" class="heading-xlarge">
-                @messages("whatNext.exclude.heading")
-            </h1>
-            <p id="confirmation-p">
-                @if(year=="cy"){
-                    @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cyminus1 + "")
-                }else {
-                    @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cy + "")
-                }
-            </p>
-        </div>
-
-        <h2>
-            @messages("whatNext.subHeading")
-        </h2>
-
-        <p id="exclude-text">
-            @Html(messages("whatNext.exclude.p1",messages("whatNext.exclude.heading")))
+    <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
+        <h1 id="title" class="govuk-panel__title">
+            @messages("whatNext.exclude.heading")
+        </h1>
+        <p id="confirmation-p">
+            @if(year=="cy"){
+                @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cyminus1 + "")
+            }else {
+                @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cy + "")
+            }
         </p>
-        <br>
-        <p>
-            <a onclick="gaEvent('Click back to exclusion overview','From: Employee excluded What next page')"
-            href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))" id="link-back-excluded">
-                @messages("Service.finish.excluded")
-            </a>
-        </p>
-        <p>
-            <a onclick="gaEventLinkOverview()" href="@routes.HomePageController.onPageLoad" id="link-back">@messages("Service.back.overview.whatNext")</a>
-        </p>
-    </section>
+    </div>
 
+    <h2 class="govuk-heading-m">
+        @messages("whatNext.subHeading")
+    </h2>
+
+    <p id="exclude-text" class="govuk-body">
+        @Html(messages("whatNext.exclude.p1",messages("whatNext.exclude.heading")))
+    </p>
+
+    <div class="govuk-form-group">
+        <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))" id="link-back-excluded">
+        @messages("Service.finish.excluded")
+        </a>
+    </div>
+    <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
+        @messages("Service.back.overview.whatNext")
+    </a>
 }

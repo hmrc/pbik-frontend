@@ -14,38 +14,32 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers
-@import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever)
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever,
+        formWithCSRF: FormWithCSRF
+)
 
-@(bikForm:Form[RegistrationList],
-  taxYearRange:TaxYearRange, empRef: EmpRef)(implicit request:Request[_], messages: Messages)
+@(
+        bikForm:Form[RegistrationList],
+        taxYearRange:TaxYearRange, empRef: EmpRef
+)(implicit request:Request[_], messages: Messages)
 
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
-@gaEventBiks = @{helper.repeat(bikForm("actives"), min=0) { activeField => Html(messages("BenefitInKind.label." + activeField("uid").value.get) + " ,")} }
 
 @screenReaderExclusionOpen = @{messages("AddBenefits.Confirm.help.reveal.link.sr.open")}
 @screenReaderExclusionClosed = @{messages("AddBenefits.Confirm.help.reveal.link.sr.closed")}
 
 @title = @{if(singleBik) {messages("AddBenefits.Confirm.Single.Title")}else {messages("AddBenefits.Confirm.Multiple.Title")}}
 
-@parentTemplate(pageTitle = title + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
-    <span class="link-back-top-wrap">
-        <a class="link-back" id="link-back-top" onclick="gaEventLinkSteps()"
-           href='@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad'>
+@govukLayoutWrapper(pageTitle = title + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
 
-            <div class="arrow-back"></div>
-            @messages("Service.back")
-        </a>
-    </span>
-
-    <h1 id="title" class="heading-xlarge">
+    <h1 id="title" class="govuk-heading-xl">
+        <span class="govuk-caption-xl">@messages("Overview.next.heading", taxYearRange.cyminus1 + "", taxYearRange.cy + "")</span>
         @if(!singleBik) {
             @messages("AddBenefits.Confirm.Multiple.Title")
         }else{
@@ -53,7 +47,7 @@ localFormPartialRetriever: LocalFormPartialRetriever)
         }
     </h1>
 
-    <p class="lede" id="lede">
+    <p class="govuk-body-l" id="lede">
         @if(singleBik){
             @messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
         }else{
@@ -62,34 +56,19 @@ localFormPartialRetriever: LocalFormPartialRetriever)
     </p>
 
     <div class="data">
-        @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes(),
-        'onsubmit -> "gaEventConfirmAddBenefits()") {
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes()) {
 
-            <table id="list-of-confirmation-benefits" role="presentation">
-                <caption>
-                    @if(!singleBik) {
-                        @messages("AddBenefits.Confirm.Multiple.Table.Heading")
-                    }else {
-                        @messages("AddBenefits.Confirm.Single.Table.Heading")
-                    }
-                </caption>
-
-                <tbody>
-                @helpers.form(action = controllers.registration.routes.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes()) {
-                    @helper.repeat(bikForm("actives"), min=0) { activeField =>
-                        <tr role="row">
-                            @helper.inputText(activeField("uid"), '_label -> "", 'style -> "display: none" )
-                            @helper.inputText(activeField("pbik_seq"), '_label -> "", 'style -> "display: none" )
-                            @helper.inputText(activeField("active"), '_label -> "", 'style -> "display: none" )
-                            <td role="gridcell" id='confirmation-row-confirmation-@activeField("uid").value.get'>
-                                @messages("BenefitInKind.label." + activeField("uid").value.get )</td>
-                        </tr>
-                    }
+            <dl class="govuk-summary-list">
+                @for(item <- bikForm.value.get.active.indices) {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key" id="benefit-@bikForm.value.get.active(item).id.toString">
+                            @messages("BenefitInKind.label." + bikForm.value.get.active(item).id.toString)
+                        </dt>
+                    </div>
                 }
-                </tbody>
-            </table>
+            </dl>
 
-            <div class="panel panel-border-wide" id="exclude-info">
+            <div class="govuk-inset-text" id="exclude-info">
                 @if(singleBik){
                     @messages("AddBenefits.Confirm.help.desc.Single")
                 }else{
@@ -98,19 +77,12 @@ localFormPartialRetriever: LocalFormPartialRetriever)
             </div>
 
             @if(singleBik) {
-            <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.register.single")">
+                <input type="submit" role="button" class="govuk-button" id="button-confirm" value='@if(singleBik){@messages("Service.register.single")}else{@messages("Service.register.multiple")}'>
             }else {
-            <input type="submit" role="button" class="button" id="button-confirm" value="@messages("Service.register.multiple")">
+                <input type="submit" role="button" class="govuk-button" id="button-confirm" value="@messages("Service.register.multiple")">
             }
         }
-        <p><a class="button-link" id="link-back" onclick="gaEventLinkOverview()"
-              href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a>
-        </p>
 
+        <a class="govuk-link" id="link-back" href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a>
     </div>
-    <script>
-        function gaEventConfirmAddBenefits() {
-            gaEvent("Benefit(s) Added for Current Year", "@gaEventBiks");
-        }
-    </script>
 }

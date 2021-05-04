@@ -21,7 +21,6 @@ import controllers.actions.{AuthAction, NoSessionCheckAction, UnauthorisedAction
 
 import javax.inject.{Inject, Singleton}
 import models._
-import play.api.Logger
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.{Result, _}
 import services.{BikListService, SessionService}
@@ -29,8 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{ControllersReferenceData, SplunkLogger, URIInformation, _}
-import views.html.registration.CautionAddCurrentTaxYear
-import views.html.{ErrorPage, Overview}
+import views.html.{ErrorPage, Summary}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
@@ -50,9 +48,8 @@ class HomePageController @Inject()(
   pbikAppConfig: PbikAppConfig,
   uriInformation: URIInformation,
   errorPageView: ErrorPage,
-  cautionAddCurrentTaxYearView: CautionAddCurrentTaxYear,
-  overviewView: Overview)(implicit val ec: ExecutionContext)
-    extends FrontendController(cc) with I18nSupport {
+  summaryPage: Summary)(implicit val ec: ExecutionContext)
+    extends FrontendController(cc) with I18nSupport with Logging {
 
   def notAuthorised: Action[AnyContent] = authenticate { implicit request =>
     Unauthorized(
@@ -68,7 +65,7 @@ class HomePageController @Inject()(
 
   def setLanguage: Action[AnyContent] = Action { implicit request =>
     val lang = request.getQueryString("lang").getOrElse("en")
-    Logger.info(s"[HomePageController][setLanguage] Request received: set language to $lang")
+    logger.info(s"[HomePageController][setLanguage] Request received: set language to $lang")
     val newLang = Lang(lang)
     Redirect(
       request.headers.toMap
@@ -76,12 +73,6 @@ class HomePageController @Inject()(
         .asInstanceOf[List[String]]
         .head)
       .withLang(newLang)(messagesApi)
-  }
-
-  def loadCautionPageForCY: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    val staticDataRequest: Future[Result] =
-      Future.successful(Ok(cautionAddCurrentTaxYearView(controllersReferenceData.YEAR_RANGE, empRef = request.empRef)))
-    controllersReferenceData.responseCheckCYEnabled(staticDataRequest)
   }
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
@@ -107,7 +98,7 @@ class HomePageController @Inject()(
       }
       auditHomePageView()
       Ok(
-        overviewView(
+        summaryPage(
           pbikAppConfig.cyEnabled,
           taxYearRange,
           currentYearList._2,

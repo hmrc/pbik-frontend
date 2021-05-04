@@ -25,15 +25,16 @@ import models.{EmpRef, HeaderTags, PbikError}
 import play.api.libs.json
 import play.api.libs.json.{JsError, JsSuccess}
 import play.api.mvc.Request
-import play.api.{Configuration, Logger}
+import play.api.Configuration
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.Exceptions.GenericServerErrorException
+import utils.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configuration) {
+class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configuration) extends Logging {
 
   val serviceUrl: String = configuration.get[Service]("microservice.services.government-gateway")
 
@@ -62,11 +63,11 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
         HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1"))
 
       pbikHeaders = headers
-      Logger.info("[HmrcTierConnector][genericGetCall] GET etag/xtxid headers: " + pbikHeaders)
+      logger.info("[HmrcTierConnector][genericGetCall] GET etag/xtxid headers: " + pbikHeaders)
 
       r.json.validate[PbikError] match {
         case s: JsSuccess[PbikError] =>
-          Logger.error(
+          logger.error(
             s"[HmrcTierConnector][genericGetCall] a pbik error code was returned. Error Code: ${s.value.errorCode}")
           throw new GenericServerErrorException(s.value.errorCode)
         case e: JsError => r.json.as[T]
@@ -89,9 +90,9 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
     val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")
     val optMapped = Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession)
 
-    Logger.info(
-      "[HmrcTierConnector][genericPostCall] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession)
-
+    logger.info(
+      "[HmrcTierConnector][genericPostCall] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession
+    )
     client.POST(createPostUrl(baseUrl, URIExtension, empRef, year), data, optMapped.toSeq).map {
       response: HttpResponse =>
         processResponse(response)
@@ -101,13 +102,13 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
   def processResponse(response: HttpResponse): HttpResponse =
     response match {
       case _ if response.status >= 400 =>
-        Logger.error(s"[HmrcTierConnector][processResponse] An unexpected status was returned: ${response.status}")
+        logger.error(s"[HmrcTierConnector][processResponse] An unexpected status was returned: ${response.status}")
         throw new GenericServerErrorException(response.body)
       case _ if response.body.length <= 0 => response
       case _ =>
         response.json.validate[PbikError].asOpt match {
           case Some(pbikError) =>
-            Logger.error(
+            logger.error(
               s"[HmrcTierConnector][processResponse] A pbik error code was returned. Error Code: ${pbikError.errorCode}")
             throw new GenericServerErrorException(pbikError.errorCode)
           case _ => response
