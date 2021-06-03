@@ -31,7 +31,7 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.BikListService
-import support.{CYEnabledSetup, StubbedBikListService, TestAuthUser, TestSplunkLogger}
+import support.{StubbedBikListService, TestAuthUser, TestSplunkLogger}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
 import utils._
 
@@ -111,35 +111,6 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with Test
     }
   }
 
-  "When a valid user loads the CY warning but CY is disabled the HomePageController" should {
-    "show the CY disabled error page" in {
-      val homePageController = app.injector.instanceOf[HomePageController]
-
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      val result = await(homePageController.loadCautionPageForCY.apply(request))
-      result.header.status must be(FORBIDDEN)
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.1"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.2"))
-    }
-  }
-
-  "When a valid user loads the CY warning page and CY mode is enabled the HomePageController" should {
-    "show the page" in new CYEnabledSetup {
-
-      val injector: Injector = new GuiceApplicationBuilder()
-        .overrides(GuiceTestModule)
-        .injector()
-
-      val homePageController = injector.instanceOf[HomePageController]
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      val result = await(homePageController.loadCautionPageForCY.apply(request))
-      result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("AddBenefits.CY.Caution.Title"))
-    }
-  }
-
   "HomePageController" should {
     "display the navigation page" in {
       val homePageController = app.injector.instanceOf[HomePageController]
@@ -155,7 +126,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with Test
       result.body.asInstanceOf[Strict].data.utf8String must include(
         Messages("Overview.current.heading", "" + YEAR_RANGE.cyminus1, "" + YEAR_RANGE.cy))
       result.body.asInstanceOf[Strict].data.utf8String must include(
-        "Help improve digital services by joining the HMRC user panel <span class=\"visuallyhidden\">(opens in new window)</span></a>")
+        "Is this page not working properly? (opens in new tab)")
       result.body.asInstanceOf[Strict].data.utf8String must include("No thanks")
     }
   }

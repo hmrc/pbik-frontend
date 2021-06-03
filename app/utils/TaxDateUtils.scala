@@ -33,8 +33,8 @@ class TaxDateUtils @Inject()(configuration: Configuration) extends PayrollBikDef
   val overridedDateFromConfig: Option[util.List[Integer]] = configuration.getIntList("pbik.date.override")
 
   val sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss")
-  val startDateBanner: Date = sdf.parse(configuration.getString("pbik.banner.date.start").getOrElse(""))
-  val endDateBanner: Date = sdf.parse(configuration.getString("pbik.banner.date.end").getOrElse(""))
+  val startDateBanner: Date = sdf.parse(configuration.getOptional[String]("pbik.banner.date.start").getOrElse(""))
+  val endDateBanner: Date = sdf.parse(configuration.getOptional[String]("pbik.banner.date.end").getOrElse(""))
 
   def getDefaultDate: LocalDate =
     if (overridedDateFromConfig.isDefined) {

@@ -15,46 +15,58 @@
  *@
 
 @import play.api.i18n._
-@import views.html.localhelpers.DateFieldsNumberInputsInline
 
-@this(dateFieldsNumberInputsInline: DateFieldsNumberInputsInline)
+@this()
 
 @(formItem:Form[_],
   dateFieldName: String,
   dayFieldName: String,
   monthFieldName: String,
   yearFieldName: String,
-  label: Html, args: (Symbol,Any)*)(implicit messages: Messages)
+  label: Html, args: (Symbol,Any)*
+)(implicit messages: Messages)
 
 @argsMap = @{args.toMap}
 @dateErrors = @{formItem(dateFieldName).errors}
-@allFieldsEmpty = @{dateErrors.exists{error => error.message.equals("error.empty.dob")}}
-@invalidDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate")}}
-@invalidDayDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.day")}}
-@invalidMonthDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.month")}}
-@invalidYearDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.year")}}
-@invalidYearFutureDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.future.year")}}
-@invalidYearPastDate = @{dateErrors.exists {error =>error.message.equals("error.invaliddate.past.year")}}
 
-<div class="form-group @if(dateErrors.length>0) {form-group-error}">
-    <fieldset class="@argsMap.get('_groupClass)">
-
-        @if(allFieldsEmpty){<span class="error-message">@messages("error.empty.dob")</span>}
-        @if(invalidDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate")</span>}
-        @if(invalidDayDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate.day")</span>}
-        @if(invalidMonthDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate.month")</span>}
-        @if(invalidYearDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate.year")</span>}
-        @if(invalidYearFutureDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate.future.year")</span>}
-        @if(invalidYearPastDate && !allFieldsEmpty){<span class="error-message">@messages("error.invaliddate.past.year")</span>}
-
-    <legend class="form-label fieldset-legend-error">@label</legend>
-    <div class="form-date" id="dob">
-        @if(argsMap.get('_hintText).isDefined) {
-            <p class="form-hint">@argsMap.get('_hintText)</p>
+<div class="govuk-form-group @if(dateErrors.nonEmpty){govuk-form-group--error}">
+    <fieldset class="govuk-fieldset" role="group" aria-describedby="dob-hint@if(dateErrors.nonEmpty){ dob-error}">
+        <legend class="govuk-fieldset__legend">
+            @label
+        </legend>
+        @if(argsMap.contains('_hintText)) {
+            <div id="dob-hint" class="govuk-hint">
+                @argsMap.get('_hintText)
+            </div>
         }
-        @dateFieldsNumberInputsInline(formItem, label, args : _*)
-    </div>
+        @if(dateErrors.nonEmpty) {
+            <span id="dob-error" class="govuk-error-message">@messages(dateErrors.head.message)</span>
+        }
+        <div class="govuk-date-input" id="@dateFieldName">
+            <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="@dayFieldName">
+                        @messages("Service.field.dob.day")
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="@dayFieldName" name="@dayFieldName" type="text" pattern="[0-9]*" inputmode="numeric" value="@{formItem(dayFieldName).value}">
+                </div>
+            </div>
+            <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="@monthFieldName">
+                        @messages("Service.field.dob.month")
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="@monthFieldName" name="@monthFieldName" type="text" pattern="[0-9]*" inputmode="numeric" value="@{formItem(monthFieldName).value}">
+                </div>
+            </div>
+            <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="@yearFieldName">
+                        @messages("Service.field.dob.year")
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="@yearFieldName" name="@yearFieldName" type="text" pattern="[0-9]*" inputmode="numeric"  value="@{formItem(yearFieldName).value}">
+                </div>
+            </div>
+        </div>
     </fieldset>
 </div>
-
-

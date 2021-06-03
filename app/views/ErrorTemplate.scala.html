@@ -16,60 +16,13 @@
 
 @import play.api.i18n.Messages
 @import config.PbikAppConfig
-@import layouts.{govuk_template => hmrcGovUkTemplate}
-@import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 @import play.api.mvc.RequestHeader
 
-@this()
+@this(govukLayoutWrapper: GovukLayoutWrapper)
 
 @(pageTitle: String, heading: String, message: String)(implicit messages: Messages, config: PbikAppConfig, request: RequestHeader)
 
-@contentHeader = {
-<h1 id="title" class="heading-xlarge">@heading</h1>
+@govukLayoutWrapper(pageTitle = pageTitle) {
+ <h1 id="title" class="govuk-heading-xl">@heading</h1>
+ <p class="govuk-body">@message</p>
 }
-
-@mainContent = {
-<p>@message</p>
-}
-
-@head = {
-@uiLayouts.head(
-linkElem = None,
-headScripts = None)
-<meta name="format-detection" content="telephone=no" />
-}
-
-@betaBanner = {
-@uiLayouts.betaBanner(
-userLoggedIn = false,
-config.betaFeedbackUrl,
-config.betaFeedbackUnauthenticatedUrl,
-showFeedbackLinkInBetaBanner = true)
-}
-
-@serviceInfo = {
-@uiLayouts.serviceInfo(
-betaBanner = betaBanner,
-includeGridWrapper = false,
-serviceInfoContent = None)
-}
-
-@content = {
-@uiLayouts.main_content(
-article = uiLayouts.article(mainContent),
-serviceInfo = serviceInfo,
-mainContentHeader = contentHeader)
-}
-
-@bodyEnd = {
-
-}
-
-@footerTop = {}
-@footerLinks = {}
-
-@insideHeader = {}
-@afterHeader = {}
-
-
-@hmrcGovUkTemplate(Some(pageTitle), None)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)

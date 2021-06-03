@@ -15,25 +15,23 @@
  *@
 
 @import config.AppConfig
-@import config.PbikContext
 @import config.LocalFormPartialRetriever
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever)
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever
+)
 
 @()(implicit request: Request[_], messages: Messages)
 
-@anchor(text: String, url: String) = {<a href="@url" target="_blank">@text</a>}
-
+@anchor(text: String, url: String) = {<a class="govuk-link" href="@url" target="_blank">@text</a>}
 
 @pageTitle= {@messages("global.page.not.found.error.title") - @messages("Service.title")}
 
-@parentTemplate(pageTitle = pageTitle.toString, None, None) {
-
-<h1 class="heading-xlarge">@Messages("global.page.not.found.error.title")</h1>
-<p>@Messages("global.page.not.found.error.check.web.address.correct")</p>
-<p>@Messages("global.page.not.found.error.check.web.address.full")</p>
-<p>@Html(Messages("global.page.not.found.error.contact", anchor(Messages("global.page.not.found.error.contact.link.text"), Messages("global.page.not.found.error.contact.link"))))</p>
+@govukLayoutWrapper(pageTitle = pageTitle.toString) {
+   <h1 class="govuk-heading-xl">@Messages("global.page.not.found.error.title")</h1>
+   <p class="govuk-body">@Messages("global.page.not.found.error.check.web.address.correct")</p>
+   <p class="govuk-body">@Messages("global.page.not.found.error.check.web.address.full")</p>
+   <p class="govuk-body">@Html(Messages("global.page.not.found.error.contact", anchor(Messages("global.page.not.found.error.contact.link.text"), Messages("global.page.not.found.error.contact.link"))))</p>
 }

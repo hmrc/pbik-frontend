@@ -16,30 +16,30 @@
 
 package views
 
-import models.{EmpRef, TaxYearRange}
+import models.{Bik, EmpRef, TaxYearRange}
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.BikListUtils
 import views.helper.PBIKViewSpec
-import views.html.Overview
+import views.html.Summary
 
-class HomePageViewSpec extends PBIKViewSpec {
+class SummaryViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   implicit val bikListUtils = app.injector.instanceOf[BikListUtils]
-  val overviewView = app.injector.instanceOf[Overview]
+  val summaryView = app.injector.instanceOf[Summary]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  override def view: Html = overviewView(cyAllowed = true, taxYearRange, List(), List(), 200, 0, "", EmpRef("", ""))
+  override def view: Html =
+    summaryView(cyAllowed = true, taxYearRange, List(), List(Bik("31", 30)), 200, 0, "", EmpRef("", ""))
 
   "overview" must {
-
     behave like pageWithTitle(messages("Overview.heading"))
-    behave like pageWithHeader(messages("Overview.heading"))
-    behave like pageWithHeaderH2(
-      messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString))
-    behave like pageWithIdAndText(messages("Overview.next.lead.empty"), "no-benefits")
+    behave like pageWithHeader(
+      messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
+        + " " + messages("Overview.heading"))
+    behave like pageWithHeaderH2(messages("Overview.table.heading.1"))
     behave like pageWithLink("Register a benefit or expense", "/payrollbik/cy/choose-benefit-expense")
 
   }

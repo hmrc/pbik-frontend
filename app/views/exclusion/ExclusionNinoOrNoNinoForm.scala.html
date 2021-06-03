@@ -14,103 +14,81 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation
-@import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
-@import views.html.includes.BackLink
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever,
-uriInformation: URIInformation,
-back_link: BackLink)
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever,
+        uriInformation: URIInformation,
+        formWithCSRF: FormWithCSRF
+)
 
-@(taxYearRange: TaxYearRange,
-  isCurrentTaxYear: String,
-  iabdType: String,
-  previousSelection: String = "",
-  form: Form[MandatoryRadioButton],
-  empRef: EmpRef)(implicit request: Request[_], messages: Messages)
+@(
+        taxYearRange: TaxYearRange,
+        isCurrentTaxYear: String,
+        iabdType: String,
+        previousSelection: String = "",
+        form: Form[MandatoryRadioButton],
+        empRef: EmpRef
+)(implicit request: Request[_], messages: Messages)
 
-@parentTemplate(pageTitle = messages("ExclusionNinoDecision.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
+@govukLayoutWrapper(pageTitle = messages("ExclusionNinoDecision.title") + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
-        @back_link(gaLabel = messages("ExclusionNinoDecision.title"))
 
         @if(form.hasErrors){
-            <div class="error-summary" role="group" aria-labelledby="error-summary-heading" tabindex="-1">
-                <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-                @messages("Service.errorSummary.heading")
-                </h2>
-
-                <ul class="error-summary-list">
-                    <li><a href="#error-list-no-selection">@messages("ExclusionDecision.noselection.error")</a></li>
-                </ul>
+            <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-heading">@messages("Service.errorSummary.heading")</h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li>
+                            <a href="#error-list-no-selection">@messages("ExclusionDecision.noselection.error")</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         }
 
-        <h1 id="title" class="heading-xlarge">
+        <h1 id="title" class="govuk-heading-xl">
             @messages("ExclusionNinoDecision.title")
         </h1>
 
-        <section id="exclusion-decision">
-            @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType))) {
+        @formWithCSRF(action = routes.ExclusionListController.withOrWithoutNinoDecision(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType))) {
 
-                <div class='form-group @if(form.hasErrors) {form-group-error}'>
+            <div class="govuk-form-group @if(form.hasErrors){govuk-form-group--error}">
+                <fieldset class="govuk-fieldset" @if(form.hasErrors){aria-describedby="error-list-no-selection"}>
+                    <legend class="govuk-fieldset__legend">
+                        @messages("ExclusionNinoDecision.question", messages("BenefitInKind.label." + iabdType), yearvalue)
+                    </legend>
                     @if(form.hasErrors) {
-                        <span id="error-list-no-selection" class="error-message" style="display:block">
+                        <span id="error-list-no-selection" class="govuk-error-message">
                         @messages("ExclusionDecision.noselection.error")</span>
                     }
-                    <fieldset>
-                        <legend >@messages("ExclusionNinoDecision.question", messages("BenefitInKind.label." + iabdType), yearvalue)</legend>
-                        @if(previousSelection=="nino") {
-                            <div class="multiple-choice">
-                                <input id="button-nino" type="radio" name="confirmation" value="nino" checked >
-                                <label for="button-nino" class="add-focus selected">
-                                    @messages("Service.yes")
-                                </label>
-                            </div>
-                        } else {
-                            <div class="multiple-choice">
-                                <input id="button-nino" type="radio" name="confirmation" value="nino" >
-                                <label for="button-nino">
-                                    @messages("Service.yes")
-                                </label>
-                            </div>
-                        }
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="button-nino" type="radio" name="confirmation" value="nino" @if(previousSelection=="nino"){checked}>
+                            <label for="button-nino" class="govuk-label govuk-radios__label">
+                                @messages("Service.yes")
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="button-no-nino" type="radio" name="confirmation" value="no-nino" @if(previousSelection=="no-nino"){checked}>
+                            <label for="button-no-nino" class="govuk-label govuk-radios__label" >
+                                @messages("Service.no")
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.continue")">
+        }
 
-                        @if(previousSelection=="no-nino") {
-                            <div class="multiple-choice">
-                                <input id="button-no-nino" type="radio" name="confirmation" value="no-nino" checked>
-                                <label for="button-no-nino" class="block-label add-focus selected" >
-                                    @messages("Service.no")
-                                </label>
-                            </div>
-                        } else {
-                            <div class="multiple-choice">
-                                <input id="button-no-nino" type="radio" name="confirmation" value="no-nino">
-                                <label for="button-no-nino" class="block-label">
-                                    @messages("Service.no")
-                                </label>
-                            </div>
-                        }
-
-                    </fieldset>
-                </div>
-                <input type="submit" class="button" role="button" id="button-continue" value="@messages("Service.continue")">
-            }
-
-            <p>
-                <a class="button-link" id="link-exclusion-back" onclick="gaEvent('Click back to exclusion overview','From: Nino/No-nino form')"
-                href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
-                    @messages("Service.back.excluded")
-                </a>
-            </p>
-
-        </section>
+        <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
+            @messages("Service.back.excluded")
+        </a>
     }
 
 }

@@ -1,0 +1,71 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
+
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever
+)
+
+@(
+        isCurrentYear: Boolean,
+        taxYearRange:TaxYearRange,
+        bikList: RegistrationList,
+        empRef: EmpRef
+)(implicit request:Request[_], messages: Messages)
+
+@benefitLabel = @{messages("BenefitInKind.label." + bikList.active.head.id )}
+@singleBik = @{ if(bikList.active.length > 1 ) { false } else { true } }
+@cyminus1 = @{""+taxYearRange.cyminus1}
+@cy = @{""+taxYearRange.cy}
+@cyplus1 = @{""+taxYearRange.cyplus1}
+@metaTitleAdditive = @{if(singleBik){messages("whatNext.add.heading.singular")}else {messages("whatNext.add.heading")}}
+
+@title = @{messages("whatNext.remove.heading") + " - " + messages("Service.title")}
+
+@govukLayoutWrapper(pageTitle = title, Some(empRef.toString), showBackLink = false) {
+
+    <section id="print-section">
+        <div id="printContainer"></div>
+    </section>
+
+    <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
+        <h1 id="title" class="govuk-panel__title">
+            @messages("whatNext.remove.heading")
+        </h1>
+        @if(!isCurrentYear) {
+            <p id="confirmation-p">
+                @Html(messages("whatNext.remove.lede", benefitLabel, cy, cyplus1, bikList.active.head.id))
+            </p>
+        }
+    </div>
+
+    <h2 class="govuk-heading-m">
+      @messages("whatNext.subHeading")
+    </h2>
+
+    <p class="govuk-body">
+      @messages("whatNext.remove.p1") <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" target="_blank" class="govuk-link">@messages("whatNext.remove.link.P11D")</a>
+      @messages("whatNext.remove.p1-after")
+    </p>
+
+    <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
+      @messages("Service.back.overview.whatNext")
+    </a>
+}

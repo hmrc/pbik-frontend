@@ -16,7 +16,7 @@
 
 package views
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig, PbikContext}
+import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig}
 import models.{EmpRef, TaxYearRange}
 import org.jsoup.Jsoup
 import play.api.i18n.MessagesApi
@@ -35,7 +35,6 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
   override def view: Html = viewWithForm()
 
-  implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
   implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]

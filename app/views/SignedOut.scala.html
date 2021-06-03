@@ -15,17 +15,17 @@
  *@
 
 @this(
-    parentTemplate: ParentTemplate
+    govukLayoutWrapper: GovukLayoutWrapper
 )
 
 @()(implicit request:Request[_], messages: Messages)
 
-@parentTemplate(pageTitle = messages("signedOut.title") + " - " + messages("Service.title"), None, None, timeoutActive = false, signedIn = false) {
+@govukLayoutWrapper(pageTitle = messages("signedOut.title") + " - " + messages("Service.title"), timeoutActive = false, signOut = false) {
 
-    <h1 class="heading-xlarge">@messages("signedOut.title")</h1>
+    <h1 class="govuk-heading-xl">@messages("signedOut.title")</h1>
 
     <div>
-        <a class="button" role="button" href="@routes.HomePageController.onPageLoad()">@messages("signedOut.signIn")</a>
+        <a class="govuk-button" role="button" href="@routes.HomePageController.onPageLoad()">@messages("signedOut.signIn")</a>
     </div>
 
 }

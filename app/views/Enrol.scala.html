@@ -14,36 +14,32 @@
  * limitations under the License.
  *@
 
-@import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever
 )
 
 @(empRef: Option[EmpRef])(implicit request:Request[_], messages: Messages)
 
+@govukLayoutWrapper(pageTitle = messages("Service.notEnrolled.title") + " - " + messages("Service.title"), showBackLink = false, empRef = empRef.map(_.toString)) {
+    <h1 id="title" class="govuk-heading-xl">@messages("Service.notEnrolled.title")</h1>
 
-@parentTemplate(pageTitle = messages("Service.notEnrolled.title") + " - " + messages("Service.title"), None, empRef.map(_.toString)) {
-    <h1 id="title" class="heading-xlarge">@messages("Service.notEnrolled.title")</h1>
+    <p class="govuk-body-l">@messages("Service.notEnrolled.text1")</p>
 
-    <p class="lede">@messages("Service.notEnrolled.text1")</p>
+    <p class="govuk-body">@messages("Service.notEnrolled.text2")</p>
 
-    <p>@messages("Service.notEnrolled.text2")</p>
-
-    <ul class="list list-bullet">
+    <ul class="govuk-list govuk-list--bullet">
         <li>@messages("Service.enrollmentLoop.list1")</li>
         <li>@messages("Service.enrollmentLoop.list2")</li>
     </ul>
 
-    <p>@messages("Service.notEnrolled.text3")</p>
+    <p class="govuk-body">@messages("Service.notEnrolled.text3")</p>
 
-    <p>@messages("Service.notEnrolled.text4")</p>
+    <p class="govuk-body">@messages("Service.notEnrolled.text4")</p>
 
-    <p>
-        <a href='https://www.gov.uk/paye-online/enrol' class="button" role="button">@messages("Service.notEnrolled.button")</a>
-    </p>
+    <a class="govuk-button" href='https://www.gov.uk/paye-online/enrol' role="button">@messages("Service.notEnrolled.button")</a>
 }

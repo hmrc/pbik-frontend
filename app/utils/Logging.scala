@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import scala.concurrent.Await
-@import scala.concurrent.duration._
-@import uk.gov.hmrc.play.http.HeaderCarrierConverter
-@import config.PbikContext
+package utils
 
-@this(context: PbikContext)
+import play.api.Logger
 
-@(supportLinkEnabled: Boolean)(implicit request: Request[_], context: config.PbikContext, messages: Messages)
-
-@if(supportLinkEnabled) {
-    @Html(Await.result(context.getPageHelpPartial()(HeaderCarrierConverter.fromRequest(request)), 5 seconds))
+trait Logging {
+  val logger: Logger = Logger(this.getClass)
 }

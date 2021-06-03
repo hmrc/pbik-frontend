@@ -15,20 +15,20 @@
  *@
 
 @import config.AppConfig
-@import config.PbikContext
 @import config.LocalFormPartialRetriever
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever)
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever
+)
 
-@(backLink:String= "payrolled-benefits-expenses", empRef: Option[EmpRef])(implicit request:Request[_], messages: Messages)
+@(backLink:String="payrolled-benefits-expenses", empRef: Option[EmpRef])(implicit request:Request[_], messages: Messages)
 
-@parentTemplate(pageTitle = messages("Service.title"), None, Some(empRef.toString)) {
+@govukLayoutWrapper(pageTitle = messages("Service.title"), showBackLink = false, empRef = Some(empRef.toString)) {
 
-    <h1 class="heading-xlarge" id="title">@messages("ErrorPage.title")</h1>
-    <p id="tryLater">
+    <h1 class="govuk-heading-xl" id="title">@messages("ErrorPage.title")</h1>
+    <p class="govuk-body" id="tryLater">
         @Html(messages("ErrorPage.try.later"))
     </p>
 }

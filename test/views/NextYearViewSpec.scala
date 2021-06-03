@@ -16,7 +16,7 @@
 
 package views
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikContext}
+import config.{AppConfig, LocalFormPartialRetriever}
 import models.{EmpRef, RegistrationList, TaxYearRange}
 import org.jsoup.Jsoup
 import play.api.data.Form
@@ -36,7 +36,6 @@ class NextYearViewSpec extends PBIKViewSpec {
 
   override def view: Html = viewWithForm(formMappings.objSelectedForm)
 
-  implicit val context: PbikContext = app.injector.instanceOf[PbikContext]
   implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
@@ -45,7 +44,9 @@ class NextYearViewSpec extends PBIKViewSpec {
 
   "nextYearPage" must {
     behave like pageWithTitle(messages("AddBenefits.Heading"))
-    behave like pageWithHeader(messages("AddBenefits.Heading"))
+    behave like pageWithHeader(
+      messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
+        + " " + messages("AddBenefits.Heading"))
     behave like pageWithContinueButtonForm("/payrollbik/cy1/choose-benefit-expense", "Continue")
 
     "check the add benefit page for the errors" in {

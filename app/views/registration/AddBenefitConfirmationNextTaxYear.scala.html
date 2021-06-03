@@ -1,0 +1,115 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import config.LocalFormPartialRetriever
+
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever
+)
+
+@(
+        isCurrentYear: Boolean,
+        taxYearRange:TaxYearRange,
+        bikList: RegistrationList,
+        empRef: EmpRef
+)(implicit request:Request[_], messages: Messages)
+
+@benefitLabel = @{messages("BenefitInKind.label." + bikList.active.head.id )}
+@singleBik = @{ if(bikList.active.length > 1 ) { false } else { true } }
+@cyminus1 = @{""+taxYearRange.cyminus1}
+@cy = @{""+taxYearRange.cy}
+@cyplus1 = @{""+taxYearRange.cyplus1}
+@metaTitleAdditive = @{if(singleBik){messages("whatNext.add.heading.singular")}else {messages("whatNext.add.heading")}}
+
+@title = @{metaTitleAdditive + " - " + messages("Service.title") }
+
+@govukLayoutWrapper(pageTitle = title, empRef = Some(empRef.toString), showBackLink = false) {
+
+    <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
+        <h1 id="title" class="govuk-panel__title">
+                @if(singleBik){
+                    @messages("whatNext.add.heading.singular")
+                }else {
+                    @messages("whatNext.add.heading")
+                }
+        </h1>
+        <p id="confirmation-p">
+            @if(!isCurrentYear) {
+                @if(singleBik){
+                    @messages("whatNext.cy1.add.lede.singular", benefitLabel, cy)
+                }else {
+                    @messages("whatNext.cy1.add.lede", cy)
+                }
+            }else {
+                @if(singleBik){
+                    @messages("whatNext.cy1.add.lede.singular", benefitLabel, cyminus1)
+                }else {
+                    @messages("whatNext.cy1.add.lede", cyminus1)
+                }
+            }
+        </p>
+    </div>
+
+    @if(!singleBik){
+        <h2 class="govuk-heading-m">@messages("whatNext.cy1.add.table.header")</h2>
+
+        <dl class="govuk-summary-list" id="list-of-confirmation-benefits">
+            @for(item <- bikList.active.indices) {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @messages("BenefitInKind.label." + bikList.active(item).id.toString)
+                    </dt>
+                </div>
+            }
+        </dl>
+    }
+
+    <h2 class="govuk-heading-m">
+        @messages("whatNext.subHeading")
+    </h2>
+
+    @if(isCurrentYear) {
+        <ul class="govuk-list govuk-list--bullet" id="next-steps">
+            <li>@Html(messages("whatNext.add.p1", cyminus1))</li>
+            @if(singleBik) {
+                <li>@Html(messages("whatNext.add.p2.singular"))</li>
+                <li>@Html(messages("whatNext.add.p3.singular", cyminus1, cy))</li>
+            }else {
+                <li>@Html(messages("whatNext.add.p2"))</li>
+                <li>@Html(messages("whatNext.add.p3", cyminus1, cy))</li>
+            }
+            <li>@Html(messages("whatNext.add.p4"))</li>
+        </ul>
+    } else {
+        <ul class="govuk-list govuk-list--bullet" id="next-steps">
+            <li>@Html(messages("whatNext.add.p1", cy))</li>
+            @if(singleBik) {
+                <li>@Html(messages("whatNext.add.p2.singular"))</li>
+                <li>@Html(messages("whatNext.add.p3.singular", cy, cyplus1)) </li>
+            } else {
+                <li>@Html(messages("whatNext.add.p2"))</li>
+                <li>@Html(messages("whatNext.add.p3", cy, cyplus1))</li>
+            }
+            <li>@Html(messages("whatNext.add.p4"))</li>
+        </ul>
+    }
+    <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
+        @messages("Service.back.overview.whatNext")
+    </a>
+}

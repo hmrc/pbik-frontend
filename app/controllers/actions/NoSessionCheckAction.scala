@@ -22,22 +22,22 @@ import com.google.inject.ImplementedBy
 
 import javax.inject.{Inject, Singleton}
 import models.AuthenticatedRequest
-import play.api.Logger
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
+import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NoSessionCheckActionImpl @Inject()()(implicit val executionContext: ExecutionContext)
-    extends NoSessionCheckAction {
+    extends NoSessionCheckAction with Logging {
   override protected def refine[A](
     request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
 
     val sessionId = request.session.get(SessionKeys.sessionId)
     sessionId match {
       case None =>
-        Logger.warn("[NoSessionCheckAction][refine] No session ID found in request")
+        logger.warn("[NoSessionCheckAction][refine] No session ID found in request")
         Future.successful(
           Left(
             Results

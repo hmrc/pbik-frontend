@@ -14,183 +14,123 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers
 @import utils.URIInformation
-@import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.html.RepeatWithIndex
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever,
-uriInformation: URIInformation,
-repeatWithIndex: RepeatWithIndex)
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever,
+        uriInformation: URIInformation,
+        repeatWithIndex: RepeatWithIndex,
+        formWithCSRF: FormWithCSRF
+)
 
-@(taxYearRange: TaxYearRange,
-  year: String,
-  iabdType: String,
-  listOfMatches: EiLPersonList,
-  listOfMatchesForm: Form[ExclusionNino],
-  formType: String,
-  empRef: EmpRef)(implicit request: Request[_], messages: Messages)
+@(
+        taxYearRange: TaxYearRange,
+        year: String,
+        iabdType: String,
+        listOfMatches: EiLPersonList,
+        listOfMatchesForm: Form[ExclusionNino],
+        formType: String,
+        empRef: EmpRef
+)(implicit request: Request[_], messages: Messages)
 
-@parentTemplate( pageTitle=messages("ExclusionSearch.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
+@expenseOrBenefit = @{messages(s"BenefitInKind.label.$iabdType")}
+@title = @{if(listOfMatches.active.length > 1){ messages("ExclusionSearch.title.multiple") } else { messages("ExclusionSearch.title.single") }}
+@govukLayoutWrapper(pageTitle= title + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
 
     @defining( if(year=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
-        @helpers.form(action = routes.ExclusionListController.withOrWithoutNinoDecision(year, uriInformation.iabdValueURLMapper(iabdType)),
-            'onsubmit -> "gaEventLinkSteps()") {
-            <input type="hidden" id="button-nino"  name="confirmation" value="@formType">
-            <button type="submit" class="link-back" id="link-back-top" data-journey-click="link - click:back:@messages("ExclusionSearch.title")">
 
-                @messages("Service.back")
-            </button>
-        }
+        @if(listOfMatches.active.length > 1) {
 
-        @if(listOfMatchesForm("individualSelection").hasErrors) {
-            <div class="error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+            @if(listOfMatchesForm("individualNino").hasErrors) {
+                <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
-                <h2 class="heading-medium error-summary-heading" id="error-summary-heading-1">
-                    @messages("Service.errorSummary.heading")
-                </h2>
-
-                <ul class="error-summary-list">
-                    @if(listOfMatchesForm.error("individualSelection").get.message.equals("error.required")){
-                        <li><a href="#selection">@messages("error.exclusion.multi.selection")</a></li>
-                    }
-                </ul>
-            </div>
-        }
-
-        <h1 id="title" class="heading-xlarge">
-            @messages("ExclusionSearch.title")
-        </h1>
-
-        <section id="search-results">
-
-         @if(listOfMatches.active.length > 1) {
-
-                <p class="lede">
-                    @if(year=="cy"){
-                        @messages("ExclusionSearch.intro.multi", messages("BenefitInKind.label." + iabdType), ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
-                    }else{
-                        @messages("ExclusionSearch.intro.multi", messages("BenefitInKind.label." + iabdType),""+taxYearRange.cy, ""+taxYearRange.cyplus1)
-                    }
-               </p>
-
-                @if(listOfMatchesForm("individualSelection").hasErrors) {
-                    <div class="form-group form-group-error">
-
-                        @if(listOfMatchesForm.error("individualSelection").get.message.equals("error.required")){
-                        <span id="selection" class="error-message">
-                            @messages("error.exclusion.multi.selection")
-                        </span>
-                        }
-
-                }else {
-                    <div class="form-group">
-                }
-
-                  @helpers.form(action = routes.ExclusionListController.updateMultipleExclusions(year, uriInformation.iabdValueURLMapper(iabdType)),
-                    'onsubmit -> "gaEventConfirmExcludeMulti()") {
-
-                    <h2>@messages("ExclusionSearch.caption.multi")</h2>
-                    <ol class="govuk-check-your-answers cya-questions-short" id="nonino">
-                        <li>
-                            <div class="cya-question">&nbsp;</div>
-                            <div class="cya-question">@messages("Service.field.name")</div>
-                            <div class="cya-question">@messages("Service.field.nino")
-                                <br>
-                                <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span></div>
-                            <div class="cya-question">@messages("Service.field.worksnumber")</div>
-                        </li>
-
-                      @for(index <- 0 until listOfMatches.active.length) {
-                        <li onclick=selectRadioButtonTable('@listOfMatches.active(index).nino-radio')>
-                            <div class="cya-answer input">
-                                <input class="radio-indent" id ='@listOfMatches.active(index).nino-radio' type="radio" name="individualNino" value='@listOfMatches.active(index).nino'>
-                            </div>
-                                <div class="cya-answer" id='table-row-name-@listOfMatches.active(index).surname@index' >
-                                    @listOfMatches.active(index).surname, @listOfMatches.active(index).firstForename
-                                </div>
-                                <div class="cya-answer" id='table-row-nino-@listOfMatches.active(index).nino'>
-                                    @listOfMatches.active(index).nino
-                                </div>
-                                <div class="cya-answer" id='table-row-wpn-@listOfMatches.active(index).worksPayrollNumber'>
-                                    @listOfMatches.active(index).worksPayrollNumber.getOrElse("")
-                                </div>
-                        }
-                    </ol>
-                <div style="clear:both"></div>
-                <p class="panel panel-border-wide">
-                    @messages("ExclusionImportant.ExcludeEmployee")
-                </p>
-                <input type="submit" class="button" role="button" id="button-confirm" value="@messages("Service.confirm")">
+                    <h2 class="govuk-error-summary__title" id="error-summary-heading-1">
+                        @messages("Service.errorSummary.heading")
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            @if(listOfMatchesForm.error("individualNino").get.message.equals("error.required")){
+                                <li><a href="#selection">@messages("error.exclusion.multi.selection")</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
             }
 
-            <p><a class="button-link" id="multi-exclusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
-                  href="@routes.ExclusionListController.performPageLoad(year, uriInformation.iabdValueURLMapper(iabdType))">
-                @messages("Service.back.excluded")</a></p>
+             @formWithCSRF(action = routes.ExclusionListController.updateMultipleExclusions(year, uriInformation.iabdValueURLMapper(iabdType), formType)) {
+                 <div class="govuk-form-group @if(listOfMatchesForm("individualNino").hasErrors){govuk-form-group--error}">
+                     <fieldset class="govuk-fieldset" @if(listOfMatchesForm("individualNino").hasErrors){aria-describedby="selection-error"}>
+                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-padding-bottom-5">
+                             <h1 id="title" class="govuk-fieldset__heading">
+                                 <span class="govuk-caption-l">@expenseOrBenefit</span>
+                                 @title
+                             </h1>
+                         </legend>
+                         @if(listOfMatchesForm("individualNino").hasErrors) {
+                             <span id="selection-error" class="govuk-error-message">
+                                @messages("error.exclusion.multi.selection")
+                             </span>
+                         }
+                         <div class="govuk-radios">
+                         @for(index <- 0 until listOfMatches.active.length) {
+                             <div class="govuk-radios__item">
+                                 <input class="govuk-radios__input" id="employee-radio-@index" type="radio" aria-describedby="employee-hint-@index" name="individualNino" value='@listOfMatches.active(index).nino'>
+                                 <label class="govuk-label govuk-radios__label govuk-label--s" for="employee-radio-@index">
+                                     @listOfMatches.active(index).firstForename @listOfMatches.active(index).surname
+                                 </label>
+                                 <span id="employee-hint-@index" class="govuk-hint govuk-radios__hint">
+                                     @messages("Service.field.nino"): @listOfMatches.active(index).nino <br>
+                                     @messages("Service.field.worksnumber"): @listOfMatches.active(index).worksPayrollNumber.getOrElse("")
+                                 </span>
+                             </div>
+                         }
+                         </div>
+                     </fieldset>
+                 </div>
 
-         } else {
-           @if(listOfMatches.active.length == 1) {
+                 <p class="govuk-body">@messages("ExclusionImportant.ExcludeEmployee")</p>
+                 <p class="govuk-inset-text">@messages("ExclusionImportant.Reminder", expenseOrBenefit, yearvalue) </p>
+                 <input type="submit" class="govuk-button" role="button" id="button-confirm" value="@messages("Service.confirmAndContinue")">
+            }
 
-                 <p class="lede">
-                  @if(year=="cy"){
-                    @messages("ExclusionSearch.intro", messages("BenefitInKind.label." + iabdType), ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
-                  }else{
-                    @messages("ExclusionSearch.intro",messages("BenefitInKind.label." + iabdType), ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
-                  }
-                 </p>
-
-                        <h2>@messages("ExclusionSearch.caption")</h2>
-                        <ol class="govuk-check-your-answers cya-questions-short">
-                            <li>
-                                <div class="cya-question">@messages("Service.field.name")</div>
-                                <div class="cya-answer" id="table-row-name">
-                                    @listOfMatches.active.head.firstForename
-                                    @listOfMatches.active.head.surname
-                                </div>
-                            </li>
-                            <li>
-                                <div class="cya-question">@Html(messages("Service.field.nino.2lines"))
-                                    <br>
-                                    <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span>
-                                </div>
-                                <div class="cya-answer" id="table-row-nino">@listOfMatches.active.head.nino</div>
-                            </li>
-                            <li>
-                                <div class="cya-question">@messages("Service.field.worksnumber")</div>
-                                <div class="cya-answer" id="table-row-wpn">@listOfMatches.active.head.worksPayrollNumber.getOrElse("")</div>
-                            </li>
-                        </ol>
-
-                <div style="clear:both"></div>
-                <div class="panel panel-border-wide">
-                    <p>@messages("ExclusionImportant.ExcludeEmployee")</p>
-                </div>
-
-                <p>
-                    <a href="@routes.ExclusionListController.updateExclusions(year, uriInformation.iabdValueURLMapper(iabdType))" type="submit" class="button" onclick="gaEventConfirmExclude()" role="button" id="button-confirm">@messages("Service.confirm")</a>
-                    <p><a class="button-link" id="link-exclusion-back" onclick="gaEvent('Click back to exclusion overview','From: Search results')"
-                          href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))">
-                        @messages("Service.back.excluded")</a></p>
-                </p>
-
-           }
-
+            <a class="govuk-link" id="multi-exclusion-back" href="@routes.ExclusionListController.performPageLoad(year, uriInformation.iabdValueURLMapper(iabdType))">
+                @messages("Service.back.excluded")
+            </a>
+        } else {
+            <h1 id="title" class="govuk-heading-xl">
+                <span class="govuk-caption-l">@expenseOrBenefit</span>
+                @title
+            </h1>
+            <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-visually-hidden">@messages("ExclusionSearch.caption")</caption>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">@messages("Service.field.name")</th>
+                        <td class="govuk-table__cell" id="name">@listOfMatches.active.head.firstForename @listOfMatches.active.head.surname</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">@Html(messages("Service.field.nino.2lines")) @Html(messages("Service.nino.lastletter"))</th>
+                        <td class="govuk-table__cell" id="nino">@listOfMatches.active.head.nino</td>
+                    </tr>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">@messages("Service.field.worksnumber")</th>
+                        <td class="govuk-table__cell" id="wpn">@listOfMatches.active.head.worksPayrollNumber.getOrElse("")</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="govuk-body">@messages("ExclusionImportant.ExcludeEmployee")</p>
+            <p class="govuk-inset-text">@messages("ExclusionImportant.Reminder", expenseOrBenefit, yearvalue) </p>
+            <div class="govuk-form-group">
+                <a href="@routes.ExclusionListController.updateExclusions(year, uriInformation.iabdValueURLMapper(iabdType))" type="submit" class="govuk-button" role="button" id="button-confirm">@messages("Service.confirm")</a>
+            </div>
+            <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))">
+                @messages("Service.back.excluded")
+            </a>
         }
-        </section>
-
-        <script>
-        function gaEventConfirmExcludeMulti() {
-          gaEvent("Exclusion for @yearvalue", "On search results screen multi, @messages("BenefitInKind.label." + iabdType)");
-        }
-        function gaEventConfirmExclude() {
-          gaEvent("Exclusion for @yearvalue", "Employee excluded, @messages("BenefitInKind.label." + iabdType)");
-        }
-
-        </script>
     }
 }

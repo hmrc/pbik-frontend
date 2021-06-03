@@ -14,98 +14,85 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.play.views.html.helpers
 @import utils._
-@import config.PbikContext
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
-@import views.html.includes.BackLink
 @import views.html.RepeatWithIndex
 
-@this(parentTemplate: ParentTemplate,
-context: PbikContext,
-config: AppConfig,
-localFormPartialRetriever: LocalFormPartialRetriever,
-uriInformation: URIInformation,
-back_link: BackLink,
-repeatWithIndex: RepeatWithIndex)
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        config: AppConfig,
+        localFormPartialRetriever: LocalFormPartialRetriever,
+        uriInformation: URIInformation,
+        repeatWithIndex: RepeatWithIndex,
+        formWithCSRF: FormWithCSRF
+)
 
-@(taxYearRange: TaxYearRange,
-  year: String, iabdType:String,
-  individualsToRemove: EiLPersonList,
-empRef: EmpRef)(implicit request: Request[_], messages: Messages)
+@(
+        taxYearRange: TaxYearRange,
+        year: String, iabdType:String,
+        individualsToRemove: EiLPersonList,
+        empRef: EmpRef
+)(implicit request: Request[_], messages: Messages)
 
+@govukLayoutWrapper(pageTitle = messages("ExclusionRemovalConfirmation.title") + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
 
-@parentTemplate(pageTitle = messages("ExclusionRemovalConfirmation.title") + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString)) {
-
-    @back_link(gaLabel = messages("ExclusionRemovalConfirmation.title"))
-
-    <h1 id="title" class="heading-xlarge">
+    <h1 id="title" class="govuk-heading-xl">
         @messages("ExclusionRemovalConfirmation.title")
     </h1>
 
-    <section id="removal-confirmation">
-        <p class="lede">
-            @messages("ExclusionRemovalConfirmation.intro", messages("BenefitInKind.label."+ uriInformation.iabdValueURLDeMapper(iabdType)), ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
-
-           @helpers.form(action=routes.ExclusionListController.removeExclusionsCommit(iabdType),
-            'onsubmit -> "gaEventConfirmRemoveExclusion()") {
-            @for(index <- 0 until individualsToRemove.active.length) {
-        <fieldset>
-
-            <h2>@messages("ExclusionRemovalConfirmation.caption")</h2>
-            <ol class="govuk-check-your-answers cya-questions-short">
-                <li>
-                    <div class="cya-question">
+    <p class="govuk-body-l">
+        @messages("ExclusionRemovalConfirmation.intro", messages("BenefitInKind.label."+ uriInformation.iabdValueURLDeMapper(iabdType)), ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+    </p>
+    @formWithCSRF(action=routes.ExclusionListController.removeExclusionsCommit(iabdType)) {
+        @for(index <- 0 until individualsToRemove.active.length) {
+            <h2 class="govuk-heading-m">@messages("ExclusionRemovalConfirmation.caption")</h2>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
                         @messages("Service.field.name")
-                    </div>
-                    <div class="cya-answer" id="name">
+                    </dt>
+                    <dd class="govuk-summary-list__value">
                         @individualsToRemove.active(index).firstForename
                         @if(individualsToRemove.active(index).secondForename.isDefined) { @individualsToRemove.active(index).secondForename.get }
                         @individualsToRemove.active(index).surname
-                    </div>
-                </li>
-                <li>
-                    <div class="cya-question">@messages("Service.field.nino")<br>
-                        <span class="nino-span">@Html(messages("Service.nino.lastletter"))</span>
-                    </div>
-                    <div class="cya-answer" id="nino">
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        @messages("Service.field.nino")<br>
+                        <span>@Html(messages("Service.nino.lastletter"))</span>
+                    </dt>
+                    <dd class="govuk-summary-list__value">
                         @individualsToRemove.active(index).nino
-                    </div>
-                </li>
+                    </dd>
+                </div>
                 @if(individualsToRemove.active(index).worksPayrollNumber.isDefined) {
-                <li>
-                    <div class="cya-question">@messages("Service.field.worksnumber")</div>
-                    <div class="cya-answer">@individualsToRemove.active(index).worksPayrollNumber.get</div>
-                </li>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @messages("Service.field.worksnumber")
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @individualsToRemove.active(index).worksPayrollNumber.get
+                        </dd>
+                    </div>
                 }
                 @if(individualsToRemove.active(index).dateOfBirth.isDefined) {
-                <li>
-                    <div class="cya-answer bold">@messages("Service.field.dob")</div>
-                    <div class="cya-answer" id="dob">@DateUtils.NPSDateConversionFormat(individualsToRemove.active(index).dateOfBirth.get)</div>
-                </li>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            @messages("Service.field.dob")
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @DateUtils.NPSDateConversionFormat(individualsToRemove.active(index).dateOfBirth.get)
+                        </dd>
+                    </div>
                 }
-            </ol>
-
-        </fieldset>
+            </dl>
         }
+        <input type="submit" class="govuk-button" role="button" id="button-confirm" value="@messages("Service.exclusion.add")">
+    }
 
-        <p>
-            <input type="submit" class="button" role="button" id="button-confirm" value="@messages("Service.exclusion.add")">
-        </p>
-        }
-            <p>
-                <a id ="link-back" onclick="gaEvent('Click back to exclusion overview','From: Removal confirmation')"
-                   href='@routes.ExclusionListController.performPageLoad(year,iabdType)'>
-                    @messages("Service.back.excluded")
-                </a>
-            </p>
-
-    </section>
-
-    <script>
-        function gaEventConfirmRemoveExclusion() {
-          gaEvent("Remove Exclusion for @year", "@messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType))");
-        }
-    </script>
+    <a id ="link-back" class="govuk-link" href='@routes.ExclusionListController.performPageLoad(year,iabdType)'>
+        @messages("Service.back.excluded")
+    </a>
 }

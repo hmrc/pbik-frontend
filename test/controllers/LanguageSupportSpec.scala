@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.{AppConfig, PbikAppConfig, PbikContext}
+import config.{AppConfig, PbikAppConfig}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models.{Bik, TaxYearRange}
@@ -48,7 +48,6 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
     .build()
 
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
-  implicit val context: PbikContext = mock(classOf[PbikContext])
   val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
 
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
