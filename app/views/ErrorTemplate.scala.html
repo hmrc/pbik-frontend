@@ -15,12 +15,11 @@
  *@
 
 @import play.api.i18n.Messages
-@import config.PbikAppConfig
 @import play.api.mvc.RequestHeader
 
 @this(govukLayoutWrapper: GovukLayoutWrapper)
 
-@(pageTitle: String, heading: String, message: String)(implicit messages: Messages, config: PbikAppConfig, request: RequestHeader)
+@(pageTitle: String, heading: String, message: String)(implicit messages: Messages, request: RequestHeader)
 
 @govukLayoutWrapper(pageTitle = pageTitle) {
  <h1 id="title" class="govuk-heading-xl">@heading</h1>

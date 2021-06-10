@@ -23,7 +23,6 @@ import models.{Bik, TaxYearRange}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
-import play.api.i18n.Lang
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContentAsEmpty, Cookie}
@@ -31,10 +30,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, RegistrationService}
 import support.{StubbedBikListService, StubbedRegistrationService, TestAuthUser}
-import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
+import uk.gov.hmrc.http.SessionKeys
 import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction}
 
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
+import scala.language.postfixOps
 
 class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplication {
 
@@ -61,8 +61,6 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshrequest
         .withHeaders("Referer" -> "/payrollbik/payrolled-benefits-expenses")
 
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      implicit val timeout: FiniteDuration = timeoutValue
       val result = mockController.setLanguage(request)
       (scala.concurrent.ExecutionContext.Implicits.global)
       status(result) must be(SEE_OTHER)
@@ -77,8 +75,6 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
         .withSession(SessionKeys.sessionId -> sessionId)
         .withCookies(Cookie("PLAY_LANG", "cy"))
 
-      implicit val timeout: FiniteDuration = timeoutValue
-      implicit val lang: Lang = Lang("cy")
       val result = homePageController.onPageLoad(request)
 
       status(result) must be(OK) // 200

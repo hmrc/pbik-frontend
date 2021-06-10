@@ -53,7 +53,7 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
       doc must haveHeadingH2WithText(headerText)
     }
 
-  def pageWithBackLink: Unit =
+  def pageWithBackLink(): Unit =
     "have a back link" in {
       doc must haveBackLink
     }

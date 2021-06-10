@@ -43,7 +43,6 @@ class AuthControllerSpec extends PlaySpec with FakePBIKApplication {
   "When an valid user logs in, and their action is not authorised the controller" should {
     "return a 401 status with enrolment message" in new SetUp {
       val controller: AuthController = app.injector.instanceOf[AuthController]
-      implicit val testRequest: FakeRequest[AnyContentAsEmpty.type] = fakeRequest
       val result: Future[Result] = controller.notAuthorised()(fakeRequest)
       status(result) must be(UNAUTHORIZED) // 401
       val bodyText: String = contentAsString(result)

@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, NoSessionCheckAction, UnauthorisedAction
 import javax.inject.{Inject, Singleton}
 import models._
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
-import play.api.mvc.{Result, _}
+import play.api.mvc._
 import services.{BikListService, SessionService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -59,7 +59,7 @@ class HomePageController @Inject()(
         empRef = Some(request.empRef)))
   }
 
-  def signout: Action[AnyContent] = unauthorisedAction { implicit request =>
+  def signout: Action[AnyContent] = unauthorisedAction {
     Redirect(pbikAppConfig.signOut)
   }
 
@@ -81,10 +81,10 @@ class HomePageController @Inject()(
     val pageLoadFuture = for {
       // Get the available count of biks available for each tax year
       biksListOptionCY: List[Bik] <- bikListService.registeredBenefitsList(
-                                      controllersReferenceData.YEAR_RANGE.cyminus1,
+                                      controllersReferenceData.yearRange.cyminus1,
                                       EmpRef("", ""))(uriInformation.getBenefitTypesPath)
       biksListOptionCYP1: List[Bik] <- bikListService.registeredBenefitsList(
-                                        controllersReferenceData.YEAR_RANGE.cy,
+                                        controllersReferenceData.yearRange.cy,
                                         EmpRef("", ""))(uriInformation.getBenefitTypesPath)
       currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
       nextYearList: (Map[String, String], List[Bik])    <- bikListService.nextYearList

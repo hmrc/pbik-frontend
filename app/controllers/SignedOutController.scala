@@ -34,7 +34,7 @@ class SignedOutController @Inject()(
     Ok(signedOutView())
   }
 
-  def keepAlive(): Action[AnyContent] = Action { implicit request =>
+  def keepAlive(): Action[AnyContent] = Action {
     NoContent
   }
 }

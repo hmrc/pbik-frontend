@@ -31,11 +31,8 @@
 )(implicit request:Request[_], messages: Messages)
 
 @benefitLabel = @{messages("BenefitInKind.label." + bikList.active.head.id )}
-@singleBik = @{ if(bikList.active.length > 1 ) { false } else { true } }
-@cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @cyplus1 = @{""+taxYearRange.cyplus1}
-@metaTitleAdditive = @{if(singleBik){messages("whatNext.add.heading.singular")}else {messages("whatNext.add.heading")}}
 
 @title = @{messages("whatNext.remove.heading") + " - " + messages("Service.title")}
 

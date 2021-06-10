@@ -22,13 +22,14 @@ import org.scalatest.matchers.{MatchResult, Matcher}
 
 trait JsoupMatchers {
 
-  import scala.collection.JavaConversions._
+  import collection.JavaConverters._
 
   class TagWithTextMatcher(expectedContent: String, tag: String) extends Matcher[Document] {
     def apply(left: Document): MatchResult = {
       val elements: List[String] =
         left
           .getElementsByTag(tag)
+          .asScala
           .toList
           .map(_.text)
 
@@ -60,6 +61,7 @@ trait JsoupMatchers {
       val elements: List[String] =
         left
           .select(selector)
+          .asScala
           .toList
           .map(_.text)
 
@@ -79,6 +81,7 @@ trait JsoupMatchers {
       val attributes: List[Attributes] =
         left
           .select(selector)
+          .asScala
           .toList
           .map(_.attributes())
 
@@ -97,6 +100,7 @@ trait JsoupMatchers {
       val classes: List[String] =
         left
           .select(selector)
+          .asScala
           .toList
           .map(_.className())
 

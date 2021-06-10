@@ -16,32 +16,28 @@
 
 package controllers.actions
 
-import akka.util.Timeout
 import config.AppConfig
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
-import play.api.http.Status._
-import play.api.mvc.{Action, AnyContent, BodyParsers, Controller}
-import play.api.test.FakeRequest
-import play.api.test.Helpers.{redirectLocation, status}
+import play.api.mvc._
+import play.api.test.Helpers.{redirectLocation, status, _}
+import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 import scala.language.postfixOps
 
 class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
-  class Harness(authAction: AuthAction) extends Controller {
+  class Harness(authAction: AuthAction, cc: ControllerComponents = Helpers.stubMessagesControllerComponents())
+      extends AbstractController(cc) {
     def onPageLoad(): Action[AnyContent] = authAction { request =>
       Ok
     }
   }
-
-  implicit val timeout: Timeout = 5 seconds
 
   "Auth Action" when {
     "the user is not logged in" must {

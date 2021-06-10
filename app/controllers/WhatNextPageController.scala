@@ -45,16 +45,16 @@ class WhatNextPageController @Inject()(
 
   def calculateTaxYear(isCurrentTaxYear: Boolean): (Int, Int) =
     if (isCurrentTaxYear) {
-      (controllersReferenceData.YEAR_RANGE.cyminus1, controllersReferenceData.YEAR_RANGE.cy)
+      (controllersReferenceData.yearRange.cyminus1, controllersReferenceData.yearRange.cy)
     } else {
-      (controllersReferenceData.YEAR_RANGE.cy, controllersReferenceData.YEAR_RANGE.cyplus1)
+      (controllersReferenceData.yearRange.cy, controllersReferenceData.yearRange.cyplus1)
     }
 
   def showWhatNextRegisteredBik(year: String): Action[AnyContent] =
     (authenticate).async { implicit request =>
       val yearInt = year match {
-        case "cy1" => controllersReferenceData.YEAR_RANGE.cy
-        case "cy"  => controllersReferenceData.YEAR_RANGE.cyminus1
+        case "cy1" => controllersReferenceData.yearRange.cy
+        case "cy"  => controllersReferenceData.yearRange.cyminus1
       }
       val resultFuture = cachingService.fetchPbikSession().map { session =>
         val addedBiksAsList: RegistrationList =
@@ -62,7 +62,7 @@ class WhatNextPageController @Inject()(
         Ok(
           addBenefitConfirmationNextTaxYearView(
             taxDateUtils.isCurrentTaxYear(yearInt),
-            controllersReferenceData.YEAR_RANGE,
+            controllersReferenceData.yearRange,
             addedBiksAsList,
             empRef = request.empRef
           ))
@@ -77,8 +77,8 @@ class WhatNextPageController @Inject()(
           RegistrationList(active = List(session.get.bikRemoved.get))
         Ok(
           removeBenefitConfirmationNextTaxYearView(
-            taxDateUtils.isCurrentTaxYear(controllersReferenceData.YEAR_RANGE.cyplus1),
-            controllersReferenceData.YEAR_RANGE,
+            taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
+            controllersReferenceData.yearRange,
             removedBikAsList,
             empRef = request.empRef
           ))

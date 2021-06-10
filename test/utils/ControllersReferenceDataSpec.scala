@@ -20,8 +20,7 @@ import controllers.FakePBIKApplication
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.HttpEntity.Strict
-import play.api.i18n.{Lang, Messages}
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Result, Results}
@@ -29,7 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.{CYDisabledSetup, CYEnabledSetup, TestAuthUser}
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.Upstream5xxResponse
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 
 import scala.concurrent.{Future, Promise}
@@ -38,6 +37,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
 
   implicit val lang = Lang("en-GB")
   val mockControllersReferenceData = app.injector.instanceOf[ControllersReferenceData]
+  val messagesApi = app.injector.instanceOf[MessagesApi]
 
   "When CY mode is disabled the controller" should {
     "display the result passsed to it" in new CYDisabledSetup {
@@ -53,8 +53,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         Ok("Passed Test")
       }(scala.concurrent.ExecutionContext.Implicits.global))(authenticatedRequest))
       result.header.status must be(FORBIDDEN) // 403
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.1"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10003.2"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ServiceMessage.10003.1"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ServiceMessage.10003.2"))
     }
   }
 
@@ -86,7 +86,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       p.failure(new NoSuchElementException("NoSuchElement"))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(NOT_FOUND) // 404
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.validationError"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.validationError"))
     }
   }
 
@@ -100,7 +100,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       p.failure(new InvalidYearURIException)
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(BAD_REQUEST) // 400
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.invalidYear"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.invalidYear"))
     }
   }
 
@@ -114,7 +114,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       p.failure(new InvalidBikTypeURIException)
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(BAD_REQUEST) // 400
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.invalidBikType"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.invalidBikType"))
     }
   }
 
@@ -125,11 +125,11 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p = Promise[Result]()
-      p.failure(Upstream5xxResponse("""{appStatusMessage=10002,}""", 100, 100))
+      p.failure(UpstreamErrorResponse("""{appStatusMessage=10002,}""", 500, 500))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
     }
   }
 
@@ -140,11 +140,11 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p = Promise[Result]()
-      p.failure(Upstream5xxResponse(null, 100, 100))
+      p.failure(UpstreamErrorResponse(null, 500, 500))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
     }
   }
 
@@ -156,11 +156,11 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p = Promise[Result]()
       // Note - invalid error message number will not parse
-      p.failure(Upstream5xxResponse("NO ERROR NUMBER TO PARSE", 100, 100))
+      p.failure(UpstreamErrorResponse("NO ERROR NUMBER TO PARSE", 500, 500))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
     }
   }
 
@@ -172,11 +172,11 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p = Promise[Result]()
       // Note - missing comma will prevent message being parsed
-      p.failure(Upstream5xxResponse("""{appStatusMessage=10002}""", 100, 100))
+      p.failure(UpstreamErrorResponse("""{appStatusMessage=10002}""", 500, 500))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
     }
   }
 
@@ -190,7 +190,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       p.failure(new GenericServerErrorException("10003"))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
     }
   }
 
@@ -204,8 +204,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       p.failure(new GenericServerErrorException("NO JSON"))
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.try.later"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
     }
   }
 
@@ -219,7 +219,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       p.failure(new RuntimeException)
       val result = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status must be(INTERNAL_SERVER_ERROR) // 500
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ErrorPage.title"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
     }
   }
 

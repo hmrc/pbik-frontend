@@ -42,9 +42,7 @@ class StubNoRegisteredBikListService @Inject()(
   when(
     tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
       any[HeaderCarrier],
-      any[Request[_]],
-      any[json.Format[List[Bik]]],
-      any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+      any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
     Integer.parseInt(x.iabdType) > 50
   }))
 }

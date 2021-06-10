@@ -44,3 +44,8 @@ lazy val microservice = Project(appName, file("."))
       Resolver.jcenterRepo
     )
   )
+
+scalacOptions ++= Seq(
+  "-P:silencer:globalFilters=Unused import",
+  "-feature"
+)

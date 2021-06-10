@@ -16,23 +16,19 @@
 
 package connectors
 
-import java.net.URLEncoder
-
 import config.Service
-
-import javax.inject.{Inject, Singleton}
 import models.{EmpRef, HeaderTags, PbikError}
-import play.api.libs.json
-import play.api.libs.json.{JsError, JsSuccess}
-import play.api.mvc.Request
 import play.api.Configuration
+import play.api.libs.json._
+import play.api.mvc.Request
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.Exceptions.GenericServerErrorException
 import utils.Logging
-
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
+import java.net.URLEncoder
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
 @Singleton
 class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configuration) extends Logging {
 
@@ -52,9 +48,7 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
 
   def genericGetCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)(
     implicit hc: HeaderCarrier,
-    request: Request[_],
-    formats: json.Format[T],
-    m: Manifest[T]): Future[T] = {
+    formats: Format[T]): Future[T] = {
     val resp = client.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
 
     resp.map { r =>
@@ -84,7 +78,7 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
   def genericPostCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int, data: T)(
     implicit hc: HeaderCarrier,
     request: Request[_],
-    formats: json.Format[T]): Future[HttpResponse] = {
+    formats: Format[T]): Future[HttpResponse] = {
 
     val etagFromSession = request.session.get(HeaderTags.ETAG).getOrElse("0")
     val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")

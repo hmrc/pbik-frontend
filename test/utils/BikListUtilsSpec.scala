@@ -22,6 +22,8 @@ import org.scalatestplus.play.PlaySpec
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 
+import scala.language.reflectiveCalls
+
 class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   val bikListUtils = app.injector.instanceOf[BikListUtils]

@@ -67,10 +67,11 @@ class RegistrationService @Inject()(
     }
 
     val isCurrentYear: String = {
-      if (taxDateUtils.isCurrentTaxYear(year))
+      if (taxDateUtils.isCurrentTaxYear(year)) {
         FormMappingsConstants.CY
-      else
+      } else {
         FormMappingsConstants.CYP1
+      }
     }
 
     for {
@@ -94,7 +95,6 @@ class RegistrationService @Inject()(
       hybridList = biksListOption.filterNot(y => decommissionedBikIds.contains(y.iabdType.toInt)) ++ nonLegislationList ++ decommissionedBikList
 
     } yield {
-      val pbikHeaders = bikListService.pbikHeaders
       val fetchFromCacheMapBiksValue = List.empty[RegistrationItem]
 
       val mergedData: RegistrationList = bikListUtils.removeMatches(hybridList, registeredListOption)
@@ -104,7 +104,7 @@ class RegistrationService @Inject()(
         Ok(
           errorPageView(
             ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
-            controllersReferenceData.YEAR_RANGE,
+            controllersReferenceData.yearRange,
             isCurrentYear,
             code = -1,
             pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING,

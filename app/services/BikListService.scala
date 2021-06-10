@@ -21,7 +21,6 @@ import connectors.HmrcTierConnector
 
 import javax.inject.{Inject, Singleton}
 import models.{AuthenticatedRequest, Bik, EmpRef}
-import play.api.mvc.Request
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, URIInformation}
 
@@ -44,7 +43,7 @@ class BikListService @Inject()(
       uriInformation.baseUrl,
       uriInformation.getRegisteredPath,
       request.empRef,
-      controllersReferenceData.YEAR_RANGE.cyminus1)
+      controllersReferenceData.yearRange.cyminus1)
 
     response.map { resultOption: List[Bik] =>
       (tierConnector.pbikHeaders, resultOption.distinct)
@@ -58,15 +57,14 @@ class BikListService @Inject()(
       uriInformation.baseUrl,
       uriInformation.getRegisteredPath,
       request.empRef,
-      controllersReferenceData.YEAR_RANGE.cy)
+      controllersReferenceData.yearRange.cy)
 
     response.map { resultOption: List[Bik] =>
       (tierConnector.pbikHeaders, resultOption.distinct)
     }
   }
 
-  def registeredBenefitsList(year: Int, empRef: EmpRef)(
-    path: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[List[Bik]] = {
+  def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)(implicit hc: HeaderCarrier): Future[List[Bik]] = {
     val newPath = if (path == "") uriInformation.getRegisteredPath else path
     val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, newPath, empRef, year)
     response

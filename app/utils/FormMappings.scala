@@ -108,16 +108,14 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val dobYear = Try(dob._3.toInt).getOrElse(0)
 
-    if (dobYear < currentYear) true
-    else false
+    dobYear < currentYear
   }
 
   def isDateYearInPastValid(dob: (String, String, String)): Boolean = {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val dobYear = Try(dob._3.toInt).getOrElse(0)
 
-    if ((dobYear + 130) < currentYear) false
-    else true
+    !((dobYear + 130) < currentYear)
   }
 
   val binaryRadioButton: Form[MandatoryRadioButton] = Form(
@@ -140,9 +138,8 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
           "uid"     -> text,
           "active"  -> boolean,
           "enabled" -> boolean
-        )(RegistrationItem.apply)(RegistrationItem.unapply)).verifying(
-        "Error message goes here",
-        selectionList => !selectionList.filter(listItem => listItem.active).isEmpty),
+        )(RegistrationItem.apply)(RegistrationItem.unapply))
+        .verifying("Error message goes here", selectionList => selectionList.exists(listItem => listItem.active)),
       "reason" -> optional(
         mapping(
           "selectionValue" -> text,
@@ -154,16 +151,16 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
   def exclusionSearchFormWithNino[A](implicit request: Request[A]): Form[EiLPerson] = Form(
     mapping(
       "firstname" -> text
-        .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.length != 0)
+        .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.nonEmpty)
         .verifying(Messages("error.incorrect.firstname"), firstname => firstname.matches(nameValidationRegex)),
       "surname" -> text
-        .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.length != 0)
+        .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.nonEmpty)
         .verifying(Messages("error.incorrect.lastname"), lastname => lastname.matches(nameValidationRegex)),
       "nino" -> text
-        .verifying(Messages("error.empty.nino"), nino => nino.trim.length != 0)
+        .verifying(Messages("error.empty.nino"), nino => nino.trim.nonEmpty)
         .verifying(
           Messages("error.incorrect.nino"),
-          nino => (nino.trim.length == 0 || nino.replaceAll(" ", "").matches(ninoValidationRegex))),
+          nino => (nino.trim.isEmpty || nino.replaceAll(" ", "").matches(ninoValidationRegex))),
       "status"     -> optional(number),
       "perOptLock" -> default(number, 0)
     )((firstname, surname, nino, status, perOptLock) =>
@@ -199,10 +196,10 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
     Form(
       mapping(
         "firstname" -> text
-          .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.length != 0)
+          .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.nonEmpty)
           .verifying(Messages("error.incorrect.firstname"), firstname => firstname.matches(nameValidationRegex)),
         "surname" -> text
-          .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.length != 0)
+          .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.nonEmpty)
           .verifying(Messages("error.incorrect.lastname"), lastname => lastname.matches(nameValidationRegex)),
         "dob" -> mapping(
           "day"   -> text,
@@ -216,7 +213,7 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
           .verifying(invalidMonthDateError, dob => !(addZeroIfNeeded(dob._2).matches(dateMonthRegex)))
           .verifying(invalidYearDateError, dob => (dob._3.matches(dateYearRegex)))
           .verifying(invalidDateError, dob => isValidDate(dob)),
-        "gender"     -> text.verifying("Error message goes here", gender => !gender.isEmpty),
+        "gender"     -> text.verifying("Error message goes here", gender => gender.nonEmpty),
         "status"     -> optional(number),
         "perOptLock" -> default(number, 0)
       )((firstname, surname, dob, gender, status, perOptLock) =>
@@ -291,7 +288,7 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
     val noReasonError = "RemoveBenefits.reason.no.selection"
     Form(
       mapping(
-        "selectionValue" -> text.verifying(noReasonError, selectionValue => selectionValue.trim.length != 0),
+        "selectionValue" -> text.verifying(noReasonError, selectionValue => selectionValue.trim.nonEmpty),
         "info"           -> optional(text)
       )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply))
 

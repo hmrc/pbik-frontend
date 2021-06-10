@@ -19,17 +19,14 @@ package controllers
 import config._
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import javax.inject.Inject
 import models._
 import org.joda.time.LocalDate
-import org.mockito.ArgumentMatchers.{eq => argEq, any}
+import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.data.Form
-import play.api.http.HttpEntity.Strict
-import play.api.i18n.{Lang, Messages}
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
@@ -39,12 +36,12 @@ import play.api.test.Helpers._
 import services.{BikListService, SessionService}
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionId, SessionKeys}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
-import utils.{ControllersReferenceData, FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction, URIInformation}
+import utils._
 
+import javax.inject.Inject
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits._
 
 class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
 
@@ -59,6 +56,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     .build()
 
   implicit val lang = Lang("en-GB")
+  val messagesApi = app.injector.instanceOf[MessagesApi]
 
   val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
@@ -139,44 +137,37 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     when(
       tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(YEAR_RANGE.cy))(
         any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
     when(
       tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(YEAR_RANGE.cyminus1))(
         any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
     when(
       tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(YEAR_RANGE.cyplus1))(
         any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
     when(
       tierConnector.genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(YEAR_RANGE.cy))(
         any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(tierConnector.genericGetCall[List[Bik]](
-      any[String],
-      argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-      argEq(EmpRef.empty),
-      argEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+    when(
+      tierConnector.genericGetCall[List[Bik]](
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
+        argEq(EmpRef.empty),
+        argEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
       }))
@@ -186,33 +177,25 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any[String],
         argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(YEAR_RANGE.cyminus1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+        argEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 10
+      }))
 
     when(
       tierConnector.genericGetCall[List[Bik]](
         any[String],
         argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(YEAR_RANGE.cyplus1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+        argEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 10
+      }))
 
     when(
       tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
         any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 5
     }))
 
@@ -230,7 +213,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any[String],
         argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
         any[EmpRef],
-        any[Int])(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+        any[Int])(any[HeaderCarrier], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) >= 15
       }))
@@ -246,22 +229,19 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
   val whatNextPageController: WhatNextPageController = {
     val w = app.injector.instanceOf[WhatNextPageController]
 
-    val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
-
     when(
       w.tierConnector.genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(YEAR_RANGE.cy))(
         any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
-    when(w.tierConnector.genericGetCall[List[Bik]](
-      any[String],
-      argEq(injected[URIInformation].getBenefitTypesPath),
-      argEq(EmpRef.empty),
-      argEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+    when(
+      w.tierConnector.genericGetCall[List[Bik]](
+        any[String],
+        argEq(injected[URIInformation].getBenefitTypesPath),
+        argEq(EmpRef.empty),
+        argEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
       }))
@@ -271,33 +251,25 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any[String],
         argEq(injected[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(YEAR_RANGE.cyminus1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+        argEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 10
+      }))
 
     when(
       w.tierConnector.genericGetCall[List[Bik]](
         any[String],
         argEq(injected[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(YEAR_RANGE.cyplus1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+        argEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 10
+      }))
 
     when(
       w.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
         any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 5
     }))
 
@@ -316,7 +288,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any[String],
         argEq(injected[URIInformation].getRegisteredPath),
         any[EmpRef],
-        any[Int])(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+        any[Int])(any[HeaderCarrier], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) >= 15
       }))
@@ -340,7 +312,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
       AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
     val result = whatNextPageController.showWhatNextRegisteredBik("cy1").apply(authenticatedRequest)
     (scala.concurrent.ExecutionContext.Implicits.global)
     status(result) must be(OK)
@@ -367,7 +338,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
       AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session002")))
     val result = whatNextPageController.showWhatNextRegisteredBik("cy1").apply(authenticatedRequest)
     (scala.concurrent.ExecutionContext.Implicits.global)
     status(result) must be(OK)
@@ -393,8 +363,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
       AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-    val whatNextRemoveMsg: String = Messages("whatNext.remove.p1")
-    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
+    val whatNextRemoveMsg: String = messagesApi("whatNext.remove.p1")
     val result = whatNextPageController.showWhatNextRemovedBik().apply(authenticatedRequest)
     (scala.concurrent.ExecutionContext.Implicits.global)
     status(result) must be(OK)

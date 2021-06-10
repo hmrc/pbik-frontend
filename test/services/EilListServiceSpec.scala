@@ -21,17 +21,17 @@ import controllers.FakePBIKApplication
 import models.{AuthenticatedRequest, EiLPerson, EmpRef, UserName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
-import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
 
 import scala.collection.immutable
 import scala.concurrent.Future
@@ -52,9 +52,7 @@ class EilListServiceSpec
     when(
       els.tierConnector.genericGetCall[List[EiLPerson]](any[String], any[String], any[EmpRef], any[Int])(
         any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[EiLPerson]]],
-        any[Manifest[List[EiLPerson]]])).thenReturn(Future.successful(List.empty[EiLPerson]))
+        any[json.Format[List[EiLPerson]]])).thenReturn(Future.successful(List.empty[EiLPerson]))
 
     els
   }
@@ -72,8 +70,6 @@ class EilListServiceSpec
 
     "return a subset of List(EiL) search results - already excluded" in {
       val eilService = MockEiLListService
-      implicit val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockrequest)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       val eiL1 = new EiLPerson("QQ123456", "Humpty", None, "Dumpty", Some("123"), Some("01/01/1980"), None, None)
       val eiL2 = new EiLPerson("QQ123457", "Humpty", None, "Dumpty", Some("789"), Some("01/01/1980"), None, None)
       val searchResultsEiL: List[EiLPerson] = List(eiL1, eiL2)

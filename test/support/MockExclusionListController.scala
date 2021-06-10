@@ -95,7 +95,7 @@ class MockExclusionListController @Inject()(
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
 
-  def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] =
+  def logSplunkEvent(dataEvent: DataEvent): Future[AuditResult] =
     Future.successful(AuditResult.Success)
 
   when(

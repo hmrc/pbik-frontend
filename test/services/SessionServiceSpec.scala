@@ -17,22 +17,22 @@
 package services
 
 import controllers.FakePBIKApplication
-import models.{Bik, EiLPerson, PbikSession, RegistrationItem, RegistrationList}
+import models._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, Matchers, OptionValues, WordSpecLike}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
-import uk.gov.hmrc.http.cache.client.CacheMap
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import play.api.test.Helpers.await
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
+import scala.language.postfixOps
 
 class SessionServiceSpec
     extends WordSpecLike with Matchers with OptionValues with FakePBIKApplication with BeforeAndAfterEach
