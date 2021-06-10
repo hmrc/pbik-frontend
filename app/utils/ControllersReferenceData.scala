@@ -40,7 +40,7 @@ object ControllersReferenceDataCodes extends Logging {
   val BIK_ADD_STATUS = 30
   val FORM_TYPE_NINO = "nino"
   val FORM_TYPE_NONINO = "no-nino"
-  val NEXT_TAX_YEAR = FormMappingsConstants.CYP1
+  val NEXT_TAX_YEAR: String = FormMappingsConstants.CYP1
   val SESSION_FROM_YTA = "fromYTA"
   val SESSION_LANG = "session_lang"
   val BIK_REMOVE_REASON_LIST = List("software", "guidance", "not-clear", "not-offering", "other")
@@ -85,7 +85,7 @@ class ControllersReferenceData @Inject()(
   implicit val localFormPartialRetriever: LocalFormPartialRetriever)
     extends FormMappings(messagesApi) with I18nSupport {
 
-  def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
+  def yearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   def responseCheckCYEnabled(staticDataRequest: Future[Result])(
     implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
@@ -93,7 +93,8 @@ class ControllersReferenceData @Inject()(
       responseErrorHandler(staticDataRequest)
     } else {
       logger.info("[ControllersReferenceData][responseCheckCYEnabled] Cy is disabled")
-      Future(Forbidden(errorPageView(CY_RESTRICTED, YEAR_RANGE, "", 10003, empRef = Some(request.empRef))))
+      val errorCode = 10003
+      Future(Forbidden(errorPageView(CY_RESTRICTED, yearRange, "", errorCode, empRef = Some(request.empRef))))
     }
 
   def responseErrorHandler(staticDataRequest: Future[Result])(
@@ -101,15 +102,15 @@ class ControllersReferenceData @Inject()(
     staticDataRequest.recover {
       case e0: NoSuchElementException => {
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled : $e0")
-        NotFound(errorPageView(VALIDATION_ERROR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
+        NotFound(errorPageView(VALIDATION_ERROR_REFERENCE, yearRange, empRef = Some(request.empRef)))
       }
       case e1: InvalidYearURIException => {
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
-        BadRequest(errorPageView(INVALID_YEAR_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
+        BadRequest(errorPageView(INVALID_YEAR_REFERENCE, yearRange, empRef = Some(request.empRef)))
       }
       case e2: InvalidBikTypeURIException => {
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeURIException was handled : $e2")
-        BadRequest(errorPageView(INVALID_BIK_TYPE_REFERENCE, YEAR_RANGE, empRef = Some(request.empRef)))
+        BadRequest(errorPageView(INVALID_BIK_TYPE_REFERENCE, yearRange, empRef = Some(request.empRef)))
       }
       case e3: Upstream5xxResponse => {
         logger.error(
@@ -124,14 +125,15 @@ class ControllersReferenceData @Inject()(
             e4)
           val msgValue = e4.message
           if (Messages("ServiceMessage." + msgValue) == ("ServiceMessage." + msgValue)) throw new Exception(msgValue)
-          else
+          else {
             InternalServerError(
               errorPageView(
                 Messages("ServiceMessage." + msgValue),
-                YEAR_RANGE,
+                yearRange,
                 "",
                 msgValue.toInt,
                 empRef = Some(request.empRef)))
+          }
         } catch {
           case ex: Exception => {
             logger.warn(

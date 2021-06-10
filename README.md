@@ -57,3 +57,4 @@ decommissioned.biks - Which benefits no longer exist <br />
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
 
+To run all PBIK and dependant services in Service Manager, run: `sm --start PBIK_ALL`

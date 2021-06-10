@@ -16,25 +16,24 @@
 
 package services
 
-import config._
 import connectors.HmrcTierConnector
-import controllers.actions.MinimalAuthAction
 import controllers.FakePBIKApplication
+import controllers.actions.MinimalAuthAction
 import models._
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
+import org.scalatest.{Matchers, OptionValues, WordSpecLike}
 import play.api.Application
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
-import play.api.mvc.{AnyContent, AnyContentAsEmpty, Request}
+import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
 import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
 import utils.{TaxDateUtils, TestMinimalAuthAction}
 import views.html.registration.NextTaxYear
 
@@ -55,45 +54,37 @@ class RegistrationServiceSpec
 
   val registrationService: RegistrationService = {
 
-    val r = app.injector.instanceOf[RegistrationService]
+    val service = app.injector.instanceOf[RegistrationService]
 
     lazy val CYCache: List[Bik] = List.tabulate(5)(n => Bik("" + (n + 1), 10))
 
-    when(r.bikListService.pbikHeaders).thenReturn(Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1"))
+    when(service.bikListService.pbikHeaders).thenReturn(Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1"))
 
-    when(
-      r.bikListService.registeredBenefitsList(any[Int], any[EmpRef])(any[String])(any[HeaderCarrier], any[Request[_]]))
+    when(service.bikListService.registeredBenefitsList(any[Int], any[EmpRef])(any[String])(any[HeaderCarrier]))
       .thenReturn(Future.successful(CYCache))
 
     // Return instance where not all Biks have been registered for CY
     when(
-      r.tierConnector.genericGetCall[List[Bik]](
+      service.tierConnector.genericGetCall[List[Bik]](
         any[String],
         any[String],
         any[EmpRef],
-        argEq(injected[TaxDateUtils].getCurrentTaxYear()))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 3
-    }))
+        argEq(injected[TaxDateUtils].getCurrentTaxYear()))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 3
+      }))
 
     // Return instance where not all Biks have been registered for CYP1
     when(
-      r.tierConnector.genericGetCall[List[Bik]](
+      service.tierConnector.genericGetCall[List[Bik]](
         any[String],
         any[String],
         any[EmpRef],
-        argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 5
-    }))
-
-    r
+        argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 5
+      }))
+    service
   }
 
   "When generating a page which allows registrations, the service" should {
@@ -105,9 +96,6 @@ class RegistrationServiceSpec
       implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       val taxDateUtils = injected[TaxDateUtils]
       val YEAR_RANGE = taxDateUtils.getTaxYearRange()
-
-      implicit val config: AppConfig = injected[AppConfig]
-      implicit val localFormPartialRetriever: LocalFormPartialRetriever = injected[LocalFormPartialRetriever]
 
       val result =
         registrationService.generateViewForBikRegistrationSelection(

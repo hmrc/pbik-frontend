@@ -32,10 +32,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.BikListService
 import support.{StubbedBikListService, TestAuthUser, TestSplunkLogger}
-import uk.gov.hmrc.http.{HeaderCarrier, SessionId, SessionKeys}
+import uk.gov.hmrc.http.SessionKeys
 import utils._
 
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
 class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser with I18nSupport {
 
@@ -88,7 +89,6 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with Test
       val homePageController = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
 
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       val result = homePageController.notAuthorised().apply(request)
       status(result) must be(UNAUTHORIZED)
       contentAsString(result) must include(Messages("ErrorPage.authorisationError"))

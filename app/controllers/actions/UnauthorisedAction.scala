@@ -19,8 +19,6 @@ package controllers.actions
 import com.google.inject.ImplementedBy
 import javax.inject.Inject
 import play.api.mvc._
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,10 +28,6 @@ trait UnauthorisedAction extends ActionBuilder[Request, AnyContent] with ActionF
 class UnauthorisedActionImpl @Inject()(val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
     extends UnauthorisedAction {
 
-  override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
-
-    implicit val hc: HeaderCarrier =
-      HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+  override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] =
     block(request)
-  }
 }

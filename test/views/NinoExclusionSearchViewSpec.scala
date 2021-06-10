@@ -54,9 +54,6 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
 
-    val mapping = formMappings.exclusionSearchFormWithNino.bind(
-      Map[String, String](("nino", ""), ("firstname", ""), ("surname", "")))
-
     val view: Html = viewWithForm(
       formMappings.exclusionSearchFormWithNino.bind(
         Map[String, String](("nino", ""), ("firstname", ""), ("surname", "")))

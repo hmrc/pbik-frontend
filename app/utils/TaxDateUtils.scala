@@ -16,34 +16,40 @@
 
 package utils
 
-import java.text.SimpleDateFormat
-import java.util
-import java.util.Date
-import java.time.LocalDate
-
-import javax.inject.{Inject, Singleton}
 import models.TaxYearRange
 import org.joda.time.DateTime
 import play.api.Configuration
 import uk.gov.hmrc.time.TaxYear
 
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.util.Date
+import javax.inject.{Inject, Singleton}
+import scala.collection.JavaConverters._
+import scala.util.{Failure, Success, Try}
+
 @Singleton
 class TaxDateUtils @Inject()(configuration: Configuration) extends PayrollBikDefaults {
 
-  val overridedDateFromConfig: Option[util.List[Integer]] = configuration.getIntList("pbik.date.override")
+  val overriddenDateFromConfig: List[Integer] = Try {
+    configuration.underlying.getIntList("pbik.date.override")
+  } match {
+    case Success(value) => value.asScala.toList
+    case Failure(_)     => List.empty
+  }
 
   val sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss")
   val startDateBanner: Date = sdf.parse(configuration.getOptional[String]("pbik.banner.date.start").getOrElse(""))
   val endDateBanner: Date = sdf.parse(configuration.getOptional[String]("pbik.banner.date.end").getOrElse(""))
 
   def getDefaultDate: LocalDate =
-    if (overridedDateFromConfig.isDefined) {
+    if (overriddenDateFromConfig.nonEmpty) {
       LocalDate
-        .of(overridedDateFromConfig.get.get(0), overridedDateFromConfig.get.get(1), overridedDateFromConfig.get.get(2))
-    } else LocalDate.now()
+        .of(overriddenDateFromConfig.head, overriddenDateFromConfig(1), overriddenDateFromConfig(2))
+    } else { LocalDate.now() }
 
   def getDefaultYear: Int =
-    if (overridedDateFromConfig.isDefined) new DateTime().getYear + 1 else new DateTime().getYear
+    if (overriddenDateFromConfig.nonEmpty) new DateTime().getYear + 1 else new DateTime().getYear
 
   def getTaxYearRange(year: Int = getCurrentTaxYear(getDefaultDate)): TaxYearRange = generateTaxYearRange(year)
 

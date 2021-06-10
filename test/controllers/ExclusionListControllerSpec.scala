@@ -24,32 +24,29 @@ import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.http.HttpEntity.Strict
-import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.i18n.Messages.Implicits._
+import play.api.i18n.{Lang, MessagesApi}
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.inject.{Injector, bind}
-import play.api.libs.crypto.CSRFTokenSigner
 import play.api.libs.json
-import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{EiLListService, SessionService}
 import support._
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, SessionId}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils.{ControllersReferenceData, URIInformation, _}
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 
 class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
+
+  val messagesApi = app.injector.instanceOf[MessagesApi]
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -118,47 +115,36 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         any[String],
         any[String],
         any[EmpRef],
-        argEq(controllersReferenceData.YEAR_RANGE.cy))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+        argEq(controllersReferenceData.yearRange.cy))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 10
+      }))
 
     when(
       melc.tierConnector.genericGetCall[List[Bik]](
         any[String],
         any[String],
         any[EmpRef],
-        argEq(controllersReferenceData.YEAR_RANGE.cyminus1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+        argEq(controllersReferenceData.yearRange.cyminus1))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 10
+      }))
 
     when(
       melc.tierConnector.genericGetCall[List[Bik]](
         any[String],
         any[String],
         any[EmpRef],
-        argEq(controllersReferenceData.YEAR_RANGE.cyplus1))(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+        argEq(controllersReferenceData.yearRange.cyplus1))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        Integer.parseInt(x.iabdType) <= 10
+      }))
 
     when(
       melc.tierConnector
-        .genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(controllersReferenceData.YEAR_RANGE.cy))(
+        .genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(controllersReferenceData.yearRange.cy))(
           any[HeaderCarrier],
-          any[Request[_]],
-          any[json.Format[List[Bik]]],
-          any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
@@ -167,8 +153,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         any[String],
         argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(controllersReferenceData.YEAR_RANGE.cy)
-      )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+        argEq(controllersReferenceData.yearRange.cy)
+      )(any[HeaderCarrier], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
       }))
@@ -178,8 +164,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         any[String],
         argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(controllersReferenceData.YEAR_RANGE.cyminus1)
-      )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+        argEq(controllersReferenceData.yearRange.cyminus1)
+      )(any[HeaderCarrier], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
       }))
@@ -189,8 +175,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         any[String],
         argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(controllersReferenceData.YEAR_RANGE.cyplus1)
-      )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+        argEq(controllersReferenceData.yearRange.cyplus1)
+      )(any[HeaderCarrier], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
       }))
@@ -198,9 +184,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
     when(
       melc.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
         any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[List[Bik]]],
-        any[Manifest[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+        any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 5
     }))
 
@@ -218,7 +202,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         any[String],
         argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
         any[EmpRef],
-        any[Int])(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]], any[Manifest[List[Bik]]]))
+        any[Int])(any[HeaderCarrier], any[json.Format[List[Bik]]]))
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) >= 15
       }))
@@ -238,7 +222,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
 
   "When mapping the CY string, the date returned by the controller" must {
     "be the first year in the CY pair (e.g CY in range 15/16-16/17 would be 15 )" in {
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result: Int = await(mockExclusionListController.mapYearStringToInt("cy"))
       result must be(dateRange.cyminus1)
     }
@@ -246,7 +229,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
 
   "When mapping the CY+1 string, the date returned by the controller" must {
     "be the first year in the CYP1 pair (e.g CYP1 in range 15/16-16/17 would be 16 ) " in {
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = await(mockExclusionListController.mapYearStringToInt("cyp1"))
       result must be(dateRange.cy)
     }
@@ -254,7 +236,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
 
   "When mapping an unknown string, the controller" must {
     "throw an InvalidYearURIException" in {
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       intercept[InvalidYearURIException] {
         await(mockExclusionListController.mapYearStringToInt("ceeewhyploosWon"))
       }
@@ -266,7 +247,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = await(mockExclusionListController.validateRequest("cy", "car"))
       result must be(dateRange.cyminus1)
     }
@@ -277,7 +257,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       intercept[InvalidBikTypeURIException] {
         await(mockExclusionListController.validateRequest("cy", "1"))
       }
@@ -307,28 +286,28 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       implicit val timeout: akka.util.Timeout = 10 seconds
       val result = await(mockExclusionController.performPageLoad("cy", "car").apply(mockrequest))(timeout)
       result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("ServiceMessage.10002"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ServiceMessage.10002"))
     }
   }
 
   "When loading the withOrWithoutNinoOnPageLoad the controller" must {
     "show the page in order to make a decision" in {
-      val title = Messages("ExclusionNinoDecision.title").substring(0, 10)
+      val title = messagesApi("ExclusionNinoDecision.title").substring(0, 10)
       implicit val timeout: Timeout = 10 seconds
       val result =
         await(mockExclusionListController.withOrWithoutNinoOnPageLoad("cy", "car").apply(mockrequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(
-        Messages("ExclusionNinoDecision.question").substring(0, 10))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Service.yes"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Service.no"))
+        messagesApi("ExclusionNinoDecision.question").substring(0, 10))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("Service.yes"))
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("Service.no"))
     }
   }
 
   "When loading the withOrWithoutNinoOnPageLoad when exclusions feature is disabled the controller" must {
     "display the error page" in {
-      val title = Messages("ServiceMessage.10002")
+      val title = messagesApi("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionController.withOrWithoutNinoOnPageLoad("cy", "car").apply(mockrequest))(timeout)
@@ -349,8 +328,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
           None,
           None
         ))))
-      val title = Messages("ExclusionNinoDecision.title")
-      val message = Messages("ExclusionNinoDecision.question")
+      val title = messagesApi("ExclusionNinoDecision.title")
+      val message = messagesApi("ExclusionNinoDecision.question")
       val result = mockExclusionListController
         .withOrWithoutNinoDecision("cyp1", "car")
         .apply(mockrequest)
@@ -363,7 +342,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
 
   "When loading the withOrWithoutNinoDecision page when exclusions are disabled the controller" must {
     "show an error page" in {
-      val title = Messages("ServiceMessage.10002")
+      val title = messagesApi("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionController.withOrWithoutNinoDecision("cy1", "car").apply(mockrequest))(timeout)
@@ -405,8 +384,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
   "When loading showExclusionSearchForm, an authorised user" must {
     "see the nino form in order to search for a person" in {
       val formType = "nino"
-      val title = Messages("ExclusionSearch.form.title")
-      val ninoHint = Messages("Service.field.ninohint")
+      val title = messagesApi("ExclusionSearch.form.title")
+      val ninoHint = messagesApi("Service.field.ninohint")
       val result = mockExclusionListController.showExclusionSearchForm("cyp1", "car", formType).apply(mockrequest)
 
       status(result) must be(OK)
@@ -416,8 +395,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
 
     "see the no-nino form in order to search for a person" in {
       val formType = "no-nino"
-      val title = Messages("ExclusionSearch.form.title")
-      val dobHint = Messages("Service.field.dobhint")
+      val title = messagesApi("ExclusionSearch.form.title")
+      val dobHint = messagesApi("Service.field.dobhint")
       val result = mockExclusionListController.showExclusionSearchForm("cyp1", "car", formType).apply(mockrequest)
 
       status(result) must be(OK)
@@ -427,7 +406,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
 
     "see an error page if neither nino or no-nino are chosen" in {
       val formType = "nothing"
-      val title = Messages("ErrorPage.invalidForm")
+      val title = messagesApi("ErrorPage.invalidForm")
       val result = mockExclusionListController.showExclusionSearchForm("cyp1", "car", formType).apply(mockrequest)
 
       status(result) must be(INTERNAL_SERVER_ERROR)
@@ -438,7 +417,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
 
   "When loading the searchResults page for an unpopulated NINO search, an authorised user" must {
     "see the NINO specific fields" in {
-      val title = Messages("ExclusionSearch.form.title")
+      val title = messagesApi("ExclusionSearch.form.title")
       implicit val timeout: Timeout = 10 seconds
       val result = await(
         mockExclusionListController
@@ -454,7 +433,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
 
   "When loading the searchResults page for an unpopulated non-NINO search, an authorised user" must {
     "see the NO-NINO specific fields" in {
-      val title = Messages("ExclusionSearch.form.title")
+      val title = messagesApi("ExclusionSearch.form.title")
       implicit val timeout: Timeout = 5 seconds
       val result = await(
         mockExclusionListController
@@ -519,7 +498,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
 
   "When loading the searchResults page when exclusions are disabled, the controller" must {
     "show an error page" in {
-      val title = Messages("ServiceMessage.10002")
+      val title = messagesApi("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
       implicit val timeout: Timeout = 5 seconds
       val result = await(
@@ -545,7 +524,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         ))))
       val result = mockExclusionListController.showResults("cyp1", "car", "nino").apply(mockrequest)
       status(result) must be(OK)
-      contentAsString(result) must include(Messages("ServiceMessage.63085.h1"))
+      contentAsString(result) must include(messagesApi("ServiceMessage.63085.h1"))
     }
   }
 
@@ -571,7 +550,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         mockExclusionListController
           .searchResultsHandleValidResult(List.empty[EiLPerson], "car", "nino", "31", List.empty[EiLPerson]))
       status(result) must be(NOT_FOUND)
-      contentAsString(result) must include(Messages("ServiceMessage.65127.h1"))
+      contentAsString(result) must include(messagesApi("ServiceMessage.65127.h1"))
     }
   }
 
@@ -630,10 +609,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         ))))
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD).apply(mockrequest)
 
       status(result) must be(SEE_OTHER)
@@ -653,13 +628,9 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
           None,
           None
         ))))
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val TEST_IABD = "car"
       val TEST_YEAR_CODE = "cyp1"
       val TEST_NINO = "AA111111B"
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = mockExclusionListController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(mockrequest)
 
       status(result) must be(SEE_OTHER)
@@ -670,10 +641,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
   "When confirming the removal of an excluded individual, an authorised user" must {
     "see the removal confirmation screen" in {
       val TEST_IABD = "car"
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       val result = mockExclusionListController.removeExclusionsCommit(TEST_IABD)(mockrequest)
 
       status(result) must be(SEE_OTHER)
@@ -732,7 +699,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       implicit val timeout: Timeout = 10 seconds
       val result = await(mockExclusionListController.validateRequest("cy", "car"))(timeout)
       result must be(taxDateUtils.getCurrentTaxYear())
@@ -742,7 +708,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
       intercept[InvalidBikTypeURIException] {
         await(mockExclusionListController.validateRequest("cy", "1"))
       }
@@ -770,7 +735,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val title = Messages("ServiceMessage.10002")
+      val title = messagesApi("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionController.removeExclusionsCommit(TEST_IABD).apply(formrequest))(timeout)
@@ -812,7 +777,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val title = Messages("ServiceMessage.10002")
+      val title = messagesApi("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
       implicit val timeout: Timeout = 5 seconds
       val result = await(mockExclusionController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(formrequest))(timeout)
@@ -878,7 +843,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val title = Messages("ServiceMessage.10002")
+      val title = messagesApi("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
       implicit val timeout: Timeout = 5 seconds
       val result =
@@ -892,10 +857,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
     " redirect to the what next page" in {
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD = "car"
-      val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody("individualNino" -> "AA111111A")
-      val title = Messages("ExclusionSearch.title")
       when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(PbikSession(
           None,
@@ -951,7 +914,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(ListOfPeople))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val title = Messages("ServiceMessage.10002")
+      val title = messagesApi("ServiceMessage.10002")
       val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
       implicit val timeout: Timeout = 5 seconds
       val result =
@@ -969,9 +932,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val TEST_YEAR_CODE = "cyp1"
       val TEST_IABD_VALUE = "car"
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
+      AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(PbikSession(
           None,
@@ -999,8 +960,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val f = controllersReferenceData.individualsForm.fill(EiLPersonList(TEST_EIL_PERSON))
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockrequest.withFormUrlEncodedBody(f.data.toSeq: _*)
-      val title = Messages("ExclusionSearch.form.title")
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
+      val title = messagesApi("ExclusionSearch.form.title")
       implicit val timeout: Timeout = 5 seconds
       val result =
         await(mockExclusionListController.searchResults(TEST_YEAR_CODE, TEST_IABD_VALUE, "nino")(formrequest))(timeout)

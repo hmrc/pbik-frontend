@@ -117,7 +117,7 @@ class SessionService @Inject()(val http: DefaultHttpClient, val sessionCache: Pb
     resetNYRegisteredBiks()
   }
 
-  private def cache[T](key: CacheKeys.Value, value: Option[T] = None)(
+  private def cache[T](key: CacheKeys.Value, value: Option[T])(
     implicit hc: HeaderCarrier): Future[Option[PbikSession]] = {
     def selectKeysToCache(session: PbikSession): PbikSession =
       key match {

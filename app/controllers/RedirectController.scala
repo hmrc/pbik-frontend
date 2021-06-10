@@ -23,16 +23,16 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 @Singleton
 class RedirectController @Inject()(cc: MessagesControllerComponents) extends FrontendController(cc) {
 
-  def redirectIfFromStart(): Action[AnyContent] = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
+  def redirectIfFromStart(): Action[AnyContent] = Action {
+    Redirect(routes.HomePageController.onPageLoad())
   }
 
-  def redirectIfFromOldOverview(): Action[AnyContent] = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
+  def redirectIfFromOldOverview(): Action[AnyContent] = Action {
+    Redirect(routes.HomePageController.onPageLoad())
   }
 
-  def redirectIfFromRoot(): Action[AnyContent] = Action { implicit request =>
-    Redirect(routes.HomePageController.onPageLoad)
+  def redirectIfFromRoot(): Action[AnyContent] = Action {
+    Redirect(routes.HomePageController.onPageLoad())
   }
 
 }
