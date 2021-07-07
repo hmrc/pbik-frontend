@@ -112,7 +112,6 @@ class HomePageController @Inject()(
         .addingToSession(ControllersReferenceDataCodes.SESSION_FROM_YTA -> fromYTA.toString)
     }
     controllersReferenceData.responseErrorHandler(pageLoadFuture)
-
   }
 
   def isFromYTA(implicit request: Request[_]): Boolean = {

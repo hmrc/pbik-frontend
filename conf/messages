@@ -136,8 +136,6 @@ AddBenefits.Confirm.Multiple.Table.Heading = Benefits and expenses to register
 AddBenefits.Confirm.Single.Table.Heading = Benefit or expense to register
 AddBenefits.Confirm.help.desc.Single = You can exclude individual employees from having this benefit payrolled if you prefer to send a P11D in. Do this after you register the benefit. If an employee doesn’t receive the benefit, you don’t have to exclude them as there is no tax due.
 AddBenefits.Confirm.help.desc = You can exclude individual employees from having these benefits payrolled if you prefer to send a P11D in for them. Do this after you register the benefits. If an employee doesn’t receive the benefit, you don’t have to exclude them as there is no tax due.
-AddBenefits.Confirm.help.reveal.link.sr.open = click to expand
-AddBenefits.Confirm.help.reveal.link.sr.closed = click to close
 
 #*************************************************************
 # Remove benefits
@@ -315,8 +313,6 @@ BenefitInKind.label.unavailable = This benefit isn’t currently available to re
 BenefitInKind.label.unavailable.desc = For benefits that aren’t currently available to register online, use a <a class="govuk-link" target="_blank" rel = "external" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D to report them instead">P11D to report them instead</a> (opens in new window).
 
 BenefitInKind.label.decommissioned = Expenses payments are either exempt from tax and National Insurance contributions or should be treated as part of the employee’s salary and paid after tax and National Insurance contributions are deducted.
-
-Prioritised.Benefits = 30,31
 
 #*************************************************************
 # Service messages

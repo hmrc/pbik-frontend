@@ -99,7 +99,7 @@ class ManageRegistrationController @Inject()(
                    values => {
                      cachingService.cacheRegistrationList(values).flatMap { _ =>
                        Future.successful(
-                         Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddCurrentTaxYear()))
+                         Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddCurrentTaxYear))
                      }
                    }
                  )
@@ -139,7 +139,7 @@ class ManageRegistrationController @Inject()(
                    values => {
                      cachingService.cacheRegistrationList(values).flatMap { _ =>
                        Future.successful(
-                         Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddNextTaxYear()))
+                         Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddNextTaxYear))
                      }
                    }
                  )
@@ -191,7 +191,7 @@ class ManageRegistrationController @Inject()(
       controllersReferenceData.responseErrorHandler(registeredFuture)
     }
 
-  def updateCurrentYearRegisteredBenefitTypes: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+  def updateCurrentYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val actionFuture = cachingService.fetchPbikSession().flatMap { session =>
         val persistentBiks = session.get.registrations.get.active
@@ -202,7 +202,7 @@ class ManageRegistrationController @Inject()(
       controllersReferenceData.responseCheckCYEnabled(actionFuture)
   }
 
-  def addNextYearRegisteredBenefitTypes: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+  def addNextYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val actionFuture = cachingService.fetchPbikSession().flatMap { session =>
         val persistentBiks = session.get.registrations.get.active
@@ -286,7 +286,7 @@ class ManageRegistrationController @Inject()(
               year,
               persistentBiks,
               Some((reasonValue.selectionValue.toUpperCase, Some(info))))
-            Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik()))
+            Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik))
           case _ =>
             tierConnector.genericPostCall(
               uriInformation.baseUrl,
@@ -295,7 +295,7 @@ class ManageRegistrationController @Inject()(
               year,
               changes)
             auditBikUpdate(additive = false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, None)))
-            Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik()))
+            Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik))
         }
       case _ =>
         logger.warn(

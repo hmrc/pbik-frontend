@@ -37,8 +37,6 @@
         empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
 
-@prioritisedBiks = @{messages("Prioritised.Benefits")}
-
 @govukLayoutWrapper(pageTitle = messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy) + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
 
     @if(form("actives").hasErrors) {
@@ -60,7 +58,7 @@
         <span class="govuk-caption-xl">@messages("Overview.next.heading", taxYearRange.cyminus1 + "", taxYearRange.cy + "")</span>
         @messages("AddBenefits.Heading")
     </h1>
-    @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.checkYourAnswersAddCurrentTaxYear()) {
+    @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.checkYourAnswersAddCurrentTaxYear) {
 
         @if(registeredBiks.size == biksAvailableCount.get) {
             <div class="govuk-panel govuk-panel--confirmation">

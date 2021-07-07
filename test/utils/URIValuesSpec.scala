@@ -16,9 +16,11 @@
 
 package utils
 
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-class URIValuesSpec extends WordSpecLike with Matchers with OptionValues with URIValues {
+class URIValuesSpec extends AnyWordSpecLike with Matchers with OptionValues with URIValues {
 
   "The Get Benefit Types path" should {
     " be equal to getbenefittypes" in {

@@ -21,7 +21,9 @@ import controllers.FakePBIKApplication
 import models.{AuthenticatedRequest, EiLPerson, EmpRef, UserName}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -37,7 +39,7 @@ import scala.collection.immutable
 import scala.concurrent.Future
 
 class EilListServiceSpec
-    extends WordSpecLike with Matchers with OptionValues with FakePBIKApplication with TestAuthUser {
+    extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication with TestAuthUser {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])

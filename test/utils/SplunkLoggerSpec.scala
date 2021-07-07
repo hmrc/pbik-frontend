@@ -18,19 +18,22 @@ package utils
 
 import controllers.FakePBIKApplication
 import models._
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.crypto.CSRFTokenSigner
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import support.{TestAuthUser, TestSplunkLogger}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.DataEvent
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
 
-class SplunkLoggerSpec extends WordSpecLike with Matchers with OptionValues with FakePBIKApplication with TestAuthUser {
+class SplunkLoggerSpec
+    extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication with TestAuthUser {
 
   val testList: List[EiLPerson] =
     List[EiLPerson](new EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0))
@@ -42,8 +45,10 @@ class SplunkLoggerSpec extends WordSpecLike with Matchers with OptionValues with
     val msg = "Hello"
 
     val csrfTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
+
     def csrfToken: (String, String) =
       "csrfToken" -> csrfTokenSigner.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+
     def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
 
     def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] =

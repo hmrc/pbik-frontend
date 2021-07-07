@@ -48,7 +48,7 @@
 @head = {
     @if(timeoutActive) {
         @hmrcTimeoutDialogHelper(
-            controllers.routes.HomePageController.signout().url,
+            controllers.routes.HomePageController.signout.url,
             Some(controllers.routes.SignedOutController.keepAlive().url),
             Some(config.timedOutUrl),
             Some(config.timeout),
@@ -121,7 +121,7 @@
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl = None,
         serviceName = Some(messages("service.name")),
-        signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout().url) } else { None },
+        signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
         userResearchBanner = userResearchBanner,
         phaseBanner = None,
         displayHmrcBanner = false

@@ -16,10 +16,12 @@
 
 package utils
 
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import utils.DateUtils._
 
-class DateUtilsSpec extends WordSpecLike with Matchers with OptionValues {
+class DateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues {
 
   "NPS date conversion" should {
     " output 1 January 1980" in {

@@ -35,10 +35,6 @@
 )(implicit request:Request[_], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(bikList.active.head.id )) }
-@singleBik = @{ if(bikList.active.length > 1 ) { false } else { true } }
-
-@screenReaderExclusionOpen = @{ messages("AddBenefits.Confirm.help.reveal.link.sr.open") }
-@screenReaderExclusionClosed = @{ messages("AddBenefits.Confirm.help.reveal.link.sr.closed") }
 
 @title = @{ messages("RemoveBenefits.Confirm.Title") }
 
@@ -73,7 +69,7 @@
     <div class="data">
         @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.id), 'id -> "form-remove") {
             <div class='govuk-form-group @if(form.hasErrors) {govuk-form-group--error}'>
-                <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="error-list-1"}>
+                <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="error-list-1" }>
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <p class="govuk-body">@messages("RemoveBenefits.reason.desc")</p>
                     </legend>
