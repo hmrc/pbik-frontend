@@ -65,7 +65,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
         val controller = new Harness(authAction)
         val result = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(controllers.routes.AuthController.notAuthorised().url)
+        redirectLocation(result) mustBe Some(controllers.routes.AuthController.notAuthorised.url)
       }
     }
   }

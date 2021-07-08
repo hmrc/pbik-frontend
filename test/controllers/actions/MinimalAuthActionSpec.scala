@@ -23,9 +23,9 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status._
-import play.api.mvc.{AbstractController, BodyParsers, Controller, ControllerComponents}
-import play.api.test.{FakeRequest, Helpers}
+import play.api.mvc.{AbstractController, Action, AnyContent, BodyParsers, ControllerComponents}
 import play.api.test.Helpers.{redirectLocation, status}
+import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.auth.core.MissingBearerToken
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
@@ -41,7 +41,7 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
 
   class Harness(authAction: MinimalAuthAction, cc: ControllerComponents = Helpers.stubMessagesControllerComponents())
       extends AbstractController(cc) {
-    def onPageLoad() = authAction { request =>
+    def onPageLoad(): Action[AnyContent] = authAction {
       Ok
     }
   }

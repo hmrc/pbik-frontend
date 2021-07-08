@@ -22,7 +22,9 @@ import controllers.actions.MinimalAuthAction
 import models._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when, _}
-import org.scalatest.{BeforeAndAfterEach, Matchers, OptionValues, WordSpecLike}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -37,7 +39,7 @@ import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 
 class BikListServiceSpec
-    extends WordSpecLike with Matchers with OptionValues with TestAuthUser with FakePBIKApplication
+    extends AnyWordSpecLike with Matchers with OptionValues with TestAuthUser with FakePBIKApplication
     with BeforeAndAfterEach {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(

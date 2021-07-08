@@ -22,7 +22,9 @@ import controllers.actions.MinimalAuthAction
 import models._
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.Application
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.inject.bind
@@ -40,7 +42,8 @@ import views.html.registration.NextTaxYear
 import scala.concurrent.Future
 
 class RegistrationServiceSpec
-    extends WordSpecLike with Matchers with OptionValues with TestAuthUser with FakePBIKApplication with I18nSupport {
+    extends AnyWordSpecLike with Matchers with OptionValues with TestAuthUser with FakePBIKApplication
+    with I18nSupport {
 
   override val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 

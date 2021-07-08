@@ -16,15 +16,17 @@
 
 package utils
 
-import java.time.LocalDate
-
 import controllers.FakePBIKApplication
 import org.joda.time.DateTimeConstants._
-import org.scalatest.{Matchers, OptionValues, WordSpecLike}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-class TaxDateUtilsSpec extends WordSpecLike with Matchers with OptionValues with FakePBIKApplication {
+import java.time.LocalDate
 
-  val taxDateUtils = app.injector.instanceOf[TaxDateUtils]
+class TaxDateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication {
+
+  val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
 
   "The current tax year" should {
     " be the same as current year, if the current date is before 6th April in the current year" in {

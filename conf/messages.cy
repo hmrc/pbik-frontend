@@ -128,8 +128,6 @@ AddBenefits.Confirm.Multiple.Table.Heading = Buddiannau a threuliau i’w cofres
 AddBenefits.Confirm.Single.Table.Heading = Buddiant neu draul i’w gofrestru/chofrestru
 AddBenefits.Confirm.help.desc.Single = Gallwch eithrio cyflogeion unigol o gael y buddiant hwn wedi’i dalu drwy’r gyflogres os byddai’n well gennych gyflwyno P11D. Gwnewch hyn ar ôl cofrestru’r buddiant. Os nad yw cyflogai’n cael y buddiant, nid oes rhaid i chi ei eithrio gan nad oes treth yn ddyledus.
 AddBenefits.Confirm.help.desc = Ni allwch eithrio cyflogeion unigol o gael y buddiannau hyn wedi’u talu drwy’r gyflogres os byddai’n well gennych gyflwyno ffurflen P11D ar eu cyfer. Gwnewch hyn ar ôl i chi gofrestru’r buddiannau. Os nad yw cyflogai’n cael y buddiant, nid oes rhaid i chi ei eithrio gan nad oes treth yn ddyledus.
-AddBenefits.Confirm.help.reveal.link.sr.open = cliciwch i ehangu
-AddBenefits.Confirm.help.reveal.link.sr.closed = cliciwch i gau
 
 #*************************************************************
 # Remove benifits
@@ -306,8 +304,6 @@ BenefitInKind.label.unavailable = Nid yw’r buddiant hwn ar gael i’w gofrestr
 BenefitInKind.label.unavailable.desc = Ar gyfer buddiannau nad ydynt ar gael ar hyn o bryd i’w cofrestru ar-lein, defnyddiwch <a class="govuk-link" rel = "external" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d.cy">ffurflen P11D i roi gwybod amdanynt yn lle hynny</a> (yn agor mewn ffenestr newydd).
 
 BenefitInKind.label.decommissioned = Mae taliadau treuliau naill ai yn rhydd o dreth a CYG neu dylid eu trin fel rhan o gyflog y cyflogai a’u talu ar ôl i dreth a CYG gael eu didynnu.
-
-Prioritised.Benefits = 30,31
 
 #*************************************************************
 # Service Messages

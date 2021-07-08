@@ -63,12 +63,12 @@ class AuthActionImpl @Inject()(
                 case _ =>
                   logger.warn(
                     "[AuthAction][invokeBlock] Authentication failed: invalid taxOfficeNumber and/or taxOfficeReference")
-                  Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad()))
+                  Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad))
               }
             }
             .getOrElse {
               logger.warn("[AuthAction][invokeBlock] Authentication failed - IR-PAYE key not found")
-              Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad()))
+              Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad))
             }
         }
       } recover {
@@ -79,7 +79,7 @@ class AuthActionImpl @Inject()(
           Map("continue_url" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend")))
       case ex: InsufficientEnrolments =>
         logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
-        Results.Redirect(controllers.routes.AuthController.notAuthorised())
+        Results.Redirect(controllers.routes.AuthController.notAuthorised)
 
     }
   }

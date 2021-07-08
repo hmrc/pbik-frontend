@@ -20,7 +20,9 @@ import controllers.FakePBIKApplication
 import models._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.{BeforeAndAfterEach, Matchers, OptionValues, WordSpecLike}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
@@ -35,7 +37,7 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.language.postfixOps
 
 class SessionServiceSpec
-    extends WordSpecLike with Matchers with OptionValues with FakePBIKApplication with BeforeAndAfterEach
+    extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication with BeforeAndAfterEach
     with MockitoSugar {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(

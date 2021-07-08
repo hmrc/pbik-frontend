@@ -32,11 +32,7 @@
         empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(bikList.active.head.id )) }
 @singleBik = @{ if(bikList.active.length > 1 ) { false } else { true } }
-
-@screenReaderExclusionOpen = @{ messages("AddBenefits.Confirm.help.reveal.link.sr.open") }
-@screenReaderExclusionClosed = @{ messages("AddBenefits.Confirm.help.reveal.link.sr.closed") }
 
 @title = @{ if(singleBik) { messages("AddBenefits.Confirm.Single.Title") } else { messages("AddBenefits.Confirm.Multiple.Title") }}
 
@@ -60,7 +56,7 @@
     </p>
 
     <div class="data">
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes(), 'onsubmit -> "gaEventConfirmAddBenefits()") {
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes, 'onsubmit -> "gaEventConfirmAddBenefits()") {
 
             <dl class="govuk-summary-list">
                     @for(item <- bikList.active.indices) {

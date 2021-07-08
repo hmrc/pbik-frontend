@@ -28,6 +28,7 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 class SignedOutControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser with I18nSupport {
   override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+
   private val messagesActionBuilder: MessagesActionBuilder =
     new DefaultMessagesActionBuilderImpl(stubBodyParser[AnyContent](), stubMessagesApi())
   private val cc: ControllerComponents = stubControllerComponents()
@@ -44,7 +45,7 @@ class SignedOutControllerSpec extends PlaySpec with FakePBIKApplication with Tes
   )
   val signedOutView: SignedOut = app.injector.instanceOf[SignedOut]
   val signedOutController = new SignedOutController(signedOutView, mockMCC, ec)
-  val fakeRequest = FakeRequest("GET", "/")
+  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/")
 
   "keepAlive" must {
     "return a NoContent" in {

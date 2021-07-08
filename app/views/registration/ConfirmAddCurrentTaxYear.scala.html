@@ -31,9 +31,6 @@
 
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
 
-@screenReaderExclusionOpen = @{messages("AddBenefits.Confirm.help.reveal.link.sr.open")}
-@screenReaderExclusionClosed = @{messages("AddBenefits.Confirm.help.reveal.link.sr.closed")}
-
 @title = @{if(singleBik) {messages("AddBenefits.Confirm.Single.Title")}else {messages("AddBenefits.Confirm.Multiple.Title")}}
 
 @govukLayoutWrapper(pageTitle = title + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
@@ -56,7 +53,7 @@
     </p>
 
     <div class="data">
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes()) {
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes) {
 
             <dl class="govuk-summary-list">
                 @for(item <- bikForm.value.get.active.indices) {
