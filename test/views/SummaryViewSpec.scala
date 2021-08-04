@@ -26,10 +26,10 @@ import views.html.Summary
 class SummaryViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val bikListUtils = app.injector.instanceOf[BikListUtils]
-  val summaryView = app.injector.instanceOf[Summary]
+  implicit val bikListUtils: BikListUtils = app.injector.instanceOf[BikListUtils]
+  val summaryView: Summary = app.injector.instanceOf[Summary]
 
-  def taxYearRange = TaxYearRange(2018, 2019, 2020)
+  def taxYearRange: TaxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html =
     summaryView(cyAllowed = true, taxYearRange, List(), List(Bik("31", 30)), 200, 0, "", EmpRef("", ""))

@@ -151,12 +151,20 @@ RemoveBenefits.reason.other.label = Eglurwch pam
 # Exclusion Overview
 #*************************************************************
 
-ExclusionOverview.title = Cyflogeion sydd wedi’u heithrio
 ExclusionOverview.caption = Talu trwy’r gyflogres – cyflogeion sydd wedi’u heithrio
 ExclusionOverview.instruction.empty = Mae’ch holl gyflogeion sy’n cael buddiant ‘{0}’ yn ei gael wedi’i drethu drwy eich cyflogres.
 ExclusionOverview.instruction.notempty = Mae’r cyflogeion hyn yn cael {0}, ac o 6 Ebrill {1} ymlaen, byddant wedi’u heithrio o’i gael/chael wedi’i drethu/threthu drwy eich cyflogres.
 ExclusionOverview.instruction.cy.notempty = Mae’r cyflogeion hyn yn cael {0}, ac o 6 Ebrill {1} ymlaen, byddant wedi’u heithrio rhag ei gael/chael wedi’i drethu/threthu drwy eich cyflogres.
 ExclusionOverview.warning = Dim ond cyflogeion sy’n cael y buddiant hwn a ddylai gael eu heithrio. Mae’n rhaid i chi lenwi ffurflen P11D ar eu cyfer.
+
+ExclusionOverview.notExcludedEmployee.title = Nid ydych wedi eithrio unrhyw gyflogeion
+ExclusionOverview.notExcludedEmployee.p1 = Trethir {0} pob un o’ch cyflogeion drwy’ch cyflogres.
+ExclusionOverview.p1 = Gallwch ond eithrio cyflogeion sy’n cael y draul neu’r buddiant hwn.
+ExclusionOverview.p2 = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant neu’r draul hon drwy anfon P11D atom. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+ExclusionOverview.h2 = A oes angen i chi eithrio cyflogai?
+ExclusionOverview.h2.hint = Gallwch eithrio hyd at {0} o gyflogeion.
+ExclusionOverview.error.required = Dewiswch ‘Iawn’ os oes angen i chi eithrio cyflogai.
+ExclusionOverview.excludedEmployee.title = Eich cyflogeion sydd wedi’u heithrio
 
 ExclusionDecision.noselection.error = Mae’n rhaid i chi ddewis un o’r opsiynau
 ExclusionNinoDecision.title = Eithrio cyflogai
@@ -393,7 +401,7 @@ ServiceMessage.63092 = Mae problemau technegol yn effeithio ar y gwasanaeth. Ryd
 
 Service.field.firstname = Enw cyntaf
 Service.field.surname = Enw olaf
-Service.field.name = Enw
+Service.field.name = Enw llawn
 Service.field.nino = Rhif Yswiriant Gwladol
 Service.field.nino.2lines = Rhif Yswiriant Gwladol
 Service.field.ninohint = Er enghraifft, QQ123456A

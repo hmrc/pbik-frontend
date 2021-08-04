@@ -22,7 +22,9 @@
         govukLayoutWrapper: GovukLayoutWrapper,
         config: AppConfig,
         localFormPartialRetriever: LocalFormPartialRetriever,
-        uriInformation: URIInformation
+        uriInformation: URIInformation,
+        govukRadios: GovukRadios,
+        formWithCSRF: FormWithCSRF
 )
 
 @(
@@ -30,71 +32,110 @@
         isCurrentTaxYear: String,
         iabdType: String,
         current: List[EiLPerson],
-        empRef: EmpRef
+        empRef: EmpRef,
+        form: Form[MandatoryRadioButton]
 )(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(pageTitle = messages("ExclusionOverview.title") + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(pageTitle = if(current.isEmpty){messages("ExclusionOverview.notExcludedEmployee.title")}else{messages("ExclusionOverview.excludedEmployee.title")} + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
 
     @defining( if(isCurrentTaxYear=="cy"){ taxYearRange.cyminus1 } else { taxYearRange.cy }){ yearvalue =>
 
-        <h1 id="title" class="govuk-heading-xl">@messages("ExclusionOverview.title")</h1>
+        @if(form.hasErrors){
+            <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-heading">@messages("Service.errorSummary.heading")</h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li>
+                            <a href="#error-list-no-selection">@messages("ExclusionOverview.error.required")</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        }
 
-        @if(current.isEmpty) {
-            <p class="govuk-body-l">
-            @messages("ExclusionOverview.instruction.empty", messages("BenefitInKind.label." + iabdType), yearvalue)
-            </p>
+        <h1 id="title" class="govuk-heading-xl">
+            <span class="govuk-caption-xl">@messages("BenefitInKind.label." + iabdType)</span>
+            @if(current.isEmpty){@messages("ExclusionOverview.notExcludedEmployee.title")}else{@messages("ExclusionOverview.excludedEmployee.title")}
+        </h1>
 
-        } else {
-            <p class="govuk-body-l">
-            @if(isCurrentTaxYear=="cy") {
-                @messages("ExclusionOverview.instruction.cy.notempty", messages("BenefitInKind.label." + iabdType), yearvalue)
-            }else{
-                @messages("ExclusionOverview.instruction.notempty", messages("BenefitInKind.label." + iabdType), yearvalue)
+        @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType))) {
+
+            @if(current.isEmpty) {
+                <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", messages("BenefitInKind.label." + iabdType))</p>
+
+            } else {
+                <table class="govuk-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">@messages("Service.field.name")</th>
+                            <th scope="col" class="govuk-table__header">@messages("Service.field.nino")<span> @Html(messages("Service.nino.lastletter"))</span></th>
+                            <th scope="col" class="govuk-table__header">@messages("Service.field.worksnumber")</th>
+                            <th scope="col" class="govuk-table__header">@messages("Service.action")</th>
+                        </tr>
+                    </thead>
+                    @for( (person, index) <- current.zipWithIndex ) {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header" id="name-@person.nino">@person.firstForename @person.surname</th>
+                            <td class="govuk-table__cell" id="nino-@person.nino">@person.nino</td>
+                            <td class="govuk-table__cell" id="wpn-@person.nino">@person.worksPayrollNumber</td>
+                            <td class="govuk-table__cell">
+                                <a class="govuk-link" id='@person.nino-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), person.nino)">
+                                    @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nino</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </table>
+
             }
-            </p>
-        }
 
-        @if(!current.isEmpty) {
-            <table class="govuk-table">
-                <caption class="govuk-table__caption govuk-table__caption--m">@messages("ExclusionOverview.caption")</caption>
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">@messages("Service.field.name")</th>
-                        <th scope="col" class="govuk-table__header">@messages("Service.field.nino")<span> @Html(messages("Service.nino.lastletter"))</span></th>
-                        <th scope="col" class="govuk-table__header">@messages("Service.field.worksnumber")</th>
-                        <th scope="col" class="govuk-table__header">@messages("Service.action")</th>
-                    </tr>
-                </thead>
-                @for( (person, index) <- current.zipWithIndex ) {
-                    <tr class="govuk-table__row">
-                        <th scope="row" class="govuk-table__header" id="name-@person.nino">@person.surname, @person.firstForename</th>
-                        <td class="govuk-table__cell" id="nino-@person.nino">@person.nino</td>
-                        <td class="govuk-table__cell" id="wpn-@person.nino">@person.worksPayrollNumber</td>
-                        <td class="govuk-table__cell">
-                            <a class="govuk-link" id='@person.nino-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), person.nino)">
-                                @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nino</span>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </table>
-        }
+            <p class="govuk-body">@messages("ExclusionOverview.p1")</p>
+            <p class="govuk-body">@messages("ExclusionOverview.p2")</p>
 
-        <div class="govuk-inset-text">
-            @messages("ExclusionOverview.warning")
-        </div>
+            @if(current.size < config.maximumExclusions ) {
+                <div class="govuk-form-group @if(form.hasErrors){govuk-form-group--error}">
+                    @if(form.hasErrors) {
+                        <span id="error-list-no-selection" class="govuk-error-message">
+                            @messages("ExclusionOverview.error.required")
+                        </span>
+                    }
 
-        <div class="govuk-form-group">
-            @if(current.size <= config.maximumExclusions ) {
-                @defining( if(current.isEmpty){"Service.excludeanemployee"}else{"Service.excludeanotheremployee"}) { buttonlabel =>
-                    <a class="govuk-button" role="button" data-module="govuk-button" id="button-exclude" href='@routes.ExclusionListController.withOrWithoutNinoOnPageLoad(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType))'>
-                    @messages(buttonlabel)
-                    </a>
-                }
+                    @govukRadios(Radios(
+                        fieldset = Some(Fieldset(
+                            legend = Some(Legend(
+                                content = Text(messages("ExclusionOverview.h2")),
+                                classes = "govuk-fieldset__legend--m",
+                                isPageHeading = false
+                            ))
+                        )),
+                        hint = Some(Hint(
+                            content = Text(messages("ExclusionOverview.h2.hint", config.maximumExclusions))
+                        )),
+                        name = "confirmation",
+                        items = Seq(
+                            RadioItem(
+                                content = Text(messages("Service.yes")),
+                                value = Some("yes"),
+                                id = Some("confirmation-yes")
+                            ),
+                            RadioItem(
+                                content = Text(messages("Service.no")),
+                                value = Some("no"),
+                                id = Some("confirmation-no")
+                            )
+                        ),
+                        classes = "govuk-radios--inline"
+                    ))
+                </div>
+
+                <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.continue")">
+
             } else {
                 <p class="govuk-body">@messages("ExclusionOverview.excludecount.exceeded")</p>
-            }
-        </div>
-        <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">@messages("Service.back.overview")</a>
+        }
+
+        }
+
+
     }
 }

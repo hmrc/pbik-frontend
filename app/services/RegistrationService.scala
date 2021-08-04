@@ -60,6 +60,7 @@ class RegistrationService @Inject()(
     request: AuthenticatedRequest[AnyContent]): Future[Result] = {
 
     val decommissionedBikIds: Seq[Int] = pbikAppConfig.biksDecommissioned
+    val status: Int = 30
     val nonLegislationBiks: Seq[Int] = if (taxDateUtils.isCurrentTaxYear(year)) {
       pbikAppConfig.biksNotSupportedCY
     } else {
@@ -83,10 +84,10 @@ class RegistrationService @Inject()(
                                request.empRef,
                                year)
       nonLegislationList = nonLegislationBiks.map { x =>
-        Bik("" + x, 30, 0)
+        Bik("" + x, status)
       }
       decommissionedBikList = decommissionedBikIds.map { x =>
-        Bik("" + x, 30, 0)
+        Bik("" + x, status)
       }
 
       // During transition, we have to ensure we handle the existing decommissioned IABDs (e.g 47 ) being sent by the server

@@ -46,7 +46,7 @@ import scala.language.postfixOps
 
 class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser {
 
-  val messagesApi = app.injector.instanceOf[MessagesApi]
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -58,7 +58,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
-  implicit val lang = Lang("en-GB")
+  implicit val lang: Lang = Lang("en-GB")
 
   val controllersReferenceData: ControllersReferenceData = app.injector.instanceOf[ControllersReferenceData]
   val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
@@ -287,6 +287,49 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = await(mockExclusionController.performPageLoad("cy", "car").apply(mockrequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ServiceMessage.10002"))
+    }
+  }
+
+  "When loading the submitExcludedEmployees page when exclusions are disabled the controller" must {
+    "show an error page" in {
+
+      val mockExclusionController = app.injector.instanceOf[MockExclusionsDisallowedController]
+
+      implicit val timeout: akka.util.Timeout = 10 seconds
+      val result = await(mockExclusionController.submitExcludedEmployees("cy", "car").apply(mockrequest))(timeout)
+      result.header.status must be(OK)
+      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ServiceMessage.10002"))
+
+    }
+  }
+
+  "When loading the submitExcludedEmployees with valid form selecting yes" must {
+    "proceed to Exclude an employee form page" in {
+      lazy val formData =
+        controllersReferenceData.binaryRadioButton.fill(MandatoryRadioButton("yes"))
+      implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+        mockrequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
+      val result = mockExclusionListController
+        .submitExcludedEmployees("cyp1", "car")
+        .apply(formrequest)
+
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be("/payrollbik/cyp1/car/exclude-employee-search")
+    }
+  }
+
+  "When loading the submitExcludedEmployees with valid form selecting no" must {
+    "proceed to Payrolling summary form page" in {
+      lazy val formData =
+        controllersReferenceData.binaryRadioButton.fill(MandatoryRadioButton("no"))
+      implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+        mockrequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
+      val result = mockExclusionListController
+        .submitExcludedEmployees("cyp1", "car")
+        .apply(formrequest)
+
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result).get must be("/payrollbik/payrolled-benefits-expenses")
     }
   }
 
