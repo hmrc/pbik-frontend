@@ -42,6 +42,7 @@ GET         /cy1/remove-benefit-expense-confirmed                controllers.Wha
 
 ## Manage exclusion list
 GET         /:year/:iabdType/excluded-employees                  controllers.ExclusionListController.performPageLoad(year: String, iabdType: String)
+POST        /:year/:iabdType/excluded-employees                  controllers.ExclusionListController.submitExcludedEmployees(year: String, iabdType: String)
 
 GET         /:year/:iabdType/exclude-employee-search             controllers.ExclusionListController.withOrWithoutNinoOnPageLoad(year: String, iabdType: String)
 POST        /:year/:iabdType/exclude-employee-search             controllers.ExclusionListController.withOrWithoutNinoDecision(year: String, iabdType: String)

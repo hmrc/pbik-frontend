@@ -21,22 +21,45 @@ import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
+import org.jsoup.Jsoup
 import views.html.exclusion.ExclusionOverview
 
 class ExclusionOverviewViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings = app.injector.instanceOf[FormMappings]
-  val exclusionOverviewView = app.injector.instanceOf[ExclusionOverview]
+  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  val exclusionOverviewView: ExclusionOverview = app.injector.instanceOf[ExclusionOverview]
 
-  def taxYearRange = TaxYearRange(2018, 2019, 2020)
+  def taxYearRange: TaxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  override def view: Html = exclusionOverviewView(taxYearRange, "cyp1", "30", List(), EmpRef("", ""))
+  private val iabdType = "31"
+
+  override def view: Html =
+    exclusionOverviewView(taxYearRange, "cyp1", iabdType, List(), EmpRef("", ""), formMappings.binaryRadioButton)
+
+  def viewWithFormWithErrors(): Html =
+    exclusionOverviewView(
+      taxYearRange,
+      "cyp1",
+      iabdType,
+      List(),
+      EmpRef("", ""),
+      formMappings.binaryRadioButton.withError("test", "error"))
 
   "exclusionOverview" must {
-    behave like pageWithTitle(messages("ExclusionOverview.title"))
-    behave like pageWithHeader(messages("ExclusionOverview.title"))
-    behave like pageWithLink(messages("Service.excludeanemployee"), "/payrollbik/cyp1/medical/exclude-employee-search")
+    behave like pageWithTitle(messages("ExclusionOverview.notExcludedEmployee.title"))
+    behave like pageWithHeader(
+      messages(s"BenefitInKind.label.$iabdType")
+        + " " + messages("ExclusionOverview.notExcludedEmployee.title"))
+    behave like pageWithContinueButtonForm("/payrollbik/cyp1/car/excluded-employees", "Continue")
+    behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
+
+    "check the excluded employees page for the errors" in {
+
+      val doc = Jsoup.parse(viewWithFormWithErrors().toString())
+      doc must haveErrorSummary(messages("ExclusionOverview.error.required"))
+      doc must haveErrorNotification(messages("ExclusionOverview.error.required"))
+    }
 
   }
 }

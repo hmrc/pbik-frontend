@@ -44,6 +44,7 @@ object ControllersReferenceDataCodes extends Logging {
   val SESSION_FROM_YTA = "fromYTA"
   val SESSION_LANG = "session_lang"
   val BIK_REMOVE_REASON_LIST = List("software", "guidance", "not-clear", "not-offering", "other")
+  val YES = "yes"
 
   val EXCLUSION_TRACE_AND_MATCH_LIST_OF_PEOPLE = "trace-and-match-list-of-people"
   val EXCLUSION_TRACE_AND_MATCH_RADIO = "trace-and-match-radio"
@@ -100,32 +101,32 @@ class ControllersReferenceData @Inject()(
   def responseErrorHandler(staticDataRequest: Future[Result])(
     implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     staticDataRequest.recover {
-      case e0: NoSuchElementException => {
+      case e0: NoSuchElementException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled : $e0")
         NotFound(errorPageView(VALIDATION_ERROR_REFERENCE, yearRange, empRef = Some(request.empRef)))
-      }
-      case e1: InvalidYearURIException => {
+
+      case e1: InvalidYearURIException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
         BadRequest(errorPageView(INVALID_YEAR_REFERENCE, yearRange, empRef = Some(request.empRef)))
-      }
-      case e2: InvalidBikTypeURIException => {
+
+      case e2: InvalidBikTypeURIException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeURIException was handled : $e2")
         BadRequest(errorPageView(INVALID_BIK_TYPE_REFERENCE, yearRange, empRef = Some(request.empRef)))
-      }
-      case e3: Upstream5xxResponse => {
+
+      case Upstream5xxResponse(message, code, _, _) =>
         logger.error(
-          s"[ControllersReferenceData][responseErrorHandler] An Upstream5xxResponse was handled : ${e3.message}",
-          e3)
+          s"[ControllersReferenceData][responseErrorHandler] An Upstream5xxResponse was handled with code: $code and message:$message")
         InternalServerError(maintenancePageView(empRef = Some(request.empRef)))
-      }
-      case e4: GenericServerErrorException => {
+
+      case e4: GenericServerErrorException =>
         try {
           logger.warn(
             s"[ControllersReferenceData][responseErrorHandler] A GenericServerErrorException was handled: ${e4.message}",
             e4)
           val msgValue = e4.message
-          if (Messages("ServiceMessage." + msgValue) == ("ServiceMessage." + msgValue)) throw new Exception(msgValue)
-          else {
+          if (Messages("ServiceMessage." + msgValue) == ("ServiceMessage." + msgValue)) {
+            throw new Exception(msgValue)
+          } else {
             InternalServerError(
               errorPageView(
                 Messages("ServiceMessage." + msgValue),
@@ -135,21 +136,18 @@ class ControllersReferenceData @Inject()(
                 empRef = Some(request.empRef)))
           }
         } catch {
-          case ex: Exception => {
+          case ex: Exception =>
             logger.warn(
-              s"[ControllersReferenceData][responseErrorHandler] Could not parse GenericServerError System Error number: ${if (!e4.message.isEmpty) e4.message else "<no error code>"}. Showing default error page instead",
+              s"[ControllersReferenceData][responseErrorHandler] Could not parse GenericServerError System Error number: ${if (e4.message.nonEmpty) e4.message else "<no error code>"}. Showing default error page instead",
               ex
             )
             InternalServerError(maintenancePageView(empRef = Some(request.empRef)))
-          }
         }
-      }
-      case e5 => {
+      case e5 =>
         logger.warn(
           s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e5.getMessage}. Showing default error page",
           e5)
         InternalServerError(maintenancePageView(empRef = Some(request.empRef)))
-      }
     }
 
 }

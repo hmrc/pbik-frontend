@@ -165,7 +165,7 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils, val auditConnector: Aud
   def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] =
     auditConnector.sendEvent(dataEvent)
 
-  def taxYearToSpPeriod(year: Int) =
+  def taxYearToSpPeriod(year: Int): SpPeriod =
     if (taxDateUtils.isCurrentTaxYear(year)) {
       CY
     } else {

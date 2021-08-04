@@ -159,13 +159,21 @@ RemoveBenefits.reason.other.label = Explain why
 # Exclusion overview
 #*************************************************************
 
-ExclusionOverview.title = Excluded employees
 ExclusionOverview.caption = Employees excluded from payrolling
 ExclusionOverview.instruction.empty = All of your employees who receive {0} benefit are having it taxed through your payroll.
 ExclusionOverview.instruction.notempty = These employees receive {0} and from 6 April {1} will be excluded from having it taxed through your payroll.
 ExclusionOverview.instruction.cy.notempty = These employees receive {0} and from 6 April {1} have been excluded from having it taxed through your payroll.
 ExclusionOverview.warning = Only exclude employees who get this benefit. You must fill in a P11D for them. You can’t exclude more than 300 employees.
 ExclusionOverview.excludecount.exceeded = You can’t exclude any more employees.
+
+ExclusionOverview.notExcludedEmployee.title = You have not excluded any employees
+ExclusionOverview.notExcludedEmployee.p1 = All of your employees are having {0} taxed through your payroll.
+ExclusionOverview.p1 = You can only exclude employees who get this expense or benefit.
+ExclusionOverview.p2 = For excluded employees, you need to report the value of this benefit or expense by sending us a P11D. You should do this at the end of the tax year.
+ExclusionOverview.h2 = Do you need to exclude an employee?
+ExclusionOverview.h2.hint = You can exclude up to {0} employees.
+ExclusionOverview.error.required = Select yes if you need to exclude an employee.
+ExclusionOverview.excludedEmployee.title = Your excluded employees
 
 ExclusionDecision.noselection.error = You need to choose an option
 ExclusionNinoDecision.title = Exclude an employee
@@ -402,7 +410,7 @@ ServiceMessage.63092 = We’re having technical difficulties. We’re working to
 
 Service.field.firstname = First name
 Service.field.surname = Last name
-Service.field.name = Name
+Service.field.name = Full Name
 Service.field.nino = National Insurance number
 Service.field.nino.2lines = National Insurance number
 Service.field.ninohint = For example, QQ123456A

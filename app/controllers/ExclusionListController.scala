@@ -89,36 +89,72 @@ class ExclusionListController @Inject()(
 
   def performPageLoad(isCurrentTaxYear: String, iabdType: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
-      implicit val hc: HeaderCarrier =
-        HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-      if (exclusionsAllowed) {
-        val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
-        val staticDataRequest = for {
-          year                                           <- validateRequest(isCurrentTaxYear, iabdType)
-          nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
-          currentYearEIL: List[EiLPerson]                <- eiLListService.currentYearEiL(iabdTypeValue, year)
-        } yield {
-          cachingService.cacheCurrentExclusions(currentYearEIL)
-          Ok(
-            exclusionOverviewView(
-              controllersReferenceData.yearRange,
-              isCurrentTaxYear,
-              iabdTypeValue,
-              currentYearEIL.sortWith(_.surname < _.surname),
-              request.empRef)
-          ).removingFromSession(HeaderTags.ETAG)
-            .addingToSession(nextYearList._1.toSeq: _*)
-        }
-        controllersReferenceData.responseErrorHandler(staticDataRequest)
-      } else {
-        Future.successful(
-          Ok(
-            errorPageView(
-              ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              empRef = Some(request.empRef))))
+      val futureResult = showExcludedPage(isCurrentTaxYear, iabdType, formMappings.binaryRadioButton)
+      controllersReferenceData.responseErrorHandler(futureResult)
+
+    }
+
+  def showExcludedPage(isCurrentTaxYear: String, iabdType: String, form: Form[MandatoryRadioButton])(
+    implicit request: AuthenticatedRequest[_]): Future[Result] = {
+
+    implicit val hc: HeaderCarrier =
+      HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    if (exclusionsAllowed) {
+      val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
+      for {
+        year                                           <- validateRequest(isCurrentTaxYear, iabdType)
+        nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
+        currentYearEIL: List[EiLPerson]                <- eiLListService.currentYearEiL(iabdTypeValue, year)
+      } yield {
+        cachingService.cacheCurrentExclusions(currentYearEIL)
+        Ok(
+          exclusionOverviewView(
+            controllersReferenceData.yearRange,
+            isCurrentTaxYear,
+            iabdTypeValue,
+            currentYearEIL.sortWith(_.surname < _.surname),
+            request.empRef,
+            form
+          )
+        ).removingFromSession(HeaderTags.ETAG)
+          .addingToSession(nextYearList._1.toSeq: _*)
       }
 
+    } else {
+      logger.info("[ExclusionListController][showExcludedPage] Exclusions not allowed, showing error page")
+      Future.successful(
+        Ok(
+          errorPageView(
+            ControllersReferenceDataCodes.FEATURE_RESTRICTED,
+            taxDateUtils.getTaxYearRange(),
+            empRef = Some(request.empRef))))
+    }
+  }
+
+  def submitExcludedEmployees(isCurrentTaxYear: String, iabdType: String): Action[AnyContent] =
+    (authenticate andThen noSessionCheck).async { implicit request =>
+      val resultFuture = formMappings.binaryRadioButton
+        .bindFromRequest()
+        .fold(
+          formWithErrors => showExcludedPage(isCurrentTaxYear, iabdType, formWithErrors),
+          values => {
+            val selectedValue = values.selectionValue
+            for {
+              _ <- validateRequest(isCurrentTaxYear, iabdType)
+            } yield {
+              selectedValue match {
+                case ControllersReferenceDataCodes.YES =>
+                  Redirect(
+                    routes.ExclusionListController
+                      .withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdType)
+                  )
+                case "no" =>
+                  Redirect(routes.HomePageController.onPageLoad)
+              }
+            }
+          }
+        )
+      controllersReferenceData.responseErrorHandler(resultFuture)
     }
 
   def withOrWithoutNinoOnPageLoad(isCurrentTaxYear: String, iabdType: String): Action[AnyContent] =
