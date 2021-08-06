@@ -36,7 +36,15 @@
         form: Form[MandatoryRadioButton]
 )(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(pageTitle = if(current.isEmpty){messages("ExclusionOverview.notExcludedEmployee.title")}else{messages("ExclusionOverview.excludedEmployee.title")} + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
+@title = @{
+    if(current.isEmpty) {
+        messages("ExclusionOverview.notExcludedEmployee.title")
+    } else {
+        messages("ExclusionOverview.excludedEmployee.title")
+    }
+}
+
+@govukLayoutWrapper(pageTitle = title + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
 
     @defining( if(isCurrentTaxYear=="cy"){ taxYearRange.cyminus1 } else { taxYearRange.cy }){ yearvalue =>
 
