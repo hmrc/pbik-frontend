@@ -21,6 +21,7 @@ import config.Service
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import utils.Exceptions.InvalidBikTypeURIException
+import play.api.Logging
 
 @Singleton
 class URIInformation @Inject()(configuration: Configuration) extends URIValues with Logging {

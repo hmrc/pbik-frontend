@@ -53,6 +53,10 @@
 
     <logger name="controllers" level="INFO"/>
 
+    <logger name="services" level="INFO"/>
+
+    <logger name="utils" level="INFO"/>
+
     <logger name="com.google.inject" level="WARN"/>
 
     <logger name="com.ning.http.client" level="WARN"/>

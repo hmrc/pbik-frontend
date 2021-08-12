@@ -17,14 +17,13 @@
 package utils
 
 import config.{AppConfig, LocalFormPartialRetriever}
-
 import javax.inject.{Inject, Singleton}
 import models._
+import play.api.Logging
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.http.Upstream5xxResponse
-import utils.ControllersReferenceDataCodes._
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 import views.html.{ErrorPage, MaintenancePage}
 
@@ -84,7 +83,7 @@ class ControllersReferenceData @Inject()(
   maintenancePageView: MaintenancePage)(
   implicit val pbikAppConfig: AppConfig,
   implicit val localFormPartialRetriever: LocalFormPartialRetriever)
-    extends FormMappings(messagesApi) with I18nSupport {
+    extends FormMappings(messagesApi) with I18nSupport with Logging {
 
   def yearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
@@ -95,7 +94,14 @@ class ControllersReferenceData @Inject()(
     } else {
       logger.info("[ControllersReferenceData][responseCheckCYEnabled] Cy is disabled")
       val errorCode = 10003
-      Future(Forbidden(errorPageView(CY_RESTRICTED, yearRange, "", errorCode, empRef = Some(request.empRef))))
+      Future(
+        Forbidden(
+          errorPageView(
+            ControllersReferenceDataCodes.CY_RESTRICTED,
+            yearRange,
+            "",
+            errorCode,
+            empRef = Some(request.empRef))))
     }
 
   def responseErrorHandler(staticDataRequest: Future[Result])(
@@ -103,15 +109,24 @@ class ControllersReferenceData @Inject()(
     staticDataRequest.recover {
       case e0: NoSuchElementException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled : $e0")
-        NotFound(errorPageView(VALIDATION_ERROR_REFERENCE, yearRange, empRef = Some(request.empRef)))
+        NotFound(
+          errorPageView(
+            ControllersReferenceDataCodes.VALIDATION_ERROR_REFERENCE,
+            yearRange,
+            empRef = Some(request.empRef)))
 
       case e1: InvalidYearURIException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
-        BadRequest(errorPageView(INVALID_YEAR_REFERENCE, yearRange, empRef = Some(request.empRef)))
+        BadRequest(
+          errorPageView(ControllersReferenceDataCodes.INVALID_YEAR_REFERENCE, yearRange, empRef = Some(request.empRef)))
 
       case e2: InvalidBikTypeURIException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeURIException was handled : $e2")
-        BadRequest(errorPageView(INVALID_BIK_TYPE_REFERENCE, yearRange, empRef = Some(request.empRef)))
+        BadRequest(
+          errorPageView(
+            ControllersReferenceDataCodes.INVALID_BIK_TYPE_REFERENCE,
+            yearRange,
+            empRef = Some(request.empRef)))
 
       case Upstream5xxResponse(message, code, _, _) =>
         logger.error(

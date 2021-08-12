@@ -32,6 +32,7 @@ import views.html.{ErrorPage, Summary}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
+import play.api.Logging
 
 @Singleton
 class HomePageController @Inject()(

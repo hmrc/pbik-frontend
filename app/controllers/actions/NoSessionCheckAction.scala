@@ -24,9 +24,9 @@ import javax.inject.{Inject, Singleton}
 import models.AuthenticatedRequest
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
-import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.Logging
 
 @Singleton
 class NoSessionCheckActionImpl @Inject()()(implicit val executionContext: ExecutionContext)
