@@ -29,9 +29,9 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utils.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.Logging
 
 @Singleton
 class AuthActionImpl @Inject()(

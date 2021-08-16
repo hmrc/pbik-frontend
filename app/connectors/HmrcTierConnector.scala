@@ -23,12 +23,12 @@ import play.api.libs.json._
 import play.api.mvc.Request
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.Exceptions.GenericServerErrorException
-import utils.Logging
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import play.api.Logging
 @Singleton
 class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configuration) extends Logging {
 

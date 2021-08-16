@@ -22,7 +22,7 @@ import javax.inject.{Inject, Singleton}
 import models.{Bik, EiLPerson, PbikSession, RegistrationItem, RegistrationList}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
-import utils.Logging
+import play.api.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
