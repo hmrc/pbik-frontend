@@ -34,9 +34,7 @@ lazy val microservice = Project(appName, file("."))
     excludeFilter in Assets := "js*" || "sass*",
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.govukfrontend.views.html.components._",
-      "uk.gov.hmrc.govukfrontend.views.html.helpers._",
-      "uk.gov.hmrc.hmrcfrontend.views.html.components._",
-      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
+      "uk.gov.hmrc.hmrcfrontend.views.html.components._"
     ),
     resolvers := Seq(
       "hmrc-releases" at "https://artefacts.tax.service.gov.uk/artifactory/hmrc-releases/",
