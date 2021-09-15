@@ -498,7 +498,7 @@ whatNext.remove.p1-after=ar eu cyfer ar ddiwedd y flwyddyn dreth.
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.rescind.heading = Cofrestriad wedi’i gyflawni
 whatNext.exclude.lede = Rydych wedi rhoi gwybod i ni na fydd {0} yn cael {1} wedi’i drethu/threthu drwy eich cyflogres o 6 Ebrill {2} ymlaen.
-whatNext.exclude.p1 = Bydd yn rhaid i chi roi gwybod am werth y buddiant hwn ar <a class="govuk-link" target = "_blank" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflen P11D</a> yn lle hynny.
+whatNext.exclude.p1 = Bydd yn rhaid i chi roi gwybod am werth y buddiant hwn ar <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflen P11D</a> yn lle hynny.
 whatNext.cy1.exclude.p2 = Ni fydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’r gyflogres bellach ar {0}
 whatNext.exclude.p3 = Dylech drefnu eich cyflogres yn gywir fel nad oes rhaid i’r cyflogeion gael eu buddiannau a’u treuliau wedi’u trethu yn eu cyflog.
 whatNext.exclude.p4 = Bydd yn rhaid i chi gyflwyno ffurflen P11D ar gyfer y cyflogeion hynny yr ydych wedi’u heithrio, gan roi gwybod i ni beth yw gwerth y buddiant neu’r draul y maent yn eu cael fel y gallwn ei gynnwys/chynnwys yn eu cod treth.
