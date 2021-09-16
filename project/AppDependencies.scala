@@ -5,11 +5,11 @@ object AppDependencies {
   val silencerVersion = "1.7.1"
 
   val compile: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"     %% "play-partials"                % "8.1.0-play-28",
+    "uk.gov.hmrc"     %% "play-partials"                % "8.2.0-play-28",
     "uk.gov.hmrc"     %% "url-builder"                  % "3.5.0-play-28",
     "uk.gov.hmrc"     %% "tax-year"                     % "1.4.0",
-    "uk.gov.hmrc"     %% "bootstrap-frontend-play-28"   % "5.8.0",
-    "uk.gov.hmrc"     %% "play-frontend-hmrc"           % "1.4.0-play-28",
+    "uk.gov.hmrc"     %% "bootstrap-frontend-play-28"   % "5.14.0",
+    "uk.gov.hmrc"     %% "play-frontend-hmrc"           % "1.9.0-play-28",
     "uk.gov.hmrc"     %% "http-caching-client"          % "9.5.0-play-28",
     compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
     "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
