@@ -69,7 +69,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
 
   class FakeResponse extends HttpResponse {
     override def status = 200
+
     override def allHeaders: Map[String, Seq[String]] = Map()
+
     override def body: String = "empty"
   }
 
@@ -235,7 +237,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val result = registrationController.showCheckYourAnswersAddCurrentTaxYear().apply(mockrequest)
 
       status(result) must be(OK)
-      contentAsString(result) must include(messagesApi("AddBenefits.Confirm.Single.Title"))
+      contentAsString(result) must include(messagesApi("AddBenefits.Confirm.Multiple.Title"))
       contentAsString(result) must include(messagesApi("BenefitInKind.label.30"))
     }
   }
@@ -287,7 +289,6 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val result = registrationController.showCheckYourAnswersAddNextTaxYear().apply(mockrequest)
 
       status(result) must be(OK)
-      contentAsString(result) must include(messagesApi("AddBenefits.Confirm.Desc.Single").stripSuffix(" {0}."))
       contentAsString(result) must include(messagesApi("BenefitInKind.label.30"))
     }
   }

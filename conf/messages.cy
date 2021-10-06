@@ -26,8 +26,6 @@ service.lang.cymraeg = Cymraeg
 Service.continue = Yn eich blaen
 Service.confirm = Cadarnhau
 Service.confirmAndContinue = Cadarnhau ac yn eich blaen
-Service.register.single = Cofrestru’r buddiant hwn
-Service.register.multiple = Cofrestru’r buddiannau hyn
 Service.proceed = Mynd yn eich blaen
 Service.cancel = Canslo
 Service.tryagain = Rhowch gynnig arall arni
@@ -119,18 +117,14 @@ AddBenefits.CY.Caution.p12.3 = (sy’n dechrau ar 6 Ebrill {0})
 
 AddBenefits.noselection.error = Mae’n rhaid i chi ddewis o leiaf 1 buddiant neu draul cyn i chi allu mynd yn eich blaen
 
-AddBenefits.Confirm.Single.Title = Cofrestru buddiant neu draul
-AddBenefits.Confirm.Multiple.Title = Cofrestru buddiannau a threuliau
+AddBenefits.Confirm.Multiple.Title = Gwiriwch y buddiannau a’r treuliau rydych am eu cofrestru
 RemoveBenefits.Confirm.Title = Dileu buddiant neu draul
-AddBenefits.Confirm.Desc = Rydych yn cofrestru i drethu’r buddiannau a’r treuliau hyn drwy eich cyflogres o 6 Ebrill {0} ymlaen.
-AddBenefits.Confirm.Desc.Single = Rydych yn cofrestru i drethu’r buddiant hwn neu’r draul hon drwy eich cyflogres o 6 Ebrill {0} ymlaen.
 AddBenefits.Confirm.Multiple.Table.Heading = Buddiannau a threuliau i’w cofrestru
 AddBenefits.Confirm.Single.Table.Heading = Buddiant neu draul i’w gofrestru/chofrestru
-AddBenefits.Confirm.help.desc.Single = Gallwch eithrio cyflogeion unigol o gael y buddiant hwn wedi’i dalu drwy’r gyflogres os byddai’n well gennych gyflwyno P11D. Gwnewch hyn ar ôl cofrestru’r buddiant. Os nad yw cyflogai’n cael y buddiant, nid oes rhaid i chi ei eithrio gan nad oes treth yn ddyledus.
-AddBenefits.Confirm.help.desc = Ni allwch eithrio cyflogeion unigol o gael y buddiannau hyn wedi’u talu drwy’r gyflogres os byddai’n well gennych gyflwyno ffurflen P11D ar eu cyfer. Gwnewch hyn ar ôl i chi gofrestru’r buddiannau. Os nad yw cyflogai’n cael y buddiant, nid oes rhaid i chi ei eithrio gan nad oes treth yn ddyledus.
+AddBenefits.Confirm.help.desc = Gallwch eithrio cyflogeion rhag talu’r buddiannau drwy’r gyflogres ar ôl i chi gofrestru, ond bydd yn rhaid i chi anfon ffurflen P11D er mwyn datgan y buddiannau sydd heb eu talu drwy’r gyflogres. Os nad yw cyflogai wedi cael y buddiant, does dim rhaid i chi ei eithrio gan nad oes treth yn ddyledus.
 
 #*************************************************************
-# Remove benifits
+# Remove benefits
 #*************************************************************
 
 RemoveBenefits.Confirm.Desc = Byddwch yn rhoi’r gorau i drethu {0} drwy eich cyflogres o 6 Ebrill {1} ymlaen.
