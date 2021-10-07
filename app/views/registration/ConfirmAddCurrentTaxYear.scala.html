@@ -31,26 +31,12 @@
 
 @singleBik = @{if(bikForm("actives").indexes.size > 1 ) {false}else{true}}
 
-@title = @{if(singleBik) {messages("AddBenefits.Confirm.Single.Title")}else {messages("AddBenefits.Confirm.Multiple.Title")}}
-
-@govukLayoutWrapper(pageTitle = title + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(pageTitle = messages("AddBenefits.Confirm.Multiple.Title") + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
 
     <h1 id="title" class="govuk-heading-xl">
         <span class="govuk-caption-xl">@messages("Overview.next.heading", taxYearRange.cyminus1 + "", taxYearRange.cy + "")</span>
-        @if(!singleBik) {
             @messages("AddBenefits.Confirm.Multiple.Title")
-        }else{
-            @messages("AddBenefits.Confirm.Single.Title")
-        }
     </h1>
-
-    <p class="govuk-body-l" id="lede">
-        @if(singleBik){
-            @messages("AddBenefits.Confirm.Desc.Single", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
-        }else{
-            @messages("AddBenefits.Confirm.Desc", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)
-        }
-    </p>
 
     <div class="data">
         @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes) {
@@ -58,7 +44,7 @@
             <dl class="govuk-summary-list">
                 @for(item <- bikForm.value.get.active.indices) {
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key" id="benefit-@bikForm.value.get.active(item).id.toString">
+                        <dt class="govuk-summary-list__value" id="benefit-@bikForm.value.get.active(item).id.toString">
                             @messages("BenefitInKind.label." + bikForm.value.get.active(item).id.toString)
                         </dt>
                     </div>
@@ -66,20 +52,11 @@
             </dl>
 
             <div class="govuk-inset-text" id="exclude-info">
-                @if(singleBik){
-                    @messages("AddBenefits.Confirm.help.desc.Single")
-                }else{
                     @messages("AddBenefits.Confirm.help.desc")
-                }
             </div>
 
-            @if(singleBik) {
-                <input type="submit" role="button" class="govuk-button" id="button-confirm" value='@if(singleBik){@messages("Service.register.single")}else{@messages("Service.register.multiple")}'>
-            }else {
-                <input type="submit" role="button" class="govuk-button" id="button-confirm" value="@messages("Service.register.multiple")">
-            }
-        }
+        <input type="submit" role="button" class="govuk-button" id="button-confirm" value='@messages("Service.confirmAndContinue")'>
 
-        <a class="govuk-link" id="link-back" href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a>
     </div>
+    }
 }

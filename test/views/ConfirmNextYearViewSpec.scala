@@ -49,13 +49,11 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
     )
 
   "nextYearPage" must {
-    behave like pageWithTitle(messages("AddBenefits.Confirm.Single.Title"))
+    behave like pageWithTitle(messages("AddBenefits.Confirm.Multiple.Title"))
     behave like pageWithHeader(
       messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
-        + " " + messages("AddBenefits.Confirm.Single.Title")
+        + " " + messages("AddBenefits.Confirm.Multiple.Title")
     )
-    behave like pageWithContinueButtonForm("/payrollbik/cy1/add-benefit-expense", "Register this benefit")
-
+    behave like pageWithContinueButtonForm("/payrollbik/cy1/add-benefit-expense", "Confirm and continue")
   }
-
 }

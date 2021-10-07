@@ -29,8 +29,6 @@ service.lang.cymraeg = Cymraeg
 Service.continue = Continue
 Service.confirm = Confirm
 Service.confirmAndContinue = Confirm and continue
-Service.register.single = Register this benefit
-Service.register.multiple = Register these benefits
 Service.proceed = Proceed
 Service.cancel = Cancel
 Service.tryagain = Try again
@@ -127,15 +125,11 @@ AddBenefits.CY.Caution.p12.3 = (starting 6 April {0})
 
 AddBenefits.noselection.error = You need to select at least 1 benefit or expense before you can continue
 
-AddBenefits.Confirm.Single.Title = Register a benefit or expense
-AddBenefits.Confirm.Multiple.Title = Register benefits and expenses
+AddBenefits.Confirm.Multiple.Title = Check the benefits and expenses you want to register
 RemoveBenefits.Confirm.Title = Remove a benefit or expense
-AddBenefits.Confirm.Desc = You’re registering to tax these benefits and expenses through your payroll from 6 April {0}.
-AddBenefits.Confirm.Desc.Single = You’re registering to tax this benefit or expense through your payroll from 6 April {0}.
 AddBenefits.Confirm.Multiple.Table.Heading = Benefits and expenses to register
 AddBenefits.Confirm.Single.Table.Heading = Benefit or expense to register
-AddBenefits.Confirm.help.desc.Single = You can exclude individual employees from having this benefit payrolled if you prefer to send a P11D in. Do this after you register the benefit. If an employee doesn’t receive the benefit, you don’t have to exclude them as there is no tax due.
-AddBenefits.Confirm.help.desc = You can exclude individual employees from having these benefits payrolled if you prefer to send a P11D in for them. Do this after you register the benefits. If an employee doesn’t receive the benefit, you don’t have to exclude them as there is no tax due.
+AddBenefits.Confirm.help.desc = You can exclude employees from payrolling once you’re registered, but you’ll need to send a P11D to declare the non-payrolled benefits. If an employee did not receive the benefit, there is no need to exclude them as there is no tax due.
 
 #*************************************************************
 # Remove benefits
