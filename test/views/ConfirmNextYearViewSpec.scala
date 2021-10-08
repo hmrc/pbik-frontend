@@ -54,6 +54,6 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
       messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
         + " " + messages("AddBenefits.Confirm.Multiple.Title")
     )
-    behave like pageWithContinueButtonForm("/payrollbik/cy1/add-benefit-expense", "Confirm and continue")
+    behave like pageWithContinueButtonForm("/payrollbik/cy1/check-the-benefits", "Confirm and continue")
   }
 }

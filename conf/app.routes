@@ -21,14 +21,14 @@ GET         /payrolled-benefits-expenses                         controllers.Hom
 GET         /cy1/choose-benefit-expense                          controllers.registration.ManageRegistrationController.nextTaxYearAddOnPageLoad
 POST        /cy1/choose-benefit-expense                          controllers.registration.ManageRegistrationController.checkYourAnswersAddNextTaxYear
 
-GET         /cy1/add-benefit-expense                             controllers.registration.ManageRegistrationController.showCheckYourAnswersAddNextTaxYear
-POST        /cy1/add-benefit-expense                             controllers.registration.ManageRegistrationController.addNextYearRegisteredBenefitTypes
+GET         /cy1/check-the-benefits                             controllers.registration.ManageRegistrationController.showCheckYourAnswersAddNextTaxYear
+POST        /cy1/check-the-benefits                             controllers.registration.ManageRegistrationController.addNextYearRegisteredBenefitTypes
 
 GET         /cy/choose-benefit-expense                           controllers.registration.ManageRegistrationController.currentTaxYearOnPageLoad
 POST        /cy/choose-benefit-expense                           controllers.registration.ManageRegistrationController.checkYourAnswersAddCurrentTaxYear
 
-GET         /cy/add-benefit-expense                              controllers.registration.ManageRegistrationController.showCheckYourAnswersAddCurrentTaxYear
-POST        /cy/add-benefit-expense                              controllers.registration.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes
+GET         /cy/check-the-benefits                              controllers.registration.ManageRegistrationController.showCheckYourAnswersAddCurrentTaxYear
+POST        /cy/check-the-benefits                              controllers.registration.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes
 
 GET         /:year/add-benefit-expense-confirmed                 controllers.WhatNextPageController.showWhatNextRegisteredBik(year: String)
 
