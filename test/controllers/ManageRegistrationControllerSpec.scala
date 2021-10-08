@@ -202,7 +202,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val result = registrationController.checkYourAnswersAddCurrentTaxYear().apply(mockRequestForm)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/cy/add-benefit-expense")
+      redirectLocation(result).get must be("/payrollbik/cy/check-the-benefits")
 
     }
 
@@ -255,7 +255,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val result = registrationController.checkYourAnswersAddNextTaxYear().apply(mockRequestForm)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/cy1/add-benefit-expense")
+      redirectLocation(result).get must be("/payrollbik/cy1/check-the-benefits")
     }
 
     "be shown the form with errors if not filled in correctly" in {
