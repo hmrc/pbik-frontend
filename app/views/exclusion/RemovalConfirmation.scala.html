@@ -25,7 +25,8 @@
         localFormPartialRetriever: LocalFormPartialRetriever,
         uriInformation: URIInformation,
         repeatWithIndex: RepeatWithIndex,
-        formWithCSRF: FormWithCSRF
+        formWithCSRF: FormWithCSRF,
+        govukInsetText: GovukInsetText
 )
 
 @(
@@ -36,63 +37,46 @@
 )(implicit request: Request[_], messages: Messages)
 
 @govukLayoutWrapper(pageTitle = messages("ExclusionRemovalConfirmation.title") + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
-
+    <span class="govuk-caption-xl">@messages("BenefitInKind.label."+ uriInformation.iabdValueURLDeMapper(iabdType))</span>
     <h1 id="title" class="govuk-heading-xl">
         @messages("ExclusionRemovalConfirmation.title")
     </h1>
 
-    <p class="govuk-body-l">
-        @messages("ExclusionRemovalConfirmation.intro", messages("BenefitInKind.label."+ uriInformation.iabdValueURLDeMapper(iabdType)), ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
-    </p>
     @formWithCSRF(action=routes.ExclusionListController.removeExclusionsCommit(iabdType)) {
         @for(index <- 0 until individualsToRemove.active.length) {
-            <h2 class="govuk-heading-m">@messages("ExclusionRemovalConfirmation.caption")</h2>
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @messages("Service.field.name")
-                    </dt>
-                    <dd class="govuk-summary-list__value">
+            <table class="govuk-table">
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">@messages("Service.field.name")</th>
+                    <td class="govuk-table__cell" id="name">
                         @individualsToRemove.active(index).firstForename
                         @if(individualsToRemove.active(index).secondForename.isDefined) { @individualsToRemove.active(index).secondForename.get }
                         @individualsToRemove.active(index).surname
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @messages("Service.field.nino")<br>
-                        <span>@Html(messages("Service.nino.lastletter"))</span>
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @individualsToRemove.active(index).nino
-                    </dd>
-                </div>
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">@messages("Service.field.nino") @messages("Service.nino.lastletter")</th>
+                    <td class="govuk-table__cell" id="nino">@individualsToRemove.active(index).nino</td>
+                </tr>
                 @if(individualsToRemove.active(index).worksPayrollNumber.isDefined) {
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @messages("Service.field.worksnumber")
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @individualsToRemove.active(index).worksPayrollNumber.get
-                        </dd>
-                    </div>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">@messages("Service.field.worksnumber")</th>
+                        <td class="govuk-table__cell" id="wpn">@individualsToRemove.active(index).worksPayrollNumber.get</td>
+                    </tr>
                 }
                 @if(individualsToRemove.active(index).dateOfBirth.isDefined) {
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            @messages("Service.field.dob")
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            @DateUtils.npsDateConversionFormat(individualsToRemove.active(index).dateOfBirth.get)
-                        </dd>
-                    </div>
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">@messages("Service.field.dob")</th>
+                        <td class="govuk-table__cell" id="dob">@DateUtils.npsDateConversionFormat(individualsToRemove.active(index).dateOfBirth.get)</td>
+                    </tr>
                 }
-            </dl>
+            </table>
         }
-        <input type="submit" class="govuk-button" role="button" id="button-confirm" value="@messages("Service.exclusion.add")">
+        @govukInsetText(InsetText(
+            content = Text(messages("ExclusionRemovalConfirmation.inset.text", messages("BenefitInKind.label."+ uriInformation.iabdValueURLDeMapper(iabdType)), ""+taxYearRange.cy))
+        ))
+        <input type="submit" class="govuk-button" role="button" id="button-confirm" value="@messages("Service.confirmAndContinue")">
     }
-
-    <a id ="link-back" class="govuk-link" href='@routes.ExclusionListController.performPageLoad(year,iabdType)'>
+    <p><a id ="link-back" class="govuk-link" href='@routes.ExclusionListController.performPageLoad(year,iabdType)'>
         @messages("Service.back.excluded")
-    </a>
+    </a></p>
 }

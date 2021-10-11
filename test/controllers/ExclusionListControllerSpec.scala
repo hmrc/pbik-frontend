@@ -677,7 +677,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(mockrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-employee-remove")
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/check-employee-details")
     }
   }
 
@@ -709,7 +709,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController.showRemovalConfirmation("cyp1", "car").apply(mockrequest)
       status(result) must be(OK)
       contentAsString(result) must include(
-        "The following employee will have Car and car fuel taxed through your payroll")
+        "By confirming, you will start taxing this employee for Car and car fuel through your payroll")
       contentAsString(result) must include("John")
       contentAsString(result) must include("Smith")
     }
@@ -808,7 +808,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(formrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-employee-remove")
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/check-employee-details")
     }
   }
 

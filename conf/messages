@@ -32,7 +32,6 @@ Service.confirmAndContinue = Confirm and continue
 Service.proceed = Proceed
 Service.cancel = Cancel
 Service.tryagain = Try again
-Service.exclusion.add = Add to payroll
 
 Service.notEnrolled.title = Enrol to use this service
 Service.notEnrolled.text1 = You’re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue.
@@ -190,10 +189,8 @@ ExclusionSearch.Fail.Exists.P = Search again for a different employee
 
 ExclusionImportant.ExcludeEmployee = For excluded employees, you need to report the value of this benefit or expense by sending us a P11D. You should do this at the end of the tax year.
 ExclusionImportant.Reminder = By confirming, you will exclude this employee from having {0} taxed through your payroll from 6 April {1}.
-ExclusionRemovalConfirmation.title = Add back to payroll
-ExclusionRemovalConfirmation.intro = The following employee will have {0} taxed through your payroll from 6 April {1}. The value of this benefit will be removed from the employee’s tax code.
-ExclusionRemovalConfirmation.caption = Employee to be payrolled
-
+ExclusionRemovalConfirmation.title = Check the details of the employee you want to add back to payroll
+ExclusionRemovalConfirmation.inset.text = By confirming, you will start taxing this employee for {0} through your payroll from 6 April {1}.
 ExclusionRemoval.WhatNext.lede = You’ve told us that {0} will be having {1} taxed through your payroll from 6 April {2}.
 
 ExclusionRescind.WhatNext.p1 = Tell your employees that their tax codes will change and we’ll send them a new tax code. You must also provide your employees with a letter straight away explaining that you are payrolling certain benefits and what it means for them.

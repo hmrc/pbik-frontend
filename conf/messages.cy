@@ -29,7 +29,6 @@ Service.confirmAndContinue = Cadarnhau ac yn eich blaen
 Service.proceed = Mynd yn eich blaen
 Service.cancel = Canslo
 Service.tryagain = Rhowch gynnig arall arni
-Service.exclusion.add = Ychwanegu i’r gyflogres
 
 Service.notEnrolled.title = Ymrestru i ddefnyddio’r gwasanaeth hwn
 Service.notEnrolled.text1 = Rydych wedi’ch mewngofnodi i Wasanaethau Ar-lein CThEM, ond mae’n rhaid i’ch cyflogwr gofrestru ar gyfer Talu Wrth Ennill (TWE) y Cyflogwr cyn i chi allu mynd yn eich blaen.
@@ -181,10 +180,8 @@ ExclusionSearch.Fail.Exists.P = Chwilio eto am gyflogai gwahanol
 
 ExclusionImportant.ExcludeEmployee = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy anfon P11D atom. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu ar {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
-ExclusionRemovalConfirmation.title = Ychwanegu yn ôl i’r gyflogres
-ExclusionRemovalConfirmation.intro = Bydd y cyflogai canlynol yn cael {0} wedi’i drethu/threthu drwy’r gyflogres o 6 Ebrill {1} ymlaen. Bydd gwerth y buddiant hwn yn cael ei ddileu o god treth y cyflogai.
-ExclusionRemovalConfirmation.caption = Cyflogai i’w dalu drwy’r gyflogres
-
+ExclusionRemovalConfirmation.title = Gwiriwch fanylion y cyflogai rydych am ei ychwanegu yn ôl i’r gyflogres
+ExclusionRemovalConfirmation.inset.text = Drwy gadarnhau, byddwch yn dechrau trethu’r cyflogai hwn ar ''{0}'' drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
 ExclusionRemoval.WhatNext.lede = Rydych wedi rhoi gwybod i ni y bydd {0} yn cael {1} wedi’i drethu/threthu drwy eich cyflogres o 6 Ebrill {2} ymlaen.
 
 ExclusionRescind.WhatNext.p1 = Rhowch wybod i’ch cyflogai y bydd ei god treth yn newid ac y byddwn yn anfon cod treth newydd ato. Ceir llythyrau enghreifftiol yn yr <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">arweiniad ‘Talu buddiannau a threuliau drwy’r gyflogres’</a> (yn agor mewn ffenestr newydd).
