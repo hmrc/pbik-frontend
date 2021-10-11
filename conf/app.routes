@@ -54,7 +54,7 @@ GET         /:year/:iabdType/exclude-employee-results-single     controllers.Exc
 
 GET         /:year/:iabdType/exclude-confirmation                controllers.ExclusionListController.showExclusionConfirmation(year: String, iabdType: String)
 
-GET         /:year/:iabdType/exclude-employee-remove             controllers.ExclusionListController.showRemovalConfirmation(year: String, iabdType: String)
+GET         /:year/:iabdType/check-employee-details              controllers.ExclusionListController.showRemovalConfirmation(year: String, iabdType: String)
 GET         /:year/:iabdType/exclude-employee-remove/:nino       controllers.ExclusionListController.remove(year: String, iabdType: String, nino: String)
 GET         /:iabdType/remove-commit                             controllers.ExclusionListController.showRemovalWhatsNext(iabdType: String)
 POST        /:iabdType/remove-commit                             controllers.ExclusionListController.removeExclusionsCommit(iabdType: String)
