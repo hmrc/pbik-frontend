@@ -14,6 +14,9 @@ Service.no = No
 Service.back = Back
 Service.back.overview = Back to your summary
 Service.back.overview.whatNext = View your summary
+Service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses.
+Service.feedback.link = What did you think of this service?
+Service.feedback = (takes 30 seconds)
 Service.back.cancel = Back to your summary
 Service.back.excluded = Back to your excluded employees
 Service.back.yta = Your tax account
@@ -474,16 +477,14 @@ error.exclusion.multi.selection = You need to choose which employee you want to 
 #*************************************************************
 
 whatNext.add.heading = Registration complete
-whatNext.add.heading.singular = Registration complete
 whatNext.remove.heading = Benefit removed
 whatNext.add.info = You’ll need to submit a P11D to HMRC to report the benefit or expense they receive.
 whatNext.cy1.add.lede = Now tax the following benefits and expenses through your payroll from 6 April {0}.
 whatNext.cy1.add.lede.singular = Now tax {0} through your payroll from 6 April {1}.
-whatNext.cy1.add.table.header = Registered benefits and expenses
-whatNext.add.p1 = Tell your employees that their tax codes will change and we’ll send them a new tax code. You must also provide your employees with a letter straight away explaining that you’re payrolling certain benefits and what it means for them.
-whatNext.add.p2 = From 6 April add the cash equivalent or relevant amount of the benefits and expenses to your employees’ pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
-whatNext.add.p3 = Stop sending us <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:Registration complete:P11Ds">P11Ds</a> for the employees’ who have benefits and expenses payrolled.
-whatNext.add.p4 = Continue sending a <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db" data-journey-click="link - click:Registration complete:P11D(b)">P11D(b)</a> to report Class 1A National Insurance contributions.
+whatNext.cy1.add.table.header = Benefits and expenses you have just registered to tax through your payroll from 6 April {0}.
+whatNext.add.p1 = From 6 April {0}, you need to add the cash equivalent or relevant amount to your employees’ pay and tax them through your payroll.
+whatNext.add.p2 = You can stop sending us the P11Ds for any employees who now have their benefits and expenses taxed through payroll.
+whatNext.add.p3 = You must still <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db" data-journey-click="link - click:Registration complete:P11D(b)">send a P11D(b) to report Class 1A National Insurance contributions(opens in a new window or tab).</a>
 whatNext.add.p2.singular = From 6 April add the cash equivalent or relevant amount of the benefit or expense to your employees’ pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
 whatNext.add.p3.singular = Stop sending us <a class="govuk-link" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11Ds</a> for the employees who have the benefit or expense payrolled.
 
@@ -500,6 +501,11 @@ whatNext.exclude.p3 = Set up your payroll correctly so that the employees don’
 whatNext.exclude.p4 = You’ll need to submit a P11D for those employees you’ve excluded, informing us of the value of the benefits and expenses they receive so we can include it in their tax code.
 whatNext.exclude.p5 = You must also report Class 1A National Insurance contributions on form P11D(b).
 whatNext.exclude.p6 = If you would like to start payrolling the excluded employees chosen benefits, please remove them from the exclusion list.
+
+whatYouNeedToKnow.subHeading = What you need to do now
+whatYouNeedToTellYourEmployees.subHeading = What you need to tell your employees
+whatYouNeedToTellYourEmployees.add.p1 = You need to send your employees a letter explaining that you’ll be taxing these benefits through payroll.
+whatYouNeedToTellYourEmployees.add.p2 = You also need to tell them that their tax codes will change. We will send them a letter about their new tax code.
 
 #*************************************************************
 # Help and contact

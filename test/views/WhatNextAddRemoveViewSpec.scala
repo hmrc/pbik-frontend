@@ -26,10 +26,11 @@ import views.html.registration.AddBenefitConfirmationNextTaxYear
 class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings = app.injector.instanceOf[FormMappings]
-  val addBenefitConfirmationNextTaxYearView = app.injector.instanceOf[AddBenefitConfirmationNextTaxYear]
+  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  val addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear =
+    app.injector.instanceOf[AddBenefitConfirmationNextTaxYear]
 
-  def taxYearRange = TaxYearRange(2018, 2019, 2020)
+  def taxYearRange: TaxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = {
     val regList = RegistrationList(active = List(RegistrationItem("30", true, true)))
@@ -39,7 +40,9 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
   "whatNextAddRemove" must {
     behave like pageWithTitle(messages("whatNext.add.heading"))
     behave like pageWithHeader(messages("whatNext.add.heading"))
-    behave like pageWithLink(messages("Service.back.overview.whatNext"), "/payrollbik/payrolled-benefits-expenses")
+    behave like pageWithLink(
+      messages("Service.back.overview.ViewYourSummary"),
+      "/payrollbik/payrolled-benefits-expenses")
 
   }
 }
