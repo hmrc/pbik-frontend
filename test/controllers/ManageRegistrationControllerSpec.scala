@@ -338,17 +338,17 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val form = formMappings.objSelectedForm.fill(mockRegistrationList)
       val mockRequestForm = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result = registrationController.updateCurrentYearRegisteredBenefitTypes.apply(mockRequestForm)
+      val result = registrationController.updateCurrentYearRegisteredBenefitTypes().apply(mockRequestForm)
       (scala.concurrent.ExecutionContext.Implicits.global)
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some("/payrollbik/cy/add-benefit-expense-confirmed"))
+      redirectLocation(result) must be(Some("/payrollbik/cy/registration-complete"))
     }
   }
 
   "When loading the addNextYearRegisteredBenefitTypes, an unauthorised user" should {
     "be directed to the login page" in {
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(registrationController.addNextYearRegisteredBenefitTypes.apply(noSessionIdRequest))(timeout)
+      val result = await(registrationController.addNextYearRegisteredBenefitTypes().apply(noSessionIdRequest))(timeout)
       result.header.status must be(UNAUTHORIZED)
       result.body.asInstanceOf[Strict].data.utf8String must include(
         "Request was not authenticated user should be redirected")

@@ -30,86 +30,59 @@
         empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
 
-@benefitLabel = @{messages("BenefitInKind.label." + bikList.active.head.id )}
-@singleBik = @{ if(bikList.active.length > 1 ) { false } else { true } }
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
-@cyplus1 = @{""+taxYearRange.cyplus1}
-@metaTitleAdditive = @{if(singleBik){messages("whatNext.add.heading.singular")}else {messages("whatNext.add.heading")}}
-
-@title = @{metaTitleAdditive + " - " + messages("Service.title") }
+@title = @{messages("whatNext.add.heading") + " - " + messages("Service.title") }
+@taxYear = @{if(isCurrentYear) cyminus1 else cy}
 
 @govukLayoutWrapper(pageTitle = title, empRef = Some(empRef.toString), showBackLink = false) {
 
-    <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
+    <div id="confirmation" class="govuk-panel govuk-panel--confirmation govuk-!-padding-top-9 govuk-!-padding-bottom-9">
         <h1 id="title" class="govuk-panel__title">
-                @if(singleBik){
-                    @messages("whatNext.add.heading.singular")
-                }else {
                     @messages("whatNext.add.heading")
-                }
         </h1>
-        <p id="confirmation-p">
-            @if(!isCurrentYear) {
-                @if(singleBik){
-                    @messages("whatNext.cy1.add.lede.singular", benefitLabel, cy)
-                }else {
-                    @messages("whatNext.cy1.add.lede", cy)
-                }
-            }else {
-                @if(singleBik){
-                    @messages("whatNext.cy1.add.lede.singular", benefitLabel, cyminus1)
-                }else {
-                    @messages("whatNext.cy1.add.lede", cyminus1)
-                }
-            }
-        </p>
     </div>
 
-    @if(!singleBik){
-        <h2 class="govuk-heading-m">@messages("whatNext.cy1.add.table.header")</h2>
+    <p class="govuk-body">@messages("whatNext.cy1.add.table.header", taxYear)</p>
 
-        <dl class="govuk-summary-list" id="list-of-confirmation-benefits">
-            @for(item <- bikList.active.indices) {
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        @messages("BenefitInKind.label." + bikList.active(item).id.toString)
-                    </dt>
-                </div>
-            }
-        </dl>
-    }
+    <dl class="govuk-summary-list" id="list-of-confirmation-benefits">
+        @for(item <- bikList.active.indices) {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__value">
+                @messages("BenefitInKind.label." + bikList.active(item).id.toString)
+            </dt>
+        </div>
+        }
+    </dl>
 
     <h2 class="govuk-heading-m">
-        @messages("whatNext.subHeading")
+        @messages("whatYouNeedToKnow.subHeading")
     </h2>
 
-    @if(isCurrentYear) {
-        <ul class="govuk-list govuk-list--bullet" id="next-steps">
-            <li>@Html(messages("whatNext.add.p1", cyminus1))</li>
-            @if(singleBik) {
-                <li>@Html(messages("whatNext.add.p2.singular"))</li>
-                <li>@Html(messages("whatNext.add.p3.singular", cyminus1, cy))</li>
-            }else {
-                <li>@Html(messages("whatNext.add.p2"))</li>
-                <li>@Html(messages("whatNext.add.p3", cyminus1, cy))</li>
-            }
-            <li>@Html(messages("whatNext.add.p4"))</li>
-        </ul>
-    } else {
-        <ul class="govuk-list govuk-list--bullet" id="next-steps">
-            <li>@Html(messages("whatNext.add.p1", cy))</li>
-            @if(singleBik) {
-                <li>@Html(messages("whatNext.add.p2.singular"))</li>
-                <li>@Html(messages("whatNext.add.p3.singular", cy, cyplus1)) </li>
-            } else {
-                <li>@Html(messages("whatNext.add.p2"))</li>
-                <li>@Html(messages("whatNext.add.p3", cy, cyplus1))</li>
-            }
-            <li>@Html(messages("whatNext.add.p4"))</li>
-        </ul>
-    }
-    <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
-        @messages("Service.back.overview.whatNext")
-    </a>
+    <div class="govuk-form-group" id="next-steps">
+        <p class="govuk-body">
+            @messages("whatNext.add.p1", taxYear)</p>
+        <p class="govuk-body">@messages("whatNext.add.p2")</p>
+        <p class="govuk-body">@Html(messages("whatNext.add.p3"))</p>
+    </div>
+
+    <h2 class="govuk-heading-m">
+        @messages("whatYouNeedToTellYourEmployees.subHeading")
+    </h2>
+
+    <div class="govuk-form-group" id="what-you-need-to-tell">
+        <p class="govuk-body">
+        @Html(messages("whatYouNeedToTellYourEmployees.add.p1")) </p>
+        <p class="govuk-body">@Html(messages("whatYouNeedToTellYourEmployees.add.p2"))</p>
+    </div>
+
+    <p class="govuk-body">
+        <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
+        @messages("Service.back.overview.ViewYourSummary")
+        </a>
+    </p>
+
+    <p class="govuk-body">
+    <a class="govuk-link" href="@config.feedbackUrl">@messages("Service.feedback.link")</a> @messages("Service.feedback")
+    </p>
 }

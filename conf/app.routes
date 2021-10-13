@@ -30,7 +30,7 @@ POST        /cy/choose-benefit-expense                           controllers.reg
 GET         /cy/check-the-benefits                              controllers.registration.ManageRegistrationController.showCheckYourAnswersAddCurrentTaxYear
 POST        /cy/check-the-benefits                              controllers.registration.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes
 
-GET         /:year/add-benefit-expense-confirmed                 controllers.WhatNextPageController.showWhatNextRegisteredBik(year: String)
+GET         /:year/registration-complete                         controllers.WhatNextPageController.showWhatNextRegisteredBik(year: String)
 
 
 ## Remove registrations
