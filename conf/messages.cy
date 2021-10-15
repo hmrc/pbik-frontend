@@ -471,7 +471,7 @@ error.exclusion.multi.selection = Mae’n rhaid i chi ddewis pa gyflogai yr ydyc
 #*************************************************************
 
 
-whatNext.add.heading = Cofrestriad wedi’i gyflawni
+whatNext.add.heading = Cofrestriad wedi’i gwblhau
 whatNext.remove.heading = Buddiant wedi’i ddileu
 whatNext.add.info = Bydd yn rhaid i chi gyflwyno ffurflen P11D i CThEM er mwyn rhoi gwybod am y buddiant neu draul y maent yn ei gael.
 whatNext.cy1.add.lede = Dylech drethu’r buddiannau a’r treuliau canlynol drwy eich cyflogres o 6 Ebrill {0} ymlaen.
