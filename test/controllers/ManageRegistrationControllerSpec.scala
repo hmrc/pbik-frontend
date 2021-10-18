@@ -43,9 +43,10 @@ import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.language.postfixOps
 
+//scalastyle:off magic.number
 class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with FakePBIKApplication {
 
-  val messagesApi = app.injector.instanceOf[MessagesApi]
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -226,7 +227,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           Future.successful(
             Some(
               PbikSession(
-                Some(RegistrationList(active = List(RegistrationItem("30", true, true)))),
+                Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                 None,
                 None,
                 None,
@@ -278,7 +279,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           Future.successful(
             Some(
               PbikSession(
-                Some(RegistrationList(active = List(RegistrationItem("30", true, true)))),
+                Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                 None,
                 None,
                 None,
@@ -300,7 +301,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           Future.successful(
             Some(
               PbikSession(
-                Some(RegistrationList(active = List(RegistrationItem("30", true, true)))),
+                Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                 None,
                 None,
                 None,
@@ -328,7 +329,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
             Some(
               PbikSession(
                 Some(mockRegistrationList),
-                Some(RegistrationItem("31", true, true)),
+                Some(RegistrationItem("31", active = true, enabled = true)),
                 None,
                 None,
                 None,
@@ -339,7 +340,6 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val mockRequestForm = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
       val result = registrationController.updateCurrentYearRegisteredBenefitTypes().apply(mockRequestForm)
-      (scala.concurrent.ExecutionContext.Implicits.global)
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/payrollbik/cy/registration-complete"))
     }
@@ -378,7 +378,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
             Some(
               PbikSession(
                 Some(mockRegistrationList),
-                Some(RegistrationItem("31", true, true)),
+                Some(RegistrationItem("31", active = true, enabled = true)),
                 None,
                 None,
                 None,
@@ -389,7 +389,6 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val mockRequestForm = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
       val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
-      (scala.concurrent.ExecutionContext.Implicits.global)
       status(result) must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
     }
@@ -406,7 +405,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           Some(
             PbikSession(
               Some(mockRegistrationList),
-              Some(RegistrationItem("31", true, true)),
+              Some(RegistrationItem("31", active = true, enabled = true)),
               None,
               None,
               None,
@@ -417,7 +416,6 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     val mockRequestForm = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
     val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
-    (scala.concurrent.ExecutionContext.Implicits.global)
     status(result) must be(SEE_OTHER)
     redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
   }
@@ -433,7 +431,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           Some(
             PbikSession(
               Some(mockRegistrationList),
-              Some(RegistrationItem("31", true, true)),
+              Some(RegistrationItem("31", active = true, enabled = true)),
               None,
               None,
               None,
@@ -444,7 +442,6 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     val mockRequestForm = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
     val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
-    (scala.concurrent.ExecutionContext.Implicits.global)
     status(result) must be(SEE_OTHER)
     redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
   }
@@ -460,7 +457,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           Some(
             PbikSession(
               Some(mockRegistrationList),
-              Some(RegistrationItem("31", true, true)),
+              Some(RegistrationItem("31", active = true, enabled = true)),
               None,
               None,
               None,
@@ -471,12 +468,11 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     val mockRequestForm = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
     val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
-    (scala.concurrent.ExecutionContext.Implicits.global)
     status(result) must be(SEE_OTHER)
     redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
   }
 
-  "selecting 'other' & providing 'info' should redirect to what next page" in {
+  "selecting 'other' should redirect to why-remove-benefit-expense page" in {
     val mockRegistrationList = RegistrationList(
       None,
       List(RegistrationItem("31", active = true, enabled = true)),
@@ -488,34 +484,22 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           Some(
             PbikSession(
               Some(mockRegistrationList),
-              Some(RegistrationItem("31", true, true)),
+              Some(RegistrationItem("31", active = true, enabled = true)),
               None,
               None,
               None,
               None,
               None
             ))))
-    val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("other", Some("Here's our other info")))
-    val mockRequestForm = mockrequest
-      .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
-    (scala.concurrent.ExecutionContext.Implicits.global)
-    status(result) must be(SEE_OTHER)
-    redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
-  }
-
-  "selecting 'other' & not providing 'info' should return to the form page with an error" in {
     val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("other", None))
     val mockRequestForm = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val errorMsg = messagesApi("RemoveBenefits.reason.other.required")
     val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
-    (scala.concurrent.ExecutionContext.Implicits.global)
-    status(result) must be(OK) // 200
-    contentAsString(result) must include(errorMsg)
+    status(result) must be(SEE_OTHER)
+    redirectLocation(result) must be(Some("/payrollbik/cy1/car/why-remove-benefit-expense"))
   }
 
-  "selecting no reason should return to the same page with an error" in {
+  "selecting nothing should return to the same page with an error" in {
     val mockRegistrationList = RegistrationList(
       None,
       List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
@@ -525,8 +509,100 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
       AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
     val errorMsg = messagesApi("RemoveBenefits.reason.no.selection")
+
     val result = registrationController.removeBenefitReasonValidation(mockRegistrationList, 2017, bikList, bikList)
     status(result) must be(OK)
     contentAsString(result) must include(errorMsg)
+
+    val resultSelection = registrationController.updateBiksFutureAction(2017, bikList, additive = false)
+    status(resultSelection) must be(OK)
+    contentAsString(resultSelection) must include(errorMsg)
+  }
+
+  "When loading the why-remove-benefit-expense, an unauthorised user" should {
+    "be directed to the login page" in {
+      implicit val timeout: FiniteDuration = timeoutValue
+      val result =
+        await(registrationController.showRemoveBenefitOtherReason("").apply(noSessionIdRequest))(timeout)
+      result.header.status must be(UNAUTHORIZED)
+      result.body.asInstanceOf[Strict].data.utf8String must include(
+        "Request was not authenticated user should be redirected")
+    }
+  }
+
+  "When loading why-remove-benefit-expense, an authorised user" should {
+    "be directed cy + 1 confirmation page to remove bik for other reason" in {
+      when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
+                None,
+                None,
+                None,
+                None,
+                None,
+                None
+              ))))
+      val title = messagesApi("RemoveBenefits.other.title").substring(0, 10)
+      implicit val timeout: FiniteDuration = timeoutValue
+      val result = await(registrationController.showRemoveBenefitOtherReason("car").apply(mockrequest))(timeout)
+      result.header.status must be(OK)
+      result.body.asInstanceOf[Strict].data.utf8String must include(title)
+    }
+
+    "provide valid other reason should redirect to what next page" in {
+
+      val otherReason = "Here's our other info"
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(RegistrationItem("31", active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("other", Some(otherReason)))
+      )
+      when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                Some(mockRegistrationList),
+                Some(RegistrationItem("31", active = true, enabled = true)),
+                None,
+                None,
+                None,
+                None,
+                None
+              ))))
+      val form = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
+      val mockRequestForm = mockrequest
+        .withFormUrlEncodedBody(form.data.toSeq: _*)
+      val result = registrationController.submitRemoveBenefitOtherReason("").apply(mockRequestForm)
+      status(result) must be(SEE_OTHER)
+      redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
+    }
+
+    "not providing other reason should return to the same page with an error" in {
+
+      val errorMsg = messagesApi("RemoveBenefits.other.error.required")
+      val form = formMappings.removalOtherReasonForm.fill(OtherReason(""))
+      val mockRequestForm = mockrequest
+        .withFormUrlEncodedBody(form.data.toSeq: _*)
+      val result = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(errorMsg)
+    }
+
+    "providing other reason more than 100 chars should return to the same page with an error" in {
+
+      val errorMsg = messagesApi("RemoveBenefits.other.error.length")
+      val reason =
+        "this is a test other reason to remove the benefits, if user wants to remove the benefits from payroll"
+      val form = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
+      val mockRequestForm = mockrequest
+        .withFormUrlEncodedBody(form.data.toSeq: _*)
+      val result = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
+      status(result) must be(BAD_REQUEST)
+      contentAsString(result) must include(errorMsg)
+    }
   }
 }

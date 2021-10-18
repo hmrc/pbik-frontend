@@ -137,19 +137,26 @@ AddBenefits.Confirm.help.desc = You can exclude employees from payrolling once y
 # Remove benefits
 #*************************************************************
 
-RemoveBenefits.Confirm.Desc = You’ll stop taxing {0} through your payroll from 6 April {1}.
+RemoveBenefits.Confirm.Title = Why do you want to remove the benefit or expense
+RemoveBenefits.Confirm.Heading = Why do you want to remove {0}?
+RemoveBenefits.Confirm.Desc = By confirming, you will stop taxing {0} through your payroll from 6 April {1}.
 RemoveBenefits.Heading = Remove benefits or expenses from the tax year starting 6 April {0}
 RemoveBenefits.ChooseBenefitsLabel  = Choose the benefit or expenses to be removed
 
-RemoveBenefits.reason.no.selection = You need to select a reason for removing this benefit or expense
+RemoveBenefits.reason.no.selection = Select why you want to remove the benefit or expense
 RemoveBenefits.reason.other.required = You need to explain why you’ve selected other
 RemoveBenefits.reason.desc = Tell us why
-RemoveBenefits.reason.software = Your software provider doesn’t support payrolling benefits and expenses yet
-RemoveBenefits.reason.guidance = The guidance for this service wasn’t clear
-RemoveBenefits.reason.not-clear = The purpose of the service wasn’t clear
-RemoveBenefits.reason.not-offering = You’re no longer offering this benefit to your employees
+RemoveBenefits.reason.software = Our software does not support taxing benefits and expenses through payroll
+RemoveBenefits.reason.guidance = The guidance for this service was not clear
+RemoveBenefits.reason.not-clear = The purpose of this service was not clear
+RemoveBenefits.reason.not-offering = We are no longer offering {0} to our employees
 RemoveBenefits.reason.other = Other
-RemoveBenefits.reason.other.label = Explain why
+RemoveBenefits.back.summary = Back to your summary of registered benefits and expenses
+
+RemoveBenefits.other.title = Tell us why you want to remove the benefit or expense
+RemoveBenefits.other.heading = Tell us why you want to remove {0}
+RemoveBenefits.other.error.required = Enter why you want to remove the benefit or expense
+RemoveBenefits.other.error.length = Why you want to remove the benefit or expense must be 100 characters or less
 
 #*************************************************************
 # Exclusion overview
