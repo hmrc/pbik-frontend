@@ -59,5 +59,9 @@ GET         /:year/:iabdType/exclude-employee-remove/:nino       controllers.Exc
 GET         /:iabdType/remove-commit                             controllers.ExclusionListController.showRemovalWhatsNext(iabdType: String)
 POST        /:iabdType/remove-commit                             controllers.ExclusionListController.removeExclusionsCommit(iabdType: String)
 
+## Remove registrations other
+GET         /cy1/:iabdType/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.showRemoveBenefitOtherReason(iabdType: String)
+POST        /cy1/:iabdType/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdType: String)
+
 GET         /keep-alive                                          controllers.SignedOutController.keepAlive()
 GET         /we-signed-you-out                                   controllers.SignedOutController.signedOut()

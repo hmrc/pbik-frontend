@@ -44,6 +44,7 @@ object ControllersReferenceDataCodes extends Logging {
   val SESSION_LANG = "session_lang"
   val BIK_REMOVE_REASON_LIST = List("software", "guidance", "not-clear", "not-offering", "other")
   val YES = "yes"
+  val OTHER = "other"
 
   val EXCLUSION_TRACE_AND_MATCH_LIST_OF_PEOPLE = "trace-and-match-list-of-people"
   val EXCLUSION_TRACE_AND_MATCH_RADIO = "trace-and-match-radio"

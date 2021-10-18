@@ -1,0 +1,66 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import utils.URIInformation
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.CharacterCount
+
+@this(
+     govukLayoutWrapper: GovukLayoutWrapper,
+     uriInformation: URIInformation,
+     formWithCSRF: FormWithCSRF,
+     hmrcCharacterCount : HmrcCharacterCount,
+     errorSummary: localhelpers.errorSummary,
+     govukButton: GovukButton
+)
+
+@(
+    form: Form[_],
+    iabdType: String,
+    empRef: EmpRef
+)(implicit request:Request[_], messages: Messages)
+
+@benefitLabel = @{ messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)) }
+
+@govukLayoutWrapper(pageTitle = messages("RemoveBenefits.other.title") + " - " + messages("Service.title"), Some("taxYearRange"), Some(empRef.toString), empRef = Some(empRef.toString)) {
+
+    @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdType)) {
+
+        @errorSummary(form.errors)
+
+        @hmrcCharacterCount(CharacterCount(
+            id = "otherReason",
+            name = "otherReason",
+            maxLength = Some(100),
+            value = form("otherReason").value,
+            label = Label(
+                isPageHeading = true,
+                classes = "govuk-label--xl",
+                content = Text(messages("RemoveBenefits.other.heading", benefitLabel)),
+                attributes = Map("id" -> "title")
+            ),
+            errorMessage = form("otherReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @govukButton(Button(
+            content = Text(messages("Service.confirmAndContinue")),
+            attributes = Map("id" -> "button-confirm")
+        ))
+
+    }
+
+    <a class="govuk-link" id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>@messages("RemoveBenefits.back.summary")</a>
+}
+

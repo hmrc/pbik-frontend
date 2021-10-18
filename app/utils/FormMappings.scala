@@ -16,9 +16,6 @@
 
 package utils
 
-import java.util.Calendar
-
-import javax.inject.{Inject, Singleton}
 import models._
 import org.joda.time.DateTimeConstants._
 import play.api.data.Form
@@ -27,6 +24,8 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Request
 import utils.FormMappingsConstants._
 
+import java.util.Calendar
+import javax.inject.{Inject, Singleton}
 import scala.util.Try
 
 object FormMappingsConstants {
@@ -55,6 +54,7 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
   private val nameValidationRegex = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
   private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
   private val ninoTrimmedRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
+  private val maxLength = 100
 
   def generateYearString(length: Int): String =
     if (length > 0) {
@@ -292,6 +292,15 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
         "info"           -> optional(text)
       )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply))
 
+  }
+
+  val removalOtherReasonForm: Form[OtherReason] = {
+    Form(
+      mapping(
+        "otherReason" -> text
+          .verifying("RemoveBenefits.other.error.required", _.trim.nonEmpty)
+          .verifying("RemoveBenefits.other.error.length", _.length <= maxLength)
+      )(OtherReason.apply)(OtherReason.unapply))
   }
 
 }

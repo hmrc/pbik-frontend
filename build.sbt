@@ -4,7 +4,7 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import com.lucidchart.sbt.scalafmt.ScalafmtCorePlugin.autoImport.scalafmtOnCompile
 
 val appName = "pbik-frontend"
-scalaVersion := "2.12.12"
+scalaVersion := "2.12.13"
 
 lazy val plugins: Seq[Plugins] =
   Seq(SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb)

@@ -120,7 +120,6 @@ AddBenefits.CY.Caution.p12.3 = (sy’n dechrau ar 6 Ebrill {0})
 AddBenefits.noselection.error = Mae’n rhaid i chi ddewis o leiaf 1 buddiant neu draul cyn i chi allu mynd yn eich blaen
 
 AddBenefits.Confirm.Multiple.Title = Gwiriwch y buddiannau a’r treuliau rydych am eu cofrestru
-RemoveBenefits.Confirm.Title = Dileu buddiant neu draul
 AddBenefits.Confirm.Multiple.Table.Heading = Buddiannau a threuliau i’w cofrestru
 AddBenefits.Confirm.Single.Table.Heading = Buddiant neu draul i’w gofrestru/chofrestru
 AddBenefits.Confirm.help.desc = Gallwch eithrio cyflogeion rhag talu’r buddiannau drwy’r gyflogres ar ôl i chi gofrestru, ond bydd yn rhaid i chi anfon ffurflen P11D er mwyn datgan y buddiannau sydd heb eu talu drwy’r gyflogres. Os nad yw cyflogai wedi cael y buddiant, does dim rhaid i chi ei eithrio gan nad oes treth yn ddyledus.
@@ -129,19 +128,26 @@ AddBenefits.Confirm.help.desc = Gallwch eithrio cyflogeion rhag talu’r buddian
 # Remove benefits
 #*************************************************************
 
-RemoveBenefits.Confirm.Desc = Byddwch yn rhoi’r gorau i drethu {0} drwy eich cyflogres o 6 Ebrill {1} ymlaen.
+RemoveBenefits.Confirm.Title = Pam yr ydych am ddileu’r buddiant neu’r draul?
+RemoveBenefits.Confirm.Heading = Pam yr ydych am ddileu {0}?
+RemoveBenefits.Confirm.Desc = Drwy gadarnhau, byddwch yn stopio trethu {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
 RemoveBenefits.Heading = Dileu buddiannau neu dreuliau o’r flwyddyn dreth sy’n dechrau ar 6 Ebrill {0}
 RemoveBenefits.ChooseBenefitsLabel = Dewiswch y buddiannau neu’r treuliau i’w dileu
 
-RemoveBenefits.reason.no.selection = Mae’n rhaid i chi ddewis un rheswm dros ddileu’r buddiant hwn neu’r draul hon
+RemoveBenefits.reason.no.selection = Dewis pam yr ydych am ddileu’r buddiant neu’r draul
 RemoveBenefits.reason.other.required = Mae’n rhaid i chi egluro pam eich bod wedi dewis ‘arall’
 RemoveBenefits.reason.desc = Rhowch wybod i ni pam.
-RemoveBenefits.reason.software = Nid yw eich darparwr meddalwedd yn cynnal buddiannau a threuliau drwy’r gyflogres hyd yn hyn
+RemoveBenefits.reason.software = Nid yw ein meddalwedd yn cynnal y gallu i drethu buddiannau a threuliau drwy’r gyflogres
 RemoveBenefits.reason.guidance = Nid oedd yr arweiniad ar gyfer y gwasanaeth hwn yn eglur
-RemoveBenefits.reason.not-clear = Nid oedd diben y gwasanaeth yn eglur
-RemoveBenefits.reason.not-offering = Nid ydych yn cynnig y buddiant hwn i’ch cyflogeion mwyach
+RemoveBenefits.reason.not-clear = Nid oedd diben y gwasanaeth hwn yn eglur
+RemoveBenefits.reason.not-offering = Nid ydym mwyach yn cynnig {0} i’n cyflogeion
 RemoveBenefits.reason.other = Arall
-RemoveBenefits.reason.other.label = Eglurwch pam
+RemoveBenefits.back.summary = Yn ôl i’ch crynodeb o fuddiannau a threuliau cofrestredig
+
+RemoveBenefits.other.title = Rhowch wybod i ni pam yr ydych am ddileu’r buddiant neu’r draul
+RemoveBenefits.other.heading = Rhowch wybod i ni pam yr ydych am ddileu {0}
+RemoveBenefits.other.error.required = Nodwch pam yr ydych am ddileu’r buddiant neu’r draul
+RemoveBenefits.other.error.length = Mae’n rhaid i ‘Pam yr ydych am ddileu’r buddiant neu’r draul’ fod yn 100 o gymeriadau neu lai
 
 #*************************************************************
 # Exclusion Overview
@@ -564,3 +570,4 @@ timeout.signOut = Allgofnodi
 
 signedOut.title = Er eich diogelwch, gwnaethom eich allgofnodi
 signedOut.signIn = Mewngofnodi
+

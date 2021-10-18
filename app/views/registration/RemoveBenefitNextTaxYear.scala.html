@@ -61,18 +61,13 @@
     }
 
     <h1 id="title" class="govuk-heading-xl">
-        @messages("RemoveBenefits.Confirm.Title")
+        @messages("RemoveBenefits.Confirm.Heading", benefitLabel)
     </h1>
-
-    <p class="govuk-body-l" id="lede"> @messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</p>
 
     <div class="data">
         @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.id), 'id -> "form-remove") {
             <div class='govuk-form-group @if(form.hasErrors) {govuk-form-group--error}'>
                 <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="error-list-1" }>
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <p class="govuk-body">@messages("RemoveBenefits.reason.desc")</p>
-                    </legend>
                     @if(form.hasErrors) {
                         <span id="error-list-1" class="govuk-error-message">
                             @if(form.errors.head.message == "error.required") {@Messages("RemoveBenefits.reason.no.selection")
@@ -96,24 +91,22 @@
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="radio-not-offering" type="radio" name="selectionValue" value="not-offering" >
-                            <label class="govuk-label govuk-radios__label" for="radio-not-offering">@messages("RemoveBenefits.reason.not-offering")</label>
+                            <label class="govuk-label govuk-radios__label" for="radio-not-offering">@messages("RemoveBenefits.reason.not-offering", benefitLabel)</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="radio-other" type="radio" name="selectionValue" value="other" data-aria-controls="conditional-other">
+                            <input class="govuk-radios__input" id="radio-other" type="radio" name="selectionValue" value="other">
                             <label class="govuk-label govuk-radios__label" for="radio-other">@messages("RemoveBenefits.reason.other")</label>
-                        </div>
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-other">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label" for="radio-other-desc">@messages("RemoveBenefits.reason.other.label")</label>
-                                <textarea id="radio-other-desc" class="govuk-textarea" cols="50" rows="4" name="info"></textarea>
-                            </div>
                         </div>
                     </div>
                 </fieldset>
             </div>
 
-            <input type="submit" role="button" class="govuk-button" id="button-confirm" value="@messages("Service.confirm")">
+            <div class="govuk-inset-text">
+                @messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
+            </div>
+
+            <input type="submit" role="button" class="govuk-button" id="button-confirm" value="@messages("Service.confirmAndContinue")">
         }
-        <a class="govuk-link" id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>@messages("Service.back.cancel")</a>
+        <a class="govuk-link" id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>@messages("RemoveBenefits.back.summary")</a>
     </div>
 }
