@@ -56,7 +56,7 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
   "exclusionNinoOrNoNinoPage" must {
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))
     behave like pageWithHeader(messages("ExclusionNinoDecision.title"))
-    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/exclude-employee-search", "Continue")
+    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/employee-national-insurance-number", "Continue")
     behave like pageWithYesNoRadioButton("button-nino", "button-no-nino")
 
     "check the add benefit page for the errors" in {
