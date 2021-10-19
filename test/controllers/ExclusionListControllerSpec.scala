@@ -314,7 +314,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         .apply(formrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/cyp1/car/exclude-employee-search")
+      redirectLocation(result).get must be("/payrollbik/cyp1/car/employee-national-insurance-number")
     }
   }
 
@@ -341,8 +341,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         await(mockExclusionListController.withOrWithoutNinoOnPageLoad("cy", "car").apply(mockrequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
-      result.body.asInstanceOf[Strict].data.utf8String must include(
-        messagesApi("ExclusionNinoDecision.question").substring(0, 10))
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("Service.yes"))
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("Service.no"))
     }
@@ -372,14 +370,12 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
           None
         ))))
       val title = messagesApi("ExclusionNinoDecision.title")
-      val message = messagesApi("ExclusionNinoDecision.question")
       val result = mockExclusionListController
         .withOrWithoutNinoDecision("cyp1", "car")
         .apply(mockrequest)
 
       status(result) must be(OK)
       contentAsString(result) must include(title)
-      contentAsString(result) must include(message)
     }
   }
 

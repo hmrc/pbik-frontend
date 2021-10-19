@@ -179,8 +179,7 @@ ExclusionOverview.error.required = Select yes if you need to exclude an employee
 ExclusionOverview.excludedEmployee.title = Your excluded employees
 
 ExclusionDecision.noselection.error = You need to choose an option
-ExclusionNinoDecision.title = Exclude an employee
-ExclusionNinoDecision.question = Do you know the National Insurance number of the employee you want to exclude?
+ExclusionNinoDecision.title = Do you know the National Insurance number of the employee you want to exclude?
 
 ExclusionSearch.title.multiple = Choose which employee to exclude
 ExclusionSearch.title.single = Check the details of the employee you want to exclude

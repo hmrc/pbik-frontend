@@ -65,10 +65,8 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
 
   def pageWithYesNoRadioButton(idYes: String, idNo: String) {
     "have a yes/no radio button" in {
-
       doc.getElementById(idYes) must not be null
       doc.getElementById(idNo) must not be null
-
     }
   }
 
