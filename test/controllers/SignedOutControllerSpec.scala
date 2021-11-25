@@ -28,11 +28,11 @@ import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 class SignedOutControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser with I18nSupport {
   override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-
+  implicit val ec: ExecutionContextExecutor = ExecutionContext.global
   private val messagesActionBuilder: MessagesActionBuilder =
     new DefaultMessagesActionBuilderImpl(stubBodyParser[AnyContent](), stubMessagesApi())
   private val cc: ControllerComponents = stubControllerComponents()
-  implicit val ec: ExecutionContextExecutor = ExecutionContext.global
+
 
   val mockMCC: MessagesControllerComponents = DefaultMessagesControllerComponents(
     messagesActionBuilder,
