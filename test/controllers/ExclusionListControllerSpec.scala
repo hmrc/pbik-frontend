@@ -401,7 +401,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         .apply(formrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/cyp1/car/nino/exclude-employee-form")
+      redirectLocation(result).get must be("/payrollbik/cyp1/car/nino/search-for-employee-national-insurance")
     }
   }
 
@@ -416,7 +416,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         .apply(formrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/cyp1/car/no-nino/exclude-employee-form")
+      redirectLocation(result).get must be("/payrollbik/cyp1/car/no-nino/search-for-employee-national-insurance")
     }
   }
 
@@ -1005,7 +1005,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         await(mockExclusionListController.searchResults(TEST_YEAR_CODE, TEST_IABD_VALUE, "nino")(formrequest))(timeout)
       result.header.status must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
-      result.body.asInstanceOf[Strict].data.utf8String must include("Search for an employee to exclude")
     }
   }
 }

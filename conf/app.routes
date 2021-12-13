@@ -46,8 +46,8 @@ POST        /:year/:iabdType/excluded-employees                  controllers.Exc
 GET         /:year/:iabdType/employee-national-insurance-number  controllers.ExclusionListController.withOrWithoutNinoOnPageLoad(year: String, iabdType: String)
 POST        /:year/:iabdType/employee-national-insurance-number  controllers.ExclusionListController.withOrWithoutNinoDecision(year: String, iabdType: String)
 
-GET         /:year/:iabdType/:formType/exclude-employee-form     controllers.ExclusionListController.showExclusionSearchForm(year: String, iabdType: String, formType: String)
-POST        /:year/:iabdType/:formType/exclude-employee-form     controllers.ExclusionListController.searchResults(year: String, iabdType: String, formType: String)
+GET         /:year/:iabdType/:formType/search-for-employee-national-insurance     controllers.ExclusionListController.showExclusionSearchForm(year: String, iabdType: String, formType: String)
+POST        /:year/:iabdType/:formType/search-for-employee-national-insurance     controllers.ExclusionListController.searchResults(year: String, iabdType: String, formType: String)
 GET         /:year/:iabdType/:formType/exclude-employee-results  controllers.ExclusionListController.showResults(year: String, iabdType: String, formType: String)
 POST        /:year/:iabdType/:formType/exclude-employee-results  controllers.ExclusionListController.updateMultipleExclusions(year: String, iabdType: String, formType: String)
 GET         /:year/:iabdType/exclude-employee-results-single     controllers.ExclusionListController.updateExclusions(year: String, iabdType: String)
