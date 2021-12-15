@@ -41,5 +41,5 @@
         <span class="govuk-hint" id="@fieldName-hint">@elements.args.get('_inputHint)</span>
     }
     @elements.field.errors.map { error => <span class="govuk-error-message" id="@fieldName-error">@messages(error.messages)</span>}
-    <input class="govuk-input @if(hasErrors){govuk-input--error}" type="text" value="@value" name="@fieldName" id="@fieldName" @if(ariaDescribedByFields){aria-describedby="@ariaDescribedByFields.get"}/>
+    <input class="govuk-input @if(elements.args.contains('_inputClass)){@elements.args.get('_inputClass)} @if(hasErrors){govuk-input--error}" type="text" value="@value" name="@fieldName" id="@fieldName" @if(ariaDescribedByFields){aria-describedby="@ariaDescribedByFields.get"}/>
 </div>
