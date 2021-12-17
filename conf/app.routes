@@ -56,8 +56,8 @@ GET         /:year/:iabdType/exclude-confirmation                controllers.Exc
 
 GET         /:year/:iabdType/check-employee-details              controllers.ExclusionListController.showRemovalConfirmation(year: String, iabdType: String)
 GET         /:year/:iabdType/exclude-employee-remove/:nino       controllers.ExclusionListController.remove(year: String, iabdType: String, nino: String)
-GET         /:iabdType/remove-commit                             controllers.ExclusionListController.showRemovalWhatsNext(iabdType: String)
-POST        /:iabdType/remove-commit                             controllers.ExclusionListController.removeExclusionsCommit(iabdType: String)
+GET         /:iabdType/employee-registration-complete            controllers.ExclusionListController.showRemovalWhatsNext(iabdType: String)
+POST        /:iabdType/employee-registration-complete            controllers.ExclusionListController.removeExclusionsCommit(iabdType: String)
 
 ## Remove registrations other
 GET         /cy1/:iabdType/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.showRemoveBenefitOtherReason(iabdType: String)

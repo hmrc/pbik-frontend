@@ -32,49 +32,47 @@
         empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(pageTitle = messages("whatNext.rescind.heading") + " - " + messages("Service.title"), showBackLink = false,  empRef =Some(empRef.toString)) {
+@govukLayoutWrapper(pageTitle = messages("whatNext.rescind.heading") + " - " + messages("Service.title"), showBackLink = true,  empRef =Some(empRef.toString)) {
 
     <section id="print-section">
         <div id="printContainer"></div>
     </section>
-
     <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
         <h1 id="title" class="govuk-panel__title">
             @messages("whatNext.rescind.heading")
         </h1>
-        <p id="confirmation-p">
-            @messages("ExclusionRemoval.WhatNext.lede", name, messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)), taxYearRange.cy+"")
+    </div>
+
+    <div class="govuk-form-group">
+        <p class="govuk-body" id="confirmation-p">
+            @messages("ExclusionRemoval.WhatNext.p1", name, messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)), taxYearRange.cy)
         </p>
+        <h2 class="govuk-heading-m">
+            @messages("ExclusionRemoval.whatYouNeedToKnow.subHeading")
+        </h2>
+        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToKnow.p1", taxYearRange.cy)</p>
+        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToKnow.p2")</p>
+        <p class="govuk-body">@Html(messages("ExclusionRemoval.whatYouNeedToKnow.p3"))</p>
+
+        <h2 class="govuk-heading-m">
+            @messages("ExclusionRemoval.whatYouNeedToTellYourEmployees.subHeading")
+        </h2>
+        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToTellYourEmployees.p1", messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)))</p>
+        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToTellYourEmployees.p2")</p>
+
     </div>
+        <p class="govuk-body">
+            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year,iabdType)" id="link-back-excluded">
+                    @messages("ExclusionRemoval.Service.finish.rescinded")
+            </a>
+        </p>
+        <p class="govuk-body">
 
-    <h2 class="govuk-heading-m">
-        @messages("whatNext.subHeading")
-    </h2>
-    <div class="govuk-form-group" >
-        <ul class="govuk-list govuk-list--bullet">
-            <li>
-                @Html(messages("ExclusionRescind.WhatNext.p1"))
-            </li>
-
-            <li>
-                @Html(messages("ExclusionRescind.WhatNext.p2"))
-            </li>
-
-            <li>
-                @Html(messages("ExclusionRescind.WhatNext.p3",messages("whatNext.exclude.heading")))
-            </li>
-
-            <li>
-                @Html(messages("ExclusionRescind.WhatNext.p4",messages("whatNext.exclude.heading")))
-            </li>
-        </ul>
-    </div>
-
-    <div class="govuk-form-group" >
-        <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year,iabdType)" id="link-back-excluded">
-            @messages("Service.finish.rescinded")
-        </a>
-    </div>
-
-    <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">@messages("Service.back.overview.whatNext")</a>
+            <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
+                            @messages("ExclusionRemoval.Service.back.overview.ViewYourSummary")
+                        </a>
+        </p>
+        <p class="govuk-body"><a class="govuk-link" href="@config.feedbackUrl">
+                    @messages("Service.feedback.link")</a> @messages("Service.feedback")
+        </p>
 }
