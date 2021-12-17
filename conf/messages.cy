@@ -173,7 +173,8 @@ ExclusionNinoDecision.title = A ydych yn gwybod beth yw rhif Yswiriant Gwladol y
 
 ExclusionSearch.title.multiple = Dewiswch pa gyflogai i’w eithrio
 ExclusionSearch.title.single = Gwiriwch fanylion y cyflogai rydych am ei eithrio
-ExclusionSearch.form.title = Chwiliwch am y cyflogai rydych am ei eithrio
+ExclusionSearch.form.title = Chwiliwch am y cyflogai i’w eithrio
+ExclusionSearch.form.header = Chwiliwch am y cyflogai rydych am ei eithrio
 ExclusionSearch.intro = Eithrio’r cyflogai canlynol o gael {0} wedi’i drethu/threthu drwy eich cyflogres o 6 Ebrill {1} ymlaen.
 ExclusionSearch.intro.multi = Dewiswch pa gyflogai yr ydych am ei eithrio o gael y buddiant {0} wedi’i drethu drwy eich cyflogres o 6 Ebrill {1} ymlaen.
 ExclusionSearch.caption = Cyflogai i’w eithrio
