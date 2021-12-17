@@ -52,7 +52,7 @@ GET         /:year/:iabdType/:formType/exclude-employee-results  controllers.Exc
 POST        /:year/:iabdType/:formType/exclude-employee-results  controllers.ExclusionListController.updateMultipleExclusions(year: String, iabdType: String, formType: String)
 GET         /:year/:iabdType/exclude-employee-results-single     controllers.ExclusionListController.updateExclusions(year: String, iabdType: String)
 
-GET         /:year/:iabdType/exclude-confirmation                controllers.ExclusionListController.showExclusionConfirmation(year: String, iabdType: String)
+GET         /:year/:iabdType/exclusion-complete                  controllers.ExclusionListController.showExclusionConfirmation(year: String, iabdType: String)
 
 GET         /:year/:iabdType/check-employee-details              controllers.ExclusionListController.showRemovalConfirmation(year: String, iabdType: String)
 GET         /:year/:iabdType/exclude-employee-remove/:nino       controllers.ExclusionListController.remove(year: String, iabdType: String, nino: String)

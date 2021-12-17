@@ -13,7 +13,7 @@ Service.yes = Iawn
 Service.no = Na
 Service.back = Yn ôl
 Service.back.overview = Yn ôl i’ch crynodeb
-Service.back.overview.whatNext = Gweld eich crynodeb
+Service.back.overview.whatNext = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 Service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 Service.feedback.link = Beth oedd eich barn am y gwasanaeth hwn?
 Service.feedback = (mae’n cymryd 30 eiliad)
@@ -43,7 +43,7 @@ Service.notEnrolled.text4 = Byddwch wedyn yn gallu defnyddio’r gwasanaeth Talu
 Service.notEnrolled.button = Ymrestru
 
 Service.removeexclusion = Canslo’r gwaharddiad
-Service.finish.excluded = Gweld cyflogeion wedi’u heithrio ac ychwanegu mwy
+Service.finish.excluded = Bwrw golwg dros eich cyflogeion sydd wedi’u heithrio
 Service.finish.rescinded = Gweld cyflogeion sydd wedi’u heithrio
 Service.for = ar gyfer
 
@@ -501,8 +501,8 @@ whatNext.remove.p1 = Os ydych yn dal i roi’r buddiant hwn neu’r draul hon i�
 whatNext.remove.p1-after=ar eu cyfer ar ddiwedd y flwyddyn dreth.
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
-whatNext.exclude.lede = Rydych wedi rhoi gwybod i ni na fydd {0} yn cael {1} wedi’i drethu/threthu drwy eich cyflogres o 6 Ebrill {2} ymlaen.
-whatNext.exclude.p1 = Bydd yn rhaid i chi roi gwybod am werth y buddiant hwn ar <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflen P11D</a> yn lle hynny.
+whatNext.exclude.lede = Ni threthir {1} {0}  drwy’ch cyflogres o 6 Ebrill {2} ymlaen.
+whatNext.exclude.p1 = O hyn ymlaen, dylech roi gwybod am werth y buddiant hwn drwy anfon ffurflen <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 whatNext.cy1.exclude.p2 = Ni fydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’r gyflogres bellach ar {0}
 whatNext.exclude.p3 = Dylech drefnu eich cyflogres yn gywir fel nad oes rhaid i’r cyflogeion gael eu buddiannau a’u treuliau wedi’u trethu yn eu cyflog.
 whatNext.exclude.p4 = Bydd yn rhaid i chi gyflwyno ffurflen P11D ar gyfer y cyflogeion hynny yr ydych wedi’u heithrio, gan roi gwybod i ni beth yw gwerth y buddiant neu’r draul y maent yn eu cael fel y gallwn ei gynnwys/chynnwys yn eu cod treth.

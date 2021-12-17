@@ -13,7 +13,7 @@ Service.yes = Yes
 Service.no = No
 Service.back = Back
 Service.back.overview = Back to your summary
-Service.back.overview.whatNext = View your summary
+Service.back.overview.whatNext = View your summary of registered benefits and expenses
 Service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses.
 Service.feedback.link = What did you think of this service?
 Service.feedback = (takes 30 seconds)
@@ -46,7 +46,7 @@ Service.notEnrolled.text4 = You’ll then be able to use payrolling benefits and
 Service.notEnrolled.button = Enrol
 
 Service.removeexclusion = Cancel exclusion
-Service.finish.excluded = View excluded employees and add more
+Service.finish.excluded = View your excluded employees
 Service.finish.rescinded = View excluded employees
 Service.for = for
 
@@ -507,8 +507,8 @@ whatNext.remove.p1 = If you’re still providing this benefit or expense to any 
 whatNext.remove.p1-after= for them at the end of the tax year.
 whatNext.exclude.heading = Exclusion complete
 whatNext.rescind.heading = Registration complete
-whatNext.exclude.lede = You’ve told us that {0} won’t be having {1} taxed through your payroll from 6 April {2}.
-whatNext.exclude.p1 = You’ll need to report the value of this benefit on a <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">P11D</a> instead.
+whatNext.exclude.lede = {0} will not have {1} taxed through your payroll from 6 April {2}.
+whatNext.exclude.p1 = From now on, you should report the value of this benefit by sending us a <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">P11D</a> for {0}. You should do this at the end of the tax year.
 whatNext.cy1.exclude.p2 = Will no longer have the following benefits and expenses payrolled on {0}
 whatNext.exclude.p3 = Set up your payroll correctly so that the employees don’t have their benefits and expenses taxed in their pay.
 whatNext.exclude.p4 = You’ll need to submit a P11D for those employees you’ve excluded, informing us of the value of the benefits and expenses they receive so we can include it in their tax code.
