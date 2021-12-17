@@ -189,7 +189,19 @@ ExclusionImportant.ExcludeEmployee = Ar gyfer cyflogeion sydd wedi’u heithrio,
 ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu ar {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
 ExclusionRemovalConfirmation.title = Gwiriwch fanylion y cyflogai rydych am ei ychwanegu yn ôl i’r gyflogres
 ExclusionRemovalConfirmation.inset.text = Drwy gadarnhau, byddwch yn dechrau trethu’r cyflogai hwn ar ''{0}'' drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
-ExclusionRemoval.WhatNext.lede = Rydych wedi rhoi gwybod i ni y bydd {0} yn cael {1} wedi’i drethu/threthu drwy eich cyflogres o 6 Ebrill {2} ymlaen.
+
+ExclusionRemoval.WhatNext.p1 = Trethir {1} {0} drwy’ch cyflogres o 6 Ebrill {2}.
+ExclusionRemoval.whatYouNeedToKnow.subHeading = Yr hyn y mae angen i chi ei wneud nawr
+ExclusionRemoval.whatYouNeedToKnow.p1 = O 6 Ebrill {0}, mae angen i chi ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog eich cyflogai a’i drethu drwy’ch cyflogres.
+ExclusionRemoval.whatYouNeedToKnow.p2 = Gallwch roi’r gorau i anfon ffurflenni P11D atom ar gyfer y cyflogai hwn.
+ExclusionRemoval.whatYouNeedToKnow.p3 = Mae’n dal i fod yn rhaid i chi <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">anfon ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd)</a>.
+
+ExclusionRemoval.whatYouNeedToTellYourEmployees.subHeading = Yr hyn y mae angen i chi ei ddweud wrth eich cyflogai
+ExclusionRemoval.whatYouNeedToTellYourEmployees.p1 = Mae angen i chi anfon llythyr at eich cyflogai, gan esbonio y byddwch yn trethu {0} drwy’r gyflogres.
+ExclusionRemoval.whatYouNeedToTellYourEmployees.p2 = Mae hefyd angen i chi roi gwybod i’ch cyflogai y bydd ei god treth yn newid. Byddwn yn anfon llythyr ato ynghylch ei god treth newydd.
+
+ExclusionRemoval.Service.finish.rescinded = Bwrw golwg dros eich cyflogeion sydd wedi’u heithrio
+ExclusionRemoval.Service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
 ExclusionRescind.WhatNext.p1 = Rhowch wybod i’ch cyflogai y bydd ei god treth yn newid ac y byddwn yn anfon cod treth newydd ato. Ceir llythyrau enghreifftiol yn yr <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">arweiniad ‘Talu buddiannau a threuliau drwy’r gyflogres’</a> (yn agor mewn ffenestr newydd).
 ExclusionRescind.WhatNext.p2 = O 6 Ebrill ymlaen, ychwanegwch gyfwerth mewn arian y buddiant neu’r draul i gyflog eich cyflogai – dylech ei drethu drwy eich cyflogres. Mae’n bosibl y bydd yn rhaid i chi ail-lunio eich meddalwedd y gyflogres i wneud hyn.
@@ -492,7 +504,8 @@ whatNext.remove.lede = Rydych wedi rhoi gwybod i ni na fyddwch yn trethu <span i
 whatNext.remove.p1 = Os ydych yn dal i roi’r buddiant hwn neu’r draul hon i’ch cyflogeion, bydd yn rhaid i chi lenwi
 whatNext.remove.p1-after=ar eu cyfer ar ddiwedd y flwyddyn dreth.
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
-whatNext.rescind.heading = Cofrestriad wedi’i gyflawni
+whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
+
 whatNext.exclude.lede = Rydych wedi rhoi gwybod i ni na fydd {0} yn cael {1} wedi’i drethu/threthu drwy eich cyflogres o 6 Ebrill {2} ymlaen.
 whatNext.exclude.p1 = Bydd yn rhaid i chi roi gwybod am werth y buddiant hwn ar <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflen P11D</a> yn lle hynny.
 whatNext.cy1.exclude.p2 = Ni fydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’r gyflogres bellach ar {0}

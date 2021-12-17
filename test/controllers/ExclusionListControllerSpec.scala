@@ -683,7 +683,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController.removeExclusionsCommit(TEST_IABD)(mockrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/car/remove-commit")
+      redirectLocation(result).get must be("/payrollbik/car/employee-registration-complete")
     }
   }
 
@@ -729,7 +729,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController.showRemovalWhatsNext("car").apply(mockrequest)
       status(result) must be(OK)
       contentAsString(result) must include(
-        "You’ve told us that John Smith will be having Car and car fuel taxed through your payroll from 6 April")
+        "John Smith will have Car and car fuel taxed through your payroll from 6 April")
     }
   }
 
@@ -764,7 +764,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController.removeExclusionsCommit(TEST_IABD)(formrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be(s"/payrollbik/$TEST_IABD/remove-commit")
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_IABD/employee-registration-complete")
     }
   }
 
