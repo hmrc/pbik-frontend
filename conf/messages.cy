@@ -204,11 +204,6 @@ ExclusionRemoval.whatYouNeedToTellYourEmployees.p2 = Mae hefyd angen i chi roi g
 ExclusionRemoval.Service.finish.rescinded = Bwrw golwg dros eich cyflogeion sydd wedi’u heithrio
 ExclusionRemoval.Service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
-ExclusionRescind.WhatNext.p1 = Rhowch wybod i’ch cyflogai y bydd ei god treth yn newid ac y byddwn yn anfon cod treth newydd ato. Ceir llythyrau enghreifftiol yn yr <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/payrolling-benefits-in-kind-draft-guidance/payrolling-benefits-in-kind#example-letters">arweiniad ‘Talu buddiannau a threuliau drwy’r gyflogres’</a> (yn agor mewn ffenestr newydd).
-ExclusionRescind.WhatNext.p2 = O 6 Ebrill ymlaen, ychwanegwch gyfwerth mewn arian y buddiant neu’r draul i gyflog eich cyflogai – dylech ei drethu drwy eich cyflogres. Mae’n bosibl y bydd yn rhaid i chi ail-lunio eich meddalwedd y gyflogres i wneud hyn.
-ExclusionRescind.WhatNext.p3 = Dylech beidio â chyflwyno <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d.cy">ffurflen P11D</a> ar gyfer y cyflogai sydd â’r buddiant neu’r draul wedi’i dalu drwy’r gyflogres.
-ExclusionRescind.WhatNext.p4 = Dylech barhau i gyflwyno <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db.cy">ffurflen P11D(b)</a> er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A.
-
 #*************************************************************
 # Benifits Messages
 #*************************************************************
@@ -506,7 +501,6 @@ whatNext.remove.p1 = Os ydych yn dal i roi’r buddiant hwn neu’r draul hon i�
 whatNext.remove.p1-after=ar eu cyfer ar ddiwedd y flwyddyn dreth.
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
-
 whatNext.exclude.lede = Rydych wedi rhoi gwybod i ni na fydd {0} yn cael {1} wedi’i drethu/threthu drwy eich cyflogres o 6 Ebrill {2} ymlaen.
 whatNext.exclude.p1 = Bydd yn rhaid i chi roi gwybod am werth y buddiant hwn ar <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflen P11D</a> yn lle hynny.
 whatNext.cy1.exclude.p2 = Ni fydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’r gyflogres bellach ar {0}

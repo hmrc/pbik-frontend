@@ -205,7 +205,7 @@ ExclusionRemoval.WhatNext.p1 = {0} will have {1} taxed through your payroll from
 ExclusionRemoval.whatYouNeedToKnow.subHeading = What you need to do now
 ExclusionRemoval.whatYouNeedToKnow.p1 = From 6 April {0}, you need to add the cash equivalent or relevant amount to your employee’s pay and tax them through your payroll.
 ExclusionRemoval.whatYouNeedToKnow.p2 = You can stop sending us the P11Ds for this employee.
-ExclusionRemoval.whatYouNeedToKnow.p3 = You must still <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">send a P11D(b) to report Class 1A National (opens in a new window or tab)</a>.
+ExclusionRemoval.whatYouNeedToKnow.p3 = You must still <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">send a P11D(b) to report Class 1A National Insurance contributions (opens in a new window or tab)</a>.
 
 ExclusionRemoval.whatYouNeedToTellYourEmployees.subHeading = What you need to tell your employee
 ExclusionRemoval.whatYouNeedToTellYourEmployees.p1 = You need to send your employee a letter explaining that you’ll be taxing {0} through payroll.
@@ -213,11 +213,6 @@ ExclusionRemoval.whatYouNeedToTellYourEmployees.p2 = You also need to tell them 
 
 ExclusionRemoval.Service.finish.rescinded = View your excluded employees
 ExclusionRemoval.Service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses
-
-ExclusionRescind.WhatNext.p1 = TeService.feedback.linkll your employees that their tax codes will change and we’ll send them a new tax code. You must also provide your employees with a letter straight away explaining that you are payrolling certain benefits and what it means for them.
-ExclusionRescind.WhatNext.p2 = From 6 April add the cash equivalent of the benefit or expense to your employee’s pay and tax them through your payroll. You may need to reconfigure your payroll software to do this.
-ExclusionRescind.WhatNext.p3 = Stop sending us a <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">P11D</a> for the employee who has the benefit or expense payrolled.
-ExclusionRescind.WhatNext.p4 = Continue sending a <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D(b)">P11D(b)</a> to report Class 1A National Insurance contributions.
 
 #*************************************************************
 # Benefits messages

@@ -45,12 +45,12 @@
 
     <div class="govuk-form-group">
         <p class="govuk-body" id="confirmation-p">
-            @messages("ExclusionRemoval.WhatNext.p1", name, messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)), taxYearRange.cy)
+            @messages("ExclusionRemoval.WhatNext.p1", name, messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)), taxYearRange.cy+"")
         </p>
         <h2 class="govuk-heading-m">
             @messages("ExclusionRemoval.whatYouNeedToKnow.subHeading")
         </h2>
-        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToKnow.p1", taxYearRange.cy)</p>
+        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToKnow.p1", taxYearRange.cy+"")</p>
         <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToKnow.p2")</p>
         <p class="govuk-body">@Html(messages("ExclusionRemoval.whatYouNeedToKnow.p3"))</p>
 
