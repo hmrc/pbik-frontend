@@ -651,7 +651,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD).apply(mockrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-confirmation")
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclusion-complete")
     }
   }
 
@@ -845,7 +845,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD)(formrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclude-confirmation")
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD/exclusion-complete")
     }
   }
 
@@ -919,7 +919,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
             .updateMultipleExclusions(TEST_YEAR_CODE, TEST_IABD, ControllersReferenceDataCodes.FORM_TYPE_NINO)(
               formrequest))(timeout)
       result.header.status must be(SEE_OTHER)
-      result.header.headers("Location") mustBe "/payrollbik/cyp1/car/exclude-confirmation"
+      result.header.headers("Location") mustBe "/payrollbik/cyp1/car/exclusion-complete"
     }
   }
 
@@ -940,8 +940,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
               ))))
       val result = mockExclusionListController.showExclusionConfirmation("cyp1", "car").apply(mockrequest)
       status(result) must be(OK)
-      contentAsString(result) must include(
-        "You’ve told us that John Smith won’t be having Car and car fuel taxed through your payroll from 6 April")
 
     }
   }
@@ -985,7 +983,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val result = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD_VALUE).apply(mockrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD_VALUE/exclude-confirmation")
+      redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD_VALUE/exclusion-complete")
     }
   }
 

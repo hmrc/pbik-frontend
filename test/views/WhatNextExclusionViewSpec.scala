@@ -43,7 +43,6 @@ class WhatNextExclusionViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     behave like pageWithLink(messages("Service.back.overview.whatNext"), "/payrollbik/payrolled-benefits-expenses")
     behave like pageWithLink(messages("Service.finish.excluded"), "/payrollbik/cyp1/medical/excluded-employees")
-
   }
 
 }

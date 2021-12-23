@@ -40,29 +40,36 @@ empRef: EmpRef)(implicit request:Request[_], messages: Messages)
         <h1 id="title" class="govuk-panel__title">
             @messages("whatNext.exclude.heading")
         </h1>
-        <p id="confirmation-p">
-            @if(year=="cy"){
-                @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cyminus1 + "")
-            }else {
-                @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cy + "")
-            }
-        </p>
     </div>
-
+    <p id="confirmation-p" class="govuk-body">
+        @if(year=="cy"){
+            @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cyminus1 + "")
+        }else {
+            @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cy + "")
+        }
+    </p>
     <h2 class="govuk-heading-m">
         @messages("whatNext.subHeading")
     </h2>
 
     <p id="exclude-text" class="govuk-body">
-        @Html(messages("whatNext.exclude.p1",messages("whatNext.exclude.heading")))
+        @Html(messages("whatNext.exclude.p1", name,messages("whatNext.exclude.heading")))
     </p>
 
     <div class="govuk-form-group">
-        <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))" id="link-back-excluded">
+        <p  class="govuk-body"> <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))" id="link-back-excluded">
         @messages("Service.finish.excluded")
         </a>
-    </div>
-    <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
+        </p>
+
+        <p class="govuk-body"> <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
         @messages("Service.back.overview.whatNext")
-    </a>
+         </a>
+        </p>
+
+         <p class="govuk-body"> <a class="govuk-link" href="@config.feedbackUrl" id="link-feedback">
+             @messages("Service.feedback.link")</a>
+             @messages("Service.feedback")
+         </p>
+    </div>
 }
