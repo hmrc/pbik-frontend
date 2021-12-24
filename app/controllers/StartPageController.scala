@@ -16,23 +16,27 @@
 
 package controllers
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import controllers.actions.{AuthAction, NoSessionCheckAction}
+import play.api.Logging
+import play.api.i18n.I18nSupport
+import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import views.html.StartPage
+
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RedirectController @Inject()(cc: MessagesControllerComponents) extends FrontendController(cc) {
+class StartPageController @Inject()(
+  cc: MessagesControllerComponents,
+  authenticate: AuthAction,
+  val noSessionCheck: NoSessionCheckAction,
+  startPageView: StartPage
+)(implicit val ec: ExecutionContext)
+    extends FrontendController(cc) with I18nSupport with Logging {
 
-  def redirectIfFromStart(): Action[AnyContent] = Action {
-    Redirect(routes.StartPageController.onPageLoad)
-  }
-
-  def redirectIfFromOldOverview(): Action[AnyContent] = Action {
-    Redirect(routes.StartPageController.onPageLoad)
-  }
-
-  def redirectIfFromRoot(): Action[AnyContent] = Action {
-    Redirect(routes.StartPageController.onPageLoad)
+  def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck) { implicit request =>
+    Ok(startPageView(request.empRef))
   }
 
 }

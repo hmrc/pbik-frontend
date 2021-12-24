@@ -9,13 +9,15 @@ GET         /                                                    controllers.Red
 GET         /start                                               controllers.RedirectController.redirectIfFromStart
 GET         /overview                                            controllers.RedirectController.redirectIfFromOldOverview
 
+GET         /start-payrolling-benefits-expenses                  controllers.StartPageController.onPageLoad
+
 GET         /not-authorised                                      controllers.AuthController.notAuthorised
 
 GET         /signout                                             controllers.HomePageController.signout
 
 GET         /setLanguage                                         controllers.HomePageController.setLanguage
 
-GET         /payrolled-benefits-expenses                         controllers.HomePageController.onPageLoad
+GET         /registered-benefits-expenses                        controllers.HomePageController.onPageLoad
 
 ## Add registrations
 GET         /cy1/choose-benefit-expense                          controllers.registration.ManageRegistrationController.nextTaxYearAddOnPageLoad

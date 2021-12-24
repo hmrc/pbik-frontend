@@ -16,23 +16,23 @@
 
 package views
 
+import models.EmpRef
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
-import views.html.SignedOut
+import views.html.StartPage
 
-class SignedOutViewSpec extends PBIKViewSpec {
+class StartPageViewSpec extends PBIKViewSpec {
 
-  val signedOutView: SignedOut = app.injector.instanceOf[SignedOut]
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
-  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  override def view: Html = startPageView(EmpRef("", ""))
 
-  override val view: Html = signedOutView()
-
-  "signedOutView" must {
-    behave like pageWithTitle(messages("signedOut.title"))
-    behave like pageWithHeader(messages("signedOut.title"))
-    behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/registered-benefits-expenses")
+  "startPage" must {
+    behave like pageWithTitle(messages("StartPage.heading"))
+    behave like pageWithHeader(messages("StartPage.heading"))
+    behave like pageWithLink(messages("StartPage.link"), "/payrollbik/registered-benefits-expenses")
   }
 
 }
