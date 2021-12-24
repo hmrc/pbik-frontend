@@ -51,7 +51,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
         val result = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get must endWith(
-          "sign-in?continue_url=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fpayrolled-benefits-expenses&origin=pbik-frontend")
+          "sign-in?continue_url=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fstart-payrolling-benefits-expenses&origin=pbik-frontend")
 
       }
     }

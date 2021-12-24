@@ -329,7 +329,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         .apply(formrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/payrolled-benefits-expenses")
+      redirectLocation(result).get must be("/payrollbik/registered-benefits-expenses")
     }
   }
 

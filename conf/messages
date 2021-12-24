@@ -62,24 +62,43 @@ Service.errorSummary.heading = There’s a problem
 Service.signout = Sign out
 
 #*************************************************************
+# Start Page
+#*************************************************************
+
+StartPage.heading = Payrolling benefits and expenses
+StartPage.p1 = Use this service to:
+StartPage.p2 = register benefits and expenses
+StartPage.p3 = remove a benefit or expense from payroll
+StartPage.p4 = exclude employees from a benefit or an expense
+StartPage.p5 = The benefits and expenses you cannot register using this service are:
+StartPage.p6 = general expenses allowance for business travel
+StartPage.p7 = interest-free and low-interest loans
+StartPage.p8 = living accommodation
+StartPage.p9 = You must <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">use a P11D form (opens in a new window or tab).</a>
+StartPage.link = Start now
+
+#*************************************************************
 # Overview
 #*************************************************************
 
+Overview.benefitsRegistered.heading = Benefits and expenses you have registered to tax through payroll
+Overview.noBenefitsRegistered.heading = You have not registered any benefits or expenses to tax through payroll
+Overview.noBenefitsRegistered.title = You have not registered any benefits or expenses
 Overview.heading = Payrolling summary
 Overview.next.heading =6 April {0} to 5 April {1}
 Overview.next.lead = Benefits and expenses you have registered to tax through your payroll.
-Overview.next.lead.empty = You haven’t registered any benefits and expenses to tax through your payroll.
+Overview.next.lead.empty = You can use this service to add a benefit or expense to tax through payroll.
 Overview.current.from=from
 Overview.current.remove=Remove
 Overview.current.payroll.p11d=payroll and report on a P11D
 Overview.current.heading = 6 April {0} to 5 April {1}
 Overview.current.lead = You’ve registered the following benefits and expenses to tax through your payroll.
-Overview.current.lead.empty = You haven’t registered any benefits and expenses to tax through your payroll.
+Overview.current.lead.empty = You can use this service to add a benefit or expense to tax through payroll.
 Overview.table.heading.1 = Benefit or expense
 Overview.table.exclude.link = Manage excluded employees
 Overview.table.exclude.none.link = Exclude an employee
-Overview.table.remove.link = Remove from payroll and report on a P11D
-Overview.table.add.link = Register a benefit or expense
+Overview.table.remove.link = Remove from payroll
+Overview.table.add.link = Add a benefit or expense
 Overview.table.add.link.more = Register another benefit or expense
 
 siderbar.h2.contact.help = Help with payrolling

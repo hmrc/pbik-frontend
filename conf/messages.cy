@@ -59,24 +59,43 @@ Service.errorSummary.heading = Mae problem wedi codi
 Service.signout = Allgofnodi
 
 #*************************************************************
+# Start Page
+#*************************************************************
+
+StartPage.heading = Talu buddiannau a threuliau drwy’r gyflogres
+StartPage.p1 = Defnyddiwch y gwasanaeth hwn i wneud y canlynol:
+StartPage.p2 = cofrestru buddiannau a threuliau
+StartPage.p3 = tynnu buddiant neu draul oddi wrth y gyflogres
+StartPage.p4 = eithrio cyflogeion rhag buddiant neu draul
+StartPage.p5 = Dyma’r buddiannau a’r treuliau na allwch eu cofrestru drwy’r gwasanaeth hwn:
+StartPage.p6 = lwfans treuliau cyffredinol ar gyfer teithio busnes
+StartPage.p7 = benthyciadau di-log a llog isel
+StartPage.p8 = llety byw
+StartPage.p9 = Mae’n rhaid i chi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">ddefnyddio ffurflen P11D (yn agor ffenestr neu dab newydd).</a>
+StartPage.link = Dechrau nawr
+
+#*************************************************************
 # Rwyf wedi cofrestru i dalu drwy’r gyflogres
 #*************************************************************
 
+Overview.benefitsRegistered.heading = Buddiannau a threuliau rydych wedi’u cofrestru i’w trethu drwy’r gyflogres
+Overview.noBenefitsRegistered.heading = Nid ydych wedi cofrestru unrhyw fuddiannau na threuliau i’w trethu drwy’r gyflogres
+Overview.noBenefitsRegistered.title = Nid ydych wedi cofrestru unrhyw fuddiannau na threuliau
 Overview.heading = Crynodeb o dalu drwy’r gyflogres
 Overview.next.heading = 6 Ebrill {0} i 5 Ebrill {1}
 Overview.next.lead = Buddiannau a threuliau rydych wedi’u cofrestru i’w trethu drwy’ch cyflogres.
-Overview.next.lead.empty = Nid ydych wedi cofrestru buddiannau a threuliau i gael eu trethu drwy eich cyflogres.
+Overview.next.lead.empty = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu buddiant neu draul i’w trethu drwy’r gyflogres.
 Overview.current.from=o
 Overview.current.remove=Dileu
 Overview.current.payroll.p11d=y gyflogres ac adrodd ar P11D
 Overview.current.heading = 6 Ebrill {0} i 5 Ebrill {1}
 Overview.current.lead = Rydych wedi cofrestru’r buddiannau a’r treuliau canlynol i gael eu trethu drwy eich cyflogres.
-Overview.current.lead.empty = Nid ydych wedi cofrestru buddiannau a threuliau i gael eu trethu drwy eich cyflogres.
+Overview.current.lead.empty = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu buddiant neu draul i’w trethu drwy’r gyflogres.
 Overview.table.heading.1 = Buddiant neu draul
 Overview.table.exclude.link = Rheoli cyflogeion sydd wedi’u heithrio
 Overview.table.exclude.none.link = Eithrio cyflogai
-Overview.table.remove.link = Dileu o’r gyflogres a rhoi gwybod ar ffurflen P11D
-Overview.table.add.link = Cofrestru buddiant neu draul
+Overview.table.remove.link = Tynnu oddi ar y gyflogres
+Overview.table.add.link = Ychwanegu buddiant neu draul
 Overview.table.add.link.more = Cofrestru buddiant neu draul arall
 
 siderbar.h2.contact.help = Help gyda thalu drwy’r gyflogres

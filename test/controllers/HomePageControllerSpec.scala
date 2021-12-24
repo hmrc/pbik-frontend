@@ -119,12 +119,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with Test
       implicit val timeout: akka.util.Timeout = timeoutValue
       val result = await(homePageController.onPageLoad(request))(timeout)
       result.header.status must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.heading"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(
-        Messages("Overview.next.heading", "" + YEAR_RANGE.cy, "" + YEAR_RANGE.cyplus1))
-      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("Overview.table.heading.1"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(
-        Messages("Overview.current.heading", "" + YEAR_RANGE.cyminus1, "" + YEAR_RANGE.cy))
+      result.body.asInstanceOf[Strict].data.utf8String must include(Messages("StartPage.heading"))
       result.body.asInstanceOf[Strict].data.utf8String must include(
         "Is this page not working properly? (opens in new tab)")
       result.body.asInstanceOf[Strict].data.utf8String must include("No thanks")

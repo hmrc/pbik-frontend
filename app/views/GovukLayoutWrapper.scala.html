@@ -24,6 +24,7 @@
 @this(
         config: AppConfig,
         govukLayout: GovukLayout,
+        govukTemplate: GovukTemplate,
         govukBackLink: GovukBackLink,
         hmrcHead: HmrcHead,
         hmrcStandardHeader: HmrcStandardHeader,
@@ -114,19 +115,39 @@
         </div>
     </div>
 }
+@if(showYTALink) {
+    @govukTemplate(
+        pageTitle = Some(pageTitle),
+        headBlock = Some(hmrcHead(headBlock = Some(head))),
+        headerBlock = hmrcStandardHeader(
+            serviceUrl = None,
+            serviceName = Some(messages("service.name")),
+            signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
+            userResearchBanner = userResearchBanner,
+            phaseBanner = None,
+            displayHmrcBanner = false
+        ),
+        beforeContentBlock = Some(beforeContentBlock),
+        bodyEndBlock = Some(hmrcScripts()),
+        mainClasses = Some("govuk-main-wrapper--auto-spacing"),
+        footerBlock = hmrcStandardFooter()
+    )(content)
+} else {
+    @govukLayout(
+        pageTitle = Some(pageTitle),
+        headBlock = Some(hmrcHead(headBlock = Some(head))),
+        headerBlock = Some(hmrcStandardHeader(
+            serviceUrl = None,
+            serviceName = Some(messages("service.name")),
+            signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
+            userResearchBanner = userResearchBanner,
+            phaseBanner = None,
+            displayHmrcBanner = false
+            )),
+        beforeContentBlock = Some(beforeContentBlock),
+        scriptsBlock = Some(hmrcScripts()),
+        footerBlock = Some(hmrcStandardFooter())
+        )(content)
+}
 
-@govukLayout(
-    pageTitle = Some(pageTitle),
-    headBlock = Some(hmrcHead(headBlock = Some(head))),
-    headerBlock = Some(hmrcStandardHeader(
-        serviceUrl = None,
-        serviceName = Some(messages("service.name")),
-        signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
-        userResearchBanner = userResearchBanner,
-        phaseBanner = None,
-        displayHmrcBanner = false
-    )),
-    beforeContentBlock = Some(beforeContentBlock),
-    scriptsBlock = Some(hmrcScripts()),
-    footerBlock = Some(hmrcStandardFooter())
-)(content)
+
