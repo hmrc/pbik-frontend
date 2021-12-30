@@ -14,25 +14,24 @@
  * limitations under the License.
  *@
 
+@import utils.URIInformation
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config: AppConfig,
-        localFormPartialRetriever: LocalFormPartialRetriever
+        localFormPartialRetriever: LocalFormPartialRetriever,
+        uriInformation: URIInformation
 )
 
 @(
         isCurrentYear: Boolean,
         taxYearRange:TaxYearRange,
         bikList: RegistrationList,
+        iabdType:String,
         empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
-
-@benefitLabel = @{messages("BenefitInKind.label." + bikList.active.head.id )}
-@cy = @{""+taxYearRange.cy}
-@cyplus1 = @{""+taxYearRange.cyplus1}
 
 @title = @{messages("whatNext.remove.heading") + " - " + messages("Service.title")}
 
@@ -46,23 +45,26 @@
         <h1 id="title" class="govuk-panel__title">
             @messages("whatNext.remove.heading")
         </h1>
-        @if(!isCurrentYear) {
-            <p id="confirmation-p">
-                @Html(messages("whatNext.remove.lede", benefitLabel, cy, cyplus1, bikList.active.head.id))
-            </p>
-        }
     </div>
+    <p class="govuk-body">
+        @messages("whatNext.remove.p", messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)), taxYearRange.cy+"")
+    </p>
 
     <h2 class="govuk-heading-m">
       @messages("whatNext.subHeading")
     </h2>
 
-    <p class="govuk-body">
-      @messages("whatNext.remove.p1") <a href="https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" target="_blank" rel="noopener noreferrer" class="govuk-link">@messages("whatNext.remove.link.P11D")</a>
-      @messages("whatNext.remove.p1-after")
+    <p class="govuk-body  govuk-!-margin-bottom-7">
+        @Html(messages("whatNext.remove.link.P11D.Text",messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType))))
     </p>
 
+    <p class="govuk-body">
     <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
-      @messages("Service.back.overview.whatNext")
+      @messages("whatNext.service.back.overview.ViewYourSummary")
     </a>
+    </p>
+
+    <p class="govuk-body"><a class="govuk-link" href="@config.feedbackUrl">
+      @messages("Service.feedback.link")</a> @messages("Service.feedback")
+    </p>
 }

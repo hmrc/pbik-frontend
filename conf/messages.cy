@@ -515,9 +515,7 @@ whatNext.add.p2.singular = O 6 Ebrill ymlaen, adiwch gyfwerth mewn arian parod, 
 whatNext.add.p3.singular = Dylech beidio â chyflwyno <a class="govuk-link" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">ffurflenni P11D</a> ar gyfer y cyflogeion sydd â’r buddiant neu’r draul wedi’i dalu/thalu drwy’r gyflogres.
 
 whatNext.subHeading = Camau nesaf
-whatNext.remove.lede = Rydych wedi rhoi gwybod i ni na fyddwch yn trethu <span id = "cy1-{3}">‘{0}’</span> drwy eich cyflogres o 6 Ebrill {1} ymlaen.
-whatNext.remove.p1 = Os ydych yn dal i roi’r buddiant hwn neu’r draul hon i’ch cyflogeion, bydd yn rhaid i chi lenwi
-whatNext.remove.p1-after=ar eu cyfer ar ddiwedd y flwyddyn dreth.
+whatNext.remove.p = Ni fyddwch yn trethu {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
 whatNext.exclude.lede = Ni threthir {1} {0}  drwy’ch cyflogres o 6 Ebrill {2} ymlaen.
@@ -527,6 +525,8 @@ whatNext.exclude.p3 = Dylech drefnu eich cyflogres yn gywir fel nad oes rhaid i�
 whatNext.exclude.p4 = Bydd yn rhaid i chi gyflwyno ffurflen P11D ar gyfer y cyflogeion hynny yr ydych wedi’u heithrio, gan roi gwybod i ni beth yw gwerth y buddiant neu’r draul y maent yn eu cael fel y gallwn ei gynnwys/chynnwys yn eu cod treth.
 whatNext.exclude.p5 = Mae’n rhaid i chi hefyd roi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A ar ffurflen P11D(b).
 whatNext.exclude.p6 = Os hoffech ddechrau talu buddiannau’r cyflogeion (sydd wedi’u heithrio) drwy’r gyflogres, dylech eu dileu o’r rhestr eithrio.
+whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
+whatNext.remove.link.P11D.Text = Os ydych yn dal i roi {0} i’ch cyflogeion, bydd yn rhaid i chi lenwi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Removal page:P11D(b)">ffurflen P11D ar eu cyfer ar ddiwedd y flwyddyn dreth (yn agor ffenestr neu dab newydd).</a>
 
 whatYouNeedToKnow.subHeading = Yr hyn y mae angen i chi ei wneud nawr
 whatYouNeedToTellYourEmployees.subHeading = Yr hyn y mae angen i chi ei ddweud wrth eich cyflogeion

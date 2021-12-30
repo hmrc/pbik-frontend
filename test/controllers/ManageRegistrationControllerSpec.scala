@@ -388,9 +388,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("software", None))
       val mockRequestForm = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
+      val result = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
+      redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
     }
   }
 
@@ -415,9 +415,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("guidance", None))
     val mockRequestForm = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
+    val result = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
     status(result) must be(SEE_OTHER)
-    redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
+    redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
   }
 
   "selecting 'not-clear' should redirect to what next page" in {
@@ -441,9 +441,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("not-clear", None))
     val mockRequestForm = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
+    val result = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
     status(result) must be(SEE_OTHER)
-    redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
+    redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
   }
 
   "selecting 'not-offering' should redirect to what next page" in {
@@ -467,9 +467,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("not-offering", None))
     val mockRequestForm = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
+    val result = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
     status(result) must be(SEE_OTHER)
-    redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
+    redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
   }
 
   "selecting 'other' should redirect to why-remove-benefit-expense page" in {
@@ -510,7 +510,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
     val errorMsg = messagesApi("RemoveBenefits.reason.no.selection")
 
-    val result = registrationController.removeBenefitReasonValidation(mockRegistrationList, 2017, bikList, bikList)
+    val result = registrationController.removeBenefitReasonValidation(mockRegistrationList, 2017, bikList, bikList, "")
     status(result) must be(OK)
     contentAsString(result) must include(errorMsg)
 
@@ -576,9 +576,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val form = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
       val mockRequestForm = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result = registrationController.submitRemoveBenefitOtherReason("").apply(mockRequestForm)
+      val result = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
       status(result) must be(SEE_OTHER)
-      redirectLocation(result) must be(Some("/payrollbik/cy1/remove-benefit-expense-confirmed"))
+      redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
     }
 
     "not providing other reason should return to the same page with an error" in {
