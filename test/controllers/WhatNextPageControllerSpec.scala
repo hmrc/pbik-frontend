@@ -363,12 +363,13 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
       AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-    val whatNextRemoveMsg: String = messagesApi("whatNext.remove.p1")
-    val result = whatNextPageController.showWhatNextRemovedBik().apply(authenticatedRequest)
+    val whatNextRemoveMsg: String = messagesApi("whatNext.remove.p")
+    val result = whatNextPageController.showWhatNextRemovedBik("medical").apply(authenticatedRequest)
     (scala.concurrent.ExecutionContext.Implicits.global)
     status(result) must be(OK)
     contentAsString(result) must include("Benefit removed")
-    contentAsString(result) must include(whatNextRemoveMsg)
+    contentAsString(result) must include(
+      "You will not be taxing Private medical treatment or insurance through your payroll from 6 April")
   }
 
   "The calculateTaxYear method" should {

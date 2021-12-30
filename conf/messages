@@ -521,9 +521,7 @@ whatNext.add.p2.singular = From 6 April add the cash equivalent or relevant amou
 whatNext.add.p3.singular = Stop sending us <a class="govuk-link" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11Ds</a> for the employees who have the benefit or expense payrolled.
 
 whatNext.subHeading = Next steps
-whatNext.remove.lede = You’ve told us you won’t be taxing <span id = "cy1-{3}">{0}</span> through your payroll from 6 April {1}.
-whatNext.remove.p1 = If you’re still providing this benefit or expense to any of your employees, you’ll need to complete a
-whatNext.remove.p1-after= for them at the end of the tax year.
+whatNext.remove.p = You will not be taxing {0} through your payroll from 6 April {1}.
 whatNext.exclude.heading = Exclusion complete
 whatNext.rescind.heading = Registration complete
 whatNext.exclude.lede = {0} will not have {1} taxed through your payroll from 6 April {2}.
@@ -533,6 +531,8 @@ whatNext.exclude.p3 = Set up your payroll correctly so that the employees don’
 whatNext.exclude.p4 = You’ll need to submit a P11D for those employees you’ve excluded, informing us of the value of the benefits and expenses they receive so we can include it in their tax code.
 whatNext.exclude.p5 = You must also report Class 1A National Insurance contributions on form P11D(b).
 whatNext.exclude.p6 = If you would like to start payrolling the excluded employees chosen benefits, please remove them from the exclusion list.
+whatNext.service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses
+whatNext.remove.link.P11D.Text =  If you are still providing this {0} to any of your employees, you will need to <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Removal page:P11D(b)">complete a P11D for them at the end of the tax year (opens in a new window or tab).</a>
 
 whatYouNeedToKnow.subHeading = What you need to do now
 whatYouNeedToTellYourEmployees.subHeading = What you need to tell your employees

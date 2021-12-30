@@ -188,7 +188,7 @@ class ManageRegistrationController @Inject()(
     (authenticate andThen noSessionCheck).async { implicit request =>
       val registeredFuture = cachingService.fetchPbikSession().flatMap { session =>
         val bikToRemove = Bik(session.get.bikRemoved.get.id, ControllersReferenceDataCodes.BIK_REMOVE_STATUS)
-        updateBiksFutureAction(controllersReferenceData.yearRange.cy, List(bikToRemove), additive = false)
+        updateBiksFutureAction(controllersReferenceData.yearRange.cy, List(bikToRemove), iabdType, additive = false)
       }
       controllersReferenceData.responseErrorHandler(registeredFuture)
     }
@@ -211,7 +211,7 @@ class ManageRegistrationController @Inject()(
           values => {
             val registeredFuture = cachingService.fetchPbikSession().flatMap { session =>
               val bikToRemove = Bik(session.get.bikRemoved.get.id, ControllersReferenceDataCodes.BIK_REMOVE_STATUS)
-              updateRemoveBenefitsOther(controllersReferenceData.yearRange.cy, List(bikToRemove), values)
+              updateRemoveBenefitsOther(controllersReferenceData.yearRange.cy, List(bikToRemove), values, iabdType)
             }
             controllersReferenceData.responseErrorHandler(registeredFuture)
           }
@@ -240,7 +240,7 @@ class ManageRegistrationController @Inject()(
       controllersReferenceData.responseErrorHandler(actionFuture)
   }
 
-  def updateBiksFutureAction(year: Int, persistentBiks: List[Bik], additive: Boolean)(
+  def updateBiksFutureAction(year: Int, persistentBiks: List[Bik], iabdType: String = "", additive: Boolean)(
     implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     tierConnector
       .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
@@ -287,7 +287,7 @@ class ManageRegistrationController @Inject()(
                       val listWithReason =
                         RegistrationList(None, session.get.registrations.get.active, reason = Some(values))
                       cachingService.cacheRegistrationList(listWithReason).flatMap { _ =>
-                        removeBenefitReasonValidation(listWithReason, year, persistentBiks, changes)
+                        removeBenefitReasonValidation(listWithReason, year, persistentBiks, changes, iabdType)
                       }
                   }
 
@@ -297,7 +297,7 @@ class ManageRegistrationController @Inject()(
         }
       }
 
-  def updateRemoveBenefitsOther(year: Int, persistentBiks: List[Bik], otherReason: OtherReason)(
+  def updateRemoveBenefitsOther(year: Int, persistentBiks: List[Bik], otherReason: OtherReason, iabdType: String)(
     implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     tierConnector
       .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
@@ -311,7 +311,7 @@ class ManageRegistrationController @Inject()(
               session.get.registrations.get.active,
               reason = Some(BinaryRadioButtonWithDesc(ControllersReferenceDataCodes.OTHER, Some(otherReason.reason))))
           cachingService.cacheRegistrationList(listWithReason).flatMap { _ =>
-            removeBenefitReasonValidation(listWithReason, year, persistentBiks, changes)
+            removeBenefitReasonValidation(listWithReason, year, persistentBiks, changes, iabdType)
           }
         }
       }
@@ -320,7 +320,8 @@ class ManageRegistrationController @Inject()(
     registrationList: RegistrationList,
     year: Int,
     persistentBiks: List[Bik],
-    changes: List[Bik])(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
+    changes: List[Bik],
+    iabdType: String)(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     registrationList.reason match {
       case Some(reasonValue)
           if ControllersReferenceDataCodes.BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue) =>
@@ -337,7 +338,7 @@ class ManageRegistrationController @Inject()(
               year,
               persistentBiks,
               Some((reasonValue.selectionValue.toUpperCase, Some(info))))
-            Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik))
+            Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik(iabdType)))
           case _ =>
             tierConnector.genericPostCall(
               uriInformation.baseUrl,
@@ -346,7 +347,7 @@ class ManageRegistrationController @Inject()(
               year,
               changes)
             auditBikUpdate(additive = false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, None)))
-            Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik))
+            Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik(iabdType)))
         }
       case _ =>
         logger.warn(
