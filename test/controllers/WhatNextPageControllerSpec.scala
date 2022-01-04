@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import config._
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
-import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
@@ -40,6 +39,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
 import utils._
 
+import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.Future
 
@@ -373,7 +373,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
   }
 
   "The calculateTaxYear method" should {
-    val startYear = TaxYear(new LocalDate().getYear)
+    val startYear = TaxYear.taxYearFor(LocalDate.now())
 
     "return this tax year and next year if given true" in {
       val result = whatNextPageController.calculateTaxYear(true)

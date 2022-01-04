@@ -199,16 +199,14 @@ ExclusionOverview.excludedEmployee.title = Your excluded employees
 
 ExclusionDecision.noselection.error = You need to choose an option
 ExclusionNinoDecision.title = Do you know the National Insurance number of the employee you want to exclude?
-
 ExclusionSearch.title.multiple = Choose which employee to exclude
 ExclusionSearch.title.single = Check the details of the employee you want to exclude
-ExclusionSearch.form.title = Search for the employee to exclude
+ExclusionSearch.form.title = Search for the employee you want to exclude
 ExclusionSearch.form.header = Search for the employee you want to exclude
 ExclusionSearch.intro = Exclude the following employee from having {0} taxed through your payroll from 6 April {1}.
 ExclusionSearch.intro.multi = Choose which employee you want to exclude from having {0} benefit taxed through your payroll from 6 April {1}.
 ExclusionSearch.caption = Employee to be excluded
 ExclusionSearch.caption.multi = Choose employee to be excluded
-ExclusionSearch.no-nino.caption = Search for an employee to exclude
 
 ExclusionSearch.Fail.Desc = This employee can’t be found.
 ExclusionSearch.Fail.P = Check the information is correct and try again

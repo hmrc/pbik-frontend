@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,9 +46,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   "ninoExclusionSearchPage" must {
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     behave like pageWithHeader(messages("ExclusionSearch.form.header"))
-    behave like pageWithContinueButtonForm(
-      "/payrollbik/cyp1/medical/nino/search-for-employee-national-insurance",
-      "Continue")
+    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/nino/search-for-employee", "Continue")
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
     behave like pageWithTextBox("surname", messages("Service.field.surname"))

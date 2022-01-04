@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -401,7 +401,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         .apply(formrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/cyp1/car/nino/search-for-employee-national-insurance")
+      redirectLocation(result).get must be("/payrollbik/cyp1/car/nino/search-for-employee")
     }
   }
 
@@ -416,7 +416,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
         .apply(formrequest)
 
       status(result) must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/cyp1/car/no-nino/search-for-employee-national-insurance")
+      redirectLocation(result).get must be("/payrollbik/cyp1/car/no-nino/search-for-employee")
     }
   }
 

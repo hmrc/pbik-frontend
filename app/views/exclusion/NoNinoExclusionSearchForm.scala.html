@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,6 +87,7 @@
     }
 
     <h1 id="title" class="govuk-heading-xl">
+        <span class="govuk-caption-xl">@messages("BenefitInKind.label." + iabdType)</span>
         @messages("ExclusionSearch.form.title")
     </h1>
 
@@ -104,9 +105,9 @@
                     <p>@messages("ExclusionSearch.no-nino.caption")</p>
                 </legend>
 
-                @textInput(searchForm("firstname"), '_label -> messages("Service.field.firstname"), '_inputClass -> "form-control")
+                @textInput(searchForm("firstname"), '_label -> messages("Service.field.firstname"), '_inputClass -> "govuk-!-width-two-thirds")
 
-                @textInput(searchForm("surname"), '_label -> messages("Service.field.surname"), '_inputClass -> "form-control")
+                @textInput(searchForm("surname"), '_label -> messages("Service.field.surname"), '_inputClass -> "govuk-!-width-two-thirds")
 
                 @dateFieldsNumberInputs(searchForm, "dob","dob.day", "dob.month", "dob.year", new Html(messages("Service.field.dob")), '_hintText->messages("Service.field.dobhint"))
 
@@ -118,7 +119,7 @@
                         @if(searchForm("gender").hasErrors){
                             <span class="govuk-error-message">@messages("error.required")</span>
                         }
-                        <div class="govuk-radios">
+                        <div class="govuk-radios govuk-radios--inline">
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" type="radio" id="gender-female" name="gender" value="female" @if(searchForm("gender").value.getOrElse("")=="female"){ checked }>
                                 <label for="gender-female" class="govuk-label govuk-radios__label">
