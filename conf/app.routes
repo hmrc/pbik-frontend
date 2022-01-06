@@ -8,6 +8,7 @@ GET         /assets/*file                                        controllers.Ass
 GET         /                                                    controllers.RedirectController.redirectIfFromRoot
 GET         /start                                               controllers.RedirectController.redirectIfFromStart
 GET         /overview                                            controllers.RedirectController.redirectIfFromOldOverview
+GET         /payrolled-benefits-expenses                         controllers.RedirectController.redirectIfFromOldOverview
 
 GET         /start-payrolling-benefits-expenses                  controllers.StartPageController.onPageLoad
 
