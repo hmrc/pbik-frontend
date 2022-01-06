@@ -88,7 +88,7 @@
 
     <h1 id="title" class="govuk-heading-xl">
         <span class="govuk-caption-xl">@messages("BenefitInKind.label." + iabdType)</span>
-        @messages("ExclusionSearch.form.title")
+        @messages("ExclusionSearch.form.header")
     </h1>
 
     @formWithCSRF(action = routes.ExclusionListController.searchResults(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), "no-nino"), 'autocomplete -> "off", 'novalidate -> "true") {
@@ -101,9 +101,6 @@
             }
 
             <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend">
-                    <p>@messages("ExclusionSearch.no-nino.caption")</p>
-                </legend>
 
                 @textInput(searchForm("firstname"), '_label -> messages("Service.field.firstname"), '_inputClass -> "govuk-!-width-two-thirds")
 
@@ -144,8 +141,12 @@
             <input type="submit" class="govuk-button" role="button" id="button-search" value="@messages("Service.continue")">
         </div>
 
-        <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
-            @messages("Service.back.excluded")
-        </a>
-    }
+       <p class="govuk-body">
+           <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
+                @messages("Service.back.excluded")
+           </a>
+       </p>
+
+
+}
 }
