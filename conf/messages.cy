@@ -341,83 +341,83 @@ BenefitInKind.label.decommissioned = Mae taliadau treuliau naill ai yn rhydd o d
 # Service Messages
 #*************************************************************
 
-ServiceMessage.0.h1 = Rhowch gynnig arall arni nes ymlaen
-ServiceMessage.0 = Rydym yn gwneud gwaith cynnal a chadw ar y gwasanaeth hwn ac nid yw ar gael ar hyn o bryd. Rydym yn gweithio ar gywiro’r problemau a dylem fod yn ôl yn fuan.
+ServiceMessage.0.h1 = Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael
+ServiceMessage.0 = Rydym yn gwneud gwaith cynnal a chadw ar y gwasanaeth hwn. Byddwch yn gallu defnyddio’r gwasanaeth yma cyn hir. Os oes angen i chi siarad â rhywun ynghylch y buddiannau a’r treuliau rydych yn eu rheoli drwy’r gyflogres, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd).
 
-ServiceMessage.10001.h1 = Rhowch gynnig arall arni nes ymlaen
-ServiceMessage.10001 = Mae problemau technegol yn effeithio ar y gwasanaeth, felly nid yw ar gael ar hyn o bryd. Rydym yn gweithio ar gywiro’r problemau a dylem fod yn ôl yn fuan.
+ServiceMessage.10001.h1 = Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael
+ServiceMessage.10001 = Rydym yn gwneud gwaith cynnal a chadw ar y gwasanaeth hwn. Byddwch yn gallu defnyddio’r gwasanaeth yma cyn hir. Os oes angen i chi siarad â rhywun ynghylch y buddiannau a’r treuliau rydych yn eu rheoli drwy’r gyflogres, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd).
 
-ServiceMessage.10002.h1 = Rhowch gynnig arall arni nes ymlaen
-ServiceMessage.10002 = Mae’n ddrwg gennym. Mae’r swyddogaeth hon wedi’i diffodd ar hyn o bryd. Rhowch gynnig arall ar y gwasanaeth yn hwyrach.
+ServiceMessage.10002.h1 = Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael
+ServiceMessage.10002 = Rydym yn gwneud gwaith cynnal a chadw ar y gwasanaeth hwn. Byddwch yn gallu defnyddio’r gwasanaeth yma cyn hir. Os oes angen i chi siarad â rhywun ynghylch y buddiannau a’r treuliau rydych yn eu rheoli drwy’r gyflogres, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd).
 
-ServiceMessage.10003.h1 = Rhowch gynnig arall arni nes ymlaen
-ServiceMessage.10003.1 = Ni allwch gofrestru buddiannau neu dreuliau i’w trethu drwy eich cyflogres yn ystod y flwyddyn dreth bresennol.
-ServiceMessage.10003.2 = Ewch yn ôl i’ch <a class="govuk-link" href = "/payrollbik">crynodeb o dalu drwy’r gyflogres</a> a gwnewch newidiadau i’ch buddiannau cofrestredig yn ystod y flwyddyn dreth nesaf.
+ServiceMessage.10003.h1 = Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael
+ServiceMessage.10003.1 = Ni allwch gofrestru am unrhyw fuddiannau ar hyn o bryd. Dylai’r gwasanaeth fod ar gael eto’n fuan. Os oes angen i chi siarad â rhywun ynghylch y buddiannau a’r treuliau rydych yn eu rheoli drwy’r gyflogres, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd).
+ServiceMessage.10003.2 = Ewch yn ôl at y sgrin grynodeb
 
-ServiceMessage.64990.h1 = Mae gwall wedi digwydd
-ServiceMessage.64990 = Ni allwch ganslo talu buddiant drwy’r gyflogres yn ystod y flwyddyn dreth bresennol.
+ServiceMessage.64990.h1 = Ni allwch ganslo’r buddiant hwn na’r draul hon
+ServiceMessage.64990 = Ni allwch ganslo buddiannau na threuliau ar gyfer y flwyddyn dreth bresennol {0} i {1}. Os oes angen i chi siarad â rhywun ynghylch y buddiannau a’r treuliau rydych yn eu rheoli drwy’r gyflogres, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd).
 
-ServiceMessage.63082.h1 = Nid oedd modd dod o hyd i’r cyflogai
+ServiceMessage.63082.h1 = Does dim cofnod yn cyfateb i’r cyflogai hwn
 ServiceMessage.63082 = Dylech wirio bod gennych y manylion cywir a chwilio eto.
 
-ServiceMessage.63088.h1 = Nid yw’r buddiant yn bodoli mwyach
-ServiceMessage.63088.1 = Nid yw’r buddiant hwn yn bodoli mwyach fel buddiant ar ei ben ei hun y mae’n rhoi gwybod amdano.
-ServiceMessage.63088.2 = Yr hyn i’w wneud nesaf – gwiriwch a yw gwerth y buddiant neu’r draul yr ydych yn ei roi i gyflogeion yn dal i fod yn drethadwy. Os felly, ewch <a class="govuk-link" id = "link-back-choose" href = "javascript: window.history.go(-1)">yn ôl</a> a dewis categori addas.
+ServiceMessage.63088.h1 = Ni allwch gofrestru’r buddiant hwn na’r draul hon
+ServiceMessage.63088.1 = Does dim angen i chi roi gwybod am y buddiant hwn na’r draul hon mwyach.
+ServiceMessage.63088.2 = Gwiriwch a yw gwerth y buddiant neu’r draul a rowch i gyflogeion yn dal i fod yn drethadwy. Os yw’n drethadwy, ewch yn ôl a dewiswch gategori gwahanol.
 
-ServiceMessage.64988.h1 = Rhowch gynnig arall arni nes ymlaen
-ServiceMessage.64988 = Rydym wedi dod o hyd i fwy nag un cofnod TWE. Cysylltwch <a class="govuk-link" href = "javascript: contactHMRC()">â CThEM</a>
+ServiceMessage.64988.h1 = Rydym wedi dod o hyd i fwy nag un cofnod TWE
+ServiceMessage.64988 = Os oes angen help arnoch, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr newydd).
 
-ServiceMessage.63089.h1 = Mae gwall wedi digwydd
-ServiceMessage.63089 = Rydych eisoes wedi cofrestru’r buddiant hwn.
+ServiceMessage.63089.h1 = Rydych eisoes wedi cofrestru'r buddiant hwn
+ServiceMessage.63089 = Ni allwch ychwanegu’r buddiant hwn neu’r draul hon eto ar gyfer y flwyddyn dreth bresennol {0} i {1}. Ewch yn ôl at y sgrin grynodeb
 
-ServiceMessage.63081.h1 = Nid oedd modd dod o hyd i’r cyflogai
-ServiceMessage.63081 = Dylech wirio bod gennych y manylion cywir a chwilio eto. Fel arall, <a class="govuk-link" href = "javascript: contactHMRC()">cysylltwch â CThEM</a>
+ServiceMessage.63081.h1 = Rydych eisoes wedi cofrestru'r buddiant hwn
+ServiceMessage.63081 = Ni allwch ychwanegu’r buddiant hwn neu’r draul hon eto ar gyfer y flwyddyn dreth bresennol {0} i {1}. Ewch yn ôl at y sgrin grynodeb
 
-ServiceMessage.63085.h1 = Mae’r cyflogai eisoes wedi’i eithrio
-ServiceMessage.63085 = Mae’r cyflogai hwn eisoes wedi’i eithrio o gael y buddiant hwn neu’r draul hon wedi’i drethu/threthu drwy ei gyflogres.
+ServiceMessage.63085.h1 = Rydych eisoes wedi eithrio’r cyflogai hwn
+ServiceMessage.63085 = Ni allwch eithrio’r cyflogai hwn eto ar gyfer y flwyddyn dreth bresennol {0} i {1}. Ewch yn ôl at y sgrin grynodeb
 
-ServiceMessage.63090.h1 = Mae’r cyflogai eisoes wedi’i eithrio
-ServiceMessage.63090 = Mae’r cyflogai hwn eisoes wedi’i eithrio o gael y buddiant hwn neu’r draul hon wedi’i drethu/threthu drwy ei gyflogres.
+ServiceMessage.63090.h1 = Rydych eisoes wedi eithrio’r cyflogai hwn
+ServiceMessage.63090 = Ni allwch eithrio’r cyflogai hwn eto ar gyfer y flwyddyn dreth bresennol {0} i {1}. Ewch yn ôl at y sgrin grynodeb
 
-ServiceMessage.63091.h1 = Nid oedd modd dod o hyd i’r cyflogai
-ServiceMessage.63091 = Oherwydd problemau technegol, nid yw’n bosibl chwilio gan ddefnyddio dyddiad geni cyflogai ar hyn o bryd. Dylech naill ai roi cynnig arall arni’n hwyrach neu chwilio gan ddefnyddio <a class="govuk-link" href = "javascript: window.history.go(-1)">rhif Yswiriant Gwladol y cyflogai.</a>.
+ServiceMessage.63091.h1 = Mae’n ddrwg gennym, mae problem gyda’r chwiliad hwn
+ServiceMessage.63091 = Nid yw chwilio am gyflogai drwy ddefnyddio’i ddyddiad geni yn gweithio ar hyn o bryd. Dylech naill ai roi cynnig arall arni’n hwyrach neu chwilio gan ddefnyddio rhif Yswiriant Gwladol y cyflogai.
 
-ServiceMessage.63086.h1 = Mae yna broblem
-ServiceMessage.63086 = Ni allwn gwblhau’r dasg hon. Cysylltwch <a class="govuk-link" href = "javascript: contactHMRC()">â CThEM</a>
+ServiceMessage.63086.h1 = Mae’n ddrwg gennym, nid yw’r gwasanaeth hwn ar gael
+ServiceMessage.63086 = Os oes angen i chi siarad â rhywun ynghylch y buddiannau a’r treuliau rydych yn eu rheoli drwy’r gyflogres, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd).
 
-ServiceMessage.64989.h1 = Nid yw’r buddiant yn bodoli mwyach
-ServiceMessage.64989.1 = Nid yw’r buddiant hwn yn bodoli mwyach fel buddiant ar ei ben ei hun y mae’n rhaid rhoi gwybod amdano.
-ServiceMessage.64989.2 = Yr hyn i’w wneud nesaf – gwiriwch a yw gwerth y buddiant neu’r draul yr ydych yn ei roi i gyflogeion yn dal i fod yn drethadwy. Os felly, ewch <a class="govuk-link" id = "link-back-choose" href = "javascript: window.history.go(-1)">yn ôl</a> a dewis categori addas.
+ServiceMessage.64989.h1 = Ni allwch gofrestru’r buddiant hwn na’r draul hon
+ServiceMessage.64989.1 = Does dim angen i chi roi gwybod am y buddiant hwn na’r draul hon mwyach.
+ServiceMessage.64989.2 = Gwiriwch a yw gwerth y buddiant neu’r draul a rowch i gyflogeion yn dal i fod yn drethadwy. Os yw’n drethadwy, ewch yn ôl a dewiswch gategori gwahanol.
 
-ServiceMessage.64986.h1 = Blwyddyn dreth anghywir
-ServiceMessage.64986 = Dylech naill ai ddefnyddio dyddiad cychwyn yn ystod y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf.
+ServiceMessage.64986.h1 = Ni allwch gofrestru buddiannau na threuliau ar gyfer y flwyddyn dreth hon
+ServiceMessage.64986 = Nodwch ddyddiad dechrau ar gyfer y flwyddyn dreth bresennol {0} i {1} neu’r flwyddyn dreth ganlynol {0} i {1}.
 
-ServiceMessage.64991.h1 = Mae gwall wedi digwydd
-ServiceMessage.64991 = Mae’r cyfeirnod yr ydych wedi’i ddefnyddio yn anghywir. Dylech wirio’r cyfeirnod a rhoi cynnig arall arni.
+ServiceMessage.64991.h1 = Mae problem gyda’r cyfeirnod
+ServiceMessage.64991 = Gwiriwch y cyfeirnod a rhowch gynnig arall arni.
 
-ServiceMessage.63087.h1 = Blwyddyn dreth anghywir
-ServiceMessage.63087 = Dim ond yn ystod y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf y gallwch gofrestru buddiannau a threuliau. Ewch <a class="govuk-link" id = "link-back" href = "/payrollbik/payrolled-benefits-expenses">yn ôl</a> a rhoi cynnig arall arni.
+ServiceMessage.63087.h1 = Ni allwch gofrestru buddiannau na threuliau ar gyfer y flwyddyn dreth hon
+ServiceMessage.63087 = Nodwch ddyddiad dechrau ar gyfer y flwyddyn dreth bresennol {0} i {1} neu’r flwyddyn dreth ganlynol {0} i {1}.
 
-ServiceMessage.65127.h1 = Nid oedd modd dod o hyd i’r cyflogai
-ServiceMessage.65127 = Dylech wirio bod gennych y manylion cywir a <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">chwilio eto</a>.
+ServiceMessage.65127.h1 = Does dim cofnod yn cyfateb i’r cyflogai hwn
+ServiceMessage.65127 = Dylech wirio bod gennych y manylion cywir a chwilio eto.
 
-ServiceMessage.63083.h1 = Nid oedd modd dod o hyd i’r cyflogai
-ServiceMessage.63083 = Dylech wirio bod gennych y manylion cywir a <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">chwilio eto</a>.
+ServiceMessage.63083.h1 = Does dim cofnod yn cyfateb i’r cyflogai hwn
+ServiceMessage.63083 = Dylech wirio bod gennych y manylion cywir a chwilio eto.
 
-ServiceMessage.63084.h1 = Nid oedd modd dod o hyd i’r cyflogai
-ServiceMessage.63084 = Dylech wirio bod gennych y manylion cywir a <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">chwilio eto</a>.
+ServiceMessage.63084.h1 = Does dim cofnod yn cyfateb i’r cyflogai hwn
+ServiceMessage.63084 = Dylech wirio bod gennych y manylion cywir a chwilio eto.
 
-ServiceMessage.65176.h1 = Rhowch gynnig arall arni nes ymlaen
-ServiceMessage.65176 = Ni allwn ddod o hyd i’r cynllun TWE hwn. Mae’n debygol fod problemau technegol wedi achosi hyn. Felly, rhowch gynnig arall arni’n hwyrach. Os na chaiff y broblem ei datrys mewn modd amserol, dylech <a class="govuk-link" href = "javascript: contactHMRC()">gysylltu â CThEM</a>
+ServiceMessage.65176.h1 = Mae problem gyda’r cynllun TWE hwn
+ServiceMessage.65176 = Rhowch gynnig arall arni yn nes ymlaen. Os oes angen help arnoch, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr newydd).
 
-ServiceMessage.64987.h1 = Mae gwall wedi digwydd
-ServiceMessage.64987 = Ni ellir canslo buddiannau ar gyfer y flwyddyn dreth bresennol. Bydd modd i chi ganslo’r buddiannau yn ystod y flwyddyn dreth nesaf.
+ServiceMessage.64987.h1 = Ni allwch ganslo’r buddiant hwn na’r draul hon
+ServiceMessage.64987 = Ni allwch ganslo’r buddiant hwn na’r draul hon ar gyfer y flwyddyn dreth bresennol {0} i {1}. Os oes angen i chi siarad â rhywun ynghylch y buddiannau a’r treuliau rydych yn eu rheoli drwy’r gyflogres, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd). Ewch yn ôl at y sgrin grynodeb
 
-ServiceMessage.65355.h1 = Mae gwall wedi digwydd
-ServiceMessage.65355 = Ni allwn ddod o hyd i Gyflogwr gweithredol ar gyfer y cyfeirnod TWE penodol. Dylech wirio’r manylion a rhoi cynnig arall arni. Fel arall, defnyddiwch y cysylltiad "Help gyda’r dudalen hon".
+ServiceMessage.65355.h1 = Mae problem gyda’r cyfeirnod TWE hwn
+ServiceMessage.65355 = Gwiriwch y cyfeirnod TWE a rhowch gynnig arall arni. Os oes angen help arnoch, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr newydd).
 
-ServiceMessage.63092.h1 = Rhowch gynnig arall arni nes ymlaen
-ServiceMessage.63092 = Mae problemau technegol yn effeithio ar y gwasanaeth. Rydym yn gweithio ar gywiro’r problemau a dylem fod yn ôl yn fuan.
+ServiceMessage.63092.h1 = Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael
+ServiceMessage.63092 = Rydym yn gwneud gwaith cynnal a chadw ar y gwasanaeth hwn. Byddwch yn gallu defnyddio’r gwasanaeth yma cyn hir. Os oes angen i chi siarad â rhywun ynghylch y buddiannau a’r treuliau rydych yn eu rheoli drwy’r gyflogres, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd).
 
 #*************************************************************
 # Service fields
@@ -444,9 +444,8 @@ Service.action = Gweithred
 # Authorisation Error Messages
 #*************************************************************
 
-ErrorPage.authorisationTitle = Gwall Awdurdodi
-ErrorPage.authorisationError = Mae’n ddrwg gennym, ynddengys nad ydych wedi eich awdurdodi i ddefnyddio’r gwasanaeth Talu buddiannau a threuliau drwy’r gyflogres Sicrhewch fod eich sefydliad wedi ymrestru ar gyfer Gwasanaeth Talu Wrth Ennill y Cyflogwr CThEM.
-
+ErrorPage.authorisationTitle = Ni allwch ddefnyddio’r gwasanaeth hwn
+ErrorPage.authorisationError = Nid yw’ch sefydliad wedi ymrestru ar gyfer gwasanaeth Talu Wrth Ennill y Cyflogwr (epaye). Os oes angen i chi siarad â rhywun ynghylch y buddiannau a’r treuliau rydych yn eu rheoli drwy’r gyflogres, cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd).
 
 #*************************************************************
 # Error Messages
@@ -458,42 +457,42 @@ ErrorPage.validationError = Mae’n ddrwg gennym, mae gwall technegol wedi digwy
 ErrorPage.connectionProblem = Mae’r gwasanaeth Talu buddiannau a threuliau drwy’r gyflogres ar gael rhwng 07:00 a 22:00, dydd Llun i ddydd Gwener, ac 08:00 i 20:00, dydd Sadwrn a dydd Sul.
 ErrorPage.connectionAction = Os ydych yn defnyddio’r gwasanaeth y tu allan i’r oriau hyn, rhowch gynnig arall arni nes ymlaen.
 ErrorPage.connectionStatus = Os ydych yn defnyddio’r gwasanaeth yn ystod yr oriau hyn, edrychwch os oes gwybodaeth am waith cynnal sydd wedi’i drefnu yn <a class="govuk-link" href = "https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">safle argaeledd gwasanaethau CThEM</a>
-ErrorPage.serviceNotLaunched = Ni allwch gofrestru buddiannau ar gyfer y flwyddyn hon gan nad yw’r gwasanaeth wedi’i lansio hyd yn hyn.
-ErrorPage.noBenefitsToAddcy = Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau sydd ar gael gyda’r gwasanaeth hwn. Os ydych yn talu rhai eraill drwy’r gyflogres, rhowch wybod i CThEM gyda ffurflen P11D.
-ErrorPage.noCY1BenefitsToRemovecy = Nid ydych wedi ychwanegu buddiannau neu dreuliau sydd ar gael ar gyfer y flwyddyn dreth bresennol, {0} i {1}. Os hoffech gofrestru un ar gyfer blwyddyn dreth {0} i {1}, ewch yn ôl i’r <a class="govuk-link" href = "/payrollbik/overview">hafan</a> a’u hychwanegu.
+ErrorPage.serviceNotLaunched = Ni allwch gofrestru buddiannau ar gyfer blwyddyn dreth {0} i {1} eto.
+ErrorPage.noBenefitsToAddcy = Rydych eisoes wedi ychwanegu'r holl fuddiannau a threuliau sydd ar gael ar gyfer y flwyddyn dreth bresennol {0} i {1}. Os hoffech ychwanegu rhagor, anfonwch ffurflen P11D atom (yn agor ffenestr neu dab newydd).
+ErrorPage.noCY1BenefitsToRemovecy = Nid ydych wedi ychwanegu unrhyw fuddiannau na threuliau sydd ar gael ar gyfer y flwyddyn dreth bresennol, {0} i {1}. Os hoffech gofrestru rhai ar gyfer blwyddyn dreth {0} i {1}, mae angen i chi ddychwelyd i’r sgrin grynodeb.
 ErrorPage.invalidForm = Cafwyd problem pan geisiodd y gweinydd brosesu’ch ffurflen. Rhowch gynnig arall ar lenwi’r ffurflen.
-ErrorPage.invalidYear = <p class="govuk-body">Rydym yn credu eich bod yn ceisio cofrestru buddiant neu draul i’w drethu/threthu drwy eich cyflogres ar gyfer blwyddyn dreth anghywir.</p><p class="govuk-body">Ewch i’r rhestr o fuddiannau a threuliau all gael eu trethu drwy eich cyflogres gan ddefnyddio’r gwasanaeth hwn.</p>
-ErrorPage.invalidBikType = <p class="govuk-body">Rydym yn credu eich bod yn ceisio cofrestru buddiant neu draul i’w drethu/threthu drwy eich cyflogres sydd naill ai ddim yn bodoli neu sy’n methu â chael ei dalu drwy eich cyflogres.</p><p class="govuk-body">Ewch i’r rhestr o fuddiannau a threuliau all gael eu trethu drwy eich cyflogres gan ddefnyddio’r gwasanaeth hwn.</p>
-ErrorPage.noBenefitsRegistered = Nid ydych wedi cofrestru buddiannau ar gyfer y flwyddyn dreth hon – ewch yn ôl i’r <a class="govuk-link" href = "/payrollbik/payrolled-benefits-expenses">hafan</a> a chofrestru buddiannau cyn ceisio ychwanegu eithriadau.
+ErrorPage.invalidYear = Ni allwch gofrestru buddiannau na threuliau ar gyfer blwyddyn dreth {0} i {1}. Ewch yn ôl i’r sgrin grynodeb a rhowch gynnig arall arni.
+ErrorPage.invalidBikType = Ni allwch gofrestru er mwyn trethu {0} drwy eich cyflogres gan ddefnyddio’r gwasanaeth hwn. Dylai rhai buddiannau neu dreuliau megis llety byw gael eu cofrestru gan ddefnyddio ffurflen P11D. Ewch yn ôl i’r sgrin grynodeb a rhowch gynnig arall arni.
+ErrorPage.noBenefitsRegistered = Mae angen i chi gofrestru buddiannau a threuliau ar gyfer y flwyddyn dreth bresennol {0} i {1} cyn y gallwch ychwanegu eithriadau. Ewch yn ôl i’r sgrin grynodeb a rhowch gynnig arall arni.
 ErrorPage.backButtonNoCache = Nid ydych wedi chwilio hyd yn hyn. Ewch yn ôl i’r hafan ac ailadrodd taith y defnyddiwr.
 
 ErrorPage.title = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth
-ErrorPage.try.later = Rhowch gynnig arall arni yn nes ymlaen.
+ErrorPage.try.later = Rhowch gynnig arall arni yn nes ymlaen
 
 #*************************************************************
 # Error- validation Messages
 #*************************************************************
 
 
-error.required = Dewiswch y rhyw.
-error.invaliddate = Nodwch ddyddiad dilys.
+error.required = Dewiswch rywedd y cyflogai
+error.invaliddate = Mae’n rhaid i’r dyddiad fod rhwng 01/01/1900 a heddiw
 
-error.empty.nino = Nodwch rif Yswiriant Gwladol.
-error.empty.firstname = Nodwch enw cyntaf.
-error.empty.lastname = Nodwch enw olaf.
+error.empty.nino = Nodwch rif Yswiriant Gwladol y cyflogai
+error.empty.firstname = Nodwch enw cyntaf y cyflogai
+error.empty.lastname = Nodwch enw olaf y cyflogai
 
-error.incorrect.nino = Nodwch rif Yswiriant Gwladol yn yr un fformat â’r enghraifft a ddangosir.
-error.incorrect.firstname = Nodwch enw cyntaf nad yw’n cynnwys rhifau neu gymeriadau arbennig.
-error.incorrect.lastname = Nodwch enw olaf nad yw’n cynnwys rhifau neu gymeriadau arbennig.
+error.incorrect.nino = Nodwch rif Yswiriant Gwladol yn y fformat cywir
+error.incorrect.firstname = Mae’n rhaid i’r enw cyntaf gynnwys y llythrennau A i Z, cysylltnodau, bylchau a chollnodau yn unig
+error.incorrect.lastname = Mae’n rhaid i’r enw olaf gynnwys y llythrennau A i Z, cysylltnodau, bylchau a chollnodau yn unig
 
-error.empty.dob = Nodwch ddyddiad geni.
-error.invaliddate.day = Nodwch ddiwrnod dilys.
-error.invaliddate.month = Nodwch fis dilys.
-error.invaliddate.year = Nodwch flwyddyn ddilys.
-error.invaliddate.future.year = Ni all blwyddyn y dyddiad geni fod yn y dyfodol.
-error.invaliddate.past.year = Mae’n rhaid i flwyddyn y dyddiad geni fod yn ystod y 130 mlynedd diwethaf.
+error.empty.dob = Nodwch ddyddiad geni’r cyflogai
+error.invaliddate.day = Nodwch ddiwrnod geni rhwng 1 a 31
+error.invaliddate.month = Nodwch fis geni rhwng 1 a 12
+error.invaliddate.year = Nodwch flwyddyn geni rhwng 1900 ac {this year}
+error.invaliddate.future.year = Mae’n rhaid i’r dyddiad geni fod yn y gorffennol
+error.invaliddate.past.year = Mae’n rhaid i’r dyddiad geni fod rhwng 01/01/1900 a heddiw
 
-error.exclusion.multi.selection = Mae’n rhaid i chi ddewis pa gyflogai yr ydych am ei eithrio cyn i chi allu mynd yn eich blaen
+error.exclusion.multi.selection = Chwiliwch am y cyflogai rydych am ei eithrio
 
 
 #*************************************************************
@@ -582,7 +581,7 @@ global.page.not.found.error.title=Heb ddod o hyd i’r dudalen
 global.page.not.found.error.check.web.address.correct=Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.
 global.page.not.found.error.check.web.address.full=Os gwnaethoch ludo’r cyfeiriad gwe, gwiriwch eich bod wedi copïo’r cyfeiriad yn llawn.
 global.page.not.found.error.contact=Os yw’r cyfeiriad gwe yn gywir neu os ydych wedi dewis cysylltiad neu fotwm, {0} os oes angen i chi siarad â rhywun am y buddiannau a’r treuliau rydych yn eu rheoli drwy’ch cyflogres.
-global.page.not.found.error.contact.link.text=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM
+global.page.not.found.error.contact.link.text=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd).
 global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines
 
 #********************************************************************

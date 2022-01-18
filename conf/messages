@@ -350,83 +350,83 @@ BenefitInKind.label.decommissioned = Expenses payments are either exempt from ta
 # Service messages
 #*************************************************************
 
-ServiceMessage.0.h1 = Please try again later
-ServiceMessage.0 = We’re doing maintenance on this service and it’s temporarily unavailable. We’re working to fix the problem and it should be back soon.
+ServiceMessage.0.h1 = Sorry, the service is unavailable
+ServiceMessage.0 = We’re doing maintenance on this service. You will be able to use this service soon. If you need to speak to someone about the benefits and expenses you manage through payroll, contact the Employer’s helpline (opens in a new window or tab).
 
-ServiceMessage.10001.h1 = Please try again later
-ServiceMessage.10001 = We’re having technical difficulties and the service is temporarily unavailable. We’re working to fix the problem and it should be back soon.
+ServiceMessage.10001.h1 = Sorry, the service is unavailable
+ServiceMessage.10001 = We’re doing maintenance on this service. You will be able to use this service soon. If you need to speak to someone about the benefits and expenses you manage through payroll, contact the Employer’s helpline (opens in a new window or tab).
 
-ServiceMessage.10002.h1 = Please try again later
-ServiceMessage.10002 = We’re sorry. This functionality is currently disabled. Please try the service later.
+ServiceMessage.10002.h1 = Sorry, the service is unavailable
+ServiceMessage.10002 = We’re doing maintenance on this service. You will be able to use this service soon. If you need to speak to someone about the benefits and expenses you manage through payroll, contact the Employer’s helpline (opens in a new window or tab).
 
-ServiceMessage.10003.h1 = Please try again later
-ServiceMessage.10003.1 = You can’t register any benefits or expenses to tax through your payroll in the current tax year.
-ServiceMessage.10003.2 = Please go back to your <a class="govuk-link" href = "/payrollbik">payrolling summary</a> and make changes to your registered benefits in the next tax year.
+ServiceMessage.10003.h1 = Sorry, the service is unavailable
+ServiceMessage.10003.1 = You cannot register any benefits at the moment. The service should be back soon. If you need to speak to someone about the benefits and expenses you manage through payroll, contact the Employer’s helpline.
+ServiceMessage.10003.2 = Go back to the summary screen
 
-ServiceMessage.64990.h1 = An error has occurred
-ServiceMessage.64990 = You can’t cancel payrolling for a benefit in the current tax year.
+ServiceMessage.64990.h1 = You cannot cancel this benefit or expense
+ServiceMessage.64990 = You cannot cancel benefits or expenses for the current tax year {0} to {1}. If you need to speak to someone about the benefits and expenses you manage through payroll, contact the Employer’s helpline (opens in a new window or tab).
 
-ServiceMessage.63082.h1 = Employee can’t be found
-ServiceMessage.63082 = Please check you have the correct details and search again.
+ServiceMessage.63082.h1 = There is no match for this employee
+ServiceMessage.63082 = Please check you have the correct details and try again.
 
-ServiceMessage.63088.h1 = Benefit no longer exists
-ServiceMessage.63088.1 = This benefit no longer exists as a stand alone benefit that needs to be reported.
-ServiceMessage.63088.2 = What to do next - please check if the value of the benefit or expense you’re providing to employees is still taxable. If it is please go <a id = "link-back-choose" href = "javascript: window.history.go(-1)">back</a> and select an appropriate category.
+ServiceMessage.63088.h1 = You cannot register this benefit or expense
+ServiceMessage.63088.1 = You no longer need to report this benefit or expense.
+ServiceMessage.63088.2 = Check if the value of the benefit or expense you’re providing to employees is still taxable. If it is please go back and select a different category.
 
-ServiceMessage.64988.h1 = Please try again later
-ServiceMessage.64988 = We found more than one PAYE record. Please <a class="govuk-link" href = "javascript: contactHMRC()">contact HMRC</a>
+ServiceMessage.64988.h1 = We have found more than one PAYE record
+ServiceMessage.64988 = If you need help, contact the Employer's helpline (opens in a new window or tab).
 
-ServiceMessage.63089.h1 = An error has occurred
-ServiceMessage.63089 = You’ve already registered this benefit.
+ServiceMessage.63089.h1 = You have already registered this benefit
+ServiceMessage.63089 = You cannot add this benefit or expense again for the current tax year {0} to {1}. Go back to the summary screen
 
-ServiceMessage.63081.h1 = Employee can’t be found
-ServiceMessage.63081 = Please check you have the correct details and search again or <a class="govuk-link" href = "javascript: contactHMRC()">contact HMRC</a>
+ServiceMessage.63081.h1 = There is no match for this employee
+ServiceMessage.63081 = Please check you have the correct details and try again.
 
-ServiceMessage.63085.h1 = Employee already excluded
-ServiceMessage.63085 = This person is already excluded from having this benefit or expense taxed through their payroll.
+ServiceMessage.63085.h1 = You have already excluded this employee
+ServiceMessage.63085 = You cannot exclude this employee again for the current tax year {0} to {1}. Go back to the summary screen
 
-ServiceMessage.63090.h1 = Employee already excluded
-ServiceMessage.63090 = This person is already excluded from having this benefit taxed through their payroll.
+ServiceMessage.63090.h1 = You have already excluded this employee
+ServiceMessage.63090 = You cannot exclude this employee again for the current tax year {0} to {1}. Go back to the summary screen
 
-ServiceMessage.63091.h1 = Employee can’t be found
-ServiceMessage.63091 = Due to technical reasons, searching with an employee’s date of birth isn’t possible at the moment. Either try again later or search using the <a href = "javascript: window.history.go(-1)">employee’s National Insurance number</a>.
+ServiceMessage.63091.h1 = Sorry, there is a problem with this search
+ServiceMessage.63091 = Searching for an employee using their date of birth is not working at the moment. Try again later or search using the employee's National Insurance number.
 
-ServiceMessage.63086.h1 = There’s a problem
-ServiceMessage.63086 = We can’t complete this task. Please <a class="govuk-link" href = "javascript: contactHMRC()">contact HMRC</a>
+ServiceMessage.63086.h1 = Sorry, this service is not available
+ServiceMessage.63086 = If you need to speak to someone about the benefits and expenses you manage through payroll, contact the Employer's helpline (opens in a new window or tab).
 
-ServiceMessage.64989.h1 = Benefit no longer exists
-ServiceMessage.64989.1 = This benefit no longer exists as a stand alone benefit that needs to be reported.
-ServiceMessage.64989.2 = What to do next - please check if the value of the benefit or expense you’re providing to employees is still taxable. If it is please go <a id = "link-back-choose" href = "javascript: window.history.go(-1)">back</a> and select an appropriate category.
+ServiceMessage.64989.h1 = You cannot register this benefit or expense
+ServiceMessage.64989.1 = You no longer need to report this benefit or expense.
+ServiceMessage.64989.2 = Check if the value of the benefit or expense you’re providing to employees is still taxable. If it is please go back and select a different category.
 
-ServiceMessage.64986.h1 = Incorrect tax year
-ServiceMessage.64986 = Please use a start date in either the current tax year or the following tax year.
+ServiceMessage.64986.h1 = You cannot register benefits or expenses for this tax year
+ServiceMessage.64986 = Enter a start date in the current tax year {0} to {1} or the following tax year {0} to {1}.
 
-ServiceMessage.64991.h1 = An error has occurred
-ServiceMessage.64991 = The reference number you’ve used is wrong. Please check and try again
+ServiceMessage.64991.h1 = There is a problem with the reference number
+ServiceMessage.64991 = Check the reference number and try again.
 
-ServiceMessage.63087.h1 = Incorrect tax year
-ServiceMessage.63087 = You can only register benefits and expenses in the current tax year or the next tax year. Please go <a class="govuk-link" id = "link-back" href = "/payrollbik/payrolled-benefits-expenses">back</a> and try again.
+ServiceMessage.63087.h1 = You cannot register benefits or expenses for this tax year
+ServiceMessage.63087 = Enter a start date in the current tax year {0} to {1} or the following tax year {0} to {1}.
 
-ServiceMessage.65127.h1 = Employee can’t be found
-ServiceMessage.65127 = Please check you have the correct details and <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">search again</a>.
+ServiceMessage.65127.h1 = There is no match for this employee
+ServiceMessage.65127 = Please check you have the correct details and try again.
 
-ServiceMessage.63083.h1 = Employee can’t be found
-ServiceMessage.63083 = Please check you have the correct details and <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">search again</a>.
+ServiceMessage.63083.h1 = There is no match for this employee
+ServiceMessage.63083 = Please check you have the correct details and try again.
 
-ServiceMessage.63084.h1 = Employee can’t be found
-ServiceMessage.63084 = Please check you have the correct details and <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">search again</a>.
+ServiceMessage.63084.h1 = There is no match for this employee
+ServiceMessage.63084 = Please check you have the correct details and try again.
 
-ServiceMessage.65176.h1 = Please try again later
-ServiceMessage.65176 = We can’t find this PAYE scheme. This is likely to be because we’re experiencing technical problems so please try again later. If the issue doesn’t resolve itself in a timely way, please <a href = "javascript: contactHMRC()">contact HMRC</a>
+ServiceMessage.65176.h1 = There is a problem with this PAYE scheme
+ServiceMessage.65176 = Try again later. If you need help, contact the Employer's helpline (opens in a new window or tab).
 
-ServiceMessage.64987.h1 = An error has occurred
-ServiceMessage.64987 = Benefits can’t be cancelled for the current tax year. The earliest date they can be cancelled from is during the next tax year.
+ServiceMessage.64987.h1 = You cannot cancel this benefit or expense
+ServiceMessage.64987 = You cannot cancel this benefit or expense for the current tax year {0} to {1}. If you need to speak to someone about the benefits and expenses you manage through payroll, contact the Employer's helpline (opens in a new window or tab). Go back to the summary screen
 
-ServiceMessage.65355.h1 = An error has occurred
-ServiceMessage.65355 = We can’t find an active employer for the specified PAYE reference. Please check their details and try again or use the ‘get help with this page’ link for help.
+ServiceMessage.65355.h1 = There is a problem with with this PAYE reference
+ServiceMessage.65355 = Check the PAYE reference and try again. If you need help, contact the Employer's helpline (opens in a new window or tab).
 
-ServiceMessage.63092.h1 = Please try again later
-ServiceMessage.63092 = We’re having technical difficulties. We’re working to fix the problems and it should be back soon.
+ServiceMessage.63092.h1 = Sorry, the service is unavailable
+ServiceMessage.63092 = We’re doing maintenance on this service. You will be able to use this service soon. If you need to speak to someone about the benefits and expenses you manage through payroll, contact the Employer's helpline (opens in a new window or tab).
 
 #*************************************************************
 # Service fields
@@ -453,8 +453,8 @@ Service.action = Action
 # Authorisation error messages
 #*************************************************************
 
-ErrorPage.authorisationTitle = Authorisation error
-ErrorPage.authorisationError = You aren’t authorised to use the payrolling benefits and expenses service. Please ensure your organisation has enrolled for the HMRC’s Employer Pay as you Earn (epaye) Service.
+ErrorPage.authorisationTitle = You cannot use this service
+ErrorPage.authorisationError = Your organisation is not enrolled for the Employer Pay as you Earn (epaye) service. If you need to speak to someone about the benefits and expenses you manage through payroll, contact the Employer's helpline (opens in a new window or tab).
 
 #*************************************************************
 # Error messages
@@ -466,41 +466,41 @@ ErrorPage.validationError = We’re sorry a technical error has occurred. Please
 ErrorPage.connectionProblem = The payrolling benefits and expenses service is available between 7am to 10pm, Monday to Friday and 8am to 8pm, Saturday and Sunday.
 ErrorPage.connectionAction = If you’re accessing the service outside of these hours, please try again later.
 ErrorPage.connectionStatus = If you’re accessing the service within these hours, please check for scheduled maintenance information at the <a class="govuk-link" href = "https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">HMRC service availability site</a>
-ErrorPage.serviceNotLaunched = You can’t register Biks for this year as the service is yet to launch
-ErrorPage.noBenefitsToAddcy = You’ve already added all of the benefits or expenses that are available with this service. If you’re payrolling any others, please tell HMRC with a P11D.
-ErrorPage.noCY1BenefitsToRemovecy = You haven’t added any benefits or expenses that are available for the current tax year {0} to {1}. If you would like to register any for tax year {0} to {1}, please return to the <a href = "/payrollbik/overview">home</a> screen and add them.
+ErrorPage.serviceNotLaunched = You cannot registered benefits for the tax year {0} to {1} yet.
+ErrorPage.noBenefitsToAddcy = You have already added all the benefits and expenses that are available for the current tax year {0} to {1}. If you would like to add more, please send us a P11D form (opens in a new window or tab).
+ErrorPage.noCY1BenefitsToRemovecy = You have not added any benefits or expenses that are available for the current tax year {0} to {1}. If you would like to register some for tax year {0} to {1}, return to the summary screen.
 ErrorPage.invalidForm = There was a problem when the server attempted to process your form. Please attempt to fill in the form again.
-ErrorPage.invalidYear = <p class="govuk-body">We think you’re trying to register a benefit or expense to tax through your payroll for an incorrect tax year.</p><p class="govuk-body">Please go to the list of benefits and expenses that can be taxed through your payroll using this service.</p>
-ErrorPage.invalidBikType = <p class="govuk-body">We think you’re trying to register a benefit or expense to tax through your payroll that either doesn’t exist or can’t be payrolled.</p><p class="govuk-body">Please go to the list of benefits and expenses that can be taxed through your payroll using this service.</p>
-ErrorPage.noBenefitsRegistered = You haven’t registered any benefits for this tax year, please return to the <a class="govuk-link" href = "/payrollbik/payrolled-benefits-expenses">home</a> screen and register benefits before trying to add exclusions.
+ErrorPage.invalidYear = You cannot register benefits or expenses for the tax year {0} to {1}. Go back to the summary screen and try again.
+ErrorPage.invalidBikType = You cannot register to tax {0} through your payroll using this service. Some benefits or expenses like living accommodation should be registered using a P11D form. Go back to the summary screen and try again.
+ErrorPage.noBenefitsRegistered = You need to register benefits and expenses for the current tax year {0} to {1} before you can add exclusions. Go back to the summary screen and try again.
 ErrorPage.backButtonNoCache = You haven’t performed a search yet. Please go back to the home page and repeat the user journey.
 
 ErrorPage.title = Sorry, there is a problem with the service
-ErrorPage.try.later = Try again later.
+ErrorPage.try.later = Try again later
 
 #*************************************************************
 # Error- validation messages
 #*************************************************************
 
-error.required = Choose a gender.
-error.invaliddate = Enter a valid date.
+error.required = Select the employee’s gender
+error.invaliddate = Date must be between 01/01/1900 and today
 
-error.empty.nino = Enter a National Insurance number.
-error.empty.firstname = Enter a first name.
-error.empty.lastname = Enter a last name.
+error.empty.nino = Enter the employee’s National Insurance number
+error.empty.firstname = Enter the employee’s first name
+error.empty.lastname = Enter the employee’s last name
 
-error.incorrect.nino = Enter a National Insurance number in the same format as the example shown.
-error.incorrect.firstname = Enter a first name that doesn’t contain any numbers or special characters.
-error.incorrect.lastname = Enter a last name that doesn’t contain any numbers or special characters.
+error.incorrect.nino = Enter a National Insurance number in the correct format
+error.incorrect.firstname = First name must only include letters A to Z, hyphens, spaces and apostrophes
+error.incorrect.lastname = Last name must only include letters A to Z, hyphens, spaces and apostrophes
 
-error.empty.dob = Enter a date of birth.
-error.invaliddate.day = Enter a valid day.
-error.invaliddate.month = Enter a valid month.
-error.invaliddate.year = Enter a valid year.
-error.invaliddate.future.year = Year of date of birth can’t be in the future.
-error.invaliddate.past.year = Year of date of birth must be in the last 130 years.
+error.empty.dob = Enter the employee’s date of birth
+error.invaliddate.day = Enter a day of birth between 1 and 31
+error.invaliddate.month = Enter a month of birth between 1 and 12
+error.invaliddate.year = Enter a year of birth between 1900 and {this year}
+error.invaliddate.future.year = Date of birth must be in the past
+error.invaliddate.past.year = Date of birth must be between 01/01/1900 and today
 
-error.exclusion.multi.selection = You need to choose which employee you want to exclude before you can continue
+error.exclusion.multi.selection = Select the employee you want to exclude
 
 #*************************************************************
 # What next
@@ -588,7 +588,7 @@ global.page.not.found.error.title=Page not found
 global.page.not.found.error.check.web.address.correct=If you typed the web address, check it is correct.
 global.page.not.found.error.check.web.address.full=If you pasted the web address, check you copied the entire address.
 global.page.not.found.error.contact=If the web address is correct or you selected a link or button, {0} if you need to speak to someone about the benefits and expenses you manage through your payroll.
-global.page.not.found.error.contact.link.text=contact the employers helpline
+global.page.not.found.error.contact.link.text=contact the employer’s helpline (opens in a new window or tab).
 global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries
 
 #********************************************************************

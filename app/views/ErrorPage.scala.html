@@ -49,8 +49,11 @@
 
     <p class="govuk-body-l">
      @isCurrentTaxYear match {
-            case _ if(code == 63091 || code == 65127 || code == 63085) => {
+            case _ if(code == 63091 || code == 65127) => {
                 @Html(messages("ServiceMessage." + (code)))
+            }
+            case _ if(code == 63085) => {
+                @Html(messages("ServiceMessage.", taxYearRange.cyminus1.toString, taxYearRange.cy.toString + (code)))
             }
             case _ if(code == 63088 || code == 64989 || code == 10003)  => {
                 @Html(messages("ServiceMessage." + (code) + ".1"))
