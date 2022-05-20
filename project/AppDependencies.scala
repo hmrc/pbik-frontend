@@ -9,7 +9,7 @@ object AppDependencies {
     "uk.gov.hmrc"     %% "url-builder"                  % "3.5.0-play-28",
     "uk.gov.hmrc"     %% "tax-year"                     % "1.6.0",
     "uk.gov.hmrc"     %% "bootstrap-frontend-play-28"   % "5.18.0",
-    "uk.gov.hmrc"     %% "play-frontend-hmrc"           % "1.31.0-play-28",
+    "uk.gov.hmrc"     %% "play-frontend-hmrc"           % "3.17.0-play-28",
     "uk.gov.hmrc"     %% "http-caching-client"          % "9.5.0-play-28",
     compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full),
     "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full
