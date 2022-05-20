@@ -60,9 +60,9 @@
         </div>
     }
 
-    <h1 id="title" class="govuk-heading-xl">
+    <legend><h1 id="title" class="govuk-heading-xl">
         @messages("RemoveBenefits.Confirm.Heading", benefitLabel)
-    </h1>
+    </h1></legend>
 
     <div class="data">
         @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.id), 'id -> "form-remove") {
