@@ -38,6 +38,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import play.api.Logging
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 
 @Singleton
 class ExclusionListController @Inject()(
@@ -64,7 +65,7 @@ class ExclusionListController @Inject()(
   whatNextExclusionView: WhatNextExclusion,
   removalConfirmationView: RemovalConfirmation,
   whatNextRescindView: WhatNextRescind)
-    extends FrontendController(cc) with I18nSupport with Logging {
+    extends FrontendController(cc) with I18nSupport with Logging with WithDefaultFormBinding {
 
   lazy val exclusionsAllowed: Boolean = configuration.get[Boolean]("pbik.enabled.eil")
 
