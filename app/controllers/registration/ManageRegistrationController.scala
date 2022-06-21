@@ -26,6 +26,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc._
 import services.{BikListService, RegistrationService, SessionService}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils._
 import views.html.registration._
@@ -56,7 +57,7 @@ class ManageRegistrationController @Inject()(
   confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear,
   removeBenefitNextTaxYearView: RemoveBenefitNextTaxYear,
   removeBenefitOtherReason: RemoveBenefitOtherReason)
-    extends FrontendController(cc) with I18nSupport with Logging {
+    extends FrontendController(cc) with I18nSupport with Logging with WithDefaultFormBinding {
 
   def nextTaxYearAddOnPageLoad: Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
