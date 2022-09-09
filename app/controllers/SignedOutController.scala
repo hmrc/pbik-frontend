@@ -24,11 +24,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class SignedOutController @Inject()(
+class SignedOutController @Inject() (
   signedOutView: SignedOut,
   val mcc: MessagesControllerComponents,
-  implicit val ec: ExecutionContext)
-    extends FrontendController(mcc) {
+  implicit val ec: ExecutionContext
+) extends FrontendController(mcc) {
 
   def signedOut: Action[AnyContent] = Action { implicit request =>
     Ok(signedOutView())

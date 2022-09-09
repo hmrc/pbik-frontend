@@ -27,9 +27,9 @@ import views.html.exclusion.SearchResults
 class SearchResultViewSpec extends PBIKBaseViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings = app.injector.instanceOf[FormMappings]
-  val searchResultsView = app.injector.instanceOf[SearchResults]
-  val listOfMatches = EiLPersonList(List.empty[EiLPerson])
+  val formMappings             = app.injector.instanceOf[FormMappings]
+  val searchResultsView        = app.injector.instanceOf[SearchResults]
+  val listOfMatches            = EiLPersonList(List.empty[EiLPerson])
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
@@ -55,7 +55,10 @@ class SearchResultViewSpec extends PBIKBaseViewSpec {
             ("individualSelection", "AA111111"),
             ("firstname", "John"),
             ("surname", "Smith"),
-            ("worksPayrollNumber", "123"))))
+            ("worksPayrollNumber", "123")
+          )
+        )
+      )
 
     behave like pageWithIdAndText("table-row-name", "John Smith")
     behave like pageWithIdAndText("table-row-nino", "AA111111")

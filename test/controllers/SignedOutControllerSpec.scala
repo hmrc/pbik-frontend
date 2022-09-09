@@ -27,13 +27,13 @@ import views.html.SignedOut
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
 class SignedOutControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser with I18nSupport {
-  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val ec: ExecutionContextExecutor = ExecutionContext.global
+  override def messagesApi: MessagesApi                    = app.injector.instanceOf[MessagesApi]
+  implicit val ec: ExecutionContextExecutor                = ExecutionContext.global
   private val messagesActionBuilder: MessagesActionBuilder =
     new DefaultMessagesActionBuilderImpl(stubBodyParser[AnyContent](), stubMessagesApi())
-  private val cc: ControllerComponents = stubControllerComponents()
+  private val cc: ControllerComponents                     = stubControllerComponents()
 
-  val mockMCC: MessagesControllerComponents = DefaultMessagesControllerComponents(
+  val mockMCC: MessagesControllerComponents            = DefaultMessagesControllerComponents(
     messagesActionBuilder,
     DefaultActionBuilder(stubBodyParser[AnyContent]()),
     cc.parsers,
@@ -42,8 +42,8 @@ class SignedOutControllerSpec extends PlaySpec with FakePBIKApplication with Tes
     cc.fileMimeTypes,
     ec
   )
-  val signedOutView: SignedOut = app.injector.instanceOf[SignedOut]
-  val signedOutController = new SignedOutController(signedOutView, mockMCC, ec)
+  val signedOutView: SignedOut                         = app.injector.instanceOf[SignedOut]
+  val signedOutController                              = new SignedOutController(signedOutView, mockMCC, ec)
   val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/")
 
   "keepAlive" must {

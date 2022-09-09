@@ -26,7 +26,7 @@ import scala.language.reflectiveCalls
 
 class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
-  val bikListUtils = app.injector.instanceOf[BikListUtils]
+  val bikListUtils                                          = app.injector.instanceOf[BikListUtils]
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   def fixture: Object {
@@ -36,7 +36,7 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
     val registered: List[Bik]
     val modifications: List[Bik]
   } = new {
-    val biks = List(
+    val biks                       = List(
       Bik("" + 40, 10),
       Bik("" + 48, 10),
       Bik("" + 54, 10),
@@ -58,9 +58,9 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
       Bik("" + 32, 10),
       Bik("" + 45, 10)
     )
-    val alphaSorted = List(39, 40, 31, 42, 43, 52, 37, 38, 44, 45, 47, 32, 48, 30, 50, 8, 53, 36, 35, 54)
-    val registered = List(Bik("" + 40, 30), Bik("" + 48, 30), Bik("" + 54, 30), Bik("" + 38, 30), Bik("" + 44, 30))
-    val modifications =
+    val alphaSorted                = List(39, 40, 31, 42, 43, 52, 37, 38, 44, 45, 47, 32, 48, 30, 50, 8, 53, 36, 35, 54)
+    val registered                 = List(Bik("" + 40, 30), Bik("" + 48, 30), Bik("" + 54, 30), Bik("" + 38, 30), Bik("" + 44, 30))
+    val modifications              =
       List(Bik("" + 40, 40), Bik("" + 48, 40), Bik("" + 54, 40), Bik("" + 45, 40), Bik("" + 47, 30), Bik("" + 52, 30))
     val normaliseResult: List[Int] = List(40, 47, 48, 52, 54).sorted
   }
@@ -87,7 +87,8 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
         bikListUtils
           .sortRegistrationsAlphabeticallyByLabels(bikListUtils.mergeSelected(f.biks, f.biks))
           .active
-          .map(x => x.id.toInt) == f.alphaSorted)
+          .map(x => x.id.toInt) == f.alphaSorted
+      )
     }
   }
 
@@ -98,13 +99,14 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
         bikListUtils
           .sortRegistrationsAlphabeticallyByLabels(bikListUtils.mergeSelected(f.biks, f.biks))
           .active
-          .size == f.biks.size)
+          .size == f.biks.size
+      )
     }
   }
 
   "When normalising additions and removals from a registered list of Biks, the remainder" should {
     " result in the correct values" in {
-      val f = fixture
+      val f          = fixture
       val ubinNormed =
         bikListUtils.normaliseSelectedBenefits(f.registered, f.modifications).map(x => x.iabdType.toInt).sorted
       assert(ubinNormed == f.normaliseResult)
@@ -113,7 +115,7 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   "When normalising additions and removals from a registered list of Biks, the remainder" should {
     " not contain duplicates" in {
-      val f = fixture
+      val f          = fixture
       val normalised = bikListUtils.normaliseSelectedBenefits(f.registered, f.modifications)
       assert(normalised.size == normalised.distinct.size)
     }
@@ -121,7 +123,7 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   "When removing matches is supplied the same list for the initial & checked lists, the remainder" should {
     " should be empty" in {
-      val f = fixture
+      val f             = fixture
       val shouldBeEmpty = bikListUtils.removeMatches(f.registered, f.registered)
       assert(shouldBeEmpty.active.isEmpty)
     }
@@ -129,9 +131,10 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   "When removing matches the head element, the remainder" should {
     " should be the tail" in {
-      val f = fixture
+      val f            = fixture
       val expectedTail = bikListUtils.removeMatches(f.biks, List()).active.tail // manually remove an element
-      val shouldBeTail = bikListUtils.removeMatches(f.biks, List(f.biks.head)).active // check the function does the same
+      val shouldBeTail =
+        bikListUtils.removeMatches(f.biks, List(f.biks.head)).active // check the function does the same
       assert(shouldBeTail == expectedTail)
     }
   }
@@ -152,7 +155,7 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   "When merging an original list, with an unconnected list, the size of the merge results" should {
     " equal the size of the original list as the unconnected elements wont be added" in {
-      val f = fixture
+      val f               = fixture
       val unconnectedList = List(Bik("" + 100000, 40), Bik("" + 100001, 40))
       assert(bikListUtils.mergeSelected(f.biks, unconnectedList).active.size == f.biks.size)
     }

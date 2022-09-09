@@ -30,7 +30,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import play.api.Logging
 @Singleton
-class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configuration) extends Logging {
+class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configuration) extends Logging {
 
   val serviceUrl: String = configuration.get[Service]("microservice.services.government-gateway")
 
@@ -46,15 +46,17 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
     }
   }
 
-  def genericGetCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)(
-    implicit hc: HeaderCarrier,
-    formats: Format[T]): Future[T] = {
+  def genericGetCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)(implicit
+    hc: HeaderCarrier,
+    formats: Format[T]
+  ): Future[T] = {
     val resp = client.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
 
     resp.map { r =>
       val headers: Map[String, String] = Map(
         HeaderTags.ETAG   -> r.header(HeaderTags.ETAG).getOrElse("0"),
-        HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1"))
+        HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1")
+      )
 
       pbikHeaders = headers
       logger.info("[HmrcTierConnector][genericGetCall] GET etag/xtxid headers: " + pbikHeaders)
@@ -62,9 +64,10 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
       r.json.validate[PbikError] match {
         case s: JsSuccess[PbikError] =>
           logger.error(
-            s"[HmrcTierConnector][genericGetCall] a pbik error code was returned. Error Code: ${s.value.errorCode}")
+            s"[HmrcTierConnector][genericGetCall] a pbik error code was returned. Error Code: ${s.value.errorCode}"
+          )
           throw new GenericServerErrorException(s.value.errorCode)
-        case e: JsError => r.json.as[T]
+        case e: JsError              => r.json.as[T]
       }
 
     }
@@ -75,14 +78,15 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
     s"$baseUrl/$orgIdentifierEncoded/$year/$URIExtension"
   }
 
-  def genericPostCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int, data: T)(
-    implicit hc: HeaderCarrier,
+  def genericPostCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int, data: T)(implicit
+    hc: HeaderCarrier,
     request: Request[_],
-    formats: Format[T]): Future[HttpResponse] = {
+    formats: Format[T]
+  ): Future[HttpResponse] = {
 
-    val etagFromSession = request.session.get(HeaderTags.ETAG).getOrElse("0")
+    val etagFromSession  = request.session.get(HeaderTags.ETAG).getOrElse("0")
     val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")
-    val optMapped = Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession)
+    val optMapped        = Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession)
 
     logger.info(
       "[HmrcTierConnector][genericPostCall] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession
@@ -95,17 +99,18 @@ class HmrcTierConnector @Inject()(client: HttpClient, configuration: Configurati
 
   def processResponse(response: HttpResponse): HttpResponse =
     response match {
-      case _ if response.status >= 400 =>
+      case _ if response.status >= 400    =>
         logger.error(s"[HmrcTierConnector][processResponse] An unexpected status was returned: ${response.status}")
         throw new GenericServerErrorException(response.body)
       case _ if response.body.length <= 0 => response
-      case _ =>
+      case _                              =>
         response.json.validate[PbikError].asOpt match {
           case Some(pbikError) =>
             logger.error(
-              s"[HmrcTierConnector][processResponse] A pbik error code was returned. Error Code: ${pbikError.errorCode}")
+              s"[HmrcTierConnector][processResponse] A pbik error code was returned. Error Code: ${pbikError.errorCode}"
+            )
             throw new GenericServerErrorException(pbikError.errorCode)
-          case _ => response
+          case _               => response
         }
     }
 }

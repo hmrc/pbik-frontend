@@ -25,9 +25,9 @@ package utils
 trait PayrollBikDefaults extends SystemPropertiesHelper {
 
   lazy val TAX_YEAR_OF_LAUNCH = taxYearOfLaunch
-  lazy val YEAR_LENGTH_VALUE = yearLengthValue
-  val DEFAULT_LAUNCH_YEAR = 2015
-  val DEFAULT_YEAR_DIGITS = 4
+  lazy val YEAR_LENGTH_VALUE  = yearLengthValue
+  val DEFAULT_LAUNCH_YEAR     = 2015
+  val DEFAULT_YEAR_DIGITS     = 4
 
   def taxYearOfLaunch: Int = getIntProperty("TAX_YEAR_OF_LAUNCH", DEFAULT_LAUNCH_YEAR)
   def yearLengthValue: Int = getIntProperty("YEAR_LENGTH_VALUE", DEFAULT_YEAR_DIGITS)

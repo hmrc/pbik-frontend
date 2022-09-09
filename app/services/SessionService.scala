@@ -28,20 +28,20 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class SessionService @Inject()(val http: DefaultHttpClient, val sessionCache: PbikSessionCache) extends Logging {
+class SessionService @Inject() (val http: DefaultHttpClient, val sessionCache: PbikSessionCache) extends Logging {
 
   private object CacheKeys extends Enumeration {
     val RegistrationList, BikRemoved, ListOfMatches, EiLPerson, CurrentExclusions, CYRegisteredBiks, NYRegisteredBiks =
       Value
   }
 
-  val PBIK_SESSION_KEY: String = "pbik_session"
+  val PBIK_SESSION_KEY: String                        = "pbik_session"
   val cleanRegistrationList: Option[RegistrationList] = Some(RegistrationList(None, List.empty[RegistrationItem], None))
-  val cleanBikRemoved: Option[RegistrationItem] = Some(RegistrationItem("", false, false))
-  val cleanEiLPersonList: Option[List[EiLPerson]] = Some(List.empty[EiLPerson])
-  val cleanEiLPerson: Option[EiLPerson] = Some(EiLPerson("", "", None, "", None, None, None, None))
-  val cleanBikList: Option[List[Bik]] = Some(List.empty[Bik])
-  val cleanSession: PbikSession = {
+  val cleanBikRemoved: Option[RegistrationItem]       = Some(RegistrationItem("", false, false))
+  val cleanEiLPersonList: Option[List[EiLPerson]]     = Some(List.empty[EiLPerson])
+  val cleanEiLPerson: Option[EiLPerson]               = Some(EiLPerson("", "", None, "", None, None, None, None))
+  val cleanBikList: Option[List[Bik]]                 = Some(List.empty[Bik])
+  val cleanSession: PbikSession                       =
     PbikSession(
       cleanRegistrationList,
       cleanBikRemoved,
@@ -49,8 +49,8 @@ class SessionService @Inject()(val http: DefaultHttpClient, val sessionCache: Pb
       cleanEiLPerson,
       cleanEiLPersonList,
       cleanBikList,
-      cleanBikList)
-  }
+      cleanBikList
+    )
 
   def fetchPbikSession()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
     sessionCache
@@ -59,10 +59,9 @@ class SessionService @Inject()(val http: DefaultHttpClient, val sessionCache: Pb
         case Some(session) => Some(session)
         case None          => Some(cleanSession)
       }
-      .recover {
-        case ex: Exception =>
-          logger.warn(s"[SessionService][fetchPbikSession] Fetch failed due to: $ex")
-          Some(cleanSession)
+      .recover { case ex: Exception =>
+        logger.warn(s"[SessionService][fetchPbikSession] Fetch failed due to: $ex")
+        Some(cleanSession)
       }
 
   def cacheRegistrationList(value: RegistrationList)(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
@@ -117,30 +116,29 @@ class SessionService @Inject()(val http: DefaultHttpClient, val sessionCache: Pb
     resetNYRegisteredBiks()
   }
 
-  private def cache[T](key: CacheKeys.Value, value: Option[T])(
-    implicit hc: HeaderCarrier): Future[Option[PbikSession]] = {
+  private def cache[T](key: CacheKeys.Value, value: Option[T])(implicit
+    hc: HeaderCarrier
+  ): Future[Option[PbikSession]] = {
     def selectKeysToCache(session: PbikSession): PbikSession =
       key match {
-        case CacheKeys.RegistrationList => session.copy(registrations = Some(value.get.asInstanceOf[RegistrationList]))
-        case CacheKeys.BikRemoved       => session.copy(bikRemoved = Some(value.get.asInstanceOf[RegistrationItem]))
-        case CacheKeys.ListOfMatches    => session.copy(listOfMatches = Some(value.get.asInstanceOf[List[EiLPerson]]))
-        case CacheKeys.EiLPerson        => session.copy(eiLPerson = Some(value.get.asInstanceOf[EiLPerson]))
+        case CacheKeys.RegistrationList  => session.copy(registrations = Some(value.get.asInstanceOf[RegistrationList]))
+        case CacheKeys.BikRemoved        => session.copy(bikRemoved = Some(value.get.asInstanceOf[RegistrationItem]))
+        case CacheKeys.ListOfMatches     => session.copy(listOfMatches = Some(value.get.asInstanceOf[List[EiLPerson]]))
+        case CacheKeys.EiLPerson         => session.copy(eiLPerson = Some(value.get.asInstanceOf[EiLPerson]))
         case CacheKeys.CurrentExclusions =>
           session.copy(currentExclusions = Some(value.get.asInstanceOf[List[EiLPerson]]))
-        case CacheKeys.CYRegisteredBiks => session.copy(cyRegisteredBiks = Some(value.get.asInstanceOf[List[Bik]]))
-        case CacheKeys.NYRegisteredBiks => session.copy(nyRegisteredBiks = Some(value.get.asInstanceOf[List[Bik]]))
-        case _ =>
+        case CacheKeys.CYRegisteredBiks  => session.copy(cyRegisteredBiks = Some(value.get.asInstanceOf[List[Bik]]))
+        case CacheKeys.NYRegisteredBiks  => session.copy(nyRegisteredBiks = Some(value.get.asInstanceOf[List[Bik]]))
+        case _                           =>
           logger.warn(s"[SessionService][cache] No matching keys found - returning clean session")
           cleanSession
       }
     for {
       currentSession <- fetchPbikSession
-      session = currentSession.getOrElse(cleanSession)
-      cacheMap <- sessionCache.cache[PbikSession](PBIK_SESSION_KEY, selectKeysToCache(session))
+      session         = currentSession.getOrElse(cleanSession)
+      cacheMap       <- sessionCache.cache[PbikSession](PBIK_SESSION_KEY, selectKeysToCache(session))
 
-    } yield {
-      cacheMap.getEntry[PbikSession](PBIK_SESSION_KEY)
-    }
+    } yield cacheMap.getEntry[PbikSession](PBIK_SESSION_KEY)
   }
 
 }

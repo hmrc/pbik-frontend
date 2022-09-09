@@ -31,28 +31,28 @@ object SplunkLogger {
   val pbik_audit_source = "pbik-frontend"
   val pbik_benefit_type = "benefit-event"
   val pbik_exclude_type = "exclusion-event"
-  val pbik_error_type = "error-event"
-  val pbik_event_name = "PBIK"
-  val pbik_no_ref = "Not available"
+  val pbik_error_type   = "error-event"
+  val pbik_event_name   = "PBIK"
+  val pbik_no_ref       = "Not available"
 
-  val key_event_name = "event"
-  val key_gateway_user = "gatewayUser"
-  val key_empref = "empref"
-  val key_tier = "tier"
-  val key_nino = "nino"
-  val key_action = "action"
-  val key_target = "target"
-  val key_period = "period"
-  val key_iabd = "iabd"
-  val key_message = "message"
-  val key_remove_reason = "removeReason"
+  val key_event_name         = "event"
+  val key_gateway_user       = "gatewayUser"
+  val key_empref             = "empref"
+  val key_tier               = "tier"
+  val key_nino               = "nino"
+  val key_action             = "action"
+  val key_target             = "target"
+  val key_period             = "period"
+  val key_iabd               = "iabd"
+  val key_message            = "message"
+  val key_remove_reason      = "removeReason"
   val key_remove_reason_desc = "removeReasonDesc"
-  val key_error = "error"
+  val key_error              = "error"
 
 }
 
 @Singleton
-class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils, val auditConnector: AuditConnector) {
+class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: AuditConnector) {
 
   sealed trait SpTier
   case object FRONTEND extends SpTier
@@ -104,20 +104,21 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils, val auditConnector: Aud
     removeReason: Option[String] = None,
     removeReasonDesc: Option[String] = None,
     name: Option[UserName],
-    empRef: Option[EmpRef]): DataEvent = {
+    empRef: Option[EmpRef]
+  ): DataEvent = {
 
     val derivedAuditType = target match {
       case BIK => pbik_benefit_type
       case EIL => pbik_exclude_type
     }
 
-    val entityIABD = if (iabd.isDefined) Seq(key_iabd                          -> iabd.get) else Nil
-    val entityNINO = if (nino.isDefined) Seq(key_nino                          -> nino.get) else Nil
-    val entityRemoveReason = if (removeReason.isDefined) Seq(key_remove_reason -> removeReason.get) else Nil
+    val entityIABD             = if (iabd.isDefined) Seq(key_iabd -> iabd.get) else Nil
+    val entityNINO             = if (nino.isDefined) Seq(key_nino -> nino.get) else Nil
+    val entityRemoveReason     = if (removeReason.isDefined) Seq(key_remove_reason -> removeReason.get) else Nil
     val entityRemoveReasonDesc =
       if (removeReasonDesc.isDefined) Seq(key_remove_reason_desc -> removeReasonDesc.get) else Nil
 
-    val entities = Seq(
+    val entities               = Seq(
       key_event_name   -> pbik_event_name,
       key_gateway_user -> name.map(_.toString).getOrElse(pbik_no_ref),
       key_empref       -> empRef.map(_.toString).getOrElse(pbik_no_ref),
@@ -132,7 +133,6 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils, val auditConnector: Aud
   }
 
   /**
-    *
     * Method creates a PBIK Specific Error which will be sent to splunk so product owners
     * can get granularity on the actions a user cannot undertake.
     *
@@ -140,8 +140,9 @@ class SplunkLogger @Inject()(taxDateUtils: TaxDateUtils, val auditConnector: Aud
     * @param msg  - free text message. Note - ensure no personal or sensitive details are included )
     * @return A DataEvent with the PBIK specific error payload which may be sent using the logSplunkEvent method.
     */
-  def createErrorEvent(tier: SpTier, error: SpError, msg: String)(
-    implicit request: AuthenticatedRequest[_]): DataEvent =
+  def createErrorEvent(tier: SpTier, error: SpError, msg: String)(implicit
+    request: AuthenticatedRequest[_]
+  ): DataEvent =
     DataEvent(
       auditSource = pbik_audit_source,
       auditType = pbik_error_type,

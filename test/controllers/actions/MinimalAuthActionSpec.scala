@@ -56,23 +56,25 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
           app.injector.instanceOf[BodyParsers.Default],
           app.injector.instanceOf[AppConfig]
         )
-        val controller = new Harness(minimalAuthAction)
-        val result = controller.onPageLoad()(FakeRequest("", ""))
+        val controller        = new Harness(minimalAuthAction)
+        val result            = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get must endWith(
-          "sign-in?continue=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fstart-payrolling-benefits-expenses&origin=pbik-frontend")
+          "sign-in?continue=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fstart-payrolling-benefits-expenses&origin=pbik-frontend"
+        )
       }
     }
   }
 
 }
 
-class BrokenAuthConnector @Inject()(exception: Throwable, httpClient: HttpClient, configuration: Configuration)
+class BrokenAuthConnector @Inject() (exception: Throwable, httpClient: HttpClient, configuration: Configuration)
     extends AuthConnector(httpClient, configuration) {
   override val serviceUrl: String = ""
 
-  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[A] =
+  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[A] =
     Future.failed(exception)
 }

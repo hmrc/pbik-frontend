@@ -66,7 +66,7 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
   def pageWithYesNoRadioButton(idYes: String, idNo: String) {
     "have a yes/no radio button" in {
       doc.getElementById(idYes) must not be null
-      doc.getElementById(idNo) must not be null
+      doc.getElementById(idNo)  must not be null
     }
   }
 
@@ -99,9 +99,9 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
 
 trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite with I18nSupport {
 
-  implicit val lang: Lang = Lang("en-GB")
+  implicit val lang: Lang                                   = Lang("en-GB")
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  implicit val messages: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val messages: MessagesApi                        = app.injector.instanceOf[MessagesApi]
 }
 
 trait PBIKViewSpec extends PBIKBaseViewSpec with PBIKViewBehaviours

@@ -28,19 +28,22 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class EiLListService @Inject()(
+class EiLListService @Inject() (
   val pbikAppConfig: PbikAppConfig,
   val tierConnector: HmrcTierConnector,
-  uRIInformation: URIInformation) {
+  uRIInformation: URIInformation
+) {
 
-  def currentYearEiL(iabdType: String, year: Int)(
-    implicit hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]): Future[List[EiLPerson]] = {
+  def currentYearEiL(iabdType: String, year: Int)(implicit
+    hc: HeaderCarrier,
+    request: AuthenticatedRequest[_]
+  ): Future[List[EiLPerson]] = {
     val response = tierConnector.genericGetCall[List[EiLPerson]](
       uRIInformation.baseUrl,
       uRIInformation.exclusionGetPath(iabdType),
       request.empRef,
-      year)
+      year
+    )
 
     response.map { resultList: List[EiLPerson] =>
       resultList.distinct
@@ -49,7 +52,8 @@ class EiLListService @Inject()(
 
   def searchResultsRemoveAlreadyExcluded(
     existingEiL: List[EiLPerson],
-    searchResultsEiL: List[EiLPerson]): List[EiLPerson] =
+    searchResultsEiL: List[EiLPerson]
+  ): List[EiLPerson] =
     searchResultsEiL diff existingEiL
 
 }

@@ -42,7 +42,11 @@ import views.html.registration.NextTaxYear
 import scala.concurrent.Future
 
 class RegistrationServiceSpec
-    extends AnyWordSpecLike with Matchers with OptionValues with TestAuthUser with FakePBIKApplication
+    extends AnyWordSpecLike
+    with Matchers
+    with OptionValues
+    with TestAuthUser
+    with FakePBIKApplication
     with I18nSupport {
 
   override val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
@@ -72,7 +76,9 @@ class RegistrationServiceSpec
         any[String],
         any[String],
         any[EmpRef],
-        argEq(injected[TaxDateUtils].getCurrentTaxYear()))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+        argEq(injected[TaxDateUtils].getCurrentTaxYear())
+      )(any[HeaderCarrier], any[json.Format[List[Bik]]])
+    )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 3
       }))
@@ -83,7 +89,9 @@ class RegistrationServiceSpec
         any[String],
         any[String],
         any[EmpRef],
-        argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+        argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1)
+      )(any[HeaderCarrier], any[json.Format[List[Bik]]])
+    )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 5
       }))
@@ -92,20 +100,21 @@ class RegistrationServiceSpec
 
   "When generating a page which allows registrations, the service" should {
     "return the selection page" in {
-      val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
-      val nextTaxYearView = app.injector.instanceOf[NextTaxYear]
+      val request: FakeRequest[AnyContentAsEmpty.type]                    = mockrequest
+      val nextTaxYearView                                                 = app.injector.instanceOf[NextTaxYear]
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      val taxDateUtils = injected[TaxDateUtils]
-      val YEAR_RANGE = taxDateUtils.getTaxYearRange()
+      implicit val hc: HeaderCarrier                                      = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+      val taxDateUtils                                                    = injected[TaxDateUtils]
+      val YEAR_RANGE                                                      = taxDateUtils.getTaxYearRange()
 
       val result =
         registrationService.generateViewForBikRegistrationSelection(
           YEAR_RANGE.cyminus1,
           "add",
-          nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty))
-      status(result) shouldBe 200
+          nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty)
+        )
+      status(result)        shouldBe 200
       contentAsString(result) should include(Messages("AddBenefits.Heading"))
       contentAsString(result) should include(Messages("BenefitInKind.label.4"))
     }

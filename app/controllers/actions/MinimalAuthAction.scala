@@ -29,21 +29,21 @@ import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MinimalAuthActionImpl @Inject()(
+class MinimalAuthActionImpl @Inject() (
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default,
   config: AppConfig
 )(implicit val executionContext: ExecutionContext)
-    extends MinimalAuthAction with AuthorisedFunctions {
+    extends MinimalAuthAction
+    with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     authorised(ConfidenceLevel.L50) {
       block(request)
-    } recover {
-      case ex: NoActiveSession =>
-        Redirect(config.authSignIn, Map("continue" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend")))
+    } recover { case ex: NoActiveSession =>
+      Redirect(config.authSignIn, Map("continue" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend")))
     }
   }
 }

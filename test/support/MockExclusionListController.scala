@@ -41,7 +41,7 @@ import views.html.exclusion._
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class MockExclusionListController @Inject()(
+class MockExclusionListController @Inject() (
   messagesApi: MessagesApi,
   formMappings: FormMappings,
   cc: MessagesControllerComponents,
@@ -65,8 +65,8 @@ class MockExclusionListController @Inject()(
   searchResultsView: SearchResults,
   whatNextExclusionView: WhatNextExclusion,
   removalConfirmationView: RemovalConfirmation,
-  whatNextRescindView: WhatNextRescind)
-    extends ExclusionListController(
+  whatNextRescindView: WhatNextRescind
+) extends ExclusionListController(
       formMappings,
       authenticate,
       cc,
@@ -90,7 +90,8 @@ class MockExclusionListController @Inject()(
       whatNextExclusionView,
       removalConfirmationView,
       whatNextRescindView
-    ) with Futures {
+    )
+    with Futures {
 
   implicit val defaultPatience: PatienceConfig =
     PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
@@ -103,14 +104,18 @@ class MockExclusionListController @Inject()(
       .genericPostCall[EiLPerson](any[String], argEq("31/exclusion/update"), any[EmpRef], any[Int], any[EiLPerson])(
         any[HeaderCarrier],
         any[Request[_]],
-        any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
+        any[json.Format[EiLPerson]]
+      )
+  ).thenReturn(Future.successful(new FakeResponse()))
 
   when(
     tierConnector
       .genericPostCall[EiLPerson](any[String], argEq("31/exclusion/remove"), any[EmpRef], any[Int], any[EiLPerson])(
         any[HeaderCarrier],
         any[Request[_]],
-        any[json.Format[EiLPerson]])).thenReturn(Future.successful(new FakeResponse()))
+        any[json.Format[EiLPerson]]
+      )
+  ).thenReturn(Future.successful(new FakeResponse()))
 
   when(
     tierConnector.genericPostCall(
@@ -118,17 +123,19 @@ class MockExclusionListController @Inject()(
       argEq(uriInformation.updateBenefitTypesPath),
       any[EmpRef],
       any[Int],
-      any[List[Bik]])(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]]))
+      any[List[Bik]]
+    )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
+  )
     .thenReturn(Future.successful(new FakeResponse()))
 
   override lazy val exclusionsAllowed = true
 }
 
 class FakeResponse extends HttpResponse {
-  override def status = 200
+  override def status                               = 200
   override def allHeaders: Map[String, Seq[String]] = Map()
-  override def body: String = "empty"
-  override val json: JsValue = Json.parse("""[
+  override def body: String                         = "empty"
+  override val json: JsValue                        = Json.parse("""[
                  {
                      "nino": "AB111111",
                      "firstForename": "Adam",

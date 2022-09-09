@@ -25,7 +25,8 @@ case class PbikSession(
   eiLPerson: Option[EiLPerson],
   currentExclusions: Option[List[EiLPerson]],
   cyRegisteredBiks: Option[List[Bik]],
-  nyRegisteredBiks: Option[List[Bik]])
+  nyRegisteredBiks: Option[List[Bik]]
+)
 
 object PbikSession {
   implicit val PbikSessionFormats: OFormat[PbikSession] = Json.format[PbikSession]

@@ -27,9 +27,9 @@ import views.html.Summary
 //scalastyle:off magic.number
 class SummaryViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  val messagesApi: MessagesApi            = app.injector.instanceOf[MessagesApi]
   implicit val bikListUtils: BikListUtils = app.injector.instanceOf[BikListUtils]
-  val summaryView: Summary = app.injector.instanceOf[Summary]
+  val summaryView: Summary                = app.injector.instanceOf[Summary]
 
   def taxYearRange: TaxYearRange = TaxYearRange(2018, 2019, 2020)
 
@@ -43,7 +43,8 @@ class SummaryViewSpec extends PBIKViewSpec {
     behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))
     behave like pageWithHeader(
       messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
-        + " " + messages("Overview.benefitsRegistered.heading"))
+        + " " + messages("Overview.benefitsRegistered.heading")
+    )
     behave like pageWithLink(messages("Overview.table.add.link"), "/payrollbik/cy/choose-benefit-expense")
     behave like pageWithBackLink()
   }
@@ -52,9 +53,10 @@ class SummaryViewSpec extends PBIKViewSpec {
 
     val doc = Jsoup.parse(viewWithNoBenefits().toString())
     doc.title must include(messages("Overview.noBenefitsRegistered.title"))
-    doc must haveHeadingWithText(
+    doc       must haveHeadingWithText(
       messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
-        + " " + messages("Overview.noBenefitsRegistered.heading"))
+        + " " + messages("Overview.noBenefitsRegistered.heading")
+    )
   }
 
 }

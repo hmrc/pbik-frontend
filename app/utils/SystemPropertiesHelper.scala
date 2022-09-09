@@ -28,41 +28,36 @@ trait SystemPropertiesHelper extends Logging {
   lazy val sysprop = new SystemProperties()
 
   def getIntProperty(key: String, defaultValue: Int): Int =
-    try {
-      if (sysprop.get(key).isDefined) {
-        sysprop.get(key).get.toInt
-      } else {
-        doesntExist(key, defaultValue)
-      }
+    try if (sysprop.get(key).isDefined) {
+      sysprop.get(key).get.toInt
+    } else {
+      doesntExist(key, defaultValue)
     } catch {
       case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
 
   def getStringProperty(key: String, defaultValue: String): String =
-    try {
-      if (sysprop.get(key).isDefined) {
-        sysprop.get(key).getOrElse(defaultValue)
-      } else {
-        doesntExist(key, defaultValue)
-      }
+    try if (sysprop.get(key).isDefined) {
+      sysprop.get(key).getOrElse(defaultValue)
+    } else {
+      doesntExist(key, defaultValue)
     } catch {
       case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
 
   def getBooleanProperty(key: String, defaultValue: Boolean): Boolean =
-    try {
-      if (sysprop.get(key).isDefined) {
-        sysprop.get(key).get.toBoolean
-      } else {
-        doesntExist(key, defaultValue)
-      }
+    try if (sysprop.get(key).isDefined) {
+      sysprop.get(key).get.toBoolean
+    } else {
+      doesntExist(key, defaultValue)
     } catch {
       case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
 
   def doesntExist[T](key: String, defaultvalue: T): T = {
     logger.info(
-      s"[SystemPropertiesHelper][doesntExist] No system property $key defined. Using default value: $defaultvalue")
+      s"[SystemPropertiesHelper][doesntExist] No system property $key defined. Using default value: $defaultvalue"
+    )
     defaultvalue
   }
 

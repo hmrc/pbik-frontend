@@ -39,7 +39,11 @@ import scala.concurrent.{Await, Future}
 import scala.language.postfixOps
 
 class BikListServiceSpec
-    extends AnyWordSpecLike with Matchers with OptionValues with TestAuthUser with FakePBIKApplication
+    extends AnyWordSpecLike
+    with Matchers
+    with OptionValues
+    with TestAuthUser
+    with FakePBIKApplication
     with BeforeAndAfterEach {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
@@ -49,9 +53,9 @@ class BikListServiceSpec
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
-  lazy val bikListService: BikListService = app.injector.instanceOf[StubBikListService]
+  lazy val bikListService: BikListService                                  = app.injector.instanceOf[StubBikListService]
   implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockrequest)
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier                                           = HeaderCarrier()
 
   override def beforeEach(): Unit =
     reset(bikListService.tierConnector)
@@ -64,7 +68,9 @@ class BikListServiceSpec
       when(
         bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
           any[HeaderCarrier],
-          any[Format[List[Bik]]])).thenReturn(Future.successful(listBiks))
+          any[Format[List[Bik]]]
+        )
+      ).thenReturn(Future.successful(listBiks))
 
       val result: (Map[String, String], List[Bik]) = Await.result(bikListService.currentYearList, 10 seconds)
       result._2 shouldBe listBiks
@@ -74,7 +80,9 @@ class BikListServiceSpec
       when(
         bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
           any[HeaderCarrier],
-          any[Format[List[Bik]]])).thenThrow(new IllegalStateException())
+          any[Format[List[Bik]]]
+        )
+      ).thenThrow(new IllegalStateException())
       // Intercept exception
       intercept[IllegalStateException] {
         bikListService.currentYearList
@@ -87,7 +95,9 @@ class BikListServiceSpec
       when(
         bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
           any[HeaderCarrier],
-          any[Format[List[Bik]]])).thenReturn(Future.successful(listBiks))
+          any[Format[List[Bik]]]
+        )
+      ).thenReturn(Future.successful(listBiks))
       implicit val hc: HeaderCarrier = HeaderCarrier()
 
       val result = Await.result(bikListService.nextYearList, 10 seconds)
@@ -99,7 +109,9 @@ class BikListServiceSpec
       when(
         bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
           any[HeaderCarrier],
-          any[Format[List[Bik]]])).thenThrow(new IllegalStateException())
+          any[Format[List[Bik]]]
+        )
+      ).thenThrow(new IllegalStateException())
 
       intercept[IllegalStateException] {
         bikListService.nextYearList

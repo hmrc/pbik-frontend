@@ -27,18 +27,18 @@ import views.html.exclusion.ExclusionNinoOrNoNinoForm
 
 class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings = app.injector.instanceOf[FormMappings]
+  val messagesApi: MessagesApi      = app.injector.instanceOf[MessagesApi]
+  val formMappings                  = app.injector.instanceOf[FormMappings]
   val exclusionNinoOrNoNinoFormView = app.injector.instanceOf[ExclusionNinoOrNoNinoForm]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = viewWithForm()
 
-  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
-  implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
-  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val taxDateUtils: TaxDateUtils                           = app.injector.instanceOf[TaxDateUtils]
+  implicit val pbikAppConfig: PbikAppConfig                         = app.injector.instanceOf[PbikAppConfig]
+  implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
+  implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   def viewWithForm(): Html =
@@ -51,7 +51,8 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
       "30",
       "",
       formMappings.binaryRadioButton.withError("test", "error"),
-      EmpRef("", ""))
+      EmpRef("", "")
+    )
 
   "exclusionNinoOrNoNinoPage" must {
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))

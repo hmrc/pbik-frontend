@@ -29,14 +29,14 @@ import views.html.registration.NextTaxYear
 class NextYearViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings = app.injector.instanceOf[FormMappings]
-  val nextTaxYearView = app.injector.instanceOf[NextTaxYear]
+  val formMappings             = app.injector.instanceOf[FormMappings]
+  val nextTaxYearView          = app.injector.instanceOf[NextTaxYear]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = viewWithForm(formMappings.objSelectedForm)
 
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   def viewWithForm(form: Form[RegistrationList]): Html =
@@ -46,12 +46,13 @@ class NextYearViewSpec extends PBIKViewSpec {
     behave like pageWithTitle(messages("AddBenefits.Heading"))
     behave like pageWithHeader(
       messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
-        + " " + messages("AddBenefits.Heading"))
+        + " " + messages("AddBenefits.Heading")
+    )
     behave like pageWithContinueButtonForm("/payrollbik/cy1/choose-benefit-expense", "Continue")
 
     "check the add benefit page for the errors" in {
       val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))
-      val doc = Jsoup.parse(view.toString())
+      val doc  = Jsoup.parse(view.toString())
 
       doc must haveErrorSummary(messages("AddBenefits.noselection.error"))
       doc must haveErrorNotification(messages("AddBenefits.noselection.error"))

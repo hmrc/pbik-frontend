@@ -26,8 +26,8 @@ import views.html.exclusion.ExclusionOverview
 
 class ExclusionOverviewViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  val messagesApi: MessagesApi                 = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings               = app.injector.instanceOf[FormMappings]
   val exclusionOverviewView: ExclusionOverview = app.injector.instanceOf[ExclusionOverview]
 
   def taxYearRange: TaxYearRange = TaxYearRange(2018, 2019, 2020)
@@ -44,13 +44,15 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
       iabdType,
       List(),
       EmpRef("", ""),
-      formMappings.binaryRadioButton.withError("test", "error"))
+      formMappings.binaryRadioButton.withError("test", "error")
+    )
 
   "exclusionOverview" must {
     behave like pageWithTitle(messages("ExclusionOverview.notExcludedEmployee.title"))
     behave like pageWithHeader(
       messages(s"BenefitInKind.label.$iabdType")
-        + " " + messages("ExclusionOverview.notExcludedEmployee.title"))
+        + " " + messages("ExclusionOverview.notExcludedEmployee.title")
+    )
     behave like pageWithContinueButtonForm("/payrollbik/cyp1/car/excluded-employees", "Continue")
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 

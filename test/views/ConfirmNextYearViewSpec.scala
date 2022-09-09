@@ -27,19 +27,19 @@ import views.html.registration.ConfirmUpdateNextTaxYear
 
 class ConfirmNextYearViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  val messagesApi: MessagesApi                               = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings                             = app.injector.instanceOf[FormMappings]
   val confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear = app.injector.instanceOf[ConfirmUpdateNextTaxYear]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = viewWithForm(formMappings.objSelectedForm)
 
-  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
+  implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
-  val bikList = RegistrationList(active = List.empty[RegistrationItem])
-  val removalBik = Some(RegistrationItem("30", true, true))
+  val bikList                                                       = RegistrationList(active = List.empty[RegistrationItem])
+  val removalBik                                                    = Some(RegistrationItem("30", true, true))
 
   def viewWithForm(form: Form[RegistrationList]): Html =
     confirmUpdateNextTaxYearView(

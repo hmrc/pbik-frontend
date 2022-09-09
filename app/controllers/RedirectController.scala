@@ -21,7 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 @Singleton
-class RedirectController @Inject()(cc: MessagesControllerComponents) extends FrontendController(cc) {
+class RedirectController @Inject() (cc: MessagesControllerComponents) extends FrontendController(cc) {
 
   def redirectIfFromStart(): Action[AnyContent] = Action {
     Redirect(routes.StartPageController.onPageLoad)

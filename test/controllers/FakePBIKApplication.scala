@@ -52,10 +52,10 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   val sessionId = s"session-${UUID.randomUUID}"
 
-  def mockrequest: FakeRequest[AnyContentAsEmpty.type] =
+  def mockrequest: FakeRequest[AnyContentAsEmpty.type]        =
     FakeRequest().withSession(SessionKeys.sessionId -> sessionId, HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "0")
 
-  def mockWelshrequest: FakeRequest[AnyContentAsEmpty.type] =
+  def mockWelshrequest: FakeRequest[AnyContentAsEmpty.type]   =
     FakeRequest("GET", "?lang=cy")
       .withSession(SessionKeys.sessionId -> sessionId, HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "0")
 
@@ -69,20 +69,20 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   implicit lazy val materializer: Materializer = fakeApplication.materializer
 
-  def injected[T](c: Class[T]): T = app.injector.instanceOf(c)
+  def injected[T](c: Class[T]): T                    = app.injector.instanceOf(c)
   def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T]
 
-  val mockSessionService: SessionService = mock[SessionService]
-  val mockHttp: DefaultHttpClient = mock[DefaultHttpClient]
+  val mockSessionService: SessionService     = mock[SessionService]
+  val mockHttp: DefaultHttpClient            = mock[DefaultHttpClient]
   val mockPbikSessionCache: PbikSessionCache = mock[PbikSessionCache]
-  val mockAppConfig: PbikAppConfig = mock[PbikAppConfig]
+  val mockAppConfig: PbikAppConfig           = mock[PbikAppConfig]
 
   val cleanRegistrationList: Option[RegistrationList] = Some(RegistrationList(None, List.empty[RegistrationItem], None))
-  val cleanBikRemoved: Option[RegistrationItem] = Some(RegistrationItem("", false, false))
-  val cleanListOfMatches: Option[List[EiLPerson]] = Some(List.empty[EiLPerson])
-  val cleanEiLPerson: Option[EiLPerson] = Some(EiLPerson("", "", None, "", None, None, None, None))
-  val cleanBikList: Option[List[Bik]] = Some(List.empty[Bik])
-  val cleanSession: PbikSession =
+  val cleanBikRemoved: Option[RegistrationItem]       = Some(RegistrationItem("", false, false))
+  val cleanListOfMatches: Option[List[EiLPerson]]     = Some(List.empty[EiLPerson])
+  val cleanEiLPerson: Option[EiLPerson]               = Some(EiLPerson("", "", None, "", None, None, None, None))
+  val cleanBikList: Option[List[Bik]]                 = Some(List.empty[Bik])
+  val cleanSession: PbikSession                       =
     PbikSession(
       cleanRegistrationList,
       cleanBikRemoved,

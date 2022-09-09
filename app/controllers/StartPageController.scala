@@ -27,13 +27,15 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class StartPageController @Inject()(
+class StartPageController @Inject() (
   cc: MessagesControllerComponents,
   authenticate: AuthAction,
   val noSessionCheck: NoSessionCheckAction,
   startPageView: StartPage
 )(implicit val ec: ExecutionContext)
-    extends FrontendController(cc) with I18nSupport with Logging {
+    extends FrontendController(cc)
+    with I18nSupport
+    with Logging {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck) { implicit request =>
     Ok(startPageView(request.empRef))

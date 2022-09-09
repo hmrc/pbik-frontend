@@ -24,6 +24,6 @@ package models
   * employer record thereby invalidating ours ).
   */
 object HeaderTags {
-  val ETAG: String = "ETag"
+  val ETAG: String   = "ETag"
   val X_TXID: String = "X-TXID"
 }

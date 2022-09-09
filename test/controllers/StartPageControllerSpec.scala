@@ -33,7 +33,7 @@ import utils.{TestAuthAction, TestNoSessionCheckAction}
 class StartPageControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser with I18nSupport {
 
   override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val lang: Lang = Lang("en-GB")
+  implicit val lang: Lang               = Lang("en-GB")
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -48,7 +48,7 @@ class StartPageControllerSpec extends PlaySpec with FakePBIKApplication with Tes
 
     "return OK and the correct view for a GET" in {
 
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockrequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
 

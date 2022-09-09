@@ -27,7 +27,8 @@ case class EiLPerson(
   dateOfBirth: Option[String],
   gender: Option[String],
   status: Option[Int],
-  perOptLock: Int = 0) {
+  perOptLock: Int = 0
+) {
 
   override def equals(obj: Any): Boolean = obj match {
     case EiLPerson(nino, _, _, _, _, _, _, _, _) => this.nino == nino
@@ -40,16 +41,16 @@ case class EiLPerson(
 object EiLPerson {
 
   val defaultStringArgumentValue = ""
-  val defaultIntArgumentValue = -1
-  val defaultNino = defaultStringArgumentValue
-  val defaultFirstName = defaultStringArgumentValue
-  val defaultSecondName = Some(defaultStringArgumentValue)
-  val defaultSurname = defaultStringArgumentValue
-  val defaultWorksPayrollNumber = Some(defaultStringArgumentValue)
-  val defaultDateOfBirth = None
-  val defaultGender = Some(defaultStringArgumentValue)
-  val defaultStatus = Some(defaultIntArgumentValue)
-  val defaultPerOptLock = defaultIntArgumentValue
+  val defaultIntArgumentValue    = -1
+  val defaultNino                = defaultStringArgumentValue
+  val defaultFirstName           = defaultStringArgumentValue
+  val defaultSecondName          = Some(defaultStringArgumentValue)
+  val defaultSurname             = defaultStringArgumentValue
+  val defaultWorksPayrollNumber  = Some(defaultStringArgumentValue)
+  val defaultDateOfBirth         = None
+  val defaultGender              = Some(defaultStringArgumentValue)
+  val defaultStatus              = Some(defaultIntArgumentValue)
+  val defaultPerOptLock          = defaultIntArgumentValue
 
   def secondaryComparison(x: EiLPerson, y: EiLPerson): Boolean =
     x.firstForename == y.firstForename &&

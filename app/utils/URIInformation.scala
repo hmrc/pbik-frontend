@@ -24,7 +24,7 @@ import utils.Exceptions.InvalidBikTypeURIException
 import play.api.Logging
 
 @Singleton
-class URIInformation @Inject()(configuration: Configuration) extends URIValues with Logging {
+class URIInformation @Inject() (configuration: Configuration) extends URIValues with Logging {
 
   val baseUrl: String = configuration.get[Service]("microservice.services.pbik") + "/epaye"
 
@@ -56,10 +56,9 @@ class URIInformation @Inject()(configuration: Configuration) extends URIValues w
     val value = urlMappedIABDValues.find(x => x._1 == iabd)
     value match {
       case Some(_) => value.get._2
-      case None => {
+      case None    =>
         logger.info("[URIInformation][iabdValueURLMapper] Invalid bik passed to map url: " + iabd)
         throw new InvalidBikTypeURIException
-      }
     }
   }
 
@@ -67,7 +66,7 @@ class URIInformation @Inject()(configuration: Configuration) extends URIValues w
     val value = urlMappedIABDValues.find(x => x._2 == iabdMappedURL)
     value match {
       case Some(_) => value.get._1
-      case None =>
+      case None    =>
         logger.info("[URIInformation][iabdValueURLDeMapper] Invalid bik passed to de-map url: " + iabdMappedURL)
         throw new InvalidBikTypeURIException
     }

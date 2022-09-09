@@ -24,7 +24,7 @@ import utils.{SplunkLogger, TaxDateUtils}
 
 import scala.concurrent.Future
 
-class TestSplunkLogger @Inject()(taxDateUtils: TaxDateUtils, auditConnector: AuditConnector)
+class TestSplunkLogger @Inject() (taxDateUtils: TaxDateUtils, auditConnector: AuditConnector)
     extends SplunkLogger(
       taxDateUtils,
       auditConnector

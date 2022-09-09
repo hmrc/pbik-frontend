@@ -23,8 +23,8 @@ import uk.gov.hmrc.play.partials.{FormPartialRetriever, HeaderCarrierForPartials
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class LocalFormPartialRetriever @Inject()(
+class LocalFormPartialRetriever @Inject() (
   val httpGet: HttpClient,
   val headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter,
-  implicit val ec: ExecutionContext)
-    extends FormPartialRetriever {}
+  implicit val ec: ExecutionContext
+) extends FormPartialRetriever {}

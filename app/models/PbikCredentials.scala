@@ -21,4 +21,5 @@ case class PbikCredentials(
   employerNumber: Int,
   payeSequenceNumber: Int,
   aoReference: String,
-  payeSchemeOperatorName: String)
+  payeSchemeOperatorName: String
+)

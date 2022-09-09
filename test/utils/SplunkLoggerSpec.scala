@@ -33,16 +33,20 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.model.DataEvent
 
 class SplunkLoggerSpec
-    extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication with TestAuthUser {
+    extends AnyWordSpecLike
+    with Matchers
+    with OptionValues
+    with FakePBIKApplication
+    with TestAuthUser {
 
-  val testList: List[EiLPerson] =
+  val testList: List[EiLPerson]     =
     List[EiLPerson](new EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0))
   val testPersonList: EiLPersonList = EiLPersonList(testList)
 
   class SetUp {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
+    implicit val hc: HeaderCarrier   = HeaderCarrier()
     val controller: TestSplunkLogger = app.injector.instanceOf[TestSplunkLogger]
-    val msg = "Hello"
+    val msg                          = "Hello"
 
     val csrfTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
 
@@ -58,15 +62,16 @@ class SplunkLoggerSpec
       auditSource = SplunkLogger.pbik_audit_source,
       auditType = SplunkLogger.pbik_benefit_type,
       detail = Map(
-        SplunkLogger.key_event_name -> SplunkLogger.pbik_event_name,
+        SplunkLogger.key_event_name   -> SplunkLogger.pbik_event_name,
         SplunkLogger.key_gateway_user -> EmpRef(
           taxOfficeNumber = "taxOfficeNumber",
-          taxOfficeReference = "taxOfficeReference").toString,
-        SplunkLogger.key_tier    -> controller.FRONTEND.toString,
-        SplunkLogger.key_action  -> controller.ADD.toString,
-        SplunkLogger.key_target  -> controller.BIK.toString,
-        SplunkLogger.key_period  -> controller.CYP1.toString,
-        SplunkLogger.key_message -> msg
+          taxOfficeReference = "taxOfficeReference"
+        ).toString,
+        SplunkLogger.key_tier         -> controller.FRONTEND.toString,
+        SplunkLogger.key_action       -> controller.ADD.toString,
+        SplunkLogger.key_target       -> controller.BIK.toString,
+        SplunkLogger.key_period       -> controller.CYP1.toString,
+        SplunkLogger.key_message      -> msg
       )
     )
   }
@@ -130,7 +135,7 @@ class SplunkLoggerSpec
 
   "When logging events, the SplunkLogger" should {
     "complete successfully when sending a general DataEvent" in new SetUp {
-      val nonPbikEvent = DataEvent(
+      val nonPbikEvent   = DataEvent(
         auditSource = "TEST",
         auditType = "TEST-AUDIT-TYPE",
         detail = Map(
@@ -141,7 +146,8 @@ class SplunkLoggerSpec
           "key3"      -> "val3",
           "key4"      -> "val4",
           "key5"      -> "val5",
-          "other key" -> "other data")
+          "other key" -> "other data"
+        )
       )
       val r: AuditResult = await(controller.logSplunkEvent(nonPbikEvent))
       assert(r == Success)
@@ -166,7 +172,9 @@ class SplunkLoggerSpec
       assert(
         d.detail.get(SplunkLogger.key_empref).get == EmpRef(
           taxOfficeNumber = "taxOfficeNumber",
-          taxOfficeReference = "taxOfficeReference").toString)
+          taxOfficeReference = "taxOfficeReference"
+        ).toString
+      )
       assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
       assert(d.detail.get(SplunkLogger.key_error).get == controller.EXCEPTION.toString)
       assert(d.detail.get(SplunkLogger.key_message).get == "No PAYE Scheme found for user")

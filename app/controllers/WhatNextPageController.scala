@@ -31,7 +31,7 @@ import views.html.registration.{AddBenefitConfirmationNextTaxYear, RemoveBenefit
 import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class WhatNextPageController @Inject()(
+class WhatNextPageController @Inject() (
   override val messagesApi: MessagesApi,
   val cachingService: SessionService,
   authenticate: AuthAction,
@@ -41,7 +41,8 @@ class WhatNextPageController @Inject()(
   cc: MessagesControllerComponents,
   addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear,
   removeBenefitConfirmationNextTaxYearView: RemoveBenefitConfirmationNextTaxYear
-) extends FrontendController(cc) with I18nSupport {
+) extends FrontendController(cc)
+    with I18nSupport {
 
   def calculateTaxYear(isCurrentTaxYear: Boolean): (Int, Int) =
     if (isCurrentTaxYear) {
@@ -51,8 +52,8 @@ class WhatNextPageController @Inject()(
     }
 
   def showWhatNextRegisteredBik(year: String): Action[AnyContent] =
-    (authenticate).async { implicit request =>
-      val yearInt = year match {
+    authenticate.async { implicit request =>
+      val yearInt      = year match {
         case "cy1" => controllersReferenceData.yearRange.cy
         case "cy"  => controllersReferenceData.yearRange.cyminus1
       }
@@ -65,13 +66,14 @@ class WhatNextPageController @Inject()(
             controllersReferenceData.yearRange,
             addedBiksAsList,
             empRef = request.empRef
-          ))
+          )
+        )
       }
       controllersReferenceData.responseErrorHandler(resultFuture)
     }
 
   def showWhatNextRemovedBik(iabdType: String): Action[AnyContent] =
-    (authenticate).async { implicit request =>
+    authenticate.async { implicit request =>
       val resultFuture = cachingService.fetchPbikSession().map { session =>
         val removedBikAsList: RegistrationList =
           RegistrationList(active = List(session.get.bikRemoved.get))
@@ -82,7 +84,8 @@ class WhatNextPageController @Inject()(
             removedBikAsList,
             iabdType,
             empRef = request.empRef
-          ))
+          )
+        )
       }
       controllersReferenceData.responseErrorHandler(resultFuture)
     }
