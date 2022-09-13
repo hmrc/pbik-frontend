@@ -24,13 +24,13 @@ import uk.gov.hmrc.play.partials.{FormPartialRetriever, HeaderCarrierForPartials
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class FormPartialProvider @Inject()(
+class FormPartialProvider @Inject() (
   val httpGet: HttpClient,
-  val headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter)
-    extends FormPartialRetriever {}
+  val headerCarrierForPartialsConverter: HeaderCarrierForPartialsConverter
+) extends FormPartialRetriever {}
 
 @Singleton
-class SessionCookieCryptoFilterWrapper @Inject()(sessionCookieCrypto: SessionCookieCrypto) {
+class SessionCookieCryptoFilterWrapper @Inject() (sessionCookieCrypto: SessionCookieCrypto) {
 
   def encryptCookieString(cookie: String): String =
     sessionCookieCrypto.crypto.encrypt(PlainText(cookie)).value

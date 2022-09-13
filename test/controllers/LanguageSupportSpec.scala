@@ -48,36 +48,36 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
     .build()
 
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
-  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  val formMappings: FormMappings          = app.injector.instanceOf[FormMappings]
 
-  lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
+  lazy val CYCache: List[Bik]      = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   val timeoutValue: FiniteDuration = 15 seconds
 
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   "The Homepage Controller" should {
     "set the request language and reload page based on referer header" in {
-      val mockController = app.injector.instanceOf[HomePageController]
+      val mockController                                        = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshrequest
         .withHeaders("Referer" -> "/payrollbik/payrolled-benefits-expenses")
 
-      val result = mockController.setLanguage(request)
+      val result                                                = mockController.setLanguage(request)
       (scala.concurrent.ExecutionContext.Implicits.global)
-      status(result) must be(SEE_OTHER)
+      status(result)               must be(SEE_OTHER)
       redirectLocation(result).get must be("/payrollbik/payrolled-benefits-expenses")
     }
   }
 
   "HomePageController" should {
     "display the navigation page" in {
-      val homePageController = app.injector.instanceOf[HomePageController]
+      val homePageController                                    = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
         .withSession(SessionKeys.sessionId -> sessionId)
         .withCookies(Cookie("PLAY_LANG", "cy"))
 
       val result = homePageController.onPageLoad(request)
 
-      status(result) must be(OK) // 200
+      status(result)          must be(OK) // 200
       contentAsString(result) must include("Cyfeirnod TWE y cyflogwr")
     }
   }

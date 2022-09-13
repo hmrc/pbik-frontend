@@ -34,7 +34,7 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.Future
 
-class StubbedRegistrationService @Inject()(
+class StubbedRegistrationService @Inject() (
   bikListUtils: BikListUtils,
   formMappings: FormMappings,
   pbikAppConfig: PbikAppConfig,
@@ -46,8 +46,8 @@ class StubbedRegistrationService @Inject()(
   override val messagesApi: MessagesApi,
   errorPageView: ErrorPage,
   currentTaxYearView: CurrentTaxYear,
-  nextTaxYearView: NextTaxYear)
-    extends RegistrationService(
+  nextTaxYearView: NextTaxYear
+) extends RegistrationService(
       messagesApi,
       bikListUtils,
       formMappings,
@@ -58,15 +58,16 @@ class StubbedRegistrationService @Inject()(
       uRIInformation,
       pbikAppConfig,
       errorPageView
-    ) with I18nSupport {
+    )
+    with I18nSupport {
 
-  val dateRange: TaxYearRange = taxDateUtils.getTaxYearRange()
-  lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
+  val dateRange: TaxYearRange                          = taxDateUtils.getTaxYearRange()
+  lazy val CYCache: List[Bik]                          = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   lazy val CYRegistrationItems: List[RegistrationItem] =
     List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
-  val registeredListOption = List.empty[Bik]
-  val allRegisteredListOption: List[Bik] = CYCache
-  val mockRegistrationItemList = List.empty[RegistrationItem]
+  val registeredListOption                             = List.empty[Bik]
+  val allRegisteredListOption: List[Bik]               = CYCache
+  val mockRegistrationItemList                         = List.empty[RegistrationItem]
   val mockFormRegistrationList: Form[RegistrationList] =
     formMappings.objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
 
@@ -80,11 +81,11 @@ class StubbedRegistrationService @Inject()(
       Seq[Bik],
       Seq[Int],
       Seq[Int],
-      Option[Int]) => HtmlFormat.Appendable)(
-    implicit hc: HeaderCarrier,
-    request: AuthenticatedRequest[AnyContent]): Future[Result] =
+      Option[Int]
+    ) => HtmlFormat.Appendable
+  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] =
     year match {
-      case dateRange.cyminus1 => {
+      case dateRange.cyminus1 =>
         Future.successful(
           Ok(
             currentTaxYearView(
@@ -96,9 +97,10 @@ class StubbedRegistrationService @Inject()(
               decommissionedBiks = List(0),
               biksAvailableCount = Some(17),
               empRef = request.empRef
-            )))
-      }
-      case _ => {
+            )
+          )
+        )
+      case _                  =>
         Future.successful(
           Ok(
             nextTaxYearView(
@@ -111,8 +113,9 @@ class StubbedRegistrationService @Inject()(
               decommissionedBiks = List(0),
               biksAvailableCount = Some(17),
               empRef = request.empRef
-            )))
-      }
+            )
+          )
+        )
     }
 
 }

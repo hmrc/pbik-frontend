@@ -31,10 +31,10 @@ import scala.util.Try
 object FormMappingsConstants {
 
   val START_OF_MONTH = 1
-  val MONTH_28_DAYS = 28
-  val MONTH_29_DAYS = 29
-  val MONTH_30_DAYS = 30
-  val MONTH_31_DAYS = 31
+  val MONTH_28_DAYS  = 28
+  val MONTH_29_DAYS  = 29
+  val MONTH_30_DAYS  = 30
+  val MONTH_31_DAYS  = 31
   val LEAP_YEAR_FREQ = 4
 
   // Note - scala range syntax needs extra one added
@@ -43,18 +43,18 @@ object FormMappingsConstants {
   val RANGE_30_DAYS = Range(START_OF_MONTH, MONTH_30_DAYS + 1)
   val RANGE_31_DAYS = Range(START_OF_MONTH, MONTH_31_DAYS + 1)
 
-  val CY = "cy"
+  val CY   = "cy"
   val CYP1 = "cyp1"
 
 }
 
 @Singleton
-class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDefaults with I18nSupport {
+class FormMappings @Inject() (val messagesApi: MessagesApi) extends PayrollBikDefaults with I18nSupport {
 
   private val nameValidationRegex = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
   private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
-  private val ninoTrimmedRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
-  private val maxLength = 100
+  private val ninoTrimmedRegex    = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
+  private val maxLength           = 100
 
   def generateYearString(length: Int): String =
     if (length > 0) {
@@ -73,13 +73,13 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
   def isValidDate(dob: (String, String, String)): Boolean =
     try {
       val monthToInt: Int = dob._2.toInt
-      val dayToInt: Int = dob._1.toInt
-      val yearToInt: Int = dob._3.toInt
+      val dayToInt: Int   = dob._1.toInt
+      val yearToInt: Int  = dob._3.toInt
       monthToInt match {
-        case month if JANUARY to DECEMBER contains month => {
+        case month if JANUARY to DECEMBER contains month =>
           monthToInt match {
-            case JANUARY => RANGE_31_DAYS.contains(dayToInt)
-            case FEBRUARY =>
+            case JANUARY   => RANGE_31_DAYS.contains(dayToInt)
+            case FEBRUARY  =>
               if (yearToInt % LEAP_YEAR_FREQ == 0) {
                 RANGE_29_DAYS.contains(dayToInt)
               } else {
@@ -97,8 +97,7 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
             case DECEMBER  => RANGE_31_DAYS.contains(dayToInt)
             case _         => throw new NumberFormatException()
           }
-        }
-        case _ => false
+        case _                                           => false
       }
     } catch {
       case ex: NumberFormatException => false
@@ -106,14 +105,14 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
 
   def isDateYearInFuture(dob: (String, String, String)): Boolean = {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-    val dobYear = Try(dob._3.toInt).getOrElse(0)
+    val dobYear     = Try(dob._3.toInt).getOrElse(0)
 
     dobYear < currentYear
   }
 
   def isDateYearInPastValid(dob: (String, String, String)): Boolean = {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-    val dobYear = Try(dob._3.toInt).getOrElse(0)
+    val dobYear     = Try(dob._3.toInt).getOrElse(0)
 
     !((dobYear + 130) < currentYear)
   }
@@ -133,34 +132,37 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
   val objSelectedForm: Form[RegistrationList] = Form(
     mapping(
       "select-all" -> optional(text),
-      "actives" -> list(
+      "actives"    -> list(
         mapping(
           "uid"     -> text,
           "active"  -> boolean,
           "enabled" -> boolean
-        )(RegistrationItem.apply)(RegistrationItem.unapply))
+        )(RegistrationItem.apply)(RegistrationItem.unapply)
+      )
         .verifying("Error message goes here", selectionList => selectionList.exists(listItem => listItem.active)),
-      "reason" -> optional(
+      "reason"     -> optional(
         mapping(
           "selectionValue" -> text,
           "info"           -> optional(text)
-        )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply))
+        )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply)
+      )
     )(RegistrationList.apply)(RegistrationList.unapply)
   )
 
   def exclusionSearchFormWithNino[A](implicit request: Request[A]): Form[EiLPerson] = Form(
     mapping(
-      "firstname" -> text
+      "firstname"  -> text
         .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.nonEmpty)
         .verifying(Messages("error.incorrect.firstname"), firstname => firstname.matches(nameValidationRegex)),
-      "surname" -> text
+      "surname"    -> text
         .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.nonEmpty)
         .verifying(Messages("error.incorrect.lastname"), lastname => lastname.matches(nameValidationRegex)),
-      "nino" -> text
+      "nino"       -> text
         .verifying(Messages("error.empty.nino"), nino => nino.trim.nonEmpty)
         .verifying(
           Messages("error.incorrect.nino"),
-          nino => (nino.trim.isEmpty || nino.replaceAll(" ", "").matches(ninoValidationRegex))),
+          nino => (nino.trim.isEmpty || nino.replaceAll(" ", "").matches(ninoValidationRegex))
+        ),
       "status"     -> optional(number),
       "perOptLock" -> default(number, 0)
     )((firstname, surname, nino, status, perOptLock) =>
@@ -174,34 +176,36 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
         EiLPerson.defaultGender,
         status,
         perOptLock
-    ))((eilPerson: EiLPerson) =>
-      Some((eilPerson.firstForename, eilPerson.surname, eilPerson.nino, eilPerson.status, eilPerson.perOptLock)))
+      )
+    )((eilPerson: EiLPerson) =>
+      Some((eilPerson.firstForename, eilPerson.surname, eilPerson.nino, eilPerson.status, eilPerson.perOptLock))
+    )
   )
 
   def stripTrailingNinoCharacterForNPS(nino: String): String =
     ninoTrimmedRegex.r.findFirstIn(nino).getOrElse("").mkString
 
   def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[EiLPerson] = {
-    val dateDayRegex: String = "([0-9])"
-    val dateMonthRegex: String = "([0-9])"
-    val dateYearRegex: String = "([0-9]){4}"
-    val emptyDateError = "error.empty.dob"
-    val invalidDateError = "error.invaliddate"
-    val invalidDayDateError = "error.invaliddate.day"
-    val invalidMonthDateError = "error.invaliddate.month"
-    val invalidYearDateError = "error.invaliddate.year"
+    val dateDayRegex: String       = "([0-9])"
+    val dateMonthRegex: String     = "([0-9])"
+    val dateYearRegex: String      = "([0-9]){4}"
+    val emptyDateError             = "error.empty.dob"
+    val invalidDateError           = "error.invaliddate"
+    val invalidDayDateError        = "error.invaliddate.day"
+    val invalidMonthDateError      = "error.invaliddate.month"
+    val invalidYearDateError       = "error.invaliddate.year"
     val invalidYearFutureDateError = "error.invaliddate.future.year"
-    val invalidYearPastDateError = "error.invaliddate.past.year"
+    val invalidYearPastDateError   = "error.invaliddate.past.year"
 
     Form(
       mapping(
-        "firstname" -> text
+        "firstname"  -> text
           .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.nonEmpty)
           .verifying(Messages("error.incorrect.firstname"), firstname => firstname.matches(nameValidationRegex)),
-        "surname" -> text
+        "surname"    -> text
           .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.nonEmpty)
           .verifying(Messages("error.incorrect.lastname"), lastname => lastname.matches(nameValidationRegex)),
-        "dob" -> mapping(
+        "dob"        -> mapping(
           "day"   -> text,
           "month" -> text,
           "year"  -> text
@@ -223,45 +227,35 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
           EiLPerson.defaultSecondName,
           surname.trim,
           EiLPerson.defaultWorksPayrollNumber,
-          Some(addZeroIfNeeded(dob._1) + "/" +
-            addZeroIfNeeded(dob._2) + "/" + dob._3),
+          Some(
+            addZeroIfNeeded(dob._1) + "/" +
+              addZeroIfNeeded(dob._2) + "/" + dob._3
+          ),
           Some(gender),
           status,
           perOptLock
-      ))(
-        (eilPerson: EiLPerson) =>
-          Some(
+        )
+      )((eilPerson: EiLPerson) =>
+        Some(
+          (
+            eilPerson.firstForename,
+            eilPerson.surname,
             (
-              eilPerson.firstForename,
-              eilPerson.surname,
-              (
-                eilPerson.dateOfBirth.get.split('/')(0),
-                eilPerson.dateOfBirth.get.split('/')(1),
-                eilPerson.dateOfBirth.get.split('/')(2)),
-              eilPerson.gender.get,
-              eilPerson.status,
-              eilPerson.perOptLock)))
+              eilPerson.dateOfBirth.get.split('/')(0),
+              eilPerson.dateOfBirth.get.split('/')(1),
+              eilPerson.dateOfBirth.get.split('/')(2)
+            ),
+            eilPerson.gender.get,
+            eilPerson.status,
+            eilPerson.perOptLock
+          )
+        )
+      )
     )
   }
 
   val individualsForm: Form[EiLPersonList] = Form(
     mapping(
-      "individuals" -> list(mapping(
-        "nino"               -> text,
-        "firstName"          -> text,
-        "secondName"         -> optional(text),
-        "surname"            -> text,
-        "worksPayrollNumber" -> optional(text),
-        "dateOfBirth"        -> optional(text),
-        "gender"             -> optional(text),
-        "status"             -> optional(number),
-        "perOptLock"         -> default(number, 0)
-      )(EiLPerson.apply)(EiLPerson.unapply)))(EiLPersonList.apply)(EiLPersonList.unapply)
-  )
-
-  val individualsFormWithRadio: Form[(String, EiLPersonList)] = Form(
-    mapping(
-      "individualSelection" -> text,
       "individuals" -> list(
         mapping(
           "nino"               -> text,
@@ -273,9 +267,30 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
           "gender"             -> optional(text),
           "status"             -> optional(number),
           "perOptLock"         -> default(number, 0)
-        )(EiLPerson.apply)(EiLPerson.unapply))
+        )(EiLPerson.apply)(EiLPerson.unapply)
+      )
+    )(EiLPersonList.apply)(EiLPersonList.unapply)
+  )
+
+  val individualsFormWithRadio: Form[(String, EiLPersonList)] = Form(
+    mapping(
+      "individualSelection" -> text,
+      "individuals"         -> list(
+        mapping(
+          "nino"               -> text,
+          "firstName"          -> text,
+          "secondName"         -> optional(text),
+          "surname"            -> text,
+          "worksPayrollNumber" -> optional(text),
+          "dateOfBirth"        -> optional(text),
+          "gender"             -> optional(text),
+          "status"             -> optional(number),
+          "perOptLock"         -> default(number, 0)
+        )(EiLPerson.apply)(EiLPerson.unapply)
+      )
     )((individualSelection, individuals) => ((individualSelection, EiLPersonList(individuals))))(
-      (individualsTuple: (String, EiLPersonList)) => Some((individualsTuple._1, individualsTuple._2.active)))
+      (individualsTuple: (String, EiLPersonList)) => Some((individualsTuple._1, individualsTuple._2.active))
+    )
   )
 
   val individualSelectionForm: Form[ExclusionNino] = Form(
@@ -290,17 +305,18 @@ class FormMappings @Inject()(val messagesApi: MessagesApi) extends PayrollBikDef
       mapping(
         "selectionValue" -> text.verifying(noReasonError, selectionValue => selectionValue.trim.nonEmpty),
         "info"           -> optional(text)
-      )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply))
+      )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply)
+    )
 
   }
 
-  val removalOtherReasonForm: Form[OtherReason] = {
+  val removalOtherReasonForm: Form[OtherReason] =
     Form(
       mapping(
         "otherReason" -> text
           .verifying("RemoveBenefits.other.error.required", _.trim.nonEmpty)
           .verifying("RemoveBenefits.other.error.length", _.length <= maxLength)
-      )(OtherReason.apply)(OtherReason.unapply))
-  }
+      )(OtherReason.apply)(OtherReason.unapply)
+    )
 
 }

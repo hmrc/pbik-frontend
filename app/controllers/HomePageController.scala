@@ -35,7 +35,7 @@ import scala.util.{Success, Try}
 import play.api.Logging
 
 @Singleton
-class HomePageController @Inject()(
+class HomePageController @Inject() (
   override val messagesApi: MessagesApi,
   cc: MessagesControllerComponents,
   bikListService: BikListService,
@@ -49,15 +49,20 @@ class HomePageController @Inject()(
   pbikAppConfig: PbikAppConfig,
   uriInformation: URIInformation,
   errorPageView: ErrorPage,
-  summaryPage: Summary)(implicit val ec: ExecutionContext)
-    extends FrontendController(cc) with I18nSupport with Logging {
+  summaryPage: Summary
+)(implicit val ec: ExecutionContext)
+    extends FrontendController(cc)
+    with I18nSupport
+    with Logging {
 
   def notAuthorised: Action[AnyContent] = authenticate { implicit request =>
     Unauthorized(
       errorPageView(
         ControllersReferenceDataCodes.AUTHORISATION_ERROR,
         taxDateUtils.getTaxYearRange(),
-        empRef = Some(request.empRef)))
+        empRef = Some(request.empRef)
+      )
+    )
   }
 
   def signout: Action[AnyContent] = unauthorisedAction {
@@ -65,28 +70,31 @@ class HomePageController @Inject()(
   }
 
   def setLanguage: Action[AnyContent] = Action { implicit request =>
-    val lang = request.getQueryString("lang").getOrElse("en")
+    val lang    = request.getQueryString("lang").getOrElse("en")
     logger.info(s"[HomePageController][setLanguage] Request received: set language to $lang")
     val newLang = Lang(lang)
     Redirect(
       request.headers.toMap
         .getOrElse("Referer", List("https://www.tax.service.gov.uk/payrollbik/payrolled-benefits-expenses"))
         .asInstanceOf[List[String]]
-        .head)
+        .head
+    )
       .withLang(newLang)(messagesApi)
   }
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     cachingService.resetAll()
-    val taxYearRange = taxDateUtils.getTaxYearRange()
-    val pageLoadFuture = for {
+    val taxYearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
+    val pageLoadFuture: Future[Result] = for {
       // Get the available count of biks available for each tax year
-      biksListOptionCY: List[Bik] <- bikListService.registeredBenefitsList(
-                                      controllersReferenceData.yearRange.cyminus1,
-                                      EmpRef("", ""))(uriInformation.getBenefitTypesPath)
-      biksListOptionCYP1: List[Bik] <- bikListService.registeredBenefitsList(
-                                        controllersReferenceData.yearRange.cy,
-                                        EmpRef("", ""))(uriInformation.getBenefitTypesPath)
+      biksListOptionCY: List[Bik]                       <-
+        bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef("", ""))(
+          uriInformation.getBenefitTypesPath
+        )
+      biksListOptionCYP1: List[Bik]                     <-
+        bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cy, EmpRef("", ""))(
+          uriInformation.getBenefitTypesPath
+        )
       currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
       nextYearList: (Map[String, String], List[Bik])    <- bikListService.nextYearList
     } yield {
@@ -108,7 +116,8 @@ class HomePageController @Inject()(
           biksListOptionCYP1.size,
           fromYTA.toString,
           empRef = request.empRef
-        ))
+        )
+      )
         .addingToSession(nextYearList._1.toSeq: _*)
         .addingToSession(ControllersReferenceDataCodes.SESSION_FROM_YTA -> fromYTA.toString)
     }
@@ -136,6 +145,7 @@ class HomePageController @Inject()(
         iabd = None,
         name = Option(request.name),
         empRef = Some(request.empRef)
-      ))
+      )
+    )
 
 }

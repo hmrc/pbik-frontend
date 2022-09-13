@@ -49,8 +49,9 @@ class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneA
           EmpRef.empty,
           UserName(Name(None, None)),
           FakeRequest("", "")
-            .withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
-        val result = new Harness().callTransform(requestWithSessionID)
+            .withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}")
+        )
+        val result               = new Harness().callTransform(requestWithSessionID)
         whenReady(result) {
           _ mustBe Right(requestWithSessionID)
         }
@@ -60,14 +61,14 @@ class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneA
     "the session is not set" must {
       "redirect user to home page controller " in {
         val request = AuthenticatedRequest(EmpRef.empty, UserName(Name(None, None)), FakeRequest("", ""))
-        val result = new Harness().callTransform(request)
+        val result  = new Harness().callTransform(request)
 
         whenReady(result) { call: Either[Result, AuthenticatedRequest[_]] =>
           call match {
             case Left(callResult) =>
               val headers: Map[String, String] = callResult.header.headers
               headers.getOrElse("Location", "") must include("/payrollbik/registered-benefits-expenses")
-            case Right(_) => fail("Result not a Left")
+            case Right(_)         => fail("Result not a Left")
           }
         }
       }

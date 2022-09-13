@@ -26,8 +26,8 @@ import views.html.exclusion.NoNinoExclusionSearchForm
 
 class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings = app.injector.instanceOf[FormMappings]
+  val messagesApi: MessagesApi      = app.injector.instanceOf[MessagesApi]
+  val formMappings                  = app.injector.instanceOf[FormMappings]
   val noNinoExclusionSearchFormView = app.injector.instanceOf[NoNinoExclusionSearchForm]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
@@ -59,7 +59,10 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
           ("dob.month", ""),
           ("dob.year", ""),
           ("gender-female", ""),
-          ("gender-male", ""))))
+          ("gender-male", "")
+        )
+      )
+    )
 
     doc must haveErrorSummary(messages("error.empty.firstname").replace(".", ""))
     doc must haveErrorNotification(messages("error.empty.firstname"))

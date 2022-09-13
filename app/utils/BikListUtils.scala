@@ -22,9 +22,9 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Request
 
 @Singleton
-class BikListUtils @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
+class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport {
 
-  val STATUS_ADD = 30
+  val STATUS_ADD    = 30
   val STATUS_REMOVE = 40
 
   /**
@@ -33,7 +33,7 @@ class BikListUtils @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
     * @return
     */
   def sortAlphabeticallyByLabels[A](biks: List[Bik])(implicit request: Request[A]): List[Bik] = {
-    val listOfIdLabelPairs: List[(Bik, String)] =
+    val listOfIdLabelPairs: List[(Bik, String)]       =
       biks.map(bik => (bik, Messages("BenefitInKind.label." + bik.iabdType)))
     val sortedListOfIdLabelPairs: List[(Bik, String)] =
       listOfIdLabelPairs.sortWith((bik1: (Bik, String), bik2: (Bik, String)) => bik1._2 < bik2._2)
@@ -45,13 +45,14 @@ class BikListUtils @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
     * @param registeredBiksList
     * @return
     */
-  def sortRegistrationsAlphabeticallyByLabels[A](registeredBiksList: RegistrationList)(
-    implicit request: Request[A]): RegistrationList = {
-    val listOfIdLabelPairs: List[(String, String)] =
+  def sortRegistrationsAlphabeticallyByLabels[A](
+    registeredBiksList: RegistrationList
+  )(implicit request: Request[A]): RegistrationList = {
+    val listOfIdLabelPairs: List[(String, String)]       =
       registeredBiksList.active.map(bik => (bik.id, Messages("BenefitInKind.label." + bik.id)))
     val sortedListOfIdLabelPairs: List[(String, String)] =
       listOfIdLabelPairs.sortWith((bik1: (String, String), bik2: (String, String)) => bik1._2 < bik2._2)
-    val registrationItemList: List[RegistrationItem] =
+    val registrationItemList: List[RegistrationItem]     =
       sortedListOfIdLabelPairs.map(bik => RegistrationItem(bik._1, false, true))
     RegistrationList(registeredBiksList.selectAll, registrationItemList)
   }
@@ -67,7 +68,8 @@ class BikListUtils @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
     val selectedBiksToRemove = selectedBiks.filter(x => x.status == STATUS_REMOVE)
 
     val biksToRemove = registeredBiks.foldLeft(List.empty[Bik])((acc, bik) =>
-      if (selectedBiksToRemove.contains(bik)) Bik(bik.iabdType, STATUS_REMOVE, bik.eilCount) :: acc else acc)
+      if (selectedBiksToRemove.contains(bik)) Bik(bik.iabdType, STATUS_REMOVE, bik.eilCount) :: acc else acc
+    )
 
     val biksToAdd = selectedBiks.filter(x => x.status == STATUS_ADD && !registeredBiks.contains(x))
 
@@ -102,9 +104,12 @@ class BikListUtils @Inject()(val messagesApi: MessagesApi) extends I18nSupport {
     */
   def removeMatches(initialList: List[Bik], checkedList: List[Bik]): RegistrationList = {
     val diff: List[Bik] = initialList.diff(checkedList)
-    RegistrationList(None, diff.map { x =>
-      RegistrationItem(x.iabdType, active = false, enabled = true)
-    })
+    RegistrationList(
+      None,
+      diff.map { x =>
+        RegistrationItem(x.iabdType, active = false, enabled = true)
+      }
+    )
 
   }
 }

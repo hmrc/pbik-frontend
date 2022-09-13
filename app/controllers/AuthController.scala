@@ -27,12 +27,13 @@ import views.html.Enrol
 import scala.concurrent.Future
 
 @Singleton
-class AuthController @Inject()(
+class AuthController @Inject() (
   authenticate: MinimalAuthAction,
   override val messagesApi: MessagesApi,
   cc: MessagesControllerComponents,
-  enrolView: Enrol)
-    extends FrontendController(cc) with I18nSupport {
+  enrolView: Enrol
+) extends FrontendController(cc)
+    with I18nSupport {
 
   def notAuthorised: Action[AnyContent] = authenticate.async { implicit request =>
     notAuthorisedResult

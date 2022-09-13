@@ -29,7 +29,7 @@ import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class TaxDateUtils @Inject()(configuration: Configuration) extends PayrollBikDefaults {
+class TaxDateUtils @Inject() (configuration: Configuration) extends PayrollBikDefaults {
 
   val overriddenDateFromConfig: List[Integer] = Try {
     configuration.underlying.getIntList("pbik.date.override")
@@ -38,9 +38,9 @@ class TaxDateUtils @Inject()(configuration: Configuration) extends PayrollBikDef
     case Failure(_)     => List.empty
   }
 
-  val sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss")
+  val sdf                   = new SimpleDateFormat("dd-M-yyyy hh:mm:ss")
   val startDateBanner: Date = sdf.parse(configuration.getOptional[String]("pbik.banner.date.start").getOrElse(""))
-  val endDateBanner: Date = sdf.parse(configuration.getOptional[String]("pbik.banner.date.end").getOrElse(""))
+  val endDateBanner: Date   = sdf.parse(configuration.getOptional[String]("pbik.banner.date.end").getOrElse(""))
 
   def getDefaultDate: LocalDate =
     if (overriddenDateFromConfig.nonEmpty) {

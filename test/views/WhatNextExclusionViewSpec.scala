@@ -26,14 +26,14 @@ import views.html.exclusion.WhatNextExclusion
 
 class WhatNextExclusionViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  val messagesApi: MessagesApi                 = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings               = app.injector.instanceOf[FormMappings]
   val whatNextExclusionView: WhatNextExclusion = app.injector.instanceOf[WhatNextExclusion]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
-  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
+  implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   override def view: Html = whatNextExclusionView(taxYearRange, "cyp1", "30", "", EmpRef("", ""))

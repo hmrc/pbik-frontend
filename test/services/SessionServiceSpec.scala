@@ -37,7 +37,11 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.language.postfixOps
 
 class SessionServiceSpec
-    extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication with BeforeAndAfterEach
+    extends AnyWordSpecLike
+    with Matchers
+    with OptionValues
+    with FakePBIKApplication
+    with BeforeAndAfterEach
     with MockitoSugar {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
@@ -46,8 +50,8 @@ class SessionServiceSpec
     .overrides(bind[SessionService].toInstance(mockSessionService))
     .build()
 
-  val timeout: FiniteDuration = 5 seconds
-  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId("session001")))
+  val timeout: FiniteDuration            = 5 seconds
+  implicit val hc: HeaderCarrier         = HeaderCarrier(sessionId = Some(SessionId("session001")))
   val TestSessionService: SessionService = new SessionService(mockHttp, mockPbikSessionCache)
 
   val pbikSession: PbikSession = PbikSession(None, None, None, None, None, None, None)
@@ -58,10 +62,10 @@ class SessionServiceSpec
       val regList = RegistrationList(None, List(RegistrationItem("31", true, true)), None)
       when(mockPbikSessionCache.fetchAndGetEntry[PbikSession](any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
-      val json = Json.toJson[PbikSession](pbikSession.copy(registrations = Some(regList)))
+      val json    = Json.toJson[PbikSession](pbikSession.copy(registrations = Some(regList)))
       when(mockPbikSessionCache.cache[PbikSession](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(CacheMap("sessionValue", Map("pbik_session" -> json))))
-      val result = await(TestSessionService.cacheRegistrationList(regList))(timeout)
+      val result  = await(TestSessionService.cacheRegistrationList(regList))(timeout)
       result shouldBe Some(pbikSession.copy(registrations = Some(regList)))
     }
 
@@ -69,10 +73,10 @@ class SessionServiceSpec
       val bikRemoved = RegistrationItem("31", true, true)
       when(mockPbikSessionCache.fetchAndGetEntry[PbikSession](any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
-      val json = Json.toJson[PbikSession](pbikSession.copy(bikRemoved = Some(bikRemoved)))
+      val json       = Json.toJson[PbikSession](pbikSession.copy(bikRemoved = Some(bikRemoved)))
       when(mockPbikSessionCache.cache[PbikSession](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(CacheMap("sessionValue", Map("pbik_session" -> json))))
-      val result = await(TestSessionService.cacheBikRemoved(bikRemoved))(timeout)
+      val result     = await(TestSessionService.cacheBikRemoved(bikRemoved))(timeout)
       result shouldBe Some(pbikSession.copy(bikRemoved = Some(bikRemoved)))
     }
 
@@ -80,10 +84,10 @@ class SessionServiceSpec
       val listOfMatches = List(EiLPerson("AA111111A", "John", None, "Smith", None, None, None, None))
       when(mockPbikSessionCache.fetchAndGetEntry[PbikSession](any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
-      val json = Json.toJson[PbikSession](pbikSession.copy(listOfMatches = Some(listOfMatches)))
+      val json          = Json.toJson[PbikSession](pbikSession.copy(listOfMatches = Some(listOfMatches)))
       when(mockPbikSessionCache.cache[PbikSession](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(CacheMap("sessionValue", Map("pbik_session" -> json))))
-      val result = await(TestSessionService.cacheListOfMatches(listOfMatches))(timeout)
+      val result        = await(TestSessionService.cacheListOfMatches(listOfMatches))(timeout)
       result shouldBe Some(pbikSession.copy(listOfMatches = Some(listOfMatches)))
     }
 
@@ -91,10 +95,10 @@ class SessionServiceSpec
       val eiLPerson = EiLPerson("AA111111A", "John", None, "Smith", None, None, None, None)
       when(mockPbikSessionCache.fetchAndGetEntry[PbikSession](any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
-      val json = Json.toJson[PbikSession](pbikSession.copy(eiLPerson = Some(eiLPerson)))
+      val json      = Json.toJson[PbikSession](pbikSession.copy(eiLPerson = Some(eiLPerson)))
       when(mockPbikSessionCache.cache[PbikSession](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(CacheMap("sessionValue", Map("pbik_session" -> json))))
-      val result = await(TestSessionService.cacheEiLPerson(eiLPerson))(timeout)
+      val result    = await(TestSessionService.cacheEiLPerson(eiLPerson))(timeout)
       result shouldBe Some(pbikSession.copy(eiLPerson = Some(eiLPerson)))
     }
 
@@ -102,10 +106,10 @@ class SessionServiceSpec
       val currentExclusions = List(EiLPerson("AA111111A", "John", None, "Smith", None, None, None, None))
       when(mockPbikSessionCache.fetchAndGetEntry[PbikSession](any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
-      val json = Json.toJson[PbikSession](pbikSession.copy(currentExclusions = Some(currentExclusions)))
+      val json              = Json.toJson[PbikSession](pbikSession.copy(currentExclusions = Some(currentExclusions)))
       when(mockPbikSessionCache.cache[PbikSession](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(CacheMap("sessionValue", Map("pbik_session" -> json))))
-      val result = await(TestSessionService.cacheCurrentExclusions(currentExclusions))(timeout)
+      val result            = await(TestSessionService.cacheCurrentExclusions(currentExclusions))(timeout)
       result shouldBe Some(pbikSession.copy(currentExclusions = Some(currentExclusions)))
     }
 
@@ -113,10 +117,10 @@ class SessionServiceSpec
       val cyRegisteredBiks = List(Bik("31", 30))
       when(mockPbikSessionCache.fetchAndGetEntry[PbikSession](any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
-      val json = Json.toJson[PbikSession](pbikSession.copy(cyRegisteredBiks = Some(cyRegisteredBiks)))
+      val json             = Json.toJson[PbikSession](pbikSession.copy(cyRegisteredBiks = Some(cyRegisteredBiks)))
       when(mockPbikSessionCache.cache[PbikSession](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(CacheMap("sessionValue", Map("pbik_session" -> json))))
-      val result = await(TestSessionService.cacheCYRegisteredBiks(cyRegisteredBiks))(timeout)
+      val result           = await(TestSessionService.cacheCYRegisteredBiks(cyRegisteredBiks))(timeout)
       result shouldBe Some(pbikSession.copy(cyRegisteredBiks = Some(cyRegisteredBiks)))
     }
 
@@ -124,10 +128,10 @@ class SessionServiceSpec
       val nyRegisteredBiks = List(Bik("31", 30))
       when(mockPbikSessionCache.fetchAndGetEntry[PbikSession](any())(any(), any(), any()))
         .thenReturn(Future.successful(None))
-      val json = Json.toJson[PbikSession](pbikSession.copy(nyRegisteredBiks = Some(nyRegisteredBiks)))
+      val json             = Json.toJson[PbikSession](pbikSession.copy(nyRegisteredBiks = Some(nyRegisteredBiks)))
       when(mockPbikSessionCache.cache[PbikSession](any(), any())(any(), any(), any()))
         .thenReturn(Future.successful(CacheMap("sessionValue", Map("pbik_session" -> json))))
-      val result = await(TestSessionService.cacheNYRegisteredBiks(nyRegisteredBiks))(timeout)
+      val result           = await(TestSessionService.cacheNYRegisteredBiks(nyRegisteredBiks))(timeout)
       result shouldBe Some(pbikSession.copy(nyRegisteredBiks = Some(nyRegisteredBiks)))
     }
 
@@ -135,7 +139,7 @@ class SessionServiceSpec
       val pbikSession = PbikSession(None, Some(RegistrationItem("31", true, true)), None, None, None, None, None)
       when(mockPbikSessionCache.fetchAndGetEntry[PbikSession](any())(any(), any(), any()))
         .thenReturn(Future.successful(Some(pbikSession)))
-      val result = await(TestSessionService.fetchPbikSession())(timeout)
+      val result      = await(TestSessionService.fetchPbikSession())(timeout)
       result shouldBe Some(pbikSession)
     }
 

@@ -39,7 +39,11 @@ import scala.collection.immutable
 import scala.concurrent.Future
 
 class EilListServiceSpec
-    extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication with TestAuthUser {
+    extends AnyWordSpecLike
+    with Matchers
+    with OptionValues
+    with FakePBIKApplication
+    with TestAuthUser {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -54,27 +58,29 @@ class EilListServiceSpec
     when(
       els.tierConnector.genericGetCall[List[EiLPerson]](any[String], any[String], any[EmpRef], any[Int])(
         any[HeaderCarrier],
-        any[json.Format[List[EiLPerson]]])).thenReturn(Future.successful(List.empty[EiLPerson]))
+        any[json.Format[List[EiLPerson]]]
+      )
+    ).thenReturn(Future.successful(List.empty[EiLPerson]))
 
     els
   }
 
   "When calling the EILService it" should {
     "return an empty list" in {
-      val eilService: EiLListService = MockEiLListService
-      implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      val eilService: EiLListService                                                 = MockEiLListService
+      implicit val hc: HeaderCarrier                                                 = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+      implicit val request: FakeRequest[AnyContentAsEmpty.type]                      = mockrequest
       implicit val authenicatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      val result = await(eilService.currentYearEiL("5", 2015))
+      val result                                                                     = await(eilService.currentYearEiL("5", 2015))
       result.size shouldBe 0
     }
 
     "return a subset of List(EiL) search results - already excluded" in {
-      val eilService = MockEiLListService
-      val eiL1 = new EiLPerson("QQ123456", "Humpty", None, "Dumpty", Some("123"), Some("01/01/1980"), None, None)
-      val eiL2 = new EiLPerson("QQ123457", "Humpty", None, "Dumpty", Some("789"), Some("01/01/1980"), None, None)
-      val searchResultsEiL: List[EiLPerson] = List(eiL1, eiL2)
+      val eilService                          = MockEiLListService
+      val eiL1                                = new EiLPerson("QQ123456", "Humpty", None, "Dumpty", Some("123"), Some("01/01/1980"), None, None)
+      val eiL2                                = new EiLPerson("QQ123457", "Humpty", None, "Dumpty", Some("789"), Some("01/01/1980"), None, None)
+      val searchResultsEiL: List[EiLPerson]   = List(eiL1, eiL2)
       val alreadyExcludedEiL: List[EiLPerson] = List(eiL1)
 
       val result: immutable.Seq[EiLPerson] =

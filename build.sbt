@@ -1,12 +1,11 @@
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
-import com.lucidchart.sbt.scalafmt.ScalafmtCorePlugin.autoImport.scalafmtOnCompile
 
 val appName = "pbik-frontend"
 scalaVersion := "2.12.15"
 
-lazy val plugins: Seq[Plugins] =
+lazy val plugins: Seq[Plugins]                  =
   Seq(SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb)
 lazy val scoverageSettings: Seq[Def.Setting[_]] =
   Seq(
@@ -47,3 +46,6 @@ scalacOptions ++= Seq(
   "-P:silencer:globalFilters=Unused import",
   "-feature"
 )
+
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt test:scalafmt")
+addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")

@@ -29,10 +29,12 @@ import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
 
 @Singleton
-class NoSessionCheckActionImpl @Inject()()(implicit val executionContext: ExecutionContext)
-    extends NoSessionCheckAction with Logging {
+class NoSessionCheckActionImpl @Inject() ()(implicit val executionContext: ExecutionContext)
+    extends NoSessionCheckAction
+    with Logging {
   override protected def refine[A](
-    request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] = {
+    request: AuthenticatedRequest[A]
+  ): Future[Either[Result, AuthenticatedRequest[A]]] = {
 
     val sessionId = request.session.get(SessionKeys.sessionId)
     sessionId match {
@@ -42,7 +44,9 @@ class NoSessionCheckActionImpl @Inject()()(implicit val executionContext: Execut
           Left(
             Results
               .Redirect(controllers.routes.HomePageController.onPageLoad)
-              .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))))
+              .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
+          )
+        )
 
       case _ => Future.successful(Right(request))
     }

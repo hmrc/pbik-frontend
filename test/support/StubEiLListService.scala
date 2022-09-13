@@ -26,11 +26,11 @@ import utils.URIInformation
 
 import scala.concurrent.Future
 
-class StubEiLListService @Inject()(
+class StubEiLListService @Inject() (
   pbikAppConfig: PbikAppConfig,
   tierConnector: HmrcTierConnector,
-  uRIInformation: URIInformation)
-    extends EiLListService(pbikAppConfig, tierConnector, uRIInformation) {
+  uRIInformation: URIInformation
+) extends EiLListService(pbikAppConfig, tierConnector, uRIInformation) {
 
   private lazy val ListOfPeople: List[EiLPerson] = List(
     EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
@@ -44,7 +44,8 @@ class StubEiLListService @Inject()(
       Some("01/01/1980"),
       Some("male"),
       Some(10),
-      0),
+      0
+    ),
     EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None, 0),
     EiLPerson(
       "AE111111",
@@ -55,7 +56,8 @@ class StubEiLListService @Inject()(
       Some("03/02/1978"),
       Some("female"),
       Some(10),
-      0),
+      0
+    ),
     EiLPerson(
       "AF111111",
       "Humpty",
@@ -65,20 +67,22 @@ class StubEiLListService @Inject()(
       Some("01/01/1980"),
       Some("male"),
       Some(10),
-      0)
+      0
+    )
   )
 
-  override def currentYearEiL(iabdType: String, year: Int)(
-    implicit hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]): Future[List[EiLPerson]] =
+  override def currentYearEiL(iabdType: String, year: Int)(implicit
+    hc: HeaderCarrier,
+    request: AuthenticatedRequest[_]
+  ): Future[List[EiLPerson]] =
     Future.successful(ListOfPeople)
 }
 
-class StubEiLListServiceOneExclusion @Inject()(
+class StubEiLListServiceOneExclusion @Inject() (
   pbikAppConfig: PbikAppConfig,
   tierConnector: HmrcTierConnector,
-  uRIInformation: URIInformation)
-    extends StubEiLListService(pbikAppConfig, tierConnector, uRIInformation) {
+  uRIInformation: URIInformation
+) extends StubEiLListService(pbikAppConfig, tierConnector, uRIInformation) {
 
   private lazy val ListOfPeople: List[EiLPerson] = List(
     EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
@@ -92,7 +96,8 @@ class StubEiLListServiceOneExclusion @Inject()(
       Some("01/01/1980"),
       Some("male"),
       Some(10),
-      0),
+      0
+    ),
     EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None, 0),
     EiLPerson(
       "AE111111",
@@ -103,7 +108,8 @@ class StubEiLListServiceOneExclusion @Inject()(
       Some("03/02/1978"),
       Some("female"),
       Some(10),
-      0),
+      0
+    ),
     EiLPerson(
       "AF111111",
       "Humpty",
@@ -113,11 +119,13 @@ class StubEiLListServiceOneExclusion @Inject()(
       Some("01/01/1980"),
       Some("male"),
       Some(10),
-      0)
+      0
+    )
   )
 
-  override def currentYearEiL(iabdType: String, year: Int)(
-    implicit hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]): Future[List[EiLPerson]] =
+  override def currentYearEiL(iabdType: String, year: Int)(implicit
+    hc: HeaderCarrier,
+    request: AuthenticatedRequest[_]
+  ): Future[List[EiLPerson]] =
     Future.successful(List(ListOfPeople.head))
 }

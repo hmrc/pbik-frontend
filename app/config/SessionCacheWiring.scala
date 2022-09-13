@@ -21,9 +21,9 @@ import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
 @Singleton
-class PbikSessionCache @Inject()(val http: DefaultHttpClient, appConfig: PbikAppConfig) extends SessionCache {
+class PbikSessionCache @Inject() (val http: DefaultHttpClient, appConfig: PbikAppConfig) extends SessionCache {
 
-  lazy val defaultSource = "pbik-frontend"
+  lazy val defaultSource   = "pbik-frontend"
   lazy val baseUri: String = appConfig.sessionCacheBaseUri
-  lazy val domain: String = appConfig.sessionCacheDomain
+  lazy val domain: String  = appConfig.sessionCacheDomain
 }

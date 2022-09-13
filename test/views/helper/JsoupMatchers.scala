@@ -16,7 +16,7 @@
 
 package views.helper
 
-import org.jsoup.nodes.{Attributes, Document}
+import org.jsoup.nodes.{Attributes, Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.matchers.{MatchResult, Matcher}
 
@@ -131,7 +131,7 @@ trait JsoupMatchers {
 
   class IdSelectorWithUrlAndTextMatcher(id: String, value: String) extends Matcher[Document] {
     def apply(left: Document): MatchResult = {
-      val element = left.getElementById(id)
+      val element: Element = left.getElementById(id)
       val valueFound: String = element.attr("value")
 
       MatchResult(

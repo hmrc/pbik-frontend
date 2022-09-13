@@ -58,13 +58,13 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
-  implicit val lang: Lang = Lang("en-GB")
-  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
-  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
-  lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
+  implicit val lang: Lang                              = Lang("en-GB")
+  val formMappings: FormMappings                       = app.injector.instanceOf[FormMappings]
+  implicit val taxDateUtils: TaxDateUtils              = app.injector.instanceOf[TaxDateUtils]
+  lazy val CYCache: List[Bik]                          = List.tabulate(21)(n => Bik("" + (n + 1), 10))
   lazy val CYRegistrationItems: List[RegistrationItem] =
     List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
-  val timeoutValue: FiniteDuration = 15 seconds
+  val timeoutValue: FiniteDuration                     = 15 seconds
 
   def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
@@ -85,7 +85,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
         .instanceOf[HmrcTierConnector]
         .genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(YEAR_RANGE.cy))(
           any[HeaderCarrier],
-          any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          any[json.Format[List[Bik]]]
+        )
+    ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 10
     }))
 
@@ -96,7 +98,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           any[String],
           argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
           argEq(EmpRef.empty),
-          argEq(YEAR_RANGE.cy))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+          argEq(YEAR_RANGE.cy)
+        )(any[HeaderCarrier], any[json.Format[List[Bik]]])
+    )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
       }))
@@ -108,7 +112,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           any[String],
           argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
           argEq(EmpRef.empty),
-          argEq(YEAR_RANGE.cyminus1))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+          argEq(YEAR_RANGE.cyminus1)
+        )(any[HeaderCarrier], any[json.Format[List[Bik]]])
+    )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
       }))
@@ -120,7 +126,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           any[String],
           argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
           argEq(EmpRef.empty),
-          argEq(YEAR_RANGE.cyplus1))(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+          argEq(YEAR_RANGE.cyplus1)
+        )(any[HeaderCarrier], any[json.Format[List[Bik]]])
+    )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) <= 10
       }))
@@ -130,7 +138,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
         .instanceOf[HmrcTierConnector]
         .genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
           any[HeaderCarrier],
-          any[json.Format[List[Bik]]])).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+          any[json.Format[List[Bik]]]
+        )
+    ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
       Integer.parseInt(x.iabdType) <= 5
     }))
 
@@ -142,7 +152,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           argEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
           any[EmpRef],
           any[Int],
-          any)(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]]))
+          any
+        )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
+    )
       .thenReturn(Future.successful(new FakeResponse()))
 
     when(
@@ -152,7 +164,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           any[String],
           argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
           any[EmpRef],
-          any[Int])(any[HeaderCarrier], any[json.Format[List[Bik]]]))
+          any[Int]
+        )(any[HeaderCarrier], any[json.Format[List[Bik]]])
+    )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
         Integer.parseInt(x.iabdType) >= 15
       }))
@@ -160,7 +174,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     when(
       app.injector
         .instanceOf[SessionService]
-        .cacheRegistrationList(any[RegistrationList])(any[HeaderCarrier]))
+        .cacheRegistrationList(any[RegistrationList])(any[HeaderCarrier])
+    )
       .thenReturn(Future.successful(None))
 
     r
@@ -168,10 +183,10 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
 
   "When loading the currentTaxYearOnPageLoad, an authorised user" should {
     "be directed to cy page with list of biks" in {
-      val title = messagesApi("AddBenefits.Heading")
+      val title                            = messagesApi("AddBenefits.Heading")
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(registrationController.currentTaxYearOnPageLoad(mockrequest))(timeout)
-      result.header.status must be(OK) // 200
+      val result                           = await(registrationController.currentTaxYearOnPageLoad(mockrequest))(timeout)
+      result.header.status                             must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("BenefitInKind.label.1"))
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("BenefitInKind.label.3"))
@@ -180,10 +195,10 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
 
   "When loading the nextTaxYearAddOnPageLoad, an authorised user" should {
     "be directed to cy + 1 page with list of biks" in {
-      val title = messagesApi("AddBenefits.Heading")
+      val title                            = messagesApi("AddBenefits.Heading")
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(registrationController.nextTaxYearAddOnPageLoad(mockrequest))(timeout)
-      result.header.status must be(OK) // 200
+      val result                           = await(registrationController.nextTaxYearAddOnPageLoad(mockrequest))(timeout)
+      result.header.status                             must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("BenefitInKind.label.1"))
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("BenefitInKind.label.3"))
@@ -195,26 +210,27 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val mockRegistrationList = RegistrationList(
         None,
         List(RegistrationItem("31", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None)))
-      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockrequest
+        Some(BinaryRadioButtonWithDesc("software", None))
+      )
+      val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+      val mockRequestForm      = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
 
       val result: Future[Result] = registrationController.checkYourAnswersAddCurrentTaxYear().apply(mockRequestForm)
 
-      status(result) must be(SEE_OTHER)
+      status(result)               must be(SEE_OTHER)
       redirectLocation(result).get must be("/payrollbik/cy/check-the-benefits")
     }
 
     "be shown the form with errors if not filled in correctly" in {
       val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
-      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockrequest
+      val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+      val mockRequestForm      = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
 
       val result = registrationController.checkYourAnswersAddCurrentTaxYear().apply(mockRequestForm)
 
-      status(result) must be(BAD_REQUEST)
+      status(result)          must be(BAD_REQUEST)
       contentAsString(result) must include(messagesApi("AddBenefits.noselection.error"))
     }
   }
@@ -233,10 +249,13 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
                 None,
                 None,
                 None
-              ))))
+              )
+            )
+          )
+        )
       val result = registrationController.showCheckYourAnswersAddCurrentTaxYear().apply(mockrequest)
 
-      status(result) must be(OK)
+      status(result)          must be(OK)
       contentAsString(result) must include(messagesApi("AddBenefits.Confirm.Multiple.Title"))
       contentAsString(result) must include(messagesApi("BenefitInKind.label.30"))
     }
@@ -247,26 +266,27 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val mockRegistrationList = RegistrationList(
         None,
         List(RegistrationItem("31", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None)))
-      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockrequest
+        Some(BinaryRadioButtonWithDesc("software", None))
+      )
+      val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+      val mockRequestForm      = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
 
       val result = registrationController.checkYourAnswersAddNextTaxYear().apply(mockRequestForm)
 
-      status(result) must be(SEE_OTHER)
+      status(result)               must be(SEE_OTHER)
       redirectLocation(result).get must be("/payrollbik/cy1/check-the-benefits")
     }
 
     "be shown the form with errors if not filled in correctly" in {
       val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
-      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockrequest
+      val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+      val mockRequestForm      = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
 
       val result = registrationController.checkYourAnswersAddNextTaxYear().apply(mockRequestForm)
 
-      status(result) must be(BAD_REQUEST)
+      status(result)          must be(BAD_REQUEST)
       contentAsString(result) must include(messagesApi("AddBenefits.noselection.error"))
     }
   }
@@ -285,10 +305,13 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
                 None,
                 None,
                 None
-              ))))
+              )
+            )
+          )
+        )
       val result = registrationController.showCheckYourAnswersAddNextTaxYear().apply(mockrequest)
 
-      status(result) must be(OK)
+      status(result)          must be(OK)
       contentAsString(result) must include(messagesApi("BenefitInKind.label.30"))
     }
   }
@@ -307,11 +330,14 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
                 None,
                 None,
                 None
-              ))))
-      val title = messagesApi("RemoveBenefits.Confirm.Title").substring(0, 10)
+              )
+            )
+          )
+        )
+      val title                            = messagesApi("RemoveBenefits.Confirm.Title").substring(0, 10)
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(registrationController.checkYourAnswersRemoveNextTaxYear("car").apply(mockrequest))(timeout)
-      result.header.status must be(OK) // 200
+      val result                           = await(registrationController.checkYourAnswersRemoveNextTaxYear("car").apply(mockrequest))(timeout)
+      result.header.status                             must be(OK) // 200
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
   }
@@ -321,7 +347,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val mockRegistrationList = RegistrationList(
         None,
         List(RegistrationItem("31", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None)))
+        Some(BinaryRadioButtonWithDesc("software", None))
+      )
       when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
         .thenReturn(
           Future.successful(
@@ -334,12 +361,15 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
                 None,
                 None,
                 None
-              ))))
-      val form = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockrequest
+              )
+            )
+          )
+        )
+      val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+      val mockRequestForm      = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result = registrationController.updateCurrentYearRegisteredBenefitTypes().apply(mockRequestForm)
-      status(result) must be(SEE_OTHER)
+      val result               = registrationController.updateCurrentYearRegisteredBenefitTypes().apply(mockRequestForm)
+      status(result)           must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/payrollbik/cy/registration-complete"))
     }
   }
@@ -347,21 +377,23 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
   "When loading the addNextYearRegisteredBenefitTypes, an unauthorised user" should {
     "be directed to the login page" in {
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(registrationController.addNextYearRegisteredBenefitTypes().apply(noSessionIdRequest))(timeout)
-      result.header.status must be(UNAUTHORIZED)
+      val result                           = await(registrationController.addNextYearRegisteredBenefitTypes().apply(noSessionIdRequest))(timeout)
+      result.header.status                             must be(UNAUTHORIZED)
       result.body.asInstanceOf[Strict].data.utf8String must include(
-        "Request was not authenticated user should be redirected")
+        "Request was not authenticated user should be redirected"
+      )
     }
   }
 
   "When loading the removeNextYearRegisteredBenefitTypes, an unauthorised user" should {
     "be directed to the login page" in {
       implicit val timeout: FiniteDuration = timeoutValue
-      val result =
+      val result                           =
         await(registrationController.removeNextYearRegisteredBenefitTypes("").apply(noSessionIdRequest))(timeout)
-      result.header.status must be(UNAUTHORIZED)
+      result.header.status                             must be(UNAUTHORIZED)
       result.body.asInstanceOf[Strict].data.utf8String must include(
-        "Request was not authenticated user should be redirected")
+        "Request was not authenticated user should be redirected"
+      )
     }
   }
 
@@ -370,7 +402,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
       val mockRegistrationList = RegistrationList(
         None,
         List(RegistrationItem("31", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None)))
+        Some(BinaryRadioButtonWithDesc("software", None))
+      )
       when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
         .thenReturn(
           Future.successful(
@@ -383,12 +416,15 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
                 None,
                 None,
                 None
-              ))))
-      val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("software", None))
-      val mockRequestForm = mockrequest
+              )
+            )
+          )
+        )
+      val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("software", None))
+      val mockRequestForm      = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
-      status(result) must be(SEE_OTHER)
+      val result               = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
+      status(result)           must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
     }
   }
@@ -397,7 +433,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     val mockRegistrationList = RegistrationList(
       None,
       List(RegistrationItem("31", active = true, enabled = true)),
-      Some(BinaryRadioButtonWithDesc("guidance", None)))
+      Some(BinaryRadioButtonWithDesc("guidance", None))
+    )
     when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
       .thenReturn(
         Future.successful(
@@ -410,12 +447,15 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
               None,
               None,
               None
-            ))))
-    val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("guidance", None))
-    val mockRequestForm = mockrequest
+            )
+          )
+        )
+      )
+    val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("guidance", None))
+    val mockRequestForm      = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
-    status(result) must be(SEE_OTHER)
+    val result               = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
+    status(result)           must be(SEE_OTHER)
     redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
   }
 
@@ -423,7 +463,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     val mockRegistrationList = RegistrationList(
       None,
       List(RegistrationItem("31", active = true, enabled = true)),
-      Some(BinaryRadioButtonWithDesc("not-clear", None)))
+      Some(BinaryRadioButtonWithDesc("not-clear", None))
+    )
     when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
       .thenReturn(
         Future.successful(
@@ -436,12 +477,15 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
               None,
               None,
               None
-            ))))
-    val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("not-clear", None))
-    val mockRequestForm = mockrequest
+            )
+          )
+        )
+      )
+    val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("not-clear", None))
+    val mockRequestForm      = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
-    status(result) must be(SEE_OTHER)
+    val result               = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
+    status(result)           must be(SEE_OTHER)
     redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
   }
 
@@ -449,7 +493,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     val mockRegistrationList = RegistrationList(
       None,
       List(RegistrationItem("31", active = true, enabled = true)),
-      Some(BinaryRadioButtonWithDesc("not-offering", None)))
+      Some(BinaryRadioButtonWithDesc("not-offering", None))
+    )
     when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
       .thenReturn(
         Future.successful(
@@ -462,12 +507,15 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
               None,
               None,
               None
-            ))))
-    val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("not-offering", None))
-    val mockRequestForm = mockrequest
+            )
+          )
+        )
+      )
+    val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("not-offering", None))
+    val mockRequestForm      = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
-    status(result) must be(SEE_OTHER)
+    val result               = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
+    status(result)           must be(SEE_OTHER)
     redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
   }
 
@@ -489,43 +537,48 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
               None,
               None,
               None
-            ))))
-    val form = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("other", None))
-    val mockRequestForm = mockrequest
+            )
+          )
+        )
+      )
+    val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("other", None))
+    val mockRequestForm      = mockrequest
       .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
-    status(result) must be(SEE_OTHER)
+    val result               = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
+    status(result)           must be(SEE_OTHER)
     redirectLocation(result) must be(Some("/payrollbik/cy1/car/why-remove-benefit-expense"))
   }
 
   "selecting nothing should return to the same page with an error" in {
-    val mockRegistrationList = RegistrationList(
+    val mockRegistrationList                                            = RegistrationList(
       None,
       List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
-      None)
-    val bikList = List(Bik("8", 10))
-    implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockrequest
+      None
+    )
+    val bikList                                                         = List(Bik("8", 10))
+    implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockrequest
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
       AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-    val errorMsg = messagesApi("RemoveBenefits.reason.no.selection")
+    val errorMsg                                                        = messagesApi("RemoveBenefits.reason.no.selection")
 
     val result = registrationController.removeBenefitReasonValidation(mockRegistrationList, 2017, bikList, bikList, "")
-    status(result) must be(OK)
+    status(result)          must be(OK)
     contentAsString(result) must include(errorMsg)
 
     val resultSelection = registrationController.updateBiksFutureAction(2017, bikList, additive = false)
-    status(resultSelection) must be(OK)
+    status(resultSelection)          must be(OK)
     contentAsString(resultSelection) must include(errorMsg)
   }
 
   "When loading the why-remove-benefit-expense, an unauthorised user" should {
     "be directed to the login page" in {
       implicit val timeout: FiniteDuration = timeoutValue
-      val result =
+      val result                           =
         await(registrationController.showRemoveBenefitOtherReason("").apply(noSessionIdRequest))(timeout)
-      result.header.status must be(UNAUTHORIZED)
+      result.header.status                             must be(UNAUTHORIZED)
       result.body.asInstanceOf[Strict].data.utf8String must include(
-        "Request was not authenticated user should be redirected")
+        "Request was not authenticated user should be redirected"
+      )
     }
   }
 
@@ -543,17 +596,20 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
                 None,
                 None,
                 None
-              ))))
-      val title = messagesApi("RemoveBenefits.other.title").substring(0, 10)
+              )
+            )
+          )
+        )
+      val title                            = messagesApi("RemoveBenefits.other.title").substring(0, 10)
       implicit val timeout: FiniteDuration = timeoutValue
-      val result = await(registrationController.showRemoveBenefitOtherReason("car").apply(mockrequest))(timeout)
-      result.header.status must be(OK)
+      val result                           = await(registrationController.showRemoveBenefitOtherReason("car").apply(mockrequest))(timeout)
+      result.header.status                             must be(OK)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
 
     "provide valid other reason should redirect to what next page" in {
 
-      val otherReason = "Here's our other info"
+      val otherReason          = "Here's our other info"
       val mockRegistrationList = RegistrationList(
         None,
         List(RegistrationItem("31", active = true, enabled = true)),
@@ -571,36 +627,39 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
                 None,
                 None,
                 None
-              ))))
-      val form = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
-      val mockRequestForm = mockrequest
+              )
+            )
+          )
+        )
+      val form                 = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
+      val mockRequestForm      = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
-      status(result) must be(SEE_OTHER)
+      val result               = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
+      status(result)           must be(SEE_OTHER)
       redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
     }
 
     "not providing other reason should return to the same page with an error" in {
 
-      val errorMsg = messagesApi("RemoveBenefits.other.error.required")
-      val form = formMappings.removalOtherReasonForm.fill(OtherReason(""))
+      val errorMsg        = messagesApi("RemoveBenefits.other.error.required")
+      val form            = formMappings.removalOtherReasonForm.fill(OtherReason(""))
       val mockRequestForm = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
-      status(result) must be(BAD_REQUEST)
+      val result          = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
+      status(result)          must be(BAD_REQUEST)
       contentAsString(result) must include(errorMsg)
     }
 
     "providing other reason more than 100 chars should return to the same page with an error" in {
 
-      val errorMsg = messagesApi("RemoveBenefits.other.error.length")
-      val reason =
+      val errorMsg        = messagesApi("RemoveBenefits.other.error.length")
+      val reason          =
         "this is a test other reason to remove the benefits, if user wants to remove the benefits from payroll"
-      val form = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
+      val form            = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
       val mockRequestForm = mockrequest
         .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
-      status(result) must be(BAD_REQUEST)
+      val result          = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
+      status(result)          must be(BAD_REQUEST)
       contentAsString(result) must include(errorMsg)
     }
   }

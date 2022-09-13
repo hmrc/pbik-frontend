@@ -17,7 +17,7 @@
 package models
 
 case class EmpRef(taxOfficeNumber: String, taxOfficeReference: String) {
-  def encodedEmpRef: String = s"$taxOfficeNumber%2F$taxOfficeReference"
+  def encodedEmpRef: String   = s"$taxOfficeNumber%2F$taxOfficeReference"
   def unencodedEmpRef: String = s"$taxOfficeNumber/$taxOfficeReference"
 
   override def toString: String = unencodedEmpRef.toString

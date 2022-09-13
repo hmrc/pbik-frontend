@@ -28,7 +28,7 @@ import utils._
 import views.html.ErrorPage
 import views.html.exclusion._
 
-class MockExclusionsDisallowedController @Inject()(
+class MockExclusionsDisallowedController @Inject() (
   formMappings: FormMappings,
   messagesApi: MessagesApi,
   pbikAppConfig: PbikAppConfig,
@@ -52,8 +52,8 @@ class MockExclusionsDisallowedController @Inject()(
   searchResultsView: SearchResults,
   whatNextExclusionView: WhatNextExclusion,
   removalConfirmationView: RemovalConfirmation,
-  whatNextRescindView: WhatNextRescind)
-    extends MockExclusionListController(
+  whatNextRescindView: WhatNextRescind
+) extends MockExclusionListController(
       messagesApi,
       formMappings,
       cc,

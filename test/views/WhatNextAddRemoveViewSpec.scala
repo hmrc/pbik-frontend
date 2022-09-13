@@ -25,8 +25,8 @@ import views.html.registration.AddBenefitConfirmationNextTaxYear
 
 class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  val messagesApi: MessagesApi                                                 = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings                                               = app.injector.instanceOf[FormMappings]
   val addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear =
     app.injector.instanceOf[AddBenefitConfirmationNextTaxYear]
 
@@ -42,7 +42,8 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages("whatNext.add.heading"))
     behave like pageWithLink(
       messages("Service.back.overview.ViewYourSummary"),
-      "/payrollbik/registered-benefits-expenses")
+      "/payrollbik/registered-benefits-expenses"
+    )
 
   }
 }

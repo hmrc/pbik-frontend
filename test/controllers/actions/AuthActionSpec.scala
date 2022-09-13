@@ -40,7 +40,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
   }
 
   "Auth Action" when {
-    "the user is not logged in" must {
+    "the user is not logged in"                must {
       "redirect the user to log in" in {
         val authAction = new AuthActionImpl(
           new BrokenAuthConnector(new MissingBearerToken, mock[HttpClient], app.injector.instanceOf[Configuration]),
@@ -48,10 +48,11 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
           app.injector.instanceOf[AppConfig]
         )
         val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(FakeRequest("", ""))
+        val result     = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get must endWith(
-          "sign-in?continue_url=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fstart-payrolling-benefits-expenses&origin=pbik-frontend")
+          "sign-in?continue_url=http%3A%2F%2Flocalhost%3A9233%2Fpayrollbik%2Fstart-payrolling-benefits-expenses&origin=pbik-frontend"
+        )
 
       }
     }
@@ -63,7 +64,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
           app.injector.instanceOf[AppConfig]
         )
         val controller = new Harness(authAction)
-        val result = controller.onPageLoad()(FakeRequest("", ""))
+        val result     = controller.onPageLoad()(FakeRequest("", ""))
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(controllers.routes.AuthController.notAuthorised.url)
       }

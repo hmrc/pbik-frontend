@@ -27,17 +27,17 @@ import views.html.exclusion.NinoExclusionSearchForm
 
 class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings = app.injector.instanceOf[FormMappings]
+  val messagesApi: MessagesApi    = app.injector.instanceOf[MessagesApi]
+  val formMappings                = app.injector.instanceOf[FormMappings]
   val ninoExclusionSearchFormView = app.injector.instanceOf[NinoExclusionSearchForm]
 
   def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
 
-  implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
-  implicit val uriInformation: URIInformation = app.injector.instanceOf[URIInformation]
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val pbikAppConfig: PbikAppConfig                         = app.injector.instanceOf[PbikAppConfig]
+  implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
+  implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   def viewWithForm(form: Form[EiLPerson]): Html =
@@ -56,7 +56,8 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
     val view: Html = viewWithForm(
       formMappings.exclusionSearchFormWithNino.bind(
-        Map[String, String](("nino", ""), ("firstname", ""), ("surname", "")))
+        Map[String, String](("nino", ""), ("firstname", ""), ("surname", ""))
+      )
     )
 
     doc must haveErrorSummary(messages("error.empty.nino").replace(".", ""))

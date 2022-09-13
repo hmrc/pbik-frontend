@@ -34,49 +34,50 @@ import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
 
 @Singleton
-class AuthActionImpl @Inject()(
+class AuthActionImpl @Inject() (
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default,
-  config: AppConfig)(implicit val executionContext: ExecutionContext)
-    extends AuthAction with AuthorisedFunctions with Logging {
+  config: AppConfig
+)(implicit val executionContext: ExecutionContext)
+    extends AuthAction
+    with AuthorisedFunctions
+    with Logging {
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE"))
-      .retrieve(Retrievals.authorisedEnrolments and Retrievals.name) {
-        case Enrolments(enrolments) ~ name => {
-          enrolments
-            .find(_.key == "IR-PAYE")
-            .map { enrolment =>
-              val taxOfficeNumber = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
-              val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
+      .retrieve(Retrievals.authorisedEnrolments and Retrievals.name) { case Enrolments(enrolments) ~ name =>
+        enrolments
+          .find(_.key == "IR-PAYE")
+          .map { enrolment =>
+            val taxOfficeNumber    = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
+            val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
 
-              (taxOfficeNumber, taxOfficeReference) match {
-                case (Some(number), Some(reference)) =>
-                  block(
-                    AuthenticatedRequest(
-                      EmpRef(number, reference),
-                      UserName(name.getOrElse(Name(None, None))),
-                      request))
-                case _ =>
-                  logger.warn(
-                    "[AuthAction][invokeBlock] Authentication failed: invalid taxOfficeNumber and/or taxOfficeReference")
-                  Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad))
-              }
+            (taxOfficeNumber, taxOfficeReference) match {
+              case (Some(number), Some(reference)) =>
+                block(
+                  AuthenticatedRequest(EmpRef(number, reference), UserName(name.getOrElse(Name(None, None))), request)
+                )
+              case _                               =>
+                logger.warn(
+                  "[AuthAction][invokeBlock] Authentication failed: invalid taxOfficeNumber and/or taxOfficeReference"
+                )
+                Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad))
             }
-            .getOrElse {
-              logger.warn("[AuthAction][invokeBlock] Authentication failed - IR-PAYE key not found")
-              Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad))
-            }
-        }
+          }
+          .getOrElse {
+            logger.warn("[AuthAction][invokeBlock] Authentication failed - IR-PAYE key not found")
+            Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad))
+          }
       } recover {
-      case ex: NoActiveSession =>
+      case ex: NoActiveSession        =>
         logger.warn("[AuthAction][invokeBlock] Bearer token missing or invalid")
         Redirect(
           config.authSignIn,
-          Map("continue_url" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend")))
+          Map("continue_url" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend"))
+        )
       case ex: InsufficientEnrolments =>
         logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
         Results.Redirect(controllers.routes.AuthController.notAuthorised)
@@ -87,9 +88,10 @@ class AuthActionImpl @Inject()(
 
 @ImplementedBy(classOf[AuthActionImpl])
 trait AuthAction
-    extends ActionBuilder[AuthenticatedRequest, AnyContent] with ActionFunction[Request, AuthenticatedRequest]
+    extends ActionBuilder[AuthenticatedRequest, AnyContent]
+    with ActionFunction[Request, AuthenticatedRequest]
 
-class AuthConnector @Inject()(val http: HttpClient, configuration: Configuration) extends PlayAuthConnector {
+class AuthConnector @Inject() (val http: HttpClient, configuration: Configuration) extends PlayAuthConnector {
 
   override val serviceUrl: String = configuration.get[Service]("microservice.services.auth")
 

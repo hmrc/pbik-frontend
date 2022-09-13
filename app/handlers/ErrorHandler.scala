@@ -27,14 +27,17 @@ import views.html.ErrorTemplate
 import views.html.page_not_found_template
 
 @Singleton
-class ErrorHandler @Inject()(
+class ErrorHandler @Inject() (
   val messagesApi: MessagesApi,
   errorTemplateView: ErrorTemplate,
-  notFoundTemplate: page_not_found_template)(implicit val config: PbikAppConfig)
-    extends FrontendErrorHandler with I18nSupport {
+  notFoundTemplate: page_not_found_template
+)(implicit val config: PbikAppConfig)
+    extends FrontendErrorHandler
+    with I18nSupport {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(
-    implicit request: Request[_]): Html =
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
+    request: Request[_]
+  ): Html =
     errorTemplateView(pageTitle, heading, message)
 
   override def notFoundTemplate(implicit request: Request[_]): Html =
