@@ -1,7 +1,5 @@
 # pbik-frontend
 
-[![Build Status](https://travis-ci.org/hmrc/pbik-frontend.svg?branch=master)](https://travis-ci.org/hmrc/pbik-frontend)
-
 This service provides the Play Framework http endpoint for employers requests. The purpose of this service is to allow employers to tell HMRC what benefits or expenses they are payrolling so that they no longer have to submit a P11D form for every employee. It retrieves a list of benefits or expenses from the PBIK microservice and allows the employer to exclude certain individuals, these updates are then sent to HMRC backend systems.
 
 Once authenticated the employer has access to the pbik-frontend functionality which allows
