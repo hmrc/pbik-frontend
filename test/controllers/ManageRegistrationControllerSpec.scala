@@ -26,10 +26,12 @@ import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.http.HttpEntity.Strict
+import play.api.http.Status
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -66,24 +68,18 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
   val timeoutValue: FiniteDuration                     = 15 seconds
 
-  def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
-
-  class FakeResponse extends HttpResponse {
-    override def status = 200
-
-    override def allHeaders: Map[String, Seq[String]] = Map()
-
-    override def body: String = "empty"
-  }
+  def yearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   val registrationController: ManageRegistrationController = {
 
     val r = app.injector.instanceOf[ManageRegistrationController]
 
+    val response = HttpResponse(Status.OK, Json.obj().toString())
+
     when(
       app.injector
         .instanceOf[HmrcTierConnector]
-        .genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(YEAR_RANGE.cy))(
+        .genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(yearRange.cy))(
           any[HeaderCarrier],
           any[json.Format[List[Bik]]]
         )
@@ -98,7 +94,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           any[String],
           argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
           argEq(EmpRef.empty),
-          argEq(YEAR_RANGE.cy)
+          argEq(yearRange.cy)
         )(any[HeaderCarrier], any[json.Format[List[Bik]]])
     )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -112,7 +108,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           any[String],
           argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
           argEq(EmpRef.empty),
-          argEq(YEAR_RANGE.cyminus1)
+          argEq(yearRange.cyminus1)
         )(any[HeaderCarrier], any[json.Format[List[Bik]]])
     )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -126,7 +122,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           any[String],
           argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
           argEq(EmpRef.empty),
-          argEq(YEAR_RANGE.cyplus1)
+          argEq(yearRange.cyplus1)
         )(any[HeaderCarrier], any[json.Format[List[Bik]]])
     )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -155,7 +151,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
           any
         )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
     )
-      .thenReturn(Future.successful(new FakeResponse()))
+      .thenReturn(Future.successful(response))
 
     when(
       app.injector

@@ -131,7 +131,7 @@ trait JsoupMatchers {
 
   class IdSelectorWithUrlAndTextMatcher(id: String, value: String) extends Matcher[Document] {
     def apply(left: Document): MatchResult = {
-      val element: Element = left.getElementById(id)
+      val element: Element   = left.getElementById(id)
       val valueFound: String = element.attr("value")
 
       MatchResult(
@@ -142,39 +142,44 @@ trait JsoupMatchers {
     }
   }
 
-  def haveHeadingWithText(expectedText: String) = new TagWithTextMatcher(expectedText, "h1")
+  def haveHeadingWithText(expectedText: String): TagWithTextMatcher = new TagWithTextMatcher(expectedText, "h1")
 
-  def haveHeadingH2WithText(expectedText: String) = new TagWithTextMatcher(expectedText, "h2")
+  def haveHeadingH2WithText(expectedText: String): TagWithTextMatcher = new TagWithTextMatcher(expectedText, "h2")
 
-  def haveElementWithIdAndText(expectedText: String, id: String) = new CssSelectorWithTextMatcher(expectedText, s"#$id")
+  def haveElementWithIdAndText(expectedText: String, id: String): CssSelectorWithTextMatcher =
+    new CssSelectorWithTextMatcher(expectedText, s"#$id")
 
-  def haveElementWithId(id: String) = new CssSelector(s"#$id")
+  def haveElementWithId(id: String): CssSelector = new CssSelector(s"#$id")
 
-  def haveBackLink = new CssSelector("a[id=back-link]")
+  def haveBackLink: CssSelector = new CssSelector("a[id=back-link]")
 
-  def haveSubmitButton(expectedText: String) =
+  def haveSubmitButton(expectedText: String): CssSelectorWithAttributeValueMatcher =
     new CssSelectorWithAttributeValueMatcher("value", expectedText, "input[type=submit]")
 
-  def haveFormWithSubmitUrl(url: String) = new CssSelectorWithAttributeValueMatcher("action", url, "form[method=POST]")
+  def haveFormWithSubmitUrl(url: String): CssSelectorWithAttributeValueMatcher =
+    new CssSelectorWithAttributeValueMatcher("action", url, "form[method=POST]")
 
-  def haveInputLabelWithText(id: String, expectedText: String) =
+  def haveInputLabelWithText(id: String, expectedText: String): CssSelectorWithTextMatcher =
     new CssSelectorWithTextMatcher(expectedText, s"label[for=$id]")
 
-  def haveElementAtPathWithText(elementSelector: String, expectedText: String) =
+  def haveElementAtPathWithText(elementSelector: String, expectedText: String): CssSelectorWithTextMatcher =
     new CssSelectorWithTextMatcher(expectedText, elementSelector)
 
-  def haveElementAtPathWithClass(elementSelector: String, className: String) =
+  def haveElementAtPathWithClass(elementSelector: String, className: String): CssSelectorWithClassMatcher =
     new CssSelectorWithClassMatcher(className, elementSelector)
 
-  def haveErrorSummary(expectedText: String) =
+  def haveErrorSummary(expectedText: String): CssSelectorWithTextMatcher =
     new CssSelectorWithTextMatcher(expectedText, ".govuk-list.govuk-error-summary__list")
 
-  def haveErrorNotification(expectedText: String) = new CssSelectorWithTextMatcher(expectedText, ".govuk-error-message")
+  def haveErrorNotification(expectedText: String): CssSelectorWithTextMatcher =
+    new CssSelectorWithTextMatcher(expectedText, ".govuk-error-message")
 
-  def haveClassWithText(expectedText: String, className: String) =
+  def haveClassWithText(expectedText: String, className: String): CssSelectorWithTextMatcher =
     new CssSelectorWithTextMatcher(expectedText, s".$className")
 
-  def haveLinkWithUrlWithID(id: String, expectedURL: String) = new IdSelectorWithUrlMatcher(expectedURL, id)
+  def haveLinkWithUrlWithID(id: String, expectedURL: String): IdSelectorWithUrlMatcher =
+    new IdSelectorWithUrlMatcher(expectedURL, id)
 
-  def haveValueElement(id: String, value: String) = new IdSelectorWithUrlAndTextMatcher(id, value)
+  def haveValueElement(id: String, value: String): IdSelectorWithUrlAndTextMatcher =
+    new IdSelectorWithUrlAndTextMatcher(id, value)
 }

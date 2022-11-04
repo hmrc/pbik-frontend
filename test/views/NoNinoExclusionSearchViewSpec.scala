@@ -30,8 +30,6 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
   val formMappings                  = app.injector.instanceOf[FormMappings]
   val noNinoExclusionSearchFormView = app.injector.instanceOf[NoNinoExclusionSearchForm]
 
-  def taxYearRange = TaxYearRange(2018, 2019, 2020)
-
   override def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
 
   def viewWithForm(form: Form[EiLPerson]): Html =

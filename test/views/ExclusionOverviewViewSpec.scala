@@ -30,8 +30,6 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings               = app.injector.instanceOf[FormMappings]
   val exclusionOverviewView: ExclusionOverview = app.injector.instanceOf[ExclusionOverview]
 
-  def taxYearRange: TaxYearRange = TaxYearRange(2018, 2019, 2020)
-
   private val iabdType = "31"
 
   override def view: Html =

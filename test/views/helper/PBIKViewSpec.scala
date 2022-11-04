@@ -16,6 +16,7 @@
 
 package views.helper
 
+import models.TaxYearRange
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.mock
@@ -102,6 +103,12 @@ trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite with I18nSuppor
   implicit val lang: Lang                                   = Lang("en-GB")
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messages: MessagesApi                        = app.injector.instanceOf[MessagesApi]
+
+  val year2018 = 2018
+  val year2019 = 2019
+  val year2020 = 202
+
+  def taxYearRange: TaxYearRange = TaxYearRange(year2018, year2019, year2020)
 }
 
 trait PBIKViewSpec extends PBIKBaseViewSpec with PBIKViewBehaviours

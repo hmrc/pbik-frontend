@@ -27,11 +27,16 @@ import java.time.LocalDate
 class TaxDateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication {
 
   val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
+  val year2015                   = 2015
+  val year2014                   = 2014
+  val year2013                   = 2013
+  val day7                       = 7
+  val day1                       = 1
 
   "The current tax year" should {
     " be the same as current year, if the current date is before 6th April in the current year" in {
-      val dateBeforeTaxYearButSameYearAsTaxYear = LocalDate.of(2014, APRIL, 1)
-      assert(taxDateUtils.getCurrentTaxYear(dateBeforeTaxYearButSameYearAsTaxYear) == 2013)
+      val dateBeforeTaxYearButSameYearAsTaxYear = LocalDate.of(year2014, APRIL, day1)
+      assert(taxDateUtils.getCurrentTaxYear(dateBeforeTaxYearButSameYearAsTaxYear) == year2013)
     }
   }
 
@@ -43,28 +48,28 @@ class TaxDateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues w
 
   "The current tax year" should {
     " be current year, if the current date is before 6th April and in the previous year" in {
-      val dateBeforeTaxYearInPreviousYear = LocalDate.of(2013, NOVEMBER, 1)
-      assert(taxDateUtils.getCurrentTaxYear(dateBeforeTaxYearInPreviousYear) == 2013)
+      val dateBeforeTaxYearInPreviousYear = LocalDate.of(year2013, NOVEMBER, 1)
+      assert(taxDateUtils.getCurrentTaxYear(dateBeforeTaxYearInPreviousYear) == year2013)
     }
   }
 
   "The current tax year" should {
     " be current year, if the current date is after 6th April in the current year" in {
-      val dateAfterTaxYear = LocalDate.of(2014, JULY, 1)
-      assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear) == 2014)
+      val dateAfterTaxYear = LocalDate.of(year2014, JULY, day1)
+      assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear) == year2014)
     }
   }
 
   "The application" should {
     "state the service has NOT launched if the date supplied has the same year as the launch date but is before April 6th" in {
-      val dateAfterTaxYear = LocalDate.of(2015, FEBRUARY, 1)
+      val dateAfterTaxYear = LocalDate.of(year2015, FEBRUARY, day1)
       assert(!taxDateUtils.isServiceLaunched(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear)))
     }
   }
 
   "The application" should {
     "state the service has  launched if the current tax year is after the year of launch" in {
-      val dateAfterTaxYear = LocalDate.of(taxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, 7)
+      val dateAfterTaxYear = LocalDate.of(taxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, day7)
       assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear) < taxDateUtils.getTaxYearRange().cyminus1)
       assert(taxDateUtils.isServiceLaunched(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear)))
     }
@@ -73,7 +78,7 @@ class TaxDateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues w
   "The application" should {
     "return the correct range for the current year" in {
 
-      val dateAfterTaxYear = LocalDate.of(taxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, 7)
+      val dateAfterTaxYear = LocalDate.of(taxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, day7)
       assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear) < taxDateUtils.getTaxYearRange().cyminus1)
       assert(taxDateUtils.isServiceLaunched(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear)))
     }

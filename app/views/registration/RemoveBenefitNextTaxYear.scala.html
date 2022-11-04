@@ -60,14 +60,13 @@
         </div>
     }
 
-    <legend><h1 id="title" class="govuk-heading-xl">
-        @messages("RemoveBenefits.Confirm.Heading", benefitLabel)
-    </h1></legend>
-
     <div class="data">
         @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.id), 'id -> "form-remove") {
             <div class='govuk-form-group @if(form.hasErrors) {govuk-form-group--error}'>
                 <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="error-list-1" }>
+                    <legend><h1 id="title" class="govuk-heading-xl">
+                        @messages("RemoveBenefits.Confirm.Heading", benefitLabel)
+                    </h1></legend>
                     @if(form.hasErrors) {
                         <span id="error-list-1" class="govuk-error-message">
                             @if(form.errors.head.message == "error.required") {@Messages("RemoveBenefits.reason.no.selection")

@@ -19,6 +19,7 @@ package connectors
 import controllers.FakePBIKApplication
 import models.{EmpRef, PbikError}
 import org.scalatestplus.play.PlaySpec
+import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.Json
 import play.api.mvc.Results
 import support.TestAuthUser
@@ -27,26 +28,29 @@ import utils.Exceptions.GenericServerErrorException
 
 class TierConnectorSpec extends PlaySpec with FakePBIKApplication with TestAuthUser with Results {
 
-  val fakeResponse: HttpResponse = HttpResponse(200, "")
+  val fakeResponse: HttpResponse = HttpResponse(OK, "")
 
   val fakeResponseWithError: HttpResponse =
-    HttpResponse(200, Json.toJson(new PbikError("64990")), Map.empty[String, Seq[String]])
+    HttpResponse(OK, Json.toJson(new PbikError("64990")), Map.empty[String, Seq[String]])
 
-  val fakeSevereResponse: HttpResponse = HttpResponse(500, "A severe server error")
+  val fakeSevereResponse: HttpResponse = HttpResponse(INTERNAL_SERVER_ERROR, "A severe server error")
 
   val hmrcTierConnector = app.injector.instanceOf[HmrcTierConnector]
 
+  val year = 2015
+
   "When creating a GET URL with an orgainsation needing encoding it" should {
     " encode the slash properly" in {
+
       val result: String =
-        hmrcTierConnector.createGetUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), 2015)
+        hmrcTierConnector.createGetUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), year)
       assert(result == "theBaseUrl/780%2FMODES16/2015/theURIExtension")
     }
   }
 
   "When creating a GET URL with no organisation it" should {
     " omit the organisation" in {
-      val result: String = hmrcTierConnector.createGetUrl("theBaseUrl", "theURIExtension", EmpRef.empty, 2015)
+      val result: String = hmrcTierConnector.createGetUrl("theBaseUrl", "theURIExtension", EmpRef.empty, year)
       assert(result == "theBaseUrl/2015/theURIExtension")
     }
   }
@@ -54,7 +58,7 @@ class TierConnectorSpec extends PlaySpec with FakePBIKApplication with TestAuthU
   "When creating a POST URL with an organisation which needs encoding it" should {
     " be properly formed with the %2F encoding" in {
       val result: String =
-        hmrcTierConnector.createPostUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), 2015)
+        hmrcTierConnector.createPostUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), year)
       assert(result == "theBaseUrl/780%2FMODES16/2015/theURIExtension")
     }
   }
@@ -70,7 +74,7 @@ class TierConnectorSpec extends PlaySpec with FakePBIKApplication with TestAuthU
   "When processing a response if the status is less than 400 it" should {
     " return the response" in {
       val resp = hmrcTierConnector.processResponse(fakeResponse)
-      assert(resp.status == 200)
+      assert(resp.status == OK)
     }
   }
 

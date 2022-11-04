@@ -32,8 +32,6 @@ class NextYearViewSpec extends PBIKViewSpec {
   val formMappings             = app.injector.instanceOf[FormMappings]
   val nextTaxYearView          = app.injector.instanceOf[NextTaxYear]
 
-  def taxYearRange = TaxYearRange(2018, 2019, 2020)
-
   override def view: Html = viewWithForm(formMappings.objSelectedForm)
 
   implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]

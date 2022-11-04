@@ -17,8 +17,7 @@
 package builders
 
 import java.util.UUID
-
-import play.api.mvc.AnyContentAsJson
+import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.SessionKeys
 
@@ -29,7 +28,7 @@ object SessionBuilder {
     fakeRequest.withSession(SessionKeys.sessionId -> sessionId)
   }
 
-  def buildRequestWithSession() = {
+  def buildRequestWithSession(): FakeRequest[AnyContentAsEmpty.type] = {
     val sessionId = s"session-${UUID.randomUUID}"
     FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
   }

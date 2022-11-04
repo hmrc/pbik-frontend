@@ -16,7 +16,7 @@
 
 package views
 
-import models.{EmpRef, RegistrationItem, RegistrationList, TaxYearRange}
+import models.{EmpRef, RegistrationItem, RegistrationList}
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
@@ -29,8 +29,6 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings                                               = app.injector.instanceOf[FormMappings]
   val addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear =
     app.injector.instanceOf[AddBenefitConfirmationNextTaxYear]
-
-  def taxYearRange: TaxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = {
     val regList = RegistrationList(active = List(RegistrationItem("30", true, true)))
