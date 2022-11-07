@@ -125,9 +125,9 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p                                                               = Promise[Result]()
-      p.failure(UpstreamErrorResponse("""{appStatusMessage=10002,}""", 500, 500))
+      p.failure(UpstreamErrorResponse("""{appStatusMessage=10002,}""", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR))
       val result                                                          = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status                             must be(INTERNAL_SERVER_ERROR) // 500
+      result.header.status                             must be(INTERNAL_SERVER_ERROR)
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
     }
@@ -140,9 +140,9 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p                                                               = Promise[Result]()
-      p.failure(UpstreamErrorResponse(null, 500, 500))
+      p.failure(UpstreamErrorResponse(null, INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR))
       val result                                                          = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status                             must be(INTERNAL_SERVER_ERROR) // 500
+      result.header.status                             must be(INTERNAL_SERVER_ERROR)
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
     }
@@ -156,9 +156,9 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p                                                               = Promise[Result]()
       // Note - invalid error message number will not parse
-      p.failure(UpstreamErrorResponse("NO ERROR NUMBER TO PARSE", 500, 500))
+      p.failure(UpstreamErrorResponse("NO ERROR NUMBER TO PARSE", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR))
       val result                                                          = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status                             must be(INTERNAL_SERVER_ERROR) // 500
+      result.header.status                             must be(INTERNAL_SERVER_ERROR)
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
     }
@@ -172,9 +172,9 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p                                                               = Promise[Result]()
       // Note - missing comma will prevent message being parsed
-      p.failure(UpstreamErrorResponse("""{appStatusMessage=10002}""", 500, 500))
+      p.failure(UpstreamErrorResponse("""{appStatusMessage=10002}""", INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR))
       val result                                                          = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
-      result.header.status                             must be(INTERNAL_SERVER_ERROR) // 500
+      result.header.status                             must be(INTERNAL_SERVER_ERROR)
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
     }

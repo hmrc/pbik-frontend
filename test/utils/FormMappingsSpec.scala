@@ -133,6 +133,7 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication {
 
   "A month value less than 12" should {
     "not be valid in a year" in {
+      //scalastyle:off magic.number
       (-5 to 0)
         .map { i =>
           formMappings.addZeroIfNeeded(i.toString)
@@ -140,12 +141,14 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication {
         .foreach { a =>
           assert(!formMappings.isValidDate(("01", a, "2014")))
         }
+      //scalastyle:on magic.number
     }
   }
 
   "The Regex for a year with 4 digits" should {
     "be [0-9][0-9][0-9][0-9]" in {
-      assert(formMappings.generateYearString(4) == "[0-9][0-9][0-9][0-9]")
+      val yearLength = 4
+      assert(formMappings.generateYearString(yearLength) == "[0-9][0-9][0-9][0-9]")
     }
   }
 

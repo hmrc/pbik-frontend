@@ -60,9 +60,21 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
 
   val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
+  val eilStatus                  = 10
+  val year2020                   = 2020
 
   lazy val listOfPeople: List[EiLPerson] = List(
-    EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
+    EiLPerson(
+      "AA111111",
+      "John",
+      Some("Stones"),
+      "Smith",
+      Some("123"),
+      Some("01/01/1980"),
+      Some("male"),
+      Some(eilStatus),
+      0
+    ),
     EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
     EiLPerson(
       "AC111111",
@@ -72,7 +84,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(10),
+      Some(eilStatus),
       0
     ),
     EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None, 0),
@@ -84,7 +96,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       Some("123"),
       Some("03/02/1978"),
       Some("female"),
-      Some(10),
+      Some(eilStatus),
       0
     ),
     EiLPerson(
@@ -95,7 +107,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(10),
+      Some(eilStatus),
       0
     )
   )
@@ -106,9 +118,9 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     None,
     List(RegistrationItem("30", active = true, enabled = true), RegistrationItem("8", true, true))
   )
-  lazy val CYCache: List[Bik]                    = List.tabulate(21)(n => Bik("" + (n + 1), 10))
+  lazy val CYCache: List[Bik]                    = List.tabulate(21)(n => Bik("" + (n + 1), eilStatus))
 
-  def yearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
+  def taxYearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   class StubBikListService @Inject() (
     pbikAppConfig: AppConfig,
@@ -122,7 +134,8 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         uriInformation
       ) {
 
-    lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
+    lazy val noOfElements       = 21
+    lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), eilStatus))
 
     override def currentYearList(implicit
       hc: HeaderCarrier,
@@ -151,7 +164,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       )
 
     when(
-      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(yearRange.cy))(
+      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(taxYearRange.cy))(
         any[HeaderCarrier],
         any[json.Format[List[Bik]]]
       )
@@ -160,7 +173,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     }))
 
     when(
-      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(yearRange.cyminus1))(
+      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(taxYearRange.cyminus1))(
         any[HeaderCarrier],
         any[json.Format[List[Bik]]]
       )
@@ -169,7 +182,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     }))
 
     when(
-      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(yearRange.cyplus1))(
+      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(taxYearRange.cyplus1))(
         any[HeaderCarrier],
         any[json.Format[List[Bik]]]
       )
@@ -178,7 +191,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     }))
 
     when(
-      tierConnector.genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(yearRange.cy))(
+      tierConnector.genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(taxYearRange.cy))(
         any[HeaderCarrier],
         any[json.Format[List[Bik]]]
       )
@@ -191,7 +204,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any[String],
         argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(yearRange.cy)
+        argEq(taxYearRange.cy)
       )(any[HeaderCarrier], any[json.Format[List[Bik]]])
     )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -203,7 +216,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any[String],
         argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(yearRange.cyminus1)
+        argEq(taxYearRange.cyminus1)
       )(any[HeaderCarrier], any[json.Format[List[Bik]]])
     )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -215,7 +228,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any[String],
         argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(yearRange.cyplus1)
+        argEq(taxYearRange.cyplus1)
       )(any[HeaderCarrier], any[json.Format[List[Bik]]])
     )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -223,7 +236,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       }))
 
     when(
-      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
+      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(year2020))(
         any[HeaderCarrier],
         any[json.Format[List[Bik]]]
       )
@@ -257,7 +270,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
   }
 
   class FakeResponse extends HttpResponse {
-    override def status                               = 200
+    override def status: Int                          = OK
     override def allHeaders: Map[String, Seq[String]] = Map()
     override def body: String                         = "empty"
   }
@@ -266,7 +279,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     val w = app.injector.instanceOf[WhatNextPageController]
 
     when(
-      w.tierConnector.genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(yearRange.cy))(
+      w.tierConnector.genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(taxYearRange.cy))(
         any[HeaderCarrier],
         any[json.Format[List[Bik]]]
       )
@@ -279,7 +292,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any[String],
         argEq(injected[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(yearRange.cy)
+        argEq(taxYearRange.cy)
       )(any[HeaderCarrier], any[json.Format[List[Bik]]])
     )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -291,7 +304,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any[String],
         argEq(injected[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(yearRange.cyminus1)
+        argEq(taxYearRange.cyminus1)
       )(any[HeaderCarrier], any[json.Format[List[Bik]]])
     )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -303,7 +316,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any[String],
         argEq(injected[URIInformation].getBenefitTypesPath),
         argEq(EmpRef.empty),
-        argEq(yearRange.cyplus1)
+        argEq(taxYearRange.cyplus1)
       )(any[HeaderCarrier], any[json.Format[List[Bik]]])
     )
       .thenReturn(Future.successful(CYCache.filter { x: Bik =>
@@ -311,7 +324,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       }))
 
     when(
-      w.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
+      w.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(year2020))(
         any[HeaderCarrier],
         any[json.Format[List[Bik]]]
       )
@@ -366,7 +379,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
       AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
     val result                                                          = whatNextPageController.showWhatNextRegisteredBik("cy1").apply(authenticatedRequest)
-    (scala.concurrent.ExecutionContext.Implicits.global)
+    scala.concurrent.ExecutionContext.Implicits.global
     status(result)          must be(OK)
     contentAsString(result) must include("Registration complete")
     contentAsString(result) must include(
@@ -381,7 +394,12 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
           Some(
             PbikSession(
               Some(
-                RegistrationList(active = List(RegistrationItem("30", true, true), RegistrationItem("8", true, true)))
+                RegistrationList(active =
+                  List(
+                    RegistrationItem("30", active = true, enabled = true),
+                    RegistrationItem("8", active = true, enabled = true)
+                  )
+                )
               ),
               None,
               None,
@@ -397,7 +415,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
       AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
     val result                                                          = whatNextPageController.showWhatNextRegisteredBik("cy1").apply(authenticatedRequest)
-    (scala.concurrent.ExecutionContext.Implicits.global)
+    scala.concurrent.ExecutionContext.Implicits.global
     status(result)          must be(OK)
     contentAsString(result) must include("Registration complete")
     contentAsString(result) must include("Private medical treatment or insurance")
@@ -411,7 +429,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
           Some(
             PbikSession(
               None,
-              Some(RegistrationItem("30", true, true)),
+              Some(RegistrationItem("30", active = true, enabled = true)),
               None,
               None,
               None,
@@ -425,7 +443,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
       AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
     val result                                                          = whatNextPageController.showWhatNextRemovedBik("medical").apply(authenticatedRequest)
-    (scala.concurrent.ExecutionContext.Implicits.global)
+    scala.concurrent.ExecutionContext.Implicits.global
     status(result)          must be(OK)
     contentAsString(result) must include("Benefit removed")
     contentAsString(result) must include(
@@ -437,13 +455,13 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     val startYear = TaxYear.taxYearFor(LocalDate.now())
 
     "return this tax year and next year if given true" in {
-      val result = whatNextPageController.calculateTaxYear(true)
+      val result: (Int, Int) = whatNextPageController.calculateTaxYear(isCurrentTaxYear = true)
       assert(result._1 == startYear.startYear)
       assert(result._2 == startYear.startYear + 1)
     }
 
     "return next year and the year after if given false" in {
-      val result = whatNextPageController.calculateTaxYear(false)
+      val result: (Int, Int) = whatNextPageController.calculateTaxYear(isCurrentTaxYear = false)
       assert(result._1 == startYear.startYear + 1)
       assert(result._2 == startYear.startYear + 2)
     }

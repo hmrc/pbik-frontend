@@ -141,7 +141,10 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   "When merging an original list, with an unconnected list, the size of the merge results" should {
     "equal the size of the original list as the unconnected elements wont be added" in {
-      val unconnectedList = List(Bik("" + 100000, 40), Bik("" + 100001, 40))
+      val iabdType1       = 100000
+      val iabdType2       = 100001
+      val status          = 40
+      val unconnectedList = List(Bik("" + iabdType1, status), Bik("" + iabdType2, status))
       assert(bikListUtils.mergeSelected(biks, unconnectedList).active.size == biks.size)
     }
   }

@@ -62,7 +62,8 @@ class StubbedRegistrationService @Inject() (
     with I18nSupport {
 
   val dateRange: TaxYearRange                          = taxDateUtils.getTaxYearRange()
-  lazy val CYCache: List[Bik]                          = List.tabulate(21)(n => Bik("" + (n + 1), 10))
+  val numberOfElements                                 = 21
+  lazy val CYCache: List[Bik]                          = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), 10))
   lazy val CYRegistrationItems: List[RegistrationItem] =
     List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
   val registeredListOption                             = List.empty[Bik]

@@ -36,8 +36,9 @@ class StubNoRegisteredBikListService @Inject() (
   controllersReferenceData: ControllersReferenceData,
   uriInformation: URIInformation
 ) extends BikListService(pbikAppConfig: AppConfig, tierConnector, controllersReferenceData, uriInformation) {
-
+  //scalastyle:off magic.number
   lazy val CYCache: List[Bik] = List.tabulate(21)(n => Bik("" + (n + 1), 10))
+  //scalastyle:on magic.number
 
   when(
     tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(

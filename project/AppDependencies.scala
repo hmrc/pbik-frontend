@@ -22,7 +22,7 @@ object AppDependencies {
     "org.scalatestplus.play"       %% "scalatestplus-play"   % "5.1.0",
     "org.scalatest"                %% "scalatest"            % "3.2.14",
     "org.scalatestplus"            %% "mockito-4-6"          % "3.2.14.0",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.13.4",
+    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.14.0",
     "com.vladsch.flexmark"          % "flexmark-all"         % "0.62.2"
   ).map(_ % "test")
 
