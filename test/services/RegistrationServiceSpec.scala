@@ -62,9 +62,9 @@ class RegistrationServiceSpec
 
   val registrationService: RegistrationService = {
 
-    val service = app.injector.instanceOf[RegistrationService]
+    val service      = app.injector.instanceOf[RegistrationService]
     val noOfElements = 5
-    val bikStatus = 10
+    val bikStatus    = 10
 
     lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), bikStatus))
 

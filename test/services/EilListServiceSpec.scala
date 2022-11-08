@@ -67,7 +67,7 @@ class EilListServiceSpec
 
   "When calling the EILService it" should {
     "return an empty list" in {
-      val year = 2015
+      val year                                                                        = 2015
       val eilService: EiLListService                                                  = MockEiLListService
       implicit val hc: HeaderCarrier                                                  = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockrequest
