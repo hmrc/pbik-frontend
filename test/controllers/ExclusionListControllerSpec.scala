@@ -68,7 +68,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
   } else {
     models.TaxYearRange(date.getYear, date.getYear + 1, date.getYear + 2)
   }
-  val eilPersonStatus = 10
+  val eilPersonStatus                                    = 10
 
   lazy val ListOfPeople: List[EiLPerson] = List(
     EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10)),

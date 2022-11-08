@@ -34,6 +34,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, SessionService}
 import support.TestAuthUser
+import play.api.http.Status
+import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
@@ -55,13 +57,15 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
-  implicit val lang = Lang("en-GB")
-  val messagesApi   = app.injector.instanceOf[MessagesApi]
+  implicit val lang: Lang = Lang("en-GB")
+  val messagesApi         = app.injector.instanceOf[MessagesApi]
 
   val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
   val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
   val eilStatus                  = 10
   val year2020                   = 2020
+
+  val response = HttpResponse(Status.OK, Json.obj().toString())
 
   lazy val listOfPeople: List[EiLPerson] = List(
     EiLPerson(
@@ -249,7 +253,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         any
       )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
     )
-      .thenReturn(Future.successful(new FakeResponse()))
+      .thenReturn(Future.successful(response))
 
     when(
       tierConnector.genericGetCall[List[Bik]](
@@ -263,12 +267,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         Integer.parseInt(x.iabdType) >= 15
       }))
 
-  }
-
-  class FakeResponse extends HttpResponse {
-    override def status: Int                          = OK
-    override def allHeaders: Map[String, Seq[String]] = Map()
-    override def body: String                         = "empty"
   }
 
   val whatNextPageController: WhatNextPageController = {
@@ -338,7 +336,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
           any
         )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
     )
-      .thenReturn(Future.successful(new FakeResponse()))
+      .thenReturn(Future.successful(response))
 
     when(
       w.tierConnector.genericGetCall[List[Bik]](
