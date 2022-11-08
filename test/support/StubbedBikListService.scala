@@ -20,7 +20,6 @@ import config.AppConfig
 import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models.{AuthenticatedRequest, Bik, EmpRef, HeaderTags}
-import play.api.mvc.Request
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, URIInformation}

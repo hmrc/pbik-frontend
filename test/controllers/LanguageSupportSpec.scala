@@ -31,7 +31,6 @@ import services.{BikListService, RegistrationService}
 import support.{StubbedBikListService, StubbedRegistrationService, TestAuthUser}
 import uk.gov.hmrc.http.SessionKeys
 import utils.{TestAuthAction, TestNoSessionCheckAction}
-import scala.language.postfixOps
 
 class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplication {
 

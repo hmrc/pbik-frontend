@@ -17,7 +17,7 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig}
-import models.{EmpRef, TaxYearRange}
+import models.EmpRef
 import org.jsoup.Jsoup
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html

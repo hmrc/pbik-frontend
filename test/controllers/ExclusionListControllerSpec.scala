@@ -68,10 +68,11 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
   } else {
     models.TaxYearRange(date.getYear, date.getYear + 1, date.getYear + 2)
   }
+  val eilPersonStatus = 10
 
   lazy val ListOfPeople: List[EiLPerson] = List(
-    EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
-    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
+    EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10)),
+    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None),
     EiLPerson(
       "AC111111",
       "Humpty",
@@ -80,10 +81,9 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(10),
-      0
+      Some(eilPersonStatus)
     ),
-    EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None, 0),
+    EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None),
     EiLPerson(
       "AE111111",
       "Alice",
@@ -92,8 +92,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       Some("123"),
       Some("03/02/1978"),
       Some("female"),
-      Some(10),
-      0
+      Some(eilPersonStatus)
     ),
     EiLPerson(
       "AF111111",
@@ -103,8 +102,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(10),
-      0
+      Some(eilPersonStatus)
     )
   )
 
@@ -535,7 +533,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
             )
           )
         )
-      lazy val ninoSearchPerson                                         = EiLPerson("AB111111", "Adam", None, "Smith", None, None, None, None, 0)
+      lazy val ninoSearchPerson                                         = EiLPerson("AB111111", "Adam", None, "Smith", None, None, None, None)
       lazy val formData                                                 =
         controllersReferenceData.exclusionSearchFormWithNino(request = mockrequest).fill(ninoSearchPerson)
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -553,7 +551,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
     "see the expected search results page" in {
 
       val noNinoSearchPerson                                            =
-        EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0)
+        EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None)
       val formData                                                      =
         controllersReferenceData.exclusionSearchFormWithoutNino(request = mockrequest).fill(noNinoSearchPerson)
       implicit val formrequest: FakeRequest[AnyContentAsFormUrlEncoded] =
@@ -1099,7 +1097,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
   "When updating exclusions," must {
     "an invalid input on first name" in {
       val TEST_EIL_PERSON: List[EiLPerson]                              = List(
-        EiLPerson("AA111111", " ", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0)
+        EiLPerson("AA111111", " ", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10))
       )
       val TEST_YEAR_CODE                                                = "cy"
       val TEST_IABD_VALUE                                               = "car"

@@ -16,7 +16,7 @@
 
 package views
 
-import models.{EmpRef, TaxYearRange}
+import models.EmpRef
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings

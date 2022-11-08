@@ -20,10 +20,9 @@ import config.AppConfig
 import connectors.HmrcTierConnector
 import javax.inject.Inject
 import models.{Bik, EmpRef}
-import org.mockito.ArgumentMatchers.{any}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.libs.json
-import play.api.mvc.Request
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, URIInformation}

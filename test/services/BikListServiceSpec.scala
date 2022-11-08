@@ -57,13 +57,17 @@ class BikListServiceSpec
   implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockrequest)
   implicit val hc: HeaderCarrier                                           = HeaderCarrier()
 
+  val bikStatus30 = 30
+  val bikStatus40 = 40
+  val bikEilCount = 10
+
   override def beforeEach(): Unit =
     reset(bikListService.tierConnector)
 
   "The BIK service" should {
 
     "Be able to get the BIKS for the current year - 2 returned" in {
-      val listBiks = List(Bik("Car & Car Fuel", 30, 10), Bik("Van Fuel", 40, 10))
+      val listBiks = List(Bik("Car & Car Fuel", bikStatus30, bikEilCount), Bik("Van Fuel", bikStatus40, bikEilCount))
 
       when(
         bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
@@ -90,7 +94,7 @@ class BikListServiceSpec
     }
 
     "Be able to get the BIKS for the next year - 2 returned" in {
-      val listBiks = List(Bik("Car & Car Fuel", 30, 10), Bik("Van Fuel", 40, 10))
+      val listBiks = List(Bik("Car & Car Fuel", bikStatus30, bikEilCount), Bik("Van Fuel", bikStatus40, bikEilCount))
 
       when(
         bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(

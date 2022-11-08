@@ -19,16 +19,12 @@ package views.helper
 import models.TaxYearRange
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.mockito.Mockito.mock
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import uk.gov.hmrc.http.HeaderCarrier
-
-import scala.concurrent.Future
 
 trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
 
@@ -106,7 +102,7 @@ trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite with I18nSuppor
 
   val year2018 = 2018
   val year2019 = 2019
-  val year2020 = 202
+  val year2020 = 2020
 
   def taxYearRange: TaxYearRange = TaxYearRange(year2018, year2019, year2020)
 }

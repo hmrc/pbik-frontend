@@ -17,7 +17,7 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever}
-import models.{EmpRef, RegistrationItem, RegistrationList, TaxYearRange}
+import models.{EmpRef, RegistrationItem, RegistrationList}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html

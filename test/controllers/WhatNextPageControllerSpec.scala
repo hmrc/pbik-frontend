@@ -72,10 +72,9 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(eilStatus),
-      0
+      Some(eilStatus)
     ),
-    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
+    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None),
     EiLPerson(
       "AC111111",
       "Humpty",
@@ -84,10 +83,9 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(eilStatus),
-      0
+      Some(eilStatus)
     ),
-    EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None, 0),
+    EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None),
     EiLPerson(
       "AE111111",
       "Alice",
@@ -96,8 +94,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       Some("123"),
       Some("03/02/1978"),
       Some("female"),
-      Some(eilStatus),
-      0
+      Some(eilStatus)
     ),
     EiLPerson(
       "AF111111",
@@ -107,8 +104,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(eilStatus),
-      0
+      Some(eilStatus)
     )
   )
 
@@ -116,7 +112,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
   lazy val registrationList                      = RegistrationList(None, List(RegistrationItem("30", active = true, enabled = true)))
   lazy val registrationListMultiple              = RegistrationList(
     None,
-    List(RegistrationItem("30", active = true, enabled = true), RegistrationItem("8", true, true))
+    List(RegistrationItem("30", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true))
   )
   lazy val CYCache: List[Bik]                    = List.tabulate(21)(n => Bik("" + (n + 1), eilStatus))
 
@@ -364,7 +360,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
         Future.successful(
           Some(
             PbikSession(
-              Some(RegistrationList(active = List(RegistrationItem("30", true, true)))),
+              Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
               None,
               None,
               None,

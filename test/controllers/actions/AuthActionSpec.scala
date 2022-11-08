@@ -28,7 +28,6 @@ import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.language.postfixOps
 
 class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 

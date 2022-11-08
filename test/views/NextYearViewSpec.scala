@@ -17,7 +17,7 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever}
-import models.{EmpRef, RegistrationList, TaxYearRange}
+import models.{EmpRef, RegistrationList}
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.api.i18n.MessagesApi
