@@ -31,8 +31,6 @@ class SearchResultViewSpec extends PBIKBaseViewSpec {
   val searchResultsView        = app.injector.instanceOf[SearchResults]
   val listOfMatches            = EiLPersonList(List.empty[EiLPerson])
 
-  def taxYearRange = TaxYearRange(2018, 2019, 2020)
-
   def viewWithForm(form: Form[ExclusionNino]): Html =
     searchResultsView(taxYearRange, "cyp1", "30", listOfMatches, form, "", EmpRef("", ""))
 

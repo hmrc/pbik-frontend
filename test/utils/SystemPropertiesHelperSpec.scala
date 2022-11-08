@@ -44,8 +44,9 @@ class SystemPropertiesHelperSpec extends AnyWordSpecLike with Matchers with Opti
 
   "When getting an Int system property which doesnt exist the helper" should {
     "return the default value" in {
-      val s = new StubSystemProperties
-      assert(s.getIntProperty("Intible", 5) == 5)
+      val s            = new StubSystemProperties
+      val defaultValue = 5
+      assert(s.getIntProperty("Intible", defaultValue) == 5)
     }
   }
 

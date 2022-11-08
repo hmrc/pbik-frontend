@@ -32,8 +32,19 @@ class StubEiLListService @Inject() (
   uRIInformation: URIInformation
 ) extends EiLListService(pbikAppConfig, tierConnector, uRIInformation) {
 
+  val status                                     = 10
   private lazy val ListOfPeople: List[EiLPerson] = List(
-    EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
+    EiLPerson(
+      "AA111111",
+      "John",
+      Some("Stones"),
+      "Smith",
+      Some("123"),
+      Some("01/01/1980"),
+      Some("male"),
+      Some(status),
+      0
+    ),
     EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
     EiLPerson(
       "AC111111",
@@ -43,7 +54,7 @@ class StubEiLListService @Inject() (
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(10),
+      Some(status),
       0
     ),
     EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None, 0),
@@ -55,7 +66,7 @@ class StubEiLListService @Inject() (
       Some("123"),
       Some("03/02/1978"),
       Some("female"),
-      Some(10),
+      Some(status),
       0
     ),
     EiLPerson(
@@ -66,7 +77,7 @@ class StubEiLListService @Inject() (
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(10),
+      Some(status),
       0
     )
   )
@@ -85,7 +96,17 @@ class StubEiLListServiceOneExclusion @Inject() (
 ) extends StubEiLListService(pbikAppConfig, tierConnector, uRIInformation) {
 
   private lazy val ListOfPeople: List[EiLPerson] = List(
-    EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10), 0),
+    EiLPerson(
+      "AA111111",
+      "John",
+      Some("Stones"),
+      "Smith",
+      Some("123"),
+      Some("01/01/1980"),
+      Some("male"),
+      Some(status),
+      0
+    ),
     EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
     EiLPerson(
       "AC111111",
@@ -95,7 +116,7 @@ class StubEiLListServiceOneExclusion @Inject() (
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(10),
+      Some(status),
       0
     ),
     EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None, 0),
@@ -107,7 +128,7 @@ class StubEiLListServiceOneExclusion @Inject() (
       Some("123"),
       Some("03/02/1978"),
       Some("female"),
-      Some(10),
+      Some(status),
       0
     ),
     EiLPerson(
@@ -118,7 +139,7 @@ class StubEiLListServiceOneExclusion @Inject() (
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(10),
+      Some(status),
       0
     )
   )

@@ -19,7 +19,6 @@ package controllers
 import config.{AppConfig, PbikAppConfig}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models._
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
@@ -54,7 +53,6 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with Test
     .build()
 
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
-  def YEAR_RANGE: TaxYearRange            = taxDateUtils.getTaxYearRange()
 
   "When checking if from YTA referer ends /account" in {
     val homePageController                                    = app.injector.instanceOf[HomePageController]

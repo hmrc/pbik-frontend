@@ -17,7 +17,7 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig}
-import models.{EmpRef, TaxYearRange}
+import models.EmpRef
 import org.jsoup.Jsoup
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
@@ -30,8 +30,6 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
   val messagesApi: MessagesApi      = app.injector.instanceOf[MessagesApi]
   val formMappings                  = app.injector.instanceOf[FormMappings]
   val exclusionNinoOrNoNinoFormView = app.injector.instanceOf[ExclusionNinoOrNoNinoForm]
-
-  def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = viewWithForm()
 

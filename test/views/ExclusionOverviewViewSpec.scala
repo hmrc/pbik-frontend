@@ -16,7 +16,7 @@
 
 package views
 
-import models.{EmpRef, TaxYearRange}
+import models.EmpRef
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
@@ -29,8 +29,6 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   val messagesApi: MessagesApi                 = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings               = app.injector.instanceOf[FormMappings]
   val exclusionOverviewView: ExclusionOverview = app.injector.instanceOf[ExclusionOverview]
-
-  def taxYearRange: TaxYearRange = TaxYearRange(2018, 2019, 2020)
 
   private val iabdType = "31"
 

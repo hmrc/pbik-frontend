@@ -26,6 +26,7 @@ import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.Application
+import play.api.http.Status.OK
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -61,9 +62,11 @@ class RegistrationServiceSpec
 
   val registrationService: RegistrationService = {
 
-    val service = app.injector.instanceOf[RegistrationService]
+    val service      = app.injector.instanceOf[RegistrationService]
+    val noOfElements = 5
+    val bikStatus    = 10
 
-    lazy val CYCache: List[Bik] = List.tabulate(5)(n => Bik("" + (n + 1), 10))
+    lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), bikStatus))
 
     when(service.bikListService.pbikHeaders).thenReturn(Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1"))
 
@@ -114,7 +117,7 @@ class RegistrationServiceSpec
           "add",
           nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty)
         )
-      status(result)        shouldBe 200
+      status(result)        shouldBe OK
       contentAsString(result) should include(Messages("AddBenefits.Heading"))
       contentAsString(result) should include(Messages("BenefitInKind.label.4"))
     }

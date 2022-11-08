@@ -17,7 +17,7 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever}
-import models.{EmpRef, RegistrationItem, RegistrationList, TaxYearRange}
+import models.{EmpRef, RegistrationItem, RegistrationList}
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
@@ -30,8 +30,6 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
   val messagesApi: MessagesApi                               = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings                             = app.injector.instanceOf[FormMappings]
   val confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear = app.injector.instanceOf[ConfirmUpdateNextTaxYear]
-
-  def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = viewWithForm(formMappings.objSelectedForm)
 

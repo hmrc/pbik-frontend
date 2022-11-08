@@ -17,7 +17,7 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever}
-import models.{EmpRef, RegistrationList, TaxYearRange}
+import models.{EmpRef, RegistrationList}
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -31,8 +31,6 @@ class NextYearViewSpec extends PBIKViewSpec {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val formMappings             = app.injector.instanceOf[FormMappings]
   val nextTaxYearView          = app.injector.instanceOf[NextTaxYear]
-
-  def taxYearRange = TaxYearRange(2018, 2019, 2020)
 
   override def view: Html = viewWithForm(formMappings.objSelectedForm)
 

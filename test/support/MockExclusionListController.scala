@@ -26,6 +26,7 @@ import org.mockito.Mockito.when
 import org.scalatest.concurrent.Futures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.Configuration
+import play.api.http.Status.OK
 import play.api.i18n.MessagesApi
 import play.api.libs.json
 import play.api.libs.json.{JsValue, Json}
@@ -93,8 +94,11 @@ class MockExclusionListController @Inject() (
     )
     with Futures {
 
-  implicit val defaultPatience: PatienceConfig =
-    PatienceConfig(timeout = Span(5, Seconds), interval = Span(500, Millis))
+  implicit val defaultPatience: PatienceConfig = {
+    val fiveSeconds       = 5
+    val fiveHundredMillis = 500
+    PatienceConfig(timeout = Span(fiveSeconds, Seconds), interval = Span(fiveHundredMillis, Millis))
+  }
 
   def logSplunkEvent(dataEvent: DataEvent): Future[AuditResult] =
     Future.successful(AuditResult.Success)
@@ -128,11 +132,11 @@ class MockExclusionListController @Inject() (
   )
     .thenReturn(Future.successful(new FakeResponse()))
 
-  override lazy val exclusionsAllowed = true
+  override lazy val exclusionsAllowed: Boolean = true
 }
 
 class FakeResponse extends HttpResponse {
-  override def status                               = 200
+  override def status: Int                          = OK
   override def allHeaders: Map[String, Seq[String]] = Map()
   override def body: String                         = "empty"
   override val json: JsValue                        = Json.parse("""[

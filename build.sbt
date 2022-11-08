@@ -12,7 +12,7 @@ lazy val scoverageSettings: Seq[Def.Setting[_]] =
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;views.*;config.*;models.*;" +
       ".*(AuthService|BuildInfo|Routes).*",
     ScoverageKeys.coverageMinimumStmtTotal := 87,
-    ScoverageKeys.coverageFailOnMinimum := false,
+    ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
 
@@ -43,8 +43,9 @@ lazy val microservice = Project(appName, file("."))
   )
 
 scalacOptions ++= Seq(
-  "-P:silencer:globalFilters=Unused import",
-  "-feature"
+  "-feature",
+  "-Wconf:src=routes/.*:s",
+  "-Wconf:cat=unused-imports&src=html/.*:s"
 )
 
 addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt test:scalafmt")

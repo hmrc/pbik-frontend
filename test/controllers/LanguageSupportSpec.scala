@@ -19,7 +19,6 @@ package controllers
 import config.{AppConfig, PbikAppConfig}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models.{Bik, TaxYearRange}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
@@ -31,10 +30,7 @@ import play.api.test.Helpers._
 import services.{BikListService, RegistrationService}
 import support.{StubbedBikListService, StubbedRegistrationService, TestAuthUser}
 import uk.gov.hmrc.http.SessionKeys
-import utils.{FormMappings, TaxDateUtils, TestAuthAction, TestNoSessionCheckAction}
-
-import scala.concurrent.duration.{DurationInt, FiniteDuration}
-import scala.language.postfixOps
+import utils.{TestAuthAction, TestNoSessionCheckAction}
 
 class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplication {
 
@@ -46,14 +42,6 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()
-
-  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
-  val formMappings: FormMappings          = app.injector.instanceOf[FormMappings]
-
-  lazy val CYCache: List[Bik]      = List.tabulate(21)(n => Bik("" + (n + 1), 10))
-  val timeoutValue: FiniteDuration = 15 seconds
-
-  def YEAR_RANGE: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   "The Homepage Controller" should {
     "set the request language and reload page based on referer header" in {
@@ -77,7 +65,7 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
 
       val result = homePageController.onPageLoad(request)
 
-      status(result)          must be(OK) // 200
+      status(result)          must be(OK)
       contentAsString(result) must include("Cyfeirnod TWE y cyflogwr")
     }
   }

@@ -240,8 +240,8 @@ class ExclusionListController @Inject() (
 
   def showExclusionSearchForm(isCurrentTaxYear: String, iabdType: String, formType: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
-      val taxYearRange  = controllersReferenceData.yearRange
-      val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
+      val taxYearRange                 = controllersReferenceData.yearRange
+      val iabdTypeValue                = uriInformation.iabdValueURLDeMapper(iabdType)
       val resultFuture: Future[Result] = for {
         _ <- validateRequest(isCurrentTaxYear, iabdType)
       } yield formType match {
@@ -281,9 +281,9 @@ class ExclusionListController @Inject() (
     (authenticate andThen noSessionCheck).async { implicit request =>
       implicit val hc: HeaderCarrier =
         HeaderCarrierConverter.fromRequestAndSession(request, request.session)
-      val iabdTypeValue: String = uriInformation.iabdValueURLDeMapper(iabdType)
+      val iabdTypeValue: String      = uriInformation.iabdValueURLDeMapper(iabdType)
       if (exclusionsAllowed) {
-        val form: Form[EiLPerson] = formType match {
+        val form: Form[EiLPerson]        = formType match {
           case ControllersReferenceDataCodes.FORM_TYPE_NINO   => formMappings.exclusionSearchFormWithNino
           case ControllersReferenceDataCodes.FORM_TYPE_NONINO => formMappings.exclusionSearchFormWithoutNino
         }
@@ -473,7 +473,8 @@ class ExclusionListController @Inject() (
                   )
                 ),
               values => {
-                val individualsDetails: EiLPerson = session.get.listOfMatches.get.find(person => person.nino == values.nino).get
+                val individualsDetails: EiLPerson     =
+                  session.get.listOfMatches.get.find(person => person.nino == values.nino).get
                 val excludedPerson: Option[EiLPerson] = createExcludedPerson(individualsDetails)
                 validateRequest(year, iabdType).flatMap { _ =>
                   commitExclusion(
