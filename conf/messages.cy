@@ -518,7 +518,7 @@ whatNext.remove.p = Ni fyddwch yn trethu {0} drwy’ch cyflogres o 6 Ebrill {1} 
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
 whatNext.exclude.lede = Ni threthir {1} {0}  drwy’ch cyflogres o 6 Ebrill {2} ymlaen.
-whatNext.exclude.p1 = O hyn ymlaen, dylech roi gwybod am werth y buddiant hwn drwy anfon ffurflen <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">P11D</a> ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+whatNext.exclude.p1 = O hyn ymlaen, dylech roi gwybod am werth y buddiant hwn drwy anfon ffurflen <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">Ffurflen Budd-dal Cyflogaeth P11D - (yn agor ffenestr neu dab newydd)</a> ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 whatNext.cy1.exclude.p2 = Ni fydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’r gyflogres bellach ar {0}
 whatNext.exclude.p3 = Dylech drefnu eich cyflogres yn gywir fel nad oes rhaid i’r cyflogeion gael eu buddiannau a’u treuliau wedi’u trethu yn eu cyflog.
 whatNext.exclude.p4 = Bydd yn rhaid i chi gyflwyno ffurflen P11D ar gyfer y cyflogeion hynny yr ydych wedi’u heithrio, gan roi gwybod i ni beth yw gwerth y buddiant neu’r draul y maent yn eu cael fel y gallwn ei gynnwys/chynnwys yn eu cod treth.

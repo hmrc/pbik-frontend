@@ -847,7 +847,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val title                                                         = messagesApi("ServiceMessage.10002")
       val mockExclusionController                                       = app.injector.instanceOf[MockExclusionsDisallowedController]
       implicit val timeout: Timeout                                     = 5 seconds
-      val result                                                        = await(mockExclusionController.removeExclusionsCommit(TEST_IABD).apply(formrequest))(timeout)
+      val result                                                        =
+        await(mockExclusionController.removeExclusionsCommit(TEST_IABD).apply(formrequest))(timeout)
       result.header.status                             must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -895,7 +896,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
       val title                                                         = messagesApi("ServiceMessage.10002")
       val mockExclusionController                                       = app.injector.instanceOf[MockExclusionsDisallowedController]
       implicit val timeout: Timeout                                     = 5 seconds
-      val result                                                        = await(mockExclusionController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(formrequest))(timeout)
+      val result                                                        =
+        await(mockExclusionController.remove(TEST_YEAR_CODE, TEST_IABD, TEST_NINO)(formrequest))(timeout)
       result.header.status                             must be(FORBIDDEN)
       result.body.asInstanceOf[Strict].data.utf8String must include(title)
     }
@@ -1086,7 +1088,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
             )
           )
         )
-      val result                                                = mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD_VALUE).apply(mockrequest)
+      val result                                                =
+        mockExclusionListController.updateExclusions(TEST_YEAR_CODE, TEST_IABD_VALUE).apply(mockrequest)
 
       status(result)               must be(SEE_OTHER)
       redirectLocation(result).get must be(s"/payrollbik/$TEST_YEAR_CODE/$TEST_IABD_VALUE/exclusion-complete")
