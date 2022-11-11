@@ -14,11 +14,13 @@
  * limitations under the License.
  *@
 
+@import views.templatemodels.PageTitle
+
 @this(govukLayoutWrapper: GovukLayoutWrapper)
 
 @(empRef: EmpRef)(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(pageTitle = messages("StartPage.heading") + " - " + messages("Service.title"), empRef = Some(empRef.toString), showBackLink = false) {
+@govukLayoutWrapper(PageTitle(messages("StartPage.heading")), empRef = Some(empRef.toString), showBackLink = false) {
 
         <h1 id="title" class="govuk-heading-xl">
            @messages("StartPage.heading")

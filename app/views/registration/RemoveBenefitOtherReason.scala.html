@@ -16,6 +16,7 @@
 
 @import utils.URIInformation
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.CharacterCount
+@import views.templatemodels.PageTitle
 
 @this(
      govukLayoutWrapper: GovukLayoutWrapper,
@@ -34,7 +35,7 @@
 
 @benefitLabel = @{ messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)) }
 
-@govukLayoutWrapper(pageTitle = messages("RemoveBenefits.other.title") + " - " + messages("Service.title"), Some("taxYearRange"), Some(empRef.toString), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper( PageTitle(messages("RemoveBenefits.other.title"), form.hasErrors), Some("taxYearRange"), Some(empRef.toString), empRef = Some(empRef.toString)) {
 
     @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdType)) {
 

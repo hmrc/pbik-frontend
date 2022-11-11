@@ -17,6 +17,7 @@
 @import utils.URIInformation
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
+@import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -30,7 +31,7 @@
   name:String,
 empRef: EmpRef)(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(pageTitle = messages("whatNext.exclude.heading") + " - " + messages("Service.title"), showBackLink = false, empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(messages("whatNext.exclude.heading")), showBackLink = false, empRef = Some(empRef.toString)) {
 
     <section id="print-section">
         <div id="printContainer"></div>

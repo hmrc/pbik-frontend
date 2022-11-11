@@ -17,6 +17,7 @@
 @import utils.URIInformation
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
+@import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -38,7 +39,7 @@
 
 @title = @{ messages("RemoveBenefits.Confirm.Title") }
 
-@govukLayoutWrapper(pageTitle = title + " - " + messages("Service.title"), Some(taxYearRange), Some(empRef.toString), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(title, form.hasErrors), Some(taxYearRange), Some(empRef.toString), empRef = Some(empRef.toString)) {
     @if(form.hasErrors) {
         <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
             <h2 class="govuk-error-summary__title" id="error-summary-title">

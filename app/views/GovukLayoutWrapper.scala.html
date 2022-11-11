@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.UserResearchBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcLanguageSelect
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, LanguageSelect}
+@import views.templatemodels.PageTitle
 @import config.AppConfig
 
 @this(
@@ -36,7 +37,7 @@
 )
 
 @(
-        pageTitle: String,
+        title: PageTitle,
         isUserResearchBannerVisible: Boolean = true,
         signOut: Boolean = true,
         timeoutActive: Boolean = true,
@@ -117,7 +118,7 @@
 }
 @if(showYTALink) {
     @govukTemplate(
-        pageTitle = Some(pageTitle),
+        pageTitle = Some(title.fullTitle()),
         headBlock = Some(hmrcHead(headBlock = Some(head))),
         headerBlock = hmrcStandardHeader(
             serviceUrl = None,
@@ -134,7 +135,7 @@
     )(content)
 } else {
     @govukLayout(
-        pageTitle = Some(pageTitle),
+        pageTitle = Some(title.fullTitle()),
         headBlock = Some(hmrcHead(headBlock = Some(head))),
         headerBlock = Some(hmrcStandardHeader(
             serviceUrl = None,

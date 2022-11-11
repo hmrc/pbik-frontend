@@ -21,6 +21,7 @@
 
 @import config.PbikAppConfig
 @import config.LocalFormPartialRetriever
+@import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -58,7 +59,7 @@
     }
 }
 
-@govukLayoutWrapper(pageTitle = title + " - " + messages("Service.title"), empRef = Some(empRef.toString), showBackLink = true, showYTALink = true) {
+@govukLayoutWrapper(PageTitle(title), empRef = Some(empRef.toString), showBackLink = true, showYTALink = true) {
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">

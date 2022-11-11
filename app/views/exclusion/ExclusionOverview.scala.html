@@ -17,6 +17,7 @@
 @import utils.URIInformation
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
+@import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -44,7 +45,7 @@
     }
 }
 
-@govukLayoutWrapper(pageTitle = title + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(title, form.hasErrors), empRef = Some(empRef.toString)) {
 
     @defining( if(isCurrentTaxYear=="cy"){ taxYearRange.cyminus1 } else { taxYearRange.cy }){ yearvalue =>
 

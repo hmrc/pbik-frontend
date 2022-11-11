@@ -54,6 +54,7 @@ Service.excludeanemployee = Exclude an employee
 Service.excludeanotheremployee = Exclude another employee
 
 Service.errorSummary.heading = There’s a problem
+Service.error = Error
 
 #*************************************************************
 # Sign out

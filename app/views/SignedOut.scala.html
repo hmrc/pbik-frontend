@@ -14,13 +14,15 @@
  * limitations under the License.
  *@
 
+@import views.templatemodels.PageTitle
+
 @this(
     govukLayoutWrapper: GovukLayoutWrapper
 )
 
 @()(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(pageTitle = messages("signedOut.title") + " - " + messages("Service.title"), timeoutActive = false, signOut = false) {
+@govukLayoutWrapper(PageTitle(messages("signedOut.title")), timeoutActive = false, signOut = false) {
 
     <h1 class="govuk-heading-xl">@messages("signedOut.title")</h1>
 

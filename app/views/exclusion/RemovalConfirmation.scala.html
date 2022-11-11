@@ -18,6 +18,7 @@
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.html.RepeatWithIndex
+@import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -36,7 +37,7 @@
         empRef: EmpRef
 )(implicit request: Request[_], messages: Messages)
 
-@govukLayoutWrapper(pageTitle = messages("ExclusionRemovalConfirmation.title") + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(messages("ExclusionRemovalConfirmation.title")), empRef = Some(empRef.toString)) {
     <span class="govuk-caption-xl">@messages("BenefitInKind.label."+ uriInformation.iabdValueURLDeMapper(iabdType))</span>
     <h1 id="title" class="govuk-heading-xl">
         @messages("ExclusionRemovalConfirmation.title")

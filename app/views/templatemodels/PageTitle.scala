@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import play.api.i18n.Messages
-@import play.api.mvc.RequestHeader
-@import views.templatemodels.PageTitle
+package views.templatemodels
 
-@this(govukLayoutWrapper: GovukLayoutWrapper)
+import play.api.i18n.Messages
 
-@(pageTitle: String, heading: String, message: String)(implicit messages: Messages, request: RequestHeader)
+case class PageTitle(title: String, formErrorsExist: Boolean = false) {
+  def fullTitle()(implicit messages: Messages): String = {
+    val standardTitle = s"$title - ${messages("Service.title")} - GOV.UK"
+    val errorTitle    = s"${messages("Service.error")}: $standardTitle"
 
-@govukLayoutWrapper(PageTitle(pageTitle)) {
- <h1 id="title" class="govuk-heading-xl">@heading</h1>
- <p class="govuk-body">@message</p>
+    if (formErrorsExist) errorTitle else standardTitle
+  }
 }
