@@ -17,7 +17,7 @@
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.html.RepeatWithIndex
-@import views.templatemodels.PageTitle
+@import views.templatemodels.{PageTitle, CheckboxId}
 
 @this(
     govukLayoutWrapper: GovukLayoutWrapper,
@@ -51,7 +51,7 @@
                 <div class="govuk-error-summary__body">
                     <ul class="govuk-list govuk-error-summary__list">
                         <li>
-                            <a href="#error-list-no-selection">@messages("AddBenefits.noselection.error")</a>
+                            <a href="#@CheckboxId.first(form.data)">@messages("AddBenefits.noselection.error")</a>
                         </li>
                     </ul>
                 </div>
