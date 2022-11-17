@@ -23,7 +23,7 @@ import config.{PbikAppConfig, PbikSessionCache}
 import controllers.actions.MinimalAuthAction
 import models.{Bik, EiLPerson, HeaderTags, PbikSession, RegistrationItem, RegistrationList}
 import org.scalatest.TestSuite
-import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.MockitoSugar.mock
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.bind

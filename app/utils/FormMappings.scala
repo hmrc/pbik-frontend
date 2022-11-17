@@ -51,10 +51,20 @@ object FormMappingsConstants {
 @Singleton
 class FormMappings @Inject() (val messagesApi: MessagesApi) extends PayrollBikDefaults with I18nSupport {
 
-  private val nameValidationRegex = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
-  private val ninoValidationRegex = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
-  private val ninoTrimmedRegex    = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
-  private val maxLength           = 100
+  private val nameValidationRegex        = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
+  private val ninoValidationRegex        = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
+  private val ninoTrimmedRegex           = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
+  private val dateDayRegex: String       = "([0-9])"
+  private val dateMonthRegex: String     = "([0-9])"
+  private val dateYearRegex: String      = "([0-9]){4}"
+  private val emptyDateError             = "error.empty.dob"
+  private val invalidDateError           = "error.invaliddate"
+  private val invalidDayDateError        = "error.invaliddate.day"
+  private val invalidMonthDateError      = "error.invaliddate.month"
+  private val invalidYearDateError       = "error.invaliddate.year"
+  private val invalidYearFutureDateError = "error.invaliddate.future.year"
+  private val invalidYearPastDateError   = "error.invaliddate.past.year"
+  private val maxLength                  = 100
 
   def generateYearString(length: Int): String =
     if (length > 0) {
@@ -185,18 +195,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends PayrollBikDe
   def stripTrailingNinoCharacterForNPS(nino: String): String =
     ninoTrimmedRegex.r.findFirstIn(nino).getOrElse("").mkString
 
-  def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[EiLPerson] = {
-    val dateDayRegex: String       = "([0-9])"
-    val dateMonthRegex: String     = "([0-9])"
-    val dateYearRegex: String      = "([0-9]){4}"
-    val emptyDateError             = "error.empty.dob"
-    val invalidDateError           = "error.invaliddate"
-    val invalidDayDateError        = "error.invaliddate.day"
-    val invalidMonthDateError      = "error.invaliddate.month"
-    val invalidYearDateError       = "error.invaliddate.year"
-    val invalidYearFutureDateError = "error.invaliddate.future.year"
-    val invalidYearPastDateError   = "error.invaliddate.past.year"
-
+  def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[EiLPerson] =
     Form(
       mapping(
         "firstname"  -> text
@@ -227,10 +226,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends PayrollBikDe
           EiLPerson.defaultSecondName,
           surname.trim,
           EiLPerson.defaultWorksPayrollNumber,
-          Some(
-            addZeroIfNeeded(dob._1) + "/" +
-              addZeroIfNeeded(dob._2) + "/" + dob._3
-          ),
+          Some(addZeroIfNeeded(dob._1) + "/" + addZeroIfNeeded(dob._2) + "/" + dob._3),
           Some(gender),
           status,
           perOptLock
@@ -252,7 +248,6 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends PayrollBikDe
         )
       )
     )
-  }
 
   val individualsForm: Form[EiLPersonList] = Form(
     mapping(

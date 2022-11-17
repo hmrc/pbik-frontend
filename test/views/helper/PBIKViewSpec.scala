@@ -60,12 +60,13 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
       doc must haveElementWithIdAndText(pageText, id)
     }
 
-  def pageWithYesNoRadioButton(idYes: String, idNo: String) {
+  def pageWithYesNoRadioButton(idYes: String, idNo: String): Unit =
     "have a yes/no radio button" in {
+      //scalastyle:off null
       doc.getElementById(idYes) must not be null
       doc.getElementById(idNo)  must not be null
+      //scalastyle:on null
     }
-  }
 
   def pageWithTextBox(id: String, label: String): Unit =
     s"have  a text box with label $label" in {
@@ -75,7 +76,7 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
   def pageWithLink(text: String, href: String): Unit =
     s"have a link with url $href and text $text" in {
       val a = doc.select(s"a[href=$href]").first()
-      a must not be null
+      a must not be null //scalastyle:ignore null
       a.text.trim mustBe text.trim
     }
 

@@ -53,7 +53,7 @@ class SystemPropertiesHelperSpec extends AnyWordSpecLike with Matchers with Opti
   "When getting a String system property which doesnt exist the helper" should {
     "return the default value" in {
       val s = new StubSystemProperties
-      assert(s.getStringProperty("Wibble", "bibble") == "bibble")
+      assert(s.getStringProperty("Wibble", Some("bibble")) == "bibble")
     }
   }
 
@@ -74,7 +74,7 @@ class SystemPropertiesHelperSpec extends AnyWordSpecLike with Matchers with Opti
   "When getting a String system property which does exist the helper" should {
     "return the default value" in {
       val s = new StubSystemProperties
-      assert(s.getStringProperty("searchString", null) == "foundString")
+      assert(s.getStringProperty("searchString", None) == "foundString")
     }
   }
 

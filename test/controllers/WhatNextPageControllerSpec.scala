@@ -118,7 +118,8 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication with 
     None,
     List(RegistrationItem("30", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true))
   )
-  lazy val CYCache: List[Bik]                    = List.tabulate(21)(n => Bik("" + (n + 1), eilStatus))
+  val numberOfElements                           = 21
+  lazy val CYCache: List[Bik]                    = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), eilStatus))
 
   def taxYearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 

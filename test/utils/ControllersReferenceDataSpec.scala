@@ -140,7 +140,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val p                                                               = Promise[Result]()
-      p.failure(UpstreamErrorResponse(null, INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR))
+      p.failure(UpstreamErrorResponse(null, INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)) //scalastyle:ignore null
       val result                                                          = await(mockController.responseErrorHandler(p.future)(authenticatedRequest))
       result.header.status                             must be(INTERNAL_SERVER_ERROR)
       result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))

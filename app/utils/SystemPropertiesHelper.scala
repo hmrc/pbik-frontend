@@ -36,13 +36,13 @@ trait SystemPropertiesHelper extends Logging {
       case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
 
-  def getStringProperty(key: String, defaultValue: String): String =
+  def getStringProperty(key: String, defaultValue: Option[String]): String =
     try if (sysprop.get(key).isDefined) {
-      sysprop.get(key).getOrElse(defaultValue)
+      sysprop.get(key).getOrElse(defaultValue.get)
     } else {
-      doesntExist(key, defaultValue)
+      doesntExist(key, defaultValue.get)
     } catch {
-      case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
+      case t: Throwable => doesntParse(key, defaultValue.get, t.getMessage)
     }
 
   def getBooleanProperty(key: String, defaultValue: Boolean): Boolean =
@@ -54,11 +54,11 @@ trait SystemPropertiesHelper extends Logging {
       case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
 
-  def doesntExist[T](key: String, defaultvalue: T): T = {
+  def doesntExist[T](key: String, defaultValue: T): T = {
     logger.info(
-      s"[SystemPropertiesHelper][doesntExist] No system property $key defined. Using default value: $defaultvalue"
+      s"[SystemPropertiesHelper][doesntExist] No system property $key defined. Using default value: $defaultValue"
     )
-    defaultvalue
+    defaultValue
   }
 
   def doesntParse[T](key: String, defaultvalue: T, errorMsg: String): T = {
