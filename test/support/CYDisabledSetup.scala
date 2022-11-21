@@ -21,11 +21,10 @@ import config.AppConfig
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito.mock
-import org.specs2.specification.Scope
 import services.BikListService
 import utils.{SplunkLogger, TestAuthAction, TestNoSessionCheckAction}
 
-trait CYDisabledSetup extends Scope {
+trait CYDisabledSetup {
 
   object GuiceTestModule extends AbstractModule {
     override def configure(): Unit = {

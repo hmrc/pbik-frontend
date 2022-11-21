@@ -187,8 +187,8 @@ ExclusionOverview.h2.hint = Gallwch eithrio hyd at {0} o gyflogeion.
 ExclusionOverview.error.required = Dewiswch ‘Iawn’ os oes angen i chi eithrio cyflogai.
 ExclusionOverview.excludedEmployee.title = Eich cyflogeion sydd wedi’u heithrio
 
-ExclusionDecision.noselection.error = Mae’n rhaid i chi ddewis un o’r opsiynau
-ExclusionNinoDecision.title = A ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai yr ydych am ei eithrio?
+ExclusionDecision.noselection.error = Dewiswch ‘Iawn’ os ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai.
+ExclusionNinoDecision.title = A ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai yr hoffech ei eithrio?
 
 ExclusionSearch.title.multiple = Dewiswch pa gyflogai i’w eithrio
 ExclusionSearch.title.single = Gwiriwch fanylion y cyflogai rydych am ei eithrio
