@@ -28,11 +28,11 @@ import play.api.mvc.{AnyContentAsEmpty, Cookie}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, RegistrationService}
-import support.{StubbedBikListService, StubbedRegistrationService, TestAuthUser}
+import support.{StubbedBikListService, StubbedRegistrationService}
 import uk.gov.hmrc.http.SessionKeys
 import utils.{TestAuthAction, TestNoSessionCheckAction}
 
-class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplication {
+class LanguageSupportSpec extends PlaySpec with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .overrides(bind[AppConfig].to(classOf[PbikAppConfig]))
@@ -43,31 +43,26 @@ class LanguageSupportSpec extends PlaySpec with TestAuthUser with FakePBIKApplic
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()
 
-  "The Homepage Controller" should {
-    "set the request language and reload page based on referer header" in {
-      val mockController                                        = app.injector.instanceOf[HomePageController]
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshrequest
-        .withHeaders("Referer" -> "/payrollbik/payrolled-benefits-expenses")
-
-      val result                                                = mockController.setLanguage(request)
-      (scala.concurrent.ExecutionContext.Implicits.global)
-      status(result)               must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/payrolled-benefits-expenses")
-    }
-  }
+  private val homePageController: HomePageController = app.injector.instanceOf[HomePageController]
 
   "HomePageController" should {
+    "set the request language and reload page based on referer header" in {
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
+        .withHeaders("Referer" -> "/payrollbik/payrolled-benefits-expenses")
+      val result                                                = homePageController.setLanguage(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("/payrollbik/payrolled-benefits-expenses")
+    }
+
     "display the navigation page" in {
-      val homePageController                                    = app.injector.instanceOf[HomePageController]
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
         .withSession(SessionKeys.sessionId -> sessionId)
         .withCookies(Cookie("PLAY_LANG", "cy"))
+      val result                                                = homePageController.onPageLoad(request)
 
-      val result = homePageController.onPageLoad(request)
-
-      status(result)          must be(OK)
+      status(result) mustBe OK
       contentAsString(result) must include("Cyfeirnod TWE y cyflogwr")
     }
   }
-
 }

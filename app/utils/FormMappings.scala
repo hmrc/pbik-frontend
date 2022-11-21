@@ -80,7 +80,6 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends PayrollBikDe
       date
     }
 
-  //scalastyle:off cyclomatic.complexity
   def isValidDate(dob: (String, String, String)): Boolean =
     try {
       val monthToInt: Int = dob._2.toInt
@@ -89,31 +88,21 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends PayrollBikDe
       monthToInt match {
         case month if JANUARY to DECEMBER contains month =>
           monthToInt match {
-            case JANUARY   => RANGE_31_DAYS.contains(dayToInt)
-            case FEBRUARY  =>
+            case JANUARY | MARCH | MAY | JULY | AUGUST | OCTOBER | DECEMBER => RANGE_31_DAYS.contains(dayToInt)
+            case APRIL | JUNE | SEPTEMBER | NOVEMBER                        => RANGE_30_DAYS.contains(dayToInt)
+            case FEBRUARY                                                   =>
               if (yearToInt % LEAP_YEAR_FREQ == 0) {
                 RANGE_29_DAYS.contains(dayToInt)
               } else {
                 RANGE_28_DAYS.contains(dayToInt)
               }
-            case MARCH     => RANGE_31_DAYS.contains(dayToInt)
-            case APRIL     => RANGE_30_DAYS.contains(dayToInt)
-            case MAY       => RANGE_31_DAYS.contains(dayToInt)
-            case JUNE      => RANGE_30_DAYS.contains(dayToInt)
-            case JULY      => RANGE_31_DAYS.contains(dayToInt)
-            case AUGUST    => RANGE_31_DAYS.contains(dayToInt)
-            case SEPTEMBER => RANGE_30_DAYS.contains(dayToInt)
-            case OCTOBER   => RANGE_31_DAYS.contains(dayToInt)
-            case NOVEMBER  => RANGE_30_DAYS.contains(dayToInt)
-            case DECEMBER  => RANGE_31_DAYS.contains(dayToInt)
-            case _         => throw new NumberFormatException()
+            case _                                                          => throw new NumberFormatException()
           }
         case _                                           => false
       }
     } catch {
-      case ex: NumberFormatException => false
+      case _: NumberFormatException => false
     }
-  //scalastyle:on cyclomatic.complexity
 
   def isDateYearInFuture(dob: (String, String, String)): Boolean = {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)

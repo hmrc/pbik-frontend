@@ -52,10 +52,10 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   val sessionId = s"session-${UUID.randomUUID}"
 
-  def mockrequest: FakeRequest[AnyContentAsEmpty.type]        =
+  def mockRequest: FakeRequest[AnyContentAsEmpty.type]        =
     FakeRequest().withSession(SessionKeys.sessionId -> sessionId, HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "0")
 
-  def mockWelshrequest: FakeRequest[AnyContentAsEmpty.type]   =
+  def mockWelshRequest: FakeRequest[AnyContentAsEmpty.type]   =
     FakeRequest("GET", "?lang=cy")
       .withSession(SessionKeys.sessionId -> sessionId, HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "0")
 
@@ -78,7 +78,7 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
   val mockAppConfig: PbikAppConfig           = mock[PbikAppConfig]
 
   val cleanRegistrationList: Option[RegistrationList] = Some(RegistrationList(None, List.empty[RegistrationItem], None))
-  val cleanBikRemoved: Option[RegistrationItem]       = Some(RegistrationItem("", false, false))
+  val cleanBikRemoved: Option[RegistrationItem]       = Some(RegistrationItem("", active = false, enabled = false))
   val cleanListOfMatches: Option[List[EiLPerson]]     = Some(List.empty[EiLPerson])
   val cleanEiLPerson: Option[EiLPerson]               = Some(EiLPerson("", "", None, "", None, None, None, None))
   val cleanBikList: Option[List[Bik]]                 = Some(List.empty[Bik])

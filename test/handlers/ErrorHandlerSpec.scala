@@ -38,7 +38,7 @@ class ErrorHandlerSpec
 
   implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
 
-  "ErrorHandlerSpec" should {
+  "ErrorHandler" should {
 
     "handle notFoundTemplate" in {
       implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()

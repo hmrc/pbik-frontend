@@ -27,40 +27,28 @@ import scala.concurrent.Future
 
 class AuthControllerSpec extends PlaySpec with FakePBIKApplication {
 
-  class SetUp {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
-
-    val csrfTokenSigner: CSRFTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
-
-    def csrfToken: (String, String) = "csrfToken" -> csrfTokenSigner.generateToken
-
-    def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
-
-    def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] =
-      FakeRequest().withSession(csrfToken).withHeaders()
-  }
+  implicit val hc: HeaderCarrier                               = HeaderCarrier()
+  private val csrfTokenSigner: CSRFTokenSigner                 = app.injector.instanceOf[CSRFTokenSigner]
+  private val controller: AuthController                       = app.injector.instanceOf[AuthController]
+  private def csrfToken: (String, String)                      = "csrfToken" -> csrfTokenSigner.generateToken
+  private def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
 
   "When an valid user logs in, and their action is not authorised the controller" should {
-    "return a 401 status with enrolment message" in new SetUp {
-      val controller: AuthController = app.injector.instanceOf[AuthController]
-      val result: Future[Result]     = controller.notAuthorised()(fakeRequest)
-      status(result) must be(UNAUTHORIZED) // 401
-      val bodyText: String = contentAsString(result)
-      assert(bodyText.contains("Enrol to use this service"))
-      assert(
-        bodyText.contains(
-          "You’re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue."
-        )
+    "return a 401 status with enrolment message" in {
+      val result: Future[Result] = controller.notAuthorised()(fakeRequest)
+
+      status(result) mustBe UNAUTHORIZED
+      contentAsString(result) must include("Enrol to use this service")
+      contentAsString(result) must include(
+        "You’re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue."
       )
-      assert(bodyText.contains("To enrol you’ll need:"))
-      assert(bodyText.contains("employer PAYE reference"))
-      assert(bodyText.contains("Accounts office reference"))
-      assert(
-        bodyText.contains(
-          "You’ll then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment."
-        )
+      contentAsString(result) must include("To enrol you’ll need:")
+      contentAsString(result) must include("employer PAYE reference")
+      contentAsString(result) must include("Accounts office reference")
+      contentAsString(result) must include(
+        "You’ll then be sent an activation code in the post. When you receive it, log on again and use it to confirm your enrolment."
       )
-      assert(bodyText.contains("You’ll then be able to use payrolling benefits and expenses."))
+      contentAsString(result) must include("You’ll then be able to use payrolling benefits and expenses.")
     }
   }
 }

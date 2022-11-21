@@ -61,16 +61,16 @@ class StubbedRegistrationService @Inject() (
     )
     with I18nSupport {
 
-  val dateRange: TaxYearRange                          = taxDateUtils.getTaxYearRange()
-  val numberOfElements                                 = 21
-  val eilStatus                                        = 10
-  lazy val CYCache: List[Bik]                          = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), eilStatus))
-  lazy val CYRegistrationItems: List[RegistrationItem] =
+  val dateRange: TaxYearRange                                            = taxDateUtils.getTaxYearRange()
+  val (numberOfElements, bikStatus, biksAvailableCount): (Int, Int, Int) = (21, 10, 17)
+  lazy val CYCache: List[Bik]                                            =
+    List.tabulate(numberOfElements)(n => Bik("" + (n + 1), bikStatus))
+  lazy val CYRegistrationItems: List[RegistrationItem]                   =
     List.tabulate(numberOfElements)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
-  val registeredListOption                             = List.empty[Bik]
-  val allRegisteredListOption: List[Bik]               = CYCache
-  val mockRegistrationItemList                         = List.empty[RegistrationItem]
-  val mockFormRegistrationList: Form[RegistrationList] =
+  val registeredListOption: List[Bik]                                    = List.empty[Bik]
+  val allRegisteredListOption: List[Bik]                                 = CYCache
+  val mockRegistrationItemList: List[RegistrationItem]                   = List.empty[RegistrationItem]
+  val mockFormRegistrationList: Form[RegistrationList]                   =
     formMappings.objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
 
   //TODO: Why is this test returning different views to the real code?
@@ -97,7 +97,7 @@ class StubbedRegistrationService @Inject() (
               allRegisteredListOption,
               nonLegislationBiks = List(0),
               decommissionedBiks = List(0),
-              biksAvailableCount = Some(17),
+              biksAvailableCount = Some(biksAvailableCount),
               empRef = request.empRef
             )
           )
@@ -113,7 +113,7 @@ class StubbedRegistrationService @Inject() (
               registeredListOption,
               nonLegislationBiks = List(0),
               decommissionedBiks = List(0),
-              biksAvailableCount = Some(17),
+              biksAvailableCount = Some(biksAvailableCount),
               empRef = request.empRef
             )
           )

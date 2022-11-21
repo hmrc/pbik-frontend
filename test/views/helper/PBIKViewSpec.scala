@@ -66,18 +66,18 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
       doc.getElementById(idYes) must not be null
       doc.getElementById(idNo)  must not be null
     }
+
+  def pageWithLink(text: String, href: String): Unit =
+    s"have a link with url $href and text $text" in {
+      val a = doc.select(s"a[href=$href]").first()
+      a must not be null
+      a.text.trim mustBe text.trim
+    }
   //scalastyle:on null
 
   def pageWithTextBox(id: String, label: String): Unit =
     s"have  a text box with label $label" in {
       doc must haveInputLabelWithText(id, label)
-    }
-
-  def pageWithLink(text: String, href: String): Unit =
-    s"have a link with url $href and text $text" in {
-      val a = doc.select(s"a[href=$href]").first()
-      a must not be null //scalastyle:ignore null
-      a.text.trim mustBe text.trim
     }
 
   def pageWithContinueButtonForm(submitUrl: String, buttonText: String): Unit =
@@ -101,9 +101,7 @@ trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite with I18nSuppor
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   implicit val messages: MessagesApi                        = app.injector.instanceOf[MessagesApi]
 
-  val year2018 = 2018
-  val year2019 = 2019
-  val year2020 = 2020
+  val (year2018, year2019, year2020): (Int, Int, Int) = (2018, 2019, 2020)
 
   def taxYearRange: TaxYearRange = TaxYearRange(year2018, year2019, year2020)
 }

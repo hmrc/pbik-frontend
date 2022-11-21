@@ -17,23 +17,21 @@
 package controllers
 
 import org.scalatestplus.play.PlaySpec
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import support.TestAuthUser
 import views.html.SignedOut
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
-class SignedOutControllerSpec extends PlaySpec with FakePBIKApplication with TestAuthUser with I18nSupport {
-  override def messagesApi: MessagesApi                    = app.injector.instanceOf[MessagesApi]
-  implicit val ec: ExecutionContextExecutor                = ExecutionContext.global
-  private val messagesActionBuilder: MessagesActionBuilder =
-    new DefaultMessagesActionBuilderImpl(stubBodyParser[AnyContent](), stubMessagesApi())
-  private val cc: ControllerComponents                     = stubControllerComponents()
+class SignedOutControllerSpec extends PlaySpec with FakePBIKApplication {
 
-  val mockMCC: MessagesControllerComponents            = DefaultMessagesControllerComponents(
+  implicit val ec: ExecutionContextExecutor                    = ExecutionContext.global
+  private val messagesActionBuilder: MessagesActionBuilder     =
+    new DefaultMessagesActionBuilderImpl(stubBodyParser[AnyContent](), stubMessagesApi())
+  private val cc: ControllerComponents                         = stubControllerComponents()
+  private val mockMCC: MessagesControllerComponents            = DefaultMessagesControllerComponents(
     messagesActionBuilder,
     DefaultActionBuilder(stubBodyParser[AnyContent]()),
     cc.parsers,
@@ -42,19 +40,21 @@ class SignedOutControllerSpec extends PlaySpec with FakePBIKApplication with Tes
     cc.fileMimeTypes,
     ec
   )
-  val signedOutView: SignedOut                         = app.injector.instanceOf[SignedOut]
-  val signedOutController                              = new SignedOutController(signedOutView, mockMCC, ec)
-  val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/")
+  private val signedOutView: SignedOut                         = app.injector.instanceOf[SignedOut]
+  private val signedOutController                              = new SignedOutController(signedOutView, mockMCC, ec)
+  private val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/")
 
-  "keepAlive" must {
-    "return a NoContent" in {
-      status(signedOutController.keepAlive().apply(fakeRequest)) mustBe NO_CONTENT
+  "SignedOutController" when {
+    "keepAlive" must {
+      "return NoContent" in {
+        status(signedOutController.keepAlive().apply(fakeRequest)) mustBe NO_CONTENT
+      }
     }
-  }
 
-  "signedOut" must {
-    "return a NoContent" in {
-      status(signedOutController.signedOut().apply(fakeRequest)) mustBe OK
+    "signedOut" must {
+      "return OK" in {
+        status(signedOutController.signedOut().apply(fakeRequest)) mustBe OK
+      }
     }
   }
 }

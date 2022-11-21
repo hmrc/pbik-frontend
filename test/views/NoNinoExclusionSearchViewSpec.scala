@@ -26,16 +26,16 @@ import views.html.exclusion.NoNinoExclusionSearchForm
 
 class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi      = app.injector.instanceOf[MessagesApi]
-  val formMappings                  = app.injector.instanceOf[FormMappings]
-  val noNinoExclusionSearchFormView = app.injector.instanceOf[NoNinoExclusionSearchForm]
+  private val formMappings: FormMappings    = app.injector.instanceOf[FormMappings]
+  private val noNinoExclusionSearchFormView = app.injector.instanceOf[NoNinoExclusionSearchForm]
 
-  override def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
+  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  override def view: Html               = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
 
-  def viewWithForm(form: Form[EiLPerson]): Html =
+  private def viewWithForm(form: Form[EiLPerson]): Html =
     noNinoExclusionSearchFormView(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
 
-  "noNinoExclusionSearchPage" must {
+  "NoNinoExclusionSearchView" must {
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/no-nino/search-for-employee", "Continue")
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
@@ -47,10 +47,9 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
   }
 
   "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
-
-    val view = viewWithForm(
+    val view: Html = viewWithForm(
       formMappings.exclusionSearchFormWithoutNino.bind(
-        Map[String, String](
+        Map(
           ("firstname", ""),
           ("surname", ""),
           ("dob.day", ""),
@@ -72,4 +71,26 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
     doc must haveErrorNotification(messages("error.required"))
   }
 
+  "check for invalid inputs" in new PBIKViewBehaviours {
+    val view: Html = viewWithForm(
+      formMappings.exclusionSearchFormWithoutNino.bind(
+        Map(
+          ("firstname", "1"),
+          ("surname", "1"),
+          ("dob.day", "01"),
+          ("dob.month", "10"),
+          ("dob.year", "9999")
+        )
+      )
+    )
+
+    doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
+    doc must haveErrorNotification(messages("error.incorrect.firstname"))
+    doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
+    doc must haveErrorNotification(messages("error.incorrect.lastname"))
+    doc must haveErrorSummary(messages("error.invaliddate.future.year").replace(".", ""))
+    doc must haveErrorNotification(messages("error.invaliddate.future.year"))
+    doc must haveErrorSummary(messages("error.required").replace(".", ""))
+    doc must haveErrorNotification(messages("error.required"))
+  }
 }
