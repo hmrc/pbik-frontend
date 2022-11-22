@@ -34,9 +34,7 @@
         empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
 
-@title = @{messages("whatNext.remove.heading")}
-
-@govukLayoutWrapper(PageTitle(title), Some(empRef.toString), showBackLink = false) {
+@govukLayoutWrapper(PageTitle(messages("whatNext.remove.heading")), Some(empRef.toString), showBackLink = false) {
 
     <section id="print-section">
         <div id="printContainer"></div>

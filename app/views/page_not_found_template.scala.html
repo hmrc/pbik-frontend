@@ -28,9 +28,7 @@
 
 @anchor(text: String, url: String) = {<a class="govuk-link" href="@url" target="_blank">@text</a>}
 
-@pageTitle= {@messages("global.page.not.found.error.title")}
-
-@govukLayoutWrapper(PageTitle(pageTitle.toString)) {
+@govukLayoutWrapper(PageTitle(messages("global.page.not.found.error.title"))) {
    <h1 class="govuk-heading-xl">@Messages("global.page.not.found.error.title")</h1>
    <p class="govuk-body">@Messages("global.page.not.found.error.check.web.address.correct")</p>
    <p class="govuk-body">@Messages("global.page.not.found.error.check.web.address.full")</p>

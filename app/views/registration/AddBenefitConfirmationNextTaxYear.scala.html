@@ -33,10 +33,9 @@
 
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
-@title = @{messages("whatNext.add.heading") }
 @taxYear = @{if(isCurrentYear) cyminus1 else cy}
 
-@govukLayoutWrapper(PageTitle(title), empRef = Some(empRef.toString), showBackLink = false) {
+@govukLayoutWrapper(PageTitle(messages("whatNext.add.heading")), empRef = Some(empRef.toString), showBackLink = false) {
 
     <div id="confirmation" class="govuk-panel govuk-panel--confirmation govuk-!-padding-top-9 govuk-!-padding-bottom-9">
         <h1 id="title" class="govuk-panel__title">

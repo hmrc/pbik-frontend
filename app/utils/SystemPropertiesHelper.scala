@@ -36,13 +36,13 @@ trait SystemPropertiesHelper extends Logging {
       case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
 
-  def getStringProperty(key: String, defaultValue: Option[String]): String =
+  def getStringProperty(key: String, defaultValue: String): String =
     try if (sysprop.get(key).isDefined) {
-      sysprop.get(key).getOrElse(defaultValue.get)
+      sysprop.get(key).getOrElse(defaultValue)
     } else {
-      doesntExist(key, defaultValue.get)
+      doesntExist(key, defaultValue)
     } catch {
-      case t: Throwable => doesntParse(key, defaultValue.get, t.getMessage)
+      case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
 
   def getBooleanProperty(key: String, defaultValue: Boolean): Boolean =
