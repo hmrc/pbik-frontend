@@ -16,27 +16,22 @@
 
 package connectors
 
-import config.Service
 import models.{EmpRef, HeaderTags, PbikError}
-import play.api.Configuration
+import play.api.Logging
 import play.api.libs.json._
 import play.api.mvc.Request
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.Exceptions.GenericServerErrorException
-import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
-import java.net.URLEncoder
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import play.api.Logging
-@Singleton
-class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configuration) extends Logging {
 
-  val serviceUrl: String = configuration.get[Service]("microservice.services.government-gateway")
+@Singleton
+class HmrcTierConnector @Inject() (client: HttpClient) extends Logging {
 
   var pbikHeaders: Map[String, String] = Map[String, String]()
-
-  def encode(value: String): String = URLEncoder.encode(value, "UTF-8")
 
   def createGetUrl(baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int): String = {
     val orgIdentifierEncoded = empRef.encodedEmpRef
@@ -67,7 +62,7 @@ class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configurat
             s"[HmrcTierConnector][genericGetCall] a pbik error code was returned. Error Code: ${s.value.errorCode}"
           )
           throw new GenericServerErrorException(s.value.errorCode)
-        case e: JsError              => r.json.as[T]
+        case _: JsError              => r.json.as[T]
       }
 
     }

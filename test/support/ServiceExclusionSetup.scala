@@ -20,11 +20,10 @@ import com.google.inject.AbstractModule
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito.mock
-import org.specs2.specification.Scope
 import services.{EiLListService, SessionService}
 import utils.{TestAuthAction, TestNoSessionCheckAction}
 
-trait ServiceExclusionSetup extends Scope {
+trait ServiceExclusionSetup {
 
   object GuiceTestModule extends AbstractModule {
     override def configure(): Unit = {

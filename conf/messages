@@ -197,7 +197,7 @@ ExclusionOverview.h2.hint = You can exclude up to {0} employees.
 ExclusionOverview.error.required = Select yes if you need to exclude an employee.
 ExclusionOverview.excludedEmployee.title = Your excluded employees
 
-ExclusionDecision.noselection.error = You need to choose an option
+ExclusionDecision.noselection.error = Select yes if you know the employee’s National Insurance number.
 ExclusionNinoDecision.title = Do you know the National Insurance number of the employee you want to exclude?
 ExclusionSearch.title.multiple = Choose which employee to exclude
 ExclusionSearch.title.single = Check the details of the employee you want to exclude
