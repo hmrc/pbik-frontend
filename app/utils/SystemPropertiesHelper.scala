@@ -36,19 +36,19 @@ trait SystemPropertiesHelper extends Logging {
       case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
     }
 
-  def doesntExist[T](key: String, defaultvalue: T): T = {
+  def doesntExist[T](key: String, defaultValue: T): T = {
     logger.info(
-      s"[SystemPropertiesHelper][doesntExist] No system property $key defined. Using default value: $defaultvalue"
+      s"[SystemPropertiesHelper][doesntExist] No system property $key defined. Using default value: $defaultValue"
     )
-    defaultvalue
+    defaultValue
   }
 
-  def doesntParse[T](key: String, defaultvalue: T, errorMsg: String): T = {
+  def doesntParse[T](key: String, defaultValue: T, errorMsg: String): T = {
     logger.warn(
       s"[SystemPropertiesHelper][doesntParse] System property $key exists but could not be parsed to the correct type." +
-        s" Please check the value: $defaultvalue. Error was $errorMsg"
+        s" Please check the value: $defaultValue. Error was $errorMsg"
     )
-    defaultvalue
+    defaultValue
   }
 
 }

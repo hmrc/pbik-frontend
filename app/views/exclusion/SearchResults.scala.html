@@ -18,6 +18,7 @@
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.html.RepeatWithIndex
+@import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -40,7 +41,7 @@
 
 @expenseOrBenefit = @{messages(s"BenefitInKind.label.$iabdType")}
 @title = @{if(listOfMatches.active.length > 1){ messages("ExclusionSearch.title.multiple") } else { messages("ExclusionSearch.title.single") }}
-@govukLayoutWrapper(pageTitle= title + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(title, listOfMatchesForm.hasErrors), empRef = Some(empRef.toString)) {
 
     @defining( if(year=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
 

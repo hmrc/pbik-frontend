@@ -18,7 +18,7 @@
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.html.localhelpers.TextInput
-
+@import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -40,7 +40,7 @@
 
 @excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">}
 @expenseOrBenefit = @{messages(s"BenefitInKind.label.$iabdType")}
-@govukLayoutWrapper(pageTitle = messages("ExclusionSearch.form.title") + " - " + messages("Service.title"), empRef = Some(empRef.toString) ) {
+@govukLayoutWrapper(PageTitle(messages("ExclusionSearch.form.title"), searchForm.hasErrors), empRef = Some(empRef.toString) ) {
 
     @if(searchForm.hasErrors){
         <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">

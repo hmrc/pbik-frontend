@@ -1109,7 +1109,16 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication with
   "When updating exclusions," must {
     "an invalid input on first name" in {
       val TEST_EIL_PERSON: List[EiLPerson]                              = List(
-        EiLPerson("AA111111", " ", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(10))
+        EiLPerson(
+          "AA111111",
+          " ",
+          Some("Stones"),
+          "Smith",
+          Some("123"),
+          Some("01/01/1980"),
+          Some("male"),
+          Some(eilPersonStatus)
+        )
       )
       val TEST_YEAR_CODE                                                = "cy"
       val TEST_IABD_VALUE                                               = "car"

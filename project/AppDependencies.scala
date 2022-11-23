@@ -12,14 +12,13 @@ object AppDependencies {
   )
 
   val test: Seq[ModuleID]    = Seq(
-    "org.mockito"                   % "mockito-core"         % "4.9.0",
-    "org.jsoup"                     % "jsoup"                % "1.15.3",
-    "org.scalatestplus.play"       %% "scalatestplus-play"   % "5.1.0",
-    "org.scalatest"                %% "scalatest"            % "3.2.14",
-    "org.scalatestplus"            %% "mockito-4-6"          % "3.2.14.0",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.14.0",
-    "com.vladsch.flexmark"          % "flexmark-all"         % "0.62.2"
-  ).map(_ % Test)
+    "org.mockito"                  %% "mockito-scala-scalatest" % "1.17.12",
+    "org.jsoup"                     % "jsoup"                   % "1.15.3",
+    "org.scalatestplus.play"       %% "scalatestplus-play"      % "5.1.0",
+    "org.scalatest"                %% "scalatest"               % "3.2.14",
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"    % "2.14.1",
+    "com.vladsch.flexmark"          % "flexmark-all"            % "0.62.2"
+  ).map(_ % "test")
 
   def apply(): Seq[ModuleID] = compile ++ test
 }

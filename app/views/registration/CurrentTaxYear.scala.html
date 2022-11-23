@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.html.RepeatWithIndex
+@import views.templatemodels.{PageTitle, CheckboxId}
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -37,7 +38,7 @@
         empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(pageTitle = messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy) + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy), form.hasErrors), empRef = Some(empRef.toString)) {
 
     @if(form("actives").hasErrors) {
         <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
@@ -47,7 +48,7 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li>
-                        <a href="#error-list-no-selection">@messages("AddBenefits.noselection.error")</a>
+                        <a href='#@CheckboxId.first(form.data)' id="error-link">@messages("AddBenefits.noselection.error")</a>
                     </li>
                 </ul>
             </div>
@@ -70,7 +71,7 @@
             <div class='govuk-form-group @if(form("actives").hasErrors) {govuk-form-group--error}' id="list-benefits">
                 <fieldset class="govuk-fieldset" aria-describedby="benefit-hint@if(form("actives").hasErrors){ error-list-no-selection}">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <p class="govuk-visually-hidden">@messages("AddBenefits.Heading")</p>
+                        <span class="govuk-visually-hidden">@messages("AddBenefits.Heading")</span>
                     </legend>
 
                     <div id="benefit-hint" class="govuk-hint">
@@ -79,6 +80,7 @@
 
                     @if(form("actives").hasErrors) {
                         <span id="error-list-no-selection" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@messages("Service.error"):</span>
                             @messages("AddBenefits.noselection.error")
                         </span>
                     }

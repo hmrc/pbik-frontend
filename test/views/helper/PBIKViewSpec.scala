@@ -76,7 +76,7 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
   def pageWithLink(text: String, href: String): Unit =
     s"have a link with url $href and text $text" in {
       val a = doc.select(s"a[href=$href]").first()
-      a must not be null
+      a must not be null //scalastyle:ignore null
       a.text.trim mustBe text.trim
     }
 

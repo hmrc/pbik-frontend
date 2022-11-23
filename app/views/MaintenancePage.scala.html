@@ -16,6 +16,7 @@
 
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
+@import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -25,7 +26,7 @@
 
 @(backLink:String="payrolled-benefits-expenses", empRef: Option[EmpRef])(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(pageTitle = messages("Service.title"), showBackLink = false, empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(messages("Service.title")), showBackLink = false, empRef = Some(empRef.toString)) {
 
     <h1 class="govuk-heading-xl" id="title">@messages("ErrorPage.title")</h1>
     <p class="govuk-body" id="tryLater">

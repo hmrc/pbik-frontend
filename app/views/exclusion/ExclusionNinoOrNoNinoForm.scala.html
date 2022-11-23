@@ -17,6 +17,7 @@
 @import utils.URIInformation
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
+@import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -36,7 +37,7 @@
 )(implicit request: Request[_], messages: Messages)
 
 @expenseOrBenefit = @{messages(s"BenefitInKind.label.$iabdType")}
-@govukLayoutWrapper(pageTitle = messages("ExclusionNinoDecision.title") + " - " + messages("Service.title"), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(messages("ExclusionNinoDecision.title", form.hasErrors), form.hasErrors), empRef = Some(empRef.toString)) {
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
 

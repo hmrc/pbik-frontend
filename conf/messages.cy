@@ -51,6 +51,7 @@ Service.excludeanemployee = Eithrio cyflogai
 Service.excludeanotheremployee = Eithrio cyflogai arall
 
 Service.errorSummary.heading = Mae problem wedi codi
+Service.error = Gwall
 
 #*************************************************************
 # Allgofnodi
