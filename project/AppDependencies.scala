@@ -11,9 +11,8 @@ object AppDependencies {
     "uk.gov.hmrc" %% "http-caching-client"        % "10.0.0-play-28"
   )
 
-  val test: Seq[ModuleID] = Seq(
+  val test: Seq[ModuleID]    = Seq(
     "org.mockito"                  %% "mockito-scala-scalatest" % "1.17.12",
-    "org.specs2"                   %% "specs2-core"             % "4.19.0",
     "org.jsoup"                     % "jsoup"                   % "1.15.3",
     "org.scalatestplus.play"       %% "scalatestplus-play"      % "5.1.0",
     "org.scalatest"                %% "scalatest"               % "3.2.14",
@@ -21,5 +20,5 @@ object AppDependencies {
     "com.vladsch.flexmark"          % "flexmark-all"            % "0.62.2"
   ).map(_ % "test")
 
-  val all: Seq[ModuleID]  = compile ++ test
+  def apply(): Seq[ModuleID] = compile ++ test
 }

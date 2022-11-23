@@ -115,7 +115,7 @@ class ControllersReferenceData @Inject() (
   )(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     staticDataRequest.recover {
       case e0: NoSuchElementException =>
-        logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled : $e0")
+        logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled: $e0")
         NotFound(
           errorPageView(
             ControllersReferenceDataCodes.VALIDATION_ERROR_REFERENCE,
@@ -142,14 +142,16 @@ class ControllersReferenceData @Inject() (
 
       case Upstream5xxResponse(message, code, _, _) =>
         logger.error(
-          s"[ControllersReferenceData][responseErrorHandler] An Upstream5xxResponse was handled with code: $code and message:$message"
+          s"[ControllersReferenceData][responseErrorHandler] An Upstream5xxResponse was handled with code: " +
+            s"$code and message:$message"
         )
         InternalServerError(maintenancePageView(empRef = Some(request.empRef)))
 
       case e4: GenericServerErrorException =>
         try {
           logger.warn(
-            s"[ControllersReferenceData][responseErrorHandler] A GenericServerErrorException was handled: ${e4.message}",
+            s"[ControllersReferenceData][responseErrorHandler] A GenericServerErrorException was handled: " +
+              s"${e4.message}",
             e4
           )
           val msgValue = e4.message
@@ -169,14 +171,16 @@ class ControllersReferenceData @Inject() (
         } catch {
           case ex: Exception =>
             logger.warn(
-              s"[ControllersReferenceData][responseErrorHandler] Could not parse GenericServerError System Error number: ${if (e4.message.nonEmpty) e4.message else "<no error code>"}. Showing default error page instead",
+              s"[ControllersReferenceData][responseErrorHandler] Could not parse GenericServerError System Error number:" +
+                s" ${if (e4.message.nonEmpty) e4.message else "<no error code>"}. Showing default error page instead",
               ex
             )
             InternalServerError(maintenancePageView(empRef = Some(request.empRef)))
         }
       case e5                              =>
         logger.warn(
-          s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e5.getMessage}. Showing default error page",
+          s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e5.getMessage}. " +
+            s"Showing default error page",
           e5
         )
         InternalServerError(maintenancePageView(empRef = Some(request.empRef)))

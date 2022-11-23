@@ -26,8 +26,8 @@ import views.html.registration.NextTaxYear
 
 class CheckboxIdSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  val messagesApi: MessagesApi     = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings   = app.injector.instanceOf[FormMappings]
   val nextTaxYearView: NextTaxYear = app.injector.instanceOf[NextTaxYear]
 
   def viewWithForm(form: Form[RegistrationList]): Html =
@@ -40,25 +40,27 @@ class CheckboxIdSpec extends PBIKViewSpec {
       val view = viewWithForm(
         formMappings.objSelectedForm
           .withError("actives", "error")
-          .bind(Map[String, String](
-            "actives[2].uid" -> "32",
-            "actives[0].uid" -> "37",
-            "actives[1].uid" -> "32"
+          .bind(
+            Map[String, String](
+              "actives[2].uid" -> "32",
+              "actives[0].uid" -> "37",
+              "actives[1].uid" -> "32"
             )
           )
       )
 
-      doc(view) must haveLinkWithUrlWithID("error-link","checkbox-37")
+      doc(view) must haveLinkWithUrlWithID("error-link", "checkbox-37")
     }
 
     "return a link to the first form checkbox ignoring id of always last 'Other' field" in {
       val view = viewWithForm(
         formMappings.objSelectedForm
           .withError("actives", "error")
-          .bind(Map[String, String](
-            "actives[0].uid" -> "47",
-            "actives[1].uid" -> "2",
-            "actives[2].uid" -> "37"
+          .bind(
+            Map[String, String](
+              "actives[0].uid" -> "47",
+              "actives[1].uid" -> "2",
+              "actives[2].uid" -> "37"
             )
           )
       )

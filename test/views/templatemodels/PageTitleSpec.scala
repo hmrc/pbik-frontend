@@ -24,7 +24,7 @@ import views.html.StartPage
 
 class PageTitleSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi                               = app.injector.instanceOf[MessagesApi]
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
   override def view: Html = startPageView(EmpRef("", ""))

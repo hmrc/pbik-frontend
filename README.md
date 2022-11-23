@@ -4,6 +4,14 @@ This service provides the Play Framework http endpoint for employers requests. T
 
 Once authenticated the employer has access to the pbik-frontend functionality which allows
 
+### Getting started
+#### Locally:
+- To run all PBIK and dependant services in Service Manager, run:
+```
+sm --start PBIK_ALL -r
+```
+
+
 ### Overview 
 
 ##### Summmary Section
@@ -54,5 +62,3 @@ decommissioned.biks - Which benefits no longer exist <br />
 ### License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
-
-To run all PBIK and dependant services in Service Manager, run: `sm --start PBIK_ALL`

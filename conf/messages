@@ -198,7 +198,7 @@ ExclusionOverview.h2.hint = You can exclude up to {0} employees.
 ExclusionOverview.error.required = Select yes if you need to exclude an employee.
 ExclusionOverview.excludedEmployee.title = Your excluded employees
 
-ExclusionDecision.noselection.error = You need to choose an option
+ExclusionDecision.noselection.error = Select yes if you know the employee’s National Insurance number.
 ExclusionNinoDecision.title = Do you know the National Insurance number of the employee you want to exclude?
 ExclusionSearch.title.multiple = Choose which employee to exclude
 ExclusionSearch.title.single = Check the details of the employee you want to exclude
@@ -524,7 +524,7 @@ whatNext.remove.p = You will not be taxing {0} through your payroll from 6 April
 whatNext.exclude.heading = Exclusion complete
 whatNext.rescind.heading = Registration complete
 whatNext.exclude.lede = {0} will not have {1} taxed through your payroll from 6 April {2}.
-whatNext.exclude.p1 = From now on, you should report the value of this benefit by sending us a <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">P11D</a> for {0}. You should do this at the end of the tax year.
+whatNext.exclude.p1 = From now on, you should report the value of this benefit by sending us a <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">P11D employment benefit form - (opens in a new window or tab)</a> for {0}. You should do this at the end of the tax year.
 whatNext.cy1.exclude.p2 = Will no longer have the following benefits and expenses payrolled on {0}
 whatNext.exclude.p3 = Set up your payroll correctly so that the employees don’t have their benefits and expenses taxed in their pay.
 whatNext.exclude.p4 = You’ll need to submit a P11D for those employees you’ve excluded, informing us of the value of the benefits and expenses they receive so we can include it in their tax code.

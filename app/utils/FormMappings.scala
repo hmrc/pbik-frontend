@@ -80,6 +80,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends PayrollBikDe
       date
     }
 
+  //scalastyle:off cyclomatic.complexity
   def isValidDate(dob: (String, String, String)): Boolean =
     try {
       val monthToInt: Int = dob._2.toInt
@@ -112,6 +113,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends PayrollBikDe
     } catch {
       case ex: NumberFormatException => false
     }
+  //scalastyle:on cyclomatic.complexity
 
   def isDateYearInFuture(dob: (String, String, String)): Boolean = {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
