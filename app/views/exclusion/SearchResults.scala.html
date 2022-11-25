@@ -127,7 +127,7 @@
             <p class="govuk-body">@messages("ExclusionImportant.ExcludeEmployee")</p>
             <p class="govuk-inset-text">@messages("ExclusionImportant.Reminder", expenseOrBenefit, yearvalue) </p>
             <div class="govuk-form-group">
-                <a href="@routes.ExclusionListController.updateExclusions(year, uriInformation.iabdValueURLMapper(iabdType))" type="submit" class="govuk-button" role="button" id="button-confirm">@messages("Service.confirm")</a>
+                <a href="@routes.ExclusionListController.updateExclusions(year, uriInformation.iabdValueURLMapper(iabdType))" class="govuk-button" role="button" id="button-confirm">@messages("Service.confirm")</a>
             </div>
             <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))">
                 @messages("Service.back.excluded")
