@@ -27,11 +27,11 @@ import views.html.exclusion.NinoExclusionSearchForm
 
 class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi    = app.injector.instanceOf[MessagesApi]
-  val formMappings                = app.injector.instanceOf[FormMappings]
-  val ninoExclusionSearchFormView = app.injector.instanceOf[NinoExclusionSearchForm]
+  val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
+  val ninoExclusionSearchFormView: NinoExclusionSearchForm = app.injector.instanceOf[NinoExclusionSearchForm]
 
-  override def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
+  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  override def view: Html               = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
 
   implicit val pbikAppConfig: PbikAppConfig                         = app.injector.instanceOf[PbikAppConfig]
   implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
@@ -41,7 +41,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   def viewWithForm(form: Form[EiLPerson]): Html =
     ninoExclusionSearchFormView(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
 
-  "ninoExclusionSearchPage" must {
+  "NinoExclusionSearchView" must {
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     behave like pageWithHeader(messages("ExclusionSearch.form.header"))
     behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/nino/search-for-employee", "Continue")
@@ -51,10 +51,9 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   }
 
   "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
-
     val view: Html = viewWithForm(
       formMappings.exclusionSearchFormWithNino.bind(
-        Map[String, String](("nino", ""), ("firstname", ""), ("surname", ""))
+        Map(("nino", ""), ("firstname", ""), ("surname", ""))
       )
     )
 
@@ -64,5 +63,20 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
     doc must haveErrorNotification(messages("error.empty.firstname"))
     doc must haveErrorSummary(messages("error.empty.lastname").replace(".", ""))
     doc must haveErrorNotification(messages("error.empty.lastname"))
+  }
+
+  "check for invalid inputs" in new PBIKViewBehaviours {
+    val view: Html = viewWithForm(
+      formMappings.exclusionSearchFormWithNino.bind(
+        Map(("nino", "1"), ("firstname", "1"), ("surname", "1"))
+      )
+    )
+
+    doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
+    doc must haveErrorNotification(messages("error.incorrect.nino"))
+    doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
+    doc must haveErrorNotification(messages("error.incorrect.firstname"))
+    doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
+    doc must haveErrorNotification(messages("error.incorrect.lastname"))
   }
 }

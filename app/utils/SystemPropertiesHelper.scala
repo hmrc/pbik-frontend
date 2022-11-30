@@ -25,11 +25,11 @@ import play.api.Logging
   */
 trait SystemPropertiesHelper extends Logging {
 
-  lazy val sysprop = new SystemProperties()
+  lazy val sysProp = new SystemProperties()
 
   def getIntProperty(key: String, defaultValue: Int): Int =
-    try if (sysprop.get(key).isDefined) {
-      sysprop.get(key).get.toInt
+    try if (sysProp.get(key).isDefined) {
+      sysProp.get(key).get.toInt
     } else {
       doesntExist(key, defaultValue)
     } catch {

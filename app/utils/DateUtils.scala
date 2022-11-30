@@ -19,7 +19,7 @@ package utils
 import java.text.{DateFormat, SimpleDateFormat}
 import java.util.Date
 
-object DateUtils extends PayrollBikDefaults {
+object DateUtils {
 
   def npsDateConversionFormat(dateAsString: String): String = {
     val sourceFormat: DateFormat = new SimpleDateFormat("dd/MM/yyyy")

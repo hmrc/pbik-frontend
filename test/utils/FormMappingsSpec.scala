@@ -17,144 +17,196 @@
 package utils
 
 import controllers.FakePBIKApplication
+import models.{EiLPerson, EiLPersonList, ExclusionNino, MandatoryRadioButton}
 import org.joda.time.DateTimeConstants._
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 import utils.FormMappingsConstants._
 
-class FormMappingsSpec extends PlaySpec with FakePBIKApplication {
+class FormMappingsSpec extends PlaySpec with FakePBIKApplication with Matchers {
 
-  val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  private val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  private val eilPerson: EiLPerson       =
+    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None)
 
-  "An input date" should {
-    "be zero padded, if only one digit of the date is supplied" in {
-      assert(formMappings.addZeroIfNeeded("1") == "01")
-      assert(formMappings.addZeroIfNeeded("2") == "02")
-      assert(formMappings.addZeroIfNeeded("3") == "03")
-      assert(formMappings.addZeroIfNeeded("4") == "04")
-      assert(formMappings.addZeroIfNeeded("5") == "05")
-      assert(formMappings.addZeroIfNeeded("6") == "06")
-      assert(formMappings.addZeroIfNeeded("7") == "07")
-      assert(formMappings.addZeroIfNeeded("8") == "08")
-      assert(formMappings.addZeroIfNeeded("9") == "09")
-      assert(formMappings.addZeroIfNeeded("10") == "10")
-      assert(formMappings.addZeroIfNeeded("11") == "11")
-      assert(formMappings.addZeroIfNeeded("20") == "20")
-      assert(formMappings.addZeroIfNeeded("22") == "22")
-      assert(formMappings.addZeroIfNeeded("30") == "30")
-    }
-  }
-
-  "A Valid date" should {
-    "be valid in all cases when the days in the year are greater than 0 and less than 29" in {
-      RANGE_28_DAYS
-        .map { i =>
-          formMappings.addZeroIfNeeded(i.toString)
-        }
-        .foreach { a =>
-          assert(formMappings.isValidDate((a, "01", "2014")))
-        }
-    }
-  }
-
-  "A day of 29" should {
-    "be valid in Febuary during a leap year ( such as 2016 )" in {
-      assert(formMappings.isValidDate(("29", "02", "2016")))
-    }
-  }
-
-  "A day of 29" should {
-    "not be valid in February when its not a leap year ( such as 2014 )" in {
-      assert(!formMappings.isValidDate(("29", "02", "2014")))
-    }
-  }
-
-  "A day of 31" should {
-    "not be valid in February, April, June, Septmember, November" in {
-      assert(!formMappings.isValidDate(("31", NOVEMBER.toString, "2014")))
-      assert(!formMappings.isValidDate(("31", APRIL.toString, "2014")))
-      assert(!formMappings.isValidDate(("31", SEPTEMBER.toString, "2014")))
-      assert(!formMappings.isValidDate(("31", JUNE.toString, "2014")))
-    }
-  }
-
-  "A day greater than 31" should {
-    "not be valid in any month" in {
-      (JANUARY to DECEMBER)
-        .map { i =>
-          formMappings.addZeroIfNeeded(i.toString)
-        }
-        .foreach { a =>
-          assert(!formMappings.isValidDate(("32", a, "2014")))
-        }
-    }
-  }
-
-  "A day equal to 31" should {
-    "be valid in Jan, May, Jul,Aug,Oct,Dec" in {
-      assert(formMappings.isValidDate(("31", JANUARY.toString, "2014")))
-      assert(formMappings.isValidDate(("31", MARCH.toString, "2014")))
-      assert(formMappings.isValidDate(("31", MAY.toString, "2014")))
-      assert(formMappings.isValidDate(("31", JULY.toString, "2014")))
-      assert(formMappings.isValidDate(("31", AUGUST.toString, "2014")))
-      assert(formMappings.isValidDate(("31", OCTOBER.toString, "2014")))
-      assert(formMappings.isValidDate(("31", DECEMBER.toString, "2014")))
-    }
-  }
-
-  "A day value less than 1" should {
-    "not be valid in a month" in {
-      (-1 to 0).foreach { i =>
-        val day = formMappings.addZeroIfNeeded(i.toString)
-        assert(!formMappings.isValidDate((day, "01", "2014")))
+  "FormMappings" when {
+    "an input date" should {
+      "be zero padded, if only one digit of the date is supplied" in {
+        assert(formMappings.addZeroIfNeeded("1") == "01")
+        assert(formMappings.addZeroIfNeeded("2") == "02")
+        assert(formMappings.addZeroIfNeeded("3") == "03")
+        assert(formMappings.addZeroIfNeeded("4") == "04")
+        assert(formMappings.addZeroIfNeeded("5") == "05")
+        assert(formMappings.addZeroIfNeeded("6") == "06")
+        assert(formMappings.addZeroIfNeeded("7") == "07")
+        assert(formMappings.addZeroIfNeeded("8") == "08")
+        assert(formMappings.addZeroIfNeeded("9") == "09")
+        assert(formMappings.addZeroIfNeeded("10") == "10")
+        assert(formMappings.addZeroIfNeeded("11") == "11")
+        assert(formMappings.addZeroIfNeeded("20") == "20")
+        assert(formMappings.addZeroIfNeeded("22") == "22")
+        assert(formMappings.addZeroIfNeeded("30") == "30")
       }
     }
-  }
 
-  "A month value less than 1" should {
-    "not be valid in a year" in {
-      (-1 to 0).foreach { i =>
-        val month = formMappings.addZeroIfNeeded(i.toString)
-        assert(!formMappings.isValidDate(("01", month, "2014")))
+    "a valid date" should {
+      "be valid in all cases when the days in the year are greater than 0 and less than 29" in {
+        RANGE_28_DAYS
+          .map { i =>
+            formMappings.addZeroIfNeeded(i.toString)
+          }
+          .foreach { a =>
+            assert(formMappings.isValidDate((a, "01", "2014")))
+          }
       }
     }
-  }
 
-  "A month value greater than 12" should {
-    "not be valid in a year" in {
-      (DECEMBER + 1 to DECEMBER + 20)
-        .map { i =>
-          formMappings.addZeroIfNeeded(i.toString)
-        }
-        .foreach { a =>
-          assert(!formMappings.isValidDate(("01", a, "2014")))
-        }
+    "a day of 29" should {
+      "be valid in February during a leap year (such as 2016)" in {
+        assert(formMappings.isValidDate(("29", "02", "2016")))
+      }
     }
-  }
 
-  "A month value less than 12" should {
-    "not be valid in a year" in {
-      //scalastyle:off magic.number
-      (-5 to 0)
-        .map { i =>
-          formMappings.addZeroIfNeeded(i.toString)
-        }
-        .foreach { a =>
-          assert(!formMappings.isValidDate(("01", a, "2014")))
-        }
-      //scalastyle:on magic.number
+    "a day of 29" should {
+      "not be valid in February when its not a leap year (such as 2014)" in {
+        assert(!formMappings.isValidDate(("29", "02", "2014")))
+      }
     }
-  }
 
-  "The Regex for a year with 4 digits" should {
-    "be [0-9][0-9][0-9][0-9]" in {
-      val yearLength = 4
-      assert(formMappings.generateYearString(yearLength) == "[0-9][0-9][0-9][0-9]")
+    "a day of 31" should {
+      "not be valid in February, April, June, September, November" in {
+        assert(!formMappings.isValidDate(("31", NOVEMBER.toString, "2014")))
+        assert(!formMappings.isValidDate(("31", APRIL.toString, "2014")))
+        assert(!formMappings.isValidDate(("31", SEPTEMBER.toString, "2014")))
+        assert(!formMappings.isValidDate(("31", JUNE.toString, "2014")))
+      }
     }
-  }
 
-  "The Regex for a year with 2 digits" should {
-    "be [[0-9][0-9]" in {
-      assert(formMappings.generateYearString(2) == "[0-9][0-9]")
+    "a day greater than 31" should {
+      "not be valid in any month" in {
+        (JANUARY to DECEMBER)
+          .map { i =>
+            formMappings.addZeroIfNeeded(i.toString)
+          }
+          .foreach { a =>
+            assert(!formMappings.isValidDate(("32", a, "2014")))
+          }
+      }
+    }
+
+    "a day equal to 31" should {
+      "be valid in January, May, July, August, October, December" in {
+        assert(formMappings.isValidDate(("31", JANUARY.toString, "2014")))
+        assert(formMappings.isValidDate(("31", MARCH.toString, "2014")))
+        assert(formMappings.isValidDate(("31", MAY.toString, "2014")))
+        assert(formMappings.isValidDate(("31", JULY.toString, "2014")))
+        assert(formMappings.isValidDate(("31", AUGUST.toString, "2014")))
+        assert(formMappings.isValidDate(("31", OCTOBER.toString, "2014")))
+        assert(formMappings.isValidDate(("31", DECEMBER.toString, "2014")))
+      }
+    }
+
+    "a day value less than 1" should {
+      "not be valid in a month" in {
+        (-1 to 0).foreach { i =>
+          val day = formMappings.addZeroIfNeeded(i.toString)
+          assert(!formMappings.isValidDate((day, "01", "2014")))
+        }
+      }
+    }
+
+    "a month value less than 1" should {
+      "not be valid in a year" in {
+        (-1 to 0).foreach { i =>
+          val month = formMappings.addZeroIfNeeded(i.toString)
+          assert(!formMappings.isValidDate(("01", month, "2014")))
+        }
+      }
+    }
+
+    "a month value greater than 12" should {
+      "not be valid in a year" in {
+        (DECEMBER + 1 to DECEMBER + 20)
+          .map { i =>
+            formMappings.addZeroIfNeeded(i.toString)
+          }
+          .foreach { a =>
+            assert(!formMappings.isValidDate(("01", a, "2014")))
+          }
+      }
+    }
+
+    "a month value less than 12" should {
+      "not be valid in a year" in {
+        val number = -5
+        (number to 0)
+          .map { i =>
+            formMappings.addZeroIfNeeded(i.toString)
+          }
+          .foreach { a =>
+            assert(!formMappings.isValidDate(("01", a, "2014")))
+          }
+      }
+    }
+
+    "the regex for a year is 4 digits" should {
+      "be [0-9][0-9][0-9][0-9]" in {
+        val yearLength = 4
+        assert(formMappings.generateYearString(yearLength) == "[0-9][0-9][0-9][0-9]")
+      }
+    }
+
+    "the regex for a year is 2 digits" should {
+      "be [0-9][0-9]" in {
+        assert(formMappings.generateYearString(2) == "[0-9][0-9]")
+      }
+    }
+
+    "individualsFormWithRadio is filled" should {
+      "result in correct result" in {
+        formMappings.individualsFormWithRadio.fill(("AB111111", EiLPersonList(List(eilPerson)))) mustBe
+          formMappings.individualsFormWithRadio.bind(
+            Map(
+              ("individualSelection", "AB111111"),
+              ("individuals[0].nino", "AB111111"),
+              ("individuals[0].firstName", "Adam"),
+              ("individuals[0].surname", "Smith"),
+              ("individuals[0].dateOfBirth", "01/01/1980"),
+              ("individuals[0].gender", "male"),
+              ("individuals[0].perOptLock", "0")
+            )
+          )
+      }
+    }
+
+    "individualsForm is filled" should {
+      "result in correct result" in {
+        formMappings.individualsForm.fill(EiLPersonList(List(eilPerson))) mustBe
+          formMappings.individualsForm.bind(
+            Map(
+              ("individuals[0].nino", "AB111111"),
+              ("individuals[0].firstName", "Adam"),
+              ("individuals[0].surname", "Smith"),
+              ("individuals[0].dateOfBirth", "01/01/1980"),
+              ("individuals[0].gender", "male"),
+              ("individuals[0].perOptLock", "0")
+            )
+          )
+      }
+    }
+
+    "individualSelectionForm is filled" should {
+      "result in correct result" in {
+        formMappings.individualSelectionForm.fill(ExclusionNino("AB111111")) mustBe
+          formMappings.individualSelectionForm.bind(Map(("individualNino", "AB111111")))
+      }
+    }
+
+    "navigationRadioButton is filled" should {
+      "result in correct result" in {
+        formMappings.navigationRadioButton.fill(MandatoryRadioButton("cy")) mustBe
+          formMappings.navigationRadioButton.bind(Map(("navigation", "cy")))
+      }
     }
   }
 }

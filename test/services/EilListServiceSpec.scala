@@ -31,19 +31,13 @@ import play.api.libs.json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 import scala.collection.immutable
 import scala.concurrent.Future
 
-class EilListServiceSpec
-    extends AnyWordSpecLike
-    with Matchers
-    with OptionValues
-    with FakePBIKApplication
-    with TestAuthUser {
+class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -70,7 +64,7 @@ class EilListServiceSpec
       val year                                                                        = 2015
       val eilService: EiLListService                                                  = MockEiLListService
       implicit val hc: HeaderCarrier                                                  = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockrequest
+      implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
       val result                                                                      = await(eilService.currentYearEiL("5", year))

@@ -25,7 +25,6 @@ import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
-import play.api.http.HttpEntity.Strict
 import play.api.http.Status
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject._
@@ -36,19 +35,14 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SessionService
-import support.{TestAuthUser, TestCYEnabledConfig}
+import support.TestCYEnabledConfig
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils._
 
 import scala.concurrent.Future
-import scala.concurrent.duration.{DurationInt, FiniteDuration}
-import scala.language.postfixOps
 
-//scalastyle:off magic.number
-class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with FakePBIKApplication {
-
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -60,603 +54,507 @@ class ManageRegistrationControllerSpec extends PlaySpec with TestAuthUser with F
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
-  implicit val lang: Lang                              = Lang("en-GB")
-  val formMappings: FormMappings                       = app.injector.instanceOf[FormMappings]
-  implicit val taxDateUtils: TaxDateUtils              = app.injector.instanceOf[TaxDateUtils]
-  lazy val CYCache: List[Bik]                          = List.tabulate(21)(n => Bik("" + (n + 1), 10))
-  lazy val CYRegistrationItems: List[RegistrationItem] =
-    List.tabulate(21)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
-  val timeoutValue: FiniteDuration                     = 15 seconds
+  implicit val lang: Lang                 = Lang("en-GB")
+  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
 
-  def yearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
+  private val messagesApi: MessagesApi                             = app.injector.instanceOf[MessagesApi]
+  private val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
+  private val (numberOfElements, bikStatus, year): (Int, Int, Int) = (21, 10, 2020)
+  private val (beginIndex, endIndex): (Int, Int)                   = (0, 10)
+  private val registrationController: ManageRegistrationController =
+    app.injector.instanceOf[ManageRegistrationController]
+  private val response: HttpResponse                               = HttpResponse(Status.OK, Json.obj().toString())
+  private lazy val CYCache: List[Bik]                              = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), bikStatus))
 
-  val registrationController: ManageRegistrationController = {
+  when(
+    app.injector
+      .instanceOf[HmrcTierConnector]
+      .genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
+        any[HeaderCarrier],
+        any[json.Format[List[Bik]]]
+      )
+  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) <= 10
+  }))
 
-    val r = app.injector.instanceOf[ManageRegistrationController]
+  when(
+    app.injector
+      .instanceOf[HmrcTierConnector]
+      .genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(year))(
+        any[HeaderCarrier],
+        any[json.Format[List[Bik]]]
+      )
+  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) <= 5
+  }))
 
-    val response = HttpResponse(Status.OK, Json.obj().toString())
+  when(
+    app.injector
+      .instanceOf[HmrcTierConnector]
+      .genericPostCall(
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
+        any[EmpRef],
+        any[Int],
+        any
+      )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
+  ).thenReturn(Future.successful(response))
 
-    when(
-      app.injector
-        .instanceOf[HmrcTierConnector]
-        .genericGetCall[List[Bik]](any[String], argEq(""), any[EmpRef], argEq(yearRange.cy))(
-          any[HeaderCarrier],
-          any[json.Format[List[Bik]]]
-        )
-    ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
+  when(
+    app.injector
+      .instanceOf[HmrcTierConnector]
+      .genericGetCall[List[Bik]](
+        any[String],
+        argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
+        any[EmpRef],
+        any[Int]
+      )(any[HeaderCarrier], any[json.Format[List[Bik]]])
+  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
+    Integer.parseInt(x.iabdType) >= 15
+  }))
 
-    when(
-      app.injector
-        .instanceOf[HmrcTierConnector]
-        .genericGetCall[List[Bik]](
-          any[String],
-          argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-          argEq(EmpRef.empty),
-          argEq(yearRange.cy)
-        )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-    )
-      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
-        Integer.parseInt(x.iabdType) <= 10
-      }))
+  when(
+    app.injector
+      .instanceOf[SessionService]
+      .cacheRegistrationList(any[RegistrationList])(any[HeaderCarrier])
+  ).thenReturn(Future.successful(None))
 
-    when(
-      app.injector
-        .instanceOf[HmrcTierConnector]
-        .genericGetCall[List[Bik]](
-          any[String],
-          argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-          argEq(EmpRef.empty),
-          argEq(yearRange.cyminus1)
-        )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-    )
-      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
-        Integer.parseInt(x.iabdType) <= 10
-      }))
+  "ManageRegistrationController" when {
+    "loading the currentTaxYearOnPageLoad, an authorised user" should {
+      "be directed to cy page with list of biks" in {
+        val title  = messagesApi("AddBenefits.Heading")
+        val result = registrationController.currentTaxYearOnPageLoad()(mockRequest)
 
-    when(
-      app.injector
-        .instanceOf[HmrcTierConnector]
-        .genericGetCall[List[Bik]](
-          any[String],
-          argEq(app.injector.instanceOf[URIInformation].getBenefitTypesPath),
-          argEq(EmpRef.empty),
-          argEq(yearRange.cyplus1)
-        )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-    )
-      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
-        Integer.parseInt(x.iabdType) <= 10
-      }))
-
-    when(
-      app.injector
-        .instanceOf[HmrcTierConnector]
-        .genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(2020))(
-          any[HeaderCarrier],
-          any[json.Format[List[Bik]]]
-        )
-    ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 5
-    }))
-
-    when(
-      app.injector
-        .instanceOf[HmrcTierConnector]
-        .genericPostCall(
-          any[String],
-          argEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
-          any[EmpRef],
-          any[Int],
-          any
-        )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
-    )
-      .thenReturn(Future.successful(response))
-
-    when(
-      app.injector
-        .instanceOf[HmrcTierConnector]
-        .genericGetCall[List[Bik]](
-          any[String],
-          argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
-          any[EmpRef],
-          any[Int]
-        )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-    )
-      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
-        Integer.parseInt(x.iabdType) >= 15
-      }))
-
-    when(
-      app.injector
-        .instanceOf[SessionService]
-        .cacheRegistrationList(any[RegistrationList])(any[HeaderCarrier])
-    )
-      .thenReturn(Future.successful(None))
-
-    r
-  }
-
-  "When loading the currentTaxYearOnPageLoad, an authorised user" should {
-    "be directed to cy page with list of biks" in {
-      val title                            = messagesApi("AddBenefits.Heading")
-      implicit val timeout: FiniteDuration = timeoutValue
-      val result                           = await(registrationController.currentTaxYearOnPageLoad(mockrequest))(timeout)
-      result.header.status                             must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
-      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("BenefitInKind.label.1"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("BenefitInKind.label.3"))
+        status(result) mustBe OK
+        contentAsString(result) must include(title)
+        contentAsString(result) must include(messagesApi("BenefitInKind.label.1"))
+        contentAsString(result) must include(messagesApi("BenefitInKind.label.3"))
+      }
     }
-  }
 
-  "When loading the nextTaxYearAddOnPageLoad, an authorised user" should {
-    "be directed to cy + 1 page with list of biks" in {
-      val title                            = messagesApi("AddBenefits.Heading")
-      implicit val timeout: FiniteDuration = timeoutValue
-      val result                           = await(registrationController.nextTaxYearAddOnPageLoad(mockrequest))(timeout)
-      result.header.status                             must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
-      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("BenefitInKind.label.1"))
-      result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("BenefitInKind.label.3"))
+    "loading the nextTaxYearAddOnPageLoad, an authorised user" should {
+      "be directed to cy + 1 page with list of biks" in {
+        val title  = messagesApi("AddBenefits.Heading")
+        val result = registrationController.nextTaxYearAddOnPageLoad()(mockRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) must include(title)
+        contentAsString(result) must include(messagesApi("BenefitInKind.label.1"))
+        contentAsString(result) must include(messagesApi("BenefitInKind.label.3"))
+      }
     }
-  }
 
-  "When loading checkYourAnswersAddCurrentTaxYear, an authorised user" should {
-    "be taken to the check your answers page when the form is correctly filled" in {
-      val mockRegistrationList = RegistrationList(
+    "loading checkYourAnswersAddCurrentTaxYear, an authorised user" should {
+      "be taken to the check your answers page when the form is correctly filled" in {
+        val mockRegistrationList = RegistrationList(
+          None,
+          List(RegistrationItem("31", active = true, enabled = true)),
+          Some(BinaryRadioButtonWithDesc("software", None))
+        )
+        val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm      = mockRequest
+          .withFormUrlEncodedBody(form.data.toSeq: _*)
+
+        val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/payrollbik/cy/check-the-benefits")
+      }
+
+      "be shown the form with errors if not filled in correctly" in {
+        val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
+        val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm      = mockRequest
+          .withFormUrlEncodedBody(form.data.toSeq: _*)
+
+        val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) must include(messagesApi("AddBenefits.noselection.error"))
+      }
+    }
+
+    "loading showCheckYourAnswersAddCurrentTaxYear, an authorised user" should {
+      "be shown the check your answers screen if correct data is present in the cache" in {
+        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+        val result = registrationController.showCheckYourAnswersAddCurrentTaxYear()(mockRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) must include(messagesApi("AddBenefits.Confirm.Multiple.Title"))
+        contentAsString(result) must include(messagesApi("BenefitInKind.label.30"))
+      }
+    }
+
+    "loading checkYourAnswersAddNextTaxYear, and authenticated user" should {
+      "be taken to the check your answers screen if the form is filled in correctly" in {
+        val mockRegistrationList = RegistrationList(
+          None,
+          List(RegistrationItem("31", active = true, enabled = true)),
+          Some(BinaryRadioButtonWithDesc("software", None))
+        )
+        val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm      = mockRequest
+          .withFormUrlEncodedBody(form.data.toSeq: _*)
+
+        val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe "/payrollbik/cy1/check-the-benefits"
+      }
+
+      "be shown the form with errors if not filled in correctly" in {
+        val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
+        val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm      = mockRequest
+          .withFormUrlEncodedBody(form.data.toSeq: _*)
+
+        val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) must include(messagesApi("AddBenefits.noselection.error"))
+      }
+    }
+
+    "loading showCheckYourAnswersNextCurrentTaxYear, an authorised user" should {
+      "be shown the check your answers screen if correct data is present in the cache" in {
+        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+        val result = registrationController.showCheckYourAnswersAddNextTaxYear()(mockRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) must include(messagesApi("BenefitInKind.label.30"))
+      }
+    }
+
+    "loading checkYourAnswersRemoveNextTaxYear, an authorised user" should {
+      "be directed cy + 1 confirmation page to remove bik" in {
+        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+        val title  = messagesApi("RemoveBenefits.Confirm.Title").substring(beginIndex, endIndex)
+        val result = registrationController.checkYourAnswersRemoveNextTaxYear("car")(mockRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) must include(title)
+      }
+    }
+
+    "loading the updateCurrentYearRegisteredBenefitTypes, an authorised user" should {
+      "persist their changes and be redirected to the what next page" in {
+        val mockRegistrationList = RegistrationList(
+          None,
+          List(RegistrationItem("31", active = true, enabled = true)),
+          Some(BinaryRadioButtonWithDesc("software", None))
+        )
+        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  Some(mockRegistrationList),
+                  Some(RegistrationItem("31", active = true, enabled = true)),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+        val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm      = mockRequest
+          .withFormUrlEncodedBody(form.data.toSeq: _*)
+        val result               = registrationController.updateCurrentYearRegisteredBenefitTypes()(mockRequestForm)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/payrollbik/cy/registration-complete")
+      }
+    }
+
+    "loading the addNextYearRegisteredBenefitTypes" should {
+      "persist changes of an authorised user and redirect this user to the what next page" in {
+        val mockRegistrationList = RegistrationList(
+          None,
+          List(RegistrationItem("31", active = true, enabled = true)),
+          Some(BinaryRadioButtonWithDesc("software", None))
+        )
+        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  Some(mockRegistrationList),
+                  Some(RegistrationItem("31", active = true, enabled = true)),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+        val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+        val result               = registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/payrollbik/cy1/registration-complete")
+      }
+
+      "direct an unauthorised user to the login page" in {
+        val result = registrationController.addNextYearRegisteredBenefitTypes()(noSessionIdRequest)
+
+        status(result) mustBe UNAUTHORIZED
+        contentAsString(result) must include(
+          "Request was not authenticated user should be redirected"
+        )
+      }
+    }
+
+    "loading the removeNextYearRegisteredBenefitTypes, an unauthorised user" should {
+      "be directed to the login page" in {
+        val result = registrationController.removeNextYearRegisteredBenefitTypes("")(noSessionIdRequest)
+
+        status(result) mustBe UNAUTHORIZED
+        contentAsString(result) must include(
+          "Request was not authenticated user should be redirected"
+        )
+      }
+    }
+
+    "a user removes a benefit" should {
+      "redirect to what next page" when {
+        def test(selectionValue: String): Unit =
+          s"$selectionValue is selected" in {
+            val mockRegistrationList = RegistrationList(
+              None,
+              List(RegistrationItem("31", active = true, enabled = true)),
+              Some(BinaryRadioButtonWithDesc(selectionValue, None))
+            )
+            when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+              .thenReturn(
+                Future.successful(
+                  Some(
+                    PbikSession(
+                      Some(mockRegistrationList),
+                      Some(RegistrationItem("31", active = true, enabled = true)),
+                      None,
+                      None,
+                      None,
+                      None,
+                      None
+                    )
+                  )
+                )
+              )
+            val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc(selectionValue, None))
+            val mockRequestForm      = mockRequest
+              .withFormUrlEncodedBody(form.data.toSeq: _*)
+            val result               = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
+
+            status(result) mustBe SEE_OTHER
+            redirectLocation(result) mustBe Some("/payrollbik/cy1/car/benefit-removed")
+          }
+
+        Seq("software", "guidance", "not-clear", "not-offering").foreach(test)
+      }
+
+      "redirect to why-remove-benefit-expense page when other is selected" in {
+        val mockRegistrationList = RegistrationList(
+          None,
+          List(RegistrationItem("31", active = true, enabled = true)),
+          Some(BinaryRadioButtonWithDesc("other", Some("Here's our other info")))
+        )
+        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  Some(mockRegistrationList),
+                  Some(RegistrationItem("31", active = true, enabled = true)),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+        val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("other", None))
+        val mockRequestForm      = mockRequest
+          .withFormUrlEncodedBody(form.data.toSeq: _*)
+        val result               = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/payrollbik/cy1/car/why-remove-benefit-expense")
+      }
+    }
+
+    "selecting nothing should return to the same page with an error" in {
+      val (bikStatus, year)                                               = (10, 2017)
+      val mockRegistrationList                                            = RegistrationList(
         None,
-        List(RegistrationItem("31", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None))
+        List(
+          RegistrationItem("31", active = true, enabled = true),
+          RegistrationItem("8", active = true, enabled = true)
+        ),
+        None
       )
-      val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm      = mockrequest
-        .withFormUrlEncodedBody(form.data.toSeq: _*)
+      val bikList                                                         = List(Bik("8", bikStatus))
+      implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+      val errorMsg                                                        = messagesApi("RemoveBenefits.reason.no.selection")
 
-      val result: Future[Result] = registrationController.checkYourAnswersAddCurrentTaxYear().apply(mockRequestForm)
+      val result =
+        registrationController.removeBenefitReasonValidation(mockRegistrationList, year, bikList, bikList, "")
 
-      status(result)               must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/cy/check-the-benefits")
-    }
-
-    "be shown the form with errors if not filled in correctly" in {
-      val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
-      val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm      = mockrequest
-        .withFormUrlEncodedBody(form.data.toSeq: _*)
-
-      val result = registrationController.checkYourAnswersAddCurrentTaxYear().apply(mockRequestForm)
-
-      status(result)          must be(BAD_REQUEST)
-      contentAsString(result) must include(messagesApi("AddBenefits.noselection.error"))
-    }
-  }
-
-  "When loading showCheckYourAnswersAddCurrentTaxYear, an authorised user" should {
-    "be shown the check your answers screen if correct data is present in the cache" in {
-      when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-        .thenReturn(
-          Future.successful(
-            Some(
-              PbikSession(
-                Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
-                None,
-                None,
-                None,
-                None,
-                None,
-                None
-              )
-            )
-          )
-        )
-      val result = registrationController.showCheckYourAnswersAddCurrentTaxYear().apply(mockrequest)
-
-      status(result)          must be(OK)
-      contentAsString(result) must include(messagesApi("AddBenefits.Confirm.Multiple.Title"))
-      contentAsString(result) must include(messagesApi("BenefitInKind.label.30"))
-    }
-  }
-
-  "When loading checkYourAnswersAddNextTaxYear, and authenticated user" should {
-    "be taken to the check your answers screen if the form is filled in correctly" in {
-      val mockRegistrationList = RegistrationList(
-        None,
-        List(RegistrationItem("31", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None))
-      )
-      val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm      = mockrequest
-        .withFormUrlEncodedBody(form.data.toSeq: _*)
-
-      val result = registrationController.checkYourAnswersAddNextTaxYear().apply(mockRequestForm)
-
-      status(result)               must be(SEE_OTHER)
-      redirectLocation(result).get must be("/payrollbik/cy1/check-the-benefits")
-    }
-
-    "be shown the form with errors if not filled in correctly" in {
-      val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
-      val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm      = mockrequest
-        .withFormUrlEncodedBody(form.data.toSeq: _*)
-
-      val result = registrationController.checkYourAnswersAddNextTaxYear().apply(mockRequestForm)
-
-      status(result)          must be(BAD_REQUEST)
-      contentAsString(result) must include(messagesApi("AddBenefits.noselection.error"))
-    }
-  }
-
-  "When loading showCheckYourAnswersNextCurrentTaxYear, an authorised user" should {
-    "be shown the check your answers screen if correct data is present in the cache" in {
-      when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-        .thenReturn(
-          Future.successful(
-            Some(
-              PbikSession(
-                Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
-                None,
-                None,
-                None,
-                None,
-                None,
-                None
-              )
-            )
-          )
-        )
-      val result = registrationController.showCheckYourAnswersAddNextTaxYear().apply(mockrequest)
-
-      status(result)          must be(OK)
-      contentAsString(result) must include(messagesApi("BenefitInKind.label.30"))
-    }
-  }
-
-  "When loading checkYourAnswersRemoveNextTaxYear, an authorised user" should {
-    "be directed cy + 1 confirmation page to remove bik" in {
-      when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-        .thenReturn(
-          Future.successful(
-            Some(
-              PbikSession(
-                Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
-                None,
-                None,
-                None,
-                None,
-                None,
-                None
-              )
-            )
-          )
-        )
-      val title                            = messagesApi("RemoveBenefits.Confirm.Title").substring(0, 10)
-      implicit val timeout: FiniteDuration = timeoutValue
-      val result                           = await(registrationController.checkYourAnswersRemoveNextTaxYear("car").apply(mockrequest))(timeout)
-      result.header.status                             must be(OK) // 200
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
-    }
-  }
-
-  "When loading the updateCurrentYearRegisteredBenefitTypes, an authorised user" should {
-    "persist their changes and be redirected to the what next page" in {
-      val mockRegistrationList = RegistrationList(
-        None,
-        List(RegistrationItem("31", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None))
-      )
-      when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-        .thenReturn(
-          Future.successful(
-            Some(
-              PbikSession(
-                Some(mockRegistrationList),
-                Some(RegistrationItem("31", active = true, enabled = true)),
-                None,
-                None,
-                None,
-                None,
-                None
-              )
-            )
-          )
-        )
-      val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm      = mockrequest
-        .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result               = registrationController.updateCurrentYearRegisteredBenefitTypes().apply(mockRequestForm)
-      status(result)           must be(SEE_OTHER)
-      redirectLocation(result) must be(Some("/payrollbik/cy/registration-complete"))
-    }
-  }
-
-  "When loading the addNextYearRegisteredBenefitTypes, an unauthorised user" should {
-    "be directed to the login page" in {
-      implicit val timeout: FiniteDuration = timeoutValue
-      val result                           = await(registrationController.addNextYearRegisteredBenefitTypes().apply(noSessionIdRequest))(timeout)
-      result.header.status                             must be(UNAUTHORIZED)
-      result.body.asInstanceOf[Strict].data.utf8String must include(
-        "Request was not authenticated user should be redirected"
-      )
-    }
-  }
-
-  "When loading the removeNextYearRegisteredBenefitTypes, an unauthorised user" should {
-    "be directed to the login page" in {
-      implicit val timeout: FiniteDuration = timeoutValue
-      val result                           =
-        await(registrationController.removeNextYearRegisteredBenefitTypes("").apply(noSessionIdRequest))(timeout)
-      result.header.status                             must be(UNAUTHORIZED)
-      result.body.asInstanceOf[Strict].data.utf8String must include(
-        "Request was not authenticated user should be redirected"
-      )
-    }
-  }
-
-  "When a user removes a benefit" should {
-    "selecting 'software' should redirect to what next page" in {
-      val mockRegistrationList = RegistrationList(
-        None,
-        List(RegistrationItem("31", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None))
-      )
-      when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-        .thenReturn(
-          Future.successful(
-            Some(
-              PbikSession(
-                Some(mockRegistrationList),
-                Some(RegistrationItem("31", active = true, enabled = true)),
-                None,
-                None,
-                None,
-                None,
-                None
-              )
-            )
-          )
-        )
-      val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("software", None))
-      val mockRequestForm      = mockrequest
-        .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result               = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
-      status(result)           must be(SEE_OTHER)
-      redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
-    }
-  }
-
-  "selecting 'guidance' should redirect to what next page" in {
-    val mockRegistrationList = RegistrationList(
-      None,
-      List(RegistrationItem("31", active = true, enabled = true)),
-      Some(BinaryRadioButtonWithDesc("guidance", None))
-    )
-    when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-      .thenReturn(
-        Future.successful(
-          Some(
-            PbikSession(
-              Some(mockRegistrationList),
-              Some(RegistrationItem("31", active = true, enabled = true)),
-              None,
-              None,
-              None,
-              None,
-              None
-            )
-          )
-        )
-      )
-    val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("guidance", None))
-    val mockRequestForm      = mockrequest
-      .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result               = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
-    status(result)           must be(SEE_OTHER)
-    redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
-  }
-
-  "selecting 'not-clear' should redirect to what next page" in {
-    val mockRegistrationList = RegistrationList(
-      None,
-      List(RegistrationItem("31", active = true, enabled = true)),
-      Some(BinaryRadioButtonWithDesc("not-clear", None))
-    )
-    when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-      .thenReturn(
-        Future.successful(
-          Some(
-            PbikSession(
-              Some(mockRegistrationList),
-              Some(RegistrationItem("31", active = true, enabled = true)),
-              None,
-              None,
-              None,
-              None,
-              None
-            )
-          )
-        )
-      )
-    val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("not-clear", None))
-    val mockRequestForm      = mockrequest
-      .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result               = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
-    status(result)           must be(SEE_OTHER)
-    redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
-  }
-
-  "selecting 'not-offering' should redirect to what next page" in {
-    val mockRegistrationList = RegistrationList(
-      None,
-      List(RegistrationItem("31", active = true, enabled = true)),
-      Some(BinaryRadioButtonWithDesc("not-offering", None))
-    )
-    when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-      .thenReturn(
-        Future.successful(
-          Some(
-            PbikSession(
-              Some(mockRegistrationList),
-              Some(RegistrationItem("31", active = true, enabled = true)),
-              None,
-              None,
-              None,
-              None,
-              None
-            )
-          )
-        )
-      )
-    val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("not-offering", None))
-    val mockRequestForm      = mockrequest
-      .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result               = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
-    status(result)           must be(SEE_OTHER)
-    redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
-  }
-
-  "selecting 'other' should redirect to why-remove-benefit-expense page" in {
-    val mockRegistrationList = RegistrationList(
-      None,
-      List(RegistrationItem("31", active = true, enabled = true)),
-      Some(BinaryRadioButtonWithDesc("other", Some("Here's our other info")))
-    )
-    when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-      .thenReturn(
-        Future.successful(
-          Some(
-            PbikSession(
-              Some(mockRegistrationList),
-              Some(RegistrationItem("31", active = true, enabled = true)),
-              None,
-              None,
-              None,
-              None,
-              None
-            )
-          )
-        )
-      )
-    val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("other", None))
-    val mockRequestForm      = mockrequest
-      .withFormUrlEncodedBody(form.data.toSeq: _*)
-    val result               = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
-    status(result)           must be(SEE_OTHER)
-    redirectLocation(result) must be(Some("/payrollbik/cy1/car/why-remove-benefit-expense"))
-  }
-
-  "selecting nothing should return to the same page with an error" in {
-    val mockRegistrationList                                            = RegistrationList(
-      None,
-      List(RegistrationItem("31", active = true, enabled = true), RegistrationItem("8", active = true, enabled = true)),
-      None
-    )
-    val bikList                                                         = List(Bik("8", 10))
-    implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockrequest
-    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-      AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-    val errorMsg                                                        = messagesApi("RemoveBenefits.reason.no.selection")
-
-    val result = registrationController.removeBenefitReasonValidation(mockRegistrationList, 2017, bikList, bikList, "")
-    status(result)          must be(OK)
-    contentAsString(result) must include(errorMsg)
-
-    val resultSelection = registrationController.updateBiksFutureAction(2017, bikList, additive = false)
-    status(resultSelection)          must be(OK)
-    contentAsString(resultSelection) must include(errorMsg)
-  }
-
-  "When loading the why-remove-benefit-expense, an unauthorised user" should {
-    "be directed to the login page" in {
-      implicit val timeout: FiniteDuration = timeoutValue
-      val result                           =
-        await(registrationController.showRemoveBenefitOtherReason("").apply(noSessionIdRequest))(timeout)
-      result.header.status                             must be(UNAUTHORIZED)
-      result.body.asInstanceOf[Strict].data.utf8String must include(
-        "Request was not authenticated user should be redirected"
-      )
-    }
-  }
-
-  "When loading why-remove-benefit-expense, an authorised user" should {
-    "be directed cy + 1 confirmation page to remove bik for other reason" in {
-      when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-        .thenReturn(
-          Future.successful(
-            Some(
-              PbikSession(
-                Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
-                None,
-                None,
-                None,
-                None,
-                None,
-                None
-              )
-            )
-          )
-        )
-      val title                            = messagesApi("RemoveBenefits.other.title").substring(0, 10)
-      implicit val timeout: FiniteDuration = timeoutValue
-      val result                           = await(registrationController.showRemoveBenefitOtherReason("car").apply(mockrequest))(timeout)
-      result.header.status                             must be(OK)
-      result.body.asInstanceOf[Strict].data.utf8String must include(title)
-    }
-
-    "provide valid other reason should redirect to what next page" in {
-
-      val otherReason          = "Here's our other info"
-      val mockRegistrationList = RegistrationList(
-        None,
-        List(RegistrationItem("31", active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("other", Some(otherReason)))
-      )
-      when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-        .thenReturn(
-          Future.successful(
-            Some(
-              PbikSession(
-                Some(mockRegistrationList),
-                Some(RegistrationItem("31", active = true, enabled = true)),
-                None,
-                None,
-                None,
-                None,
-                None
-              )
-            )
-          )
-        )
-      val form                 = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
-      val mockRequestForm      = mockrequest
-        .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result               = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
-      status(result)           must be(SEE_OTHER)
-      redirectLocation(result) must be(Some("/payrollbik/cy1/car/benefit-removed"))
-    }
-
-    "not providing other reason should return to the same page with an error" in {
-
-      val errorMsg        = messagesApi("RemoveBenefits.other.error.required")
-      val form            = formMappings.removalOtherReasonForm.fill(OtherReason(""))
-      val mockRequestForm = mockrequest
-        .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result          = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
-      status(result)          must be(BAD_REQUEST)
+      status(result) mustBe OK
       contentAsString(result) must include(errorMsg)
+
+      val resultSelection = registrationController.updateBiksFutureAction(year, bikList, additive = false)
+
+      status(resultSelection) mustBe OK
+      contentAsString(resultSelection) must include(errorMsg)
     }
 
-    "providing other reason more than 100 chars should return to the same page with an error" in {
+    "loading the why-remove-benefit-expense, an unauthorised user" should {
+      "be directed to the login page" in {
+        val result = registrationController.showRemoveBenefitOtherReason("")(noSessionIdRequest)
 
-      val errorMsg        = messagesApi("RemoveBenefits.other.error.length")
-      val reason          =
-        "this is a test other reason to remove the benefits, if user wants to remove the benefits from payroll"
-      val form            = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
-      val mockRequestForm = mockrequest
-        .withFormUrlEncodedBody(form.data.toSeq: _*)
-      val result          = registrationController.submitRemoveBenefitOtherReason("car").apply(mockRequestForm)
-      status(result)          must be(BAD_REQUEST)
-      contentAsString(result) must include(errorMsg)
+        status(result) mustBe UNAUTHORIZED
+        contentAsString(result) must include(
+          "Request was not authenticated user should be redirected"
+        )
+      }
+    }
+
+    "loading why-remove-benefit-expense, an authorised user" should {
+      "be directed cy + 1 confirmation page to remove bik for other reason" in {
+        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+
+        val title  = messagesApi("RemoveBenefits.other.title").substring(beginIndex, endIndex)
+        val result = registrationController.showRemoveBenefitOtherReason("car")(mockRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) must include(title)
+      }
+
+      "be redirected to what next page when a valid other reason is provided" in {
+        val otherReason          = "Here's our other info"
+        val mockRegistrationList = RegistrationList(
+          None,
+          List(RegistrationItem("31", active = true, enabled = true)),
+          Some(BinaryRadioButtonWithDesc("other", Some(otherReason)))
+        )
+        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  Some(mockRegistrationList),
+                  Some(RegistrationItem("31", active = true, enabled = true)),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+        val form                 = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
+        val mockRequestForm      = mockRequest
+          .withFormUrlEncodedBody(form.data.toSeq: _*)
+        val result               = registrationController.submitRemoveBenefitOtherReason("car")(mockRequestForm)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/payrollbik/cy1/car/benefit-removed")
+      }
+
+      "return to the same page with an error when other reason is not provided" in {
+        val errorMsg        = messagesApi("RemoveBenefits.other.error.required")
+        val form            = formMappings.removalOtherReasonForm.fill(OtherReason(""))
+        val mockRequestForm = mockRequest
+          .withFormUrlEncodedBody(form.data.toSeq: _*)
+        val result          = registrationController.submitRemoveBenefitOtherReason("car")(mockRequestForm)
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) must include(errorMsg)
+      }
+
+      "return to the same page with an error when other reason of more than 100 chars is provided" in {
+        val errorMsg        = messagesApi("RemoveBenefits.other.error.length")
+        val reason          =
+          "this is a test other reason to remove the benefits, if user wants to remove the benefits from payroll"
+        val form            = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
+        val mockRequestForm = mockRequest
+          .withFormUrlEncodedBody(form.data.toSeq: _*)
+        val result          = registrationController.submitRemoveBenefitOtherReason("car")(mockRequestForm)
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) must include(errorMsg)
+      }
     }
   }
 }

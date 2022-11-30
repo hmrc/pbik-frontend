@@ -59,7 +59,6 @@ class RegistrationService @Inject() (
       Option[Int]
     ) => HtmlFormat.Appendable
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-
     val decommissionedBikIds: Seq[Int] = pbikAppConfig.biksDecommissioned
     val status: Int                    = 30
     val nonLegislationBiks: Seq[Int]   = if (taxDateUtils.isCurrentTaxYear(year)) {
@@ -67,7 +66,6 @@ class RegistrationService @Inject() (
     } else {
       pbikAppConfig.biksNotSupported
     }
-
     val isCurrentYear: String = {
       if (taxDateUtils.isCurrentTaxYear(year)) {
         FormMappingsConstants.CY
@@ -77,54 +75,72 @@ class RegistrationService @Inject() (
     }
 
     for {
-      biksListOption: List[Bik] <-
-        bikListService.registeredBenefitsList(year, EmpRef.empty)(uriInformation.getBenefitTypesPath)
-      registeredListOption      <-
+      biksListOption       <- bikListService.registeredBenefitsList(year, EmpRef.empty)(uriInformation.getBenefitTypesPath)
+      registeredListOption <-
         tierConnector
           .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
-      nonLegislationList         = nonLegislationBiks.map { x =>
-                                     Bik("" + x, status)
-                                   }
-      decommissionedBikList      = decommissionedBikIds.map { x =>
-                                     Bik("" + x, status)
-                                   }
+      nonLegislationList    = nonLegislationBiks.map(x => Bik("" + x, status))
+      decommissionedBikList = decommissionedBikIds.map(x => Bik("" + x, status))
 
       // During transition, we have to ensure we handle the existing decommissioned IABDs (e.g 47 ) being sent by the server
       // and after the NPS R38 config release, when it wont be. Therefore, aas this is a list, we remove the
       // decommissioned values ( if they exist ) and then add them back in
-      hybridList                 = biksListOption.filterNot(y =>
-                                     decommissionedBikIds.contains(y.iabdType.toInt)
-                                   ) ++ nonLegislationList ++ decommissionedBikList
+      hybridList = biksListOption.filterNot(y =>
+                     decommissionedBikIds.contains(y.iabdType.toInt)
+                   ) ++ nonLegislationList ++ decommissionedBikList
 
-    } yield {
-      val fetchFromCacheMapBiksValue = List.empty[RegistrationItem]
+    } yield result(
+      hybridList,
+      registeredListOption,
+      nonLegislationBiks,
+      biksListOption,
+      isCurrentYear,
+      generateViewBasedOnFormItems
+    )
+  }
 
-      val mergedData: RegistrationList      = bikListUtils.removeMatches(hybridList, registeredListOption)
-      val sortedMegedData: RegistrationList = bikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
+  private def result(
+    hybridList: List[Bik],
+    registeredListOption: List[Bik],
+    nonLegislationBiks: Seq[Int],
+    biksListOption: List[Bik],
+    isCurrentYear: String,
+    generateViewBasedOnFormItems: (
+      Form[RegistrationList],
+      Seq[RegistrationItem],
+      Seq[Bik],
+      Seq[Int],
+      Seq[Int],
+      Option[Int]
+    ) => HtmlFormat.Appendable
+  )(implicit request: AuthenticatedRequest[AnyContent]): Result = {
+    val fetchFromCacheMapBiksValue = List.empty[RegistrationItem]
 
-      if (sortedMegedData.active.isEmpty) {
-        Ok(
-          errorPageView(
-            ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
-            controllersReferenceData.yearRange,
-            isCurrentYear,
-            code = -1,
-            pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING,
-            empRef = Some(request.empRef)
-          )
+    val mergedData: RegistrationList      = bikListUtils.removeMatches(hybridList, registeredListOption)
+    val sortedMegedData: RegistrationList = bikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
+
+    if (sortedMegedData.active.isEmpty) {
+      Ok(
+        errorPageView(
+          ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
+          controllersReferenceData.yearRange,
+          isCurrentYear,
+          code = -1,
+          pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING,
+          empRef = Some(request.empRef)
         )
-      } else {
-        Ok(
-          generateViewBasedOnFormItems(
-            formMappings.objSelectedForm.fill(sortedMegedData),
-            fetchFromCacheMapBiksValue,
-            registeredListOption,
-            nonLegislationBiks,
-            pbikAppConfig.biksDecommissioned,
-            Some(biksListOption.size)
-          )
+      )
+    } else {
+      Ok(
+        generateViewBasedOnFormItems(
+          formMappings.objSelectedForm.fill(sortedMegedData),
+          fetchFromCacheMapBiksValue,
+          registeredListOption,
+          nonLegislationBiks,
+          pbikAppConfig.biksDecommissioned,
+          Some(biksListOption.size)
         )
-      }
+      )
     }
   }
 

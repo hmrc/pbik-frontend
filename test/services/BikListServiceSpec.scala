@@ -54,7 +54,7 @@ class BikListServiceSpec
     .build()
 
   lazy val bikListService: BikListService                                  = app.injector.instanceOf[StubBikListService]
-  implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockrequest)
+  implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockRequest)
   implicit val hc: HeaderCarrier                                           = HeaderCarrier()
 
   val bikStatus30 = 30

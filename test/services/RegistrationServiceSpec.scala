@@ -22,7 +22,6 @@ import controllers.actions.MinimalAuthAction
 import models._
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
-import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.Application
@@ -34,7 +33,6 @@ import play.api.libs.json
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
-import support.TestAuthUser
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import utils.{TaxDateUtils, TestMinimalAuthAction}
@@ -42,15 +40,9 @@ import views.html.registration.NextTaxYear
 
 import scala.concurrent.Future
 
-class RegistrationServiceSpec
-    extends AnyWordSpecLike
-    with Matchers
-    with OptionValues
-    with TestAuthUser
-    with FakePBIKApplication
-    with I18nSupport {
+class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKApplication with I18nSupport {
 
-  override val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
@@ -60,11 +52,10 @@ class RegistrationServiceSpec
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
-  val registrationService: RegistrationService = {
+  private val registrationService: RegistrationService = {
 
-    val service      = app.injector.instanceOf[RegistrationService]
-    val noOfElements = 5
-    val bikStatus    = 10
+    val service                   = app.injector.instanceOf[RegistrationService]
+    val (noOfElements, bikStatus) = (5, 10)
 
     lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), bikStatus))
 
@@ -103,7 +94,7 @@ class RegistrationServiceSpec
 
   "When generating a page which allows registrations, the service" should {
     "return the selection page" in {
-      val request: FakeRequest[AnyContentAsEmpty.type]                    = mockrequest
+      val request: FakeRequest[AnyContentAsEmpty.type]                    = mockRequest
       val nextTaxYearView                                                 = app.injector.instanceOf[NextTaxYear]
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
@@ -117,6 +108,7 @@ class RegistrationServiceSpec
           "add",
           nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty)
         )
+
       status(result)        shouldBe OK
       contentAsString(result) should include(Messages("AddBenefits.Heading"))
       contentAsString(result) should include(Messages("BenefitInKind.label.4"))
