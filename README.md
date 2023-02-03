@@ -40,7 +40,7 @@ sm --start PBIK_ALL -r
 survey.url - Feedback page location when the user signs out of the service <br />
 pbik.banner.start - Overview page banner start date to be shown when annual tax coding is about to start (21 December) <br />
 pbik.banner.end - Overview page banner end date to be shown when annual tax coding is about to end <br />
-enabled.cy - Enable CY registrations (Caution when enabling, needs to be dicussed with DSM/ stakeholders) <br />
+enabled.cy - Enable CY registrations (Caution when enabling, needs to be discussed with DSM/ stakeholders) <br />
 enabled.eil - Exclusion functionality enabled <br />
 unsupported.biks.cy - Which benefits can't be registered in CY (Caution, may need NPS config change prior to changing here) <br />
 unsupported.biks.cy1 - Which benefits can't be registered in CY+1 (Caution, may need NPS config change prior to changing here) <br />
