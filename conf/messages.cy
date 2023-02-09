@@ -8,7 +8,7 @@ Service.title = Talu buddiannau a threuliau drwy’r gyflogres - GOV.UK
 service.name = Talu buddiannau a threuliau drwy’r gyflogres
 Service.news.banner.message = Bydd newidiadau a wnewch yn effeithio ar godau treth eich cyflogeion ar gyfer y flwyddyn dreth nesaf, a gallai hyn arwain at anfon mwy nag un hysbysiad o god iddynt.
 
-Service.hmrcBanner = Cyllid a Thollau EM
+Service.hmrcBanner = Cyllid a Thollau EF
 Service.yes = Iawn
 Service.no = Na
 Service.back = Yn ôl
@@ -34,7 +34,7 @@ Service.cancel = Canslo
 Service.tryagain = Rhowch gynnig arall arni
 
 Service.notEnrolled.title = Ymrestru i ddefnyddio’r gwasanaeth hwn
-Service.notEnrolled.text1 = Rydych wedi’ch mewngofnodi i Wasanaethau Ar-lein CThEM, ond mae’n rhaid i’ch cyflogwr gofrestru ar gyfer Talu Wrth Ennill (TWE) y Cyflogwr cyn i chi allu mynd yn eich blaen.
+Service.notEnrolled.text1 = Rydych wedi’ch mewngofnodi i Wasanaethau Ar-lein CThEF, ond mae’n rhaid i’ch cyflogwr gofrestru ar gyfer Talu Wrth Ennill (TWE) y Cyflogwr cyn i chi allu mynd yn eich blaen.
 Service.notEnrolled.text2 = Er mwyn ymrestru, bydd angen y rhain arnoch:
 Service.enrollmentLoop.list1 = Cyfeirnod TWE y Cyflogwr
 Service.enrollmentLoop.list2 = Cyfeirnod y Swyddfa Gyfrifon
@@ -127,13 +127,13 @@ AddBenefits.CY.Caution.p2 = Mae’r rhan fwyaf o sefydliadau yn cofrestru ar gyf
 AddBenefits.CY.Caution.p3 = Sicrhewch eich bod yn deall y canlynol cyn i chi barhau:
 AddBenefits.CY.Caution.p4 = Mae’r gwasanaeth hwn yn fyw!
 AddBenefits.CY.Caution.p5 = Daw’r newidiadau i rym ar unwaith
-AddBenefits.CY.Caution.p6 = Ni fydd CThEM yn gallu cywiro gwall a wnewch yn hawdd nac yn gyflym
+AddBenefits.CY.Caution.p6 = Ni fydd CThEF yn gallu cywiro gwall a wnewch yn hawdd nac yn gyflym
 AddBenefits.CY.Caution.p7 = Drwy barhau, rydych yn deall y canlynol:
 AddBenefits.CY.Caution.p8 = mae’n rhaid i chi fod yn talu drwy’r gyflogres yn barod ar gyfer y flwyddyn dreth bresennol, sef 6 Ebrill {0}
 AddBenefits.CY.Caution.p9 = bydd cofrestriadau’n gymwys i’r flwyddyn dreth bresennol
 AddBenefits.CY.Caution.p10 = gall cofrestriadau newid cod treth eich cyflogeion
 AddBenefits.CY.Caution.p11 = gall cyflogeion gael hysbysiadau newydd sy’n nodi bod eu cod treth wedi newid
-AddBenefits.CY.Caution.p12.1 = Os ydych yn newydd i’r broses talu drwy’r gyflogres, mae CThEM yn argymell yn gryf eich bod yn defnyddio’r gwasanaeth hwn i gofrestru i dalu buddiannau a threuliau drwy’r gyflogres o’r
+AddBenefits.CY.Caution.p12.1 = Os ydych yn newydd i’r broses talu drwy’r gyflogres, mae CThEF yn argymell yn gryf eich bod yn defnyddio’r gwasanaeth hwn i gofrestru i dalu buddiannau a threuliau drwy’r gyflogres o’r
 AddBenefits.CY.Caution.p12.2 = flwyddyn dreth nesaf
 AddBenefits.CY.Caution.p12.3 = (sy’n dechrau ar 6 Ebrill {0})
 
@@ -304,7 +304,7 @@ BenefitInKind.p11d.47.ref = Adran M
 BenefitInKind.hint.47 = Mae’n rhaid i chi dalu, drwy’r gyflogres, yr holl eitemau rydych yn rhoi gwybod amdanynt yn yr adran hon, neu dim ohonynt, heblaw am Dreth Incwm a dalwyd ond na chafodd ei didynnu oddi wrth dâl y cyfarwyddwr, sy’n fuddiant ar ei ben ei hun.
 
 BenefitInKind.label.52 = Treth Incwm a dalwyd ond na chafodd ei didynnu oddi wrth dâl y cyfarwyddwr
-BenefitInKind.desc.52 = Os ydych yn talu cyfarwyddwr cwmni heb ddidynnu treth o dan TWE, ac mae CThEM yn adennill y dreth sydd heb ei thalu oddi wrthych, mae hyn yn cyfrif fel buddiant.
+BenefitInKind.desc.52 = Os ydych yn talu cyfarwyddwr cwmni heb ddidynnu treth o dan TWE, ac mae CThEF yn adennill y dreth sydd heb ei thalu oddi wrthych, mae hyn yn cyfrif fel buddiant.
 BenefitInKind.url.52 = <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/paying-your-employees-expenses-and-benefits-through-your-payroll#income-tax">rhagor</a> (Yn agor ffenestr newydd)
 BenefitInKind.p11d.52.ref = Adran M
 
@@ -366,13 +366,13 @@ ServiceMessage.63088.1 = Nid yw’r buddiant hwn yn bodoli mwyach fel buddiant a
 ServiceMessage.63088.2 = Yr hyn i’w wneud nesaf – gwiriwch a yw gwerth y buddiant neu’r draul yr ydych yn ei roi i gyflogeion yn dal i fod yn drethadwy. Os felly, ewch <a class="govuk-link" id = "link-back-choose" href = "javascript: window.history.go(-1)">yn ôl</a> a dewis categori addas.
 
 ServiceMessage.64988.h1 = Rhowch gynnig arall arni nes ymlaen
-ServiceMessage.64988 = Rydym wedi dod o hyd i fwy nag un cofnod TWE. Cysylltwch <a class="govuk-link" href = "javascript: contactHMRC()">â CThEM</a>
+ServiceMessage.64988 = Rydym wedi dod o hyd i fwy nag un cofnod TWE. Cysylltwch <a class="govuk-link" href = "javascript: contactHMRC()">â CThEF</a>
 
 ServiceMessage.63089.h1 = Mae gwall wedi digwydd
 ServiceMessage.63089 = Rydych eisoes wedi cofrestru’r buddiant hwn.
 
 ServiceMessage.63081.h1 = Nid oedd modd dod o hyd i’r cyflogai
-ServiceMessage.63081 = Dylech wirio bod gennych y manylion cywir a chwilio eto. Fel arall, <a class="govuk-link" href = "javascript: contactHMRC()">cysylltwch â CThEM</a>
+ServiceMessage.63081 = Dylech wirio bod gennych y manylion cywir a chwilio eto. Fel arall, <a class="govuk-link" href = "javascript: contactHMRC()">cysylltwch â CThEF</a>
 
 ServiceMessage.63085.h1 = Mae’r cyflogai eisoes wedi’i eithrio
 ServiceMessage.63085 = Mae’r cyflogai hwn eisoes wedi’i eithrio o gael y buddiant hwn neu’r draul hon wedi’i drethu/threthu drwy ei gyflogres.
@@ -384,7 +384,7 @@ ServiceMessage.63091.h1 = Nid oedd modd dod o hyd i’r cyflogai
 ServiceMessage.63091 = Oherwydd problemau technegol, nid yw’n bosibl chwilio gan ddefnyddio dyddiad geni cyflogai ar hyn o bryd. Dylech naill ai roi cynnig arall arni’n hwyrach neu chwilio gan ddefnyddio <a class="govuk-link" href = "javascript: window.history.go(-1)">rhif Yswiriant Gwladol y cyflogai.</a>.
 
 ServiceMessage.63086.h1 = Mae yna broblem
-ServiceMessage.63086 = Ni allwn gwblhau’r dasg hon. Cysylltwch <a class="govuk-link" href = "javascript: contactHMRC()">â CThEM</a>
+ServiceMessage.63086 = Ni allwn gwblhau’r dasg hon. Cysylltwch <a class="govuk-link" href = "javascript: contactHMRC()">â CThEF</a>
 
 ServiceMessage.64989.h1 = Nid yw’r buddiant yn bodoli mwyach
 ServiceMessage.64989.1 = Nid yw’r buddiant hwn yn bodoli mwyach fel buddiant ar ei ben ei hun y mae’n rhaid rhoi gwybod amdano.
@@ -409,7 +409,7 @@ ServiceMessage.63084.h1 = Nid oedd modd dod o hyd i’r cyflogai
 ServiceMessage.63084 = Dylech wirio bod gennych y manylion cywir a <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">chwilio eto</a>.
 
 ServiceMessage.65176.h1 = Rhowch gynnig arall arni nes ymlaen
-ServiceMessage.65176 = Ni allwn ddod o hyd i’r cynllun TWE hwn. Mae’n debygol fod problemau technegol wedi achosi hyn. Felly, rhowch gynnig arall arni’n hwyrach. Os na chaiff y broblem ei datrys mewn modd amserol, dylech <a class="govuk-link" href = "javascript: contactHMRC()">gysylltu â CThEM</a>
+ServiceMessage.65176 = Ni allwn ddod o hyd i’r cynllun TWE hwn. Mae’n debygol fod problemau technegol wedi achosi hyn. Felly, rhowch gynnig arall arni’n hwyrach. Os na chaiff y broblem ei datrys mewn modd amserol, dylech <a class="govuk-link" href = "javascript: contactHMRC()">gysylltu â CThEF</a>
 
 ServiceMessage.64987.h1 = Mae gwall wedi digwydd
 ServiceMessage.64987 = Ni ellir canslo buddiannau ar gyfer y flwyddyn dreth bresennol. Bydd modd i chi ganslo’r buddiannau yn ystod y flwyddyn dreth nesaf.
@@ -446,7 +446,7 @@ Service.action = Gweithred
 #*************************************************************
 
 ErrorPage.authorisationTitle = Gwall Awdurdodi
-ErrorPage.authorisationError = Mae’n ddrwg gennym, ynddengys nad ydych wedi eich awdurdodi i ddefnyddio’r gwasanaeth Talu buddiannau a threuliau drwy’r gyflogres Sicrhewch fod eich sefydliad wedi ymrestru ar gyfer Gwasanaeth Talu Wrth Ennill y Cyflogwr CThEM.
+ErrorPage.authorisationError = Mae’n ddrwg gennym, ynddengys nad ydych wedi eich awdurdodi i ddefnyddio’r gwasanaeth Talu buddiannau a threuliau drwy’r gyflogres Sicrhewch fod eich sefydliad wedi ymrestru ar gyfer Gwasanaeth Talu Wrth Ennill y Cyflogwr CThEF.
 
 
 #*************************************************************
@@ -458,9 +458,9 @@ ErrorPage.heading.invalidYear = Blwyddyn annilys wedi’i dangos
 ErrorPage.validationError = Mae’n ddrwg gennym, mae gwall technegol wedi digwydd. Rhowch gynnig arall arni nes ymlaen.
 ErrorPage.connectionProblem = Mae’r gwasanaeth Talu buddiannau a threuliau drwy’r gyflogres ar gael rhwng 07:00 a 22:00, dydd Llun i ddydd Gwener, ac 08:00 i 20:00, dydd Sadwrn a dydd Sul.
 ErrorPage.connectionAction = Os ydych yn defnyddio’r gwasanaeth y tu allan i’r oriau hyn, rhowch gynnig arall arni nes ymlaen.
-ErrorPage.connectionStatus = Os ydych yn defnyddio’r gwasanaeth yn ystod yr oriau hyn, edrychwch os oes gwybodaeth am waith cynnal sydd wedi’i drefnu yn <a class="govuk-link" href = "https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">safle argaeledd gwasanaethau CThEM</a>
+ErrorPage.connectionStatus = Os ydych yn defnyddio’r gwasanaeth yn ystod yr oriau hyn, edrychwch os oes gwybodaeth am waith cynnal sydd wedi’i drefnu yn <a class="govuk-link" href = "https://www.gov.uk/government/collections/hm-revenue-and-customs-service-availability-and-issues">safle argaeledd gwasanaethau CThEF</a>
 ErrorPage.serviceNotLaunched = Ni allwch gofrestru buddiannau ar gyfer y flwyddyn hon gan nad yw’r gwasanaeth wedi’i lansio hyd yn hyn.
-ErrorPage.noBenefitsToAddcy = Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau sydd ar gael gyda’r gwasanaeth hwn. Os ydych yn talu rhai eraill drwy’r gyflogres, rhowch wybod i CThEM gyda ffurflen P11D.
+ErrorPage.noBenefitsToAddcy = Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau sydd ar gael gyda’r gwasanaeth hwn. Os ydych yn talu rhai eraill drwy’r gyflogres, rhowch wybod i CThEF gyda ffurflen P11D.
 ErrorPage.noCY1BenefitsToRemovecy = Nid ydych wedi ychwanegu buddiannau neu dreuliau sydd ar gael ar gyfer y flwyddyn dreth bresennol, {0} i {1}. Os hoffech gofrestru un ar gyfer blwyddyn dreth {0} i {1}, ewch yn ôl i’r <a class="govuk-link" href = "/payrollbik/overview">hafan</a> a’u hychwanegu.
 ErrorPage.invalidForm = Cafwyd problem pan geisiodd y gweinydd brosesu’ch ffurflen. Rhowch gynnig arall ar lenwi’r ffurflen.
 ErrorPage.invalidYear = <p class="govuk-body">Rydym yn credu eich bod yn ceisio cofrestru buddiant neu draul i’w drethu/threthu drwy eich cyflogres ar gyfer blwyddyn dreth anghywir.</p><p class="govuk-body">Ewch i’r rhestr o fuddiannau a threuliau all gael eu trethu drwy eich cyflogres gan ddefnyddio’r gwasanaeth hwn.</p>
@@ -504,7 +504,7 @@ error.exclusion.multi.selection = Mae’n rhaid i chi ddewis pa gyflogai yr ydyc
 
 whatNext.add.heading = Cofrestriad wedi’i gwblhau
 whatNext.remove.heading = Buddiant wedi’i ddileu
-whatNext.add.info = Bydd yn rhaid i chi gyflwyno ffurflen P11D i CThEM er mwyn rhoi gwybod am y buddiant neu draul y maent yn ei gael.
+whatNext.add.info = Bydd yn rhaid i chi gyflwyno ffurflen P11D i CThEF er mwyn rhoi gwybod am y buddiant neu draul y maent yn ei gael.
 whatNext.cy1.add.lede = Dylech drethu’r buddiannau a’r treuliau canlynol drwy eich cyflogres o 6 Ebrill {0} ymlaen.
 whatNext.cy1.add.lede.singular = Dylech drethu {0} drwy eich cyflogres o 6 Ebrill {1} ymlaen.
 whatNext.cy1.add.table.header = Buddiannau a threuliau rydych newydd eu cofrestru i’w trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen.
@@ -538,7 +538,7 @@ whatYouNeedToTellYourEmployees.add.p2 = Mae hefyd angen i chi roi gwybod iddynt 
 #*************************************************************
 
 HelpAndContact.title = Help a chysylltiadau
-HelpAndContact.p1 = Os oes gennych ymholiad treth penodol, <a class="govuk-link" rel = "external noopener noreferrer" onclick = "gaEvent(’’Help: Telephone’’)" href = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines">cysylltwch â CThEM</a>.
+HelpAndContact.p1 = Os oes gennych ymholiad treth penodol, <a class="govuk-link" rel = "external noopener noreferrer" onclick = "gaEvent(’’Help: Telephone’’)" href = "https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines">cysylltwch â CThEF</a>.
 HelpAndContact.p2 = Os oes angen help arnoch gyda defnyddio’r gwasanaeth talu buddiannau a threuliau drwy’r gyflogres, llenwch y ffurflen isod.
 HelpAndContact.form.title = Sut allwn ni eich helpu?
 HelpAndContact.form.p1 = Peidiwch â chynnwys gwybodaeth bersonol nac ariannol. Er enghraifft, eich rhif Yswiriant Gwladol neu rif eich cerdyn credyd.
@@ -574,7 +574,7 @@ questionnaire.exploreGov = Chwilio drwy GOV.UK
 #***********************
 # UR banner
 #***********************
-urbanner.message.text = Helpwch i wella gwasanaethau digidol drwy ymuno â phanel defnyddwyr CThEM
+urbanner.message.text = Helpwch i wella gwasanaethau digidol drwy ymuno â phanel defnyddwyr CThEF
 urbanner.message.ga.text = homepage UR banner
 urbanner.message.open.new.window = yn agor ffenestr newydd
 urbanner.message.reject = Dim diolch
@@ -583,7 +583,7 @@ global.page.not.found.error.title=Heb ddod o hyd i’r dudalen
 global.page.not.found.error.check.web.address.correct=Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.
 global.page.not.found.error.check.web.address.full=Os gwnaethoch ludo’r cyfeiriad gwe, gwiriwch eich bod wedi copïo’r cyfeiriad yn llawn.
 global.page.not.found.error.contact=Os yw’r cyfeiriad gwe yn gywir neu os ydych wedi dewis cysylltiad neu fotwm, {0} os oes angen i chi siarad â rhywun am y buddiannau a’r treuliau rydych yn eu rheoli drwy’ch cyflogres.
-global.page.not.found.error.contact.link.text=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM
+global.page.not.found.error.contact.link.text=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEF
 global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines
 
 #********************************************************************
