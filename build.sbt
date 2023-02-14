@@ -1,6 +1,5 @@
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName = "pbik-frontend"
 
@@ -19,7 +18,6 @@ lazy val microservice = Project(appName, file("."))
     scoverageSettings,
     scalaSettings,
     scalaVersion := "2.12.16",
-    publishingSettings,
     defaultSettings(),
     majorVersion := 7,
     PlayKeys.playDefaultPort := 9233,
@@ -40,5 +38,5 @@ scalacOptions ++= Seq(
   "-Wconf:cat=unused-imports&src=html/.*:s"
 )
 
-addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt test:scalafmt")
-addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")
