@@ -32,8 +32,7 @@ import utils._
 import views.html.registration._
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ManageRegistrationController @Inject() (
@@ -57,7 +56,8 @@ class ManageRegistrationController @Inject() (
   confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear,
   removeBenefitNextTaxYearView: RemoveBenefitNextTaxYear,
   removeBenefitOtherReason: RemoveBenefitOtherReason
-) extends FrontendController(cc)
+)(implicit ec: ExecutionContext)
+    extends FrontendController(cc)
     with I18nSupport
     with Logging
     with WithUnsafeDefaultFormBinding {

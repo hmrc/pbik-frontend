@@ -14,14 +14,15 @@ sm --start PBIK_ALL -r
 
 ### Overview 
 
-##### Summmary Section
+#### Summary Section
 
 * An overview of which benefits the employer has registered to payroll for current year ( CY )
 * An overview of which benefits the employer has registered to payroll for next year ( CY+1 )
 * Ability to add, remove, exclude individuals by selecting the relevant link
 
-##### Current Year Plus One (CY+1)
 -----
+##### Current Year Plus One (CY+1)
+
 * An overview of which benefits the employer has registered to payroll for next year (CY+1)
 * The ability to ADD benefits to Current Year Plus One
 * The ability to REMOVE benefits to Current Year Plus One
@@ -33,7 +34,6 @@ sm --start PBIK_ALL -r
 * The ability to exclude an individual for Current Year
 * The ability to exclude an individual for Next Year
 * The ability to rescind an exclusion for Next Current Year
-* 
 
 ### Configuration
 

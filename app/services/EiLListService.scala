@@ -18,21 +18,19 @@ package services
 
 import config.PbikAppConfig
 import connectors.HmrcTierConnector
-
-import javax.inject.{Inject, Singleton}
 import models.{AuthenticatedRequest, EiLPerson}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.URIInformation
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EiLListService @Inject() (
   val pbikAppConfig: PbikAppConfig,
   val tierConnector: HmrcTierConnector,
   uRIInformation: URIInformation
-) {
+)(implicit ec: ExecutionContext) {
 
   def currentYearEiL(iabdType: String, year: Int)(implicit
     hc: HeaderCarrier,

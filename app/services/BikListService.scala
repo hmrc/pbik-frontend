@@ -18,14 +18,12 @@ package services
 
 import config.AppConfig
 import connectors.HmrcTierConnector
-
-import javax.inject.{Inject, Singleton}
 import models.{AuthenticatedRequest, Bik, EmpRef}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, URIInformation}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BikListService @Inject() (
@@ -33,7 +31,7 @@ class BikListService @Inject() (
   val tierConnector: HmrcTierConnector,
   controllersReferenceData: ControllersReferenceData,
   uriInformation: URIInformation
-) {
+)(implicit ec: ExecutionContext) {
 
   def pbikHeaders: Map[String, String] = Map[String, String]()
 

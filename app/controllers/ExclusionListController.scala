@@ -19,13 +19,14 @@ package controllers
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
-import play.api.Configuration
+import play.api.{Configuration, Logging}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Codec.utf_8
 import play.api.mvc._
 import services.{BikListService, EiLListService, SessionService}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
@@ -35,10 +36,7 @@ import views.html.exclusion._
 
 import java.util.UUID
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import play.api.Logging
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ExclusionListController @Inject() (
@@ -65,7 +63,8 @@ class ExclusionListController @Inject() (
   whatNextExclusionView: WhatNextExclusion,
   removalConfirmationView: RemovalConfirmation,
   whatNextRescindView: WhatNextRescind
-) extends FrontendController(cc)
+)(implicit ec: ExecutionContext)
+    extends FrontendController(cc)
     with I18nSupport
     with Logging
     with WithUnsafeDefaultFormBinding {

@@ -17,7 +17,6 @@
 package utils
 
 import config.{AppConfig, LocalFormPartialRetriever}
-import javax.inject.{Inject, Singleton}
 import models._
 import play.api.Logging
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -27,8 +26,8 @@ import uk.gov.hmrc.http.Upstream5xxResponse
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 import views.html.{ErrorPage, MaintenancePage}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 object ControllersReferenceDataCodes extends Logging {
   val CY_RESTRICTED          = "ServiceMessage.10003"
@@ -82,8 +81,11 @@ class ControllersReferenceData @Inject() (
   override val messagesApi: MessagesApi,
   errorPageView: ErrorPage,
   maintenancePageView: MaintenancePage
-)(implicit val pbikAppConfig: AppConfig, implicit val localFormPartialRetriever: LocalFormPartialRetriever)
-    extends FormMappings(messagesApi)
+)(
+  implicit ec: ExecutionContext,
+  val pbikAppConfig: AppConfig,
+  implicit val localFormPartialRetriever: LocalFormPartialRetriever
+) extends FormMappings(messagesApi)
     with I18nSupport
     with Logging {
 

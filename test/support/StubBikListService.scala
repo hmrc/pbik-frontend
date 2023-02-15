@@ -18,16 +18,19 @@ package support
 
 import config.AppConfig
 import connectors.HmrcTierConnector
-import javax.inject.Inject
 import models.HeaderTags
 import services.BikListService
 import utils.{ControllersReferenceData, URIInformation}
+
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class StubBikListService @Inject() (
   pbikAppConfig: AppConfig,
   tierConnector: HmrcTierConnector,
   controllersReferenceData: ControllersReferenceData,
   uriInformation: URIInformation
-) extends BikListService(pbikAppConfig, tierConnector, controllersReferenceData, uriInformation) {
+)(implicit ec: ExecutionContext)
+    extends BikListService(pbikAppConfig, tierConnector, controllersReferenceData, uriInformation) {
   override lazy val pbikHeaders: Map[String, String] = Map(HeaderTags.ETAG -> "1", HeaderTags.X_TXID -> "1")
 }
