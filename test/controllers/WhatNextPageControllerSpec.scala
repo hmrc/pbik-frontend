@@ -24,24 +24,24 @@ import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
+import play.api.http.Status
 import play.api.i18n.Lang
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, SessionService}
-import play.api.http.Status
-import play.api.libs.json.Json
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYear
 import utils._
+
 import java.time.LocalDate
-
 import javax.inject.Inject
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {

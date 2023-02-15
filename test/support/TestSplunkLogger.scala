@@ -16,16 +16,17 @@
 
 package support
 
-import javax.inject.Inject
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.DataEvent
 import utils.{SplunkLogger, TaxDateUtils}
 
-import scala.concurrent.Future
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class TestSplunkLogger @Inject() (taxDateUtils: TaxDateUtils, auditConnector: AuditConnector)
-    extends SplunkLogger(
+class TestSplunkLogger @Inject() (taxDateUtils: TaxDateUtils, auditConnector: AuditConnector)(implicit
+  ec: ExecutionContext
+) extends SplunkLogger(
       taxDateUtils,
       auditConnector
     ) /*with TestAuditConnector*/ {

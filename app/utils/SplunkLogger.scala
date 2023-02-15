@@ -16,15 +16,14 @@
 
 package utils
 
-import javax.inject.{Inject, Singleton}
 import models._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.DataEvent
+import utils.SplunkLogger._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import SplunkLogger._
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 object SplunkLogger {
 
@@ -52,7 +51,9 @@ object SplunkLogger {
 }
 
 @Singleton
-class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: AuditConnector) {
+class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: AuditConnector)(implicit
+  ec: ExecutionContext
+) {
 
   sealed trait SpTier
   case object FRONTEND extends SpTier

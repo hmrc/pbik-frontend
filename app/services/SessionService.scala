@@ -17,18 +17,18 @@
 package services
 
 import config.PbikSessionCache
-
-import javax.inject.{Inject, Singleton}
-import models.{Bik, EiLPerson, PbikSession, RegistrationItem, RegistrationList}
+import models._
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
-import play.api.Logging
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SessionService @Inject() (val http: DefaultHttpClient, val sessionCache: PbikSessionCache) extends Logging {
+class SessionService @Inject() (val http: DefaultHttpClient, val sessionCache: PbikSessionCache)(implicit
+  ec: ExecutionContext
+) extends Logging {
 
   private object CacheKeys extends Enumeration {
     val RegistrationList, BikRemoved, ListOfMatches, EiLPerson, CurrentExclusions, CYRegisteredBiks, NYRegisteredBiks =

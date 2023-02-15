@@ -25,11 +25,10 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.Exceptions.GenericServerErrorException
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HmrcTierConnector @Inject() (client: HttpClient) extends Logging {
+class HmrcTierConnector @Inject() (client: HttpClient)(implicit ec: ExecutionContext) extends Logging {
 
   var pbikHeaders: Map[String, String] = Map[String, String]()
 

@@ -40,7 +40,7 @@ import views.html.ErrorPage
 import views.html.exclusion._
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class MockExclusionListController @Inject() (
   messagesApi: MessagesApi,
@@ -67,7 +67,8 @@ class MockExclusionListController @Inject() (
   whatNextExclusionView: WhatNextExclusion,
   removalConfirmationView: RemovalConfirmation,
   whatNextRescindView: WhatNextRescind
-) extends ExclusionListController(
+)(implicit ec: ExecutionContext)
+    extends ExclusionListController(
       formMappings,
       authenticate,
       cc,

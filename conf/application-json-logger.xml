@@ -13,17 +13,17 @@
 
     <logger name="play.core.netty.utils.ServerCookieDecoder" level="WARN"/>
 
-    <logger name="uk.gov" level="${logger.uk.gov:-INFO}"/>
+    <logger name="uk.gov" level="INFO"/>
 
-    <logger name="connectors" level="${logger.application:-INFO}"/>
+    <logger name="connectors" level="INFO"/>
 
-    <logger name="controllers" level="${logger.application:-INFO}"/>
+    <logger name="controllers" level="INFO"/>
 
-    <logger name="services" level="${logger.application:-INFO}"/>
+    <logger name="services" level="INFO"/>
 
-    <logger name="utils" level="${logger.application:-INFO}"/>
+    <logger name="utils" level="INFO"/>
 
-    <root level="${logger.root:-ERROR}">
+    <root level="ERROR">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

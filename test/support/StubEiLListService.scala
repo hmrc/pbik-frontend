@@ -18,19 +18,20 @@ package support
 
 import config.PbikAppConfig
 import connectors.HmrcTierConnector
-import javax.inject.Inject
 import models.{AuthenticatedRequest, EiLPerson}
 import services.EiLListService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.URIInformation
 
-import scala.concurrent.Future
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class StubEiLListService @Inject() (
   pbikAppConfig: PbikAppConfig,
   tierConnector: HmrcTierConnector,
   uRIInformation: URIInformation
-) extends EiLListService(pbikAppConfig, tierConnector, uRIInformation) {
+)(implicit ec: ExecutionContext)
+    extends EiLListService(pbikAppConfig, tierConnector, uRIInformation) {
 
   val status                                     = 10
   private lazy val ListOfPeople: List[EiLPerson] = List(
@@ -93,7 +94,8 @@ class StubEiLListServiceOneExclusion @Inject() (
   pbikAppConfig: PbikAppConfig,
   tierConnector: HmrcTierConnector,
   uRIInformation: URIInformation
-) extends StubEiLListService(pbikAppConfig, tierConnector, uRIInformation) {
+)(implicit ec: ExecutionContext)
+    extends StubEiLListService(pbikAppConfig, tierConnector, uRIInformation) {
 
   private lazy val ListOfPeople: List[EiLPerson] = List(
     EiLPerson(

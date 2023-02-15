@@ -19,7 +19,6 @@ package support
 import config.PbikAppConfig
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import javax.inject.Inject
 import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.mvc.MessagesControllerComponents
@@ -27,6 +26,9 @@ import services.{BikListService, EiLListService, SessionService}
 import utils._
 import views.html.ErrorPage
 import views.html.exclusion._
+
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class MockExclusionsDisallowedController @Inject() (
   formMappings: FormMappings,
@@ -53,7 +55,8 @@ class MockExclusionsDisallowedController @Inject() (
   whatNextExclusionView: WhatNextExclusion,
   removalConfirmationView: RemovalConfirmation,
   whatNextRescindView: WhatNextRescind
-) extends MockExclusionListController(
+)(implicit ec: ExecutionContext)
+    extends MockExclusionListController(
       messagesApi,
       formMappings,
       cc,

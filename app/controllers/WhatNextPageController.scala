@@ -17,18 +17,17 @@
 package controllers
 
 import connectors.HmrcTierConnector
-
-import javax.inject.{Inject, Singleton}
+import controllers.actions.AuthAction
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.{ControllersReferenceData, _}
-import controllers.actions.AuthAction
+import utils._
 import views.html.registration.{AddBenefitConfirmationNextTaxYear, RemoveBenefitConfirmationNextTaxYear}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class WhatNextPageController @Inject() (
@@ -41,7 +40,8 @@ class WhatNextPageController @Inject() (
   cc: MessagesControllerComponents,
   addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear,
   removeBenefitConfirmationNextTaxYearView: RemoveBenefitConfirmationNextTaxYear
-) extends FrontendController(cc)
+)(implicit ec: ExecutionContext)
+    extends FrontendController(cc)
     with I18nSupport {
 
   def calculateTaxYear(isCurrentTaxYear: Boolean): (Int, Int) =
