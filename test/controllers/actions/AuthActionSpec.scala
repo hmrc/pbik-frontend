@@ -50,7 +50,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
   )
 
   private class Test(enrolment: Enrolment) {
-    val mockAuthConnector: AuthConnector = mock[AuthConnector]
+    private val mockAuthConnector: controllers.actions.AuthConnector = mock[controllers.actions.AuthConnector]
 
     type RetrievalType = Enrolments ~ Option[Name]
 
