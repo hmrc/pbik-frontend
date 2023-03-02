@@ -17,17 +17,19 @@
 package utils
 
 import org.mockito.Mockito._
+import org.mockito.scalatest.MockitoSugar
 import org.scalatest.OptionValues
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.sys.SystemProperties
 
-class SystemPropertiesHelperSpec extends AnyWordSpecLike with OptionValues {
+class SystemPropertiesHelperSpec extends AnyWordSpecLike with OptionValues with MockitoSugar {
 
   private class StubSystemProperties extends SystemPropertiesHelper {
-    override lazy val sysProp: SystemProperties = mock(classOf[SystemProperties])
 
-    when(sysProp.get("searchInt")).thenReturn(Some("555"))
+    override lazy val sysProp: SystemProperties = mock[SystemProperties]
+
+//    when(sysProp.get("searchInt")).thenReturn(Some("555"))
   }
 
   private val stubSystemProperties: StubSystemProperties = new StubSystemProperties
@@ -35,6 +37,8 @@ class SystemPropertiesHelperSpec extends AnyWordSpecLike with OptionValues {
   "SystemPropertiesHelper" when {
     "getting an Int system property which does not exist, the helper" should {
       "return the default value" in {
+
+
         val defaultValue = 5
         assert(stubSystemProperties.getIntProperty("Intible", defaultValue) == 5)
       }
@@ -42,6 +46,9 @@ class SystemPropertiesHelperSpec extends AnyWordSpecLike with OptionValues {
 
     "getting an Int system property which does exist, the helper" should {
       "return the default value" in {
+
+
+
         assert(stubSystemProperties.getIntProperty("searchInt", -1) == 555)
       }
     }

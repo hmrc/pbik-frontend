@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class MinimalAuthActionImpl @Inject() (
-  override val authConnector: AuthConnector,
+  override val authConnector: controllers.actions.AuthConnector,
   val parser: BodyParsers.Default,
   config: AppConfig
 )(implicit val executionContext: ExecutionContext)
