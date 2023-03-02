@@ -31,7 +31,7 @@ class SystemPropertiesHelperSpec extends AnyWordSpecLike with OptionValues {
       "return the default value" in {
 
         val defaultValue = 5
-        stubSystemProperties.getIntProperty("Intible", defaultValue) mustBe 5
+        stubSystemProperties.getIntProperty("some-non-existing-key", defaultValue) mustBe 5
       }
     }
 

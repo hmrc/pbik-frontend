@@ -24,15 +24,17 @@ import play.api.Logging
   */
 trait SystemPropertiesHelper extends Logging {
 
-  def getIntProperty(key: String, defaultValue: Int): Int =
-    try if (Some(System.getProperty(key)).isDefined) {
-      System.getProperty(key).toInt
-    } else {
-      doesntExist(key, defaultValue)
-    } catch {
-      case t: Throwable =>
-        doesntParse(key, defaultValue, t.getMessage)
+  def getIntProperty(key: String, defaultValue: Int): Int = {
+    Option(System.getProperty(key)) match {
+      case Some(value) => value.toInt
+      case None =>
+        logger.warn(
+          s"[SystemPropertiesHelper][getIntProperty] System property $key does not exists or could not be parsed to the correct type." +
+            s"Using default value: $defaultValue"
+        )
+        defaultValue
     }
+  }
 
   def doesntExist[T](key: String, defaultValue: T): T = {
     logger.info(
