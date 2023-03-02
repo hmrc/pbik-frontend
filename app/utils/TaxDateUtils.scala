@@ -29,7 +29,7 @@ import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
 @Singleton
-class TaxDateUtils @Inject() (configuration: Configuration) extends PayrollBikDefaults {
+class TaxDateUtils @Inject() (configuration: Configuration) {
 
   val overriddenDateFromConfig: List[Integer] = Try {
     configuration.underlying.getIntList("pbik.date.override")
@@ -58,11 +58,6 @@ class TaxDateUtils @Inject() (configuration: Configuration) extends PayrollBikDe
 
   def isCurrentTaxYear(yearToCheck: Int = getDefaultYear, dateToCheck: LocalDate = getDefaultDate): Boolean =
     yearToCheck == TaxYear.taxYearFor(dateToCheck).currentYear
-
-  def isServiceLaunched(year: Int = getCurrentTaxYear()): Boolean = {
-    val launched = year >= TAX_YEAR_OF_LAUNCH
-    launched
-  }
 
   private def generateTaxYearRange(year: Int): TaxYearRange =
     TaxYearRange(year, year + 1, year + 2)

@@ -83,12 +83,6 @@ class TaxDateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues w
       }
     }
 
-    "The application" should {
-      "state the service has not launched if the current tax year is before the year of launch" in new Test {
-        assert(!taxDateUtils.isServiceLaunched(taxDateUtils.TAX_YEAR_OF_LAUNCH - 1))
-      }
-    }
-
     "The current tax year" should {
       "be current year, if the current date is before 6th April and in the previous year" in new Test {
         val dateBeforeTaxYearInPreviousYear: LocalDate = LocalDate.of(year2013, NOVEMBER, day1)
@@ -100,29 +94,6 @@ class TaxDateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues w
       "be current year, if the current date is after 6th April in the current year" in new Test {
         val dateAfterTaxYear: LocalDate = LocalDate.of(year2014, JULY, day1)
         assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear) == year2014)
-      }
-    }
-
-    "The application" should {
-      "state the service has NOT launched if the date supplied has the same year as the launch date but is before April 6th" in new Test {
-        val dateAfterTaxYear: LocalDate = LocalDate.of(year2015, FEBRUARY, day1)
-        assert(!taxDateUtils.isServiceLaunched(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear)))
-      }
-    }
-
-    "The application" should {
-      "state the service has  launched if the current tax year is after the year of launch" in new Test {
-        val dateAfterTaxYear: LocalDate = LocalDate.of(taxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, day7)
-        assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear) < taxDateUtils.getTaxYearRange().cyminus1)
-        assert(taxDateUtils.isServiceLaunched(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear)))
-      }
-    }
-
-    "The application" should {
-      "return the correct range for the current year" in new Test {
-        val dateAfterTaxYear: LocalDate = LocalDate.of(taxDateUtils.TAX_YEAR_OF_LAUNCH, APRIL, day7)
-        assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear) < taxDateUtils.getTaxYearRange().cyminus1)
-        assert(taxDateUtils.isServiceLaunched(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear)))
       }
     }
   }
