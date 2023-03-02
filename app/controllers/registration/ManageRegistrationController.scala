@@ -91,28 +91,30 @@ class ManageRegistrationController @Inject() (
           bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef.empty)(
             uriInformation.getBenefitTypesPath
           )
-        result                    <- formMappings.objSelectedForm.bindFromRequest.fold(
-                                       formWithErrors =>
-                                         Future.successful(
-                                           BadRequest(
-                                             currentTaxYearView(
-                                               formWithErrors,
-                                               controllersReferenceData.yearRange,
-                                               registeredBiks = List.empty[Bik],
-                                               nonLegislationBiks = pbikAppConfig.biksNotSupportedCY,
-                                               decommissionedBiks = pbikAppConfig.biksDecommissioned,
-                                               biksAvailableCount = Some(biksListOption.size),
-                                               empRef = request.empRef
-                                             )
-                                           )
-                                         ),
-                                       values =>
-                                         cachingService.cacheRegistrationList(values).flatMap { _ =>
+        result                    <- formMappings.objSelectedForm
+                                       .bindFromRequest()
+                                       .fold(
+                                         formWithErrors =>
                                            Future.successful(
-                                             Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddCurrentTaxYear)
-                                           )
-                                         }
-                                     )
+                                             BadRequest(
+                                               currentTaxYearView(
+                                                 formWithErrors,
+                                                 controllersReferenceData.yearRange,
+                                                 registeredBiks = List.empty[Bik],
+                                                 nonLegislationBiks = pbikAppConfig.biksNotSupportedCY,
+                                                 decommissionedBiks = pbikAppConfig.biksDecommissioned,
+                                                 biksAvailableCount = Some(biksListOption.size),
+                                                 empRef = request.empRef
+                                               )
+                                             )
+                                           ),
+                                         values =>
+                                           cachingService.cacheRegistrationList(values).flatMap { _ =>
+                                             Future.successful(
+                                               Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddCurrentTaxYear)
+                                             )
+                                           }
+                                       )
       } yield result
       controllersReferenceData.responseCheckCYEnabled(resultFuture)
   }
@@ -136,28 +138,30 @@ class ManageRegistrationController @Inject() (
           bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cy, EmpRef.empty)(
             uriInformation.getBenefitTypesPath
           )
-        result                    <- formMappings.objSelectedForm.bindFromRequest.fold(
-                                       formWithErrors =>
-                                         Future.successful(
-                                           BadRequest(
-                                             nextTaxYearView(
-                                               form = formWithErrors,
-                                               additive = true,
-                                               taxYearRange = controllersReferenceData.yearRange,
-                                               nonLegislationBiks = pbikAppConfig.biksNotSupported,
-                                               decommissionedBiks = pbikAppConfig.biksDecommissioned,
-                                               biksAvailableCount = Some(biksListOption.size),
-                                               empRef = request.empRef
-                                             )
-                                           )
-                                         ),
-                                       values =>
-                                         cachingService.cacheRegistrationList(values).flatMap { _ =>
+        result                    <- formMappings.objSelectedForm
+                                       .bindFromRequest()
+                                       .fold(
+                                         formWithErrors =>
                                            Future.successful(
-                                             Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddNextTaxYear)
-                                           )
-                                         }
-                                     )
+                                             BadRequest(
+                                               nextTaxYearView(
+                                                 form = formWithErrors,
+                                                 additive = true,
+                                                 taxYearRange = controllersReferenceData.yearRange,
+                                                 nonLegislationBiks = pbikAppConfig.biksNotSupported,
+                                                 decommissionedBiks = pbikAppConfig.biksDecommissioned,
+                                                 biksAvailableCount = Some(biksListOption.size),
+                                                 empRef = request.empRef
+                                               )
+                                             )
+                                           ),
+                                         values =>
+                                           cachingService.cacheRegistrationList(values).flatMap { _ =>
+                                             Future.successful(
+                                               Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddNextTaxYear)
+                                             )
+                                           }
+                                       )
       } yield result
       controllersReferenceData.responseErrorHandler(resultFuture)
   }

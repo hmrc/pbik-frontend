@@ -134,7 +134,7 @@ class SessionService @Inject() (val http: DefaultHttpClient, val sessionCache: P
           cleanSession
       }
     for {
-      currentSession <- fetchPbikSession
+      currentSession <- fetchPbikSession()
       session         = currentSession.getOrElse(cleanSession)
       cacheMap       <- sessionCache.cache[PbikSession](PBIK_SESSION_KEY, selectKeysToCache(session))
 

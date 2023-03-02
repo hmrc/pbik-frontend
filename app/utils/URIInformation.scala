@@ -26,7 +26,7 @@ import play.api.Logging
 @Singleton
 class URIInformation @Inject() (configuration: Configuration) extends URIValues with Logging {
 
-  val baseUrl: String = configuration.get[Service]("microservice.services.pbik") + "/epaye"
+  val baseUrl: String = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
 
   val urlMappedIABDValues = List(
     ("40", "assets-transferred"),
