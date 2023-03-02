@@ -16,7 +16,6 @@
 
 package utils
 
-import scala.sys.SystemProperties
 import play.api.Logging
 
 /**
@@ -25,15 +24,14 @@ import play.api.Logging
   */
 trait SystemPropertiesHelper extends Logging {
 
-  lazy val sysProp = new SystemProperties()
-
   def getIntProperty(key: String, defaultValue: Int): Int =
-    try if (sysProp.get(key).isDefined) {
-      sysProp.get(key).get.toInt
+    try if (Some(System.getProperty(key)).isDefined) {
+      System.getProperty(key).toInt
     } else {
       doesntExist(key, defaultValue)
     } catch {
-      case t: Throwable => doesntParse(key, defaultValue, t.getMessage)
+      case t: Throwable =>
+        doesntParse(key, defaultValue, t.getMessage)
     }
 
   def doesntExist[T](key: String, defaultValue: T): T = {

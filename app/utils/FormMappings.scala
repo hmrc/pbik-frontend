@@ -49,7 +49,7 @@ object FormMappingsConstants {
 }
 
 @Singleton
-class FormMappings @Inject() (val messagesApi: MessagesApi) extends PayrollBikDefaults with I18nSupport {
+class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport {
 
   private val nameValidationRegex        = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
   private val ninoValidationRegex        = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
