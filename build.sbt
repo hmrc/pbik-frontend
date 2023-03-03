@@ -1,5 +1,5 @@
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
+import uk.gov.hmrc.DefaultBuildSettings.defaultSettings
 
 val appName = "pbik-frontend"
 
@@ -16,8 +16,8 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb)
   .settings(
     scoverageSettings,
-    scalaSettings,
-    scalaVersion := "2.12.16",
+    // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
+    libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always),
     defaultSettings(),
     majorVersion := 7,
     PlayKeys.playDefaultPort := 9233,
@@ -31,6 +31,7 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.components._"
     )
   )
+  .settings(scalaVersion := "2.13.10")
 
 scalacOptions ++= Seq(
   "-feature",

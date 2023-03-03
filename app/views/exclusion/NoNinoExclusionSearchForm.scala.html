@@ -92,7 +92,7 @@
         @messages("ExclusionSearch.form.header")
     </h1>
 
-    @formWithCSRF(action = routes.ExclusionListController.searchResults(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), "no-nino"), 'autocomplete -> "off", 'novalidate -> "true") {
+    @formWithCSRF(action = routes.ExclusionListController.searchResults(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), "no-nino"), Symbol("autocomplete") -> "off", Symbol("novalidate") -> "true") {
 
         <div class='form-group @if(searchForm("status").hasErrors) {form-group-error}' id="search-form">
             @if(searchForm("status").hasErrors){
@@ -103,11 +103,11 @@
 
             <fieldset class="govuk-fieldset">
 
-                @textInput(searchForm("firstname"), '_label -> messages("Service.field.firstname"), '_inputClass -> "govuk-!-width-two-thirds")
+                @textInput(searchForm("firstname"), Symbol("_label") -> messages("Service.field.firstname"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
 
-                @textInput(searchForm("surname"), '_label -> messages("Service.field.surname"), '_inputClass -> "govuk-!-width-two-thirds")
+                @textInput(searchForm("surname"), Symbol("_label") -> messages("Service.field.surname"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
 
-                @dateFieldsNumberInputs(searchForm, "dob","dob.day", "dob.month", "dob.year", new Html(messages("Service.field.dob")), '_hintText->messages("Service.field.dobhint"))
+                @dateFieldsNumberInputs(searchForm, "dob","dob.day", "dob.month", "dob.year", new Html(messages("Service.field.dob")), Symbol("_hintText")->messages("Service.field.dobhint"))
 
                 <div class="govuk-form-group @if(searchForm("gender").hasErrors){govuk-form-group--error}" id="gender">
                     <fieldset class="govuk-fieldset">

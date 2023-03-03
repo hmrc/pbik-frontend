@@ -22,7 +22,7 @@ import org.scalatest.matchers.{MatchResult, Matcher}
 
 trait JsoupMatchers {
 
-  import collection.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   class TagWithTextMatcher(expectedContent: String, tag: String) extends Matcher[Document] {
     def apply(left: Document): MatchResult = {

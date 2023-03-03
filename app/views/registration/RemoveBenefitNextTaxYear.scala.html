@@ -62,7 +62,7 @@
     }
 
     <div class="data">
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.id), 'id -> "form-remove") {
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.id), Symbol("id") -> "form-remove") {
             <div class='govuk-form-group @if(form.hasErrors) {govuk-form-group--error}'>
                 <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="error-list-1" }>
                     <legend><h1 id="title" class="govuk-heading-xl">

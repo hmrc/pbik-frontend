@@ -34,9 +34,9 @@
         <legend class="govuk-fieldset__legend">
             @label
         </legend>
-        @if(argsMap.contains('_hintText)) {
+        @if(argsMap.contains(Symbol("_hintText"))) {
             <div id="dob-hint" class="govuk-hint">
-                @argsMap.get('_hintText)
+                @argsMap.get(Symbol("_hintText"))
             </div>
         }
         @if(dateErrors.nonEmpty) {

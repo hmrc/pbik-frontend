@@ -27,6 +27,7 @@ import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
+import controllers.actions.AuthConnector
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HttpClient
 
@@ -50,7 +51,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
   )
 
   private class Test(enrolment: Enrolment) {
-    val mockAuthConnector: AuthConnector = mock[AuthConnector]
+    private val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
     type RetrievalType = Enrolments ~ Option[Name]
 

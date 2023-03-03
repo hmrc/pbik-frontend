@@ -22,7 +22,7 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.http.Upstream5xxResponse
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
 import views.html.{ErrorPage, MaintenancePage}
 
@@ -142,7 +142,7 @@ class ControllersReferenceData @Inject() (
           )
         )
 
-      case Upstream5xxResponse(message, code, _, _) =>
+      case UpstreamErrorResponse(message, code, _, _) =>
         logger.error(
           s"[ControllersReferenceData][responseErrorHandler] An Upstream5xxResponse was handled with code: " +
             s"$code and message:$message"
