@@ -41,7 +41,7 @@
     </h1>
 
     <div class="data">
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes, 'onsubmit -> "gaEventConfirmAddBenefits()") {
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes, Symbol("onsubmit") -> "gaEventConfirmAddBenefits()") {
 
             <dl class="govuk-summary-list">
                     @for(item <- bikList.active.indices) {

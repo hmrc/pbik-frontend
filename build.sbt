@@ -1,5 +1,5 @@
 import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
+import uk.gov.hmrc.DefaultBuildSettings.defaultSettings
 
 val appName = "pbik-frontend"
 
@@ -16,7 +16,6 @@ lazy val microservice = Project(appName, file("."))
   .enablePlugins(SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb)
   .settings(
     scoverageSettings,
-    scalaSettings,
     // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
     libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always),
     defaultSettings(),

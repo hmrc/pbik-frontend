@@ -15,12 +15,12 @@ addSbtPlugin("uk.gov.hmrc" % "sbt-distributables" % "2.2.0")
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.19")
 
-addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
+addSbtPlugin("com.beautiful-scala" % "sbt-scalastyle" % "1.5.1")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.6")
 
 addSbtPlugin("io.github.irundaia" % "sbt-sassify" % "1.5.2")
 
-addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.0")
 
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.3")
