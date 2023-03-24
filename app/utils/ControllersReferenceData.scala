@@ -29,7 +29,7 @@ import views.html.{ErrorPage, MaintenancePage}
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-object ControllersReferenceDataCodes extends Logging {
+object ControllersReferenceDataCodes {
   val CY_RESTRICTED          = "ServiceMessage.10003"
   val FEATURE_RESTRICTED     = "ServiceMessage.10002"
   val DEFAULT_ERROR          = "ServiceMessage.10001"
@@ -40,39 +40,17 @@ object ControllersReferenceDataCodes extends Logging {
   val FORM_TYPE_NONINO       = "no-nino"
   val NEXT_TAX_YEAR: String  = FormMappingsConstants.CYP1
   val SESSION_FROM_YTA       = "fromYTA"
-  val SESSION_LANG           = "session_lang"
   val BIK_REMOVE_REASON_LIST = List("software", "guidance", "not-clear", "not-offering", "other")
   val YES                    = "yes"
   val OTHER                  = "other"
 
-  val EXCLUSION_TRACE_AND_MATCH_LIST_OF_PEOPLE = "trace-and-match-list-of-people"
-  val EXCLUSION_TRACE_AND_MATCH_RADIO          = "trace-and-match-radio"
-  val EXCLUSION_SEARCHFORM_PERSON              = "person-search-exclusion"
-  val EXCLUSION_FORMTYPE_DECISION_FORMID       = "formtype-exclusion-decision"
-  val EXCLUSION_CHOOSE_BENEFIT_FOR_EXCLUSION   = "choose-benefit-decision"
-  val SELECT_ALL_REGISTRATION                  = "select-all-registration"
-  val REGISTRATION_VIEW_CHOOSE_YEAR            = "registration-view-year-decision"
-  val EXCLUSION_VIEW_CHOOSE_YEAR               = "exclusion-view-year-decision"
-  val EXCLUSION_MANAGE_CHOOSE_YEAR             = "exclusion-manage-year-decision"
-  val MANAGE_REGISTRATION_DECISION             = "registration-add-remove-decision"
-  val REGISTRATION_FORMTYPE_DECISION_FORMID    = "add-remove-registration-decision"
-  val REGISTRATION_LIST_BIKS                   = "registration-list-biks"
-
-  val INVALID_YEAR_TITLE                                                = "ErrorPage.heading.invalidYear"
-  val VALIDATION_ERROR_REFERENCE                                        = "ErrorPage.validationError"
-  val CONNECTION_ERROR_REFERENCE                                        = "ErrorPage.connectionProblem"
-  val SERVICE_NOT_LAUNCHED_ERROR                                        = "ErrorPage.serviceNotLaunched"
-  val NO_MORE_BENEFITS_TO_ADD_HEADING                                   = "AddBenefits.Heading"
-  val NO_MORE_BENEFITS_TO_ADD                                           = "ErrorPage.noBenefitsToAdd"
-  val NO_MORE_BENEFITS_TO_REMOVE_CY1                                    = "ErrorPage.noCY1BenefitsToRemove"
-  val INVALID_YEAR_REFERENCE                                            = "ErrorPage.invalidYear"
-  val INVALID_BIK_TYPE_REFERENCE                                        = "ErrorPage.invalidBikType"
-  val NO_BENEFITS_REGISTERED                                            = "ErrorPage.noBenefitsRegistered"
-  val NO_BENEFITS_REGISTERED_VIEW                                       = "ErrorPage.noBenefitsRegisteredView"
-  val INVALID_FORM_ERROR                                                = "ErrorPage.invalidForm"
-  val EXLCUSIONS_RADIO_BUTTTON_SELECTION_CONFIRMATION_BACK_BUTTON_ERROR = "ErrorPage.backButtonNoCache"
-  val AUTHORISATION_ERROR                                               = "ErrorPage.authorisationError"
-  val AUTHORISATION_TITLE                                               = "ErrorPage.authorisationTitle"
+  val VALIDATION_ERROR_REFERENCE      = "ErrorPage.validationError"
+  val NO_MORE_BENEFITS_TO_ADD_HEADING = "AddBenefits.Heading"
+  val NO_MORE_BENEFITS_TO_ADD         = "ErrorPage.noBenefitsToAdd"
+  val INVALID_YEAR_REFERENCE          = "ErrorPage.invalidYear"
+  val INVALID_BIK_TYPE_REFERENCE      = "ErrorPage.invalidBikType"
+  val INVALID_FORM_ERROR              = "ErrorPage.invalidForm"
+  val AUTHORISATION_ERROR             = "ErrorPage.authorisationError"
 }
 
 @Singleton
