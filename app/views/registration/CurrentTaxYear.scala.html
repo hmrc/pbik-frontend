@@ -56,7 +56,7 @@
     }
 
     <h1 id="title" class="govuk-heading-xl">
-        <span class="govuk-caption-xl">@messages("Overview.next.heading", taxYearRange.cyminus1 + "", taxYearRange.cy + "")</span>
+        <span class="govuk-caption-xl">@messages("Overview.next.heading", s"${taxYearRange.cyminus1}", s"${taxYearRange.cy}")</span>
         @messages("AddBenefits.Heading")
     </h1>
     @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.checkYourAnswersAddCurrentTaxYear) {

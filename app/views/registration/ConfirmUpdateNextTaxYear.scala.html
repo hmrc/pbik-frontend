@@ -36,7 +36,7 @@
 @govukLayoutWrapper(PageTitle(messages("AddBenefits.Confirm.Multiple.Title")), Some(taxYearRange), Some(empRef.toString), empRef = Some(empRef.toString)) {
 
     <h1 id="title" class="govuk-heading-xl">
-        <span class="govuk-caption-xl">@messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")</span>
+        <span class="govuk-caption-xl">@messages("Overview.next.heading", s"${taxYearRange.cy}", s"${taxYearRange.cyplus1}")</span>
             @messages("AddBenefits.Confirm.Multiple.Title")
     </h1>
 

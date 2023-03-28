@@ -148,7 +148,7 @@ ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hw
 ExclusionRemovalConfirmation.title = Gwiriwch fanylion y cyflogai rydych am ei ychwanegu yn ôl i’r gyflogres
 ExclusionRemovalConfirmation.inset.text = Drwy gadarnhau, byddwch yn dechrau trethu’r cyflogai hwn ar ''{0}'' drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
 
-ExclusionRemoval.WhatNext.p1 = Trethir {1} {0} drwy’ch cyflogres o 6 Ebrill {2}.
+ExclusionRemoval.WhatNext.p1 = Trethir {0} {1} drwy’ch cyflogres o 6 Ebrill {2}.
 ExclusionRemoval.whatYouNeedToKnow.subHeading = Yr hyn y mae angen i chi ei wneud nawr
 ExclusionRemoval.whatYouNeedToKnow.p1 = O 6 Ebrill {0}, mae angen i chi ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog eich cyflogai a’i drethu drwy’ch cyflogres.
 ExclusionRemoval.whatYouNeedToKnow.p2 = Gallwch roi’r gorau i anfon ffurflenni P11D atom ar gyfer y cyflogai hwn.
@@ -368,8 +368,8 @@ whatNext.subHeading = Camau nesaf
 whatNext.remove.p = Ni fyddwch yn trethu {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
-whatNext.exclude.lede = Ni threthir {1} {0}  drwy’ch cyflogres o 6 Ebrill {2} ymlaen.
-whatNext.exclude.p1 = O hyn ymlaen, dylech roi gwybod am werth y buddiant hwn drwy anfon ffurflen <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d">Ffurflen Budd-dal Cyflogaeth P11D - (yn agor ffenestr neu dab newydd)</a> ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+whatNext.exclude.lede = Ni threthir {0} {1} drwy’ch cyflogres o 6 Ebrill {2} ymlaen.
+whatNext.exclude.p1 = O hyn ymlaen, dylech roi gwybod am werth y buddiant hwn drwy anfon ffurflen <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">Ffurflen Budd-dal Cyflogaeth P11D - (yn agor ffenestr neu dab newydd)</a> ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 whatNext.remove.link.P11D.Text = Os ydych yn dal i roi {0} i’ch cyflogeion, bydd yn rhaid i chi lenwi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Removal page:P11D(b)">ffurflen P11D ar eu cyfer ar ddiwedd y flwyddyn dreth (yn agor ffenestr neu dab newydd).</a>
 
@@ -377,10 +377,6 @@ whatYouNeedToKnow.subHeading = Yr hyn y mae angen i chi ei wneud nawr
 whatYouNeedToTellYourEmployees.subHeading = Yr hyn y mae angen i chi ei ddweud wrth eich cyflogeion
 whatYouNeedToTellYourEmployees.add.p1 = Mae angen i chi anfon llythyr at eich cyflogeion, gan esbonio y byddwch yn trethu’r buddiannau hyn drwy’r gyflogres.
 whatYouNeedToTellYourEmployees.add.p2 = Mae hefyd angen i chi roi gwybod iddynt y bydd eu codau treth yn newid. Byddwn yn anfon llythyr atynt ynghylch eu cod treth newydd.
-
-#***********************
-# UR banner
-#***********************
 
 global.page.not.found.error.title=Heb ddod o hyd i’r dudalen
 global.page.not.found.error.check.web.address.correct=Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.

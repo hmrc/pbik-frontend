@@ -64,7 +64,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 id="title" class="govuk-heading-xl">
-                <span class="govuk-caption-xl">@messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")</span>
+                <span class="govuk-caption-xl">@messages("Overview.next.heading", s"${taxYearRange.cy}", s"${taxYearRange.cyplus1}")</span>
                 @heading
             </h1>
 
@@ -106,7 +106,7 @@
                     </dl>
                 } else {
                     <p id="no-benefits" class="govuk-body">
-                        @messages("Overview.next.lead.empty", taxYearRange.cy + "")
+                        @messages("Overview.next.lead.empty", s"${taxYearRange.cy}")
                     </p>
                 }
             </div>
@@ -124,7 +124,7 @@
     @if(cyAllowed || !registeredBenefitsCurrentYear.isEmpty) {
         <div class="govuk-form-group">
             <div class="govuk-grid-column-three-quarters">
-                <h3 class="govuk-heading-m">@messages("Overview.current.heading", taxYearRange.cyminus1 + "", taxYearRange.cy + "")</h3>
+                <h3 class="govuk-heading-m">@messages("Overview.current.heading", s"${taxYearRange.cyminus1}", s"${taxYearRange.cy}")</h3>
 
                 @if(!registeredBenefitsCurrentYear.isEmpty) {
                     <dl class="govuk-summary-list">

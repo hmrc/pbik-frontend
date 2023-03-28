@@ -40,7 +40,7 @@ class SummaryViewSpec extends PBIKViewSpec {
   "overview with benefits" must {
     behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))
     behave like pageWithHeader(
-      messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
+      messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
         + " " + messages("Overview.benefitsRegistered.heading")
     )
     behave like pageWithLink(messages("Overview.table.add.link"), "/payrollbik/cy/choose-benefit-expense")
@@ -52,7 +52,7 @@ class SummaryViewSpec extends PBIKViewSpec {
     val doc = Jsoup.parse(viewWithNoBenefits().toString())
     doc.title must include(messages("Overview.noBenefitsRegistered.title"))
     doc       must haveHeadingWithText(
-      messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
+      messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
         + " " + messages("Overview.noBenefitsRegistered.heading")
     )
   }

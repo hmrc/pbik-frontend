@@ -74,7 +74,7 @@
         </div>
     }
 
-    @formWithCSRF(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), "nino"), 'autocomplete -> "off") {
+    @formWithCSRF(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), "nino"), Symbol("autocomplete") -> "off") {
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <span class="govuk-caption-l">@expenseOrBenefit</span>
@@ -88,11 +88,11 @@
                     </span>
                     }
                 </div>
-                @textInput(searchForm("firstname"), '_label -> messages("Service.field.firstname"), '_inputClass -> "govuk-!-width-two-thirds")
+                @textInput(searchForm("firstname"), Symbol("_label") -> messages("Service.field.firstname"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
 
-                @textInput(searchForm("surname"), '_label -> messages("Service.field.surname"), '_inputClass -> "govuk-!-width-two-thirds")
+                @textInput(searchForm("surname"), Symbol("_label") -> messages("Service.field.surname"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
 
-                @textInput(searchForm("nino"), '_label -> messages("Service.field.nino"), '_inputHint ->  messages("Service.field.ninohint"), '_inputClass -> "govuk-!-width-one-half")
+                @textInput(searchForm("nino"), Symbol("_label") -> messages("Service.field.nino"), Symbol("_inputHint") ->  messages("Service.field.ninohint"), Symbol("_inputClass") -> "govuk-!-width-one-half")
             </fieldset>
 
             <input type="hidden" name="status" id="status" value="10"/>
