@@ -21,7 +21,7 @@ import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import java.time.LocalDate
-import java.time.Month.{APRIL, FEBRUARY, JULY, NOVEMBER}
+import java.time.Month.{APRIL, JULY, NOVEMBER}
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 

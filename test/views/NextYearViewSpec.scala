@@ -43,7 +43,7 @@ class NextYearViewSpec extends PBIKViewSpec {
   "nextYearPage" must {
     behave like pageWithTitle(messages("AddBenefits.Heading"))
     behave like pageWithHeader(
-      messages("Overview.next.heading", taxYearRange.cy + "", taxYearRange.cyplus1 + "")
+      messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
         + " " + messages("AddBenefits.Heading")
     )
     behave like pageWithContinueButtonForm("/payrollbik/cy1/choose-benefit-expense", "Continue")

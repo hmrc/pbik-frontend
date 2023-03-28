@@ -44,9 +44,9 @@ empRef: EmpRef)(implicit request:Request[_], messages: Messages)
     </div>
     <p id="confirmation-p" class="govuk-body">
         @if(year=="cy"){
-            @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cyminus1 + "")
+            @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), s"${taxYearRange.cyminus1}")
         }else {
-            @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), taxYearRange.cy + "")
+            @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), s"${taxYearRange.cy}")
         }
     </p>
     <h2 class="govuk-heading-m">
