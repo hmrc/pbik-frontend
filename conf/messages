@@ -233,7 +233,7 @@ ServiceMessage.63082 = Please check you have the correct details and search agai
 
 ServiceMessage.63088.h1 = Benefit no longer exists
 ServiceMessage.63088.1 = This benefit no longer exists as a stand alone benefit that needs to be reported.
-ServiceMessage.63088.2 = What to do next - please check if the value of the benefit or expense you’re providing to employees is still taxable. If it is please go <a id = "link-back-choose" href = "javascript: window.history.go(-1)">back</a> and select an appropriate category.
+ServiceMessage.63088.2 = What to do next - please check if the value of the benefit or expense you’re providing to employees is still taxable. If it is please go <a id = "link-back-choose">back</a> and select an appropriate category.
 
 ServiceMessage.64988.h1 = Please try again later
 ServiceMessage.64988 = We found more than one PAYE record. Please <a class="govuk-link" href = "javascript: contactHMRC()">contact HMRC</a>
@@ -251,14 +251,14 @@ ServiceMessage.63090.h1 = Employee already excluded
 ServiceMessage.63090 = This person is already excluded from having this benefit taxed through their payroll.
 
 ServiceMessage.63091.h1 = Employee can’t be found
-ServiceMessage.63091 = Due to technical reasons, searching with an employee’s date of birth isn’t possible at the moment. Either try again later or search using the <a href = "javascript: window.history.go(-1)">employee’s National Insurance number</a>.
+ServiceMessage.63091 = Due to technical reasons, searching with an employee’s date of birth isn’t possible at the moment. Either try again later or search using the <a id="back-link-63091">employee’s National Insurance number</a>.
 
 ServiceMessage.63086.h1 = There’s a problem
 ServiceMessage.63086 = We can’t complete this task. Please <a class="govuk-link" href = "javascript: contactHMRC()">contact HMRC</a>
 
 ServiceMessage.64989.h1 = Benefit no longer exists
 ServiceMessage.64989.1 = This benefit no longer exists as a stand alone benefit that needs to be reported.
-ServiceMessage.64989.2 = What to do next - please check if the value of the benefit or expense you’re providing to employees is still taxable. If it is please go <a id = "link-back-choose" href = "javascript: window.history.go(-1)">back</a> and select an appropriate category.
+ServiceMessage.64989.2 = What to do next - please check if the value of the benefit or expense you’re providing to employees is still taxable. If it is please go <a id = "link-back-choose">back</a> and select an appropriate category.
 
 ServiceMessage.64986.h1 = Incorrect tax year
 ServiceMessage.64986 = Please use a start date in either the current tax year or the following tax year.
@@ -270,7 +270,7 @@ ServiceMessage.63087.h1 = Incorrect tax year
 ServiceMessage.63087 = You can only register benefits and expenses in the current tax year or the next tax year. Please go <a class="govuk-link" id = "link-back" href = "/payrollbik/payrolled-benefits-expenses">back</a> and try again.
 
 ServiceMessage.65127.h1 = Employee can’t be found
-ServiceMessage.65127 = Please check you have the correct details and <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">search again</a>.
+ServiceMessage.65127 = Please check you have the correct details and <a class="govuk-link" id = "link-try-again">search again</a>.
 
 ServiceMessage.63083.h1 = Employee can’t be found
 ServiceMessage.63083 = Please check you have the correct details and <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">search again</a>.

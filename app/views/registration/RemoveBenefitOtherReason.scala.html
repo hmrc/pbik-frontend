@@ -17,6 +17,7 @@
 @import utils.URIInformation
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.CharacterCount
 @import views.templatemodels.PageTitle
+@import views.html.helper.CSPNonce
 
 @this(
      govukLayoutWrapper: GovukLayoutWrapper,
@@ -62,6 +63,7 @@
 
     }
 
-    <a class="govuk-link" id="link-back" onclick="gaEventLinkOverview()" href='@routes.HomePageController.onPageLoad'>@messages("RemoveBenefits.back.summary")</a>
+    <a class="govuk-link" id="link-back" href='@routes.HomePageController.onPageLoad'>@messages("RemoveBenefits.back.summary")</a>
+    <script @{CSPNonce.attr}>document.getElementById("link-back").addEventListener("click", () => gaEventLinkOverview());</script>
 }
 

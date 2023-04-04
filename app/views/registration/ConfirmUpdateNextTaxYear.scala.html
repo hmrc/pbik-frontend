@@ -18,6 +18,7 @@
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.templatemodels.PageTitle
+@import views.html.helper.CSPNonce
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -41,7 +42,7 @@
     </h1>
 
     <div class="data">
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes, Symbol("onsubmit") -> "gaEventConfirmAddBenefits()") {
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes) {
 
             <dl class="govuk-summary-list">
                     @for(item <- bikList.active.indices) {

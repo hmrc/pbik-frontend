@@ -17,27 +17,46 @@
 package connectors
 
 import controllers.FakePBIKApplication
-import models.{EmpRef, PbikError}
+import models.{Bik, EmpRef, HeaderTags, PbikError}
+import org.apache.http.HttpStatus
+import org.mockito.ArgumentMatchers
+import uk.gov.hmrc.http.HttpClient
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import org.mockito.MockitoSugar.mock
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status.{INTERNAL_SERVER_ERROR, OK}
-import play.api.libs.json.Json
-import play.api.mvc.Results
+import play.api.libs.json.{JsArray, JsResultException, Json, Writes}
+import play.api.mvc.{Request, Results}
+import play.api.test.FakeRequest
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import support.TestAuthUser
 import uk.gov.hmrc.http._
 import utils.Exceptions.GenericServerErrorException
 
+import scala.Seq
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
+
 class TierConnectorSpec extends PlaySpec with FakePBIKApplication with TestAuthUser with Results {
+  implicit val hc: HeaderCarrier           = HeaderCarrier()
+  implicit val request: Request[List[Bik]] = FakeRequest().asInstanceOf[Request[List[Bik]]]
 
-  val fakeResponse: HttpResponse = HttpResponse(OK, "")
+  private val fakeResponse: HttpResponse       = HttpResponse(OK, "")
+  private val pbikErrorResp: PbikError         = new PbikError("64990")
+  private val fakeSevereResponse: HttpResponse = HttpResponse(INTERNAL_SERVER_ERROR, "A severe server error")
+  private val hmrcTierConnector                = app.injector.instanceOf[HmrcTierConnector]
+  private val mockHttpClient: HttpClient       = mock[HttpClient]
+  private val hmrcTierConnectorWithMockClient  = new HmrcTierConnector(mockHttpClient)
+  private val year                             = 2015
+  private val bikStatus30                      = 30
+  private val bikStatus40                      = 40
+  private val bikEilCount                      = 10
+  private val listBiks                         =
+    List(Bik("Car & Car Fuel", bikStatus30, bikEilCount), Bik("Van Fuel", bikStatus40, bikEilCount))
 
-  val fakeResponseWithError: HttpResponse =
-    HttpResponse(OK, Json.toJson(new PbikError("64990")), Map.empty[String, Seq[String]])
-
-  val fakeSevereResponse: HttpResponse = HttpResponse(INTERNAL_SERVER_ERROR, "A severe server error")
-
-  val hmrcTierConnector = app.injector.instanceOf[HmrcTierConnector]
-
-  val year = 2015
+  def buildFakeResponseWithBody[A](body: A)(implicit w: Writes[A]): HttpResponse =
+    HttpResponse(OK, Json.toJson(body), Map.empty[String, Seq[String]])
 
   "When creating a GET URL with an orgainsation needing encoding it" should {
     " encode the slash properly" in {
@@ -80,9 +99,183 @@ class TierConnectorSpec extends PlaySpec with FakePBIKApplication with TestAuthU
 
   "When processing a response if there is a PBIK error code" should {
     " throw a GenericServerErrorException" in {
+      val fakeResponseWithError = buildFakeResponseWithBody(pbikErrorResp)
       intercept[GenericServerErrorException] {
         hmrcTierConnector.processResponse(fakeResponseWithError)
       }
+    }
+  }
+
+  "When processing genericPostCall" should {
+    "return valid list of PBIKs in the response for a valid request" in {
+      val url: String                = hmrcTierConnector.createPostUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), year)
+      val fakeResponseWithListOfBiks = buildFakeResponseWithBody(listBiks)
+
+      // first setup a mock api call to return a stubbed response
+      when(
+        mockHttpClient.POST(ArgumentMatchers.eq(url), any[List[Bik]], any[Seq[(String, String)]])(
+          any[Writes[List[Bik]]],
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(Future.successful(fakeResponseWithListOfBiks))
+
+      val result =
+        await(
+          hmrcTierConnectorWithMockClient.genericPostCall[List[Bik]](
+            "theBaseUrl",
+            "theURIExtension",
+            EmpRef("780", "MODES16"),
+            year,
+            listBiks
+          )
+        )
+
+      assert(Json.parse(result.body).as[JsArray].value.size == 2)
+      assert(result.status == HttpStatus.SC_OK)
+      assert(hmrcTierConnectorWithMockClient.pbikHeaders == Map.empty)
+    }
+  }
+
+  "When processing GenericGetCall" should {
+    "return PBIK error" in {
+      val url: String           = hmrcTierConnector.createGetUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), year)
+      val fakeResponseWithError = buildFakeResponseWithBody(pbikErrorResp)
+
+      // first setup a mock api call to return a stubbed response
+      when(
+        mockHttpClient.GET(ArgumentMatchers.eq(url), any[Seq[(String, String)]], any[Seq[(String, String)]])(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(Future.successful(fakeResponseWithError))
+
+      val result = intercept[GenericServerErrorException] {
+        await(
+          hmrcTierConnectorWithMockClient.genericGetCall[List[Bik]](
+            "theBaseUrl",
+            "theURIExtension",
+            EmpRef("780", "MODES16"),
+            year
+          )
+        )
+      }
+
+      assert(result.message == pbikErrorResp.errorCode)
+
+      assert(
+        hmrcTierConnectorWithMockClient.pbikHeaders == Map(
+          HeaderTags.ETAG   -> "0",
+          HeaderTags.X_TXID -> "1"
+        )
+      )
+    }
+
+    "return HttpResponse with String body" in {
+      val url: String           = hmrcTierConnector.createGetUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), year)
+      val fakeResponseWithError = buildFakeResponseWithBody("Test")
+
+      // first setup a mock api call to return a stubbed response
+      when(
+        mockHttpClient.GET(ArgumentMatchers.eq(url), any[Seq[(String, String)]], any[Seq[(String, String)]])(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(Future.successful(fakeResponseWithError))
+
+      val result = intercept[JsResultException] {
+        await(
+          hmrcTierConnectorWithMockClient.genericGetCall[List[Bik]](
+            "theBaseUrl",
+            "theURIExtension",
+            EmpRef("780", "MODES16"),
+            year
+          )
+        )
+      }
+
+      assert(result.errors.flatMap(_._2.map(_.message)) == Seq("error.expected.jsarray"))
+
+      assert(
+        hmrcTierConnectorWithMockClient.pbikHeaders == Map(
+          HeaderTags.ETAG   -> "0",
+          HeaderTags.X_TXID -> "1"
+        )
+      )
+    }
+
+    "return HttpResponse with a list of Biks in the body" in {
+      val url: String                = hmrcTierConnector.createGetUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), year)
+      val fakeResponseWithListOfBiks = buildFakeResponseWithBody(listBiks)
+
+      // first setup a mock api call to return a stubbed response
+      when(
+        mockHttpClient.GET(ArgumentMatchers.eq(url), any[Seq[(String, String)]], any[Seq[(String, String)]])(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(Future.successful(fakeResponseWithListOfBiks))
+
+      val result =
+        await(
+          hmrcTierConnectorWithMockClient.genericGetCall[List[Bik]](
+            "theBaseUrl",
+            "theURIExtension",
+            EmpRef("780", "MODES16"),
+            year
+          )
+        )
+
+      assert(result == listBiks)
+
+      assert(
+        hmrcTierConnectorWithMockClient.pbikHeaders == Map(
+          HeaderTags.ETAG   -> "0",
+          HeaderTags.X_TXID -> "1"
+        )
+      )
+    }
+
+    "return HttpResponse with empty list of Biks in the body" in {
+      val url: String               = hmrcTierConnector.createGetUrl("theBaseUrl", "theURIExtension", EmpRef("780", "MODES16"), year)
+      val fakeResponseWithEmptyBiks = buildFakeResponseWithBody(List.empty[Bik])
+
+      // first setup a mock api call to return a stubbed response
+      when(
+        mockHttpClient.GET(ArgumentMatchers.eq(url), any[Seq[(String, String)]], any[Seq[(String, String)]])(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(Future.successful(fakeResponseWithEmptyBiks))
+
+      val result =
+        await(
+          hmrcTierConnectorWithMockClient.genericGetCall[List[Bik]](
+            "theBaseUrl",
+            "theURIExtension",
+            EmpRef("780", "MODES16"),
+            year
+          )
+        )
+
+      assert(result == Seq.empty)
+
+      assert(
+        hmrcTierConnectorWithMockClient.pbikHeaders == Map(
+          HeaderTags.ETAG   -> "0",
+          HeaderTags.X_TXID -> "1"
+        )
+      )
     }
   }
 
