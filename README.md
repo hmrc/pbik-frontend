@@ -11,6 +11,14 @@ Once authenticated the employer has access to the pbik-frontend functionality wh
 sm --start PBIK_ALL -r
 ```
 
+- To run specific set of tests/ scenarios, following commands are useful
+```To run the whole spec
+sbt 'testOnly *TierConnectorSpec'
+```
+
+```To run a single test/ scenario
+sbt 'testOnly *TierConnectorSpec -- -z partialTextOnTheTestName'
+```
 
 ### Overview 
 

@@ -1,4 +1,4 @@
-window.onload = function() {
+window.addEventListener("load", function() {
     if (document.getElementById('printContainer') !=null)  {
         if(supportPrint() || (isiOS() && !iOSLessThan4()) || (isAndroid() && !androidLessThan4())) {
             var prtContainer = document.getElementById("printContainer");
@@ -8,12 +8,12 @@ window.onload = function() {
             newTag.setAttribute("class", "print-link");
             newTag.setAttribute("id", "print");
             newTag.setAttribute('href',"#");
-            newTag.setAttribute('onClick',"gaEventPrintLink('"+pageTitle+"')");
             newTag.innerHTML = "Print this page";
+            newTag.addEventListener("click", () => gaEventPrintLink(pageTitle));
             prtContainer.appendChild(newTag);
         }
     }
-};
+});
 
     function insertAfter(newNode, referenceNode) {
     //    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);

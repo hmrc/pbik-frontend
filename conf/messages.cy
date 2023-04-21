@@ -233,7 +233,7 @@ ServiceMessage.63082 = Dylech wirio bod gennych y manylion cywir a chwilio eto.
 
 ServiceMessage.63088.h1 = Nid yw’r buddiant yn bodoli mwyach
 ServiceMessage.63088.1 = Nid yw’r buddiant hwn yn bodoli mwyach fel buddiant ar ei ben ei hun y mae’n rhoi gwybod amdano.
-ServiceMessage.63088.2 = Yr hyn i’w wneud nesaf – gwiriwch a yw gwerth y buddiant neu’r draul yr ydych yn ei roi i gyflogeion yn dal i fod yn drethadwy. Os felly, ewch <a class="govuk-link" id = "link-back-choose" href = "javascript: window.history.go(-1)">yn ôl</a> a dewis categori addas.
+ServiceMessage.63088.2 = Yr hyn i’w wneud nesaf – gwiriwch a yw gwerth y buddiant neu’r draul yr ydych yn ei roi i gyflogeion yn dal i fod yn drethadwy. Os felly, ewch <a class="govuk-link" id = "link-back-choose">yn ôl</a> a dewis categori addas.
 
 ServiceMessage.64988.h1 = Rhowch gynnig arall arni nes ymlaen
 ServiceMessage.64988 = Rydym wedi dod o hyd i fwy nag un cofnod TWE. Cysylltwch <a class="govuk-link" href = "javascript: contactHMRC()">â CThEF</a>
@@ -251,14 +251,14 @@ ServiceMessage.63090.h1 = Mae’r cyflogai eisoes wedi’i eithrio
 ServiceMessage.63090 = Mae’r cyflogai hwn eisoes wedi’i eithrio o gael y buddiant hwn neu’r draul hon wedi’i drethu/threthu drwy ei gyflogres.
 
 ServiceMessage.63091.h1 = Nid oedd modd dod o hyd i’r cyflogai
-ServiceMessage.63091 = Oherwydd problemau technegol, nid yw’n bosibl chwilio gan ddefnyddio dyddiad geni cyflogai ar hyn o bryd. Dylech naill ai roi cynnig arall arni’n hwyrach neu chwilio gan ddefnyddio <a class="govuk-link" href = "javascript: window.history.go(-1)">rhif Yswiriant Gwladol y cyflogai.</a>.
+ServiceMessage.63091 = Oherwydd problemau technegol, nid yw’n bosibl chwilio gan ddefnyddio dyddiad geni cyflogai ar hyn o bryd. Dylech naill ai roi cynnig arall arni’n hwyrach neu chwilio gan ddefnyddio <a class="govuk-link" id="back-link-63091">rhif Yswiriant Gwladol y cyflogai.</a>.
 
 ServiceMessage.63086.h1 = Mae yna broblem
 ServiceMessage.63086 = Ni allwn gwblhau’r dasg hon. Cysylltwch <a class="govuk-link" href = "javascript: contactHMRC()">â CThEF</a>
 
 ServiceMessage.64989.h1 = Nid yw’r buddiant yn bodoli mwyach
 ServiceMessage.64989.1 = Nid yw’r buddiant hwn yn bodoli mwyach fel buddiant ar ei ben ei hun y mae’n rhaid rhoi gwybod amdano.
-ServiceMessage.64989.2 = Yr hyn i’w wneud nesaf – gwiriwch a yw gwerth y buddiant neu’r draul yr ydych yn ei roi i gyflogeion yn dal i fod yn drethadwy. Os felly, ewch <a class="govuk-link" id = "link-back-choose" href = "javascript: window.history.go(-1)">yn ôl</a> a dewis categori addas.
+ServiceMessage.64989.2 = Yr hyn i’w wneud nesaf – gwiriwch a yw gwerth y buddiant neu’r draul yr ydych yn ei roi i gyflogeion yn dal i fod yn drethadwy. Os felly, ewch <a class="govuk-link" id = "link-back-choose">yn ôl</a> a dewis categori addas.
 
 ServiceMessage.64986.h1 = Blwyddyn dreth anghywir
 ServiceMessage.64986 = Dylech naill ai ddefnyddio dyddiad cychwyn yn ystod y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf.
@@ -270,7 +270,7 @@ ServiceMessage.63087.h1 = Blwyddyn dreth anghywir
 ServiceMessage.63087 = Dim ond yn ystod y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf y gallwch gofrestru buddiannau a threuliau. Ewch <a class="govuk-link" id = "link-back" href = "/payrollbik/payrolled-benefits-expenses">yn ôl</a> a rhoi cynnig arall arni.
 
 ServiceMessage.65127.h1 = Nid oedd modd dod o hyd i’r cyflogai
-ServiceMessage.65127 = Dylech wirio bod gennych y manylion cywir a <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">chwilio eto</a>.
+ServiceMessage.65127 = Dylech wirio bod gennych y manylion cywir a <a class="govuk-link" id = "link-try-again">chwilio eto</a>.
 
 ServiceMessage.63083.h1 = Nid oedd modd dod o hyd i’r cyflogai
 ServiceMessage.63083 = Dylech wirio bod gennych y manylion cywir a <a class="govuk-link" id = "link-try-again" href = "javascript: window.history.go(-1)">chwilio eto</a>.

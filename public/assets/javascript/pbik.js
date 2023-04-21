@@ -90,17 +90,13 @@ if (window.addEventListener) {
     var el = document.getElementById("get-help-action");
     if(el != null){
         window.addEventListener("load", function(){
-            document.getElementById("get-help-action").onclick = function(){
-                gaEventLinkGetHelp();
-            };
+            document.getElementById("get-help-action").addEventListener("click", () => gaEventLinkGetHelp());
         });
    }
 }
 else {
     window.attachEvent("load", function(){
-        document.getElementById("get-help-action").onclick = function(){
-             gaEventLinkGetHelp();
-        };
+        document.getElementById("get-help-action").addEventListener("click", () => gaEventLinkGetHelp());
     });
 }
 

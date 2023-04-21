@@ -18,6 +18,7 @@
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.templatemodels.PageTitle
+@import views.html.helper.CSPNonce
 
 @this(
     govukLayoutWrapper: GovukLayoutWrapper,
@@ -52,10 +53,11 @@
      @isCurrentTaxYear match {
             case _ if(code == 63091 || code == 65127 || code == 63085) => {
                 @Html(messages("ServiceMessage." + (code)))
-            }
+                <script @{CSPNonce.attr}>document.querySelectorAll("#back-link-63091, #link-try-again").forEach(elem => elem.addEventListener("click", () => window.history.go(-1)));</script>
+        }
             case _ if(code == 63088 || code == 64989 || code == 10003)  => {
                 @Html(messages("ServiceMessage." + (code) + ".1"))
-            }
+        }
             case utils.FormMappingsConstants.CY => {@Html(messages(errorMessage, taxYearRange.cyminus1.toString, taxYearRange.cy.toString))}
             case utils.FormMappingsConstants.CYP1 => {@Html(messages(errorMessage, taxYearRange.cy.toString, taxYearRange.cyplus1.toString))}
             case _ => {@Html(messages(errorMessage))}
@@ -65,13 +67,20 @@
     @if(code == 63088 || code == 64989 || code == 10003) {
         <p class="govuk-body">
             @Html(messages("ServiceMessage." + (code) + ".2"))
+            <script @{CSPNonce.attr}>document.querySelectorAll("#link-back-choose").forEach(elem => elem.addEventListener("click", () => window.history.go(-1)));</script>
         </p>
     }
 
     <div class="govuk-form-group">
         @code match {
-            case 63082 => {<a class="govuk-link" id="link-try-again" href='javascript: window.history.go(-1)'>@messages("Service.tryagain")</a>}
-            case 63090 | 63092  => {<a class="govuk-link" id="link-add-another" href='javascript: window.history.go(-1)'>@messages("Service.excludeanotheremployee")</a>}
+            case 63082 => {
+                <a class="govuk-link" id="link-try-again">@messages("Service.tryagain")</a>
+                <script @{CSPNonce.attr}>document.getElementById("link-try-again").addEventListener("click", () => window.history.go(-1));</script>
+            }
+            case 63090 | 63092  => {
+                <a class="govuk-link" id="link-add-another">@messages("Service.excludeanotheremployee")</a>
+                <script @{CSPNonce.attr}>document.getElementById("link-add-another").addEventListener("click", () => window.history.go(-1));</script>
+            }
             case _ => {}
         }
     </div>
@@ -91,7 +100,7 @@
             </a>
         }
         case _ => {
-            <a class="govuk-link" id="link-back-summary"href='@routes.HomePageController.onPageLoad'>
+            <a class="govuk-link" id="link-back-summary" href='@routes.HomePageController.onPageLoad'>
                 @messages("Service.back.overview")
             </a>
         }
