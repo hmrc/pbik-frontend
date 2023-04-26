@@ -14,6 +14,7 @@ lazy val scoverageSettings: Seq[Def.Setting[_]] =
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb)
+  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     scoverageSettings,
     // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
