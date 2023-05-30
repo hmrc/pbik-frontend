@@ -32,7 +32,7 @@ class MessagesSpec extends PlaySpec with Logging {
     )
     .build()
 
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+  def messagesApi: MessagesApi = injector().instanceOf[MessagesApi]
 
   implicit lazy val messages: Messages = messagesApi.preferred(Seq(Lang("en"), Lang("cy")))
 
@@ -109,7 +109,6 @@ class MessagesSpec extends PlaySpec with Logging {
             s" $key -- English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq"
         )
       }
-      println(mismatchedArgSequences)
       mismatchedArgSequences.size mustBe 0
     }
   }
