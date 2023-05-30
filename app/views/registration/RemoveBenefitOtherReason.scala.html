@@ -36,7 +36,7 @@
 
 @benefitLabel = @{ messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)) }
 
-@govukLayoutWrapper( PageTitle(messages("RemoveBenefits.other.title"), form.hasErrors), Some("taxYearRange"), Some(empRef.toString), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper( PageTitle(messages("RemoveBenefits.other.title"), form.hasErrors), empRef = Some(empRef.toString)) {
 
     @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdType)) {
 
