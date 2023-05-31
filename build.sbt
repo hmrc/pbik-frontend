@@ -5,9 +5,8 @@ val appName = "pbik-frontend"
 
 lazy val scoverageSettings: Seq[Def.Setting[_]] =
   Seq(
-    ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;models/.data/..*;views.*;config.*;models.*;" +
-      ".*(AuthService|BuildInfo|Routes).*",
-    ScoverageKeys.coverageMinimumStmtTotal := 97,
+    ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*(AuthService|BuildInfo|Routes).*",
+    ScoverageKeys.coverageMinimumStmtTotal := 91,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
@@ -15,6 +14,8 @@ lazy val scoverageSettings: Seq[Def.Setting[_]] =
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  // To resolve dependency clash between flexmark v0.64.4+ and play-language to run accessibility tests, remove when versions align
+  .settings(dependencyOverrides += "com.ibm.icu" % "icu4j" % "69.1")
   .settings(
     scoverageSettings,
     // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
@@ -37,7 +38,7 @@ lazy val microservice = Project(appName, file("."))
 scalacOptions ++= Seq(
   "-feature",
   "-Wconf:src=routes/.*:s",
-  "-Wconf:cat=unused-imports&src=html/.*:s"
+  "-Wconf:cat=unused-imports&src=views/.*:s"
 )
 
 addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")

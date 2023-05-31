@@ -109,7 +109,8 @@ class MessagesSpec extends PlaySpec with Logging {
             s" $key -- English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq"
         )
       }
-      mismatchedArgSequences.size mustBe 0
+
+      mismatchedArgSequences must be(empty)
     }
   }
 

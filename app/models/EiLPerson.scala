@@ -40,36 +40,12 @@ case class EiLPerson(
 
 object EiLPerson {
 
-  val defaultStringArgumentValue = ""
-  val defaultIntArgumentValue    = -1
-  val defaultNino                = defaultStringArgumentValue
-  val defaultFirstName           = defaultStringArgumentValue
-  val defaultSecondName          = Some(defaultStringArgumentValue)
-  val defaultSurname             = defaultStringArgumentValue
-  val defaultWorksPayrollNumber  = Some(defaultStringArgumentValue)
-  val defaultDateOfBirth         = None
-  val defaultGender              = Some(defaultStringArgumentValue)
-  val defaultStatus              = Some(defaultIntArgumentValue)
-  val defaultPerOptLock          = defaultIntArgumentValue
-
-  def secondaryComparison(x: EiLPerson, y: EiLPerson): Boolean =
-    x.firstForename == y.firstForename &&
-      x.surname == y.surname &&
-      x.dateOfBirth.getOrElse("") == y.dateOfBirth.getOrElse("") &&
-      x.gender.getOrElse("") == y.gender.getOrElse("")
-
-  def defaultEiLPerson(): EiLPerson =
-    EiLPerson(
-      defaultNino,
-      defaultFirstName,
-      defaultSecondName,
-      defaultSurname,
-      defaultWorksPayrollNumber,
-      defaultDateOfBirth,
-      defaultGender,
-      defaultStatus,
-      defaultPerOptLock
-    )
+  val defaultStringArgumentValue: String        = ""
+  val defaultNino: String                       = defaultStringArgumentValue
+  val defaultSecondName: Option[String]         = Some(defaultStringArgumentValue)
+  val defaultWorksPayrollNumber: Option[String] = Some(defaultStringArgumentValue)
+  val defaultDateOfBirth: Option[String]        = None
+  val defaultGender: Option[String]             = Some(defaultStringArgumentValue)
 
   implicit val EiLPersonFormats: OFormat[EiLPerson] = Json.format[EiLPerson]
 }
