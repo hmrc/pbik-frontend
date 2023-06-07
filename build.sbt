@@ -3,7 +3,7 @@ import uk.gov.hmrc.DefaultBuildSettings.defaultSettings
 
 val appName = "pbik-frontend"
 
-lazy val scoverageSettings: Seq[Def.Setting[_]] =
+lazy val scoverageSettings: Seq[Def.Setting[?]] =
   Seq(
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*(AuthService|BuildInfo|Routes).*",
     ScoverageKeys.coverageMinimumStmtTotal := 91,
@@ -33,7 +33,7 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.components._"
     )
   )
-  .settings(scalaVersion := "2.13.10")
+  .settings(scalaVersion := "2.13.11")
 
 scalacOptions ++= Seq(
   "-feature",
