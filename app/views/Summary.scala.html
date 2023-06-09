@@ -124,7 +124,7 @@
     @if(cyAllowed || !registeredBenefitsCurrentYear.isEmpty) {
         <div class="govuk-form-group">
             <div class="govuk-grid-column-three-quarters">
-                <h3 class="govuk-heading-m">@messages("Overview.current.heading", s"${taxYearRange.cyminus1}", s"${taxYearRange.cy}")</h3>
+                <h2 class="govuk-heading-m">@messages("Overview.current.heading", s"${taxYearRange.cyminus1}", s"${taxYearRange.cy}")</h2>
 
                 @if(!registeredBenefitsCurrentYear.isEmpty) {
                     <dl class="govuk-summary-list">
