@@ -65,7 +65,17 @@ decommissioned.biks - Which benefits no longer exist <br />
                                               
           -> Exclude (CY)       -> Overview -> Choose Nino/ No-nino -> Search -> Confirm -> Individual excluded
                                               -> Confirm removal -> Individual removed
-                                              
+
+## Accessibility Tests
+
+### Prerequisites
+Have node installed on your machine
+
+### Execute tests
+To run the tests locally, simply run:
+```bash
+sbt clean A11y/test
+```
 
 ### License
 

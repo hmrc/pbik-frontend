@@ -154,7 +154,7 @@ class ExclusionListController @Inject() (
                   routes.ExclusionListController
                     .withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdType)
                 )
-              case "no"                              =>
+              case ControllersReferenceDataCodes.NO  =>
                 Redirect(routes.HomePageController.onPageLoad)
             }
           }

@@ -42,6 +42,7 @@ object ControllersReferenceDataCodes {
   val SESSION_FROM_YTA       = "fromYTA"
   val BIK_REMOVE_REASON_LIST = List("software", "guidance", "not-clear", "not-offering", "other")
   val YES                    = "yes"
+  val NO                     = "no"
   val OTHER                  = "other"
 
   val VALIDATION_ERROR_REFERENCE      = "ErrorPage.validationError"
