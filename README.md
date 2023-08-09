@@ -6,9 +6,9 @@ Once authenticated the employer has access to the pbik-frontend functionality wh
 
 ### Getting started
 #### Locally:
-- To run all PBIK and dependant services in Service Manager, run:
+- To run all PBIK and dependant services in Service Manager2, run:
 ```
-sm --start PBIK_ALL -r
+sm2 --start PBIK_ALL
 ```
 
 - To run specific set of tests/ scenarios, following commands are useful
