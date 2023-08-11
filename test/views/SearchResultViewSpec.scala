@@ -21,32 +21,52 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
-import views.helper.{PBIKBaseViewSpec, PBIKViewBehaviours}
+import views.helper.{PBIKBaseViewSpec, PBIKNoViewBehaviours}
 import views.html.exclusion.SearchResults
 
-class SearchResultViewSpec extends PBIKBaseViewSpec {
+class SearchResultViewSpec extends PBIKBaseViewSpec with PBIKNoViewBehaviours {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings             = app.injector.instanceOf[FormMappings]
-  val searchResultsView        = app.injector.instanceOf[SearchResults]
-  val listOfMatches            = EiLPersonList(List.empty[EiLPerson])
+  val messagesApi: MessagesApi         = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings       = app.injector.instanceOf[FormMappings]
+  val searchResultsView: SearchResults = app.injector.instanceOf[SearchResults]
+  val listOfMatches: EiLPersonList     = EiLPersonList(
+    List(
+      EiLPerson(
+        "AA111111",
+        "John",
+        Some("Stones"),
+        "Smith",
+        Some("123"),
+        Some("01/01/1980"),
+        Some("male"),
+        Some(10),
+        0
+      )
+    )
+  )
 
   def viewWithForm(form: Form[ExclusionNino]): Html =
     searchResultsView(taxYearRange, "cyp1", "30", listOfMatches, form, "", EmpRef("", ""))
 
-  "exclusionNinoOrNoNinoForm" in new PBIKViewBehaviours {
+  "exclusionNinoOrNoNinoForm" should {
 
-    override def view: Html = viewWithForm(formMappings.individualSelectionForm)
+    def view: Html = viewWithForm(formMappings.individualSelectionForm)
 
-    behave like pageWithTitle(messages("ExclusionSearch.title"))
-    behave like pageWithHeader(messages("ExclusionSearch.title"))
-    behave like pageWithButtonForm("/payrollbik/cyp1/medical/exclude-employee-searchSearchResultViewSpec", "Confirm")
-
+    behave like pageWithTitle(view, messages("ExclusionSearch.title.single"))
+    behave like pageWithHeader(
+      view,
+      messages("BenefitInKind.label.30") + " " + messages("ExclusionSearch.title.single")
+    )
+    behave like pageWithElementAndText(
+      view,
+      "button-confirm",
+      messages("Service.confirm")
+    )
   }
 
-  "check the nino search page for text validation" in new PBIKViewBehaviours {
+  "check the nino search page for text validation" should {
 
-    override def view: Html =
+    def view: Html =
       viewWithForm(
         formMappings.individualSelectionForm.bind(
           Map[String, String](
@@ -58,10 +78,59 @@ class SearchResultViewSpec extends PBIKBaseViewSpec {
         )
       )
 
-    behave like pageWithIdAndText("table-row-name", "John Smith")
-    behave like pageWithIdAndText("table-row-nino", "AA111111")
-    behave like pageWithIdAndText("table-row-dob", "123")
-
+    behave like pageWithIdAndText(view, "John Smith", "name")
+    behave like pageWithIdAndText(view, "AA111111", "nino")
+    behave like pageWithIdAndText(view, "123", "wpn")
   }
 
+  "check the individual nino search page for multiple active matches" should {
+    val listOfActives = EiLPersonList(
+      List(
+        EiLPerson(
+          "AA111111",
+          "John",
+          Some("Stones"),
+          "Smith",
+          Some("123"),
+          Some("01/01/1980"),
+          Some("male"),
+          Some(10),
+          0
+        ),
+        EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
+        EiLPerson(
+          "AC111111",
+          "Humpty",
+          Some("Alexander"),
+          "Dumpty",
+          Some("123"),
+          Some("01/01/1980"),
+          Some("male"),
+          Some(10),
+          0
+        )
+      )
+    )
+
+    def view: Html = searchResultsView(
+      taxYearRange,
+      "cyp1",
+      "30",
+      listOfActives,
+      formMappings.individualSelectionForm,
+      "",
+      EmpRef("", "")
+    )
+
+    behave like pageWithTitle(view, messages("ExclusionSearch.title.multiple"))
+    behave like pageWithHeader(
+      view,
+      messages("BenefitInKind.label.30") + " " + messages("ExclusionSearch.title.multiple")
+    )
+    behave like pageWithContinueButtonForm(
+      view,
+      "/payrollbik/cyp1/medical//exclude-employee-results",
+      "Confirm and continue"
+    )
+  }
 }

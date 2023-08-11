@@ -17,7 +17,7 @@
 package views
 
 import config.{AppConfig, LocalFormPartialRetriever}
-import models.{EmpRef}
+import models.EmpRef
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.{FormMappings, URIInformation}

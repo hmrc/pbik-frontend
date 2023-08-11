@@ -22,16 +22,16 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.{FormMappings, URIInformation}
-import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
+import views.helper.{PBIKBaseViewSpec, PBIKNoViewBehaviours}
 import views.html.exclusion.NinoExclusionSearchForm
 
-class NinoExclusionSearchViewSpec extends PBIKViewSpec {
+class NinoExclusionSearchViewSpec extends PBIKBaseViewSpec with PBIKNoViewBehaviours {
 
   val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
   val ninoExclusionSearchFormView: NinoExclusionSearchForm = app.injector.instanceOf[NinoExclusionSearchForm]
 
-  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  override def view: Html               = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  def view: Html               = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
 
   implicit val pbikAppConfig: PbikAppConfig                         = app.injector.instanceOf[PbikAppConfig]
   implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
@@ -42,41 +42,41 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
     ninoExclusionSearchFormView(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
 
   "NinoExclusionSearchView" must {
-    behave like pageWithTitle(messages("ExclusionSearch.form.title"))
-    behave like pageWithHeader(messages("ExclusionSearch.form.header"))
-    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/nino/search-for-employee", "Continue")
-    behave like pageWithTextBox("nino", messages("Service.field.nino"))
-    behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
-    behave like pageWithTextBox("surname", messages("Service.field.surname"))
+    behave like pageWithTitle(view, messages("ExclusionSearch.form.title"))
+    behave like pageWithHeader(view, messages("ExclusionSearch.form.header"))
+    behave like pageWithContinueButtonForm(view, "/payrollbik/cyp1/medical/nino/search-for-employee", "Continue")
+    behave like pageWithTextBox(view, "nino", messages("Service.field.nino"))
+    behave like pageWithTextBox(view, "firstname", messages("Service.field.firstname"))
+    behave like pageWithTextBox(view, "surname", messages("Service.field.surname"))
   }
 
-  "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
+  "check the nino exclusion page for the empty errors" in {
     val view: Html = viewWithForm(
       formMappings.exclusionSearchFormWithNino.bind(
         Map(("nino", ""), ("firstname", ""), ("surname", ""))
       )
     )
 
-    doc must haveErrorSummary(messages("error.empty.nino").replace(".", ""))
-    doc must haveErrorNotification(messages("error.empty.nino"))
-    doc must haveErrorSummary(messages("error.empty.firstname").replace(".", ""))
-    doc must haveErrorNotification(messages("error.empty.firstname"))
-    doc must haveErrorSummary(messages("error.empty.lastname").replace(".", ""))
-    doc must haveErrorNotification(messages("error.empty.lastname"))
+    doc(view) must haveErrorSummary(messages("error.empty.nino").replace(".", ""))
+    doc(view) must haveErrorNotification(messages("error.empty.nino"))
+    doc(view) must haveErrorSummary(messages("error.empty.firstname").replace(".", ""))
+    doc(view) must haveErrorNotification(messages("error.empty.firstname"))
+    doc(view) must haveErrorSummary(messages("error.empty.lastname").replace(".", ""))
+    doc(view) must haveErrorNotification(messages("error.empty.lastname"))
   }
 
-  "check for invalid inputs" in new PBIKViewBehaviours {
+  "check for invalid inputs" in {
     val view: Html = viewWithForm(
       formMappings.exclusionSearchFormWithNino.bind(
         Map(("nino", "1"), ("firstname", "1"), ("surname", "1"))
       )
     )
 
-    doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
-    doc must haveErrorNotification(messages("error.incorrect.nino"))
-    doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
-    doc must haveErrorNotification(messages("error.incorrect.firstname"))
-    doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
-    doc must haveErrorNotification(messages("error.incorrect.lastname"))
+    doc(view) must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
+    doc(view) must haveErrorNotification(messages("error.incorrect.nino"))
+    doc(view) must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
+    doc(view) must haveErrorNotification(messages("error.incorrect.firstname"))
+    doc(view) must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
+    doc(view) must haveErrorNotification(messages("error.incorrect.lastname"))
   }
 }

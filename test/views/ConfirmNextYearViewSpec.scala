@@ -18,7 +18,6 @@ package views
 
 import config.{AppConfig, LocalFormPartialRetriever}
 import models.{EmpRef, RegistrationItem, RegistrationList}
-import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.{FormMappings, URIInformation}
@@ -31,20 +30,17 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings                             = app.injector.instanceOf[FormMappings]
   val confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear = app.injector.instanceOf[ConfirmUpdateNextTaxYear]
 
-  override def view: Html = viewWithForm(formMappings.objSelectedForm)
+  override def view: Html = confirmUpdateNextTaxYearView(
+    bikList,
+    taxYearRange,
+    EmpRef("", "")
+  )
 
   implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
   implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
-  val bikList                                                       = RegistrationList(active = List.empty[RegistrationItem])
-  val removalBik                                                    = Some(RegistrationItem("30", true, true))
-
-  def viewWithForm(form: Form[RegistrationList]): Html =
-    confirmUpdateNextTaxYearView(
-      bikList,
-      taxYearRange,
-      EmpRef("", "")
-    )
+  val bikList: RegistrationList                                     = RegistrationList(active = List.empty[RegistrationItem])
+  val removalBik: Option[RegistrationItem]                          = Some(RegistrationItem("30", active = true, enabled = true))
 
   "nextYearPage" must {
     behave like pageWithTitle(messages("AddBenefits.Confirm.Multiple.Title"))

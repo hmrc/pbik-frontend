@@ -27,9 +27,9 @@ import views.html.exclusion.ExclusionNinoOrNoNinoForm
 
 class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi      = app.injector.instanceOf[MessagesApi]
-  val formMappings                  = app.injector.instanceOf[FormMappings]
-  val exclusionNinoOrNoNinoFormView = app.injector.instanceOf[ExclusionNinoOrNoNinoForm]
+  val messagesApi: MessagesApi                                 = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings                               = app.injector.instanceOf[FormMappings]
+  val exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm = app.injector.instanceOf[ExclusionNinoOrNoNinoForm]
 
   override def view: Html = viewWithForm()
 
@@ -64,7 +64,6 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
       doc must haveErrorSummary(messages("ExclusionDecision.noselection.error"))
       doc must haveErrorNotification(messages("ExclusionDecision.noselection.error"))
     }
-
   }
 
 }

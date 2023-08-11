@@ -16,10 +16,10 @@
 
 package models
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class PbikError(errorCode: String)
 
 object PbikError {
-  implicit val pbikErrorFormat = Json.format[PbikError]
+  implicit val pbikErrorFormat: OFormat[PbikError] = Json.format[PbikError]
 }
