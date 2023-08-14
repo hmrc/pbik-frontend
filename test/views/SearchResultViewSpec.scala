@@ -21,10 +21,10 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
-import views.helper.{PBIKBaseViewSpec, PBIKNoViewBehaviours}
+import views.helper.PBIKViewSpec
 import views.html.exclusion.SearchResults
 
-class SearchResultViewSpec extends PBIKBaseViewSpec with PBIKNoViewBehaviours {
+class SearchResultViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi         = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings       = app.injector.instanceOf[FormMappings]
@@ -50,15 +50,13 @@ class SearchResultViewSpec extends PBIKBaseViewSpec with PBIKNoViewBehaviours {
 
   "exclusionNinoOrNoNinoForm" should {
 
-    def view: Html = viewWithForm(formMappings.individualSelectionForm)
+    implicit def view: Html = viewWithForm(formMappings.individualSelectionForm)
 
-    behave like pageWithTitle(view, messages("ExclusionSearch.title.single"))
+    behave like pageWithTitle(messages("ExclusionSearch.title.single"))
     behave like pageWithHeader(
-      view,
       messages("BenefitInKind.label.30") + " " + messages("ExclusionSearch.title.single")
     )
     behave like pageWithElementAndText(
-      view,
       "button-confirm",
       messages("Service.confirm")
     )
@@ -66,21 +64,18 @@ class SearchResultViewSpec extends PBIKBaseViewSpec with PBIKNoViewBehaviours {
 
   "check the nino search page for text validation" should {
 
-    def view: Html =
+    implicit def view: Html =
       viewWithForm(
         formMappings.individualSelectionForm.bind(
           Map[String, String](
-            ("individualSelection", "AA111111"),
-            ("firstname", "John"),
-            ("surname", "Smith"),
-            ("worksPayrollNumber", "123")
+            ("individualNino", "AA111111")
           )
         )
       )
 
-    behave like pageWithIdAndText(view, "John Smith", "name")
-    behave like pageWithIdAndText(view, "AA111111", "nino")
-    behave like pageWithIdAndText(view, "123", "wpn")
+    behave like pageWithIdAndText("John Smith", "name")
+    behave like pageWithIdAndText("AA111111", "nino")
+    behave like pageWithIdAndText("123", "wpn")
   }
 
   "check the individual nino search page for multiple active matches" should {
@@ -112,7 +107,7 @@ class SearchResultViewSpec extends PBIKBaseViewSpec with PBIKNoViewBehaviours {
       )
     )
 
-    def view: Html = searchResultsView(
+    implicit def view: Html = searchResultsView(
       taxYearRange,
       "cyp1",
       "30",
@@ -122,13 +117,11 @@ class SearchResultViewSpec extends PBIKBaseViewSpec with PBIKNoViewBehaviours {
       EmpRef("", "")
     )
 
-    behave like pageWithTitle(view, messages("ExclusionSearch.title.multiple"))
+    behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
     behave like pageWithHeader(
-      view,
       messages("BenefitInKind.label.30") + " " + messages("ExclusionSearch.title.multiple")
     )
     behave like pageWithContinueButtonForm(
-      view,
       "/payrollbik/cyp1/medical//exclude-employee-results",
       "Confirm and continue"
     )

@@ -34,7 +34,7 @@ class WhatNextExclusionViewSpec extends PBIKViewSpec {
   implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
-  override def view: Html = whatNextExclusionView(taxYearRange, "cyp1", "30", "", EmpRef("", ""))
+  implicit def view: Html = whatNextExclusionView(taxYearRange, "cyp1", "30", "", EmpRef("", ""))
 
   "whatNextAddRemove" must {
     behave like pageWithTitle(messages("whatNext.exclude.heading"))

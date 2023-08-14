@@ -33,11 +33,9 @@ class CheckboxIdSpec extends PBIKViewSpec {
   def viewWithForm(form: Form[RegistrationList]): Html =
     nextTaxYearView(form, additive = true, taxYearRange, List(), List(), List(), List(), Some(1), EmpRef("", ""))
 
-  override def view: Html = viewWithForm(formMappings.objSelectedForm)
-
   "first" should {
     "return a link to the first form checkbox" in {
-      val view = viewWithForm(
+      implicit def view: Html = viewWithForm(
         formMappings.objSelectedForm
           .withError("actives", "error")
           .bind(
@@ -49,11 +47,11 @@ class CheckboxIdSpec extends PBIKViewSpec {
           )
       )
 
-      doc(view) must haveLinkWithUrlWithID("error-link", "checkbox-37")
+      doc must haveLinkWithUrlWithID("error-link", "checkbox-37")
     }
 
     "return a link to the first form checkbox ignoring id of always last 'Other' field" in {
-      val view = viewWithForm(
+      implicit def view: Html = viewWithForm(
         formMappings.objSelectedForm
           .withError("actives", "error")
           .bind(
@@ -65,16 +63,16 @@ class CheckboxIdSpec extends PBIKViewSpec {
           )
       )
 
-      doc(view) must haveLinkWithUrlWithID("error-link", "checkbox-2")
+      doc must haveLinkWithUrlWithID("error-link", "checkbox-2")
     }
 
     "returns an empty link where a form is constructed with 0 elements" in {
-      val view = viewWithForm(
+      implicit def view: Html = viewWithForm(
         formMappings.objSelectedForm
           .withError("actives", "error")
       )
 
-      doc(view) must haveLinkWithUrlWithID("error-link", "")
+      doc must haveLinkWithUrlWithID("error-link", "")
     }
   }
 }

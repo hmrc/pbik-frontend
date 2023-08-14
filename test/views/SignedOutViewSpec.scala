@@ -27,7 +27,7 @@ class SignedOutViewSpec extends PBIKViewSpec {
 
   override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  override val view: Html = signedOutView()
+  implicit val view: Html = signedOutView()
 
   "signedOutView" must {
     behave like pageWithTitle(messages("signedOut.title"))
