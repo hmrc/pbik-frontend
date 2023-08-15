@@ -30,8 +30,8 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
   val addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear =
     app.injector.instanceOf[AddBenefitConfirmationNextTaxYear]
 
-  override def view: Html = {
-    val regList = RegistrationList(active = List(RegistrationItem("30", true, true)))
+  implicit def view: Html = {
+    val regList = RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))
     addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList, EmpRef("", ""))
   }
 

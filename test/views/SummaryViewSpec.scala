@@ -31,7 +31,7 @@ class SummaryViewSpec extends PBIKViewSpec {
   implicit val bikListUtils: BikListUtils = app.injector.instanceOf[BikListUtils]
   val summaryView: Summary                = app.injector.instanceOf[Summary]
 
-  override def view: Html =
+  implicit def view: Html =
     summaryView(cyAllowed = true, taxYearRange, List(), List(Bik("31", 30)), 200, 0, "", EmpRef("", ""))
 
   def viewWithNoBenefits(): Html =

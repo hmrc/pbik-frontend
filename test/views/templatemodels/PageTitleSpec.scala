@@ -27,7 +27,7 @@ class PageTitleSpec extends PBIKViewSpec {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
-  override def view: Html = startPageView(EmpRef("", ""))
+  implicit def view: Html = startPageView(EmpRef("", ""))
 
   val postTitleText = s"- ${messages("Service.title")} - GOV.UK"
   val title         = "testTitle"
@@ -39,7 +39,7 @@ class PageTitleSpec extends PBIKViewSpec {
     }
 
     "return a title with error pre text and title post text when form errors are present" in {
-      val pageTitle = PageTitle(title, true)
+      val pageTitle = PageTitle(title, formErrorsExist = true)
       pageTitle.fullTitle() mustBe s"${messages("Service.error")}: $title $postTitleText"
     }
   }

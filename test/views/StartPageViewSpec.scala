@@ -27,7 +27,7 @@ class StartPageViewSpec extends PBIKViewSpec {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
   val startPageView: StartPage = app.injector.instanceOf[StartPage]
 
-  override def view: Html = startPageView(EmpRef("", ""))
+  implicit def view: Html = startPageView(EmpRef("", ""))
 
   "startPage" must {
     behave like pageWithTitle(messages("StartPage.heading"))

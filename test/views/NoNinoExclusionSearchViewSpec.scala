@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
-import views.helper.{PBIKViewBehaviours, PBIKViewSpec}
+import views.helper.PBIKViewSpec
 import views.html.exclusion.NoNinoExclusionSearchForm
 
 class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
@@ -29,13 +29,14 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
   private val formMappings: FormMappings    = app.injector.instanceOf[FormMappings]
   private val noNinoExclusionSearchFormView = app.injector.instanceOf[NoNinoExclusionSearchForm]
 
-  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  override def view: Html               = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
+  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   private def viewWithForm(form: Form[EiLPerson]): Html =
     noNinoExclusionSearchFormView(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
 
   "NoNinoExclusionSearchView" must {
+    implicit def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
+
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/no-nino/search-for-employee", "Continue")
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
@@ -46,8 +47,8 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
     behave like pageWithYesNoRadioButton("gender-female", "gender-male")
   }
 
-  "check the nino exclusion page for the empty errors" in new PBIKViewBehaviours {
-    val view: Html = viewWithForm(
+  "check the nino exclusion page for the empty errors" in {
+    implicit def view: Html = viewWithForm(
       formMappings.exclusionSearchFormWithoutNino.bind(
         Map(
           ("firstname", ""),
@@ -71,8 +72,8 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
     doc must haveErrorNotification(messages("error.required"))
   }
 
-  "check for invalid inputs" in new PBIKViewBehaviours {
-    val view: Html = viewWithForm(
+  "check for invalid inputs" in {
+    implicit val view: Html = viewWithForm(
       formMappings.exclusionSearchFormWithoutNino.bind(
         Map(
           ("firstname", "1"),

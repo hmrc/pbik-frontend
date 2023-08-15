@@ -32,7 +32,7 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
 
   private val iabdType = "31"
 
-  override def view: Html =
+  implicit def view: Html =
     exclusionOverviewView(taxYearRange, "cyp1", iabdType, List(), EmpRef("", ""), formMappings.binaryRadioButton)
 
   def viewWithFormWithErrors(): Html =

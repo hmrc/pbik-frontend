@@ -28,11 +28,11 @@ import views.html.registration.NextTaxYear
 
 class NextYearViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val formMappings             = app.injector.instanceOf[FormMappings]
-  val nextTaxYearView          = app.injector.instanceOf[NextTaxYear]
+  val messagesApi: MessagesApi     = app.injector.instanceOf[MessagesApi]
+  val formMappings: FormMappings   = app.injector.instanceOf[FormMappings]
+  val nextTaxYearView: NextTaxYear = app.injector.instanceOf[NextTaxYear]
 
-  override def view: Html = viewWithForm(formMappings.objSelectedForm)
+  implicit def view: Html = viewWithForm(formMappings.objSelectedForm)
 
   implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]

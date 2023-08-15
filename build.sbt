@@ -41,5 +41,5 @@ scalacOptions ++= Seq(
   "-Wconf:cat=unused-imports&src=views/.*:s"
 )
 
-addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt A11y/scalafmt")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle A11y/scalastyle")

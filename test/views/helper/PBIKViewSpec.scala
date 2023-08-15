@@ -28,64 +28,58 @@ import play.twirl.api.Html
 
 trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
 
-  def view: Html
+  def doc(implicit view: Html): Document = Jsoup.parse(view.toString())
 
-  def doc: Document = Jsoup.parse(view.toString())
-
-  def doc(view: Html): Document = Jsoup.parse(view.toString())
-
-  def pageWithTitle(titleText: String): Unit =
+  def pageWithTitle(titleText: String)(implicit view: Html): Unit =
     "have a static title" in {
       doc.title must include(titleText)
     }
 
-  def pageWithHeader(headerText: String): Unit =
+  def pageWithHeader(headerText: String)(implicit view: Html): Unit =
     "have a static h1 header" in {
       doc must haveHeadingWithText(headerText)
     }
 
-  def pageWithHeaderH2(headerText: String): Unit =
+  def pageWithHeaderH2(headerText: String)(implicit view: Html): Unit =
     "have a static h2 header" in {
 
       doc must haveHeadingH2WithText(headerText)
     }
 
-  def pageWithBackLink(): Unit =
+  def pageWithBackLink()(implicit view: Html): Unit =
     "have a back link" in {
       doc must haveBackLink
     }
 
-  def pageWithIdAndText(pageText: String, id: String): Unit =
+  def pageWithIdAndText(pageText: String, id: String)(implicit view: Html): Unit =
     s"have a static text ($pageText) with id ($id)" in {
       doc must haveElementWithIdAndText(pageText, id)
     }
 
-  //scalastyle:off null
-  def pageWithYesNoRadioButton(idYes: String, idNo: String): Unit =
+  def pageWithYesNoRadioButton(idYes: String, idNo: String)(implicit view: Html): Unit =
     "have a yes/no radio button" in {
-      doc.getElementById(idYes) must not be null
-      doc.getElementById(idNo)  must not be null
+      doc.getElementById(idYes) must not be None.orNull
+      doc.getElementById(idNo)  must not be None.orNull
     }
 
-  def pageWithLink(text: String, href: String): Unit =
+  def pageWithLink(text: String, href: String)(implicit view: Html): Unit =
     s"have a link with url $href and text $text" in {
       val a = doc.select(s"a[href=$href]").first()
-      a must not be null
+      a must not be None.orNull
       a.text.trim mustBe text.trim
     }
-  //scalastyle:on null
 
-  def pageWithTextBox(id: String, label: String): Unit =
+  def pageWithTextBox(id: String, label: String)(implicit view: Html): Unit =
     s"have  a text box with label $label" in {
       doc must haveInputLabelWithText(id, label)
     }
 
-  def pageWithContinueButtonForm(submitUrl: String, buttonText: String): Unit =
+  def pageWithContinueButtonForm(submitUrl: String, buttonText: String)(implicit view: Html): Unit =
     pageWithButtonForm(submitUrl, buttonText)
 
   def nonBreakable(string: String): String = string.replace(" ", "\u00A0")
 
-  def pageWithButtonForm(submitUrl: String, buttonText: String): Unit = {
+  def pageWithButtonForm(submitUrl: String, buttonText: String)(implicit view: Html): Unit = {
     "have a form with a submit button or input labelled as buttonText" in {
       doc must haveSubmitButton(buttonText)
     }
@@ -93,6 +87,11 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
       doc must haveFormWithSubmitUrl(submitUrl)
     }
   }
+
+  def pageWithElementAndText(id: String, text: String)(implicit view: Html): Unit =
+    "have a form with element of the corresponding id" in {
+      doc must haveElementWithIdAndText(text, id)
+    }
 }
 
 trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite with I18nSupport {
