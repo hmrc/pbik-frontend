@@ -20,12 +20,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 
 trait AppConfig {
-  val assetsPrefix: String
-  val reportAProblemPartialUrl: String
-  val betaFeedbackUrl: String
-  val betaFeedbackUnauthenticatedUrl: String
-  val contactFrontendService: String
-  val contactFormServiceIdentifier: String
   val cyEnabled: Boolean
   val maximumExclusions: Int
   val biksNotSupported: Seq[Int]
@@ -46,28 +40,13 @@ trait AppConfig {
 @Singleton
 class PbikAppConfig @Inject() (configuration: Configuration) extends AppConfig {
 
-  private lazy val basGatewayHost: String          = configuration.get[String]("microservice.auth.bas-gateway.host")
-  override lazy val contactFrontendService: String =
-    configuration.get[Service]("microservice.services.contact-frontend")
-  override lazy val contactFormServiceIdentifier   = "PayrollBIK"
-  override lazy val maximumExclusions: Int         = configuration.get[Int]("pbik.exclusions.maximum")
-
-  private lazy val contactHost: Service = configuration.get[Service]("microservice.services.contact-frontend")
-
-  override lazy val assetsPrefix: String     =
-    configuration.get[String]("assets.url") + configuration.get[String]("assets.version")
-  override lazy val reportAProblemPartialUrl =
-    s"${configuration.get[Service]("microservice.services.contact-frontend")}/contact/problem_reports"
-
-  override lazy val betaFeedbackUrl                = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
-  override lazy val betaFeedbackUnauthenticatedUrl =
-    s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+  private lazy val basGatewayHost: String  = configuration.get[String]("microservice.auth.bas-gateway.host")
+  override lazy val maximumExclusions: Int = configuration.get[Int]("pbik.exclusions.maximum")
 
   override lazy val cyEnabled: Boolean           = configuration.get[Boolean]("pbik.enabled.cy")
   override lazy val biksNotSupported: Seq[Int]   = configuration.get[Seq[Int]]("pbik.unsupported.biks.cy1")
   override lazy val biksNotSupportedCY: Seq[Int] = configuration.get[Seq[Int]]("pbik.unsupported.biks.cy")
   override lazy val biksDecommissioned: Seq[Int] = configuration.get[Seq[Int]]("pbik.decommissioned.biks")
-  lazy val urBannerToggle: Boolean               = configuration.get[Boolean]("urBanner.toggle")
   override lazy val urBannerLink: String         = configuration.get[String]("urBanner.link")
   override lazy val feedbackUrl: String          = configuration.get[String]("feedback.url")
   override lazy val signOut                      = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
