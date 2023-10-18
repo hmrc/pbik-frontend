@@ -143,7 +143,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     Integer.parseInt(x.iabdType) >= 15
   }))
 
-  when(mockExclusionListController.cachingService.cacheEiLPerson(any())(any[HeaderCarrier])).thenReturn(
+  when(mockExclusionListController.cachingService.storeEiLPerson(any())(any[HeaderCarrier])).thenReturn(
     Future.successful(None)
   )
 
@@ -331,7 +331,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "loading the searchResults page" must {
       "display the expected search results page for an authorised user's NINO search" in {
-        when(mockExclusionListController.cachingService.cacheListOfMatches(any())(any[HeaderCarrier]))
+        when(mockExclusionListController.cachingService.storeListOfMatches(any())(any[HeaderCarrier]))
           .thenReturn(Future.successful(None))
         when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(

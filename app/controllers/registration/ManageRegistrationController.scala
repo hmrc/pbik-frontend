@@ -36,26 +36,26 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ManageRegistrationController @Inject() (
-  bikListUtils: BikListUtils,
-  registrationService: RegistrationService,
-  formMappings: FormMappings,
-  override val messagesApi: MessagesApi,
-  cc: MessagesControllerComponents,
-  val bikListService: BikListService,
-  tierConnector: HmrcTierConnector,
-  val authenticate: AuthAction,
-  val noSessionCheck: NoSessionCheckAction,
-  val cachingService: SessionService,
-  controllersReferenceData: ControllersReferenceData,
-  splunkLogger: SplunkLogger,
-  pbikAppConfig: PbikAppConfig,
-  uriInformation: URIInformation,
-  nextTaxYearView: NextTaxYear,
-  currentTaxYearView: CurrentTaxYear,
-  confirmAddCurrentTaxYearView: ConfirmAddCurrentTaxYear,
-  confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear,
-  removeBenefitNextTaxYearView: RemoveBenefitNextTaxYear,
-  removeBenefitOtherReason: RemoveBenefitOtherReason
+                                               bikListUtils: BikListUtils,
+                                               registrationService: RegistrationService,
+                                               formMappings: FormMappings,
+                                               override val messagesApi: MessagesApi,
+                                               cc: MessagesControllerComponents,
+                                               val bikListService: BikListService,
+                                               tierConnector: HmrcTierConnector,
+                                               val authenticate: AuthAction,
+                                               val noSessionCheck: NoSessionCheckAction,
+                                               val sessionService: SessionService,
+                                               controllersReferenceData: ControllersReferenceData,
+                                               splunkLogger: SplunkLogger,
+                                               pbikAppConfig: PbikAppConfig,
+                                               uriInformation: URIInformation,
+                                               nextTaxYearView: NextTaxYear,
+                                               currentTaxYearView: CurrentTaxYear,
+                                               confirmAddCurrentTaxYearView: ConfirmAddCurrentTaxYear,
+                                               confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear,
+                                               removeBenefitNextTaxYearView: RemoveBenefitNextTaxYear,
+                                               removeBenefitOtherReason: RemoveBenefitOtherReason
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport
@@ -109,7 +109,7 @@ class ManageRegistrationController @Inject() (
                                              )
                                            ),
                                          values =>
-                                           cachingService.cacheRegistrationList(values).flatMap { _ =>
+                                           sessionService.storeRegistrationList(values).flatMap { _ =>
                                              Future.successful(
                                                Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddCurrentTaxYear)
                                              )
@@ -121,8 +121,9 @@ class ManageRegistrationController @Inject() (
 
   def showCheckYourAnswersAddCurrentTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val resultFuture = cachingService.fetchPbikSession().flatMap { session =>
-        val registrationList             = RegistrationList(None, session.get.registrations.get.active.filter(_.active), None)
+      val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
+        val activeReg = session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
+        val registrationList             = RegistrationList(None, activeReg, None)
         val form: Form[RegistrationList] = formMappings.objSelectedForm.fill(registrationList)
         Future.successful(
           Ok(confirmAddCurrentTaxYearView(form, controllersReferenceData.yearRange, empRef = request.empRef))
@@ -156,7 +157,7 @@ class ManageRegistrationController @Inject() (
                                              )
                                            ),
                                          values =>
-                                           cachingService.cacheRegistrationList(values).flatMap { _ =>
+                                           sessionService.storeRegistrationList(values).flatMap { _ =>
                                              Future.successful(
                                                Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddNextTaxYear)
                                              )
@@ -168,8 +169,9 @@ class ManageRegistrationController @Inject() (
 
   def showCheckYourAnswersAddNextTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val resultFuture = cachingService.fetchPbikSession().flatMap { session =>
-        val registrationList = RegistrationList(None, session.get.registrations.get.active.filter(_.active), None)
+      val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
+        val activeReg = session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
+        val registrationList = RegistrationList(None, activeReg, None)
         Future.successful(
           Ok(
             confirmUpdateNextTaxYearView(registrationList, controllersReferenceData.yearRange, empRef = request.empRef)
@@ -192,7 +194,7 @@ class ManageRegistrationController @Inject() (
     val bikToRemove      = RegistrationItem(iabdType, active = true, enabled = true)
     val registrationList =
       RegistrationList(None, List(bikToRemove), reason = None)
-    cachingService.cacheBikRemoved(
+    sessionService.storeBikRemoved(
       RegistrationItem(uriInformation.iabdValueURLDeMapper(iabdType), active = false, enabled = true)
     )
     Future.successful(
@@ -211,8 +213,8 @@ class ManageRegistrationController @Inject() (
   //TODO iabdType is not used
   def removeNextYearRegisteredBenefitTypes(iabdType: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
-      val registeredFuture = cachingService.fetchPbikSession().flatMap { session =>
-        val bikToRemove = Bik(session.get.bikRemoved.get.id, ControllersReferenceDataCodes.BIK_REMOVE_STATUS)
+      val registeredFuture = sessionService.fetchPbikSession().flatMap { session =>
+        val bikToRemove = Bik(session.get.bikRemoved.get.id, ControllersReferenceDataCodes.BIK_REMOVE_STATUS) //todo fix this session.get
         updateBiksFutureAction(controllersReferenceData.yearRange.cy, List(bikToRemove), iabdType, additive = false)
       }
       controllersReferenceData.responseErrorHandler(registeredFuture)
@@ -235,8 +237,8 @@ class ManageRegistrationController @Inject() (
             Future.successful(BadRequest(removeBenefitOtherReason(formWithErrors, iabdType, empRef = request.empRef)))
           },
           values => {
-            val registeredFuture = cachingService.fetchPbikSession().flatMap { session =>
-              val bikToRemove = Bik(session.get.bikRemoved.get.id, ControllersReferenceDataCodes.BIK_REMOVE_STATUS)
+            val registeredFuture = sessionService.fetchPbikSession().flatMap { session =>
+              val bikToRemove = Bik(session.get.bikRemoved.get.id, ControllersReferenceDataCodes.BIK_REMOVE_STATUS) // todo fix this session.get
               updateRemoveBenefitsOther(controllersReferenceData.yearRange.cy, List(bikToRemove), values, iabdType)
             }
             controllersReferenceData.responseErrorHandler(registeredFuture)
@@ -246,8 +248,10 @@ class ManageRegistrationController @Inject() (
 
   def updateCurrentYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val actionFuture = cachingService.fetchPbikSession().flatMap { session =>
-        val persistentBiks = session.get.registrations.get.active
+      val actionFuture = sessionService.fetchPbikSession().flatMap { session =>
+        val activeReg = session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
+
+        val persistentBiks = activeReg
           .filter(biks => biks.active)
           .map(bik => Bik(bik.id, ControllersReferenceDataCodes.BIK_ADD_STATUS))
         updateBiksFutureAction(controllersReferenceData.yearRange.cyminus1, persistentBiks, additive = true)
@@ -257,8 +261,10 @@ class ManageRegistrationController @Inject() (
 
   def addNextYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val actionFuture = cachingService.fetchPbikSession().flatMap { session =>
-        val persistentBiks = session.get.registrations.get.active
+      val actionFuture = sessionService.fetchPbikSession().flatMap { session =>
+        val activeReg = session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
+
+        val persistentBiks = activeReg
           .filter(biks => biks.active)
           .map(bik => Bik(bik.id, ControllersReferenceDataCodes.BIK_ADD_STATUS))
         updateBiksFutureAction(controllersReferenceData.yearRange.cy, persistentBiks, additive = true)
@@ -272,7 +278,7 @@ class ManageRegistrationController @Inject() (
     tierConnector
       .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
       .flatMap { registeredResponse =>
-        cachingService.fetchPbikSession().flatMap { session =>
+        sessionService.fetchPbikSession().flatMap { session =>
           val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
           if (additive) {
             // Process registration
@@ -315,9 +321,11 @@ class ManageRegistrationController @Inject() (
                         )
                       )
                     case _                                   =>
+                      val activeReg = session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
+
                       val listWithReason =
-                        RegistrationList(None, session.get.registrations.get.active, reason = Some(values))
-                      cachingService.cacheRegistrationList(listWithReason).flatMap { _ =>
+                        RegistrationList(None, activeReg, reason = Some(values))
+                      sessionService.storeRegistrationList(listWithReason).flatMap { _ =>
                         removeBenefitReasonValidation(listWithReason, year, persistentBiks, changes, iabdType)
                       }
                   }
@@ -332,16 +340,18 @@ class ManageRegistrationController @Inject() (
     tierConnector
       .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
       .flatMap { registeredResponse =>
-        cachingService.fetchPbikSession().flatMap { session =>
+        sessionService.fetchPbikSession().flatMap { session =>
           val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
+
+          val activeReg = session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
 
           val listWithReason =
             RegistrationList(
               None,
-              session.get.registrations.get.active,
+              activeReg,
               reason = Some(BinaryRadioButtonWithDesc(ControllersReferenceDataCodes.OTHER, Some(otherReason.reason)))
             )
-          cachingService.cacheRegistrationList(listWithReason).flatMap { _ =>
+          sessionService.storeRegistrationList(listWithReason).flatMap { _ =>
             removeBenefitReasonValidation(listWithReason, year, persistentBiks, changes, iabdType)
           }
         }

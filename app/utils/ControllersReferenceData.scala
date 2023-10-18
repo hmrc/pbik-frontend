@@ -96,6 +96,7 @@ class ControllersReferenceData @Inject() (
   )(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     staticDataRequest.recover {
       case e0: NoSuchElementException     =>
+        logger.error(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled", e0)
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled: $e0")
         NotFound(
           errorPageView(

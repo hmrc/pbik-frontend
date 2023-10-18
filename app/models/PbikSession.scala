@@ -16,18 +16,25 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json, OFormat}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
+import java.time.Instant
 
 case class PbikSession(
-  registrations: Option[RegistrationList],
-  bikRemoved: Option[RegistrationItem],
-  listOfMatches: Option[List[EiLPerson]],
-  eiLPerson: Option[EiLPerson],
-  currentExclusions: Option[List[EiLPerson]],
-  cyRegisteredBiks: Option[List[Bik]],
-  nyRegisteredBiks: Option[List[Bik]]
+  sessionId: String,
+  registrations: Option[RegistrationList] = None,
+  bikRemoved: Option[RegistrationItem] = None,
+  listOfMatches: Option[List[EiLPerson]] = None,
+  eiLPerson: Option[EiLPerson] = None,
+  currentExclusions: Option[List[EiLPerson]] = None,
+  cyRegisteredBiks: Option[List[Bik]] = None,
+  nyRegisteredBiks: Option[List[Bik]] = None,
+  lastUpdated: Instant = Instant.now()
 )
 
 object PbikSession {
-  implicit val PbikSessionFormats: OFormat[PbikSession] = Json.format[PbikSession]
+  implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
+
+  implicit val pbikSessionFormats: OFormat[PbikSession] = Json.format[PbikSession]
 }

@@ -48,7 +48,7 @@ class ExclusionListController @Inject() (
   val eiLListService: EiLListService,
   val bikListService: BikListService,
   val cachingService: SessionService,
-  val tierConnector: HmrcTierConnector, //TODO: Why do we need this?,
+  val tierConnector: HmrcTierConnector, //TODO: Why do we need this?
   taxDateUtils: TaxDateUtils,
   splunkLogger: SplunkLogger,
   controllersReferenceData: ControllersReferenceData,
@@ -110,7 +110,7 @@ class ExclusionListController @Inject() (
         nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
         currentYearEIL: List[EiLPerson]                <- eiLListService.currentYearEiL(iabdTypeValue, year)
       } yield {
-        cachingService.cacheCurrentExclusions(currentYearEIL)
+        cachingService.storeCurrentExclusions(currentYearEIL)
         Ok(
           exclusionOverviewView(
             controllersReferenceData.yearRange,
@@ -301,7 +301,7 @@ class ExclusionListController @Inject() (
                                                             validModel
                                                           )
                 resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
-                cache                                  <- cachingService.cacheListOfMatches(result.json.validate[List[EiLPerson]].asOpt.get)
+                _                                  <- cachingService.storeListOfMatches(result.json.validate[List[EiLPerson]].asOpt.get)
               } yield Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdType, formType))
           )
         controllersReferenceData.responseErrorHandler(futureResult)
@@ -640,7 +640,7 @@ class ExclusionListController @Inject() (
       if (exclusionsAllowed) {
         val resultFuture = cachingService.fetchPbikSession().flatMap { session =>
           val selectedPerson: EiLPerson = session.get.currentExclusions.get.filter(person => person.nino == nino).head
-          cachingService.cacheEiLPerson(selectedPerson).map { _ =>
+          cachingService.storeEiLPerson(selectedPerson).map { _ =>
             Redirect(routes.ExclusionListController.showRemovalConfirmation(year, iabdType))
           }
         }

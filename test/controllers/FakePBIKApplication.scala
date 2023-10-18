@@ -74,22 +74,6 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   val mockSessionService: SessionService     = mock[SessionService]
   val mockHttp: DefaultHttpClient            = mock[DefaultHttpClient]
-  val mockPbikSessionCache: PbikSessionCache = mock[PbikSessionCache]
+//  val mockPbikSessionRepository: PbikSessionRepository = mock[PbikSessionCache]
   val mockAppConfig: PbikAppConfig           = mock[PbikAppConfig]
-
-  val cleanRegistrationList: Option[RegistrationList] = Some(RegistrationList(None, List.empty[RegistrationItem], None))
-  val cleanBikRemoved: Option[RegistrationItem]       = Some(RegistrationItem("", active = false, enabled = false))
-  val cleanListOfMatches: Option[List[EiLPerson]]     = Some(List.empty[EiLPerson])
-  val cleanEiLPerson: Option[EiLPerson]               = Some(EiLPerson("", "", None, "", None, None, None, None))
-  val cleanBikList: Option[List[Bik]]                 = Some(List.empty[Bik])
-  val cleanSession: PbikSession                       =
-    PbikSession(
-      cleanRegistrationList,
-      cleanBikRemoved,
-      cleanListOfMatches,
-      cleanEiLPerson,
-      cleanListOfMatches,
-      cleanBikList,
-      cleanBikList
-    )
 }

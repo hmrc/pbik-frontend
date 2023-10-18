@@ -55,10 +55,6 @@ class PbikAppConfig @Inject() (configuration: Configuration) extends AppConfig {
 
   override val ssoUrl: Option[String] = configuration.getOptional[String]("portal.ssoUrl")
 
-  lazy val sessionCacheBaseUri: String = configuration.get[Service]("microservice.services.keystore")
-  lazy val sessionCacheDomain: String  =
-    configuration.get[String](s"microservice.services.cachable.session-cache.domain")
-
   lazy val timeout: Int          = configuration.get[Int]("timeout.timeout")
   lazy val timeoutCountdown: Int = configuration.get[Int]("timeout.countdown")
 
