@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
@@ -35,7 +34,6 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SessionService
-import support.TestCYEnabledConfig
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils._
@@ -46,10 +44,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(config)
+  ).configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
-    .overrides(bind[AppConfig].toInstance(TestCYEnabledConfig))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
@@ -117,7 +114,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
     app.injector
       .instanceOf[SessionService]
       .storeRegistrationList(any[RegistrationList])(any[HeaderCarrier])
-  ).thenReturn(Future.successful(None))
+  ).thenReturn(Future.successful(PbikSession(sessionId)))
 
   "ManageRegistrationController" when {
     "loading the currentTaxYearOnPageLoad, an authorised user" should {
@@ -181,6 +178,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                   None,
                   None,
@@ -237,6 +235,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                   None,
                   None,
@@ -262,6 +261,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                   None,
                   None,
@@ -293,6 +293,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(mockRegistrationList),
                   Some(RegistrationItem("31", active = true, enabled = true)),
                   None,
@@ -326,6 +327,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(mockRegistrationList),
                   Some(RegistrationItem("31", active = true, enabled = true)),
                   None,
@@ -380,6 +382,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
                 Future.successful(
                   Some(
                     PbikSession(
+                      sessionId,
                       Some(mockRegistrationList),
                       Some(RegistrationItem("31", active = true, enabled = true)),
                       None,
@@ -414,6 +417,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(mockRegistrationList),
                   Some(RegistrationItem("31", active = true, enabled = true)),
                   None,
@@ -481,6 +485,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                   None,
                   None,
@@ -512,6 +517,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(mockRegistrationList),
                   Some(RegistrationItem("31", active = true, enabled = true)),
                   None,

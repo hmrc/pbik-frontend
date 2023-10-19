@@ -21,13 +21,12 @@ import models.cache.MissingSessionIdException
 import play.api.Logging
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SessionService @Inject() (val http: DefaultHttpClient, val sessionRepository: SessionRepository)(implicit
+class SessionService @Inject() (val sessionRepository: SessionRepository)(implicit
   ec: ExecutionContext
 ) extends Logging {
 
@@ -40,14 +39,14 @@ class SessionService @Inject() (val http: DefaultHttpClient, val sessionReposito
     hc.sessionId match {
       case Some(value) =>
         Right(value.value)
-      case _ =>
+      case _           =>
         logger.warn("[SessionService][getSessionFromHeaderCarrier] No session Id present at header carrier")
         Left(new MissingSessionIdException("Unable to retrieve session ID"))
     }
 
   def fetchPbikSession()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
     getSessionFromHeaderCarrier(hc) match {
-      case Left(_) => Future.successful(None)
+      case Left(_)          => Future.successful(None)
       case Right(sessionId) => sessionRepository.get(sessionId)
     }
 
@@ -74,7 +73,7 @@ class SessionService @Inject() (val http: DefaultHttpClient, val sessionReposito
 
   def resetAll()(implicit hc: HeaderCarrier): Future[Boolean] =
     getSessionFromHeaderCarrier(hc) match {
-      case Left(_) =>
+      case Left(_)   =>
         logger.info("[SessionService][resetAll] No session to reset")
         Future.successful(false)
       case Right(id) => sessionRepository.remove(id)
@@ -94,12 +93,12 @@ class SessionService @Inject() (val http: DefaultHttpClient, val sessionReposito
         case CacheKeys.CYRegisteredBiks  => session.copy(cyRegisteredBiks = Some(value.asInstanceOf[List[Bik]]))
         case CacheKeys.NYRegisteredBiks  => session.copy(nyRegisteredBiks = Some(value.asInstanceOf[List[Bik]]))
         case _                           =>
-            logger.warn(s"[SessionService][storeSession] No matching keys found - returning current session")
-            session
+          logger.warn(s"[SessionService][storeSession] No matching keys found - returning current session")
+          session
       }
 
     val sessionId = getSessionFromHeaderCarrier(hc) match {
-      case Left(e) => throw e
+      case Left(e)          => throw e
       case Right(sessionId) => sessionId
     }
 

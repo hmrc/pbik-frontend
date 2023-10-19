@@ -21,7 +21,7 @@ import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
 import models._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when, _}
+import org.mockito.Mockito._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
@@ -48,7 +48,7 @@ class BikListServiceSpec
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(config)
+  ).configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()

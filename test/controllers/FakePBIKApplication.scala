@@ -16,38 +16,33 @@
 
 package controllers
 
-import java.util.UUID
-
 import akka.stream.Materializer
-import config.{PbikAppConfig, PbikSessionCache}
 import controllers.actions.MinimalAuthAction
-import models.{Bik, EiLPerson, HeaderTags, PbikSession, RegistrationItem, RegistrationList}
+import models.HeaderTags
 import org.scalatest.TestSuite
-import org.mockito.MockitoSugar.mock
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import services.SessionService
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 import utils.TestMinimalAuthAction
 
+import java.util.UUID
 import scala.reflect.ClassTag
 
 trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   this: TestSuite =>
 
-  val config: Map[String, Any] = Map(
-    "application.secret"                          -> "Its secret",
-    "csrf.sign.tokens"                            -> false,
-    "microservice.services.contact-frontend.host" -> "localhost",
-    "microservice.services.contact-frontend.port" -> "9250",
-    "auditing.enabled"                            -> false,
-    "sessionId"                                   -> "a-session-id"
+  val configMap: Map[String, Any] = Map(
+    "application.secret"          -> "Its secret",
+    "csrf.sign.tokens"            -> false,
+    "auditing.enabled"            -> false,
+    "sessionId"                   -> "a-session-id",
+    "pbik.enabled.cy"             -> true,
+    "mongodb.timeToLiveInSeconds" -> 3600
   )
 
   val sessionId = s"session-${UUID.randomUUID}"
@@ -63,7 +58,7 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(config)
+  ).configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .build()
 
@@ -72,8 +67,4 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
   def injected[T](c: Class[T]): T                    = app.injector.instanceOf(c)
   def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T]
 
-  val mockSessionService: SessionService     = mock[SessionService]
-  val mockHttp: DefaultHttpClient            = mock[DefaultHttpClient]
-//  val mockPbikSessionRepository: PbikSessionRepository = mock[PbikSessionCache]
-  val mockAppConfig: PbikAppConfig           = mock[PbikAppConfig]
 }

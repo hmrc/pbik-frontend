@@ -17,14 +17,12 @@
 package utils
 
 import controllers.actions.AuthAction
-
-import javax.inject.Inject
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import play.api.mvc.Results._
 import play.api.mvc.{BodyParsers, Request, Result}
 import uk.gov.hmrc.auth.core.retrieve.Name
 
-import java.util.UUID
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TestAuthAction @Inject() (val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
@@ -35,8 +33,7 @@ class TestAuthAction @Inject() (val parser: BodyParsers.Default)(implicit val ex
         AuthenticatedRequest(
           EmpRef("taxOfficeNumber", "taxOfficeReference"),
           UserName(Name(None, None)),
-          request,
-          request.session.get("sessionId").getOrElse(UUID.randomUUID)
+          request
         )
       block(authenticatedRequest)
     } else {

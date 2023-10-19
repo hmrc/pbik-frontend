@@ -20,7 +20,6 @@ import controllers.FakePBIKApplication
 import models.{Bik, EmpRef, HeaderTags, PbikError}
 import org.apache.http.HttpStatus
 import org.mockito.ArgumentMatchers
-import uk.gov.hmrc.http.HttpClient
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock
@@ -31,10 +30,9 @@ import play.api.mvc.{Request, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import support.TestAuthUser
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.{HttpClient, _}
 import utils.Exceptions.GenericServerErrorException
 
-import scala.Seq
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 

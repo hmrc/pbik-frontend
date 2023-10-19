@@ -17,31 +17,17 @@
 package utils
 
 import models._
-import org.joda.time.DateTimeConstants._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Request
-import utils.FormMappingsConstants._
 
+import java.time.LocalDate
 import java.util.Calendar
 import javax.inject.{Inject, Singleton}
 import scala.util.Try
 
 object FormMappingsConstants {
-
-  val START_OF_MONTH = 1
-  val MONTH_28_DAYS  = 28
-  val MONTH_29_DAYS  = 29
-  val MONTH_30_DAYS  = 30
-  val MONTH_31_DAYS  = 31
-  val LEAP_YEAR_FREQ = 4
-
-  // Note - scala range syntax needs extra one added
-  val RANGE_28_DAYS = Range(START_OF_MONTH, MONTH_28_DAYS + 1)
-  val RANGE_29_DAYS = Range(START_OF_MONTH, MONTH_29_DAYS + 1)
-  val RANGE_30_DAYS = Range(START_OF_MONTH, MONTH_30_DAYS + 1)
-  val RANGE_31_DAYS = Range(START_OF_MONTH, MONTH_31_DAYS + 1)
 
   val CY   = "cy"
   val CYP1 = "cyp1"
@@ -85,33 +71,20 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
       val monthToInt: Int = dob._2.toInt
       val dayToInt: Int   = dob._1.toInt
       val yearToInt: Int  = dob._3.toInt
-      monthToInt match {
-        case month if JANUARY to DECEMBER contains month =>
-          monthToInt match {
-            case JANUARY | MARCH | MAY | JULY | AUGUST | OCTOBER | DECEMBER => RANGE_31_DAYS.contains(dayToInt)
-            case APRIL | JUNE | SEPTEMBER | NOVEMBER                        => RANGE_30_DAYS.contains(dayToInt)
-            case FEBRUARY                                                   =>
-              if (yearToInt % LEAP_YEAR_FREQ == 0) {
-                RANGE_29_DAYS.contains(dayToInt)
-              } else {
-                RANGE_28_DAYS.contains(dayToInt)
-              }
-            case _                                                          => throw new NumberFormatException()
-          }
-        case _                                           => false
-      }
+      LocalDate.of(yearToInt, monthToInt, dayToInt)
+      true
     } catch {
-      case _: NumberFormatException => false
+      case _: Exception => false
     }
 
-  def isDateYearInFuture(dob: (String, String, String)): Boolean = {
+  private def isDateYearInFuture(dob: (String, String, String)): Boolean = {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val dobYear     = Try(dob._3.toInt).getOrElse(0)
 
     dobYear < currentYear
   }
 
-  def isDateYearInPastValid(dob: (String, String, String)): Boolean = {
+  private def isDateYearInPastValid(dob: (String, String, String)): Boolean = {
     val currentYear = Calendar.getInstance().get(Calendar.YEAR)
     val dobYear     = Try(dob._3.toInt).getOrElse(0)
 
@@ -162,7 +135,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
         .verifying(Messages("error.empty.nino"), nino => nino.trim.nonEmpty)
         .verifying(
           Messages("error.incorrect.nino"),
-          nino => (nino.trim.isEmpty || nino.replaceAll(" ", "").matches(ninoValidationRegex))
+          nino => nino.trim.isEmpty || nino.replaceAll(" ", "").matches(ninoValidationRegex)
         ),
       "status"     -> optional(number),
       "perOptLock" -> default(number, 0)
@@ -183,7 +156,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     )
   )
 
-  def stripTrailingNinoCharacterForNPS(nino: String): String =
+  private def stripTrailingNinoCharacterForNPS(nino: String): String =
     ninoTrimmedRegex.r.findFirstIn(nino).getOrElse("").mkString
 
   def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[EiLPerson] =
@@ -203,9 +176,9 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
           .verifying(emptyDateError, dob => !(dob._1.isEmpty && dob._2.isEmpty && dob._3.isEmpty))
           .verifying(invalidYearFutureDateError, dob => isDateYearInFuture(dob))
           .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
-          .verifying(invalidDayDateError, dob => !(addZeroIfNeeded(dob._1).matches(dateDayRegex)))
-          .verifying(invalidMonthDateError, dob => !(addZeroIfNeeded(dob._2).matches(dateMonthRegex)))
-          .verifying(invalidYearDateError, dob => (dob._3.matches(dateYearRegex)))
+          .verifying(invalidDayDateError, dob => !addZeroIfNeeded(dob._1).matches(dateDayRegex))
+          .verifying(invalidMonthDateError, dob => !addZeroIfNeeded(dob._2).matches(dateMonthRegex))
+          .verifying(invalidYearDateError, dob => dob._3.matches(dateYearRegex))
           .verifying(invalidDateError, dob => isValidDate(dob)),
         "gender"     -> text.verifying("Error message goes here", gender => gender.nonEmpty),
         "status"     -> optional(number),
@@ -274,7 +247,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
           "perOptLock"         -> default(number, 0)
         )(EiLPerson.apply)(EiLPerson.unapply)
       )
-    )((individualSelection, individuals) => ((individualSelection, EiLPersonList(individuals))))(
+    )((individualSelection, individuals) => (individualSelection, EiLPersonList(individuals)))(
       (individualsTuple: (String, EiLPersonList)) => Some((individualsTuple._1, individualsTuple._2.active))
     )
   )

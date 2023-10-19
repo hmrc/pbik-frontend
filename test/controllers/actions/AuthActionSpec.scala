@@ -18,6 +18,7 @@ package controllers.actions
 
 import config.AppConfig
 import controllers.actions.AuthActionSpec.AuthRetrievals
+import controllers.actions.AuthConnector
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -26,9 +27,8 @@ import play.api.Configuration
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
-import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
-import controllers.actions.AuthConnector
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
 import uk.gov.hmrc.http.HttpClient
 
 import scala.concurrent.ExecutionContext.Implicits.global

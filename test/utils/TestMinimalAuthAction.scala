@@ -17,9 +17,9 @@
 package utils
 
 import controllers.actions.MinimalAuthAction
-import javax.inject.Inject
 import play.api.mvc.{BodyParsers, Request, Result}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TestMinimalAuthAction @Inject() (val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)

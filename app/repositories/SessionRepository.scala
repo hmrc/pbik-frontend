@@ -16,49 +16,14 @@
 
 package repositories
 
-import com.mongodb.client.model.ReturnDocument
-import com.mongodb.client.model.Indexes.ascending
+import com.google.inject.ImplementedBy
 import models.PbikSession
-import org.bson.conversions.Bson
-import org.mongodb.scala.model.Filters._
-import org.mongodb.scala.model.{FindOneAndReplaceOptions, IndexModel, IndexOptions}
-import play.api.Configuration
-import uk.gov.hmrc.mongo.MongoComponent
-import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
-import java.util.concurrent.TimeUnit
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-@Singleton
-class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)(implicit ec: ExecutionContext)
-    extends PlayMongoRepository[PbikSession](
-      collectionName = config.get[String]("appName"),
-      mongoComponent = mongo,
-      domainFormat   = PbikSession.pbikSessionFormats,
-      indexes = Seq(
-        IndexModel(
-          ascending("lastUpdated"),
-          IndexOptions()
-            .name("userAnswersExpiry")
-            .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
-        )
-      )
-    ) {
-
-  def upsert(session: PbikSession): Future[PbikSession] =
-    collection
-      .findOneAndReplace(byId(session.sessionId), session, FindOneAndReplaceOptions().upsert(true).returnDocument(ReturnDocument.AFTER))
-      .toFuture()
-
-  def get(id: String): Future[Option[PbikSession]] =
-    collection
-      .find(byId(id))
-      .headOption()
-
-  def remove(id: String): Future[Boolean] =
-    collection.deleteOne(byId(id)).toFuture().map(_.wasAcknowledged())
-
-  private def byId(value: String): Bson =
-    equal("id", value)
+@ImplementedBy(classOf[DefaultSessionRepository])
+trait SessionRepository {
+  def upsert(session: PbikSession): Future[PbikSession]
+  def get(id: String): Future[Option[PbikSession]]
+  def remove(id: String): Future[Boolean]
 }

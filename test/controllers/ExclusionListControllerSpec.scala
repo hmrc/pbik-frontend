@@ -19,7 +19,6 @@ package controllers
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
-import java.time.LocalDate
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
@@ -40,13 +39,15 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils._
 
+import java.time.LocalDate
+import java.util.UUID
 import scala.concurrent.Future
 
 class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(config)
+  ).configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[EiLListService].to(classOf[StubEiLListService]))
@@ -87,6 +88,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
   private val formData: Form[EiLPersonList]                                          =
     controllersReferenceData.individualsForm.fill(EiLPersonList(listOfPeople))
   private val pbikSession: PbikSession                                               = PbikSession(
+    sessionId = UUID.randomUUID().toString,
     registrations = None,
     bikRemoved = None,
     listOfMatches = Some(List(EiLPerson("AA111111A", "John", None, "Smith", Some("123"), None, None, None))),
@@ -144,7 +146,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
   }))
 
   when(mockExclusionListController.cachingService.storeEiLPerson(any())(any[HeaderCarrier])).thenReturn(
-    Future.successful(None)
+    Future.successful(PbikSession(pbikSession.sessionId))
   )
 
   "ExclusionListController" when {
@@ -332,7 +334,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     "loading the searchResults page" must {
       "display the expected search results page for an authorised user's NINO search" in {
         when(mockExclusionListController.cachingService.storeListOfMatches(any())(any[HeaderCarrier]))
-          .thenReturn(Future.successful(None))
+          .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
         when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
@@ -449,7 +451,9 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
       "show an error page if no results are present in the cache" in {
         when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
-          .thenReturn(Future.successful(Some(pbikSession.copy(None, None, None, None, None, None, None))))
+          .thenReturn(
+            Future.successful(Some(pbikSession.copy(pbikSession.sessionId, None, None, None, None, None, None, None)))
+          )
         val result = mockExclusionListController.showResults(cyp1, iabdType, "nino")(mockRequest)
 
         status(result) mustBe NOT_FOUND

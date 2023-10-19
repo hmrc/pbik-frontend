@@ -48,7 +48,7 @@ class ExclusionListController @Inject() (
   val eiLListService: EiLListService,
   val bikListService: BikListService,
   val cachingService: SessionService,
-  val tierConnector: HmrcTierConnector, //TODO: Why do we need this?
+  val tierConnector: HmrcTierConnector,
   taxDateUtils: TaxDateUtils,
   splunkLogger: SplunkLogger,
   controllersReferenceData: ControllersReferenceData,
@@ -301,7 +301,7 @@ class ExclusionListController @Inject() (
                                                             validModel
                                                           )
                 resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
-                _                                  <- cachingService.storeListOfMatches(result.json.validate[List[EiLPerson]].asOpt.get)
+                _                                      <- cachingService.storeListOfMatches(result.json.validate[List[EiLPerson]].asOpt.get)
               } yield Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdType, formType))
           )
         controllersReferenceData.responseErrorHandler(futureResult)

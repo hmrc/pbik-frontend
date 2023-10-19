@@ -69,7 +69,7 @@ class HomePageController @Inject() (
     Redirect(pbikAppConfig.signOut)
   }
 
-  def setLanguage: Action[AnyContent] = Action { implicit request =>
+  def setLanguage(): Action[AnyContent] = Action { implicit request =>
     val lang    = request.getQueryString("lang").getOrElse("en")
     logger.info(s"[HomePageController][setLanguage] Request received: set language to $lang")
     val newLang = Lang(lang)
@@ -85,7 +85,7 @@ class HomePageController @Inject() (
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val taxYearRange: TaxYearRange     = taxDateUtils.getTaxYearRange()
     val pageLoadFuture: Future[Result] = for {
-      _ <- cachingService.resetAll()
+      _                                                 <- cachingService.resetAll()
       // Get the available count of biks available for each tax year
       biksListOptionCY: List[Bik]                       <-
         bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef("", ""))(
