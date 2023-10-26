@@ -39,7 +39,7 @@ class HomePageController @Inject() (
   override val messagesApi: MessagesApi,
   cc: MessagesControllerComponents,
   bikListService: BikListService,
-  cachingService: SessionService,
+  sessionService: SessionService,
   authenticate: AuthAction,
   val noSessionCheck: NoSessionCheckAction,
   unauthorisedAction: UnauthorisedAction,
@@ -69,7 +69,7 @@ class HomePageController @Inject() (
     Redirect(pbikAppConfig.signOut)
   }
 
-  def setLanguage: Action[AnyContent] = Action { implicit request =>
+  def setLanguage(): Action[AnyContent] = Action { implicit request =>
     val lang    = request.getQueryString("lang").getOrElse("en")
     logger.info(s"[HomePageController][setLanguage] Request received: set language to $lang")
     val newLang = Lang(lang)
@@ -83,9 +83,9 @@ class HomePageController @Inject() (
   }
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    cachingService.resetAll()
     val taxYearRange: TaxYearRange     = taxDateUtils.getTaxYearRange()
     val pageLoadFuture: Future[Result] = for {
+      _                                                 <- sessionService.resetAll()
       // Get the available count of biks available for each tax year
       biksListOptionCY: List[Bik]                       <-
         bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef("", ""))(
@@ -98,8 +98,8 @@ class HomePageController @Inject() (
       currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
       nextYearList: (Map[String, String], List[Bik])    <- bikListService.nextYearList
     } yield {
-      cachingService.cacheCYRegisteredBiks(currentYearList._2)
-      cachingService.cacheNYRegisteredBiks(nextYearList._2)
+      sessionService.storeCYRegisteredBiks(currentYearList._2)
+      sessionService.storeNYRegisteredBiks(nextYearList._2)
       val fromYTA = if (request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).isDefined) {
         request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).get
       } else {

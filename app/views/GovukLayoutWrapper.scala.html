@@ -93,8 +93,8 @@
     </header>
     @hmrcLanguageSelect(LanguageSelect(
         if (messages.lang.code == "cy") Cy else En,
-        (En, s"${controllers.routes.HomePageController.setLanguage}?lang=en"),
-        (Cy, s"${controllers.routes.HomePageController.setLanguage}?lang=cy")
+        (En, s"${controllers.routes.HomePageController.setLanguage()}?lang=en"),
+        (Cy, s"${controllers.routes.HomePageController.setLanguage()}?lang=cy")
     ))
     @if(showBackLink) {
         @govukBackLink(BackLink(

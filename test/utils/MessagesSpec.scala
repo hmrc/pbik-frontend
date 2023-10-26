@@ -17,10 +17,10 @@
 package utils
 
 import org.scalatestplus.play.PlaySpec
-import play.api.{Application, Logging}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.baseApplicationBuilder.injector
+import play.api.{Application, Logging}
 
 import scala.util.matching.Regex
 
@@ -116,7 +116,7 @@ class MessagesSpec extends PlaySpec with Logging {
 
   private def isInteger(s: String): Boolean = s forall Character.isDigit
 
-  private def toArgArray(msg: String) = msg.split("\\{|\\}").map(_.trim()).filter(isInteger)
+  private def toArgArray(msg: String) = msg.split("[{}]").map(_.trim()).filter(isInteger)
 
   private def countArgs(msg: String) = toArgArray(msg).length
 

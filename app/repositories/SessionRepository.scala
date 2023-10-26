@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package config
+package repositories
 
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.cache.client.SessionCache
-import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
+import com.google.inject.ImplementedBy
+import models.PbikSession
 
-@Singleton
-class PbikSessionCache @Inject() (val http: DefaultHttpClient, appConfig: PbikAppConfig) extends SessionCache {
+import scala.concurrent.Future
 
-  lazy val defaultSource   = "pbik-frontend"
-  lazy val baseUri: String = appConfig.sessionCacheBaseUri
-  lazy val domain: String  = appConfig.sessionCacheDomain
+@ImplementedBy(classOf[DefaultSessionRepository])
+trait SessionRepository {
+  def upsert(session: PbikSession): Future[PbikSession]
+  def get(id: String): Future[Option[PbikSession]]
+  def remove(id: String): Future[Boolean]
 }

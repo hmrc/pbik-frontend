@@ -18,10 +18,10 @@ package utils
 
 import controllers.FakePBIKApplication
 import models.{EiLPerson, EiLPersonList, ExclusionNino, MandatoryRadioButton}
-import org.joda.time.DateTimeConstants._
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
-import utils.FormMappingsConstants._
+
+import java.time.Month._
 
 class FormMappingsSpec extends PlaySpec with FakePBIKApplication with Matchers {
 
@@ -51,7 +51,10 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication with Matchers {
 
     "a valid date" should {
       "be valid in all cases when the days in the year are greater than 0 and less than 29" in {
-        RANGE_28_DAYS
+        val firstDayOfMonth   = 1
+        val lastDayOfMonthFeb = 28
+        Range
+          .inclusive(firstDayOfMonth, lastDayOfMonthFeb)
           .map { i =>
             formMappings.addZeroIfNeeded(i.toString)
           }
@@ -75,16 +78,16 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication with Matchers {
 
     "a day of 31" should {
       "not be valid in February, April, June, September, November" in {
-        assert(!formMappings.isValidDate(("31", NOVEMBER.toString, "2014")))
-        assert(!formMappings.isValidDate(("31", APRIL.toString, "2014")))
-        assert(!formMappings.isValidDate(("31", SEPTEMBER.toString, "2014")))
-        assert(!formMappings.isValidDate(("31", JUNE.toString, "2014")))
+        assert(!formMappings.isValidDate(("31", NOVEMBER.getValue.toString, "2014")))
+        assert(!formMappings.isValidDate(("31", APRIL.getValue.toString, "2014")))
+        assert(!formMappings.isValidDate(("31", SEPTEMBER.getValue.toString, "2014")))
+        assert(!formMappings.isValidDate(("31", JUNE.getValue.toString, "2014")))
       }
     }
 
     "a day greater than 31" should {
       "not be valid in any month" in {
-        (JANUARY to DECEMBER)
+        (JANUARY.getValue to DECEMBER.getValue)
           .map { i =>
             formMappings.addZeroIfNeeded(i.toString)
           }
@@ -96,13 +99,13 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication with Matchers {
 
     "a day equal to 31" should {
       "be valid in January, May, July, August, October, December" in {
-        assert(formMappings.isValidDate(("31", JANUARY.toString, "2014")))
-        assert(formMappings.isValidDate(("31", MARCH.toString, "2014")))
-        assert(formMappings.isValidDate(("31", MAY.toString, "2014")))
-        assert(formMappings.isValidDate(("31", JULY.toString, "2014")))
-        assert(formMappings.isValidDate(("31", AUGUST.toString, "2014")))
-        assert(formMappings.isValidDate(("31", OCTOBER.toString, "2014")))
-        assert(formMappings.isValidDate(("31", DECEMBER.toString, "2014")))
+        assert(formMappings.isValidDate(("31", JANUARY.getValue.toString, "2014")))
+        assert(formMappings.isValidDate(("31", MARCH.getValue.toString, "2014")))
+        assert(formMappings.isValidDate(("31", MAY.getValue.toString, "2014")))
+        assert(formMappings.isValidDate(("31", JULY.getValue.toString, "2014")))
+        assert(formMappings.isValidDate(("31", AUGUST.getValue.toString, "2014")))
+        assert(formMappings.isValidDate(("31", OCTOBER.getValue.toString, "2014")))
+        assert(formMappings.isValidDate(("31", DECEMBER.getValue.toString, "2014")))
       }
     }
 
@@ -126,7 +129,7 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication with Matchers {
 
     "a month value greater than 12" should {
       "not be valid in a year" in {
-        (DECEMBER + 1 to DECEMBER + 20)
+        (DECEMBER.getValue + 1 to DECEMBER.getValue + 20)
           .map { i =>
             formMappings.addZeroIfNeeded(i.toString)
           }

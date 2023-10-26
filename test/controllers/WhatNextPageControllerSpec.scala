@@ -48,7 +48,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(config)
+  ).configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[BikListService].toInstance(mock(classOf[StubBikListService])))
@@ -146,11 +146,12 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
 
   "WhatNextPageController" when {
     "showWhatNextRegisteredBik" should {
-      when(whatNextPageController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+      when(whatNextPageController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
         .thenReturn(
           Future.successful(
             Some(
               PbikSession(
+                sessionId,
                 Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                 None,
                 None,
@@ -176,11 +177,12 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
       Seq("cy1", "cy").foreach(test)
 
       "state the status is ok and display correct page for Multiple benefits (Register a BIK)" in {
-        when(whatNextPageController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(whatNextPageController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(
                     RegistrationList(active =
                       List(
@@ -210,11 +212,12 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "showWhatNextRemovedBik" should {
       "state the status is ok and display correct page (Remove a BIK)" in {
-        when(whatNextPageController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(whatNextPageController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   None,
                   Some(RegistrationItem("30", active = true, enabled = true)),
                   None,

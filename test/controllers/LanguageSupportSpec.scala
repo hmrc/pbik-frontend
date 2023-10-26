@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.{AppConfig, PbikAppConfig}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito._
@@ -35,7 +34,6 @@ import utils.{TestAuthAction, TestNoSessionCheckAction}
 class LanguageSupportSpec extends PlaySpec with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
-    .overrides(bind[AppConfig].to(classOf[PbikAppConfig]))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .overrides(bind[BikListService].to(classOf[StubbedBikListService]))
     .overrides(bind[RegistrationService].to(classOf[StubbedRegistrationService]))
@@ -49,7 +47,7 @@ class LanguageSupportSpec extends PlaySpec with FakePBIKApplication {
     "set the request language and reload page based on referer header" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
         .withHeaders("Referer" -> "/payrollbik/payrolled-benefits-expenses")
-      val result                                                = homePageController.setLanguage(request)
+      val result                                                = homePageController.setLanguage()(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some("/payrollbik/payrolled-benefits-expenses")

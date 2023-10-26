@@ -17,11 +17,11 @@
 package views
 
 import models.EmpRef
+import org.jsoup.Jsoup
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
-import org.jsoup.Jsoup
 import views.html.exclusion.ExclusionOverview
 
 class ExclusionOverviewViewSpec extends PBIKViewSpec {

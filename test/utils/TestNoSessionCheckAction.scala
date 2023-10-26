@@ -17,10 +17,10 @@
 package utils
 
 import controllers.actions.NoSessionCheckAction
-import javax.inject.Inject
 import models.AuthenticatedRequest
 import play.api.mvc.{BodyParsers, Result}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TestNoSessionCheckAction @Inject() (val parser: BodyParsers.Default)(implicit

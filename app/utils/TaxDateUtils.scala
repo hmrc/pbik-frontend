@@ -17,12 +17,11 @@
 package utils
 
 import models.TaxYearRange
-import org.joda.time.DateTime
 import play.api.Configuration
 import uk.gov.hmrc.time.TaxYear
 
 import java.text.SimpleDateFormat
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 import java.util.Date
 import javax.inject.{Inject, Singleton}
 import scala.jdk.CollectionConverters._
@@ -49,8 +48,14 @@ class TaxDateUtils @Inject() (configuration: Configuration) {
         .of(overriddenDateFromConfig.head, overriddenDateFromConfig(1), overriddenDateFromConfig(2))
     } else { LocalDate.now() }
 
-  def getDefaultYear: Int =
-    if (overriddenDateFromConfig.nonEmpty) new DateTime().getYear + 1 else new DateTime().getYear
+  def getDefaultYear: Int = {
+    val year = LocalDateTime.now().getYear
+    if (overriddenDateFromConfig.nonEmpty) {
+      year + 1
+    } else {
+      year
+    }
+  }
 
   def getTaxYearRange(year: Int = getCurrentTaxYear(getDefaultDate)): TaxYearRange = generateTaxYearRange(year)
 

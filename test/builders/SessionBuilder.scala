@@ -16,10 +16,11 @@
 
 package builders
 
-import java.util.UUID
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsJson}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.http.SessionKeys
+
+import java.util.UUID
 
 object SessionBuilder {
 

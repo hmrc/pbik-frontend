@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.{AppConfig, PbikAppConfig}
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito._
@@ -36,7 +35,6 @@ import utils._
 class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18nSupport {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
-    .overrides(bind[AppConfig].to(classOf[PbikAppConfig]))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .overrides(bind[BikListService].to(classOf[StubbedBikListService]))
     .overrides(bind[SplunkLogger].to(classOf[TestSplunkLogger]))
@@ -54,7 +52,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
         implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(
           "referer" -> s"$url"
         )
-        val result                                                = homePageController.isFromYTA
+        val result                                                = homePageController.isFromYTA(request)
 
         result mustBe value
       }
@@ -101,7 +99,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
 
     "set the request language and redirect with no referer header" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
-      val result                                                = homePageController.setLanguage(request)
+      val result                                                = homePageController.setLanguage()(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some("https://www.tax.service.gov.uk/payrollbik/payrolled-benefits-expenses")

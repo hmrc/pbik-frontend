@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.AppConfig
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
@@ -35,7 +34,6 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SessionService
-import support.TestCYEnabledConfig
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils._
@@ -46,10 +44,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(config)
+  ).configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
-    .overrides(bind[AppConfig].toInstance(TestCYEnabledConfig))
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
@@ -116,8 +113,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
   when(
     app.injector
       .instanceOf[SessionService]
-      .cacheRegistrationList(any[RegistrationList])(any[HeaderCarrier])
-  ).thenReturn(Future.successful(None))
+      .storeRegistrationList(any[RegistrationList])(any[HeaderCarrier])
+  ).thenReturn(Future.successful(PbikSession(sessionId)))
 
   "ManageRegistrationController" when {
     "loading the currentTaxYearOnPageLoad, an authorised user" should {
@@ -176,11 +173,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
     "loading showCheckYourAnswersAddCurrentTaxYear, an authorised user" should {
       "be shown the check your answers screen if correct data is present in the cache" in {
-        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                   None,
                   None,
@@ -232,11 +230,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
     "loading showCheckYourAnswersNextCurrentTaxYear, an authorised user" should {
       "be shown the check your answers screen if correct data is present in the cache" in {
-        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                   None,
                   None,
@@ -257,11 +256,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
     "loading checkYourAnswersRemoveNextTaxYear, an authorised user" should {
       "be directed cy + 1 confirmation page to remove bik" in {
-        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                   None,
                   None,
@@ -288,11 +288,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           List(RegistrationItem("31", active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("software", None))
         )
-        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(mockRegistrationList),
                   Some(RegistrationItem("31", active = true, enabled = true)),
                   None,
@@ -321,11 +322,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           List(RegistrationItem("31", active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("software", None))
         )
-        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(mockRegistrationList),
                   Some(RegistrationItem("31", active = true, enabled = true)),
                   None,
@@ -375,11 +377,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
               List(RegistrationItem("31", active = true, enabled = true)),
               Some(BinaryRadioButtonWithDesc(selectionValue, None))
             )
-            when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+            when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
               .thenReturn(
                 Future.successful(
                   Some(
                     PbikSession(
+                      sessionId,
                       Some(mockRegistrationList),
                       Some(RegistrationItem("31", active = true, enabled = true)),
                       None,
@@ -409,11 +412,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           List(RegistrationItem("31", active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("other", Some("Here's our other info")))
         )
-        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(mockRegistrationList),
                   Some(RegistrationItem("31", active = true, enabled = true)),
                   None,
@@ -476,11 +480,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
     "loading why-remove-benefit-expense, an authorised user" should {
       "be directed cy + 1 confirmation page to remove bik for other reason" in {
-        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
                   None,
                   None,
@@ -507,11 +512,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           List(RegistrationItem("31", active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("other", Some(otherReason)))
         )
-        when(registrationController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
                 PbikSession(
+                  sessionId,
                   Some(mockRegistrationList),
                   Some(RegistrationItem("31", active = true, enabled = true)),
                   None,

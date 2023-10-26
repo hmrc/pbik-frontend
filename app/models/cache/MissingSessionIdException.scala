@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 
-package utils
+package models.cache
 
-import controllers.actions.MinimalAuthAction
-import play.api.mvc.{BodyParsers, Request, Result}
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
-
-class TestMinimalAuthAction @Inject() (val parser: BodyParsers.Default)(implicit val executionContext: ExecutionContext)
-    extends MinimalAuthAction {
-  override def invokeBlock[A](request: Request[A], block: Request[A] => Future[Result]): Future[Result] =
-    block(request)
-
-}
+class MissingSessionIdException(detailMessage: String) extends RuntimeException(detailMessage)

@@ -16,8 +16,9 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
 import play.api.Configuration
+
+import javax.inject.{Inject, Singleton}
 
 trait AppConfig {
   val cyEnabled: Boolean
@@ -35,6 +36,7 @@ trait AppConfig {
   val authSignIn: String
   val authSignOut: String
   val timedOutUrl: String
+  val mongoTTL: Int
 }
 
 @Singleton
@@ -49,22 +51,21 @@ class PbikAppConfig @Inject() (configuration: Configuration) extends AppConfig {
   override lazy val biksDecommissioned: Seq[Int] = configuration.get[Seq[Int]]("pbik.decommissioned.biks")
   override lazy val urBannerLink: String         = configuration.get[String]("urBanner.link")
   override lazy val feedbackUrl: String          = configuration.get[String]("feedback.url")
-  override lazy val signOut                      = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
+  override lazy val signOut: String              = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
   private lazy val timedOutRedirectUrl: String   = configuration.get[String]("timedOutUrl")
-  lazy val timedOutUrl                           = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$timedOutRedirectUrl"
+  override lazy val timedOutUrl: String          =
+    s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$timedOutRedirectUrl"
 
   override val ssoUrl: Option[String] = configuration.getOptional[String]("portal.ssoUrl")
 
-  lazy val sessionCacheBaseUri: String = configuration.get[Service]("microservice.services.keystore")
-  lazy val sessionCacheDomain: String  =
-    configuration.get[String](s"microservice.services.cachable.session-cache.domain")
+  override lazy val timeout: Int          = configuration.get[Int]("timeout.timeout")
+  override lazy val timeoutCountdown: Int = configuration.get[Int]("timeout.countdown")
 
-  lazy val timeout: Int          = configuration.get[Int]("timeout.timeout")
-  lazy val timeoutCountdown: Int = configuration.get[Int]("timeout.countdown")
+  override lazy val loginCallbackUrl: String = configuration.get[String]("microservice.auth.login-callback.url")
+  private lazy val loginPath: String         = configuration.get[String]("microservice.auth.login_path")
+  private lazy val signOutPath: String       = configuration.get[String]("microservice.auth.signout_path")
+  override lazy val authSignIn: String       = s"$basGatewayHost/bas-gateway/$loginPath"
+  override lazy val authSignOut: String      = s"$basGatewayHost/bas-gateway/$signOutPath"
 
-  lazy val loginCallbackUrl: String    = configuration.get[String]("microservice.auth.login-callback.url")
-  private lazy val loginPath: String   = configuration.get[String]("microservice.auth.login_path")
-  private lazy val signOutPath: String = configuration.get[String]("microservice.auth.signout_path")
-  lazy val authSignIn                  = s"$basGatewayHost/bas-gateway/$loginPath"
-  lazy val authSignOut                 = s"$basGatewayHost/bas-gateway/$signOutPath"
+  override lazy val mongoTTL: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 }

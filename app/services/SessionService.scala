@@ -16,17 +16,17 @@
 
 package services
 
-import config.PbikSessionCache
 import models._
+import models.cache.MissingSessionIdException
 import play.api.Logging
+import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SessionService @Inject() (val http: DefaultHttpClient, val sessionCache: PbikSessionCache)(implicit
+class SessionService @Inject() (val sessionRepository: SessionRepository)(implicit
   ec: ExecutionContext
 ) extends Logging {
 
@@ -35,110 +35,78 @@ class SessionService @Inject() (val http: DefaultHttpClient, val sessionCache: P
       Value
   }
 
-  val PBIK_SESSION_KEY: String                        = "pbik_session"
-  val cleanRegistrationList: Option[RegistrationList] = Some(RegistrationList(None, List.empty[RegistrationItem], None))
-  val cleanBikRemoved: Option[RegistrationItem]       = Some(RegistrationItem("", false, false))
-  val cleanEiLPersonList: Option[List[EiLPerson]]     = Some(List.empty[EiLPerson])
-  val cleanEiLPerson: Option[EiLPerson]               = Some(EiLPerson("", "", None, "", None, None, None, None))
-  val cleanBikList: Option[List[Bik]]                 = Some(List.empty[Bik])
-  val cleanSession: PbikSession                       =
-    PbikSession(
-      cleanRegistrationList,
-      cleanBikRemoved,
-      cleanEiLPersonList,
-      cleanEiLPerson,
-      cleanEiLPersonList,
-      cleanBikList,
-      cleanBikList
-    )
+  private def getSessionFromHeaderCarrier(hc: HeaderCarrier): Either[Exception, String] =
+    hc.sessionId match {
+      case Some(sessionId) =>
+        Right(sessionId.value)
+      case _               =>
+        logger.warn("[SessionService][getSessionFromHeaderCarrier] No session Id present at header carrier")
+        Left(new MissingSessionIdException("Unable to retrieve session ID"))
+    }
 
   def fetchPbikSession()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    sessionCache
-      .fetchAndGetEntry[PbikSession](PBIK_SESSION_KEY)
-      .map {
-        case Some(session) => Some(session)
-        case None          => Some(cleanSession)
-      }
-      .recover { case ex: Exception =>
-        logger.warn(s"[SessionService][fetchPbikSession] Fetch failed due to: $ex")
-        Some(cleanSession)
-      }
+    getSessionFromHeaderCarrier(hc) match {
+      case Left(_)          => Future.successful(None)
+      case Right(sessionId) => sessionRepository.get(sessionId)
+    }
 
-  def cacheRegistrationList(value: RegistrationList)(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.RegistrationList, Some(value))
+  def storeRegistrationList(value: RegistrationList)(implicit hc: HeaderCarrier): Future[PbikSession] =
+    storeSession(CacheKeys.RegistrationList, value)
 
-  def cacheBikRemoved(value: RegistrationItem)(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.BikRemoved, Some(value))
+  def storeBikRemoved(value: RegistrationItem)(implicit hc: HeaderCarrier): Future[PbikSession] =
+    storeSession(CacheKeys.BikRemoved, value)
 
-  def cacheListOfMatches(value: List[EiLPerson])(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.ListOfMatches, Some(value))
+  def storeListOfMatches(value: List[EiLPerson])(implicit hc: HeaderCarrier): Future[PbikSession] =
+    storeSession(CacheKeys.ListOfMatches, value)
 
-  def cacheEiLPerson(value: EiLPerson)(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.EiLPerson, Some(value))
+  def storeEiLPerson(value: EiLPerson)(implicit hc: HeaderCarrier): Future[PbikSession] =
+    storeSession(CacheKeys.EiLPerson, value)
 
-  def cacheCurrentExclusions(value: List[EiLPerson])(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.CurrentExclusions, Some(value))
+  def storeCurrentExclusions(value: List[EiLPerson])(implicit hc: HeaderCarrier): Future[PbikSession] =
+    storeSession(CacheKeys.CurrentExclusions, value)
 
-  def cacheCYRegisteredBiks(value: List[Bik])(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.CYRegisteredBiks, Some(value))
+  def storeCYRegisteredBiks(value: List[Bik])(implicit hc: HeaderCarrier): Future[PbikSession] =
+    storeSession(CacheKeys.CYRegisteredBiks, value)
 
-  def cacheNYRegisteredBiks(value: List[Bik])(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.NYRegisteredBiks, Some(value))
+  def storeNYRegisteredBiks(value: List[Bik])(implicit hc: HeaderCarrier): Future[PbikSession] =
+    storeSession(CacheKeys.NYRegisteredBiks, value)
 
-  def resetRegistrationList()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.RegistrationList, cleanRegistrationList)
+  def resetAll()(implicit hc: HeaderCarrier): Future[Boolean] =
+    getSessionFromHeaderCarrier(hc) match {
+      case Left(_)   =>
+        logger.info("[SessionService][resetAll] No session to reset")
+        Future.successful(false)
+      case Right(id) => sessionRepository.remove(id)
+    }
 
-  def resetBikRemoved()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.BikRemoved, cleanBikRemoved)
-
-  def resetListOfMatches()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.ListOfMatches, cleanEiLPersonList)
-
-  def resetEiLPerson()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.EiLPerson, cleanEiLPerson)
-
-  def resetCurrentExclusions()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.CurrentExclusions, cleanEiLPersonList)
-
-  def resetCYRegisteredBiks()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.CYRegisteredBiks, cleanBikList)
-
-  def resetNYRegisteredBiks()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] =
-    cache(CacheKeys.NYRegisteredBiks, cleanBikList)
-
-  def resetAll()(implicit hc: HeaderCarrier): Future[Option[PbikSession]] = {
-    resetBikRemoved()
-    resetEiLPerson()
-    resetRegistrationList()
-    resetListOfMatches()
-    resetCurrentExclusions()
-    resetCYRegisteredBiks()
-    resetNYRegisteredBiks()
-  }
-
-  private def cache[T](key: CacheKeys.Value, value: Option[T])(implicit
+  private def storeSession[T](key: CacheKeys.Value, value: T)(implicit
     hc: HeaderCarrier
-  ): Future[Option[PbikSession]] = {
+  ): Future[PbikSession] = {
     def selectKeysToCache(session: PbikSession): PbikSession =
       key match {
-        case CacheKeys.RegistrationList  => session.copy(registrations = Some(value.get.asInstanceOf[RegistrationList]))
-        case CacheKeys.BikRemoved        => session.copy(bikRemoved = Some(value.get.asInstanceOf[RegistrationItem]))
-        case CacheKeys.ListOfMatches     => session.copy(listOfMatches = Some(value.get.asInstanceOf[List[EiLPerson]]))
-        case CacheKeys.EiLPerson         => session.copy(eiLPerson = Some(value.get.asInstanceOf[EiLPerson]))
+        case CacheKeys.RegistrationList  => session.copy(registrations = Some(value.asInstanceOf[RegistrationList]))
+        case CacheKeys.BikRemoved        => session.copy(bikRemoved = Some(value.asInstanceOf[RegistrationItem]))
+        case CacheKeys.ListOfMatches     => session.copy(listOfMatches = Some(value.asInstanceOf[List[EiLPerson]]))
+        case CacheKeys.EiLPerson         => session.copy(eiLPerson = Some(value.asInstanceOf[EiLPerson]))
         case CacheKeys.CurrentExclusions =>
-          session.copy(currentExclusions = Some(value.get.asInstanceOf[List[EiLPerson]]))
-        case CacheKeys.CYRegisteredBiks  => session.copy(cyRegisteredBiks = Some(value.get.asInstanceOf[List[Bik]]))
-        case CacheKeys.NYRegisteredBiks  => session.copy(nyRegisteredBiks = Some(value.get.asInstanceOf[List[Bik]]))
+          session.copy(currentExclusions = Some(value.asInstanceOf[List[EiLPerson]]))
+        case CacheKeys.CYRegisteredBiks  => session.copy(cyRegisteredBiks = Some(value.asInstanceOf[List[Bik]]))
+        case CacheKeys.NYRegisteredBiks  => session.copy(nyRegisteredBiks = Some(value.asInstanceOf[List[Bik]]))
         case _                           =>
-          logger.warn(s"[SessionService][cache] No matching keys found - returning clean session")
-          cleanSession
+          logger.warn(s"[SessionService][storeSession] No matching keys found - returning current session")
+          session
       }
+
+    val sessionId = getSessionFromHeaderCarrier(hc) match {
+      case Left(e)          => throw e
+      case Right(sessionId) => sessionId
+    }
+
     for {
       currentSession <- fetchPbikSession()
-      session         = currentSession.getOrElse(cleanSession)
-      cacheMap       <- sessionCache.cache[PbikSession](PBIK_SESSION_KEY, selectKeysToCache(session))
-
-    } yield cacheMap.getEntry[PbikSession](PBIK_SESSION_KEY)
+      session         = currentSession.getOrElse(PbikSession(sessionId))
+      updatedSession <- sessionRepository.upsert(selectKeysToCache(session))
+    } yield updatedSession
   }
 
 }

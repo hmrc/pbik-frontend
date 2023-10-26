@@ -36,6 +36,12 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
 
   implicit val lang: Lang = Lang("en-GB")
 
+  override val configMap: Map[String, Any] = Map(
+    "auditing.enabled" -> false,
+    "sessionId"        -> "a-session-id",
+    "pbik.enabled.cy"  -> false
+  )
+
   private val mockControllersReferenceData: ControllersReferenceData = app.injector.instanceOf[ControllersReferenceData]
   private val messagesApi: MessagesApi                               = app.injector.instanceOf[MessagesApi]
 

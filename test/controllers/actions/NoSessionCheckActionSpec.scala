@@ -16,8 +16,6 @@
 
 package controllers.actions
 
-import java.util.UUID
-
 import akka.util.Timeout
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import org.scalatest.concurrent.ScalaFutures
@@ -28,6 +26,7 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.SessionKeys
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.Future
 import scala.concurrent.duration._

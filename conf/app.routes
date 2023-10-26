@@ -16,7 +16,7 @@ GET         /not-authorised                                      controllers.Aut
 
 GET         /signout                                             controllers.HomePageController.signout
 
-GET         /setLanguage                                         controllers.HomePageController.setLanguage
+GET         /setLanguage                                         controllers.HomePageController.setLanguage()
 
 GET         /registered-benefits-expenses                        controllers.HomePageController.onPageLoad
 
