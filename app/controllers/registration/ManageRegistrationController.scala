@@ -122,8 +122,7 @@ class ManageRegistrationController @Inject() (
   def showCheckYourAnswersAddCurrentTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
-        val activeReg                    =
-          session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
+        val activeReg                    = session.flatMap(_.getActiveRegistrationItems()).getOrElse(List.empty[RegistrationItem])
         val registrationList             = RegistrationList(None, activeReg, None)
         val form: Form[RegistrationList] = formMappings.objSelectedForm.fill(registrationList)
         Future.successful(
@@ -171,8 +170,7 @@ class ManageRegistrationController @Inject() (
   def showCheckYourAnswersAddNextTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
-        val activeReg        =
-          session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
+        val activeReg        = session.flatMap(_.getActiveRegistrationItems()).getOrElse(List.empty[RegistrationItem])
         val registrationList = RegistrationList(None, activeReg, None)
         Future.successful(
           Ok(
@@ -252,8 +250,7 @@ class ManageRegistrationController @Inject() (
   def updateCurrentYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val actionFuture = sessionService.fetchPbikSession().flatMap { session =>
-        val activeReg =
-          session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
+        val activeReg = session.flatMap(_.getActiveRegistrationItems()).getOrElse(List.empty[RegistrationItem])
 
         val persistentBiks = activeReg
           .filter(biks => biks.active)
@@ -266,8 +263,7 @@ class ManageRegistrationController @Inject() (
   def addNextYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val actionFuture = sessionService.fetchPbikSession().flatMap { session =>
-        val activeReg =
-          session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
+        val activeReg = session.flatMap(_.getActiveRegistrationItems()).getOrElse(List.empty[RegistrationItem])
 
         val persistentBiks = activeReg
           .filter(biks => biks.active)
@@ -326,9 +322,8 @@ class ManageRegistrationController @Inject() (
                         )
                       )
                     case _                                   =>
-                      val activeReg = session
-                        .flatMap(_.registrations.map(_.active.filter(_.active)))
-                        .getOrElse(List.empty[RegistrationItem])
+                      val activeReg =
+                        session.flatMap(_.getActiveRegistrationItems()).getOrElse(List.empty[RegistrationItem])
 
                       val listWithReason =
                         RegistrationList(None, activeReg, reason = Some(values))
@@ -355,9 +350,7 @@ class ManageRegistrationController @Inject() (
         sessionService.fetchPbikSession().flatMap { session =>
           val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
 
-          val activeReg =
-            session.flatMap(_.registrations.map(_.active.filter(_.active))).getOrElse(List.empty[RegistrationItem])
-
+          val activeReg      = session.flatMap(_.getActiveRegistrationItems()).getOrElse(List.empty[RegistrationItem])
           val listWithReason =
             RegistrationList(
               None,

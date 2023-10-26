@@ -37,9 +37,9 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
 
   private def getSessionFromHeaderCarrier(hc: HeaderCarrier): Either[Exception, String] =
     hc.sessionId match {
-      case Some(value) =>
-        Right(value.value)
-      case _           =>
+      case Some(sessionId) =>
+        Right(sessionId.value)
+      case _               =>
         logger.warn("[SessionService][getSessionFromHeaderCarrier] No session Id present at header carrier")
         Left(new MissingSessionIdException("Unable to retrieve session ID"))
     }

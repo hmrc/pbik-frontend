@@ -30,7 +30,7 @@ import play.api.mvc.{Request, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import support.TestAuthUser
-import uk.gov.hmrc.http.{HttpClient, _}
+import uk.gov.hmrc.http._
 import utils.Exceptions.GenericServerErrorException
 
 import scala.concurrent.ExecutionContext.Implicits.global

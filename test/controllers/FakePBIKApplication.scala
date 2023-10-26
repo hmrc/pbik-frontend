@@ -37,8 +37,6 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
   this: TestSuite =>
 
   val configMap: Map[String, Any] = Map(
-    "application.secret"          -> "Its secret",
-    "csrf.sign.tokens"            -> false,
     "auditing.enabled"            -> false,
     "sessionId"                   -> "a-session-id",
     "pbik.enabled.cy"             -> true,

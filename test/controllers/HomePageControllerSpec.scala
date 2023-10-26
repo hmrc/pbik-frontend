@@ -49,10 +49,10 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
   "HomePageController" should {
     def test(value: Boolean, url: String): Unit =
       s"return $value for isFromYTA if referer ends with $url" in {
-        val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(
           "referer" -> s"$url"
         )
-        val result                                       = homePageController.isFromYTA(request)
+        val result                                                = homePageController.isFromYTA(request)
 
         result mustBe value
       }

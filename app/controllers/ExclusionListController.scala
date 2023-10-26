@@ -47,7 +47,7 @@ class ExclusionListController @Inject() (
   val noSessionCheck: NoSessionCheckAction,
   val eiLListService: EiLListService,
   val bikListService: BikListService,
-  val cachingService: SessionService,
+  val sessionService: SessionService,
   val tierConnector: HmrcTierConnector,
   taxDateUtils: TaxDateUtils,
   splunkLogger: SplunkLogger,
@@ -110,7 +110,7 @@ class ExclusionListController @Inject() (
         nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
         currentYearEIL: List[EiLPerson]                <- eiLListService.currentYearEiL(iabdTypeValue, year)
       } yield {
-        cachingService.storeCurrentExclusions(currentYearEIL)
+        sessionService.storeCurrentExclusions(currentYearEIL)
         Ok(
           exclusionOverviewView(
             controllersReferenceData.yearRange,
@@ -301,7 +301,7 @@ class ExclusionListController @Inject() (
                                                             validModel
                                                           )
                 resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdTypeValue, year)
-                _                                      <- cachingService.storeListOfMatches(result.json.validate[List[EiLPerson]].asOpt.get)
+                _                                      <- sessionService.storeListOfMatches(result.json.validate[List[EiLPerson]].asOpt.get)
               } yield Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdType, formType))
           )
         controllersReferenceData.responseErrorHandler(futureResult)
@@ -323,7 +323,7 @@ class ExclusionListController @Inject() (
       val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       val resultFuture  = for {
         _                                    <- validateRequest(year, iabdType)
-        optionalSession: Option[PbikSession] <- cachingService.fetchPbikSession()
+        optionalSession: Option[PbikSession] <- sessionService.fetchPbikSession()
       } yield {
         val session = optionalSession.get
         searchResultsHandleValidResult(
@@ -453,7 +453,7 @@ class ExclusionListController @Inject() (
   def updateMultipleExclusions(year: String, iabdType: String, formType: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       if (exclusionsAllowed) {
-        val resultFuture = cachingService.fetchPbikSession().flatMap { session =>
+        val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
           formMappings.individualSelectionForm
             .bindFromRequest()
             .fold(
@@ -517,7 +517,7 @@ class ExclusionListController @Inject() (
       implicit val hc: HeaderCarrier =
         HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       if (exclusionsAllowed) {
-        val resultFuture = cachingService.fetchPbikSession().flatMap { session: Option[PbikSession] =>
+        val resultFuture = sessionService.fetchPbikSession().flatMap { session: Option[PbikSession] =>
           getExcludedPerson(session).fold {
             logger.error(
               "[ExclusionListController][updateExclusions] can not get excludedPerson, session data not filled"
@@ -561,7 +561,7 @@ class ExclusionListController @Inject() (
     (authenticate andThen noSessionCheck).async { implicit request =>
       val resultFuture = for {
         _       <- validateRequest(year, iabdType)
-        session <- cachingService.fetchPbikSession()
+        session <- sessionService.fetchPbikSession()
       } yield Ok(
         whatNextExclusionView(
           taxDateUtils.getTaxYearRange(),
@@ -638,9 +638,9 @@ class ExclusionListController @Inject() (
     (authenticate andThen noSessionCheck).async { implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       if (exclusionsAllowed) {
-        val resultFuture = cachingService.fetchPbikSession().flatMap { session =>
+        val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
           val selectedPerson: EiLPerson = session.get.currentExclusions.get.filter(person => person.nino == nino).head
-          cachingService.storeEiLPerson(selectedPerson).map { _ =>
+          sessionService.storeEiLPerson(selectedPerson).map { _ =>
             Redirect(routes.ExclusionListController.showRemovalConfirmation(year, iabdType))
           }
         }
@@ -661,7 +661,7 @@ class ExclusionListController @Inject() (
 
   def showRemovalConfirmation(year: String, iabdType: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
-      val futureResult = cachingService.fetchPbikSession().map { session =>
+      val futureResult = sessionService.fetchPbikSession().map { session =>
         Ok(
           removalConfirmationView(
             controllersReferenceData.yearRange,
@@ -681,7 +681,7 @@ class ExclusionListController @Inject() (
       val iabdTypeValue              = uriInformation.iabdValueURLDeMapper(iabdType)
       val taxYearRange               = taxDateUtils.getTaxYearRange()
       if (exclusionsAllowed) {
-        val resultFuture = cachingService.fetchPbikSession().flatMap { session =>
+        val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
           val individual   = session.get.eiLPerson.get
           val year         = taxYearRange.cy
           val removalsList = List(individual)
@@ -728,7 +728,7 @@ class ExclusionListController @Inject() (
 
   def showRemovalWhatsNext(iabdType: String): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val futureResult = cachingService.fetchPbikSession().map { session =>
+      val futureResult = sessionService.fetchPbikSession().map { session =>
         val individual = session.get.eiLPerson.get
         Ok(
           whatNextRescindView(

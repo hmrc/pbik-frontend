@@ -31,7 +31,11 @@ case class PbikSession(
   cyRegisteredBiks: Option[List[Bik]] = None,
   nyRegisteredBiks: Option[List[Bik]] = None,
   lastUpdated: Instant = Instant.now()
-)
+) {
+
+  def getActiveRegistrationItems(): Option[List[RegistrationItem]] = this.registrations.map(_.active.filter(_.active))
+
+}
 
 object PbikSession {
   implicit val instantFormat: Format[Instant] = MongoJavatimeFormats.instantFormat

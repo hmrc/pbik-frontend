@@ -32,7 +32,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class WhatNextPageController @Inject() (
   override val messagesApi: MessagesApi,
-  val cachingService: SessionService,
+  val sessionService: SessionService,
   authenticate: AuthAction,
   val tierConnector: HmrcTierConnector,
   taxDateUtils: TaxDateUtils,
@@ -57,7 +57,7 @@ class WhatNextPageController @Inject() (
         case "cy1" => controllersReferenceData.yearRange.cy
         case "cy"  => controllersReferenceData.yearRange.cyminus1
       }
-      val resultFuture = cachingService.fetchPbikSession().map { session =>
+      val resultFuture = sessionService.fetchPbikSession().map { session =>
         val addedBiksAsList: RegistrationList =
           RegistrationList(active = session.get.registrations.get.active.filter(item => item.active))
         Ok(
@@ -74,7 +74,7 @@ class WhatNextPageController @Inject() (
 
   def showWhatNextRemovedBik(iabdType: String): Action[AnyContent] =
     authenticate.async { implicit request =>
-      val resultFuture = cachingService.fetchPbikSession().map { session =>
+      val resultFuture = sessionService.fetchPbikSession().map { session =>
         val removedBikAsList: RegistrationList =
           RegistrationList(active = List(session.get.bikRemoved.get))
         Ok(

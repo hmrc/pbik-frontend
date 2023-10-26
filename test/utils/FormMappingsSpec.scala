@@ -20,7 +20,6 @@ import controllers.FakePBIKApplication
 import models.{EiLPerson, EiLPersonList, ExclusionNino, MandatoryRadioButton}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
-import utils.FormMappingsConstants._
 
 import java.time.Month._
 
@@ -52,7 +51,10 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication with Matchers {
 
     "a valid date" should {
       "be valid in all cases when the days in the year are greater than 0 and less than 29" in {
-        Range.inclusive(1, 28)
+        val firstDayOfMonth   = 1
+        val lastDayOfMonthFeb = 28
+        Range
+          .inclusive(firstDayOfMonth, lastDayOfMonthFeb)
           .map { i =>
             formMappings.addZeroIfNeeded(i.toString)
           }

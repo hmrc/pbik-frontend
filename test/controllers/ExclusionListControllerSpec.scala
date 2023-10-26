@@ -145,7 +145,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     Integer.parseInt(x.iabdType) >= 15
   }))
 
-  when(mockExclusionListController.cachingService.storeEiLPerson(any())(any[HeaderCarrier])).thenReturn(
+  when(mockExclusionListController.sessionService.storeEiLPerson(any())(any[HeaderCarrier])).thenReturn(
     Future.successful(PbikSession(pbikSession.sessionId))
   )
 
@@ -263,7 +263,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "loading the withOrWithoutNinoDecision page with the form omitted, an authorised user" must {
       "see the page in order to confirm their decision" in {
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(pbikSession)))
         val title  = messagesApi("ExclusionNinoDecision.title")
         val result = mockExclusionListController.withOrWithoutNinoDecision(cyp1, iabdType)(mockRequest)
@@ -333,9 +333,9 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "loading the searchResults page" must {
       "display the expected search results page for an authorised user's NINO search" in {
-        when(mockExclusionListController.cachingService.storeListOfMatches(any())(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.storeListOfMatches(any())(any[HeaderCarrier]))
           .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
@@ -394,7 +394,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "handling a valid search result" must {
       "show an error page if the list of matches contains only already excluded individuals" in {
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
@@ -413,7 +413,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
       }
 
       "show an error page if the list of matches is empty" in {
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
@@ -439,7 +439,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "loading the searchResults page" must {
       "show the search results if they are present in the cache" in {
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(pbikSession)))
         val result = mockExclusionListController.showResults(cyp1, iabdType, "nino")(mockRequest)
 
@@ -450,7 +450,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
       }
 
       "show an error page if no results are present in the cache" in {
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(Some(pbikSession.copy(pbikSession.sessionId, None, None, None, None, None, None, None)))
           )
@@ -463,7 +463,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "remove is called" must {
       "show the confirmation page" in {
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(pbikSession)))
         val nino   = "AA111111B"
         val result = mockExclusionListController.remove(cyp1, iabdType, nino)(mockRequest)
@@ -485,7 +485,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     }
 
     "loading removal screens with valid data in the cache" must {
-      when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+      when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
         .thenReturn(Future.successful(Some(pbikSession.copy(listOfMatches = None, currentExclusions = None))))
 
       "show the removal check your answers screen" in {
@@ -531,7 +531,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "updateExclusions is called" must {
       "redirect to the what next page" in {
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(pbikSession.copy(nyRegisteredBiks = Some(List(Bik("31", statusValue)))))))
         val result = mockExclusionListController.updateExclusions(cyp1, iabdType)(mockRequest)
 
@@ -542,7 +542,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
       "return a 500 when there is no session data present" in {
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
           mockRequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
@@ -575,7 +575,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
       "redirect to the what next page" in {
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
           mockRequest.withFormUrlEncodedBody("individualNino" -> "AA111111A")
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(
             Future.successful(
               Some(
@@ -627,7 +627,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "the what next page is loaded" must {
       "display the what next confirmation screen" in {
-        when(mockExclusionListController.cachingService.fetchPbikSession()(any[HeaderCarrier]))
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
           .thenReturn(Future.successful(Some(pbikSession.copy(eiLPerson = None, currentExclusions = None))))
         val result = mockExclusionListController.showExclusionConfirmation(cyp1, iabdType)(mockRequest)
 

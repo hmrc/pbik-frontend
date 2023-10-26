@@ -39,7 +39,7 @@ class HomePageController @Inject() (
   override val messagesApi: MessagesApi,
   cc: MessagesControllerComponents,
   bikListService: BikListService,
-  cachingService: SessionService,
+  sessionService: SessionService,
   authenticate: AuthAction,
   val noSessionCheck: NoSessionCheckAction,
   unauthorisedAction: UnauthorisedAction,
@@ -85,7 +85,7 @@ class HomePageController @Inject() (
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val taxYearRange: TaxYearRange     = taxDateUtils.getTaxYearRange()
     val pageLoadFuture: Future[Result] = for {
-      _                                                 <- cachingService.resetAll()
+      _                                                 <- sessionService.resetAll()
       // Get the available count of biks available for each tax year
       biksListOptionCY: List[Bik]                       <-
         bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef("", ""))(
@@ -98,8 +98,8 @@ class HomePageController @Inject() (
       currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
       nextYearList: (Map[String, String], List[Bik])    <- bikListService.nextYearList
     } yield {
-      cachingService.storeCYRegisteredBiks(currentYearList._2)
-      cachingService.storeNYRegisteredBiks(nextYearList._2)
+      sessionService.storeCYRegisteredBiks(currentYearList._2)
+      sessionService.storeNYRegisteredBiks(nextYearList._2)
       val fromYTA = if (request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).isDefined) {
         request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).get
       } else {
