@@ -16,7 +16,7 @@
 
 package connectors
 
-import models.{Bik, EmpRef, HeaderTags, PbikError}
+import models.{EmpRef, HeaderTags, PbikError}
 import play.api.Logging
 import play.api.libs.json._
 import play.api.mvc.Request
@@ -29,8 +29,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HmrcTierConnector @Inject() (client: HttpClient)(implicit ec: ExecutionContext) extends Logging {
-
-//  var pbikHeaders: Map[String, String] = Map[String, String]()
 
   def createGetUrl(baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int): String = {
     val orgIdentifierEncoded = empRef.encodedEmpRef
@@ -46,6 +44,38 @@ class HmrcTierConnector @Inject() (client: HttpClient)(implicit ec: ExecutionCon
     request
   }
 
+  /*
+    - New code should be simple and not do too many things
+    - We can potentially still keep the logging of headers and validation
+    - However, returning the response as is opens up the possibility to transform the data into whatever we want.
+    - Old genericGet method was returning a tuple making it annoying to manipulate as you would have to deconstruct the tuple into ._1 or ._2 etc.
+   */
+
+  def getV2WithLoggingAndJsonValidation(baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)(implicit
+                                                                            hc: HeaderCarrier
+  ): Future[HttpResponse] = {
+
+    val request = client.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
+    request.map { response =>
+      val headers: Map[String, String] = Map(
+        HeaderTags.ETAG -> response.header(HeaderTags.ETAG).getOrElse("0"),
+        HeaderTags.X_TXID -> response.header(HeaderTags.X_TXID).getOrElse("1")
+      )
+
+      logger.info("[HmrcTierConnector][get] GET etag/xtxid headers: " + headers)
+
+      response.json.validate[PbikError] match {
+        case s: JsSuccess[PbikError] =>
+          logger.error(s"[HmrcTierConnector][get] a PBIK error code was returned. Error Code: ${s.value.errorCode}")
+          throw new GenericServerErrorException(s.value.errorCode)
+        case _: JsError => response
+      }
+    }
+  }
+
+
+
+// old code
 //  def genericGetCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)(implicit
 //    hc: HeaderCarrier,
 //    formats: Format[T]
