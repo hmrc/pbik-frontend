@@ -18,8 +18,6 @@ package services
 
 import config.PbikAppConfig
 import connectors.HmrcTierConnector
-
-import javax.inject.{Inject, Singleton}
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,9 +25,10 @@ import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{ControllersReferenceData, URIInformation, _}
+import utils._
 import views.html.ErrorPage
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -61,11 +60,12 @@ class RegistrationService @Inject() (
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     val decommissionedBikIds: Seq[Int] = pbikAppConfig.biksDecommissioned
     val status: Int                    = 30
-    val nonLegislationBiks: Seq[Int]   = if (taxDateUtils.isCurrentTaxYear(year)) {
-      pbikAppConfig.biksNotSupportedCY
-    } else {
-      pbikAppConfig.biksNotSupported
-    }
+    val nonLegislationBiks: Seq[Int]   =
+      if (taxDateUtils.isCurrentTaxYear(year)) {
+        pbikAppConfig.biksNotSupportedCY
+      } else {
+        pbikAppConfig.biksNotSupported
+      }
     val isCurrentYear: String = {
       if (taxDateUtils.isCurrentTaxYear(year)) {
         FormMappingsConstants.CY
@@ -76,9 +76,10 @@ class RegistrationService @Inject() (
 
     for {
       biksListOption       <- bikListService.registeredBenefitsList(year, EmpRef.empty)(uriInformation.getBenefitTypesPath)
-      registeredListOption <-
+      registeredListOptionResponse <-
         tierConnector
-          .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
+          .get(uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
+      registeredListOption =  registeredListOptionResponse.json.as[List[Bik]]
       nonLegislationList    = nonLegislationBiks.map(x => Bik("" + x, status))
       decommissionedBikList = decommissionedBikIds.map(x => Bik("" + x, status))
 

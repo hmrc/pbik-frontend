@@ -277,10 +277,10 @@ class ManageRegistrationController @Inject() (
     request: AuthenticatedRequest[AnyContent]
   ): Future[Result] =
     tierConnector
-      .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
+      .get(uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
       .flatMap { registeredResponse =>
         sessionService.fetchPbikSession().flatMap { session =>
-          val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
+          val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse.json.as[List[Bik]], persistentBiks)
           if (additive) {
             // Process registration
             val saveFuture = tierConnector.genericPostCall(
@@ -345,10 +345,10 @@ class ManageRegistrationController @Inject() (
     request: AuthenticatedRequest[AnyContent]
   ): Future[Result] =
     tierConnector
-      .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
+      .get(uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
       .flatMap { registeredResponse =>
         sessionService.fetchPbikSession().flatMap { session =>
-          val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
+          val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse.json.as[List[Bik]], persistentBiks)
 
           val activeReg      = session.flatMap(_.getActiveRegistrationItems()).getOrElse(List.empty[RegistrationItem])
           val listWithReason =

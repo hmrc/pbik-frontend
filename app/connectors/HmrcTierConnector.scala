@@ -58,8 +58,8 @@ class HmrcTierConnector @Inject() (client: HttpClient)(implicit ec: ExecutionCon
     val request = client.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
     request.map { response =>
       val headers: Map[String, String] = Map(
-        HeaderTags.ETAG -> response.header(HeaderTags.ETAG).getOrElse("0"),
-        HeaderTags.X_TXID -> response.header(HeaderTags.X_TXID).getOrElse("1")
+        HeaderTags.ETAG -> response.header(HeaderTags.ETAG).getOrElse("yolo"),
+        HeaderTags.X_TXID -> response.header(HeaderTags.X_TXID).getOrElse("fomo")
       )
 
       logger.info("[HmrcTierConnector][get] GET etag/xtxid headers: " + headers)
@@ -114,9 +114,12 @@ class HmrcTierConnector @Inject() (client: HttpClient)(implicit ec: ExecutionCon
     formats: Format[T]
   ): Future[HttpResponse] = {
 
-    val etagFromSession  = request.session.get(HeaderTags.ETAG).getOrElse("0")
-    val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")
-    val optMapped        = Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession)
+    val etagFromSession  = request.session.get(HeaderTags.ETAG).getOrElse("lmao")
+    val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("rofl")
+    val optMapped        =
+      Map(
+        HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession
+      )
 
     logger.info(
       "[HmrcTierConnector][genericPostCall] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession

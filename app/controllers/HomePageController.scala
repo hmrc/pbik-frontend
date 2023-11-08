@@ -84,7 +84,6 @@ class HomePageController @Inject() (
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val taxYearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-
     // you can see how we can access at this controller level anything we want since the connector only returns a response.
     // it is quite noisy and can look a little nice if we create some helper methods to refctor the code and how we want to consume the response.
     // but this is the resultant refactored code. You can see we can still achieve the old desired functionality and remove the parametric polymorphism that was being used.
@@ -104,14 +103,16 @@ class HomePageController @Inject() (
         currentYearList: List[Bik]              <- bikListService.currentYearList
         nextYearListResponse: HttpResponse      <- bikListService.getNextYearList
         nextYearList                             = nextYearListResponse.json.as[List[Bik]]
-        nextYearListHeaders: Map[String, String] = Map(
-                                                     HeaderTags.ETAG   -> nextYearListResponse
-                                                       .header(HeaderTags.ETAG)
-                                                       .getOrElse("0"),
-                                                     HeaderTags.X_TXID -> nextYearListResponse
-                                                       .header(HeaderTags.X_TXID)
-                                                       .getOrElse("1")
-                                                   )
+        nextYearListHeaders: Map[String, String] =
+          Map(
+            HeaderTags.ETAG   -> nextYearListResponse
+              .header("Mikey")
+              .getOrElse("something that aint real"),
+            HeaderTags.X_TXID -> nextYearListResponse
+              .header("Mikey")
+              .getOrElse("Melon")
+          )
+        _ = println("******" + nextYearListHeaders + "******" * 5)
       } yield {
         sessionService.storeCYRegisteredBiks(currentYearList)
         sessionService.storeNYRegisteredBiks(nextYearList)

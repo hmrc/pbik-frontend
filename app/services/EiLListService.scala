@@ -36,15 +36,15 @@ class EiLListService @Inject() (
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
   ): Future[List[EiLPerson]] = {
-    val response = tierConnector.genericGetCall[List[EiLPerson]](
+    val response = tierConnector.get(
       uRIInformation.baseUrl,
       uRIInformation.exclusionGetPath(iabdType),
       request.empRef,
       year
     )
 
-    response.map { resultList: List[EiLPerson] =>
-      resultList.distinct
+    response.map { resultList =>
+      resultList.json.as[List[EiLPerson]].distinct
     }
   }
 

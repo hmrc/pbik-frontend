@@ -19,11 +19,11 @@ package controllers
 import connectors.HmrcTierConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
-import play.api.{Configuration, Logging}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Codec.utf_8
 import play.api.mvc._
+import play.api.{Configuration, Logging}
 import services.{BikListService, EiLListService, SessionService}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
@@ -106,9 +106,17 @@ class ExclusionListController @Inject() (
     if (exclusionsAllowed) {
       val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       for {
-        year                                           <- validateRequest(isCurrentTaxYear, iabdType)
-        nextYearList: (Map[String, String], List[Bik]) <- bikListService.getNextYearList
-        currentYearEIL: List[EiLPerson]                <- eiLListService.currentYearEiL(iabdTypeValue, year)
+        year                                    <- validateRequest(isCurrentTaxYear, iabdType)
+        nextYearListResponse                    <- bikListService.getNextYearList
+        nextYearListHeaders: Map[String, String] = Map(
+                                                     HeaderTags.ETAG   -> nextYearListResponse
+                                                       .header("Mikey")
+                                                       .getOrElse("something that aint real"),
+                                                     HeaderTags.X_TXID -> nextYearListResponse
+                                                       .header("Mikey")
+                                                       .getOrElse("Melon")
+                                                   )
+        currentYearEIL: List[EiLPerson]         <- eiLListService.currentYearEiL(iabdTypeValue, year)
       } yield {
         sessionService.storeCurrentExclusions(currentYearEIL)
         Ok(
@@ -121,7 +129,7 @@ class ExclusionListController @Inject() (
             form
           )
         ).removingFromSession(HeaderTags.ETAG)
-          .addingToSession(nextYearList._1.toSeq: _*)
+          .addingToSession(nextYearListHeaders.toSeq: _*)
       }
 
     } else {
