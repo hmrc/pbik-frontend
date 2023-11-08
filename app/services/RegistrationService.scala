@@ -85,6 +85,7 @@ class RegistrationService @Inject() (
       // During transition, we have to ensure we handle the existing decommissioned IABDs (e.g 47 ) being sent by the server
       // and after the NPS R38 config release, when it wont be. Therefore, aas this is a list, we remove the
       // decommissioned values ( if they exist ) and then add them back in
+
       hybridList = biksListOption.filterNot(y =>
                      decommissionedBikIds.contains(y.iabdType.toInt)
                    ) ++ nonLegislationList ++ decommissionedBikList
