@@ -84,6 +84,11 @@ class HomePageController @Inject() (
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val taxYearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
+
+    // you can see how we can access at this controller level anything we want since the connector only returns a response.
+    // it is quite noisy and can look a little nice if we create some helper methods to refctor the code and how we want to consume the response.
+    // but this is the resultant refactored code. You can see we can still achieve the old desired functionality and remove the parametric polymorphism that was being used.
+
     val pageLoadFuture: Future[Result] =
       for {
         _                                       <- sessionService.resetAll()
