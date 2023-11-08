@@ -16,7 +16,7 @@
 
 package connectors
 
-import models.{EmpRef, HeaderTags, PbikError}
+import models.{Bik, EmpRef, HeaderTags, PbikError}
 import play.api.Logging
 import play.api.libs.json._
 import play.api.mvc.Request
@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class HmrcTierConnector @Inject() (client: HttpClient)(implicit ec: ExecutionContext) extends Logging {
 
-  var pbikHeaders: Map[String, String] = Map[String, String]()
+//  var pbikHeaders: Map[String, String] = Map[String, String]()
 
   def createGetUrl(baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int): String = {
     val orgIdentifierEncoded = empRef.encodedEmpRef
@@ -40,32 +40,38 @@ class HmrcTierConnector @Inject() (client: HttpClient)(implicit ec: ExecutionCon
     }
   }
 
-  def genericGetCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)(implicit
-    hc: HeaderCarrier,
-    formats: Format[T]
-  ): Future[T] = {
-    val resp = client.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
+  def get(baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
-    resp.map { r =>
-      val headers: Map[String, String] = Map(
-        HeaderTags.ETAG   -> r.header(HeaderTags.ETAG).getOrElse("0"),
-        HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1")
-      )
-
-      pbikHeaders = headers
-      logger.info("[HmrcTierConnector][genericGetCall] GET etag/xtxid headers: " + pbikHeaders)
-
-      r.json.validate[PbikError] match {
-        case s: JsSuccess[PbikError] =>
-          logger.error(
-            s"[HmrcTierConnector][genericGetCall] a pbik error code was returned. Error Code: ${s.value.errorCode}"
-          )
-          throw new GenericServerErrorException(s.value.errorCode)
-        case _: JsError              => r.json.as[T]
-      }
-
-    }
+    val request = client.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
+    request
   }
+
+//  def genericGetCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)(implicit
+//    hc: HeaderCarrier,
+//    formats: Format[T]
+//  ): Future[T] = {
+//    val resp = client.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
+//
+//    resp.map { r =>
+//      val headers: Map[String, String] = Map(
+//        HeaderTags.ETAG   -> r.header(HeaderTags.ETAG).getOrElse("0"),
+//        HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1")
+//      )
+//
+//      pbikHeaders = headers
+//      logger.info("[HmrcTierConnector][genericGetCall] GET etag/xtxid headers: " + pbikHeaders)
+//
+//      r.json.validate[PbikError] match {
+//        case s: JsSuccess[PbikError] =>
+//          logger.error(
+//            s"[HmrcTierConnector][genericGetCall] a pbik error code was returned. Error Code: ${s.value.errorCode}"
+//          )
+//          throw new GenericServerErrorException(s.value.errorCode)
+//        case _: JsError              => r.json.as[T]
+//      }
+//
+//    }
+//  }
 
   def createPostUrl(baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int): String = {
     val orgIdentifierEncoded = empRef.encodedEmpRef

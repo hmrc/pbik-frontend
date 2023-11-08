@@ -19,11 +19,13 @@ package services
 import config.AppConfig
 import connectors.HmrcTierConnector
 import models.{AuthenticatedRequest, Bik, EmpRef}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.{ControllersReferenceData, URIInformation}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+
+case class Response[A](headers: Map[String, String], value: A)
 
 @Singleton
 class BikListService @Inject() (
@@ -38,38 +40,39 @@ class BikListService @Inject() (
   def currentYearList(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
-  ): Future[(Map[String, String], List[Bik])] = {
-    val response = tierConnector.genericGetCall[List[Bik]](
+  ): Future[List[Bik]] = {
+    val response = tierConnector.get(
       uriInformation.baseUrl,
       uriInformation.getRegisteredPath,
       request.empRef,
       controllersReferenceData.yearRange.cyminus1
     )
 
-    response.map { resultOption: List[Bik] =>
-      (tierConnector.pbikHeaders, resultOption.distinct)
+    response.map { resp =>
+      resp.json.as[List[Bik]].distinct
     }
   }
 
-  def nextYearList(implicit
+  def getNextYearList(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
-  ): Future[(Map[String, String], List[Bik])] = {
-    val response = tierConnector.genericGetCall[List[Bik]](
+  ): Future[HttpResponse] = {
+
+    val response = tierConnector.get(
       uriInformation.baseUrl,
       uriInformation.getRegisteredPath,
       request.empRef,
       controllersReferenceData.yearRange.cy
     )
 
-    response.map { resultOption: List[Bik] =>
-      (tierConnector.pbikHeaders, resultOption.distinct)
-    }
+    response
   }
 
   def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)(implicit hc: HeaderCarrier): Future[List[Bik]] = {
-    val newPath  = if (path == "") uriInformation.getRegisteredPath else path
-    val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, newPath, empRef, year)
-    response
+    val newPath                        = if (path == "") uriInformation.getRegisteredPath else path
+    val response: Future[HttpResponse] = tierConnector.get(uriInformation.baseUrl, newPath, empRef, year)
+    response.map { resp =>
+      resp.json.as[List[Bik]]
+    }
   }
 }

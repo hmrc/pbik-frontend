@@ -104,7 +104,7 @@ class BikListServiceSpec
       ).thenReturn(Future.successful(listBiks))
       implicit val hc: HeaderCarrier = HeaderCarrier()
 
-      val result = Await.result(bikListService.nextYearList, 10 seconds)
+      val result = Await.result(bikListService.getNextYearList, 10 seconds)
 
       result._2 shouldBe listBiks
     }
@@ -118,7 +118,7 @@ class BikListServiceSpec
       ).thenThrow(new IllegalStateException())
 
       intercept[IllegalStateException] {
-        bikListService.nextYearList
+        bikListService.getNextYearList
       }
     }
 

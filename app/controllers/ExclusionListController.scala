@@ -107,7 +107,7 @@ class ExclusionListController @Inject() (
       val iabdTypeValue = uriInformation.iabdValueURLDeMapper(iabdType)
       for {
         year                                           <- validateRequest(isCurrentTaxYear, iabdType)
-        nextYearList: (Map[String, String], List[Bik]) <- bikListService.nextYearList
+        nextYearList: (Map[String, String], List[Bik]) <- bikListService.getNextYearList
         currentYearEIL: List[EiLPerson]                <- eiLListService.currentYearEiL(iabdTypeValue, year)
       } yield {
         sessionService.storeCurrentExclusions(currentYearEIL)

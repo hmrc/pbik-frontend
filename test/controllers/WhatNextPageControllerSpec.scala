@@ -91,9 +91,9 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
         )
       )
 
-    override def nextYearList(implicit
-      hc: HeaderCarrier,
-      request: AuthenticatedRequest[_]
+    override def getNextYearList(implicit
+                                 hc: HeaderCarrier,
+                                 request: AuthenticatedRequest[_]
     ): Future[(Map[String, String], List[Bik])] =
       Future.successful(
         (

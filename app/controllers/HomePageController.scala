@@ -24,7 +24,7 @@ import models._
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc._
 import services.{BikListService, SessionService}
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{ControllersReferenceData, SplunkLogger, URIInformation, _}
@@ -84,7 +84,9 @@ class HomePageController @Inject() (
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val taxYearRange: TaxYearRange     = taxDateUtils.getTaxYearRange()
-    val pageLoadFuture: Future[Result] = for {
+
+    val pageLoadFuture: Future[Result] =
+      for {
       _                                                 <- sessionService.resetAll()
       // Get the available count of biks available for each tax year
       biksListOptionCY: List[Bik]                       <-
@@ -95,11 +97,13 @@ class HomePageController @Inject() (
         bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cy, EmpRef("", ""))(
           uriInformation.getBenefitTypesPath
         )
-      currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
-      nextYearList: (Map[String, String], List[Bik])    <- bikListService.nextYearList
+      currentYearList: List[Bik] <- bikListService.currentYearList
+      nextYearListResponse: HttpResponse <- bikListService.getNextYearList
+      nextYearList  = nextYearListResponse.json.as[List[Bik]]
     } yield {
-      sessionService.storeCYRegisteredBiks(currentYearList._2)
-      sessionService.storeNYRegisteredBiks(nextYearList._2)
+      sessionService.storeCYRegisteredBiks(currentYearList)
+      sessionService.storeNYRegisteredBiks(nextYearList)
+
       val fromYTA = if (request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).isDefined) {
         request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).get
       } else {
@@ -110,15 +114,15 @@ class HomePageController @Inject() (
         summaryPage(
           pbikAppConfig.cyEnabled,
           taxYearRange,
-          currentYearList._2,
-          nextYearList._2,
+          currentYearList,
+          nextYearList,
           biksListOptionCY.size,
           biksListOptionCYP1.size,
           fromYTA.toString,
           empRef = request.empRef
         )
       )
-        .addingToSession(nextYearList._1.toSeq: _*)
+        .addingToSession(nextYearListResponse.headers.toSeq: _*)
         .addingToSession(ControllersReferenceDataCodes.SESSION_FROM_YTA -> fromYTA.toString)
     }
     controllersReferenceData.responseErrorHandler(pageLoadFuture)
