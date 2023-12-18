@@ -20,19 +20,12 @@ import config.PbikAppConfig
 import connectors.HmrcTierConnector
 import controllers.ExclusionListController
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models.{Bik, EiLPerson, EmpRef}
-import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.mockito.Mockito.when
 import org.scalatest.concurrent.Futures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.Configuration
-import play.api.http.Status.OK
 import play.api.i18n.MessagesApi
-import play.api.libs.json
-import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{MessagesControllerComponents, Request}
+import play.api.mvc.MessagesControllerComponents
 import services.{BikListService, EiLListService, SessionService}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.audit.model.DataEvent
 import utils._
@@ -104,52 +97,5 @@ class MockExclusionListController @Inject() (
   def logSplunkEvent(dataEvent: DataEvent): Future[AuditResult] =
     Future.successful(AuditResult.Success)
 
-  when(
-    tierConnector
-      .genericPostCall[EiLPerson](any[String], argEq("31/exclusion/update"), any[EmpRef], any[Int], any[EiLPerson])(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[EiLPerson]]
-      )
-  ).thenReturn(Future.successful(new FakeResponse()))
-
-  when(
-    tierConnector
-      .genericPostCall[EiLPerson](any[String], argEq("31/exclusion/remove"), any[EmpRef], any[Int], any[EiLPerson])(
-        any[HeaderCarrier],
-        any[Request[_]],
-        any[json.Format[EiLPerson]]
-      )
-  ).thenReturn(Future.successful(new FakeResponse()))
-
-  when(
-    tierConnector.genericPostCall(
-      any[String],
-      argEq(uriInformation.updateBenefitTypesPath),
-      any[EmpRef],
-      any[Int],
-      any[List[Bik]]
-    )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
-  )
-    .thenReturn(Future.successful(new FakeResponse()))
-
   override lazy val exclusionsAllowed: Boolean = true
-}
-
-class FakeResponse extends HttpResponse {
-  override def status: Int                          = OK
-  override def allHeaders: Map[String, Seq[String]] = Map()
-  override def body: String                         = "empty"
-  override val json: JsValue                        = Json.parse("""[
-                 {
-                     "nino": "AB111111",
-                     "firstForename": "Adam",
-                    "surname": "Smith",
-                     "worksPayrollNumber": "ABC123",
-                     "dateOfBirth": "01/01/1980",
-                     "gender": "male",
-                     "status": 0,
-                     "perOptLock": 0
-                 }
-             ]""")
 }

@@ -40,13 +40,13 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   def viewWithForm(): Html =
-    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "30", "", formMappings.binaryRadioButton, EmpRef("", ""))
+    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "medical", "", formMappings.binaryRadioButton, EmpRef("", ""))
 
   def viewWithFormWithErrors(): Html =
     exclusionNinoOrNoNinoFormView(
       taxYearRange,
       "cyp1",
-      "30",
+      "medical",
       "",
       formMappings.binaryRadioButton.withError("test", "error"),
       EmpRef("", "")

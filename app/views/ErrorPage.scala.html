@@ -87,7 +87,7 @@
 
     @if(iabdType != "") {
         <div class="govuk-form-group">
-            <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
+            <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">
                 @messages("Service.back.excluded")
             </a>
         </div>

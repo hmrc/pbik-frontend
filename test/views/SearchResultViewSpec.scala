@@ -46,7 +46,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
   )
 
   def viewWithForm(form: Form[ExclusionNino]): Html =
-    searchResultsView(taxYearRange, "cyp1", "30", listOfMatches, form, "", EmpRef("", ""))
+    searchResultsView(taxYearRange, "cyp1", "medical", listOfMatches, form, "", EmpRef("", ""))
 
   "exclusionNinoOrNoNinoForm" should {
 
@@ -110,7 +110,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
     implicit def view: Html = searchResultsView(
       taxYearRange,
       "cyp1",
-      "30",
+      "medical",
       listOfActives,
       formMappings.individualSelectionForm,
       "",

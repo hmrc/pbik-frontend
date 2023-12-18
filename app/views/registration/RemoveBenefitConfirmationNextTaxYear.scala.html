@@ -46,7 +46,7 @@
         </h1>
     </div>
     <p class="govuk-body">
-        @messages("whatNext.remove.p", messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)), s"${taxYearRange.cy}")
+        @messages("whatNext.remove.p", messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}"), s"${taxYearRange.cy}")
     </p>
 
     <h2 class="govuk-heading-m">
@@ -54,7 +54,7 @@
     </h2>
 
     <p class="govuk-body  govuk-!-margin-bottom-7">
-        @Html(messages("whatNext.remove.link.P11D.Text",messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType))))
+        @Html(messages("whatNext.remove.link.P11D.Text",messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}")))
     </p>
 
     <p class="govuk-body">

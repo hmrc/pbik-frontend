@@ -36,9 +36,8 @@ class EiLListService @Inject() (
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
   ): Future[List[EiLPerson]] = {
-    val response = tierConnector.genericGetCall[List[EiLPerson]](
-      uRIInformation.baseUrl,
-      uRIInformation.exclusionGetPath(iabdType),
+    val response = tierConnector.getAllExcludedEiLPersonForBik(
+      iabdType,
       request.empRef,
       year
     )

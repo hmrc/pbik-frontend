@@ -16,26 +16,23 @@
 
 package controllers
 
-import connectors.HmrcTierConnector
+import connectors.{BikResponse, HmrcTierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
 import models._
-import org.mockito.ArgumentMatchers.{any, eq => argEq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
-import play.api.http.Status
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json
-import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SessionService
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 
 import scala.concurrent.Future
@@ -56,59 +53,48 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
   private val messagesApi: MessagesApi                             = app.injector.instanceOf[MessagesApi]
   private val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
-  private val (numberOfElements, bikStatus, year): (Int, Int, Int) = (21, 10, 2020)
+  private val (numberOfElements, bikStatus): (Int, Int)            = (21, 10)
   private val (beginIndex, endIndex): (Int, Int)                   = (0, 10)
   private val registrationController: ManageRegistrationController =
     app.injector.instanceOf[ManageRegistrationController]
-  private val response: HttpResponse                               = HttpResponse(Status.OK, Json.obj().toString())
-  private lazy val CYCache: List[Bik]                              = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), bikStatus))
+
+  val responseHeaders: Map[String, String] = Map(
+    HeaderTags.ETAG   -> "0",
+    HeaderTags.X_TXID -> "1"
+  )
+
+  private lazy val CYCache: List[Bik] = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), bikStatus))
+
+  when(app.injector.instanceOf[HmrcTierConnector].getAllAvailableBiks(any[Int])(any[HeaderCarrier]))
+    .thenReturn(Future.successful(CYCache))
 
   when(
     app.injector
       .instanceOf[HmrcTierConnector]
-      .genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
-        any[HeaderCarrier],
-        any[json.Format[List[Bik]]]
-      )
-  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 10
-  }))
-
-  when(
-    app.injector
-      .instanceOf[HmrcTierConnector]
-      .genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(year))(
-        any[HeaderCarrier],
-        any[json.Format[List[Bik]]]
-      )
-  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 5
-  }))
-
-  when(
-    app.injector
-      .instanceOf[HmrcTierConnector]
-      .genericPostCall(
-        any[String],
-        argEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
+      .updateOrganisationsRegisteredBiks(
         any[EmpRef],
         any[Int],
         any
-      )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
-  ).thenReturn(Future.successful(response))
+      )(any[HeaderCarrier], any[Request[_]])
+  ).thenReturn(Future.successful(OK))
 
   when(
     app.injector
       .instanceOf[HmrcTierConnector]
-      .genericGetCall[List[Bik]](
-        any[String],
-        argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
+      .getRegisteredBiks(
         any[EmpRef],
         any[Int]
-      )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) >= 15
-  }))
+      )(any[HeaderCarrier])
+  ).thenReturn(
+    Future.successful(
+      BikResponse(
+        responseHeaders,
+        CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) >= 15
+        }
+      )
+    )
+  )
 
   when(
     app.injector

@@ -18,21 +18,20 @@ package controllers
 
 import config.PbikAppConfig
 import controllers.actions.{AuthAction, NoSessionCheckAction, UnauthorisedAction}
-
-import javax.inject.{Inject, Singleton}
 import models._
+import play.api.Logging
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc._
 import services.{BikListService, SessionService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.{ControllersReferenceData, SplunkLogger, URIInformation, _}
+import utils._
 import views.html.{ErrorPage, Summary}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Success, Try}
-import play.api.Logging
 
 @Singleton
 class HomePageController @Inject() (
@@ -85,21 +84,17 @@ class HomePageController @Inject() (
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val taxYearRange: TaxYearRange     = taxDateUtils.getTaxYearRange()
     val pageLoadFuture: Future[Result] = for {
-      _                                                 <- sessionService.resetAll()
+      _                             <- sessionService.resetAll()
       // Get the available count of biks available for each tax year
-      biksListOptionCY: List[Bik]                       <-
-        bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef("", ""))(
-          uriInformation.getBenefitTypesPath
-        )
-      biksListOptionCYP1: List[Bik]                     <-
-        bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cy, EmpRef("", ""))(
-          uriInformation.getBenefitTypesPath
-        )
-      currentYearList: (Map[String, String], List[Bik]) <- bikListService.currentYearList
-      nextYearList: (Map[String, String], List[Bik])    <- bikListService.nextYearList
+      biksListOptionCY: List[Bik]   <-
+        bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef.empty)
+      biksListOptionCYP1: List[Bik] <-
+        bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cy, EmpRef.empty)
+      currentYearList               <- bikListService.currentYearList
+      nextYearList                  <- bikListService.nextYearList
     } yield {
-      sessionService.storeCYRegisteredBiks(currentYearList._2)
-      sessionService.storeNYRegisteredBiks(nextYearList._2)
+      sessionService.storeCYRegisteredBiks(currentYearList.bikList)
+      sessionService.storeNYRegisteredBiks(nextYearList.bikList)
       val fromYTA = if (request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).isDefined) {
         request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).get
       } else {
@@ -110,15 +105,15 @@ class HomePageController @Inject() (
         summaryPage(
           pbikAppConfig.cyEnabled,
           taxYearRange,
-          currentYearList._2,
-          nextYearList._2,
+          currentYearList.bikList,
+          nextYearList.bikList,
           biksListOptionCY.size,
           biksListOptionCYP1.size,
           fromYTA.toString,
           empRef = request.empRef
         )
       )
-        .addingToSession(nextYearList._1.toSeq: _*)
+        .addingToSession(nextYearList.headers.toSeq: _*)
         .addingToSession(ControllersReferenceDataCodes.SESSION_FROM_YTA -> fromYTA.toString)
     }
     controllersReferenceData.responseErrorHandler(pageLoadFuture)

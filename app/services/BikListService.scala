@@ -17,7 +17,7 @@
 package services
 
 import config.AppConfig
-import connectors.HmrcTierConnector
+import connectors.{BikResponse, HmrcTierConnector}
 import models.{AuthenticatedRequest, Bik, EmpRef}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.{ControllersReferenceData, URIInformation}
@@ -35,41 +35,20 @@ class BikListService @Inject() (
 
   def pbikHeaders: Map[String, String] = Map[String, String]()
 
-  def currentYearList(implicit
-    hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]
-  ): Future[(Map[String, String], List[Bik])] = {
-    val response = tierConnector.genericGetCall[List[Bik]](
-      uriInformation.baseUrl,
-      uriInformation.getRegisteredPath,
-      request.empRef,
-      controllersReferenceData.yearRange.cyminus1
-    )
+  def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BikResponse] =
+    tierConnector
+      .getRegisteredBiks(request.empRef, controllersReferenceData.yearRange.cyminus1)
+      .map(response => BikResponse(response.headers, response.bikList.distinct))
 
-    response.map { resultOption: List[Bik] =>
-      (tierConnector.pbikHeaders, resultOption.distinct)
+  def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BikResponse] =
+    tierConnector
+      .getRegisteredBiks(request.empRef, controllersReferenceData.yearRange.cy)
+      .map(response => BikResponse(response.headers, response.bikList.distinct))
+
+  def registeredBenefitsList(year: Int, empRef: EmpRef)(implicit hc: HeaderCarrier): Future[List[Bik]] =
+    if (empRef.taxOfficeNumber == "" && empRef.taxOfficeReference == "") {
+      tierConnector.getAllAvailableBiks(year)
+    } else {
+      tierConnector.getRegisteredBiks(empRef, year).map(_.bikList)
     }
-  }
-
-  def nextYearList(implicit
-    hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]
-  ): Future[(Map[String, String], List[Bik])] = {
-    val response = tierConnector.genericGetCall[List[Bik]](
-      uriInformation.baseUrl,
-      uriInformation.getRegisteredPath,
-      request.empRef,
-      controllersReferenceData.yearRange.cy
-    )
-
-    response.map { resultOption: List[Bik] =>
-      (tierConnector.pbikHeaders, resultOption.distinct)
-    }
-  }
-
-  def registeredBenefitsList(year: Int, empRef: EmpRef)(path: String)(implicit hc: HeaderCarrier): Future[List[Bik]] = {
-    val newPath  = if (path == "") uriInformation.getRegisteredPath else path
-    val response = tierConnector.genericGetCall[List[Bik]](uriInformation.baseUrl, newPath, empRef, year)
-    response
-  }
 }

@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.HmrcTierConnector
+import connectors.{BikResponse, EiLResponse, HmrcTierConnector}
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
@@ -27,15 +27,14 @@ import play.api.data.Form
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json
-import play.api.libs.json.JsObject
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{EiLListService, SessionService}
 import support._
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.Exceptions.{InvalidBikTypeURIException, InvalidYearURIException}
 import utils._
 
@@ -72,7 +71,28 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
   private val (iabdType, nino, cy, cyp1): (String, String, String, String)           = ("car", "AA111111A", "cy", "cyp1")
   private val CYCache: List[Bik]                                                     =
     List.range(start, end).map(n => Bik("" + n, statusValue))
-  private val listOfPeople: List[EiLPerson]                                          = List(
+
+  val responseHeaders: Map[String, String] = None.orNull
+
+  val exclusionResponse: EiLResponse = EiLResponse(
+    OK,
+    Json
+      .parse("""[
+                   {
+                       "nino": "AB111111",
+                       "firstForename": "Adam",
+                      "surname": "Smith",
+                       "worksPayrollNumber": "ABC123",
+                       "dateOfBirth": "01/01/1980",
+                       "gender": "male",
+                       "status": 0,
+                       "perOptLock": 0
+                   }
+               ]""")
+      .as[List[EiLPerson]]
+  )
+
+  private val listOfPeople: List[EiLPerson] = List(
     EiLPerson(
       "AA111111",
       "John",
@@ -85,9 +105,9 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     ),
     EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None)
   )
-  private val formData: Form[EiLPersonList]                                          =
+  private val formData: Form[EiLPersonList] =
     controllersReferenceData.individualsForm.fill(EiLPersonList(listOfPeople))
-  private val pbikSession: PbikSession                                               = PbikSession(
+  private val pbikSession: PbikSession      = PbikSession(
     sessionId = UUID.randomUUID().toString,
     registrations = None,
     bikRemoved = None,
@@ -103,47 +123,58 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
   implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
     AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
 
+  when(mockExclusionListController.tierConnector.getAllAvailableBiks(any[Int])(any[HeaderCarrier]))
+    .thenReturn(Future.successful(CYCache))
+
   when(
-    mockExclusionListController.tierConnector.genericGetCall[List[Bik]](
-      any[String],
-      any[String],
+    mockExclusionListController.tierConnector.getRegisteredBiks(
       any[EmpRef],
       any[Int]
-    )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 10
-  }))
+    )(any[HeaderCarrier])
+  ).thenReturn(
+    Future.successful(
+      BikResponse(
+        responseHeaders,
+        CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 10
+        }
+      )
+    )
+  )
 
   when(
     mockExclusionListController.tierConnector
-      .genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(year))(
-        any[HeaderCarrier],
-        any[json.Format[List[Bik]]]
+      .getRegisteredBiks(any[EmpRef], argEq(year))(
+        any[HeaderCarrier]
       )
-  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 5
-  }))
+  ).thenReturn(
+    Future.successful(
+      BikResponse(
+        responseHeaders,
+        CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 5
+        }
+      )
+    )
+  )
 
   when(
-    mockExclusionListController.tierConnector.genericPostCall(
-      any[String],
-      argEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
-      any[EmpRef],
-      any[Int],
-      any
-    )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
-  ).thenReturn(Future.successful(new FakeResponse()))
+    mockExclusionListController.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(any[HeaderCarrier])
+  ).thenReturn(
+    Future.successful(
+      BikResponse(
+        responseHeaders,
+        CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) >= 15
+        }
+      )
+    )
+  )
 
   when(
-    mockExclusionListController.tierConnector.genericGetCall[List[Bik]](
-      any[String],
-      argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
-      any[EmpRef],
-      any[Int]
-    )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) >= 15
-  }))
+    mockExclusionListController.tierConnector
+      .excludeEiLPersonFromBik(argEq(iabdType), any[EmpRef], any[Int], any[EiLPerson])(any[HeaderCarrier], any[Request[_]])
+  ).thenReturn(Future.successful(exclusionResponse))
 
   when(mockExclusionListController.sessionService.storeEiLPerson(any())(any[HeaderCarrier])).thenReturn(
     Future.successful(PbikSession(pbikSession.sessionId))
@@ -191,7 +222,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     "checking the Bik's IABD value is invalid for CY" must {
       "throw a InvalidBikTypeURIException" in {
         intercept[InvalidBikTypeURIException] {
-          await(mockExclusionListController.validateRequest(cy, "1"))
+          await(mockExclusionListController.validateRequest(cy, "unknown"))
         }
       }
     }
@@ -347,6 +378,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
               )
             )
           )
+
         val ninoSearchPerson                                              = EiLPerson("AB111111", "Adam", None, "Smith", None, None, None, None)
         val formData                                                      =
           controllersReferenceData.exclusionSearchFormWithNino(request = mockRequest).fill(ninoSearchPerson)
@@ -514,6 +546,11 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
         mockRequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
 
       "show the what next page" in {
+        when(
+          mockExclusionListController.tierConnector
+            .removeEiLPersonExclusionFromBik(argEq(iabdType), any[EmpRef], any[Int], any[EiLPerson])(any[HeaderCarrier], any[Request[_]])
+        ).thenReturn(Future.successful(OK))
+
         val result = mockExclusionListController.removeExclusionsCommit(iabdType)(formRequest)
 
         status(result) mustBe SEE_OTHER
@@ -575,18 +612,19 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
       "redirect to the what next page" in {
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
           mockRequest.withFormUrlEncodedBody("individualNino" -> "AA111111A")
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
-          .thenReturn(
-            Future.successful(
-              Some(
-                pbikSession.copy(
-                  currentExclusions = Some(List.empty[EiLPerson]),
-                  nyRegisteredBiks = Some(List(Bik("31", statusValue)))
-                )
+
+        when(mockExclusionListController.sessionService.fetchPbikSession()(any[HeaderCarrier])).thenReturn(
+          Future.successful(
+            Some(
+              pbikSession.copy(
+                currentExclusions = Some(List.empty[EiLPerson]),
+                nyRegisteredBiks = Some(List(Bik("31", statusValue)))
               )
             )
           )
-        val result                                                        =
+        )
+
+        val result =
           mockExclusionListController.updateMultipleExclusions(
             cyp1,
             iabdType,
@@ -638,12 +676,11 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     "searchResultsHandleFormErrors is called" must {
       val eiLPersonForNino   = EiLPerson("AA111111", "1", None, "Smith", None, None, None, None)
       val eiLPersonForNoNino = EiLPerson("AB111111", "1", None, "Smith", None, Some("01/01/1980"), Some("male"), None)
-      val value              = "40"
 
       def test(formType: String, formData: Form[EiLPerson]): Unit =
         s"return OK for an invalid input on first name for formType $formType" in {
           val form   = formData
-          val result = mockExclusionListController.searchResultsHandleFormErrors(cy, formType, value, form)
+          val result = mockExclusionListController.searchResultsHandleFormErrors(cy, formType, iabdType, form)
 
           status(result) mustBe OK
         }
@@ -676,16 +713,15 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
       implicit val hc: HeaderCarrier                                      = HeaderCarrier()
 
       val eilPerson = EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None)
-      "return 500 for genericPostCall that returns 400" in {
+      "return INTERNAL_SERVER_ERROR (500) when receiving a BAD_REQUEST (400) from the connector at an exclusion" in {
         when(
-          mockExclusionListController.tierConnector.genericPostCall(
-            any[String],
-            argEq(app.injector.instanceOf[URIInformation].exclusionPostUpdatePath(iabdType)),
-            any[EmpRef],
-            any[Int],
-            any
-          )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
-        ).thenReturn(Future.successful(HttpResponse(BAD_REQUEST, JsObject.empty.toString())))
+          mockExclusionListController.tierConnector
+            .excludeEiLPersonFromBik(argEq(iabdType), any[EmpRef], any[Int], argEq(eilPerson))(
+              any[HeaderCarrier],
+              any[Request[_]]
+            )
+        ).thenReturn(Future.successful(EiLResponse(BAD_REQUEST, List.empty)))
+
         val resultForCyp1 = mockExclusionListController.commitExclusion(cyp1, iabdType, dateRange, Some(eilPerson))
         val resultForCy   = mockExclusionListController.commitExclusion(cy, iabdType, dateRange, Some(eilPerson))
 

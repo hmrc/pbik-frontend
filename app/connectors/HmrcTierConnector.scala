@@ -16,95 +16,133 @@
 
 package connectors
 
-import models.{EmpRef, HeaderTags, PbikError}
+import models._
 import play.api.Logging
+import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json._
 import play.api.mvc.Request
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.Exceptions.GenericServerErrorException
+import utils.URIInformation
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HmrcTierConnector @Inject() (client: HttpClient)(implicit ec: ExecutionContext) extends Logging {
+class HmrcTierConnector @Inject() (client: HttpClient, URIInformation: URIInformation)(implicit ec: ExecutionContext)
+    extends Logging {
 
-  var pbikHeaders: Map[String, String] = Map[String, String]()
+  private val maxEmptyBodyLength: Int = 4
 
-  def createGetUrl(baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int): String = {
-    val orgIdentifierEncoded = empRef.encodedEmpRef
-    orgIdentifierEncoded.trim.length match {
-      case 3 => s"$baseUrl/$year/$URIExtension"
-      case _ => s"$baseUrl/$orgIdentifierEncoded/$year/$URIExtension"
-    }
-  }
-
-  def genericGetCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int)(implicit
-    hc: HeaderCarrier,
-    formats: Format[T]
-  ): Future[T] = {
-    val resp = client.GET(createGetUrl(baseUrl, URIExtension, empRef, year))
-
-    resp.map { r =>
-      val headers: Map[String, String] = Map(
-        HeaderTags.ETAG   -> r.header(HeaderTags.ETAG).getOrElse("0"),
-        HeaderTags.X_TXID -> r.header(HeaderTags.X_TXID).getOrElse("1")
+  def getRegisteredBiks(
+    empRef: EmpRef,
+    year: Int
+  )(implicit hc: HeaderCarrier): Future[BikResponse] =
+    client
+      .GET(s"${URIInformation.baseUrl}/${empRef.encodedEmpRef}/$year")
+      .flatMap(implicit response =>
+        Future(BikResponse(responseHeaders, validateResponses("getRegisteredBiks").json.as[List[Bik]]))
       )
 
-      pbikHeaders = headers
-      logger.info("[HmrcTierConnector][genericGetCall] GET etag/xtxid headers: " + pbikHeaders)
+  def getAllAvailableBiks(year: Int)(implicit hc: HeaderCarrier): Future[List[Bik]] =
+    client
+      .GET(s"${URIInformation.baseUrl}/$year/getbenefittypes")
+      .flatMap(implicit response => Future(validateResponses("getAllAvailableBiks").json.as[List[Bik]]))
 
-      r.json.validate[PbikError] match {
-        case s: JsSuccess[PbikError] =>
-          logger.error(
-            s"[HmrcTierConnector][genericGetCall] a pbik error code was returned. Error Code: ${s.value.errorCode}"
-          )
-          throw new GenericServerErrorException(s.value.errorCode)
-        case _: JsError              => r.json.as[T]
+  def getAllExcludedEiLPersonForBik(iabdType: String, empRef: EmpRef, year: Int)(implicit hc: HeaderCarrier): Future[List[EiLPerson]] = {
+    val mapped = URIInformation.iabdValueURLDeMapper(iabdType)
+    client
+      .GET(s"${URIInformation.baseUrl}/${empRef.encodedEmpRef}/$year/$mapped/exclusion")
+      .flatMap(implicit response => Future(validateResponses("getAllExcludedEiLPersonForBik").json.as[List[EiLPerson]]))
+  }
+
+  def excludeEiLPersonFromBik(iabdType: String, empRef: EmpRef, year: Int, individual: EiLPerson)(
+    implicit
+    hc: HeaderCarrier,
+    request: Request[_]
+  ): Future[EiLResponse] = {
+    val mapped = URIInformation.iabdValueURLDeMapper(iabdType)
+    client
+      .POST(
+        s"${URIInformation.baseUrl}/${empRef.encodedEmpRef}/$year/$mapped/exclusion/update",
+        individual,
+        createOrCheckForRequiredHeaders
+      )
+      .flatMap {
+        case response if response.body.length <= maxEmptyBodyLength =>
+          Future(EiLResponse(validateResponses("excludeEiLPersonFromBik")(response).status, List.empty))
+        case response                                               =>
+          Future(EiLResponse(response.status, validateResponses("excludeEiLPersonFromBik")(response).json.as[List[EiLPerson]]))
       }
 
-    }
   }
 
-  def createPostUrl(baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int): String = {
-    val orgIdentifierEncoded = empRef.encodedEmpRef
-    s"$baseUrl/$orgIdentifierEncoded/$year/$URIExtension"
-  }
-
-  def genericPostCall[T](baseUrl: String, URIExtension: String, empRef: EmpRef, year: Int, data: T)(implicit
+  def removeEiLPersonExclusionFromBik(iabdType: String, empRef: EmpRef, year: Int, individualToRemove: EiLPerson)(
+    implicit
     hc: HeaderCarrier,
-    request: Request[_],
-    formats: Format[T]
-  ): Future[HttpResponse] = {
+    request: Request[_]
+  ): Future[Int] = {
+    val mapped = URIInformation.iabdValueURLDeMapper(iabdType)
 
+    client
+      .POST(
+        s"${URIInformation.baseUrl}/${empRef.encodedEmpRef}/$year/$mapped/exclusion/remove",
+        individualToRemove,
+        createOrCheckForRequiredHeaders
+      )
+      .flatMap { implicit response =>
+        Future(validateResponses("removeEiLPersonExclusionFromBik").status)
+      }
+  }
+
+  def updateOrganisationsRegisteredBiks(empRef: EmpRef, year: Int, changes: List[Bik])(
+    implicit
+    hc: HeaderCarrier,
+    request: Request[_]
+  ): Future[Int] =
+    client
+      .POST(
+        s"${URIInformation.baseUrl}/${empRef.encodedEmpRef}/$year/updatebenefittypes",
+        changes,
+        createOrCheckForRequiredHeaders
+      )
+      .flatMap { implicit response =>
+        Future(validateResponses("updateOrganisationsRegisteredBiks").status)
+      }
+
+  private def responseHeaders(implicit response: HttpResponse): Map[String, String] =
+    Map(
+      HeaderTags.ETAG   -> response.header(HeaderTags.ETAG).getOrElse("0"),
+      HeaderTags.X_TXID -> response.header(HeaderTags.X_TXID).getOrElse("1")
+    )
+
+  private def createOrCheckForRequiredHeaders(implicit request: Request[_]): Seq[(String, String)] = {
     val etagFromSession  = request.session.get(HeaderTags.ETAG).getOrElse("0")
     val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")
-    val optMapped        = Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession)
-
     logger.info(
-      "[HmrcTierConnector][genericPostCall] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession
+      "[HmrcTierConnector][createOrCheckForRequiredHeaders] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession
     )
-    client.POST(createPostUrl(baseUrl, URIExtension, empRef, year), data, optMapped.toSeq).map {
-      response: HttpResponse =>
-        processResponse(response)
-    }
+    Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession).toSeq
   }
 
-  def processResponse(response: HttpResponse): HttpResponse =
-    response match {
-      case _ if response.status >= 400    =>
-        logger.error(s"[HmrcTierConnector][processResponse] An unexpected status was returned: ${response.status}")
-        throw new GenericServerErrorException(response.body)
-      case _ if response.body.length <= 0 => response
-      case _                              =>
-        response.json.validate[PbikError].asOpt match {
-          case Some(pbikError) =>
-            logger.error(
-              s"[HmrcTierConnector][processResponse] A pbik error code was returned. Error Code: ${pbikError.errorCode}"
-            )
-            throw new GenericServerErrorException(pbikError.errorCode)
-          case _               => response
-        }
+  private def validateResponses(fromMethod: String)(implicit response: HttpResponse): HttpResponse =
+    if (response.status >= BAD_REQUEST) {
+      logger.error(s"[HmrcTierConnector][$fromMethod] An unexpected status was returned: ${response.status}")
+      throw new GenericServerErrorException(response.body)
+    } else if (response.body.length <= maxEmptyBodyLength) {
+      response
+    } else {
+      response.json.validate[PbikError] match {
+        case errorReceived: JsSuccess[PbikError] =>
+          logger.error(
+            s"[HmrcTierConnector][$fromMethod] a pbik error code was returned. Error Code: ${errorReceived.value.errorCode}"
+          )
+          throw new GenericServerErrorException(errorReceived.value.errorCode)
+        case _: JsError                          => response
+      }
     }
 }
+
+case class BikResponse(headers: Map[String, String], bikList: List[Bik])
+case class EiLResponse(status: Int, eilList: List[EiLPerson])

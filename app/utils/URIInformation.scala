@@ -17,11 +17,10 @@
 package utils
 
 import config.Service
+import play.api.{Configuration, Logging}
+import utils.Exceptions.InvalidBikTypeURIException
 
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
-import utils.Exceptions.InvalidBikTypeURIException
-import play.api.Logging
 
 @Singleton
 class URIInformation @Inject() (configuration: Configuration) extends URIValues with Logging {
@@ -65,7 +64,8 @@ class URIInformation @Inject() (configuration: Configuration) extends URIValues 
   def iabdValueURLDeMapper(iabdMappedURL: String): String = {
     val value = urlMappedIABDValues.find(x => x._2 == iabdMappedURL)
     value match {
-      case Some(_) => value.get._1
+      case Some(_) =>
+        value.get._1
       case None    =>
         logger.info("[URIInformation][iabdValueURLDeMapper] Invalid bik passed to de-map url: " + iabdMappedURL)
         throw new InvalidBikTypeURIException

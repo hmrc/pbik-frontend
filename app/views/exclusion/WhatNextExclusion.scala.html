@@ -44,9 +44,9 @@ empRef: EmpRef)(implicit request:Request[_], messages: Messages)
     </div>
     <p id="confirmation-p" class="govuk-body">
         @if(year=="cy"){
-            @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), s"${taxYearRange.cyminus1}")
+            @messages("whatNext.exclude.lede", name, messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}"), s"${taxYearRange.cyminus1}")
         }else {
-            @messages("whatNext.exclude.lede", name, messages("BenefitInKind.label." + iabdType), s"${taxYearRange.cy}")
+            @messages("whatNext.exclude.lede", name, messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}"), s"${taxYearRange.cy}")
         }
     </p>
     <h2 class="govuk-heading-m">
@@ -58,14 +58,14 @@ empRef: EmpRef)(implicit request:Request[_], messages: Messages)
     </p>
 
     <div class="govuk-form-group">
-        <p  class="govuk-body"> <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year,uriInformation.iabdValueURLMapper(iabdType))" id="link-back-excluded">
-        @messages("Service.finish.excluded")
-        </a>
+        <p  class="govuk-body">
+            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdType)" id="link-back-excluded">
+                @messages("Service.finish.excluded")
+            </a>
         </p>
 
-        <p class="govuk-body"> <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
-        @messages("Service.back.overview.whatNext")
-         </a>
+        <p class="govuk-body">
+            <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back"> @messages("Service.back.overview.whatNext") </a>
         </p>
 
          <p class="govuk-body"> <a class="govuk-link" href="@config.feedbackUrl" id="link-feedback">

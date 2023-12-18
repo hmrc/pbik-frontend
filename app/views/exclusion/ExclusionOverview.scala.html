@@ -63,14 +63,14 @@
         }
 
         <h1 id="title" class="govuk-heading-xl">
-            <span class="govuk-caption-xl">@messages("BenefitInKind.label." + iabdType)</span>
+            <span class="govuk-caption-xl">@messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}")</span>
             @if(current.isEmpty){@messages("ExclusionOverview.notExcludedEmployee.title")}else{@messages("ExclusionOverview.excludedEmployee.title")}
         </h1>
 
-        @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType))) {
+        @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdType)) {
 
             @if(current.isEmpty) {
-                <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", messages("BenefitInKind.label." + iabdType))</p>
+                <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}"))</p>
 
             } else {
                 <table class="govuk-table">
@@ -88,7 +88,7 @@
                             <td class="govuk-table__cell" id="nino-@person.nino">@person.nino</td>
                             <td class="govuk-table__cell" id="wpn-@person.nino">@person.worksPayrollNumber</td>
                             <td class="govuk-table__cell">
-                                <a class="govuk-link" id='@person.nino-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), person.nino)">
+                                <a class="govuk-link" id='@person.nino-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdType, person.nino)">
                                     @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nino</span>
                                 </a>
                             </td>

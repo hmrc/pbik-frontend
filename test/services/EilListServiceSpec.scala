@@ -27,7 +27,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
@@ -50,9 +49,8 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
     val els = app.injector.instanceOf[EiLListService]
 
     when(
-      els.tierConnector.genericGetCall[List[EiLPerson]](any[String], any[String], any[EmpRef], any[Int])(
-        any[HeaderCarrier],
-        any[json.Format[List[EiLPerson]]]
+      els.tierConnector.getAllExcludedEiLPersonForBik(any[String], any[EmpRef], any[Int])(
+        any[HeaderCarrier]
       )
     ).thenReturn(Future.successful(List.empty[EiLPerson]))
 

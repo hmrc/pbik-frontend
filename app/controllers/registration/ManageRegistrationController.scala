@@ -88,9 +88,7 @@ class ManageRegistrationController @Inject() (
     implicit request =>
       val resultFuture = for {
         biksListOption: List[Bik] <-
-          bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef.empty)(
-            uriInformation.getBenefitTypesPath
-          )
+          bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef.empty)
         result                    <- formMappings.objSelectedForm
                                        .bindFromRequest()
                                        .fold(
@@ -136,9 +134,7 @@ class ManageRegistrationController @Inject() (
     implicit request =>
       val resultFuture = for {
         biksListOption: List[Bik] <-
-          bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cy, EmpRef.empty)(
-            uriInformation.getBenefitTypesPath
-          )
+          bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cy, EmpRef.empty)
         result                    <- formMappings.objSelectedForm
                                        .bindFromRequest()
                                        .fold(
@@ -277,19 +273,13 @@ class ManageRegistrationController @Inject() (
     request: AuthenticatedRequest[AnyContent]
   ): Future[Result] =
     tierConnector
-      .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
+      .getRegisteredBiks(request.empRef, year)
       .flatMap { registeredResponse =>
         sessionService.fetchPbikSession().flatMap { session =>
-          val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
+          val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse.bikList, persistentBiks)
           if (additive) {
             // Process registration
-            val saveFuture = tierConnector.genericPostCall(
-              uriInformation.baseUrl,
-              uriInformation.updateBenefitTypesPath,
-              request.empRef,
-              year,
-              changes
-            )
+            val saveFuture = tierConnector.updateOrganisationsRegisteredBiks(request.empRef, year, changes)
             saveFuture.map { _ =>
               auditBikUpdate(additive = true, year, persistentBiks)
               lazy val yearRange  = controllersReferenceData.yearRange
@@ -345,10 +335,10 @@ class ManageRegistrationController @Inject() (
     request: AuthenticatedRequest[AnyContent]
   ): Future[Result] =
     tierConnector
-      .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
+      .getRegisteredBiks(request.empRef, year)
       .flatMap { registeredResponse =>
         sessionService.fetchPbikSession().flatMap { session =>
-          val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse, persistentBiks)
+          val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse.bikList, persistentBiks)
 
           val activeReg      = session.flatMap(_.getActiveRegistrationItems()).getOrElse(List.empty[RegistrationItem])
           val listWithReason =
@@ -375,9 +365,7 @@ class ManageRegistrationController @Inject() (
           if ControllersReferenceDataCodes.BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue) =>
         reasonValue.info match {
           case Some(info) =>
-            tierConnector.genericPostCall(
-              uriInformation.baseUrl,
-              uriInformation.updateBenefitTypesPath,
+            tierConnector.updateOrganisationsRegisteredBiks(
               request.empRef,
               year,
               changes
@@ -390,13 +378,7 @@ class ManageRegistrationController @Inject() (
             )
             Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik(iabdType)))
           case _          =>
-            tierConnector.genericPostCall(
-              uriInformation.baseUrl,
-              uriInformation.updateBenefitTypesPath,
-              request.empRef,
-              year,
-              changes
-            )
+            tierConnector.updateOrganisationsRegisteredBiks(request.empRef, year, changes)
             auditBikUpdate(additive = false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, None)))
             Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik(iabdType)))
         }

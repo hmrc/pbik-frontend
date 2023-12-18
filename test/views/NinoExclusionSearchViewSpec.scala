@@ -38,7 +38,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   def viewWithForm(form: Form[EiLPerson]): Html =
-    ninoExclusionSearchFormView(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
+    ninoExclusionSearchFormView(taxYearRange, "cyp1", "medical", form, alreadyExists = true, EmpRef("", ""))
 
   "NinoExclusionSearchView" must {
     implicit def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)

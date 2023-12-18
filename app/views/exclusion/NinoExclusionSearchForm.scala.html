@@ -38,8 +38,8 @@
         empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
 
-@excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">}
-@expenseOrBenefit = @{messages(s"BenefitInKind.label.$iabdType")}
+@excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">}
+@expenseOrBenefit = @{messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}")}
 @govukLayoutWrapper(PageTitle(messages("ExclusionSearch.form.title"), searchForm.hasErrors), empRef = Some(empRef.toString) ) {
 
     @if(searchForm.hasErrors){
@@ -50,7 +50,7 @@
             </h2>
             @if(searchForm("status").hasErrors) {
                 @if(alreadyExists) {
-                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages("BenefitInKind.label." + iabdType), excludedEmployeesLink, "</a>"))
+                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}"), excludedEmployeesLink, "</a>"))
                 } else {
                     @Html(messages("ExclusionSearch.Fail.Desc"))
                 }
@@ -74,7 +74,7 @@
         </div>
     }
 
-    @formWithCSRF(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), "nino"), Symbol("autocomplete") -> "off") {
+    @formWithCSRF(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdType, "nino"), Symbol("autocomplete") -> "off") {
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <span class="govuk-caption-l">@expenseOrBenefit</span>
@@ -101,7 +101,7 @@
             <input type="submit" class="govuk-button" role="button" id="button-search" value="@messages("Service.continue")"/>
 
         <p class="govuk-body">
-        <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
+        <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">
             @messages("Service.back.excluded")
         </a>
         </p>
