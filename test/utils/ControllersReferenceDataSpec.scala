@@ -28,7 +28,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
+import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeException, InvalidYearURIException}
 
 import scala.concurrent.{Future, Promise}
 
@@ -96,8 +96,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.invalidYear"))
       }
 
-      "show an error page when the Future completes with a InvalidBikTypeURIException" in new Test {
-        p.failure(new InvalidBikTypeURIException)
+      "show an error page when the Future completes with a InvalidBikTypeException" in new Test {
+        p.failure(new InvalidBikTypeException)
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe BAD_REQUEST

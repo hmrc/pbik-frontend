@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import utils.URIInformation
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.templatemodels.PageTitle
@@ -23,7 +22,6 @@
         govukLayoutWrapper: GovukLayoutWrapper,
         config: AppConfig,
         localFormPartialRetriever: LocalFormPartialRetriever,
-        uriInformation: URIInformation,
         govukRadios: GovukRadios,
         formWithCSRF: FormWithCSRF
 )
@@ -31,7 +29,7 @@
 @(
         taxYearRange: TaxYearRange,
         isCurrentTaxYear: String,
-        iabdType: String,
+        iabdString: String,
         current: List[EiLPerson],
         empRef: EmpRef,
         form: Form[MandatoryRadioButton]
@@ -63,14 +61,14 @@
         }
 
         <h1 id="title" class="govuk-heading-xl">
-            <span class="govuk-caption-xl">@messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}")</span>
+            <span class="govuk-caption-xl">@messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")</span>
             @if(current.isEmpty){@messages("ExclusionOverview.notExcludedEmployee.title")}else{@messages("ExclusionOverview.excludedEmployee.title")}
         </h1>
 
-        @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdType)) {
+        @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdString)) {
 
             @if(current.isEmpty) {
-                <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}"))</p>
+                <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))</p>
 
             } else {
                 <table class="govuk-table">
@@ -88,7 +86,7 @@
                             <td class="govuk-table__cell" id="nino-@person.nino">@person.nino</td>
                             <td class="govuk-table__cell" id="wpn-@person.nino">@person.worksPayrollNumber</td>
                             <td class="govuk-table__cell">
-                                <a class="govuk-link" id='@person.nino-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdType, person.nino)">
+                                <a class="govuk-link" id='@person.nino-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdString, person.nino)">
                                     @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nino</span>
                                 </a>
                             </td>

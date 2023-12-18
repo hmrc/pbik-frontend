@@ -14,17 +14,16 @@
  * limitations under the License.
  *@
 
-@import utils.URIInformation
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.html.RepeatWithIndex
 @import views.templatemodels.PageTitle
 
+
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config: AppConfig,
         localFormPartialRetriever: LocalFormPartialRetriever,
-        uriInformation: URIInformation,
         repeatWithIndex: RepeatWithIndex,
         formWithCSRF: FormWithCSRF
 )
@@ -32,14 +31,14 @@
 @(
         taxYearRange: TaxYearRange,
         year: String,
-        iabdType: String,
+        iabdString: String,
         listOfMatches: EiLPersonList,
         listOfMatchesForm: Form[ExclusionNino],
         formType: String,
         empRef: EmpRef
 )(implicit request: Request[_], messages: Messages)
 
-@expenseOrBenefit = @{messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}")}
+@expenseOrBenefit = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
 @title = @{if(listOfMatches.active.length > 1){ messages("ExclusionSearch.title.multiple") } else { messages("ExclusionSearch.title.single") }}
 @govukLayoutWrapper(PageTitle(title, listOfMatchesForm.hasErrors), empRef = Some(empRef.toString)) {
 
@@ -63,7 +62,7 @@
                 </div>
             }
 
-             @formWithCSRF(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdType, formType)) {
+             @formWithCSRF(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdString, formType)) {
                  <div class="govuk-form-group @if(listOfMatchesForm("individualNino").hasErrors){govuk-form-group--error}">
                      <fieldset class="govuk-fieldset" @if(listOfMatchesForm("individualNino").hasErrors){aria-describedby="selection-error"}>
                          <legend class="govuk-fieldset__legend govuk-fieldset__legend--l govuk-!-padding-bottom-5">
@@ -99,7 +98,7 @@
                  <input type="submit" class="govuk-button" role="button" id="button-confirm" value="@messages("Service.confirmAndContinue")">
             }
 
-            <a class="govuk-link" id="multi-exclusion-back" href="@routes.ExclusionListController.performPageLoad(year, iabdType)">
+            <a class="govuk-link" id="multi-exclusion-back" href="@routes.ExclusionListController.performPageLoad(year, iabdString)">
                 @messages("Service.back.excluded")
             </a>
         } else {
@@ -127,9 +126,9 @@
             <p class="govuk-body">@messages("ExclusionImportant.ExcludeEmployee")</p>
             <p class="govuk-inset-text">@messages("ExclusionImportant.Reminder", expenseOrBenefit, yearvalue) </p>
             <div class="govuk-form-group">
-                <a href="@routes.ExclusionListController.updateExclusions(year, iabdType)" class="govuk-button" role="button" id="button-confirm">@messages("Service.confirm")</a>
+                <a href="@routes.ExclusionListController.updateExclusions(year, iabdString)" class="govuk-button" role="button" id="button-confirm">@messages("Service.confirm")</a>
             </div>
-            <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(year, iabdType)">
+            <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(year, iabdString)">
                 @messages("Service.back.excluded")
             </a>
         }

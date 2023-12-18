@@ -21,7 +21,7 @@ import connectors.{BikResponse, HmrcTierConnector}
 import models.{AuthenticatedRequest, Bik, EmpRef, HeaderTags}
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{ControllersReferenceData, URIInformation}
+import utils.ControllersReferenceData
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,21 +29,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class StubbedBikListService @Inject() (
   pbikAppConfig: AppConfig,
   tierConnector: HmrcTierConnector,
-  controllersReferenceData: ControllersReferenceData,
-  uriInformation: URIInformation
+  controllersReferenceData: ControllersReferenceData
 )(implicit ec: ExecutionContext)
     extends BikListService(
       pbikAppConfig,
       tierConnector,
-      controllersReferenceData,
-      uriInformation
+      controllersReferenceData
     ) {
 
   //scalastyle:off magic.number
-  lazy val CYCache: List[Bik]                        = List.range(3, 32).map(n => Bik("" + n, 10))
+  lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
   //scalastyle:on magic.number
   /*(n => new Bik("" + (n + 1), 10))*/
-  override lazy val pbikHeaders: Map[String, String] = Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1")
 
   override def currentYearList(implicit
     hc: HeaderCarrier,

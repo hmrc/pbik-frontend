@@ -21,7 +21,7 @@ import models.EmpRef
 import org.jsoup.Jsoup
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import utils.{FormMappings, TaxDateUtils, URIInformation}
+import utils.{FormMappings, TaxDateUtils}
 import views.helper.PBIKViewSpec
 import views.html.exclusion.ExclusionNinoOrNoNinoForm
 
@@ -35,7 +35,6 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
   implicit val taxDateUtils: TaxDateUtils                           = app.injector.instanceOf[TaxDateUtils]
   implicit val pbikAppConfig: PbikAppConfig                         = app.injector.instanceOf[PbikAppConfig]
-  implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
   implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 

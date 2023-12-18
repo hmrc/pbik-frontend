@@ -40,7 +40,6 @@ class RegistrationService @Inject() (
   val bikListService: BikListService,
   taxDateUtils: TaxDateUtils,
   controllersReferenceData: ControllersReferenceData,
-  uriInformation: URIInformation,
   pbikAppConfig: PbikAppConfig,
   errorPageView: ErrorPage
 )(implicit val executionContext: ExecutionContext)

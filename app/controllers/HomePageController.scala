@@ -46,7 +46,6 @@ class HomePageController @Inject() (
   splunkLogger: SplunkLogger,
   taxDateUtils: TaxDateUtils,
   pbikAppConfig: PbikAppConfig,
-  uriInformation: URIInformation,
   errorPageView: ErrorPage,
   summaryPage: Summary
 )(implicit val ec: ExecutionContext)

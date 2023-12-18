@@ -16,7 +16,6 @@
 
 @import utils.BikListUtils
 @import utils.TaxDateUtils
-@import utils.URIInformation
 @import java.util.Calendar
 
 @import config.PbikAppConfig
@@ -28,7 +27,6 @@
         localFormPartialRetriever: LocalFormPartialRetriever,
         taxDateUtils: TaxDateUtils,
         pbikAppConfig: PbikAppConfig,
-        uriInformation: URIInformation,
         bikListUtils: BikListUtils,
 )
 
@@ -89,14 +87,14 @@
                                     @messages("BenefitInKind.label." + n.iabdType)
                                 </dt>
                                 <dd class="govuk-summary-list__actions">
-                                    <a id="cy1-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", uriInformation.iabdValueURLMapper(n.iabdType))' class="govuk-link">
+                                    <a id="cy1-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", Bik.asBenefitString(n.iabdType))' class="govuk-link">
                                         @if(n.eilCount == 0) {@messages("Overview.table.exclude.none.link")} else {@messages("Overview.table.exclude.link")}
                                         @if(n.eilCount > 0) {(@n.eilCount)}
                                         <span class="govuk-visually-hidden">@messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType)</span>
                                     </a>
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a id="cy1-remove-@n.iabdType" href="@controllers.registration.routes.ManageRegistrationController.checkYourAnswersRemoveNextTaxYear(uriInformation.iabdValueURLMapper(n.iabdType))" class="govuk-link">
+                                    <a id="cy1-remove-@n.iabdType" href="@controllers.registration.routes.ManageRegistrationController.checkYourAnswersRemoveNextTaxYear(Bik.asBenefitString(n.iabdType))" class="govuk-link">
                                         <span aria-hidden="true">@messages("Overview.table.remove.link")</span>
                                         <span class="govuk-visually-hidden">@messages("Overview.current.remove") @messages("BenefitInKind.label." + n.iabdType) @messages("Overview.current.from") @messages("Overview.current.payroll.p11d")</span>
                                     </a>
@@ -134,7 +132,7 @@
                                     @messages("BenefitInKind.label." + n.iabdType)
                                 </dt>
                                 <dd class="govuk-summary-list__actions">
-                                    <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", uriInformation.iabdValueURLMapper(n.iabdType))' class="govuk-link">
+                                    <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", Bik.asBenefitString(n.iabdType))' class="govuk-link">
                                         @if(n.eilCount == 0) {@messages("Overview.table.exclude.none.link")} else {@messages("Overview.table.exclude.link")}
                                         @if(n.eilCount > 0) {(@n.eilCount)}
                                     <span class="govuk-visually-hidden"> @messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType)</span>

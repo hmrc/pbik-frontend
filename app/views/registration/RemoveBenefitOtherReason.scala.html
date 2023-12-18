@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
-@import utils.URIInformation
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.CharacterCount
 @import views.templatemodels.PageTitle
 @import views.html.helper.CSPNonce
 
 @this(
      govukLayoutWrapper: GovukLayoutWrapper,
-     uriInformation: URIInformation,
      formWithCSRF: FormWithCSRF,
      hmrcCharacterCount : HmrcCharacterCount,
      errorSummary: localhelpers.errorSummary,
@@ -30,15 +28,15 @@
 
 @(
     form: Form[OtherReason],
-    iabdType: String,
+    iabdString: String,
     empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)) }
+@benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
 
 @govukLayoutWrapper( PageTitle(messages("RemoveBenefits.other.title"), form.hasErrors), empRef = Some(empRef.toString)) {
 
-    @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdType)) {
+    @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdString)) {
 
         @errorSummary(form.errors)
 

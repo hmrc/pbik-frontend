@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import utils.URIInformation
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.templatemodels.PageTitle
@@ -22,13 +21,12 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config: AppConfig,
-        ocalFormPartialRetriever: LocalFormPartialRetriever,
-        uriInformation: URIInformation
+        localFormPartialRetriever: LocalFormPartialRetriever,
 )
 
 @(
         taxYearRange:TaxYearRange,
-        year:String, iabdType:String,
+        year:String, iabdString:String,
         name:String,
         empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
@@ -46,7 +44,7 @@
 
     <div class="govuk-form-group">
         <p class="govuk-body" id="confirmation-p">
-            @messages("ExclusionRemoval.WhatNext.p1", name, messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)), s"${taxYearRange.cy}")
+            @messages("ExclusionRemoval.WhatNext.p1", name, messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)), s"${taxYearRange.cy}")
         </p>
         <h2 class="govuk-heading-m">
             @messages("ExclusionRemoval.whatYouNeedToKnow.subHeading")
@@ -58,12 +56,12 @@
         <h2 class="govuk-heading-m">
             @messages("ExclusionRemoval.whatYouNeedToTellYourEmployees.subHeading")
         </h2>
-        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToTellYourEmployees.p1", messages("BenefitInKind.label." + uriInformation.iabdValueURLDeMapper(iabdType)))</p>
+        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToTellYourEmployees.p1", messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)))</p>
         <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToTellYourEmployees.p2")</p>
 
     </div>
         <p class="govuk-body">
-            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year,iabdType)" id="link-back-excluded">
+            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year,iabdString)" id="link-back-excluded">
                     @messages("ExclusionRemoval.Service.finish.rescinded")
             </a>
         </p>

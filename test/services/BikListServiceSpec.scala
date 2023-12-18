@@ -29,7 +29,7 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
-import support.{StubBikListService, TestAuthUser}
+import support.TestAuthUser
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.TestMinimalAuthAction
 
@@ -52,7 +52,7 @@ class BikListServiceSpec
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
-  lazy val bikListService: BikListService                                  = app.injector.instanceOf[StubBikListService]
+  lazy val bikListService: BikListService                                  = app.injector.instanceOf[BikListService]
   implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockRequest)
   implicit val hc: HeaderCarrier                                           = HeaderCarrier()
 
@@ -71,7 +71,7 @@ class BikListServiceSpec
   "The BIK service" should {
 
     "Be able to get the BIKS for the current year - 2 returned" in {
-      val listBiks = List(Bik("Car & Car Fuel", bikStatus30, bikEilCount), Bik("Van Fuel", bikStatus40, bikEilCount))
+      val listBiks = List(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
 
       when(
         bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
@@ -96,7 +96,7 @@ class BikListServiceSpec
     }
 
     "Be able to get the BIKS for the next year - 2 returned" in {
-      val listBiks = List(Bik("Car & Car Fuel", bikStatus30, bikEilCount), Bik("Van Fuel", bikStatus40, bikEilCount))
+      val listBiks = List(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
 
       when(
         bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(

@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import utils.URIInformation
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.templatemodels.PageTitle
@@ -23,11 +22,10 @@
         govukLayoutWrapper: GovukLayoutWrapper,
         config: AppConfig,
         localFormPartialRetriever: LocalFormPartialRetriever,
-        uriInformation: URIInformation
 )
 
 @(taxYearRange:TaxYearRange,
-  year:String, iabdType:String,
+  year:String, iabdString:String,
   name:String,
 empRef: EmpRef)(implicit request:Request[_], messages: Messages)
 
@@ -44,9 +42,9 @@ empRef: EmpRef)(implicit request:Request[_], messages: Messages)
     </div>
     <p id="confirmation-p" class="govuk-body">
         @if(year=="cy"){
-            @messages("whatNext.exclude.lede", name, messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}"), s"${taxYearRange.cyminus1}")
+            @messages("whatNext.exclude.lede", name, messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), s"${taxYearRange.cyminus1}")
         }else {
-            @messages("whatNext.exclude.lede", name, messages(s"BenefitInKind.label.${uriInformation.iabdValueURLDeMapper(iabdType)}"), s"${taxYearRange.cy}")
+            @messages("whatNext.exclude.lede", name, messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), s"${taxYearRange.cy}")
         }
     </p>
     <h2 class="govuk-heading-m">
@@ -59,7 +57,7 @@ empRef: EmpRef)(implicit request:Request[_], messages: Messages)
 
     <div class="govuk-form-group">
         <p  class="govuk-body">
-            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdType)" id="link-back-excluded">
+            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdString)" id="link-back-excluded">
                 @messages("Service.finish.excluded")
             </a>
         </p>

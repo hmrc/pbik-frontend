@@ -23,7 +23,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeURIException, InvalidYearURIException}
+import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeException, InvalidYearURIException}
 import views.html.{ErrorPage, MaintenancePage}
 
 import javax.inject.{Inject, Singleton}
@@ -95,7 +95,7 @@ class ControllersReferenceData @Inject() (
     staticDataRequest: Future[Result]
   )(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     staticDataRequest.recover {
-      case e0: NoSuchElementException     =>
+      case e0: NoSuchElementException  =>
         logger.error(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled: $e0")
         NotFound(
           errorPageView(
@@ -104,13 +104,13 @@ class ControllersReferenceData @Inject() (
             empRef = Some(request.empRef)
           )
         )
-      case e1: InvalidYearURIException    =>
+      case e1: InvalidYearURIException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
         BadRequest(
           errorPageView(ControllersReferenceDataCodes.INVALID_YEAR_REFERENCE, yearRange, empRef = Some(request.empRef))
         )
-      case e2: InvalidBikTypeURIException =>
-        logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeURIException was handled : $e2")
+      case e2: InvalidBikTypeException =>
+        logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeException was handled : $e2")
         BadRequest(
           errorPageView(
             ControllersReferenceDataCodes.INVALID_BIK_TYPE_REFERENCE,

@@ -20,7 +20,6 @@ import config.PbikAppConfig
 import connectors.HmrcTierConnector
 import models.{AuthenticatedRequest, EiLPerson}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.URIInformation
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,16 +27,15 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EiLListService @Inject() (
   val pbikAppConfig: PbikAppConfig,
-  val tierConnector: HmrcTierConnector,
-  uRIInformation: URIInformation
+  val tierConnector: HmrcTierConnector
 )(implicit ec: ExecutionContext) {
 
-  def currentYearEiL(iabdType: String, year: Int)(implicit
+  def currentYearEiL(iabdString: String, year: Int)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
   ): Future[List[EiLPerson]] = {
     val response = tierConnector.getAllExcludedEiLPersonForBik(
-      iabdType,
+      iabdString,
       request.empRef,
       year
     )

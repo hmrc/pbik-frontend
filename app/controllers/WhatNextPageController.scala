@@ -72,7 +72,7 @@ class WhatNextPageController @Inject() (
       controllersReferenceData.responseErrorHandler(resultFuture)
     }
 
-  def showWhatNextRemovedBik(iabdType: String): Action[AnyContent] =
+  def showWhatNextRemovedBik(iabdString: String): Action[AnyContent] =
     authenticate.async { implicit request =>
       val resultFuture = sessionService.fetchPbikSession().map { session =>
         val removedBikAsList: RegistrationList =
@@ -82,7 +82,7 @@ class WhatNextPageController @Inject() (
             taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
             controllersReferenceData.yearRange,
             removedBikAsList,
-            iabdType,
+            iabdString,
             empRef = request.empRef
           )
         )

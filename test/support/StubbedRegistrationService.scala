@@ -42,7 +42,6 @@ class StubbedRegistrationService @Inject() (
   bikListService: BikListService,
   taxDateUtils: TaxDateUtils,
   controllersReferenceData: ControllersReferenceData,
-  uRIInformation: URIInformation,
   override val messagesApi: MessagesApi,
   errorPageView: ErrorPage,
   currentTaxYearView: CurrentTaxYear,
@@ -55,7 +54,6 @@ class StubbedRegistrationService @Inject() (
       bikListService,
       taxDateUtils,
       controllersReferenceData,
-      uRIInformation,
       pbikAppConfig,
       errorPageView
     )

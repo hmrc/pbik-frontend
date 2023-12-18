@@ -16,56 +16,55 @@
 
 package connectors
 
+import config.Service
 import models._
-import play.api.Logging
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json._
 import play.api.mvc.Request
+import play.api.{Configuration, Logging}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.Exceptions.GenericServerErrorException
-import utils.URIInformation
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HmrcTierConnector @Inject() (client: HttpClient, URIInformation: URIInformation)(implicit ec: ExecutionContext)
+class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configuration)(implicit ec: ExecutionContext)
     extends Logging {
 
   private val maxEmptyBodyLength: Int = 4
+  private val baseUrl: String         = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
 
   def getRegisteredBiks(
     empRef: EmpRef,
     year: Int
   )(implicit hc: HeaderCarrier): Future[BikResponse] =
     client
-      .GET(s"${URIInformation.baseUrl}/${empRef.encodedEmpRef}/$year")
+      .GET(s"$baseUrl/${empRef.encodedEmpRef}/$year")
       .flatMap(implicit response =>
         Future(BikResponse(responseHeaders, validateResponses("getRegisteredBiks").json.as[List[Bik]]))
       )
 
   def getAllAvailableBiks(year: Int)(implicit hc: HeaderCarrier): Future[List[Bik]] =
     client
-      .GET(s"${URIInformation.baseUrl}/$year/getbenefittypes")
+      .GET(s"$baseUrl/$year/getbenefittypes")
       .flatMap(implicit response => Future(validateResponses("getAllAvailableBiks").json.as[List[Bik]]))
 
-  def getAllExcludedEiLPersonForBik(iabdType: String, empRef: EmpRef, year: Int)(implicit hc: HeaderCarrier): Future[List[EiLPerson]] = {
-    val mapped = URIInformation.iabdValueURLDeMapper(iabdType)
+  def getAllExcludedEiLPersonForBik(iabdString: String, empRef: EmpRef, year: Int)(implicit
+    hc: HeaderCarrier
+  ): Future[List[EiLPerson]] =
     client
-      .GET(s"${URIInformation.baseUrl}/${empRef.encodedEmpRef}/$year/$mapped/exclusion")
+      .GET(s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion")
       .flatMap(implicit response => Future(validateResponses("getAllExcludedEiLPersonForBik").json.as[List[EiLPerson]]))
-  }
 
-  def excludeEiLPersonFromBik(iabdType: String, empRef: EmpRef, year: Int, individual: EiLPerson)(
-    implicit
+  def excludeEiLPersonFromBik(iabdString: String, empRef: EmpRef, year: Int, individual: EiLPerson)(implicit
     hc: HeaderCarrier,
     request: Request[_]
-  ): Future[EiLResponse] = {
-    val mapped = URIInformation.iabdValueURLDeMapper(iabdType)
+  ): Future[EiLResponse] =
     client
       .POST(
-        s"${URIInformation.baseUrl}/${empRef.encodedEmpRef}/$year/$mapped/exclusion/update",
+        s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion/update",
         individual,
         createOrCheckForRequiredHeaders
       )
@@ -73,37 +72,36 @@ class HmrcTierConnector @Inject() (client: HttpClient, URIInformation: URIInform
         case response if response.body.length <= maxEmptyBodyLength =>
           Future(EiLResponse(validateResponses("excludeEiLPersonFromBik")(response).status, List.empty))
         case response                                               =>
-          Future(EiLResponse(response.status, validateResponses("excludeEiLPersonFromBik")(response).json.as[List[EiLPerson]]))
+          Future(
+            EiLResponse(
+              response.status,
+              validateResponses("excludeEiLPersonFromBik")(response).json.as[List[EiLPerson]]
+            )
+          )
       }
 
-  }
-
-  def removeEiLPersonExclusionFromBik(iabdType: String, empRef: EmpRef, year: Int, individualToRemove: EiLPerson)(
-    implicit
-    hc: HeaderCarrier,
-    request: Request[_]
-  ): Future[Int] = {
-    val mapped = URIInformation.iabdValueURLDeMapper(iabdType)
-
-    client
-      .POST(
-        s"${URIInformation.baseUrl}/${empRef.encodedEmpRef}/$year/$mapped/exclusion/remove",
-        individualToRemove,
-        createOrCheckForRequiredHeaders
-      )
-      .flatMap { implicit response =>
-        Future(validateResponses("removeEiLPersonExclusionFromBik").status)
-      }
-  }
-
-  def updateOrganisationsRegisteredBiks(empRef: EmpRef, year: Int, changes: List[Bik])(
+  def removeEiLPersonExclusionFromBik(iabdString: String, empRef: EmpRef, year: Int, individualToRemove: EiLPerson)(
     implicit
     hc: HeaderCarrier,
     request: Request[_]
   ): Future[Int] =
     client
       .POST(
-        s"${URIInformation.baseUrl}/${empRef.encodedEmpRef}/$year/updatebenefittypes",
+        s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion/remove",
+        individualToRemove,
+        createOrCheckForRequiredHeaders
+      )
+      .flatMap { implicit response =>
+        Future(validateResponses("removeEiLPersonExclusionFromBik").status)
+      }
+
+  def updateOrganisationsRegisteredBiks(empRef: EmpRef, year: Int, changes: List[Bik])(implicit
+    hc: HeaderCarrier,
+    request: Request[_]
+  ): Future[Int] =
+    client
+      .POST(
+        s"$baseUrl/${empRef.encodedEmpRef}/$year/updatebenefittypes",
         changes,
         createOrCheckForRequiredHeaders
       )

@@ -16,6 +16,7 @@
 
 package connectors
 
+import config.Service
 import controllers.FakePBIKApplication
 import models._
 import org.mockito.ArgumentMatchersSugar.{any, eqTo}
@@ -23,6 +24,7 @@ import org.mockito.MockitoSugar.{mock, when}
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.Configuration
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsResultException, Json, Writes}
 import play.api.mvc.{Request, Results}
@@ -31,7 +33,6 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import support.TestAuthUser
 import uk.gov.hmrc.http._
 import utils.Exceptions.GenericServerErrorException
-import utils.URIInformation
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,8 +40,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplication with TestAuthUser with Results {
 
   private val mockHttpClient: HttpClient                         = mock[HttpClient]
-  private val urlInformation: URIInformation                     = app.injector.instanceOf[URIInformation]
-  private val hmrcTierConnectorWithMockClient: HmrcTierConnector = new HmrcTierConnector(mockHttpClient, urlInformation)
+  private val configuration: Configuration                       = app.injector.instanceOf[Configuration]
+  private val hmrcTierConnectorWithMockClient: HmrcTierConnector = new HmrcTierConnector(mockHttpClient, configuration)
 
   implicit val hc: HeaderCarrier           = HeaderCarrier()
   implicit val request: Request[List[Bik]] = FakeRequest().asInstanceOf[Request[List[Bik]]]
@@ -51,16 +52,17 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
     HeaderTags.ETAG   -> "0",
     HeaderTags.X_TXID -> "1"
   )
+  private val baseUrl: String                      = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
 
-  private val year: Int        = 2015
-  private val bikStatus30: Int = 30
-  private val bikStatus40: Int = 40
-  private val bikEilCount: Int = 10
-  private val empRef: EmpRef   = EmpRef("780", "MODES16")
-  private val ibdType          = "car"
+  private val year: Int              = 2015
+  private val bikStatus30: Int       = 30
+  private val bikStatus40: Int       = 40
+  private val bikEilCount: Int       = 10
+  private val empRef: EmpRef         = EmpRef("780", "MODES16")
+  private val (iabdType, iabdString) = ("31", "car")
 
   private val listBiks: List[Bik] =
-    List(Bik("Car & Car Fuel", bikStatus30, bikEilCount), Bik("Van Fuel", bikStatus40, bikEilCount))
+    List(Bik(iabdType, bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
   private val listOfEiLPerson     = List(
     EiLPerson(
       nino = "AB123456C",
@@ -86,13 +88,16 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         when(
           mockHttpClient.GET(
-            eqTo(s"${urlInformation.baseUrl}/${empRef.encodedEmpRef}/$year"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year"),
             any[Seq[(String, String)]],
             any[Seq[(String, String)]]
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithListOfBiks))
 
-        hmrcTierConnectorWithMockClient.getRegisteredBiks(empRef, year).futureValue mustBe BikResponse(responseHeaders, listBiks)
+        hmrcTierConnectorWithMockClient.getRegisteredBiks(empRef, year).futureValue mustBe BikResponse(
+          responseHeaders,
+          listBiks
+        )
       }
 
       "throw an exception when a pbik error code is received" in {
@@ -100,7 +105,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         when(
           mockHttpClient.GET(
-            eqTo(s"${urlInformation.baseUrl}/${empRef.encodedEmpRef}/$year"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year"),
             any[Seq[(String, String)]],
             any[Seq[(String, String)]]
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
@@ -121,7 +126,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         when(
           mockHttpClient.GET(
-            eqTo(s"${urlInformation.baseUrl}/${empRef.encodedEmpRef}/$year"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year"),
             any[Seq[(String, String)]],
             any[Seq[(String, String)]]
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
@@ -144,7 +149,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         when(
           mockHttpClient.GET(
-            eqTo(s"${urlInformation.baseUrl}/$year/getbenefittypes"),
+            eqTo(s"$baseUrl/$year/getbenefittypes"),
             any[Seq[(String, String)]],
             any[Seq[(String, String)]]
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
@@ -160,13 +165,15 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         when(
           mockHttpClient.GET(
-            eqTo(s"${urlInformation.baseUrl}/${empRef.encodedEmpRef}/$year/31/exclusion"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion"),
             any[Seq[(String, String)]],
             any[Seq[(String, String)]]
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithListOfEiLs))
 
-        hmrcTierConnectorWithMockClient.getAllExcludedEiLPersonForBik(ibdType, empRef, year).futureValue mustBe listOfEiLPerson
+        hmrcTierConnectorWithMockClient
+          .getAllExcludedEiLPersonForBik(iabdString, empRef, year)
+          .futureValue mustBe listOfEiLPerson
       }
     }
 
@@ -176,35 +183,35 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         when(
           mockHttpClient.POST(
-            eqTo(s"${urlInformation.baseUrl}/${empRef.encodedEmpRef}/$year/31/exclusion/update"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
             any[List[Bik]],
             eqTo(responseHeaders.toSeq)
           )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithListOfEiLs))
 
         hmrcTierConnectorWithMockClient
-          .excludeEiLPersonFromBik(ibdType, empRef, year, listOfEiLPerson.head)
+          .excludeEiLPersonFromBik(iabdString, empRef, year, listOfEiLPerson.head)
           .futureValue mustBe EiLResponse(OK, listOfEiLPerson)
       }
 
       "return no excluded individual matches on the requested benefit" in {
         when(
           mockHttpClient.POST(
-            eqTo(s"${urlInformation.baseUrl}/${empRef.encodedEmpRef}/$year/31/exclusion/update"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
             any[List[Bik]],
             eqTo(responseHeaders.toSeq)
           )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(buildFakeResponseWithBody(List.empty[EiLPerson], OK)))
 
         hmrcTierConnectorWithMockClient
-          .excludeEiLPersonFromBik(ibdType, empRef, year, listOfEiLPerson.head)
+          .excludeEiLPersonFromBik(iabdString, empRef, year, listOfEiLPerson.head)
           .futureValue mustBe EiLResponse(OK, List.empty)
       }
 
       "throw an exception when the response received is BAD_REQUEST (400) or higher" in {
         when(
           mockHttpClient.POST(
-            eqTo(s"${urlInformation.baseUrl}/${empRef.encodedEmpRef}/$year/31/exclusion/update"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
             any[List[Bik]],
             eqTo(responseHeaders.toSeq)
           )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
@@ -213,7 +220,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
         val exception = intercept[GenericServerErrorException] {
           await(
             hmrcTierConnectorWithMockClient
-              .excludeEiLPersonFromBik(ibdType, empRef, year, listOfEiLPerson.head)
+              .excludeEiLPersonFromBik(iabdString, empRef, year, listOfEiLPerson.head)
           )
         }
 
@@ -226,21 +233,21 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         when(
           mockHttpClient.POST(
-            eqTo(s"${urlInformation.baseUrl}/${empRef.encodedEmpRef}/$year/31/exclusion/remove"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/remove"),
             any[EiLPerson],
             eqTo(responseHeaders.toSeq)
           )(any[Writes[EiLPerson]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponse))
 
         hmrcTierConnectorWithMockClient
-          .removeEiLPersonExclusionFromBik(ibdType, empRef, year, listOfEiLPerson.head)
+          .removeEiLPersonExclusionFromBik(iabdString, empRef, year, listOfEiLPerson.head)
           .futureValue mustBe OK
       }
 
       "throw an exception when the response received is BAD_REQUEST (400) or higher" in {
         when(
           mockHttpClient.POST(
-            eqTo(s"${urlInformation.baseUrl}/${empRef.encodedEmpRef}/$year/31/exclusion/remove"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/remove"),
             any[EiLPerson],
             eqTo(responseHeaders.toSeq)
           )(any[Writes[EiLPerson]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
@@ -249,7 +256,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
         val exception = intercept[GenericServerErrorException] {
           await(
             hmrcTierConnectorWithMockClient
-              .removeEiLPersonExclusionFromBik(ibdType, empRef, year, listOfEiLPerson.head)
+              .removeEiLPersonExclusionFromBik(iabdString, empRef, year, listOfEiLPerson.head)
           )
         }
 
@@ -261,7 +268,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
       "return OK (200) when successfully changing an organisations registered benefits" in {
         when(
           mockHttpClient.POST(
-            eqTo(s"${urlInformation.baseUrl}/${empRef.encodedEmpRef}/$year/updatebenefittypes"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/updatebenefittypes"),
             any[List[Bik]],
             eqTo(responseHeaders.toSeq)
           )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])

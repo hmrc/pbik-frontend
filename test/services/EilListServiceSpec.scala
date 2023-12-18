@@ -44,7 +44,7 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
     .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
     .build()
 
-  val MockEiLListService: EiLListService = {
+  val mockEiLListService: EiLListService = {
 
     val els = app.injector.instanceOf[EiLListService]
 
@@ -60,17 +60,17 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
   "When calling the EILService it" should {
     "return an empty list" in {
       val year                                                                        = 2015
-      val eilService: EiLListService                                                  = MockEiLListService
+      val eilService: EiLListService                                                  = mockEiLListService
       implicit val hc: HeaderCarrier                                                  = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
-      val result                                                                      = await(eilService.currentYearEiL("5", year))
+      val result                                                                      = await(eilService.currentYearEiL("services", year))
       result.size shouldBe 0
     }
 
     "return a subset of List(EiL) search results - already excluded" in {
-      val eilService                          = MockEiLListService
+      val eilService                          = mockEiLListService
       val eiL1                                = new EiLPerson("QQ123456", "Humpty", None, "Dumpty", Some("123"), Some("01/01/1980"), None, None)
       val eiL2                                = new EiLPerson("QQ123457", "Humpty", None, "Dumpty", Some("789"), Some("01/01/1980"), None, None)
       val searchResultsEiL: List[EiLPerson]   = List(eiL1, eiL2)

@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.{BikResponse, HmrcTierConnector}
 import models.{AuthenticatedRequest, Bik, EmpRef}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{ControllersReferenceData, URIInformation}
+import utils.ControllersReferenceData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,11 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class BikListService @Inject() (
   val pbikAppConfig: AppConfig,
   val tierConnector: HmrcTierConnector,
-  controllersReferenceData: ControllersReferenceData,
-  uriInformation: URIInformation
+  controllersReferenceData: ControllersReferenceData
 )(implicit ec: ExecutionContext) {
-
-  def pbikHeaders: Map[String, String] = Map[String, String]()
 
   def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BikResponse] =
     tierConnector

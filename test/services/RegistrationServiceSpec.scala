@@ -62,14 +62,13 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
 
     lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), bikStatus))
 
-    when(service.bikListService.pbikHeaders).thenReturn(Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1"))
-
     when(service.bikListService.registeredBenefitsList(any[Int], any[EmpRef])(any[HeaderCarrier]))
       .thenReturn(Future.successful(CYCache))
 
     // Return instance where not all Biks have been registered for CY
     when(
-      service.tierConnector.getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear()))(any[HeaderCarrier])
+      service.tierConnector
+        .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear()))(any[HeaderCarrier])
     ) thenReturn (Future.successful(
       BikResponse(
         responseHeaders,
