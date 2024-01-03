@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.{BikResponse, HmrcTierConnector}
+import connectors.PbikConnector
 import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
 import models._
@@ -48,7 +48,7 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
   ).configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .overrides(bind[BikListService].toInstance(mock(classOf[BikListService])))
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .build()
 
   private val registrationService: RegistrationService = {

@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import play.api.data.Form
@@ -48,7 +48,7 @@ class ExclusionListController @Inject() (
   val eiLListService: EiLListService,
   val bikListService: BikListService,
   val sessionService: SessionService,
-  val tierConnector: HmrcTierConnector,
+  val tierConnector: PbikConnector,
   taxDateUtils: TaxDateUtils,
   splunkLogger: SplunkLogger,
   controllersReferenceData: ControllersReferenceData,

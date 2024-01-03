@@ -37,11 +37,11 @@ import utils.Exceptions.GenericServerErrorException
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplication with TestAuthUser with Results {
+class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplication with TestAuthUser with Results {
 
-  private val mockHttpClient: HttpClient                         = mock[HttpClient]
-  private val configuration: Configuration                       = app.injector.instanceOf[Configuration]
-  private val hmrcTierConnectorWithMockClient: HmrcTierConnector = new HmrcTierConnector(mockHttpClient, configuration)
+  private val mockHttpClient: HttpClient                 = mock[HttpClient]
+  private val configuration: Configuration               = app.injector.instanceOf[Configuration]
+  private val pbikConnectorWithMockClient: PbikConnector = new PbikConnector(mockHttpClient, configuration)
 
   implicit val hc: HeaderCarrier           = HeaderCarrier()
   implicit val request: Request[List[Bik]] = FakeRequest().asInstanceOf[Request[List[Bik]]]
@@ -81,7 +81,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
   def buildFakeResponseWithBody[A](body: A, status: Int = OK)(implicit w: Writes[A]): HttpResponse =
     HttpResponse(status, Json.toJson(body), Map.empty[String, Seq[String]])
 
-  "HmrcTierConnector" when {
+  "PbikConnector" when {
     ".getRegisteredBiks" must {
       "return a list of benefits for an organisation on a specific year" in {
         val fakeResponseWithListOfBiks = buildFakeResponseWithBody(listBiks)
@@ -94,7 +94,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithListOfBiks))
 
-        hmrcTierConnectorWithMockClient.getRegisteredBiks(empRef, year).futureValue mustBe BikResponse(
+        pbikConnectorWithMockClient.getRegisteredBiks(empRef, year).futureValue mustBe BikResponse(
           responseHeaders,
           listBiks
         )
@@ -113,7 +113,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         val result = intercept[GenericServerErrorException] {
           await(
-            hmrcTierConnectorWithMockClient.getRegisteredBiks(empRef, year)
+            pbikConnectorWithMockClient.getRegisteredBiks(empRef, year)
           )
         }
 
@@ -134,7 +134,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         val result = intercept[JsResultException] {
           await(
-            hmrcTierConnectorWithMockClient.getRegisteredBiks(empRef, year)
+            pbikConnectorWithMockClient.getRegisteredBiks(empRef, year)
           )
         }
 
@@ -155,7 +155,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithListOfBiks))
 
-        hmrcTierConnectorWithMockClient.getAllAvailableBiks(year).futureValue mustBe listBiks
+        pbikConnectorWithMockClient.getAllAvailableBiks(year).futureValue mustBe listBiks
       }
     }
 
@@ -171,7 +171,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithListOfEiLs))
 
-        hmrcTierConnectorWithMockClient
+        pbikConnectorWithMockClient
           .getAllExcludedEiLPersonForBik(iabdString, empRef, year)
           .futureValue mustBe listOfEiLPerson
       }
@@ -189,7 +189,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
           )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithListOfEiLs))
 
-        hmrcTierConnectorWithMockClient
+        pbikConnectorWithMockClient
           .excludeEiLPersonFromBik(iabdString, empRef, year, listOfEiLPerson.head)
           .futureValue mustBe EiLResponse(OK, listOfEiLPerson)
       }
@@ -203,7 +203,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
           )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(buildFakeResponseWithBody(List.empty[EiLPerson], OK)))
 
-        hmrcTierConnectorWithMockClient
+        pbikConnectorWithMockClient
           .excludeEiLPersonFromBik(iabdString, empRef, year, listOfEiLPerson.head)
           .futureValue mustBe EiLResponse(OK, List.empty)
       }
@@ -219,7 +219,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         val exception = intercept[GenericServerErrorException] {
           await(
-            hmrcTierConnectorWithMockClient
+            pbikConnectorWithMockClient
               .excludeEiLPersonFromBik(iabdString, empRef, year, listOfEiLPerson.head)
           )
         }
@@ -239,7 +239,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
           )(any[Writes[EiLPerson]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponse))
 
-        hmrcTierConnectorWithMockClient
+        pbikConnectorWithMockClient
           .removeEiLPersonExclusionFromBik(iabdString, empRef, year, listOfEiLPerson.head)
           .futureValue mustBe OK
       }
@@ -255,7 +255,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         val exception = intercept[GenericServerErrorException] {
           await(
-            hmrcTierConnectorWithMockClient
+            pbikConnectorWithMockClient
               .removeEiLPersonExclusionFromBik(iabdString, empRef, year, listOfEiLPerson.head)
           )
         }
@@ -274,7 +274,7 @@ class TierConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
           )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponse))
 
-        hmrcTierConnectorWithMockClient
+        pbikConnectorWithMockClient
           .updateOrganisationsRegisteredBiks(empRef, year, listBiks)
           .futureValue mustBe OK
       }

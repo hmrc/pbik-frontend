@@ -17,7 +17,7 @@
 package services
 
 import config.PbikAppConfig
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ class RegistrationService @Inject() (
   override val messagesApi: MessagesApi,
   bikListUtils: BikListUtils,
   formMappings: FormMappings,
-  val tierConnector: HmrcTierConnector,
+  val tierConnector: PbikConnector,
   val bikListService: BikListService,
   taxDateUtils: TaxDateUtils,
   controllersReferenceData: ControllersReferenceData,

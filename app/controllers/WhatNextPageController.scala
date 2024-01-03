@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.actions.AuthAction
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,7 +34,7 @@ class WhatNextPageController @Inject() (
   override val messagesApi: MessagesApi,
   val sessionService: SessionService,
   authenticate: AuthAction,
-  val tierConnector: HmrcTierConnector,
+  val tierConnector: PbikConnector,
   taxDateUtils: TaxDateUtils,
   controllersReferenceData: ControllersReferenceData,
   cc: MessagesControllerComponents,

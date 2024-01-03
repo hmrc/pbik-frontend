@@ -17,9 +17,9 @@ object AppDependencies {
     "org.mockito"                  %% "mockito-scala-scalatest" % "1.17.30",
     "uk.gov.hmrc"                  %% "bootstrap-test-play-28"  % bootstrapPlayVersion,
     "uk.gov.hmrc.mongo"            %% "hmrc-mongo-test-play-28" % hmrcMongoPlayVersion,
-    "org.jsoup"                     % "jsoup"                   % "1.17.1",
+    "org.jsoup"                     % "jsoup"                   % "1.17.2",
     "org.scalatest"                %% "scalatest"               % "3.2.17",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala"    % "2.16.0",
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"    % "2.16.1",
     "com.vladsch.flexmark"          % "flexmark-all"            % "0.64.8"
   ).map(_ % Test)
 

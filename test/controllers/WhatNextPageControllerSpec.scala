@@ -17,7 +17,7 @@
 package controllers
 
 import config._
-import connectors.{BikResponse, HmrcTierConnector}
+import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import org.mockito.ArgumentMatchers.any
@@ -49,7 +49,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[BikListService].toInstance(mock(classOf[StubBikListService])))
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
@@ -66,7 +66,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
 
   private class StubBikListService @Inject() (
     pbikAppConfig: AppConfig,
-    tierConnector: HmrcTierConnector,
+    tierConnector: PbikConnector,
     controllersReferenceData: ControllersReferenceData
   ) extends BikListService(
         pbikAppConfig,

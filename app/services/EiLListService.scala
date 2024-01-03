@@ -17,7 +17,7 @@
 package services
 
 import config.PbikAppConfig
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import models.{AuthenticatedRequest, EiLPerson}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EiLListService @Inject() (
   val pbikAppConfig: PbikAppConfig,
-  val tierConnector: HmrcTierConnector
+  val tierConnector: PbikConnector
 )(implicit ec: ExecutionContext) {
 
   def currentYearEiL(iabdString: String, year: Int)(implicit

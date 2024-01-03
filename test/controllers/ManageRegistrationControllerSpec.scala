@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.{BikResponse, HmrcTierConnector}
+import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
 import models._
@@ -44,7 +44,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
   ).configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
@@ -66,12 +66,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
   private lazy val CYCache: List[Bik] = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), bikStatus))
 
-  when(app.injector.instanceOf[HmrcTierConnector].getAllAvailableBiks(any[Int])(any[HeaderCarrier]))
+  when(app.injector.instanceOf[PbikConnector].getAllAvailableBiks(any[Int])(any[HeaderCarrier]))
     .thenReturn(Future.successful(CYCache))
 
   when(
     app.injector
-      .instanceOf[HmrcTierConnector]
+      .instanceOf[PbikConnector]
       .updateOrganisationsRegisteredBiks(
         any[EmpRef],
         any[Int],
@@ -81,7 +81,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
   when(
     app.injector
-      .instanceOf[HmrcTierConnector]
+      .instanceOf[PbikConnector]
       .getRegisteredBiks(
         any[EmpRef],
         any[Int]

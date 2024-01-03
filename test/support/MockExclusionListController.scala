@@ -17,7 +17,7 @@
 package support
 
 import config.PbikAppConfig
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.ExclusionListController
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.scalatest.concurrent.Futures
@@ -45,7 +45,7 @@ class MockExclusionListController @Inject() (
   eiLListService: EiLListService,
   bikListService: BikListService,
   sessionService: SessionService,
-  tierConnector: HmrcTierConnector,
+  tierConnector: PbikConnector,
   runModeConfiguration: Configuration,
   taxDateUtils: TaxDateUtils,
   splunkLogger: SplunkLogger,

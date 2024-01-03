@@ -30,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configuration)(implicit ec: ExecutionContext)
+class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)(implicit ec: ExecutionContext)
     extends Logging {
 
   private val maxEmptyBodyLength: Int = 4
@@ -42,21 +42,19 @@ class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configurat
   )(implicit hc: HeaderCarrier): Future[BikResponse] =
     client
       .GET(s"$baseUrl/${empRef.encodedEmpRef}/$year")
-      .flatMap(implicit response =>
-        Future(BikResponse(responseHeaders, validateResponses("getRegisteredBiks").json.as[List[Bik]]))
-      )
+      .map(implicit response => BikResponse(responseHeaders, validateResponses("getRegisteredBiks").json.as[List[Bik]]))
 
   def getAllAvailableBiks(year: Int)(implicit hc: HeaderCarrier): Future[List[Bik]] =
     client
       .GET(s"$baseUrl/$year/getbenefittypes")
-      .flatMap(implicit response => Future(validateResponses("getAllAvailableBiks").json.as[List[Bik]]))
+      .map(implicit response => validateResponses("getAllAvailableBiks").json.as[List[Bik]])
 
   def getAllExcludedEiLPersonForBik(iabdString: String, empRef: EmpRef, year: Int)(implicit
     hc: HeaderCarrier
   ): Future[List[EiLPerson]] =
     client
       .GET(s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion")
-      .flatMap(implicit response => Future(validateResponses("getAllExcludedEiLPersonForBik").json.as[List[EiLPerson]]))
+      .map(implicit response => validateResponses("getAllExcludedEiLPersonForBik").json.as[List[EiLPerson]])
 
   def excludeEiLPersonFromBik(iabdString: String, empRef: EmpRef, year: Int, individual: EiLPerson)(implicit
     hc: HeaderCarrier,
@@ -68,16 +66,11 @@ class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configurat
         individual,
         createOrCheckForRequiredHeaders
       )
-      .flatMap {
+      .map {
         case response if response.body.length <= maxEmptyBodyLength =>
-          Future(EiLResponse(validateResponses("excludeEiLPersonFromBik")(response).status, List.empty))
+          EiLResponse(validateResponses("excludeEiLPersonFromBik")(response).status, List.empty)
         case response                                               =>
-          Future(
-            EiLResponse(
-              response.status,
-              validateResponses("excludeEiLPersonFromBik")(response).json.as[List[EiLPerson]]
-            )
-          )
+          EiLResponse(response.status, validateResponses("excludeEiLPersonFromBik")(response).json.as[List[EiLPerson]])
       }
 
   def removeEiLPersonExclusionFromBik(iabdString: String, empRef: EmpRef, year: Int, individualToRemove: EiLPerson)(
@@ -91,8 +84,8 @@ class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configurat
         individualToRemove,
         createOrCheckForRequiredHeaders
       )
-      .flatMap { implicit response =>
-        Future(validateResponses("removeEiLPersonExclusionFromBik").status)
+      .map { implicit response =>
+        validateResponses("removeEiLPersonExclusionFromBik").status
       }
 
   def updateOrganisationsRegisteredBiks(empRef: EmpRef, year: Int, changes: List[Bik])(implicit
@@ -105,8 +98,8 @@ class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configurat
         changes,
         createOrCheckForRequiredHeaders
       )
-      .flatMap { implicit response =>
-        Future(validateResponses("updateOrganisationsRegisteredBiks").status)
+      .map { implicit response =>
+        validateResponses("updateOrganisationsRegisteredBiks").status
       }
 
   private def responseHeaders(implicit response: HttpResponse): Map[String, String] =
@@ -119,14 +112,14 @@ class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configurat
     val etagFromSession  = request.session.get(HeaderTags.ETAG).getOrElse("0")
     val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")
     logger.info(
-      "[HmrcTierConnector][createOrCheckForRequiredHeaders] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession
+      "[PbikConnector][createOrCheckForRequiredHeaders] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession
     )
     Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession).toSeq
   }
 
   private def validateResponses(fromMethod: String)(implicit response: HttpResponse): HttpResponse =
     if (response.status >= BAD_REQUEST) {
-      logger.error(s"[HmrcTierConnector][$fromMethod] An unexpected status was returned: ${response.status}")
+      logger.error(s"[PbikConnector][$fromMethod] An unexpected status was returned: ${response.status}")
       throw new GenericServerErrorException(response.body)
     } else if (response.body.length <= maxEmptyBodyLength) {
       response
@@ -134,13 +127,10 @@ class HmrcTierConnector @Inject() (client: HttpClient, configuration: Configurat
       response.json.validate[PbikError] match {
         case errorReceived: JsSuccess[PbikError] =>
           logger.error(
-            s"[HmrcTierConnector][$fromMethod] a pbik error code was returned. Error Code: ${errorReceived.value.errorCode}"
+            s"[PbikConnector][$fromMethod] a pbik error code was returned. Error Code: ${errorReceived.value.errorCode}"
           )
           throw new GenericServerErrorException(errorReceived.value.errorCode)
         case _: JsError                          => response
       }
     }
 }
-
-case class BikResponse(headers: Map[String, String], bikList: List[Bik])
-case class EiLResponse(status: Int, eilList: List[EiLPerson])

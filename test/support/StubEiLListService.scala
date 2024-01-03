@@ -17,7 +17,7 @@
 package support
 
 import config.PbikAppConfig
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import models.{AuthenticatedRequest, EiLPerson}
 import services.EiLListService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class StubEiLListService @Inject() (
   pbikAppConfig: PbikAppConfig,
-  tierConnector: HmrcTierConnector
+  tierConnector: PbikConnector
 )(implicit ec: ExecutionContext)
     extends EiLListService(pbikAppConfig, tierConnector) {
 
@@ -90,7 +90,7 @@ class StubEiLListService @Inject() (
 
 class StubEiLListServiceOneExclusion @Inject() (
   pbikAppConfig: PbikAppConfig,
-  tierConnector: HmrcTierConnector
+  tierConnector: PbikConnector
 )(implicit ec: ExecutionContext)
     extends StubEiLListService(pbikAppConfig, tierConnector) {
 

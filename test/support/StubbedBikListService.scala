@@ -17,8 +17,8 @@
 package support
 
 import config.AppConfig
-import connectors.{BikResponse, HmrcTierConnector}
-import models.{AuthenticatedRequest, Bik, EmpRef, HeaderTags}
+import connectors.PbikConnector
+import models.{AuthenticatedRequest, Bik, BikResponse, EmpRef, HeaderTags}
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.ControllersReferenceData
@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class StubbedBikListService @Inject() (
   pbikAppConfig: AppConfig,
-  tierConnector: HmrcTierConnector,
+  tierConnector: PbikConnector,
   controllersReferenceData: ControllersReferenceData
 )(implicit ec: ExecutionContext)
     extends BikListService(

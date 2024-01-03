@@ -17,7 +17,7 @@
 package controllers.registration
 
 import config.PbikAppConfig
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import play.api.Logging
@@ -42,7 +42,7 @@ class ManageRegistrationController @Inject() (
   override val messagesApi: MessagesApi,
   cc: MessagesControllerComponents,
   val bikListService: BikListService,
-  tierConnector: HmrcTierConnector,
+  tierConnector: PbikConnector,
   val authenticate: AuthAction,
   val noSessionCheck: NoSessionCheckAction,
   val sessionService: SessionService,

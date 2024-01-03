@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.FakePBIKApplication
 import models.{AuthenticatedRequest, EiLPerson, EmpRef, UserName}
 import org.mockito.ArgumentMatchers.any
@@ -41,7 +41,7 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
   override lazy val fakeApplication: Application = GuiceApplicationBuilder(
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(configMap)
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .build()
 
   val mockEiLListService: EiLListService = {

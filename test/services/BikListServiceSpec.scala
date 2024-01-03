@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.{BikResponse, HmrcTierConnector}
+import connectors.PbikConnector
 import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
 import models._
@@ -49,7 +49,7 @@ class BikListServiceSpec
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .build()
 
   lazy val bikListService: BikListService                                  = app.injector.instanceOf[BikListService]

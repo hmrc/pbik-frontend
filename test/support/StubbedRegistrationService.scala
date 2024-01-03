@@ -17,7 +17,7 @@
 package support
 
 import config.PbikAppConfig
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +38,7 @@ class StubbedRegistrationService @Inject() (
   bikListUtils: BikListUtils,
   formMappings: FormMappings,
   pbikAppConfig: PbikAppConfig,
-  tierConnector: HmrcTierConnector,
+  tierConnector: PbikConnector,
   bikListService: BikListService,
   taxDateUtils: TaxDateUtils,
   controllersReferenceData: ControllersReferenceData,

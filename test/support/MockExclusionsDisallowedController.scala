@@ -17,7 +17,7 @@
 package support
 
 import config.PbikAppConfig
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import play.api.Configuration
 import play.api.i18n.MessagesApi
@@ -40,7 +40,7 @@ class MockExclusionsDisallowedController @Inject() (
   eiLListService: EiLListService,
   bikListService: BikListService,
   sessionService: SessionService,
-  tierConnector: HmrcTierConnector,
+  tierConnector: PbikConnector,
   runModeConfiguration: Configuration,
   taxDateUtils: TaxDateUtils,
   splunkLogger: SplunkLogger,

@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.{BikResponse, EiLResponse, HmrcTierConnector}
+import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
@@ -50,7 +50,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[EiLListService].to(classOf[StubEiLListService]))
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
