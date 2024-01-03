@@ -17,9 +17,7 @@
 package services
 
 import config.PbikAppConfig
-import connectors.HmrcTierConnector
-
-import javax.inject.{Inject, Singleton}
+import connectors.PbikConnector
 import models._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -27,9 +25,10 @@ import play.api.mvc.Results._
 import play.api.mvc.{AnyContent, Result}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.{ControllersReferenceData, URIInformation, _}
+import utils._
 import views.html.ErrorPage
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -37,11 +36,10 @@ class RegistrationService @Inject() (
   override val messagesApi: MessagesApi,
   bikListUtils: BikListUtils,
   formMappings: FormMappings,
-  val tierConnector: HmrcTierConnector,
+  val tierConnector: PbikConnector,
   val bikListService: BikListService,
   taxDateUtils: TaxDateUtils,
   controllersReferenceData: ControllersReferenceData,
-  uriInformation: URIInformation,
   pbikAppConfig: PbikAppConfig,
   errorPageView: ErrorPage
 )(implicit val executionContext: ExecutionContext)
@@ -75,10 +73,8 @@ class RegistrationService @Inject() (
     }
 
     for {
-      biksListOption       <- bikListService.registeredBenefitsList(year, EmpRef.empty)(uriInformation.getBenefitTypesPath)
-      registeredListOption <-
-        tierConnector
-          .genericGetCall[List[Bik]](uriInformation.baseUrl, uriInformation.getRegisteredPath, request.empRef, year)
+      biksListOption       <- bikListService.registeredBenefitsList(year, EmpRef.empty)
+      registeredListOption <- tierConnector.getRegisteredBiks(request.empRef, year).map(_.bikList)
       nonLegislationList    = nonLegislationBiks.map(x => Bik("" + x, status))
       decommissionedBikList = decommissionedBikIds.map(x => Bik("" + x, status))
 

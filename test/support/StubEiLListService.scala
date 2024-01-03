@@ -17,21 +17,19 @@
 package support
 
 import config.PbikAppConfig
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import models.{AuthenticatedRequest, EiLPerson}
 import services.EiLListService
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.URIInformation
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class StubEiLListService @Inject() (
   pbikAppConfig: PbikAppConfig,
-  tierConnector: HmrcTierConnector,
-  uRIInformation: URIInformation
+  tierConnector: PbikConnector
 )(implicit ec: ExecutionContext)
-    extends EiLListService(pbikAppConfig, tierConnector, uRIInformation) {
+    extends EiLListService(pbikAppConfig, tierConnector) {
 
   val status                                     = 10
   private lazy val ListOfPeople: List[EiLPerson] = List(
@@ -92,10 +90,9 @@ class StubEiLListService @Inject() (
 
 class StubEiLListServiceOneExclusion @Inject() (
   pbikAppConfig: PbikAppConfig,
-  tierConnector: HmrcTierConnector,
-  uRIInformation: URIInformation
+  tierConnector: PbikConnector
 )(implicit ec: ExecutionContext)
-    extends StubEiLListService(pbikAppConfig, tierConnector, uRIInformation) {
+    extends StubEiLListService(pbikAppConfig, tierConnector) {
 
   private lazy val ListOfPeople: List[EiLPerson] = List(
     EiLPerson(

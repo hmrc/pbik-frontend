@@ -30,16 +30,16 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings               = app.injector.instanceOf[FormMappings]
   val exclusionOverviewView: ExclusionOverview = app.injector.instanceOf[ExclusionOverview]
 
-  private val iabdType = "31"
+  private val (iabdType, iabdString) = ("31", "car")
 
   implicit def view: Html =
-    exclusionOverviewView(taxYearRange, "cyp1", iabdType, List(), EmpRef("", ""), formMappings.binaryRadioButton)
+    exclusionOverviewView(taxYearRange, "cyp1", iabdString, List(), EmpRef("", ""), formMappings.binaryRadioButton)
 
   def viewWithFormWithErrors(): Html =
     exclusionOverviewView(
       taxYearRange,
       "cyp1",
-      iabdType,
+      iabdString,
       List(),
       EmpRef("", ""),
       formMappings.binaryRadioButton.withError("test", "error")
@@ -51,7 +51,7 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
       messages(s"BenefitInKind.label.$iabdType")
         + " " + messages("ExclusionOverview.notExcludedEmployee.title")
     )
-    behave like pageWithContinueButtonForm("/payrollbik/cyp1/car/excluded-employees", "Continue")
+    behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/$iabdString/excluded-employees", "Continue")
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 
     "check the excluded employees page for the errors" in {

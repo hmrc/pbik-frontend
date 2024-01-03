@@ -21,7 +21,7 @@ import models._
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import utils.{FormMappings, URIInformation}
+import utils.FormMappings
 import views.helper.PBIKViewSpec
 import views.html.exclusion.NinoExclusionSearchForm
 
@@ -33,12 +33,11 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   implicit val pbikAppConfig: PbikAppConfig                         = app.injector.instanceOf[PbikAppConfig]
-  implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
   implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
   def viewWithForm(form: Form[EiLPerson]): Html =
-    ninoExclusionSearchFormView(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
+    ninoExclusionSearchFormView(taxYearRange, "cyp1", "medical", form, alreadyExists = true, EmpRef("", ""))
 
   "NinoExclusionSearchView" must {
     implicit def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)

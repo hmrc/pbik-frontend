@@ -73,7 +73,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
   implicit val arbRemovalReasonForm: Arbitrary[Form[BinaryRadioButtonWithDesc]] = fixed(forms.removalReasonForm)
   implicit val arbBinaryRadioButtonForm: Arbitrary[Form[MandatoryRadioButton]] = fixed(forms.binaryRadioButton)
 
-  override implicit val arbAsciiString: Arbitrary[String] = fixed("40")
+  override implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
   implicit val arbRegistrationList: Arbitrary[RegistrationList] = fixed(registrationList)
   implicit val arbListOfEiLPerson: Arbitrary[List[EiLPerson]] = fixed(listOfEiLPerson)
   implicit val arbEilPersonList: Arbitrary[EiLPersonList] = fixed(EiLPersonList(listOfEiLPerson))

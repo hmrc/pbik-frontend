@@ -29,7 +29,11 @@ class SearchResultViewSpec extends PBIKViewSpec {
   val messagesApi: MessagesApi         = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings       = app.injector.instanceOf[FormMappings]
   val searchResultsView: SearchResults = app.injector.instanceOf[SearchResults]
-  val listOfMatches: EiLPersonList     = EiLPersonList(
+
+  private val status: Int            = 10
+  private val (iabdType, iabdString) = ("30", "medical")
+
+  val listOfMatches: EiLPersonList = EiLPersonList(
     List(
       EiLPerson(
         "AA111111",
@@ -39,14 +43,14 @@ class SearchResultViewSpec extends PBIKViewSpec {
         Some("123"),
         Some("01/01/1980"),
         Some("male"),
-        Some(10),
+        Some(status),
         0
       )
     )
   )
 
   def viewWithForm(form: Form[ExclusionNino]): Html =
-    searchResultsView(taxYearRange, "cyp1", "30", listOfMatches, form, "", EmpRef("", ""))
+    searchResultsView(taxYearRange, "cyp1", iabdString, listOfMatches, form, "", EmpRef("", ""))
 
   "exclusionNinoOrNoNinoForm" should {
 
@@ -54,7 +58,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("ExclusionSearch.title.single"))
     behave like pageWithHeader(
-      messages("BenefitInKind.label.30") + " " + messages("ExclusionSearch.title.single")
+      messages(s"BenefitInKind.label.$iabdType") + " " + messages("ExclusionSearch.title.single")
     )
     behave like pageWithElementAndText(
       "button-confirm",
@@ -89,7 +93,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
           Some("123"),
           Some("01/01/1980"),
           Some("male"),
-          Some(10),
+          Some(status),
           0
         ),
         EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
@@ -101,7 +105,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
           Some("123"),
           Some("01/01/1980"),
           Some("male"),
-          Some(10),
+          Some(status),
           0
         )
       )
@@ -110,7 +114,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
     implicit def view: Html = searchResultsView(
       taxYearRange,
       "cyp1",
-      "30",
+      iabdString,
       listOfActives,
       formMappings.individualSelectionForm,
       "",
@@ -119,10 +123,10 @@ class SearchResultViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
     behave like pageWithHeader(
-      messages("BenefitInKind.label.30") + " " + messages("ExclusionSearch.title.multiple")
+      messages(s"BenefitInKind.label.$iabdType") + " " + messages("ExclusionSearch.title.multiple")
     )
     behave like pageWithContinueButtonForm(
-      "/payrollbik/cyp1/medical//exclude-employee-results",
+      s"/payrollbik/cyp1/$iabdString//exclude-employee-results",
       "Confirm and continue"
     )
   }

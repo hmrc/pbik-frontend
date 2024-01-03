@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
 import models._
@@ -28,9 +28,8 @@ import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Format
 import play.api.mvc.AnyContentAsEmpty
-import support.{StubBikListService, TestAuthUser}
+import support.TestAuthUser
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.TestMinimalAuthAction
 
@@ -50,12 +49,17 @@ class BikListServiceSpec
     disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
   ).configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .build()
 
-  lazy val bikListService: BikListService                                  = app.injector.instanceOf[StubBikListService]
+  lazy val bikListService: BikListService                                  = app.injector.instanceOf[BikListService]
   implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockRequest)
   implicit val hc: HeaderCarrier                                           = HeaderCarrier()
+
+  val responseHeaders: Map[String, String] = Map(
+    HeaderTags.ETAG   -> "0",
+    HeaderTags.X_TXID -> "1"
+  )
 
   val bikStatus30 = 30
   val bikStatus40 = 40
@@ -67,24 +71,22 @@ class BikListServiceSpec
   "The BIK service" should {
 
     "Be able to get the BIKS for the current year - 2 returned" in {
-      val listBiks = List(Bik("Car & Car Fuel", bikStatus30, bikEilCount), Bik("Van Fuel", bikStatus40, bikEilCount))
+      val listBiks = List(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
 
       when(
-        bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
-          any[HeaderCarrier],
-          any[Format[List[Bik]]]
+        bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
+          any[HeaderCarrier]
         )
-      ).thenReturn(Future.successful(listBiks))
+      ).thenReturn(Future.successful(BikResponse(responseHeaders, listBiks)))
 
-      val result: (Map[String, String], List[Bik]) = Await.result(bikListService.currentYearList, 10 seconds)
-      result._2 shouldBe listBiks
+      val result: BikResponse = Await.result(bikListService.currentYearList, 10 seconds)
+      result.bikList shouldBe listBiks
     }
 
     "Be able to get the BIKS for the current year - no biks returned" in {
       when(
-        bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
-          any[HeaderCarrier],
-          any[Format[List[Bik]]]
+        bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
+          any[HeaderCarrier]
         )
       ).thenThrow(new IllegalStateException())
       // Intercept exception
@@ -94,26 +96,24 @@ class BikListServiceSpec
     }
 
     "Be able to get the BIKS for the next year - 2 returned" in {
-      val listBiks = List(Bik("Car & Car Fuel", bikStatus30, bikEilCount), Bik("Van Fuel", bikStatus40, bikEilCount))
+      val listBiks = List(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
 
       when(
-        bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
-          any[HeaderCarrier],
-          any[Format[List[Bik]]]
+        bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
+          any[HeaderCarrier]
         )
-      ).thenReturn(Future.successful(listBiks))
+      ).thenReturn(Future.successful(BikResponse(responseHeaders, listBiks)))
       implicit val hc: HeaderCarrier = HeaderCarrier()
 
       val result = Await.result(bikListService.nextYearList, 10 seconds)
 
-      result._2 shouldBe listBiks
+      result.bikList shouldBe listBiks
     }
 
     "Be able to get the BIKS for the next year - no biks returned" in {
       when(
-        bikListService.tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
-          any[HeaderCarrier],
-          any[Format[List[Bik]]]
+        bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
+          any[HeaderCarrier]
         )
       ).thenThrow(new IllegalStateException())
 

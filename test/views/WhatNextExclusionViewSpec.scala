@@ -20,7 +20,7 @@ import config.{AppConfig, LocalFormPartialRetriever}
 import models.EmpRef
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import utils.{FormMappings, URIInformation}
+import utils.FormMappings
 import views.helper.PBIKViewSpec
 import views.html.exclusion.WhatNextExclusion
 
@@ -30,11 +30,10 @@ class WhatNextExclusionViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings               = app.injector.instanceOf[FormMappings]
   val whatNextExclusionView: WhatNextExclusion = app.injector.instanceOf[WhatNextExclusion]
 
-  implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
   implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
 
-  implicit def view: Html = whatNextExclusionView(taxYearRange, "cyp1", "30", "", EmpRef("", ""))
+  implicit def view: Html = whatNextExclusionView(taxYearRange, "cyp1", "medical", "", EmpRef("", ""))
 
   "whatNextAddRemove" must {
     behave like pageWithTitle(messages("whatNext.exclude.heading"))

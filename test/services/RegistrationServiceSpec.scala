@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
 import models._
@@ -29,7 +29,6 @@ import play.api.http.Status.OK
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
@@ -49,46 +48,49 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
   ).configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .overrides(bind[BikListService].toInstance(mock(classOf[BikListService])))
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .build()
 
   private val registrationService: RegistrationService = {
+    val responseHeaders: Map[String, String] = Map(
+      HeaderTags.ETAG   -> "0",
+      HeaderTags.X_TXID -> "1"
+    )
 
     val service                   = app.injector.instanceOf[RegistrationService]
     val (noOfElements, bikStatus) = (5, 10)
 
     lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), bikStatus))
 
-    when(service.bikListService.pbikHeaders).thenReturn(Map(HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "1"))
-
-    when(service.bikListService.registeredBenefitsList(any[Int], any[EmpRef])(any[String])(any[HeaderCarrier]))
+    when(service.bikListService.registeredBenefitsList(any[Int], any[EmpRef])(any[HeaderCarrier]))
       .thenReturn(Future.successful(CYCache))
 
     // Return instance where not all Biks have been registered for CY
     when(
-      service.tierConnector.genericGetCall[List[Bik]](
-        any[String],
-        any[String],
-        any[EmpRef],
-        argEq(injected[TaxDateUtils].getCurrentTaxYear())
-      )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-    )
-      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
-        Integer.parseInt(x.iabdType) <= 3
-      }))
+      service.tierConnector
+        .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear()))(any[HeaderCarrier])
+    ) thenReturn (Future.successful(
+      BikResponse(
+        responseHeaders,
+        CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 3
+        }
+      )
+    ))
 
     // Return instance where not all Biks have been registered for CYP1
     when(
-      service.tierConnector.genericGetCall[List[Bik]](
-        any[String],
-        any[String],
-        any[EmpRef],
-        argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1)
-      )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-    )
-      .thenReturn(Future.successful(CYCache.filter { x: Bik =>
-        Integer.parseInt(x.iabdType) <= 5
-      }))
+      service.tierConnector
+        .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(any[HeaderCarrier])
+    ) thenReturn (Future.successful(
+      BikResponse(
+        responseHeaders,
+        CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) <= 5
+        }
+      )
+    ))
+
     service
   }
 

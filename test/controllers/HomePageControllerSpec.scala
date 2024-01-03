@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
@@ -35,7 +35,7 @@ import utils._
 class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18nSupport {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .overrides(bind[BikListService].to(classOf[StubbedBikListService]))
     .overrides(bind[SplunkLogger].to(classOf[TestSplunkLogger]))
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))

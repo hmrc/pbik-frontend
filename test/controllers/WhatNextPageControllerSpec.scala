@@ -17,25 +17,22 @@
 package controllers
 
 import config._
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
-import org.mockito.ArgumentMatchers.{any, eq => argEq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
-import play.api.http.Status
 import play.api.i18n.Lang
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json
-import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, SessionService}
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYear
 import utils._
 
@@ -52,7 +49,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[BikListService].toInstance(mock(classOf[StubBikListService])))
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
@@ -61,29 +58,28 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
   implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
     AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
 
-  private val (noOfElements, statusValue, year): (Int, Int, Int) = (21, 10, 2020)
-  private val response: HttpResponse                             = HttpResponse(Status.OK, Json.obj().toString())
-  private lazy val CYCache: List[Bik]                            = List.tabulate(noOfElements)(n => Bik("" + (n + 1), statusValue))
-  private val whatNextPageController: WhatNextPageController     = app.injector.instanceOf[WhatNextPageController]
+  private lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), statusValue))
+
+  private val (noOfElements, statusValue): (Int, Int)        = (21, 10)
+  private val (iabdType, iabdString): (String, String)       = ("30", "medical")
+  private val whatNextPageController: WhatNextPageController = app.injector.instanceOf[WhatNextPageController]
 
   private class StubBikListService @Inject() (
     pbikAppConfig: AppConfig,
-    tierConnector: HmrcTierConnector,
-    controllersReferenceData: ControllersReferenceData,
-    uriInformation: URIInformation
+    tierConnector: PbikConnector,
+    controllersReferenceData: ControllersReferenceData
   ) extends BikListService(
         pbikAppConfig,
         tierConnector,
-        controllersReferenceData,
-        uriInformation
+        controllersReferenceData
       ) {
 
     override def currentYearList(implicit
       hc: HeaderCarrier,
       request: AuthenticatedRequest[_]
-    ): Future[(Map[String, String], List[Bik])] =
+    ): Future[BikResponse] =
       Future.successful(
-        (
+        BikResponse(
           Map(HeaderTags.ETAG -> "1"),
           CYCache.filter { x: Bik =>
             Integer.parseInt(x.iabdType) <= 10
@@ -94,9 +90,9 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
     override def nextYearList(implicit
       hc: HeaderCarrier,
       request: AuthenticatedRequest[_]
-    ): Future[(Map[String, String], List[Bik])] =
+    ): Future[BikResponse] =
       Future.successful(
-        (
+        BikResponse(
           Map(HeaderTags.ETAG -> "1"),
           CYCache.filter { x: Bik =>
             Integer.parseInt(x.iabdType) > 10
@@ -104,44 +100,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
         )
       )
 
-    when(
-      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
-        any[HeaderCarrier],
-        any[json.Format[List[Bik]]]
-      )
-    ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 10
-    }))
-
-    when(
-      tierConnector.genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(year))(
-        any[HeaderCarrier],
-        any[json.Format[List[Bik]]]
-      )
-    ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) <= 5
-    }))
-
-    when(
-      tierConnector.genericPostCall(
-        any[String],
-        argEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
-        any[EmpRef],
-        any[Int],
-        any
-      )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
-    ).thenReturn(Future.successful(response))
-
-    when(
-      tierConnector.genericGetCall[List[Bik]](
-        any[String],
-        argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
-        any[EmpRef],
-        any[Int]
-      )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-    ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-      Integer.parseInt(x.iabdType) >= 15
-    }))
   }
 
   "WhatNextPageController" when {
@@ -152,7 +110,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
             Some(
               PbikSession(
                 sessionId,
-                Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
+                Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
                 None,
                 None,
                 None,
@@ -186,7 +144,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
                   Some(
                     RegistrationList(active =
                       List(
-                        RegistrationItem("30", active = true, enabled = true),
+                        RegistrationItem(iabdType, active = true, enabled = true),
                         RegistrationItem("8", active = true, enabled = true)
                       )
                     )
@@ -219,7 +177,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
                 PbikSession(
                   sessionId,
                   None,
-                  Some(RegistrationItem("30", active = true, enabled = true)),
+                  Some(RegistrationItem(iabdType, active = true, enabled = true)),
                   None,
                   None,
                   None,
@@ -229,7 +187,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
               )
             )
           )
-        val result = whatNextPageController.showWhatNextRemovedBik("medical").apply(authenticatedRequest)
+        val result = whatNextPageController.showWhatNextRemovedBik(iabdString).apply(authenticatedRequest)
 
         status(result) mustBe OK
         contentAsString(result) must include("Benefit removed")

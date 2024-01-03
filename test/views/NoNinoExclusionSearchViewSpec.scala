@@ -32,7 +32,7 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   private def viewWithForm(form: Form[EiLPerson]): Html =
-    noNinoExclusionSearchFormView(taxYearRange, "cyp1", "30", form, alreadyExists = true, EmpRef("", ""))
+    noNinoExclusionSearchFormView(taxYearRange, "cyp1", "medical", form, alreadyExists = true, EmpRef("", ""))
 
   "NoNinoExclusionSearchView" must {
     implicit def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)

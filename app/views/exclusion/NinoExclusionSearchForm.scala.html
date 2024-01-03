@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import utils.URIInformation
 @import config.AppConfig
 @import config.LocalFormPartialRetriever
 @import views.html.localhelpers.TextInput
@@ -24,7 +23,6 @@
         govukLayoutWrapper: GovukLayoutWrapper,
         config: AppConfig,
         localFormPartialRetriever: LocalFormPartialRetriever,
-        uriInformation: URIInformation,
         formWithCSRF: FormWithCSRF,
         textInput: TextInput
 )
@@ -32,14 +30,14 @@
 @(
         taxYearRange:TaxYearRange,
         isCurrentTaxYear:String,
-        iabdType:String,
+        iabdString:String,
         searchForm: Form[EiLPerson],
         alreadyExists: Boolean = false,
         empRef: EmpRef
 )(implicit request:Request[_], messages: Messages)
 
-@excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">}
-@expenseOrBenefit = @{messages(s"BenefitInKind.label.$iabdType")}
+@excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdString)">}
+@expenseOrBenefit = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
 @govukLayoutWrapper(PageTitle(messages("ExclusionSearch.form.title"), searchForm.hasErrors), empRef = Some(empRef.toString) ) {
 
     @if(searchForm.hasErrors){
@@ -50,7 +48,7 @@
             </h2>
             @if(searchForm("status").hasErrors) {
                 @if(alreadyExists) {
-                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages("BenefitInKind.label." + iabdType), excludedEmployeesLink, "</a>"))
+                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), excludedEmployeesLink, "</a>"))
                 } else {
                     @Html(messages("ExclusionSearch.Fail.Desc"))
                 }
@@ -74,7 +72,7 @@
         </div>
     }
 
-    @formWithCSRF(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, uriInformation.iabdValueURLMapper(iabdType), "nino"), Symbol("autocomplete") -> "off") {
+    @formWithCSRF(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdString, "nino"), Symbol("autocomplete") -> "off") {
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <span class="govuk-caption-l">@expenseOrBenefit</span>
@@ -101,7 +99,7 @@
             <input type="submit" class="govuk-button" role="button" id="button-search" value="@messages("Service.continue")"/>
 
         <p class="govuk-body">
-        <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear,uriInformation.iabdValueURLMapper(iabdType))">
+        <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdString)">
             @messages("Service.back.excluded")
         </a>
         </p>

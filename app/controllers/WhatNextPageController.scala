@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.actions.AuthAction
 import models._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,7 +34,7 @@ class WhatNextPageController @Inject() (
   override val messagesApi: MessagesApi,
   val sessionService: SessionService,
   authenticate: AuthAction,
-  val tierConnector: HmrcTierConnector,
+  val tierConnector: PbikConnector,
   taxDateUtils: TaxDateUtils,
   controllersReferenceData: ControllersReferenceData,
   cc: MessagesControllerComponents,
@@ -72,7 +72,7 @@ class WhatNextPageController @Inject() (
       controllersReferenceData.responseErrorHandler(resultFuture)
     }
 
-  def showWhatNextRemovedBik(iabdType: String): Action[AnyContent] =
+  def showWhatNextRemovedBik(iabdString: String): Action[AnyContent] =
     authenticate.async { implicit request =>
       val resultFuture = sessionService.fetchPbikSession().map { session =>
         val removedBikAsList: RegistrationList =
@@ -82,7 +82,7 @@ class WhatNextPageController @Inject() (
             taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
             controllersReferenceData.yearRange,
             removedBikAsList,
-            iabdType,
+            iabdString,
             empRef = request.empRef
           )
         )

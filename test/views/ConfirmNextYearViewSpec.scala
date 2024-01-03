@@ -20,7 +20,7 @@ import config.{AppConfig, LocalFormPartialRetriever}
 import models.{EmpRef, RegistrationItem, RegistrationList}
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
-import utils.{FormMappings, URIInformation}
+import utils.FormMappings
 import views.helper.PBIKViewSpec
 import views.html.registration.ConfirmUpdateNextTaxYear
 
@@ -36,7 +36,6 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
     EmpRef("", "")
   )
 
-  implicit val uriInformation: URIInformation                       = app.injector.instanceOf[URIInformation]
   implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
   implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
   val bikList: RegistrationList                                     = RegistrationList(active = List.empty[RegistrationItem])

@@ -24,7 +24,6 @@
         govukLayoutWrapper: GovukLayoutWrapper,
         config: AppConfig,
         localFormPartialRetriever: LocalFormPartialRetriever,
-        uriInformation: URIInformation,
         repeatWithIndex: RepeatWithIndex,
         formWithCSRF: FormWithCSRF,
         govukInsetText: GovukInsetText
@@ -32,18 +31,18 @@
 
 @(
         taxYearRange: TaxYearRange,
-        year: String, iabdType:String,
+        year: String, iabdString:String,
         individualsToRemove: EiLPersonList,
         empRef: EmpRef
 )(implicit request: Request[_], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("ExclusionRemovalConfirmation.title")), empRef = Some(empRef.toString)) {
-    <span class="govuk-caption-xl">@messages("BenefitInKind.label."+ uriInformation.iabdValueURLDeMapper(iabdType))</span>
+    <span class="govuk-caption-xl">@messages("BenefitInKind.label."+ Bik.asNPSTypeValue(iabdString))</span>
     <h1 id="title" class="govuk-heading-xl">
         @messages("ExclusionRemovalConfirmation.title")
     </h1>
 
-    @formWithCSRF(action=routes.ExclusionListController.removeExclusionsCommit(iabdType)) {
+    @formWithCSRF(action=routes.ExclusionListController.removeExclusionsCommit(iabdString)) {
         @for(index <- 0 until individualsToRemove.active.length) {
             <table class="govuk-table">
                 <tr class="govuk-table__row">
@@ -73,11 +72,11 @@
             </table>
         }
         @govukInsetText(InsetText(
-            content = Text(messages("ExclusionRemovalConfirmation.inset.text", messages("BenefitInKind.label."+ uriInformation.iabdValueURLDeMapper(iabdType)), ""+taxYearRange.cy))
+            content = Text(messages("ExclusionRemovalConfirmation.inset.text", messages("BenefitInKind.label."+ Bik.asNPSTypeValue(iabdString)), ""+taxYearRange.cy))
         ))
         <input type="submit" class="govuk-button" role="button" id="button-confirm" value="@messages("Service.confirmAndContinue")">
     }
-    <p><a id ="link-back" class="govuk-link" href='@routes.ExclusionListController.performPageLoad(year,iabdType)'>
+    <p><a id ="link-back" class="govuk-link" href='@routes.ExclusionListController.performPageLoad(year,iabdString)'>
         @messages("Service.back.excluded")
     </a></p>
 }

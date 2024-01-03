@@ -16,26 +16,23 @@
 
 package controllers
 
-import connectors.HmrcTierConnector
+import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
 import models._
-import org.mockito.ArgumentMatchers.{any, eq => argEq}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
-import play.api.http.Status
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json
-import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SessionService
 import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils._
 
 import scala.concurrent.Future
@@ -47,7 +44,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
   ).configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
-    .overrides(bind[HmrcTierConnector].toInstance(mock(classOf[HmrcTierConnector])))
+    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
@@ -56,59 +53,49 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
   private val messagesApi: MessagesApi                             = app.injector.instanceOf[MessagesApi]
   private val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
-  private val (numberOfElements, bikStatus, year): (Int, Int, Int) = (21, 10, 2020)
+  private val (numberOfElements, bikStatus): (Int, Int)            = (21, 10)
   private val (beginIndex, endIndex): (Int, Int)                   = (0, 10)
+  private val (iabdType, iabdString): (String, String)             = ("31", "car")
   private val registrationController: ManageRegistrationController =
     app.injector.instanceOf[ManageRegistrationController]
-  private val response: HttpResponse                               = HttpResponse(Status.OK, Json.obj().toString())
-  private lazy val CYCache: List[Bik]                              = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), bikStatus))
+
+  val responseHeaders: Map[String, String] = Map(
+    HeaderTags.ETAG   -> "0",
+    HeaderTags.X_TXID -> "1"
+  )
+
+  private lazy val CYCache: List[Bik] = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), bikStatus))
+
+  when(app.injector.instanceOf[PbikConnector].getAllAvailableBiks(any[Int])(any[HeaderCarrier]))
+    .thenReturn(Future.successful(CYCache))
 
   when(
     app.injector
-      .instanceOf[HmrcTierConnector]
-      .genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], any[Int])(
-        any[HeaderCarrier],
-        any[json.Format[List[Bik]]]
-      )
-  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 10
-  }))
-
-  when(
-    app.injector
-      .instanceOf[HmrcTierConnector]
-      .genericGetCall[List[Bik]](any[String], any[String], any[EmpRef], argEq(year))(
-        any[HeaderCarrier],
-        any[json.Format[List[Bik]]]
-      )
-  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) <= 5
-  }))
-
-  when(
-    app.injector
-      .instanceOf[HmrcTierConnector]
-      .genericPostCall(
-        any[String],
-        argEq(app.injector.instanceOf[URIInformation].updateBenefitTypesPath),
+      .instanceOf[PbikConnector]
+      .updateOrganisationsRegisteredBiks(
         any[EmpRef],
         any[Int],
         any
-      )(any[HeaderCarrier], any[Request[_]], any[json.Format[List[Bik]]])
-  ).thenReturn(Future.successful(response))
+      )(any[HeaderCarrier], any[Request[_]])
+  ).thenReturn(Future.successful(OK))
 
   when(
     app.injector
-      .instanceOf[HmrcTierConnector]
-      .genericGetCall[List[Bik]](
-        any[String],
-        argEq(app.injector.instanceOf[URIInformation].getRegisteredPath),
+      .instanceOf[PbikConnector]
+      .getRegisteredBiks(
         any[EmpRef],
         any[Int]
-      )(any[HeaderCarrier], any[json.Format[List[Bik]]])
-  ).thenReturn(Future.successful(CYCache.filter { x: Bik =>
-    Integer.parseInt(x.iabdType) >= 15
-  }))
+      )(any[HeaderCarrier])
+  ).thenReturn(
+    Future.successful(
+      BikResponse(
+        responseHeaders,
+        CYCache.filter { x: Bik =>
+          Integer.parseInt(x.iabdType) >= 15
+        }
+      )
+    )
+  )
 
   when(
     app.injector
@@ -145,7 +132,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
       "be taken to the check your answers page when the form is correctly filled" in {
         val mockRegistrationList = RegistrationList(
           None,
-          List(RegistrationItem("31", active = true, enabled = true)),
+          List(RegistrationItem(iabdType, active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("software", None))
         )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
@@ -179,7 +166,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
               Some(
                 PbikSession(
                   sessionId,
-                  Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
+                  Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
                   None,
                   None,
                   None,
@@ -194,7 +181,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
         status(result) mustBe OK
         contentAsString(result) must include(messagesApi("AddBenefits.Confirm.Multiple.Title"))
-        contentAsString(result) must include(messagesApi("BenefitInKind.label.30"))
+        contentAsString(result) must include(messagesApi(s"BenefitInKind.label.$iabdType"))
       }
     }
 
@@ -202,7 +189,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
       "be taken to the check your answers screen if the form is filled in correctly" in {
         val mockRegistrationList = RegistrationList(
           None,
-          List(RegistrationItem("31", active = true, enabled = true)),
+          List(RegistrationItem(iabdType, active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("software", None))
         )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
@@ -236,7 +223,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
               Some(
                 PbikSession(
                   sessionId,
-                  Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
+                  Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
                   None,
                   None,
                   None,
@@ -250,7 +237,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val result = registrationController.showCheckYourAnswersAddNextTaxYear()(mockRequest)
 
         status(result) mustBe OK
-        contentAsString(result) must include(messagesApi("BenefitInKind.label.30"))
+        contentAsString(result) must include(messagesApi(s"BenefitInKind.label.$iabdType"))
       }
     }
 
@@ -262,7 +249,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
               Some(
                 PbikSession(
                   sessionId,
-                  Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
+                  Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
                   None,
                   None,
                   None,
@@ -274,7 +261,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             )
           )
         val title  = messagesApi("RemoveBenefits.Confirm.Title").substring(beginIndex, endIndex)
-        val result = registrationController.checkYourAnswersRemoveNextTaxYear("car")(mockRequest)
+        val result = registrationController.checkYourAnswersRemoveNextTaxYear(iabdString)(mockRequest)
 
         status(result) mustBe OK
         contentAsString(result) must include(title)
@@ -285,7 +272,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
       "persist their changes and be redirected to the what next page" in {
         val mockRegistrationList = RegistrationList(
           None,
-          List(RegistrationItem("31", active = true, enabled = true)),
+          List(RegistrationItem(iabdType, active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("software", None))
         )
         when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
@@ -295,7 +282,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
                 PbikSession(
                   sessionId,
                   Some(mockRegistrationList),
-                  Some(RegistrationItem("31", active = true, enabled = true)),
+                  Some(RegistrationItem(iabdType, active = true, enabled = true)),
                   None,
                   None,
                   None,
@@ -319,7 +306,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
       "persist changes of an authorised user and redirect this user to the what next page" in {
         val mockRegistrationList = RegistrationList(
           None,
-          List(RegistrationItem("31", active = true, enabled = true)),
+          List(RegistrationItem(iabdType, active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("software", None))
         )
         when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
@@ -329,7 +316,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
                 PbikSession(
                   sessionId,
                   Some(mockRegistrationList),
-                  Some(RegistrationItem("31", active = true, enabled = true)),
+                  Some(RegistrationItem(iabdType, active = true, enabled = true)),
                   None,
                   None,
                   None,
@@ -374,7 +361,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           s"$selectionValue is selected" in {
             val mockRegistrationList = RegistrationList(
               None,
-              List(RegistrationItem("31", active = true, enabled = true)),
+              List(RegistrationItem(iabdType, active = true, enabled = true)),
               Some(BinaryRadioButtonWithDesc(selectionValue, None))
             )
             when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
@@ -384,7 +371,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
                     PbikSession(
                       sessionId,
                       Some(mockRegistrationList),
-                      Some(RegistrationItem("31", active = true, enabled = true)),
+                      Some(RegistrationItem(iabdType, active = true, enabled = true)),
                       None,
                       None,
                       None,
@@ -397,10 +384,10 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc(selectionValue, None))
             val mockRequestForm      = mockRequest
               .withFormUrlEncodedBody(form.data.toSeq: _*)
-            val result               = registrationController.removeNextYearRegisteredBenefitTypes("car").apply(mockRequestForm)
+            val result               = registrationController.removeNextYearRegisteredBenefitTypes(iabdString).apply(mockRequestForm)
 
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some("/payrollbik/cy1/car/benefit-removed")
+            redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/benefit-removed")
           }
 
         Seq("software", "guidance", "not-clear", "not-offering").foreach(test)
@@ -409,7 +396,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
       "redirect to why-remove-benefit-expense page when other is selected" in {
         val mockRegistrationList = RegistrationList(
           None,
-          List(RegistrationItem("31", active = true, enabled = true)),
+          List(RegistrationItem(iabdType, active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("other", Some("Here's our other info")))
         )
         when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
@@ -419,7 +406,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
                 PbikSession(
                   sessionId,
                   Some(mockRegistrationList),
-                  Some(RegistrationItem("31", active = true, enabled = true)),
+                  Some(RegistrationItem(iabdType, active = true, enabled = true)),
                   None,
                   None,
                   None,
@@ -435,7 +422,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val result               = registrationController.removeNextYearRegisteredBenefitTypes("").apply(mockRequestForm)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("/payrollbik/cy1/car/why-remove-benefit-expense")
+        redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/why-remove-benefit-expense")
       }
     }
 
@@ -444,7 +431,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
       val mockRegistrationList                                            = RegistrationList(
         None,
         List(
-          RegistrationItem("31", active = true, enabled = true),
+          RegistrationItem(iabdType, active = true, enabled = true),
           RegistrationItem("8", active = true, enabled = true)
         ),
         None
@@ -486,7 +473,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
               Some(
                 PbikSession(
                   sessionId,
-                  Some(RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))),
+                  Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
                   None,
                   None,
                   None,
@@ -499,7 +486,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           )
 
         val title  = messagesApi("RemoveBenefits.other.title").substring(beginIndex, endIndex)
-        val result = registrationController.showRemoveBenefitOtherReason("car")(mockRequest)
+        val result = registrationController.showRemoveBenefitOtherReason(iabdString)(mockRequest)
 
         status(result) mustBe OK
         contentAsString(result) must include(title)
@@ -509,7 +496,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val otherReason          = "Here's our other info"
         val mockRegistrationList = RegistrationList(
           None,
-          List(RegistrationItem("31", active = true, enabled = true)),
+          List(RegistrationItem(iabdType, active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("other", Some(otherReason)))
         )
         when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
@@ -519,7 +506,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
                 PbikSession(
                   sessionId,
                   Some(mockRegistrationList),
-                  Some(RegistrationItem("31", active = true, enabled = true)),
+                  Some(RegistrationItem(iabdType, active = true, enabled = true)),
                   None,
                   None,
                   None,
@@ -532,10 +519,10 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val form                 = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
         val mockRequestForm      = mockRequest
           .withFormUrlEncodedBody(form.data.toSeq: _*)
-        val result               = registrationController.submitRemoveBenefitOtherReason("car")(mockRequestForm)
+        val result               = registrationController.submitRemoveBenefitOtherReason(iabdString)(mockRequestForm)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("/payrollbik/cy1/car/benefit-removed")
+        redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/benefit-removed")
       }
 
       "return to the same page with an error when other reason is not provided" in {
@@ -543,7 +530,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val form            = formMappings.removalOtherReasonForm.fill(OtherReason(""))
         val mockRequestForm = mockRequest
           .withFormUrlEncodedBody(form.data.toSeq: _*)
-        val result          = registrationController.submitRemoveBenefitOtherReason("car")(mockRequestForm)
+        val result          = registrationController.submitRemoveBenefitOtherReason(iabdString)(mockRequestForm)
 
         status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(errorMsg)
@@ -556,7 +543,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val form            = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
         val mockRequestForm = mockRequest
           .withFormUrlEncodedBody(form.data.toSeq: _*)
-        val result          = registrationController.submitRemoveBenefitOtherReason("car")(mockRequestForm)
+        val result          = registrationController.submitRemoveBenefitOtherReason(iabdString)(mockRequestForm)
 
         status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(errorMsg)
