@@ -35,6 +35,26 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
       Value
   }
 
+  //TODO investigate if we can remove all this default object creation
+  private val cleanRegistrationList: Option[RegistrationList] = Some(
+    RegistrationList(None, List.empty[RegistrationItem], None)
+  )
+  private val cleanBikRemoved: Option[RegistrationItem]       = Some(RegistrationItem("", active = false, enabled = false))
+  private val cleanEiLPersonList: Option[List[EiLPerson]]     = Some(List.empty[EiLPerson])
+  private val cleanEiLPerson: Option[EiLPerson]               = Some(EiLPerson("", "", None, "", None, None, None, None))
+  private val cleanBikList: Option[List[Bik]]                 = Some(List.empty[Bik])
+  private def cleanSession(sessionId: String): PbikSession    =
+    PbikSession(
+      sessionId,
+      cleanRegistrationList,
+      cleanBikRemoved,
+      cleanEiLPersonList,
+      cleanEiLPerson,
+      cleanEiLPersonList,
+      cleanBikList,
+      cleanBikList
+    )
+
   private def getSessionFromHeaderCarrier(hc: HeaderCarrier): Either[Exception, String] =
     hc.sessionId match {
       case Some(sessionId) =>
@@ -104,7 +124,7 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
 
     for {
       currentSession <- fetchPbikSession()
-      session         = currentSession.getOrElse(PbikSession(sessionId))
+      session         = currentSession.getOrElse(cleanSession(sessionId))
       updatedSession <- sessionRepository.upsert(selectKeysToCache(session))
     } yield updatedSession
   }
