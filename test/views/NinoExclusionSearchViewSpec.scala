@@ -16,7 +16,7 @@
 
 package views
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig}
+import config.{AppConfig, PbikAppConfig}
 import models._
 import play.api.data.Form
 import play.api.i18n.MessagesApi
@@ -32,9 +32,8 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  implicit val pbikAppConfig: PbikAppConfig                         = app.injector.instanceOf[PbikAppConfig]
-  implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
-  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
+  implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
+  implicit val appConfig: AppConfig         = app.injector.instanceOf[AppConfig]
 
   def viewWithForm(form: Form[EiLPerson]): Html =
     ninoExclusionSearchFormView(taxYearRange, "cyp1", "medical", form, alreadyExists = true, EmpRef("", ""))

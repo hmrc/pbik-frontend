@@ -16,7 +16,7 @@
 
 package views
 
-import config.{AppConfig, LocalFormPartialRetriever}
+import config.AppConfig
 import models.{EmpRef, RegistrationList}
 import org.jsoup.Jsoup
 import play.api.data.Form
@@ -34,8 +34,7 @@ class NextYearViewSpec extends PBIKViewSpec {
 
   implicit def view: Html = viewWithForm(formMappings.objSelectedForm)
 
-  implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
-  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
+  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
 
   def viewWithForm(form: Form[RegistrationList]): Html =
     nextTaxYearView(form, additive = true, taxYearRange, List(), List(), List(), List(), Some(1), EmpRef("", ""))
