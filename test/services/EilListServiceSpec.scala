@@ -38,9 +38,8 @@ import scala.concurrent.Future
 
 class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication {
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
-    disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(configMap)
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+    .configure(configMap)
     .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .build()
 

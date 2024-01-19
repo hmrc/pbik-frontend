@@ -45,9 +45,8 @@ class SessionServiceSpec
 
   val mockSessionService: SessionService = mock[SessionService]
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
-    disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(configMap)
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+    .configure(configMap)
     .overrides(bind[SessionService].toInstance(mockSessionService))
     .build()
 

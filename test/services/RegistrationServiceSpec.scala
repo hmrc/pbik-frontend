@@ -43,9 +43,8 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
 
   override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
-    disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(configMap)
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+    .configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .overrides(bind[BikListService].toInstance(mock(classOf[BikListService])))
     .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))

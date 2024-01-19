@@ -31,9 +31,8 @@ import utils.{TestAuthAction, TestNoSessionCheckAction}
 
 class StartPageControllerSpec extends PlaySpec with FakePBIKApplication {
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
-    disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(configMap)
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+    .configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()

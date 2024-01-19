@@ -127,7 +127,7 @@ class HomePageController @Inject() (
     }
   }
 
-  def auditHomePageView()(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[AuditResult] =
+  private def auditHomePageView()(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[AuditResult] =
     splunkLogger.logSplunkEvent(
       splunkLogger.createDataEvent(
         tier = splunkLogger.FRONTEND,

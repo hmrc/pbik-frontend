@@ -34,7 +34,7 @@ import scala.language.postfixOps
 
 class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneAppPerSuite {
 
-  class Harness() extends NoSessionCheckActionImpl {
+  class Harness extends NoSessionCheckActionImpl {
     def callTransform[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
       refine(request)
   }

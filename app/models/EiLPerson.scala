@@ -40,12 +40,12 @@ case class EiLPerson(
 
 object EiLPerson {
 
-  val defaultStringArgumentValue: String        = ""
-  val defaultNino: String                       = defaultStringArgumentValue
-  val defaultSecondName: Option[String]         = Some(defaultStringArgumentValue)
-  val defaultWorksPayrollNumber: Option[String] = Some(defaultStringArgumentValue)
-  val defaultDateOfBirth: Option[String]        = None
-  val defaultGender: Option[String]             = Some(defaultStringArgumentValue)
+  private val defaultStringArgumentValue: String = ""
+  val defaultNino: String                        = defaultStringArgumentValue
+  val defaultSecondName: Option[String]          = Some(defaultStringArgumentValue)
+  val defaultWorksPayrollNumber: Option[String]  = Some(defaultStringArgumentValue)
+  val defaultDateOfBirth: Option[String]         = None
+  val defaultGender: Option[String]              = Some(defaultStringArgumentValue)
 
   implicit val EiLPersonFormats: OFormat[EiLPerson] = Json.format[EiLPerson]
 }
