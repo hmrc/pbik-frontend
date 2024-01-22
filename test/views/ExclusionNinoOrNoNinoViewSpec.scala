@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package views
 
-import config.{AppConfig, LocalFormPartialRetriever, PbikAppConfig}
+import config.{AppConfig, PbikAppConfig}
 import models.EmpRef
 import org.jsoup.Jsoup
 import play.api.i18n.MessagesApi
@@ -33,10 +33,9 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
   implicit def view: Html = viewWithForm()
 
-  implicit val taxDateUtils: TaxDateUtils                           = app.injector.instanceOf[TaxDateUtils]
-  implicit val pbikAppConfig: PbikAppConfig                         = app.injector.instanceOf[PbikAppConfig]
-  implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
-  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
+  implicit val taxDateUtils: TaxDateUtils   = app.injector.instanceOf[TaxDateUtils]
+  implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
+  implicit val appConfig: AppConfig         = app.injector.instanceOf[AppConfig]
 
   def viewWithForm(): Html =
     exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "medical", "", formMappings.binaryRadioButton, EmpRef("", ""))

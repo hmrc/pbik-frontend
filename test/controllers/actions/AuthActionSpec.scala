@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
   private class Test(enrolment: Enrolment) {
     private val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-    type RetrievalType = Enrolments ~ Option[Name]
+    private type RetrievalType = Enrolments ~ Option[Name]
 
     def retrievals(
       enrolments: Enrolments = Enrolments(Set(enrolment)),

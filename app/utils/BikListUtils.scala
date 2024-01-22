@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import play.api.mvc.Request
 @Singleton
 class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport {
 
-  val STATUS_ADD    = 30
-  val STATUS_REMOVE = 40
+  private val STATUS_ADD    = 30
+  private val STATUS_REMOVE = 40
 
   /**
     * sort the input list according to the labels in the messages files and create a new list based on this order
@@ -53,7 +53,7 @@ class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     val sortedListOfIdLabelPairs: List[(String, String)] =
       listOfIdLabelPairs.sortWith((bik1: (String, String), bik2: (String, String)) => bik1._2 < bik2._2)
     val registrationItemList: List[RegistrationItem]     =
-      sortedListOfIdLabelPairs.map(bik => RegistrationItem(bik._1, false, true))
+      sortedListOfIdLabelPairs.map(bik => RegistrationItem(bik._1, active = false, enabled = true))
     RegistrationList(registeredBiksList.selectAll, registrationItemList)
   }
 

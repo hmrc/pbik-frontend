@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package controllers.actions
 
-import akka.util.Timeout
 import config.AppConfig
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
@@ -25,7 +24,7 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status._
 import play.api.mvc._
-import play.api.test.Helpers.{redirectLocation, status}
+import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.auth.core.MissingBearerToken
 import uk.gov.hmrc.auth.core.authorise.Predicate
@@ -34,9 +33,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
-import scala.language.postfixOps
 
 class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
@@ -48,8 +45,6 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
       Ok
     }
   }
-
-  implicit val timeout: Timeout = 5 seconds
 
   "Minimal Auth Action" when {
     "the user is logged in" must {

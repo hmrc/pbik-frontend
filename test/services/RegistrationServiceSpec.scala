@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,8 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
 
   override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder(
-    disabled = Seq(classOf[com.kenshoo.play.metrics.PlayModule])
-  ).configure(configMap)
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+    .configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .overrides(bind[BikListService].toInstance(mock(classOf[BikListService])))
     .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))

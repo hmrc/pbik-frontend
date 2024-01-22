@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
         Some("123"),
         Some("01/01/1980"),
         Some("male"),
-        Some(status),
-        0
+        Some(status)
       )
     )
   )
@@ -93,10 +92,9 @@ class SearchResultViewSpec extends PBIKViewSpec {
           Some("123"),
           Some("01/01/1980"),
           Some("male"),
-          Some(status),
-          0
+          Some(status)
         ),
-        EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
+        EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None),
         EiLPerson(
           "AC111111",
           "Humpty",
@@ -105,8 +103,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
           Some("123"),
           Some("01/01/1980"),
           Some("male"),
-          Some(status),
-          0
+          Some(status)
         )
       )
     )

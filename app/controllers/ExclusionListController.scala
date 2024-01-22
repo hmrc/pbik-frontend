@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,7 +98,7 @@ class ExclusionListController @Inject() (
 
     }
 
-  def showExcludedPage(isCurrentTaxYear: String, iabdString: String, form: Form[MandatoryRadioButton])(implicit
+  private def showExcludedPage(isCurrentTaxYear: String, iabdString: String, form: Form[MandatoryRadioButton])(implicit
     request: AuthenticatedRequest[_]
   ): Future[Result] = {
 
@@ -167,8 +167,8 @@ class ExclusionListController @Inject() (
       controllersReferenceData.responseErrorHandler(futureResult)
     }
 
-  def showWithOrWithoutNino(isCurrentTaxYear: String, iabdString: String, form: Form[MandatoryRadioButton])(implicit
-    request: AuthenticatedRequest[_]
+  private def showWithOrWithoutNino(isCurrentTaxYear: String, iabdString: String, form: Form[MandatoryRadioButton])(
+    implicit request: AuthenticatedRequest[_]
   ): Future[Result] =
     if (exclusionsAllowed) {
       for {
@@ -423,7 +423,7 @@ class ExclusionListController @Inject() (
       }
     }
 
-  def createExcludedPerson(individualsDetails: EiLPerson): Option[EiLPerson] =
+  private def createExcludedPerson(individualsDetails: EiLPerson): Option[EiLPerson] =
     Some(
       EiLPerson(
         individualsDetails.nino,

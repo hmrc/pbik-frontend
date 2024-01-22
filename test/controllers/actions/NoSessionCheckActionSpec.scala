@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import scala.language.postfixOps
 
 class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneAppPerSuite {
 
-  class Harness() extends NoSessionCheckActionImpl {
+  class Harness extends NoSessionCheckActionImpl {
     def callTransform[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
       refine(request)
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 package models
 
 case class EmpRef(taxOfficeNumber: String, taxOfficeReference: String) {
-  def encodedEmpRef: String   = s"$taxOfficeNumber%2F$taxOfficeReference"
-  def unencodedEmpRef: String = s"$taxOfficeNumber/$taxOfficeReference"
+  def encodedEmpRef: String           = s"$taxOfficeNumber%2F$taxOfficeReference"
+  private def unencodedEmpRef: String = s"$taxOfficeNumber/$taxOfficeReference"
 
-  override def toString: String = unencodedEmpRef.toString
+  override def toString: String = unencodedEmpRef
 
   def getOrElse(default: String): String = (taxOfficeNumber, taxOfficeReference) match {
     case ("", "") => default

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package views
 
-import config.{AppConfig, LocalFormPartialRetriever}
+import config.AppConfig
 import models.{EmpRef, RegistrationItem, RegistrationList}
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
@@ -36,10 +36,9 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
     EmpRef("", "")
   )
 
-  implicit val appConfig: AppConfig                                 = app.injector.instanceOf[AppConfig]
-  implicit val localFormPartialRetriever: LocalFormPartialRetriever = app.injector.instanceOf[LocalFormPartialRetriever]
-  val bikList: RegistrationList                                     = RegistrationList(active = List.empty[RegistrationItem])
-  val removalBik: Option[RegistrationItem]                          = Some(RegistrationItem("30", active = true, enabled = true))
+  implicit val appConfig: AppConfig        = app.injector.instanceOf[AppConfig]
+  val bikList: RegistrationList            = RegistrationList(active = List.empty[RegistrationItem])
+  val removalBik: Option[RegistrationItem] = Some(RegistrationItem("30", active = true, enabled = true))
 
   "nextYearPage" must {
     behave like pageWithTitle(messages("AddBenefits.Confirm.Multiple.Title"))

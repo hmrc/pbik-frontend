@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,18 +33,8 @@ class StubEiLListService @Inject() (
 
   val status                                     = 10
   private lazy val ListOfPeople: List[EiLPerson] = List(
-    EiLPerson(
-      "AA111111",
-      "John",
-      Some("Stones"),
-      "Smith",
-      Some("123"),
-      Some("01/01/1980"),
-      Some("male"),
-      Some(status),
-      0
-    ),
-    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
+    EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(status)),
+    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None),
     EiLPerson(
       "AC111111",
       "Humpty",
@@ -53,10 +43,9 @@ class StubEiLListService @Inject() (
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(status),
-      0
+      Some(status)
     ),
-    EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None, 0),
+    EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None),
     EiLPerson(
       "AE111111",
       "Alice",
@@ -65,8 +54,7 @@ class StubEiLListService @Inject() (
       Some("123"),
       Some("03/02/1978"),
       Some("female"),
-      Some(status),
-      0
+      Some(status)
     ),
     EiLPerson(
       "AF111111",
@@ -76,8 +64,7 @@ class StubEiLListService @Inject() (
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(status),
-      0
+      Some(status)
     )
   )
 
@@ -95,18 +82,8 @@ class StubEiLListServiceOneExclusion @Inject() (
     extends StubEiLListService(pbikAppConfig, tierConnector) {
 
   private lazy val ListOfPeople: List[EiLPerson] = List(
-    EiLPerson(
-      "AA111111",
-      "John",
-      Some("Stones"),
-      "Smith",
-      Some("123"),
-      Some("01/01/1980"),
-      Some("male"),
-      Some(status),
-      0
-    ),
-    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None, 0),
+    EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(status)),
+    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None),
     EiLPerson(
       "AC111111",
       "Humpty",
@@ -115,10 +92,9 @@ class StubEiLListServiceOneExclusion @Inject() (
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(status),
-      0
+      Some(status)
     ),
-    EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None, 0),
+    EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None),
     EiLPerson(
       "AE111111",
       "Alice",
@@ -127,8 +103,7 @@ class StubEiLListServiceOneExclusion @Inject() (
       Some("123"),
       Some("03/02/1978"),
       Some("female"),
-      Some(status),
-      0
+      Some(status)
     ),
     EiLPerson(
       "AF111111",
@@ -138,8 +113,7 @@ class StubEiLListServiceOneExclusion @Inject() (
       Some("123"),
       Some("01/01/1980"),
       Some("male"),
-      Some(status),
-      0
+      Some(status)
     )
   )
 
