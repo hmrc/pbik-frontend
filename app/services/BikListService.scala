@@ -16,7 +16,7 @@
 
 package services
 
-import config.AppConfig
+import config.PbikAppConfig
 import connectors.PbikConnector
 import models.{AuthenticatedRequest, Bik, BikResponse, EmpRef}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BikListService @Inject() (
-  val pbikAppConfig: AppConfig,
+  val pbikAppConfig: PbikAppConfig,
   val tierConnector: PbikConnector,
   controllersReferenceData: ControllersReferenceData
 )(implicit ec: ExecutionContext) {

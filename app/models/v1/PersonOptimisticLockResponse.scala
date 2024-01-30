@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package models
+package models.v1
 
 import play.api.libs.json.{Json, OFormat}
 
-case class PbikError(errorCode: String)
+case class PersonOptimisticLockResponse(
+  payeSchemeType: String,
+  employerNumber: Int,
+  payeSequenceNo: Int,
+  currentOptimisticLock: Int,
+  updatedOptimisticLock: Int
+)
 
-object PbikError {
-  implicit val pbikErrorFormat: OFormat[PbikError] = Json.format[PbikError]
+object PersonOptimisticLockResponse {
+  implicit val formats: OFormat[PersonOptimisticLockResponse] = Json.format[PersonOptimisticLockResponse]
 }

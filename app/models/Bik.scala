@@ -16,6 +16,7 @@
 
 package models
 
+import models.v1.BenefitInKindWithCount
 import play.api.Logging
 import play.api.libs.json.{Json, OFormat}
 import utils.Exceptions.InvalidBikTypeException
@@ -36,13 +37,11 @@ object Bik extends Logging {
     ("40", "assets-transferred"),
     ("48", "payments-employee"),
     ("54", "vouchers-credit-cards"),
-    ("38", "living-accommodation"),
     ("44", "mileage"),
     ("31", "car"),
     ("29", "car-fuel"),
     ("35", "vans"),
     ("36", "van-fuel"),
-    ("37", "interest-free-loans"),
     ("30", "medical"),
     ("50", "qualifying-relocation"),
     ("8", "services"),
@@ -55,6 +54,13 @@ object Bik extends Logging {
     ("32", "telephone"),
     ("45", "non-qualifying-relocation")
   )
+
+  def apply(benefitInKindWithCount: BenefitInKindWithCount): Bik =
+    new Bik(
+      benefitInKindWithCount.iabdType.id.toString,
+      benefitInKindWithCount.payrolledBenefitInKindStatus.id,
+      benefitInKindWithCount.payrolledBenefitInKindExclusionCount
+    )
 
   def asBenefitString(iabdType: String): String =
     iabdValueMap.getOrElse(iabdType, reportMissingBik(iabdType))

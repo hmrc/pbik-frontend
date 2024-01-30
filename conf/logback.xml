@@ -49,25 +49,11 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
-    <logger name="connectors" level="INFO"/>
-
-    <logger name="controllers" level="INFO"/>
-
-    <logger name="services" level="INFO"/>
-
-    <logger name="utils" level="INFO"/>
-
     <logger name="com.google.inject" level="WARN"/>
 
-    <logger name="com.ning.http.client" level="WARN"/>
+    <logger name="org.asynchttpclient.netty" level="INFO"/>
 
-    <logger name="org.asynchttpclient.netty.channel.DefaultChannelPool" level="WARN"/>
-
-    <logger name="org.asynchttpclient.netty" level="WARN"/>
-
-    <logger name="play.core.netty" level="WARN"/>
-
-    <root level="WARN">
+    <root level="INFO">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>

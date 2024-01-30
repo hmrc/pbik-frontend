@@ -18,8 +18,8 @@ package connectors
 
 import config.Service
 import models._
+import models.v1.{BenefitInKindRequest, BenefitInKindWithCount, PersonOptimisticLockResponse}
 import play.api.http.Status.BAD_REQUEST
-import play.api.libs.json._
 import play.api.mvc.Request
 import play.api.{Configuration, Logging}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
@@ -42,7 +42,12 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
   )(implicit hc: HeaderCarrier): Future[BikResponse] =
     client
       .GET(s"$baseUrl/${empRef.encodedEmpRef}/$year")
-      .map(implicit response => BikResponse(responseHeaders, validateResponses("getRegisteredBiks").json.as[List[Bik]]))
+      .map { implicit response =>
+        val headers  = responseHeaders
+        val benefits = validateResponses("getRegisteredBiks").json.as[List[BenefitInKindWithCount]]
+        val biks     = benefits.map(benefit => Bik(benefit))
+        BikResponse(headers, biks)
+      }
 
   def getAllAvailableBiks(year: Int)(implicit hc: HeaderCarrier): Future[List[Bik]] =
     client
@@ -64,7 +69,7 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
       .POST(
         s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion/update",
         individual,
-        createOrCheckForRequiredHeaders
+        createOrCheckForRequiredHeaders.toSeq
       )
       .map {
         case response if response.body.length <= maxEmptyBodyLength =>
@@ -82,39 +87,48 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
       .POST(
         s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion/remove",
         individualToRemove,
-        createOrCheckForRequiredHeaders
+        createOrCheckForRequiredHeaders.toSeq
       )
       .map { implicit response =>
         validateResponses("removeEiLPersonExclusionFromBik").status
       }
 
-  def updateOrganisationsRegisteredBiks(empRef: EmpRef, year: Int, changes: List[Bik])(implicit
+  def updateOrganisationsRegisteredBiks(year: Int, changes: List[Bik])(implicit
     hc: HeaderCarrier,
-    request: Request[_]
-  ): Future[Int] =
+    request: AuthenticatedRequest[_]
+  ): Future[Int] = {
+    val updatedBiks                  = changes.map(bik => BenefitInKindRequest(bik, request.isAgent))
+    val headers: Map[String, String] = createOrCheckForRequiredHeaders
     client
       .POST(
-        s"$baseUrl/${empRef.encodedEmpRef}/$year/updatebenefittypes",
-        changes,
-        createOrCheckForRequiredHeaders
+        s"$baseUrl/${request.empRef.encodedEmpRef}/$year/updatebenefittypes",
+        updatedBiks,
+        headers.toSeq
       )
-      .map { implicit response =>
-        validateResponses("updateOrganisationsRegisteredBiks").status
+      .map { response =>
+        val validatedResponse                     = validateResponses("updateOrganisationsRegisteredBiks")(response)
+        val lock                                  = validatedResponse.json.as[PersonOptimisticLockResponse]
+        val updatedHeaders: Seq[(String, String)] =
+          HeaderTags.createResponseHeaders(lock.updatedOptimisticLock.toString).toSeq
+
+        hc.withExtraHeaders(updatedHeaders: _*)
+        lock.updatedOptimisticLock
       }
+  }
 
   private def responseHeaders(implicit response: HttpResponse): Map[String, String] =
     Map(
-      HeaderTags.ETAG   -> response.header(HeaderTags.ETAG).getOrElse("0"),
-      HeaderTags.X_TXID -> response.header(HeaderTags.X_TXID).getOrElse("1")
+      HeaderTags.ETAG   -> response.header(HeaderTags.ETAG).getOrElse(HeaderTags.ETAG_DEFAULT_VALUE),
+      HeaderTags.X_TXID -> response.header(HeaderTags.X_TXID).getOrElse(HeaderTags.X_TXID_DEFAULT_VALUE)
     )
 
-  private def createOrCheckForRequiredHeaders(implicit request: Request[_]): Seq[(String, String)] = {
-    val etagFromSession  = request.session.get(HeaderTags.ETAG).getOrElse("0")
-    val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse("1")
+  private def createOrCheckForRequiredHeaders(implicit request: Request[_]): Map[String, String] = {
+    val etagFromSession  = request.session.get(HeaderTags.ETAG).getOrElse(HeaderTags.ETAG_DEFAULT_VALUE)
+    val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse(HeaderTags.X_TXID_DEFAULT_VALUE)
     logger.info(
       "[PbikConnector][createOrCheckForRequiredHeaders] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession
     )
-    Map(HeaderTags.ETAG -> etagFromSession, HeaderTags.X_TXID -> xtxidFromSession).toSeq
+    HeaderTags.createResponseHeaders(etagFromSession, xtxidFromSession)
   }
 
   private def validateResponses(fromMethod: String)(implicit response: HttpResponse): HttpResponse =
@@ -124,13 +138,16 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
     } else if (response.body.length <= maxEmptyBodyLength) {
       response
     } else {
-      response.json.validate[PbikError] match {
-        case errorReceived: JsSuccess[PbikError] =>
-          logger.error(
-            s"[PbikConnector][$fromMethod] a pbik error code was returned. Error Code: ${errorReceived.value.errorCode}"
-          )
-          throw new GenericServerErrorException(errorReceived.value.errorCode)
-        case _: JsError                          => response
+      val isOldError = response.body.contains("errorCode")
+      val isNewError = response.body.contains("reason") && response.body.contains("code")
+
+      if (isOldError || isNewError) {
+        logger.error(
+          s"[PbikConnector][$fromMethod] a pbik error code was returned. Error: ${response.body}"
+        )
+        throw new GenericServerErrorException(response.body)
+      } else {
+        response
       }
     }
 }

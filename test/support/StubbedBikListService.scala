@@ -16,9 +16,9 @@
 
 package support
 
-import config.AppConfig
+import config.PbikAppConfig
 import connectors.PbikConnector
-import models.{AuthenticatedRequest, Bik, BikResponse, EmpRef, HeaderTags}
+import models._
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.ControllersReferenceData
@@ -27,7 +27,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class StubbedBikListService @Inject() (
-  pbikAppConfig: AppConfig,
+  pbikAppConfig: PbikAppConfig,
   tierConnector: PbikConnector,
   controllersReferenceData: ControllersReferenceData
 )(implicit ec: ExecutionContext)
@@ -48,7 +48,7 @@ class StubbedBikListService @Inject() (
   ): Future[BikResponse] =
     Future.successful(
       BikResponse(
-        Map(HeaderTags.ETAG -> "1"),
+        HeaderTags.createResponseHeaders(),
         CYCache.filter { x: Bik =>
           Integer.parseInt(x.iabdType) == 31
         }
@@ -61,7 +61,7 @@ class StubbedBikListService @Inject() (
   ): Future[BikResponse] =
     Future.successful(
       BikResponse(
-        Map(HeaderTags.ETAG -> "1"),
+        HeaderTags.createResponseHeaders(),
         CYCache.filter { x: Bik =>
           Integer.parseInt(x.iabdType) == 31
         }

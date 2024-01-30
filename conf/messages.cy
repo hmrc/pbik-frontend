@@ -171,8 +171,6 @@ BenefitInKind.label.48 = Taliadau a wnaed ar ran cyflogai
 
 BenefitInKind.label.54 = Talebau a chardiau credyd
 
-BenefitInKind.label.38 = Llety
-
 BenefitInKind.label.44 = Lwfans milltiroedd a thaliadau teithwyr
 
 BenefitInKind.label.31 = Ceir a thanwydd ceir
@@ -182,8 +180,6 @@ BenefitInKind.label.29 = Tanwydd ceir
 BenefitInKind.label.35 = Faniau
 
 BenefitInKind.label.36 = Tanwydd faniau
-
-BenefitInKind.label.37 = Benthyciadau di-log a llog isel
 
 BenefitInKind.label.30 = Triniaeth neu yswiriant meddygol preifat
 

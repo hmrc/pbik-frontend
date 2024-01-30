@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-package modules
+package models.auth
 
-import com.google.inject.AbstractModule
-import config.{AppConfig, PbikAppConfig}
-
-class Module extends AbstractModule {
-
-  override def configure(): Unit =
-    bind(classOf[AppConfig]).to(classOf[PbikAppConfig])
+object EpayeSessionKeys {
+  val EPAYE_USER_TYPE       = "EPAYE_USER_TYPE"
+  val AGENT_FRONTEND_EMPREF = "epaye-empref"
 }

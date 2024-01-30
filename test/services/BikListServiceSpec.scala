@@ -55,10 +55,7 @@ class BikListServiceSpec
   implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockRequest)
   implicit val hc: HeaderCarrier                                           = HeaderCarrier()
 
-  val responseHeaders: Map[String, String] = Map(
-    HeaderTags.ETAG   -> "0",
-    HeaderTags.X_TXID -> "1"
-  )
+  val responseHeaders: Map[String, String] = HeaderTags.createResponseHeaders()
 
   val bikStatus30 = 30
   val bikStatus40 = 40

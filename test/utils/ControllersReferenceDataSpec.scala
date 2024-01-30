@@ -48,7 +48,12 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
   private trait Test {
     implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-      AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+      AuthenticatedRequest(
+        EmpRef("taxOfficeNumber", "taxOfficeReference"),
+        UserName(Name(None, None)),
+        request,
+        isAgent = false
+      )
     val p: Promise[Result]                                              = Promise[Result]()
   }
 

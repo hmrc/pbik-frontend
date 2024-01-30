@@ -16,7 +16,7 @@
 
 package utils
 
-import config.AppConfig
+import config.PbikAppConfig
 import models._
 import play.api.Logging
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -62,7 +62,7 @@ class ControllersReferenceData @Inject() (
   maintenancePageView: MaintenancePage
 )(implicit
   ec: ExecutionContext,
-  val pbikAppConfig: AppConfig
+  val pbikAppConfig: PbikAppConfig
 ) extends FormMappings(messagesApi)
     with I18nSupport
     with Logging {

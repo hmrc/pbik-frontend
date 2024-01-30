@@ -17,13 +17,22 @@
 package models
 
 /**
-  * The Header Tags are used between the PBIK gateway and NPS to control the optimistic locks.
-  * Each time a call is made to NPS on an employer specific URL, NPS returns the current value of the optimistic lock for the employer record
-  * We need to save that value and send it back in each time we wish to change the employer record ( i.e by updating the registered benefits or
-  * excluding an individual ). If the Etag value does not match, NPS will reject the update as it indicates other changes have been made to the
-  * employer record thereby invalidating ours ).
+  * The Header Tags are used to control a simple optimistic lock feature which prevents race conditions.
+  * Each time a call is made for an employer-specific URL, the current value of the current optimistic lock is returned
+  * That value should be send back each time we wish to change the employer record ( i.e by updating the registered benefits or
+  * excluding an individual ). On receipt by the server, if the Etag value does not match, the update will be rejected, indicating some other source
+  * has changed the record, thereby invalidating our changes.
   */
 object HeaderTags {
   val ETAG: String   = "ETag"
   val X_TXID: String = "X-TXID"
+
+  val ETAG_DEFAULT_VALUE: String   = "0"
+  val X_TXID_DEFAULT_VALUE: String = "1"
+
+  def createResponseHeaders(
+    etag: String = ETAG_DEFAULT_VALUE,
+    txid: String = X_TXID_DEFAULT_VALUE
+  ): Map[String, String] = Map(ETAG -> etag, X_TXID -> txid)
+
 }

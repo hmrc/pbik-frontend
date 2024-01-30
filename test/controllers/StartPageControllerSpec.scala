@@ -40,7 +40,12 @@ class StartPageControllerSpec extends PlaySpec with FakePBIKApplication {
   implicit val lang: Lang                                                         = Lang("en-GB")
   implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
   implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
-    AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+    AuthenticatedRequest(
+      EmpRef("taxOfficeNumber", "taxOfficeReference"),
+      UserName(Name(None, None)),
+      request,
+      isAgent = false
+    )
 
   private val messagesApi: MessagesApi                 = app.injector.instanceOf[MessagesApi]
   private val startPageController: StartPageController = app.injector.instanceOf[StartPageController]

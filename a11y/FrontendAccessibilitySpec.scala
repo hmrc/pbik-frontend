@@ -88,7 +88,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     case signedOut: SignedOut                                                       => render(signedOut)
     case startPage: StartPage                                                       => render(startPage)
     case summary: Summary                                                           => render(summary)(
-      fixed(true), arbTaxYearRange, fixed(listOfBik("40", "48")), fixed(listOfBik("54", "38")),
+      fixed(true), arbTaxYearRange, fixed(listOfBik("40", "48")), fixed(listOfBik("54", "44")),
       fixed(2), fixed(2), fixed("false"), arbEmpRef, arbRequest, arbMessages
     )
     case exclusionNinoOrNoNinoForm: ExclusionNinoOrNoNinoForm                       => render(exclusionNinoOrNoNinoForm)

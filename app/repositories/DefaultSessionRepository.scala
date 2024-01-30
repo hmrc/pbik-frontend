@@ -18,7 +18,7 @@ package repositories
 
 import com.mongodb.client.model.Indexes.ascending
 import com.mongodb.client.model.ReturnDocument
-import config.AppConfig
+import config.PbikAppConfig
 import models.PbikSession
 import org.bson.conversions.Bson
 import org.mongodb.scala.model.Filters._
@@ -32,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DefaultSessionRepository @Inject() (config: AppConfig, mongo: MongoComponent)(implicit ec: ExecutionContext)
+class DefaultSessionRepository @Inject() (config: PbikAppConfig, mongo: MongoComponent)(implicit ec: ExecutionContext)
     extends PlayMongoRepository[PbikSession](
       collectionName = "user-answers",
       mongoComponent = mongo,

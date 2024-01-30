@@ -58,10 +58,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
   private val registrationController: ManageRegistrationController =
     app.injector.instanceOf[ManageRegistrationController]
 
-  val responseHeaders: Map[String, String] = Map(
-    HeaderTags.ETAG   -> "0",
-    HeaderTags.X_TXID -> "1"
-  )
+  val responseHeaders: Map[String, String] = HeaderTags.createResponseHeaders()
 
   private lazy val CYCache: List[Bik] = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), bikStatus))
 
@@ -72,10 +69,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
     app.injector
       .instanceOf[PbikConnector]
       .updateOrganisationsRegisteredBiks(
-        any[EmpRef],
         any[Int],
         any
-      )(any[HeaderCarrier], any[Request[_]])
+      )(any[HeaderCarrier], any[AuthenticatedRequest[_]])
   ).thenReturn(Future.successful(OK))
 
   when(
@@ -438,7 +434,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
       val bikList                                                         = List(Bik("8", bikStatus))
       implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+        AuthenticatedRequest(
+          EmpRef("taxOfficeNumber", "taxOfficeReference"),
+          UserName(Name(None, None)),
+          request,
+          isAgent = false
+        )
       val errorMsg                                                        = messagesApi("RemoveBenefits.reason.no.selection")
 
       val result =
