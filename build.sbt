@@ -1,6 +1,6 @@
 val appName = "pbik-frontend"
 
-ThisBuild / scalaVersion := "2.13.12"
+ThisBuild / scalaVersion := "2.13.13"
 ThisBuild / majorVersion := 7
 
 lazy val microservice = Project(appName, file("."))
