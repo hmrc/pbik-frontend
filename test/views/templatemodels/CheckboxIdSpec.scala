@@ -41,13 +41,13 @@ class CheckboxIdSpec extends PBIKViewSpec {
           .bind(
             Map[String, String](
               "actives[2].uid" -> "32",
-              "actives[0].uid" -> "37",
+              "actives[0].uid" -> "35",
               "actives[1].uid" -> "32"
             )
           )
       )
 
-      doc must haveLinkWithUrlWithID("error-link", "checkbox-37")
+      doc must haveLinkWithUrlWithID("error-link", "checkbox-35")
     }
 
     "return a link to the first form checkbox ignoring id of always last 'Other' field" in {
@@ -58,7 +58,7 @@ class CheckboxIdSpec extends PBIKViewSpec {
             Map[String, String](
               "actives[0].uid" -> "47",
               "actives[1].uid" -> "2",
-              "actives[2].uid" -> "37"
+              "actives[2].uid" -> "35"
             )
           )
       )

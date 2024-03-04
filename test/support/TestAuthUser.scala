@@ -26,7 +26,8 @@ trait TestAuthUser {
     AuthenticatedRequest(
       EmpRef("taxOfficeNumber", "taxOfficeReference"),
       UserName(Name(Some("EPaye User"), None)),
-      request
+      request,
+      isAgent = false
     )
 
 }

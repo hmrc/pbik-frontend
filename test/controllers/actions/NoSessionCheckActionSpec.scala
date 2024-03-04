@@ -48,7 +48,8 @@ class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneA
           EmpRef.empty,
           UserName(Name(None, None)),
           FakeRequest("", "")
-            .withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}")
+            .withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}"),
+          isAgent = false
         )
         val result               = new Harness().callTransform(requestWithSessionID)
         whenReady(result) {
@@ -59,7 +60,8 @@ class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneA
 
     "the session is not set" must {
       "redirect user to home page controller " in {
-        val request = AuthenticatedRequest(EmpRef.empty, UserName(Name(None, None)), FakeRequest("", ""))
+        val request =
+          AuthenticatedRequest(EmpRef.empty, UserName(Name(None, None)), FakeRequest("", ""), isAgent = false)
         val result  = new Harness().callTransform(request)
 
         whenReady(result) { call: Either[Result, AuthenticatedRequest[_]] =>

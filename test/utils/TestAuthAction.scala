@@ -33,7 +33,8 @@ class TestAuthAction @Inject() (val parser: BodyParsers.Default)(implicit val ex
         AuthenticatedRequest(
           EmpRef("taxOfficeNumber", "taxOfficeReference"),
           UserName(Name(None, None)),
-          request
+          request,
+          isAgent = false
         )
       block(authenticatedRequest)
     } else {

@@ -16,7 +16,7 @@
 
 package views
 
-import config.AppConfig
+import config.PbikAppConfig
 import models.EmpRef
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
@@ -30,7 +30,7 @@ class WhatNextExclusionViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings               = app.injector.instanceOf[FormMappings]
   val whatNextExclusionView: WhatNextExclusion = app.injector.instanceOf[WhatNextExclusion]
 
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val appConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
 
   implicit def view: Html = whatNextExclusionView(taxYearRange, "cyp1", "medical", "", EmpRef("", ""))
 

@@ -24,22 +24,20 @@ import play.api.test.FakeRequest
 
 class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
-  val bikListUtils                                          = app.injector.instanceOf[BikListUtils]
+  val bikListUtils: BikListUtils                            = app.injector.instanceOf[BikListUtils]
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
   // scalastyle:off magic.number
-  private val alphaSorted = List(39, 40, 31, 42, 43, 52, 37, 38, 44, 45, 47, 32, 48, 30, 50, 8, 53, 36, 35, 54)
+  private val alphaSorted = List(39, 40, 31, 42, 43, 52, 44, 45, 47, 32, 48, 30, 50, 8, 53, 36, 35, 54)
 
-  val biks = List(
+  val biks: List[Bik] = List(
     Bik("" + 40, 10),
     Bik("" + 48, 10),
     Bik("" + 54, 10),
-    Bik("" + 38, 10),
     Bik("" + 44, 10),
     Bik("" + 31, 10),
     Bik("" + 35, 10),
     Bik("" + 36, 10),
-    Bik("" + 37, 10),
     Bik("" + 30, 10),
     Bik("" + 50, 10),
     Bik("" + 8, 10),
@@ -54,7 +52,7 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
   )
 
   private val registered                 =
-    List(Bik("" + 40, 30), Bik("" + 48, 30), Bik("" + 54, 30), Bik("" + 38, 30), Bik("" + 44, 30))
+    List(Bik("" + 40, 30), Bik("" + 48, 30), Bik("" + 54, 30), Bik("" + 35, 30), Bik("" + 44, 30))
   private val modifications              =
     List(Bik("" + 40, 40), Bik("" + 48, 40), Bik("" + 54, 40), Bik("" + 45, 40), Bik("" + 47, 30), Bik("" + 52, 30))
   private val normaliseResult: List[Int] = List(40, 47, 48, 52, 54).sorted

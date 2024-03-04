@@ -55,7 +55,12 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
   implicit val lang: Lang                                             = Lang("en-GB")
   implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
   implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-    AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+    AuthenticatedRequest(
+      EmpRef("taxOfficeNumber", "taxOfficeReference"),
+      UserName(Name(None, None)),
+      request,
+      isAgent = false
+    )
 
   private lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), statusValue))
 
@@ -64,7 +69,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
   private val whatNextPageController: WhatNextPageController = app.injector.instanceOf[WhatNextPageController]
 
   private class StubBikListService @Inject() (
-    pbikAppConfig: AppConfig,
+    pbikAppConfig: PbikAppConfig,
     tierConnector: PbikConnector,
     controllersReferenceData: ControllersReferenceData
   ) extends BikListService(
@@ -79,7 +84,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
     ): Future[BikResponse] =
       Future.successful(
         BikResponse(
-          Map(HeaderTags.ETAG -> "1"),
+          HeaderTags.createResponseHeaders(),
           CYCache.filter { x: Bik =>
             Integer.parseInt(x.iabdType) <= 10
           }
@@ -92,7 +97,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
     ): Future[BikResponse] =
       Future.successful(
         BikResponse(
-          Map(HeaderTags.ETAG -> "1"),
+          HeaderTags.createResponseHeaders(),
           CYCache.filter { x: Bik =>
             Integer.parseInt(x.iabdType) > 10
           }

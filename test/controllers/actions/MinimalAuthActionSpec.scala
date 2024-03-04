@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import config.AppConfig
+import config.PbikAppConfig
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
@@ -27,13 +27,10 @@ import play.api.mvc._
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.auth.core.MissingBearerToken
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HttpClient
 
-import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
@@ -57,7 +54,7 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
         val minimalAuthAction = new MinimalAuthActionImpl(
           authConnector = mockAuthConnector,
           parser = app.injector.instanceOf[BodyParsers.Default],
-          config = app.injector.instanceOf[AppConfig]
+          config = app.injector.instanceOf[PbikAppConfig]
         )
         val controller        = new Harness(minimalAuthAction)
         val result            = controller.onPageLoad()(FakeRequest("", ""))
@@ -71,7 +68,7 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
         val minimalAuthAction = new MinimalAuthActionImpl(
           new BrokenAuthConnector(new MissingBearerToken, mock[HttpClient], app.injector.instanceOf[Configuration]),
           app.injector.instanceOf[BodyParsers.Default],
-          app.injector.instanceOf[AppConfig]
+          app.injector.instanceOf[PbikAppConfig]
         )
         val controller        = new Harness(minimalAuthAction)
         val result            = controller.onPageLoad()(FakeRequest("", ""))
@@ -84,15 +81,4 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
     }
   }
 
-}
-
-class BrokenAuthConnector @Inject() (exception: Throwable, httpClient: HttpClient, configuration: Configuration)
-    extends AuthConnector(httpClient, configuration) {
-  override val serviceUrl: String = ""
-
-  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[A] =
-    Future.failed(exception)
 }

@@ -48,7 +48,7 @@ class SplunkLoggerSpec
     val controller: TestSplunkLogger = app.injector.instanceOf[TestSplunkLogger]
     val msg                          = "Hello"
 
-    val csrfTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
+    val csrfTokenSigner: CSRFTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
 
     def csrfToken: (String, String) =
       "csrfToken" -> csrfTokenSigner.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
@@ -58,7 +58,7 @@ class SplunkLoggerSpec
     def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] =
       FakeRequest().withSession(csrfToken).withHeaders()
 
-    val pbikDataEvent = DataEvent(
+    val pbikDataEvent: DataEvent = DataEvent(
       auditSource = SplunkLogger.pbik_audit_source,
       auditType = SplunkLogger.pbik_benefit_type,
       detail = Map(
@@ -90,13 +90,13 @@ class SplunkLoggerSpec
       assert(d.auditSource == SplunkLogger.pbik_audit_source)
       assert(d.detail.nonEmpty)
       assert(d.detail.contains(SplunkLogger.key_event_name))
-      assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
-      assert(d.detail.get(SplunkLogger.key_empref).get == "taxOfficeNumber/taxOfficeReference")
-      assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
-      assert(d.detail.get(SplunkLogger.key_action).get == controller.ADD.toString)
-      assert(d.detail.get(SplunkLogger.key_tier).get == controller.FRONTEND.toString)
-      assert(d.detail.get(SplunkLogger.key_target).get == controller.BIK.toString)
-      assert(d.detail.get(SplunkLogger.key_period).get == controller.CYP1.toString)
+      assert(d.detail(SplunkLogger.key_event_name) == SplunkLogger.pbik_event_name)
+      assert(d.detail(SplunkLogger.key_empref) == "taxOfficeNumber/taxOfficeReference")
+      assert(d.detail(SplunkLogger.key_gateway_user) == "TEST_USER")
+      assert(d.detail(SplunkLogger.key_action) == controller.ADD.toString)
+      assert(d.detail(SplunkLogger.key_tier) == controller.FRONTEND.toString)
+      assert(d.detail(SplunkLogger.key_target) == controller.BIK.toString)
+      assert(d.detail(SplunkLogger.key_period) == controller.CYP1.toString)
     }
   }
 
@@ -115,13 +115,13 @@ class SplunkLoggerSpec
       assert(d.auditSource == SplunkLogger.pbik_audit_source)
       assert(d.detail.nonEmpty)
       assert(d.detail.contains(SplunkLogger.key_event_name))
-      assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
-      assert(d.detail.get(SplunkLogger.key_empref).get == SplunkLogger.pbik_no_ref)
-      assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
-      assert(d.detail.get(SplunkLogger.key_action).get == controller.ADD.toString)
-      assert(d.detail.get(SplunkLogger.key_tier).get == controller.FRONTEND.toString)
-      assert(d.detail.get(SplunkLogger.key_target).get == controller.BIK.toString)
-      assert(d.detail.get(SplunkLogger.key_period).get == controller.CYP1.toString)
+      assert(d.detail(SplunkLogger.key_event_name) == SplunkLogger.pbik_event_name)
+      assert(d.detail(SplunkLogger.key_empref) == SplunkLogger.pbik_no_ref)
+      assert(d.detail(SplunkLogger.key_gateway_user) == "TEST_USER")
+      assert(d.detail(SplunkLogger.key_action) == controller.ADD.toString)
+      assert(d.detail(SplunkLogger.key_tier) == controller.FRONTEND.toString)
+      assert(d.detail(SplunkLogger.key_target) == controller.BIK.toString)
+      assert(d.detail(SplunkLogger.key_period) == controller.CYP1.toString)
     }
   }
 
@@ -135,7 +135,7 @@ class SplunkLoggerSpec
 
   "When logging events, the SplunkLogger" should {
     "complete successfully when sending a general DataEvent" in new SetUp {
-      val nonPbikEvent   = DataEvent(
+      val nonPbikEvent: DataEvent = DataEvent(
         auditSource = "TEST",
         auditType = "TEST-AUDIT-TYPE",
         detail = Map(
@@ -149,7 +149,7 @@ class SplunkLoggerSpec
           "other key" -> "other data"
         )
       )
-      val r: AuditResult = await(controller.logSplunkEvent(nonPbikEvent))
+      val r: AuditResult          = await(controller.logSplunkEvent(nonPbikEvent))
       assert(r == Success)
     }
   }
@@ -159,7 +159,8 @@ class SplunkLoggerSpec
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         models.EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference = "taxOfficeReference"),
         UserName(Name(Some("TEST_USER"), None)),
-        FakeRequest()
+        FakeRequest(),
+        isAgent = false
       )
 
       val d: DataEvent =
@@ -168,16 +169,16 @@ class SplunkLoggerSpec
       assert(d.auditSource == SplunkLogger.pbik_audit_source)
       assert(d.detail.nonEmpty)
       assert(d.detail.contains(SplunkLogger.key_event_name))
-      assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
+      assert(d.detail(SplunkLogger.key_event_name) == SplunkLogger.pbik_event_name)
       assert(
-        d.detail.get(SplunkLogger.key_empref).get == EmpRef(
+        d.detail(SplunkLogger.key_empref) == EmpRef(
           taxOfficeNumber = "taxOfficeNumber",
           taxOfficeReference = "taxOfficeReference"
         ).toString
       )
-      assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
-      assert(d.detail.get(SplunkLogger.key_error).get == controller.EXCEPTION.toString)
-      assert(d.detail.get(SplunkLogger.key_message).get == "No PAYE Scheme found for user")
+      assert(d.detail(SplunkLogger.key_gateway_user) == "TEST_USER")
+      assert(d.detail(SplunkLogger.key_error) == controller.EXCEPTION.toString)
+      assert(d.detail(SplunkLogger.key_message) == "No PAYE Scheme found for user")
     }
   }
 
@@ -186,7 +187,8 @@ class SplunkLoggerSpec
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         models.EmpRef.empty,
         UserName(Name(Some("TEST_USER"), None)),
-        FakeRequest()
+        FakeRequest(),
+        isAgent = false
       )
 
       val d: DataEvent = controller.createErrorEvent(controller.FRONTEND, controller.EXCEPTION, msg = "No Empref")
@@ -194,11 +196,11 @@ class SplunkLoggerSpec
       assert(d.auditSource == SplunkLogger.pbik_audit_source)
       assert(d.detail.nonEmpty)
       assert(d.detail.contains(SplunkLogger.key_event_name))
-      assert(d.detail.get(SplunkLogger.key_event_name).get == SplunkLogger.pbik_event_name)
-      assert(d.detail.get(SplunkLogger.key_empref).get == SplunkLogger.pbik_no_ref)
-      assert(d.detail.get(SplunkLogger.key_gateway_user).get == "TEST_USER")
-      assert(d.detail.get(SplunkLogger.key_error).get == controller.EXCEPTION.toString)
-      assert(d.detail.get(SplunkLogger.key_message).get == "No Empref")
+      assert(d.detail(SplunkLogger.key_event_name) == SplunkLogger.pbik_event_name)
+      assert(d.detail(SplunkLogger.key_empref) == SplunkLogger.pbik_no_ref)
+      assert(d.detail(SplunkLogger.key_gateway_user) == "TEST_USER")
+      assert(d.detail(SplunkLogger.key_error) == controller.EXCEPTION.toString)
+      assert(d.detail(SplunkLogger.key_message) == "No Empref")
     }
   }
 
@@ -232,7 +234,8 @@ class SplunkLoggerSpec
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         models.EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference = "taxOfficeReference"),
         UserName(Name(Some("TEST_USER"), None)),
-        FakeRequest()
+        FakeRequest(),
+        isAgent = false
       )
       assert(controller.extractGovernmentGatewayString == "TEST_USER")
     }
@@ -244,7 +247,8 @@ class SplunkLoggerSpec
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
         models.EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference = "taxOfficeReference"),
         UserName(Name(None, None)),
-        FakeRequest()
+        FakeRequest(),
+        isAgent = false
       )
       assert(controller.extractGovernmentGatewayString == SplunkLogger.pbik_no_ref)
     }

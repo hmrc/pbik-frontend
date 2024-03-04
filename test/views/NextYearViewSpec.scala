@@ -16,7 +16,7 @@
 
 package views
 
-import config.AppConfig
+import config.PbikAppConfig
 import models.{EmpRef, RegistrationList}
 import org.jsoup.Jsoup
 import play.api.data.Form
@@ -34,7 +34,7 @@ class NextYearViewSpec extends PBIKViewSpec {
 
   implicit def view: Html = viewWithForm(formMappings.objSelectedForm)
 
-  implicit val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  implicit val appConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
 
   def viewWithForm(form: Form[RegistrationList]): Html =
     nextTaxYearView(form, additive = true, taxYearRange, List(), List(), List(), List(), Some(1), EmpRef("", ""))

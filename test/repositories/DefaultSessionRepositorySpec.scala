@@ -16,7 +16,7 @@
 
 package repositories
 
-import config.AppConfig
+import config.PbikAppConfig
 import controllers.FakePBIKApplication
 import models._
 import org.mongodb.scala.model.Filters
@@ -35,7 +35,7 @@ class DefaultSessionRepositorySpec
     with OptionValues
     with BeforeAndAfterEach {
 
-  private val appConfig: AppConfig           = injected[AppConfig]
+  private val appConfig: PbikAppConfig       = injected[PbikAppConfig]
   private val mongoComponent: MongoComponent = injected[MongoComponent]
   private val sessionRepository              = new DefaultSessionRepository(appConfig, mongoComponent)
   private val pbikSession: PbikSession       = PbikSession(sessionId)

@@ -17,72 +17,138 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
-import config.{AppConfig, Service}
-
-import javax.inject.{Inject, Singleton}
+import config.{PbikAppConfig, Service}
+import models.auth.EpayeSessionKeys
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.Configuration
+import play.api.{Configuration, Logging}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.Logging
 
 @Singleton
 class AuthActionImpl @Inject() (
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default,
-  config: AppConfig
+  config: PbikAppConfig
 )(implicit val executionContext: ExecutionContext)
     extends AuthAction
     with AuthorisedFunctions
     with Logging {
 
+  private def authAsEmployer[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result])(implicit
+    hc: HeaderCarrier
+  ): Future[Result] =
+    authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE"))
+      .retrieve(Retrievals.authorisedEnrolments and Retrievals.name and Retrievals.affinityGroup) {
+        case Enrolments(enrolments) ~ name ~ Some(_) =>
+          enrolments
+            .find(_.key == "IR-PAYE")
+            .map { enrolment =>
+              val taxOfficeNumber    = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
+              val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
+
+              (taxOfficeNumber, taxOfficeReference) match {
+                case (Some(number), Some(reference)) =>
+                  block(
+                    AuthenticatedRequest(
+                      EmpRef(number, reference),
+                      UserName(name.getOrElse(Name(None, None))),
+                      request,
+                      isAgent = false
+                    )
+                  )
+                case _                               =>
+                  logger.warn(
+                    "[AuthAction][authAsEmployer] Authentication failed: invalid taxOfficeNumber and/or taxOfficeReference"
+                  )
+                  Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
+              }
+            }
+            .getOrElse {
+              logger.warn("[AuthAction][authAsEmployer] Authentication failed - IR-PAYE key not found")
+              Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
+            }
+      } recover { case ex: InsufficientEnrolments =>
+      logger.warn("[AuthAction][authAsEmployer] Insufficient enrolments provided with request")
+      Results.Redirect(controllers.routes.AuthController.notAuthorised)
+    }
+
+  private def authAsAgent[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result])(implicit
+    hc: HeaderCarrier
+  ): Future[Result] = {
+    val clientEmpRef = request.session.get(EpayeSessionKeys.AGENT_FRONTEND_EMPREF)
+
+    clientEmpRef match {
+      case None                         =>
+        logger.warn("[AuthFunction][authAsAgent] No client EmpRef found in session")
+        Future.successful(Redirect(config.agentClientListUrl))
+      case Some(agentEmployerReference) =>
+        val empRefs = agentEmployerReference.split("/")
+
+        if (empRefs.size != 2) {
+          logger.warn("[AuthFunction][authAsAgent] Invalid client EmpRef found in session")
+          Future.successful(Redirect(config.agentClientListUrl))
+        } else {
+
+          val empRef = EmpRef(empRefs.head, empRefs.last)
+
+          authorised(
+            Enrolment("IR-PAYE")
+              .withIdentifier("TaxOfficeNumber", empRef.taxOfficeNumber)
+              .withIdentifier("TaxOfficeReference", empRef.taxOfficeReference)
+              .withDelegatedAuthRule("lp-paye")
+          )
+            .retrieve(Retrievals.allEnrolments and Retrievals.name and Retrievals.affinityGroup) {
+              case Enrolments(enrs) ~ name ~ Some(_) =>
+                block(
+                  AuthenticatedRequest(
+                    empRef,
+                    UserName(name.getOrElse(Name(None, None))),
+                    request,
+                    isAgent = true
+                  )
+                )
+            }
+        }
+    }
+  }
+
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE"))
-      .retrieve(Retrievals.authorisedEnrolments and Retrievals.name) { case Enrolments(enrolments) ~ name =>
-        enrolments
-          .find(_.key == "IR-PAYE")
-          .map { enrolment =>
-            val taxOfficeNumber    = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
-            val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
+    authorised()
+      .retrieve(Retrievals.name and Retrievals.affinityGroup) { case name ~ Some(affinityGroup) =>
+        affinityGroup match {
+          case AffinityGroup.Agent        => authAsAgent(request, block)
+          case AffinityGroup.Organisation => authAsEmployer(request, block) //default how it was before
+          //Individual
+          case _                          =>
+            logger.warn(
+              s"[AuthAction][invokeBlock] Authentication failed - AffinityGroup not supported: ${affinityGroup.toString}"
+            )
+            throw new IllegalArgumentException(s"AffinityGroup not supported: ${affinityGroup.toString}")
+        }
+      }
+      .recover {
+        case ex: NoActiveSession =>
+          logger.warn("[AuthAction][invokeBlock] No Active Session")
+          Redirect(
+            config.authSignIn,
+            Map("continue_url" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend"))
+          )
 
-            (taxOfficeNumber, taxOfficeReference) match {
-              case (Some(number), Some(reference)) =>
-                block(
-                  AuthenticatedRequest(EmpRef(number, reference), UserName(name.getOrElse(Name(None, None))), request)
-                )
-              case _                               =>
-                logger.warn(
-                  "[AuthAction][invokeBlock] Authentication failed: invalid taxOfficeNumber and/or taxOfficeReference"
-                )
-                Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad))
-            }
-          }
-          .getOrElse {
-            logger.warn("[AuthAction][invokeBlock] Authentication failed - IR-PAYE key not found")
-            Future.successful(Results.Redirect(controllers.routes.HomePageController.onPageLoad))
-          }
-      } recover {
-      case ex: NoActiveSession        =>
-        logger.warn("[AuthAction][invokeBlock] Bearer token missing or invalid")
-        Redirect(
-          config.authSignIn,
-          Map("continue_url" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend"))
-        )
-      case ex: InsufficientEnrolments =>
-        logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
-        Results.Redirect(controllers.routes.AuthController.notAuthorised)
-
-    }
+        case ex: InsufficientEnrolments =>
+          logger.warn("[AuthAction][authAsEmployer] Insufficient enrolments provided with request")
+          Results.Redirect(controllers.routes.AuthController.notAuthorised)
+      }
   }
 }
 

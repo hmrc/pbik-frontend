@@ -278,8 +278,7 @@ class ManageRegistrationController @Inject() (
           val changes = bikListUtils.normaliseSelectedBenefits(registeredResponse.bikList, persistentBiks)
           if (additive) {
             // Process registration
-            val saveFuture = tierConnector.updateOrganisationsRegisteredBiks(request.empRef, year, changes)
-            saveFuture.map { _ =>
+            tierConnector.updateOrganisationsRegisteredBiks(year, changes).map { _ =>
               auditBikUpdate(additive = true, year, persistentBiks)
               lazy val yearRange  = controllersReferenceData.yearRange
               lazy val yearString = year match {
@@ -364,11 +363,7 @@ class ManageRegistrationController @Inject() (
           if ControllersReferenceDataCodes.BIK_REMOVE_REASON_LIST.contains(reasonValue.selectionValue) =>
         reasonValue.info match {
           case Some(info) =>
-            tierConnector.updateOrganisationsRegisteredBiks(
-              request.empRef,
-              year,
-              changes
-            )
+            tierConnector.updateOrganisationsRegisteredBiks(year, changes)
             auditBikUpdate(
               additive = false,
               year,
@@ -377,7 +372,7 @@ class ManageRegistrationController @Inject() (
             )
             Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik(iabdString)))
           case _          =>
-            tierConnector.updateOrganisationsRegisteredBiks(request.empRef, year, changes)
+            tierConnector.updateOrganisationsRegisteredBiks(year, changes)
             auditBikUpdate(additive = false, year, persistentBiks, Some((reasonValue.selectionValue.toUpperCase, None)))
             Future.successful(Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik(iabdString)))
         }

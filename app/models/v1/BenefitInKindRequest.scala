@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.PbikAppConfig
+package models.v1
 
-@import views.templatemodels.PageTitle
+import models.Bik
+import models.v1.IabdType.IabdType
+import models.v1.PbikAction.PbikAction
+import play.api.libs.json.{Format, Json}
 
-@this(
-        govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
-
+case class BenefitInKindRequest(
+  iabdType: IabdType,
+  payrolledBenefitInKindAction: PbikAction,
+  isAgentSubmission: Boolean
 )
 
-@(backLink:String="payrolled-benefits-expenses", empRef: Option[EmpRef])(implicit request:Request[_], messages: Messages)
+object BenefitInKindRequest {
+  implicit val formats: Format[BenefitInKindRequest] = Json.format[BenefitInKindRequest]
 
-@govukLayoutWrapper(PageTitle(messages("Service.title")), showBackLink = false, empRef = Some(empRef.toString)) {
-
-    <h1 class="govuk-heading-xl" id="title">@messages("ErrorPage.title")</h1>
-    <p class="govuk-body" id="tryLater">
-        @Html(messages("ErrorPage.try.later"))
-    </p>
+  def apply(bik: Bik, isAgentSubmission: Boolean): BenefitInKindRequest =
+    new BenefitInKindRequest(IabdType(bik.iabdType.toInt), PbikAction(bik.status), isAgentSubmission)
 }

@@ -63,7 +63,12 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
       implicit val hc: HeaderCarrier                                                  = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+        AuthenticatedRequest(
+          EmpRef("taxOfficeNumber", "taxOfficeReference"),
+          UserName(Name(None, None)),
+          request,
+          isAgent = false
+        )
       val result                                                                      = await(eilService.currentYearEiL("services", year))
       result.size shouldBe 0
     }

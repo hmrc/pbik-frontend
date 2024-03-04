@@ -16,7 +16,7 @@
 
 package views
 
-import config.AppConfig
+import config.PbikAppConfig
 import models.{EmpRef, RegistrationItem, RegistrationList}
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
@@ -36,7 +36,7 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
     EmpRef("", "")
   )
 
-  implicit val appConfig: AppConfig        = app.injector.instanceOf[AppConfig]
+  implicit val appConfig: PbikAppConfig    = app.injector.instanceOf[PbikAppConfig]
   val bikList: RegistrationList            = RegistrationList(active = List.empty[RegistrationItem])
   val removalBik: Option[RegistrationItem] = Some(RegistrationItem("30", active = true, enabled = true))
 

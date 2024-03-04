@@ -121,7 +121,12 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
   implicit val lang: Lang                                                         = Lang("en-GB")
   implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
   implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
-    AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+    AuthenticatedRequest(
+      EmpRef("taxOfficeNumber", "taxOfficeReference"),
+      UserName(Name(None, None)),
+      request,
+      isAgent = false
+    )
 
   when(mockExclusionListController.tierConnector.getAllAvailableBiks(any[Int])(any[HeaderCarrier]))
     .thenReturn(Future.successful(CYCache))
@@ -717,7 +722,12 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "commitExclusion is called" must {
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+        AuthenticatedRequest(
+          EmpRef("taxOfficeNumber", "taxOfficeReference"),
+          UserName(Name(None, None)),
+          request,
+          isAgent = false
+        )
       implicit val hc: HeaderCarrier                                      = HeaderCarrier()
 
       val eilPerson = EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None)

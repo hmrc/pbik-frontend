@@ -51,10 +51,7 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
     .build()
 
   private val registrationService: RegistrationService = {
-    val responseHeaders: Map[String, String] = Map(
-      HeaderTags.ETAG   -> "0",
-      HeaderTags.X_TXID -> "1"
-    )
+    val responseHeaders: Map[String, String] = HeaderTags.createResponseHeaders()
 
     val service                   = app.injector.instanceOf[RegistrationService]
     val (noOfElements, bikStatus) = (5, 10)
@@ -68,27 +65,27 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
     when(
       service.tierConnector
         .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear()))(any[HeaderCarrier])
-    ) thenReturn (Future.successful(
+    ) thenReturn Future.successful(
       BikResponse(
         responseHeaders,
         CYCache.filter { x: Bik =>
           Integer.parseInt(x.iabdType) <= 3
         }
       )
-    ))
+    )
 
     // Return instance where not all Biks have been registered for CYP1
     when(
       service.tierConnector
         .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(any[HeaderCarrier])
-    ) thenReturn (Future.successful(
+    ) thenReturn Future.successful(
       BikResponse(
         responseHeaders,
         CYCache.filter { x: Bik =>
           Integer.parseInt(x.iabdType) <= 5
         }
       )
-    ))
+    )
 
     service
   }
@@ -98,7 +95,12 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
       val request: FakeRequest[AnyContentAsEmpty.type]                    = mockRequest
       val nextTaxYearView                                                 = app.injector.instanceOf[NextTaxYear]
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(EmpRef("taxOfficeNumber", "taxOfficeReference"), UserName(Name(None, None)), request)
+        AuthenticatedRequest(
+          EmpRef("taxOfficeNumber", "taxOfficeReference"),
+          UserName(Name(None, None)),
+          request,
+          isAgent = false
+        )
       implicit val hc: HeaderCarrier                                      = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       val taxDateUtils                                                    = injected[TaxDateUtils]
       val YEAR_RANGE                                                      = taxDateUtils.getTaxYearRange()

@@ -17,7 +17,7 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
-import config.AppConfig
+import config.PbikAppConfig
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.Results._
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class MinimalAuthActionImpl @Inject() (
   override val authConnector: controllers.actions.AuthConnector,
   val parser: BodyParsers.Default,
-  config: AppConfig
+  config: PbikAppConfig
 )(implicit val executionContext: ExecutionContext)
     extends MinimalAuthAction
     with AuthorisedFunctions {

@@ -44,12 +44,20 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   val sessionId = s"session-${UUID.randomUUID}"
 
-  def mockRequest: FakeRequest[AnyContentAsEmpty.type]        =
-    FakeRequest().withSession(SessionKeys.sessionId -> sessionId, HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "0")
+  def mockRequest: FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest().withSession(
+      SessionKeys.sessionId -> sessionId,
+      HeaderTags.ETAG       -> HeaderTags.ETAG_DEFAULT_VALUE,
+      HeaderTags.X_TXID     -> HeaderTags.X_TXID_DEFAULT_VALUE
+    )
 
-  def mockWelshRequest: FakeRequest[AnyContentAsEmpty.type]   =
+  def mockWelshRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("GET", "?lang=cy")
-      .withSession(SessionKeys.sessionId -> sessionId, HeaderTags.ETAG -> "0", HeaderTags.X_TXID -> "0")
+      .withSession(
+        SessionKeys.sessionId -> sessionId,
+        HeaderTags.ETAG       -> HeaderTags.ETAG_DEFAULT_VALUE,
+        HeaderTags.X_TXID     -> HeaderTags.X_TXID_DEFAULT_VALUE
+      )
 
   def noSessionIdRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession()
 
