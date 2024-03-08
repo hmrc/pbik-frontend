@@ -16,7 +16,6 @@
 
 package views
 
-import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
 import views.html.SignedOut
@@ -25,11 +24,17 @@ class SignedOutViewSpec extends PBIKViewSpec {
 
   val signedOutView: SignedOut = app.injector.instanceOf[SignedOut]
 
-  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  "signedOutView - organisation" must {
+    implicit val view: Html = signedOutView()(organisationRequest, messages)
 
-  implicit val view: Html = signedOutView()
+    behave like pageWithTitle(messages("signedOut.title"))
+    behave like pageWithHeader(messages("signedOut.title"))
+    behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/registered-benefits-expenses")
+  }
 
-  "signedOutView" must {
+  "signedOutView - Agent" must {
+    implicit val view: Html = signedOutView()(organisationRequest, messages)
+
     behave like pageWithTitle(messages("signedOut.title"))
     behave like pageWithHeader(messages("signedOut.title"))
     behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/registered-benefits-expenses")

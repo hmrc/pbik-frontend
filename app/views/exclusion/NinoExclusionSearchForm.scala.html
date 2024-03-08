@@ -22,7 +22,6 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
         formWithCSRF: FormWithCSRF,
         textInput: TextInput
 )
@@ -32,13 +31,12 @@
         isCurrentTaxYear:String,
         iabdString:String,
         searchForm: Form[EiLPerson],
-        alreadyExists: Boolean = false,
-        empRef: EmpRef
+        alreadyExists: Boolean = false
 )(implicit request:Request[_], messages: Messages)
 
 @excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdString)">}
 @expenseOrBenefit = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
-@govukLayoutWrapper(PageTitle(messages("ExclusionSearch.form.title"), searchForm.hasErrors), empRef = Some(empRef.toString) ) {
+@govukLayoutWrapper(PageTitle(messages("ExclusionSearch.form.title"), searchForm.hasErrors)) {
 
     @if(searchForm.hasErrors){
         <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">

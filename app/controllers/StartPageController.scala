@@ -38,7 +38,7 @@ class StartPageController @Inject() (
     with Logging {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck) { implicit request =>
-    Ok(startPageView(request.empRef))
+    Ok(startPageView())
   }
 
 }

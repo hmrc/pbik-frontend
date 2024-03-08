@@ -17,8 +17,7 @@
 package views
 
 import config.PbikAppConfig
-import models.{EmpRef, RegistrationItem, RegistrationList}
-import play.api.i18n.MessagesApi
+import models.{AuthenticatedRequest, RegistrationItem, RegistrationList}
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -26,21 +25,32 @@ import views.html.registration.ConfirmUpdateNextTaxYear
 
 class ConfirmNextYearViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi                               = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings                             = app.injector.instanceOf[FormMappings]
   val confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear = app.injector.instanceOf[ConfirmUpdateNextTaxYear]
 
-  implicit def view: Html = confirmUpdateNextTaxYearView(
+  def view(implicit request: AuthenticatedRequest[_]): Html = confirmUpdateNextTaxYearView(
     bikList,
-    taxYearRange,
-    EmpRef("", "")
+    taxYearRange
   )
 
   implicit val appConfig: PbikAppConfig    = app.injector.instanceOf[PbikAppConfig]
   val bikList: RegistrationList            = RegistrationList(active = List.empty[RegistrationItem])
   val removalBik: Option[RegistrationItem] = Some(RegistrationItem("30", active = true, enabled = true))
 
-  "nextYearPage" must {
+  "nextYearPage - organisation" must {
+    implicit def html: Html = view(organisationRequest)
+
+    behave like pageWithTitle(messages("AddBenefits.Confirm.Multiple.Title"))
+    behave like pageWithHeader(
+      messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
+        + " " + messages("AddBenefits.Confirm.Multiple.Title")
+    )
+    behave like pageWithContinueButtonForm("/payrollbik/cy1/check-the-benefits", "Confirm and continue")
+  }
+
+  "nextYearPage - Agent" must {
+    implicit def html: Html = view(agentRequest)
+
     behave like pageWithTitle(messages("AddBenefits.Confirm.Multiple.Title"))
     behave like pageWithHeader(
       messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)

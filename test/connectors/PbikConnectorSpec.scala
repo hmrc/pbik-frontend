@@ -32,7 +32,6 @@ import play.api.mvc.{Request, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import support.TestAuthUser
-import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http._
 import utils.Exceptions.GenericServerErrorException
 
@@ -59,11 +58,10 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
   private val empRef: EmpRef         = EmpRef("780", "MODES16")
   private val (iabdType, iabdString) = (IabdType.CarBenefit.id.toString, "car")
 
-  val username: UserName                                             = UserName(Name(None, None))
   val request: Request[List[Bik]]                                    = FakeRequest().asInstanceOf[Request[List[Bik]]]
   implicit val hc: HeaderCarrier                                     = HeaderCarrier()
   implicit val authenticatedRequest: AuthenticatedRequest[List[Bik]] =
-    AuthenticatedRequest[List[Bik]](empRef, username, request, isAgent = true)
+    AuthenticatedRequest[List[Bik]](empRef, username, request, None)
 
   private val listBiks: List[Bik] =
     List(

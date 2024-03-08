@@ -16,18 +16,9 @@
 
 package views.templatemodels
 
-import models.EmpRef
-import play.api.i18n.MessagesApi
-import play.twirl.api.Html
 import views.helper.PBIKViewSpec
-import views.html.StartPage
 
 class PageTitleSpec extends PBIKViewSpec {
-
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  val startPageView: StartPage = app.injector.instanceOf[StartPage]
-
-  implicit def view: Html = startPageView(EmpRef("", ""))
 
   val postTitleText = s"- ${messages("Service.title")} - GOV.UK"
   val title         = "testTitle"
@@ -43,4 +34,5 @@ class PageTitleSpec extends PBIKViewSpec {
       pageTitle.fullTitle() mustBe s"${messages("Service.error")}: $title $postTitleText"
     }
   }
+
 }

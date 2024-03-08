@@ -40,5 +40,5 @@ class AuthController @Inject() (
   }
 
   private def notAuthorisedResult(implicit request: Request[AnyContent]): Future[Result] =
-    Future.successful(Unauthorized(enrolView(None)))
+    Future.successful(Unauthorized(enrolView()))
 }

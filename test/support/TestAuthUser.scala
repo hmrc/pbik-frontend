@@ -27,7 +27,7 @@ trait TestAuthUser {
       EmpRef("taxOfficeNumber", "taxOfficeReference"),
       UserName(Name(Some("EPaye User"), None)),
       request,
-      isAgent = false
+      None
     )
 
 }

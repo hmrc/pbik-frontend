@@ -21,17 +21,15 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
 )
 
 @(
         taxYearRange:TaxYearRange,
         year:String, iabdString:String,
-        name:String,
-        empRef: EmpRef
+        name:String
 )(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages("whatNext.rescind.heading")), showBackLink = true,  empRef =Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(messages("whatNext.rescind.heading")), showBackLink = true) {
 
     <section id="print-section">
         <div id="printContainer"></div>

@@ -16,10 +16,8 @@
 
 package views
 
-import config.PbikAppConfig
 import models._
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -30,15 +28,12 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
   val ninoExclusionSearchFormView: NinoExclusionSearchForm = app.injector.instanceOf[NinoExclusionSearchForm]
 
-  val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  def viewWithForm(form: Form[EiLPerson])(implicit request: AuthenticatedRequest[_]): Html =
+    ninoExclusionSearchFormView(taxYearRange, "cyp1", "medical", form, alreadyExists = true)
 
-  implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
-
-  def viewWithForm(form: Form[EiLPerson]): Html =
-    ninoExclusionSearchFormView(taxYearRange, "cyp1", "medical", form, alreadyExists = true, EmpRef("", ""))
-
-  "NinoExclusionSearchView" must {
-    implicit def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino)
+  "NinoExclusionSearchView - organisation" must {
+    implicit def view: Html =
+      viewWithForm(formMappings.exclusionSearchFormWithoutNino(organisationRequest))(organisationRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     behave like pageWithHeader(messages("ExclusionSearch.form.header"))
@@ -46,35 +41,86 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
     behave like pageWithTextBox("surname", messages("Service.field.surname"))
+
+    "check the nino exclusion page for the empty errors" in {
+      implicit def view: Html = viewWithForm(
+        formMappings
+          .exclusionSearchFormWithNino(organisationRequest)
+          .bind(
+            Map(("nino", ""), ("firstname", ""), ("surname", ""))
+          )
+      )(organisationRequest)
+
+      doc must haveErrorSummary(messages("error.empty.nino").replace(".", ""))
+      doc must haveErrorNotification(messages("error.empty.nino"))
+      doc must haveErrorSummary(messages("error.empty.firstname").replace(".", ""))
+      doc must haveErrorNotification(messages("error.empty.firstname"))
+      doc must haveErrorSummary(messages("error.empty.lastname").replace(".", ""))
+      doc must haveErrorNotification(messages("error.empty.lastname"))
+    }
+
+    "check for invalid inputs" in {
+      implicit def view: Html = viewWithForm(
+        formMappings
+          .exclusionSearchFormWithNino(organisationRequest)
+          .bind(
+            Map(("nino", "1"), ("firstname", "1"), ("surname", "1"))
+          )
+      )(organisationRequest)
+
+      doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
+      doc must haveErrorNotification(messages("error.incorrect.nino"))
+      doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
+      doc must haveErrorNotification(messages("error.incorrect.firstname"))
+      doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
+      doc must haveErrorNotification(messages("error.incorrect.lastname"))
+    }
   }
 
-  "check the nino exclusion page for the empty errors" in {
-    implicit def view: Html = viewWithForm(
-      formMappings.exclusionSearchFormWithNino.bind(
-        Map(("nino", ""), ("firstname", ""), ("surname", ""))
-      )
-    )
+  "NinoExclusionSearchView - Agent" must {
+    implicit def view: Html =
+      viewWithForm(formMappings.exclusionSearchFormWithoutNino(agentRequest))(agentRequest)
 
-    doc must haveErrorSummary(messages("error.empty.nino").replace(".", ""))
-    doc must haveErrorNotification(messages("error.empty.nino"))
-    doc must haveErrorSummary(messages("error.empty.firstname").replace(".", ""))
-    doc must haveErrorNotification(messages("error.empty.firstname"))
-    doc must haveErrorSummary(messages("error.empty.lastname").replace(".", ""))
-    doc must haveErrorNotification(messages("error.empty.lastname"))
+    behave like pageWithTitle(messages("ExclusionSearch.form.title"))
+    behave like pageWithHeader(messages("ExclusionSearch.form.header"))
+    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/nino/search-for-employee", "Continue")
+    behave like pageWithTextBox("nino", messages("Service.field.nino"))
+    behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
+    behave like pageWithTextBox("surname", messages("Service.field.surname"))
+
+    "check the nino exclusion page for the empty errors" in {
+      implicit def view: Html = viewWithForm(
+        formMappings
+          .exclusionSearchFormWithNino(agentRequest)
+          .bind(
+            Map(("nino", ""), ("firstname", ""), ("surname", ""))
+          )
+      )(agentRequest)
+
+      doc must haveErrorSummary(messages("error.empty.nino").replace(".", ""))
+      doc must haveErrorNotification(messages("error.empty.nino"))
+      doc must haveErrorSummary(messages("error.empty.firstname").replace(".", ""))
+      doc must haveErrorNotification(messages("error.empty.firstname"))
+      doc must haveErrorSummary(messages("error.empty.lastname").replace(".", ""))
+      doc must haveErrorNotification(messages("error.empty.lastname"))
+    }
+
+    "check for invalid inputs" in {
+      implicit def view: Html = viewWithForm(
+        formMappings
+          .exclusionSearchFormWithNino(agentRequest)
+          .bind(
+            Map(("nino", "1"), ("firstname", "1"), ("surname", "1"))
+          )
+      )(agentRequest)
+
+      doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
+      doc must haveErrorNotification(messages("error.incorrect.nino"))
+      doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
+      doc must haveErrorNotification(messages("error.incorrect.firstname"))
+      doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
+      doc must haveErrorNotification(messages("error.incorrect.lastname"))
+    }
   }
 
-  "check for invalid inputs" in {
-    implicit def view: Html = viewWithForm(
-      formMappings.exclusionSearchFormWithNino.bind(
-        Map(("nino", "1"), ("firstname", "1"), ("surname", "1"))
-      )
-    )
-
-    doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
-    doc must haveErrorNotification(messages("error.incorrect.nino"))
-    doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
-    doc must haveErrorNotification(messages("error.incorrect.firstname"))
-    doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
-    doc must haveErrorNotification(messages("error.incorrect.lastname"))
-  }
 }

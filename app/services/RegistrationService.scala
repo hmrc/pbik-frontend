@@ -122,8 +122,7 @@ class RegistrationService @Inject() (
           controllersReferenceData.yearRange,
           isCurrentYear,
           code = -1,
-          pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING,
-          empRef = Some(request.empRef)
+          pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING
         )
       )
     } else {

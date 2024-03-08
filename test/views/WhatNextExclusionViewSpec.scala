@@ -17,8 +17,7 @@
 package views
 
 import config.PbikAppConfig
-import models.EmpRef
-import play.api.i18n.MessagesApi
+import models.AuthenticatedRequest
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -26,15 +25,26 @@ import views.html.exclusion.WhatNextExclusion
 
 class WhatNextExclusionViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi                 = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings               = app.injector.instanceOf[FormMappings]
   val whatNextExclusionView: WhatNextExclusion = app.injector.instanceOf[WhatNextExclusion]
 
   implicit val appConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
 
-  implicit def view: Html = whatNextExclusionView(taxYearRange, "cyp1", "medical", "", EmpRef("", ""))
+  implicit def view()(implicit request: AuthenticatedRequest[_]): Html =
+    whatNextExclusionView(taxYearRange, "cyp1", "medical", "")
 
-  "whatNextAddRemove" must {
+  "whatNextAddRemove - organisation" must {
+    implicit val html: Html = view()(organisationRequest)
+
+    behave like pageWithTitle(messages("whatNext.exclude.heading"))
+    behave like pageWithHeader(messages("whatNext.exclude.heading"))
+    behave like pageWithLink(messages("Service.back.overview.whatNext"), "/payrollbik/registered-benefits-expenses")
+    behave like pageWithLink(messages("Service.finish.excluded"), "/payrollbik/cyp1/medical/excluded-employees")
+  }
+
+  "whatNextAddRemove - Agent" must {
+    implicit val html: Html = view()(agentRequest)
+
     behave like pageWithTitle(messages("whatNext.exclude.heading"))
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     behave like pageWithLink(messages("Service.back.overview.whatNext"), "/payrollbik/registered-benefits-expenses")

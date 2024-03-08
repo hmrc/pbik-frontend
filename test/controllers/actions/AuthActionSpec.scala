@@ -17,6 +17,7 @@
 package controllers.actions
 
 import config.PbikAppConfig
+import connectors.AgentPayeConnector
 import controllers.actions.AuthActionSpec.AuthRetrievals
 import controllers.actions.AuthConnector
 import models.auth.EpayeSessionKeys
@@ -54,27 +55,39 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
 
   private val pbikConfig = app.injector.instanceOf[PbikAppConfig]
 
+  private val mockAgentPayeConnector: AgentPayeConnector = mock[AgentPayeConnector]
+
+  when(mockAgentPayeConnector.getClient(any(), any())(any(), any()))
+    .thenReturn(Future.successful(None))
+
+  private val fakeRequestForOrganisation = FakeRequest("GET", "/url")
+  private val fakeRequestForAgent        =
+    FakeRequest("GET", "/url").withSession(EpayeSessionKeys.AGENT_FRONTEND_EMPREF -> "123/AB12345")
+
   private class Test(enrolment: Enrolment) {
     private val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-    private type RetrievalType = Enrolments ~ Option[Name] ~ Option[AffinityGroup]
+    private type RetrievalType = Option[AffinityGroup] ~ Enrolments ~ Option[Name] ~ Option[String]
 
     def retrievals(
       affinityGroup: Option[AffinityGroup],
       enrolments: Enrolments = Enrolments(Set(enrolment)),
-      name: Option[Name] = Some(Name(Some("Ted"), Some("Walker")))
+      name: Option[Name] = Some(Name(Some("Ted"), Some("Walker"))),
+      agentCode: Option[String] = Some("agentcode1")
     ): Harness = {
 
-      when(mockAuthConnector.authorise[Option[Name] ~ Option[AffinityGroup]](any(), any())(any(), any()))
-        .thenReturn(Future.successful(name composeRetrievals affinityGroup))
-
       when(mockAuthConnector.authorise[RetrievalType](any(), any())(any(), any()))
-        .thenReturn(Future.successful(enrolments composeRetrievals name composeRetrievals affinityGroup))
+        .thenReturn(
+          Future.successful(
+            affinityGroup composeRetrievals enrolments composeRetrievals name composeRetrievals agentCode
+          )
+        )
 
       val authAction = new AuthActionImpl(
         authConnector = mockAuthConnector,
         parser = app.injector.instanceOf[BodyParsers.Default],
-        config = pbikConfig
+        config = pbikConfig,
+        agentPayeConnector = mockAgentPayeConnector
       )
 
       new Harness(authAction)
@@ -86,7 +99,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
       "the user is logged in with valid credentials" must {
         "return OK" in new Test(enrolment) {
           val controller: Harness    = retrievals(affinityGroup = Some(AffinityGroup.Organisation))
-          val result: Future[Result] = controller.onPageLoad()(FakeRequest("", ""))
+          val result: Future[Result] = controller.onPageLoad()(fakeRequestForOrganisation)
 
           status(result) mustBe OK
         }
@@ -95,7 +108,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
       "the user with no name is logged in with valid credentials" must {
         "return OK" in new Test(enrolment) {
           val controller: Harness    = retrievals(affinityGroup = Some(AffinityGroup.Organisation), name = None)
-          val result: Future[Result] = controller.onPageLoad()(FakeRequest("", ""))
+          val result: Future[Result] = controller.onPageLoad()(fakeRequestForOrganisation)
 
           status(result) mustBe OK
         }
@@ -106,7 +119,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
 
         "redirect the user to home page" in new Test(enrolmentWithNoIdentifiers) {
           val controller: Harness    = retrievals(affinityGroup = Some(AffinityGroup.Organisation))
-          val result: Future[Result] = controller.onPageLoad()(FakeRequest("", ""))
+          val result: Future[Result] = controller.onPageLoad()(fakeRequestForOrganisation)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result).value mustBe controllers.routes.AuthController.notAuthorised.url
@@ -118,7 +131,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
 
         "redirect the user to home page" in new Test(enrolmentWithInvalidEnrolmentKey) {
           val controller: Harness    = retrievals(affinityGroup = Some(AffinityGroup.Organisation))
-          val result: Future[Result] = controller.onPageLoad()(FakeRequest("", ""))
+          val result: Future[Result] = controller.onPageLoad()(fakeRequestForOrganisation)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result).value mustBe controllers.routes.AuthController.notAuthorised.url
@@ -130,10 +143,11 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
           val authAction = new AuthActionImpl(
             new BrokenAuthConnector(new MissingBearerToken, mock[HttpClient], app.injector.instanceOf[Configuration]),
             app.injector.instanceOf[BodyParsers.Default],
-            app.injector.instanceOf[PbikAppConfig]
+            app.injector.instanceOf[PbikAppConfig],
+            mockAgentPayeConnector
           )
           val controller = new Harness(authAction)
-          val result     = controller.onPageLoad()(FakeRequest("", ""))
+          val result     = controller.onPageLoad()(fakeRequestForOrganisation)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result).value must endWith(
@@ -152,10 +166,11 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
               app.injector.instanceOf[Configuration]
             ),
             app.injector.instanceOf[BodyParsers.Default],
-            app.injector.instanceOf[PbikAppConfig]
+            app.injector.instanceOf[PbikAppConfig],
+            mockAgentPayeConnector
           )
           val controller = new Harness(authAction)
-          val result     = controller.onPageLoad()(FakeRequest("", ""))
+          val result     = controller.onPageLoad()(fakeRequestForOrganisation)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result).value mustBe controllers.routes.AuthController.notAuthorised.url
@@ -167,13 +182,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
       "the user is logged in with valid empRef headers" must {
         "return OK" in new Test(enrolment) {
           val controller: Harness    = retrievals(affinityGroup = Some(AffinityGroup.Agent))
-          val result: Future[Result] = controller.onPageLoad()(
-            FakeRequest("", "")
-              .withSession(
-                EpayeSessionKeys.EPAYE_USER_TYPE       -> "Agent",
-                EpayeSessionKeys.AGENT_FRONTEND_EMPREF -> "123/AB12345"
-              )
-          )
+          val result: Future[Result] = controller.onPageLoad()(fakeRequestForAgent)
 
           status(result) mustBe OK
         }
@@ -182,13 +191,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
       "the user with no name is logged in with valid credentials" must {
         "return OK" in new Test(enrolment) {
           val controller: Harness    = retrievals(affinityGroup = Some(AffinityGroup.Agent), name = None)
-          val result: Future[Result] = controller.onPageLoad()(
-            FakeRequest("", "")
-              .withSession(
-                EpayeSessionKeys.EPAYE_USER_TYPE       -> "Agent",
-                EpayeSessionKeys.AGENT_FRONTEND_EMPREF -> "123/AB12345"
-              )
-          )
+          val result: Future[Result] = controller.onPageLoad()(fakeRequestForAgent)
 
           status(result) mustBe OK
         }
@@ -199,12 +202,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
 
         "redirect the user to home page" in new Test(enrolmentWithNoIdentifiers) {
           val controller: Harness    = retrievals(affinityGroup = Some(AffinityGroup.Agent))
-          val result: Future[Result] = controller.onPageLoad()(
-            FakeRequest("", "")
-              .withSession(
-                EpayeSessionKeys.EPAYE_USER_TYPE -> "Agent"
-              )
-          )
+          val result: Future[Result] = controller.onPageLoad()(fakeRequestForOrganisation)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result).value mustBe pbikConfig.agentClientListUrl
@@ -219,7 +217,6 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
           val result: Future[Result] = controller.onPageLoad()(
             FakeRequest("", "")
               .withSession(
-                EpayeSessionKeys.EPAYE_USER_TYPE       -> "Agent",
                 EpayeSessionKeys.AGENT_FRONTEND_EMPREF -> ""
               )
           )
@@ -237,7 +234,6 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
           val result: Future[Result] = controller.onPageLoad()(
             FakeRequest("", "")
               .withSession(
-                EpayeSessionKeys.EPAYE_USER_TYPE       -> "Agent",
                 EpayeSessionKeys.AGENT_FRONTEND_EMPREF -> "123/"
               )
           )
@@ -252,16 +248,11 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
           val authAction = new AuthActionImpl(
             new BrokenAuthConnector(new MissingBearerToken, mock[HttpClient], app.injector.instanceOf[Configuration]),
             app.injector.instanceOf[BodyParsers.Default],
-            app.injector.instanceOf[PbikAppConfig]
+            app.injector.instanceOf[PbikAppConfig],
+            mockAgentPayeConnector
           )
           val controller = new Harness(authAction)
-          val result     = controller.onPageLoad()(
-            FakeRequest("", "")
-              .withSession(
-                EpayeSessionKeys.EPAYE_USER_TYPE       -> "Agent",
-                EpayeSessionKeys.AGENT_FRONTEND_EMPREF -> "123/AB12345"
-              )
-          )
+          val result     = controller.onPageLoad()(fakeRequestForAgent)
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result).value must endWith(
@@ -275,13 +266,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
       "the user is Individual" must {
         "return exception as it is not supported" in new Test(enrolment) {
           val controller: Harness    = retrievals(affinityGroup = Some(AffinityGroup.Individual))
-          val result: Future[Result] = controller.onPageLoad()(
-            FakeRequest("", "")
-              .withSession(
-                EpayeSessionKeys.EPAYE_USER_TYPE       -> "Agent",
-                EpayeSessionKeys.AGENT_FRONTEND_EMPREF -> "123/AB12345"
-              )
-          )
+          val result: Future[Result] = controller.onPageLoad()(fakeRequestForAgent)
 
           result.failed.futureValue.getMessage mustBe "AffinityGroup not supported: Individual"
         }

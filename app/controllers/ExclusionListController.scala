@@ -117,7 +117,6 @@ class ExclusionListController @Inject() (
             isCurrentTaxYear,
             iabdString,
             currentYearEIL.sortWith(_.surname < _.surname),
-            request.empRef,
             form
           )
         ).removingFromSession(HeaderTags.ETAG).addingToSession(nextYearList.headers.toSeq: _*)
@@ -129,8 +128,7 @@ class ExclusionListController @Inject() (
         Ok(
           errorPageView(
             ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-            taxDateUtils.getTaxYearRange(),
-            empRef = Some(request.empRef)
+            taxDateUtils.getTaxYearRange()
           )
         )
       )
@@ -178,8 +176,7 @@ class ExclusionListController @Inject() (
           controllersReferenceData.yearRange,
           isCurrentTaxYear,
           iabdString,
-          form = form,
-          empRef = request.empRef
+          form = form
         )
       )
 
@@ -189,8 +186,7 @@ class ExclusionListController @Inject() (
         Forbidden(
           errorPageView(
             ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-            taxDateUtils.getTaxYearRange(),
-            empRef = Some(request.empRef)
+            taxDateUtils.getTaxYearRange()
           )
         )
       }
@@ -226,8 +222,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              empRef = Some(request.empRef)
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -246,8 +241,7 @@ class ExclusionListController @Inject() (
               taxYearRange,
               isCurrentTaxYear,
               iabdString,
-              formMappings.exclusionSearchFormWithNino,
-              empRef = request.empRef
+              formMappings.exclusionSearchFormWithNino
             )
           )
         case "no-nino" =>
@@ -256,16 +250,14 @@ class ExclusionListController @Inject() (
               taxYearRange,
               isCurrentTaxYear,
               iabdString,
-              formMappings.exclusionSearchFormWithoutNino,
-              empRef = request.empRef
+              formMappings.exclusionSearchFormWithoutNino
             )
           )
         case _         =>
           InternalServerError(
             errorPageView(
               ControllersReferenceDataCodes.INVALID_FORM_ERROR,
-              taxDateUtils.getTaxYearRange(),
-              empRef = Some(request.empRef)
+              taxDateUtils.getTaxYearRange()
             )
           )
       }
@@ -287,10 +279,10 @@ class ExclusionListController @Inject() (
             formWithErrors => searchResultsHandleFormErrors(isCurrentTaxYear, formType, iabdString, formWithErrors),
             validModel =>
               for {
-                year                                   <- validateRequest(isCurrentTaxYear, iabdString)
-                result                                 <- tierConnector.excludeEiLPersonFromBik(iabdString, request.empRef, year, validModel)
-                resultAlreadyExcluded: List[EiLPerson] <- eiLListService.currentYearEiL(iabdString, year)
-                _                                      <- sessionService.storeListOfMatches(result.eilList)
+                year   <- validateRequest(isCurrentTaxYear, iabdString)
+                result <- tierConnector.excludeEiLPersonFromBik(iabdString, request.empRef, year, validModel)
+                _      <- eiLListService.currentYearEiL(iabdString, year)
+                _      <- sessionService.storeListOfMatches(result.eilList)
               } yield Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdString, formType))
           )
         controllersReferenceData.responseErrorHandler(futureResult)
@@ -300,8 +292,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              empRef = Some(request.empRef)
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -351,7 +342,6 @@ class ExclusionListController @Inject() (
               taxYearRange = controllersReferenceData.yearRange,
               isCurrentTaxYear = isCurrentTaxYear,
               code = errorCode,
-              empRef = Some(request.empRef),
               iabdString = iabdString
             )
           )
@@ -364,7 +354,6 @@ class ExclusionListController @Inject() (
               taxYearRange = controllersReferenceData.yearRange,
               isCurrentTaxYear = isCurrentTaxYear,
               code = errorCode,
-              empRef = Some(request.empRef),
               iabdString = iabdString
             )
           )
@@ -381,8 +370,7 @@ class ExclusionListController @Inject() (
             iabdString,
             EiLPersonList(uniqueListOfMatches),
             formMappings.individualSelectionForm,
-            formType,
-            empRef = request.empRef
+            formType
           )
         )
     }
@@ -406,8 +394,7 @@ class ExclusionListController @Inject() (
               controllersReferenceData.yearRange,
               isCurrentTaxYear,
               iabdString,
-              formWithErrors,
-              empRef = request.empRef
+              formWithErrors
             )
           )
         case ControllersReferenceDataCodes.FORM_TYPE_NONINO =>
@@ -416,8 +403,7 @@ class ExclusionListController @Inject() (
               controllersReferenceData.yearRange,
               isCurrentTaxYear,
               iabdString,
-              formWithErrors,
-              empRef = request.empRef
+              formWithErrors
             )
           )
       }
@@ -454,8 +440,7 @@ class ExclusionListController @Inject() (
                       iabdString,
                       EiLPersonList(session.get.listOfMatches.get),
                       formWithErrors,
-                      formType,
-                      request.empRef
+                      formType
                     )
                   )
                 ),
@@ -481,8 +466,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              empRef = Some(request.empRef)
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -514,8 +498,7 @@ class ExclusionListController @Inject() (
               InternalServerError(
                 errorPageView(
                   ControllersReferenceDataCodes.DEFAULT_ERROR,
-                  taxDateUtils.getTaxYearRange(),
-                  empRef = Some(request.empRef)
+                  taxDateUtils.getTaxYearRange()
                 )
               )
             )
@@ -537,8 +520,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              empRef = Some(request.empRef)
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -555,8 +537,7 @@ class ExclusionListController @Inject() (
           taxDateUtils.getTaxYearRange(),
           year,
           iabdString,
-          session.get.listOfMatches.get.head.firstForename + " " + session.get.listOfMatches.get.head.surname,
-          request.empRef
+          session.get.listOfMatches.get.head.firstForename + " " + session.get.listOfMatches.get.head.surname
         )
       )
       controllersReferenceData.responseErrorHandler(resultFuture)
@@ -592,8 +573,7 @@ class ExclusionListController @Inject() (
               errorPageView(
                 "Could not perform update operation",
                 controllersReferenceData.yearRange,
-                isCurrentTaxYear = "",
-                empRef = Some(request.empRef)
+                isCurrentTaxYear = ""
               )
             )
               .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
@@ -633,8 +613,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              empRef = Some(request.empRef)
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -649,8 +628,7 @@ class ExclusionListController @Inject() (
             controllersReferenceData.yearRange,
             year,
             iabdString,
-            EiLPersonList(List(session.get.eiLPerson.get)),
-            empRef = request.empRef
+            EiLPersonList(List(session.get.eiLPerson.get))
           )
         )
       }
@@ -681,8 +659,7 @@ class ExclusionListController @Inject() (
                   errorPageView(
                     "Could not perform update operation",
                     controllersReferenceData.yearRange,
-                    "",
-                    empRef = Some(request.empRef)
+                    ""
                   )
                 )
                   .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
@@ -693,7 +670,7 @@ class ExclusionListController @Inject() (
         logger.info("[ExclusionListController][removeExclusionsCommit] Exclusions not allowed, showing error page")
         Future.successful(
           Forbidden(
-            errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxYearRange, empRef = Some(request.empRef))
+            errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxYearRange)
           )
         )
       }
@@ -708,8 +685,7 @@ class ExclusionListController @Inject() (
             taxDateUtils.getTaxYearRange(),
             ControllersReferenceDataCodes.NEXT_TAX_YEAR,
             iabdString,
-            individual.firstForename + " " + individual.surname,
-            request.empRef
+            individual.firstForename + " " + individual.surname
           )
         )
       }

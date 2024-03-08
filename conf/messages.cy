@@ -49,17 +49,31 @@ Service.error = Gwall
 # Start Page
 #*************************************************************
 
-StartPage.heading = Talu buddiannau a threuliau drwy’r gyflogres
-StartPage.p1 = Defnyddiwch y gwasanaeth hwn i wneud y canlynol:
-StartPage.p2 = cofrestru buddiannau a threuliau
-StartPage.p3 = tynnu buddiant neu draul oddi wrth y gyflogres
-StartPage.p4 = eithrio cyflogeion rhag buddiant neu draul
-StartPage.p5 = Dyma’r buddiannau a’r treuliau na allwch eu cofrestru drwy’r gwasanaeth hwn:
-StartPage.p6 = lwfans treuliau cyffredinol ar gyfer teithio busnes
-StartPage.p7 = benthyciadau di-log a llog isel
-StartPage.p8 = llety byw
-StartPage.p9 = Mae’n rhaid i chi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">ddefnyddio ffurflen P11D (yn agor ffenestr neu dab newydd).</a>
-StartPage.link = Dechrau nawr
+StartPage.heading.organisation = Talu buddiannau a threuliau drwy’r gyflogres
+StartPage.p1.organisation = Defnyddiwch y gwasanaeth hwn i wneud y canlynol:
+StartPage.p2.organisation = cofrestru buddiannau a threuliau i dreth drwy’r gyflogres
+StartPage.p3.organisation = tynnu buddiant neu draul oddi wrth y gyflogres
+StartPage.p4.organisation = eithrio cyflogeion rhag buddiant neu draul
+StartPage.p5.organisation = Buddiannau a threuliau na allwch eu cofrestru
+StartPage.p6.organisation = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru’r canlynol:
+StartPage.p7.organisation = lwfans treuliau cyffredinol ar gyfer teithio busnes
+StartPage.p8.organisation = benthyciadau di-log a llog isel
+StartPage.p9.organisation = llety preswyl
+StartPage.p10.organisation = Er mwyn rhoi gwybod am y costau hyn, mae’n rhaid i chi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd).</a>
+StartPage.link.organisation = Dechrau nawr
+
+StartPage.heading.agent = Talu buddiannau a threuliau drwy’r gyflogres ar gyfer eich cleient
+StartPage.p1.agent = Os oes gennych ganiatâd gan eich cleient, gallwch ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
+StartPage.p2.agent = cofrestru buddiannau a threuliau i dreth drwy’r gyflogres
+StartPage.p3.agent = tynnu buddiant neu draul oddi wrth y gyflogres
+StartPage.p4.agent = eithrio cyflogeion rhag buddiant neu draul
+StartPage.p5.agent = Buddiannau a threuliau na allwch eu cofrestru
+StartPage.p6.agent = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru’r canlynol:
+StartPage.p7.agent = lwfans treuliau cyffredinol ar gyfer teithio busnes
+StartPage.p8.agent = benthyciadau di-log a llog isel
+StartPage.p9.agent = llety preswyl
+StartPage.p10.agent = Er mwyn rhoi gwybod am y costau hyn, mae’n rhaid i chi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd)</a>
+StartPage.link.agent = Dechrau nawr
 
 #*************************************************************
 # Rwyf wedi cofrestru i dalu drwy’r gyflogres

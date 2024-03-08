@@ -38,7 +38,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
     .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .overrides(bind[BikListService].to(classOf[StubbedBikListService]))
     .overrides(bind[SplunkLogger].to(classOf[TestSplunkLogger]))
-    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()
 
@@ -91,7 +91,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
       val result                                                = homePageController.onPageLoad(request)
 
       status(result) mustBe OK
-      contentAsString(result) must include(Messages("StartPage.heading"))
+      contentAsString(result) must include(Messages("StartPage.heading.organisation"))
       contentAsString(result) must include(
         "Is this page not working properly? (opens in new tab)"
       )
@@ -104,5 +104,23 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some("https://www.tax.service.gov.uk/payrollbik/payrolled-benefits-expenses")
     }
+
+    "set the request language and reload page based on referer header - Welsh" in {
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
+        .withHeaders("Referer" -> "/payrollbik/payrolled-benefits-expenses")
+      val result                                                = homePageController.setLanguage()(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("/payrollbik/payrolled-benefits-expenses")
+    }
+
+    "display the navigation page - Welsh" in {
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
+      val result                                                = homePageController.onPageLoad(request)
+
+      status(result) mustBe OK
+      contentAsString(result) must include("Buddiannau a threuliau rydych wedi’u cofrestru i’w trethu drwy’r gyflogres")
+    }
   }
+
 }

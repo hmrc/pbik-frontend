@@ -64,8 +64,7 @@ class WhatNextPageController @Inject() (
           addBenefitConfirmationNextTaxYearView(
             taxDateUtils.isCurrentTaxYear(yearInt),
             controllersReferenceData.yearRange,
-            addedBiksAsList,
-            empRef = request.empRef
+            addedBiksAsList
           )
         )
       }
@@ -82,8 +81,7 @@ class WhatNextPageController @Inject() (
             taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
             controllersReferenceData.yearRange,
             removedBikAsList,
-            iabdString,
-            empRef = request.empRef
+            iabdString
           )
         )
       }

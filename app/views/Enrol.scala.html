@@ -21,12 +21,11 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
 )
 
-@(empRef: Option[EmpRef])(implicit request:Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle("Service.notEnrolled.title"), showBackLink = false, empRef = empRef.map(_.toString)) {
+@govukLayoutWrapper(PageTitle("Service.notEnrolled.title"), showBackLink = false) {
     <h1 id="title" class="govuk-heading-xl">@messages("Service.notEnrolled.title")</h1>
 
     <p class="govuk-body-l">@messages("Service.notEnrolled.text1")</p>

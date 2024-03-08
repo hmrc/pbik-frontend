@@ -28,13 +28,12 @@
 
 @(
     form: Form[OtherReason],
-    iabdString: String,
-    empRef: EmpRef
+    iabdString: String
 )(implicit request:Request[_], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
 
-@govukLayoutWrapper( PageTitle(messages("RemoveBenefits.other.title"), form.hasErrors), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper( PageTitle(messages("RemoveBenefits.other.title"), form.hasErrors)) {
 
     @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdString)) {
 

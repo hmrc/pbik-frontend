@@ -22,7 +22,6 @@
 @this(
     govukLayoutWrapper: GovukLayoutWrapper,
     config:PbikAppConfig,
-
     repeatWithIndex: RepeatWithIndex,
     formWithCSRF: FormWithCSRF
 )
@@ -35,13 +34,12 @@
     registeredBiks: Seq[Bik] = List.empty[Bik],
     nonLegislationBiks: Seq[Int],
     decommissionedBiks: Seq[Int],
-    biksAvailableCount: Option[Int],
-    empRef: EmpRef
-)(implicit request:Request[_], messages: Messages)
+    biksAvailableCount: Option[Int]
+)(implicit request: Request[_], messages: Messages)
 
 @title = @{if(additive) {messages("AddBenefits.Heading", "" + taxYearRange.cy, "" + taxYearRange.cyplus1)} else {messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)}}
 
-@govukLayoutWrapper(PageTitle(title, form.hasErrors), empRef = Some(empRef.toString)){
+@govukLayoutWrapper(PageTitle(title, form.hasErrors)){
 
         @if(form("actives").hasErrors) {
             <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">

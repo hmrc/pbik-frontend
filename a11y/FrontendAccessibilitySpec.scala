@@ -15,12 +15,15 @@
  */
 
 import models._
+import models.agent.{AccountsOfficeReference, Client}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.Html
+import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.scalatestaccessibilitylinter.views.AutomaticAccessibilitySpec
 import utils.FormMappings
 import views.html._
+import views.html.components.PageTitleHeading
 import views.html.exclusion._
 import views.html.registration._
 
@@ -67,18 +70,40 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     )
   )
 
-  implicit val arbObjSelectedForm: Arbitrary[Form[RegistrationList]] = fixed(forms.objSelectedForm.fill(registrationList))
-  implicit val arbIndividualSelectionForm: Arbitrary[Form[ExclusionNino]] = fixed(forms.individualSelectionForm)
-  implicit val arbOtherReasonForm: Arbitrary[Form[OtherReason]] = fixed(forms.removalOtherReasonForm)
-  implicit val arbRemovalReasonForm: Arbitrary[Form[BinaryRadioButtonWithDesc]] = fixed(forms.removalReasonForm)
-  implicit val arbBinaryRadioButtonForm: Arbitrary[Form[MandatoryRadioButton]] = fixed(forms.binaryRadioButton)
+  val empRef: EmpRef = EmpRef(taxOfficeNumber = "123", taxOfficeReference = "4567890")
 
-  override implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
+  val agentClient: Option[Client] = Some(
+    Client(
+      uk.gov.hmrc.domain.EmpRef(empRef.taxOfficeNumber, empRef.taxOfficeReference),
+      AccountsOfficeReference("123AB12345678", "123", "A", "12345678"),
+      Some("client test name"),
+      lpAuthorisation = false,
+      None,
+      None
+    )
+  )
+
+  val authenticatedRequest: AuthenticatedRequest[_] = AuthenticatedRequest(
+    empRef,
+    UserName(Name(Some("test"), Some("tester"))),
+    fakeRequest,
+    agentClient
+  )
+
+  implicit val arbObjSelectedForm: Arbitrary[Form[RegistrationList]]            = fixed(
+    forms.objSelectedForm.fill(registrationList)
+  )
+  implicit val arbIndividualSelectionForm: Arbitrary[Form[ExclusionNino]]       = fixed(forms.individualSelectionForm)
+  implicit val arbOtherReasonForm: Arbitrary[Form[OtherReason]]                 = fixed(forms.removalOtherReasonForm)
+  implicit val arbRemovalReasonForm: Arbitrary[Form[BinaryRadioButtonWithDesc]] = fixed(forms.removalReasonForm)
+  implicit val arbBinaryRadioButtonForm: Arbitrary[Form[MandatoryRadioButton]]  = fixed(forms.binaryRadioButton)
+
+  override implicit val arbAsciiString: Arbitrary[String]       = fixed("assets-transferred")
   implicit val arbRegistrationList: Arbitrary[RegistrationList] = fixed(registrationList)
-  implicit val arbListOfEiLPerson: Arbitrary[List[EiLPerson]] = fixed(listOfEiLPerson)
-  implicit val arbEilPersonList: Arbitrary[EiLPersonList] = fixed(EiLPersonList(listOfEiLPerson))
-  implicit val arbTaxYearRange: Arbitrary[TaxYearRange] = fixed(TaxYearRange(cyMinus1, cy, cyPlus1))
-  implicit val arbEmpRef: Arbitrary[EmpRef] = fixed(EmpRef(taxOfficeNumber = "123", taxOfficeReference = "4567890"))
+  implicit val arbListOfEiLPerson: Arbitrary[List[EiLPerson]]   = fixed(listOfEiLPerson)
+  implicit val arbEilPersonList: Arbitrary[EiLPersonList]       = fixed(EiLPersonList(listOfEiLPerson))
+  implicit val arbTaxYearRange: Arbitrary[TaxYearRange]         = fixed(TaxYearRange(cyMinus1, cy, cyPlus1))
+  implicit val arbEmpRef: Arbitrary[EmpRef]                     = fixed(empRef)
 
   override def renderViewByClass: PartialFunction[Any, Html] = {
     case enrol: Enrol                                                               => render(enrol)
@@ -86,18 +111,32 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     case errorTemplate: ErrorTemplate                                               => render(errorTemplate)
     case maintenancePage: MaintenancePage                                           => render(maintenancePage)
     case signedOut: SignedOut                                                       => render(signedOut)
-    case startPage: StartPage                                                       => render(startPage)
-    case summary: Summary                                                           => render(summary)(
-      fixed(true), arbTaxYearRange, fixed(listOfBik("40", "48")), fixed(listOfBik("54", "44")),
-      fixed(2), fixed(2), fixed("false"), arbEmpRef, arbRequest, arbMessages
-    )
+    case startPage: StartPage                                                       =>
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
+      render(startPage)
+    case summary: Summary                                                           =>
+      render(summary)(
+        fixed(true),
+        arbTaxYearRange,
+        fixed(listOfBik("40", "48")),
+        fixed(listOfBik("54", "44")),
+        fixed(2),
+        fixed(2),
+        fixed("false"),
+        arbRequest,
+        arbMessages
+      )
     case exclusionNinoOrNoNinoForm: ExclusionNinoOrNoNinoForm                       => render(exclusionNinoOrNoNinoForm)
     case exclusionOverview: ExclusionOverview                                       => render(exclusionOverview)
     case ninoExclusionSearchForm: NinoExclusionSearchForm                           =>
-      implicit val exclusionSearchFormWithNino: Arbitrary[Form[EiLPerson]] = fixed(forms.exclusionSearchFormWithNino(fakeRequest))
+      implicit val exclusionSearchFormWithNino: Arbitrary[Form[EiLPerson]] = fixed(
+        forms.exclusionSearchFormWithNino(fakeRequest)
+      )
       render(ninoExclusionSearchForm)
     case noNinoExclusionSearchForm: NoNinoExclusionSearchForm                       =>
-      implicit val exclusionSearchFormWithoutNino: Arbitrary[Form[EiLPerson]] = fixed(forms.exclusionSearchFormWithoutNino(fakeRequest))
+      implicit val exclusionSearchFormWithoutNino: Arbitrary[Form[EiLPerson]] = fixed(
+        forms.exclusionSearchFormWithoutNino(fakeRequest)
+      )
       render(noNinoExclusionSearchForm)
     case removalConfirmation: RemovalConfirmation                                   =>
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
@@ -108,7 +147,8 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
       render(whatNextRescind)
     case page_not_found_template: page_not_found_template                           => render(page_not_found_template)
-    case addBenefitConfirmationNextTaxYear: AddBenefitConfirmationNextTaxYear       => render(addBenefitConfirmationNextTaxYear)
+    case addBenefitConfirmationNextTaxYear: AddBenefitConfirmationNextTaxYear       =>
+      render(addBenefitConfirmationNextTaxYear)
     case confirmAddCurrentTaxYear: ConfirmAddCurrentTaxYear                         => render(confirmAddCurrentTaxYear)
     case confirmUpdateNextTaxYear: ConfirmUpdateNextTaxYear                         => render(confirmUpdateNextTaxYear)
     case currentTaxYear: CurrentTaxYear                                             => render(currentTaxYear)
@@ -117,14 +157,19 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
       render(removeBenefitConfirmationNextTaxYear)
     case removeBenefitNextTaxYear: RemoveBenefitNextTaxYear                         =>
-      implicit val arbRegistrationList: Arbitrary[RegistrationList] = fixed(RegistrationList(
-        active = registrationList.active.map(_.copy(id = "assets-transferred"))
-      ))
-      implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
+      implicit val arbRegistrationList: Arbitrary[RegistrationList] = fixed(
+        RegistrationList(
+          active = registrationList.active.map(_.copy(id = "assets-transferred"))
+        )
+      )
+      implicit val arbAsciiString: Arbitrary[String]                = fixed("assets-transferred")
       render(removeBenefitNextTaxYear)
     case removeBenefitOtherReason: RemoveBenefitOtherReason                         =>
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
       render(removeBenefitOtherReason)
+    case pageTitleHeading: PageTitleHeading                                         =>
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
+      render(pageTitleHeading)
   }
 
   override def viewPackageName: String = "views.html"

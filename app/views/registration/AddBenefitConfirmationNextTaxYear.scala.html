@@ -21,21 +21,19 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
 )
 
 @(
         isCurrentYear: Boolean,
         taxYearRange:TaxYearRange,
-        bikList: RegistrationList,
-        empRef: EmpRef
+        bikList: RegistrationList
 )(implicit request:Request[_], messages: Messages)
 
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(isCurrentYear) cyminus1 else cy}
 
-@govukLayoutWrapper(PageTitle(messages("whatNext.add.heading")), empRef = Some(empRef.toString), showBackLink = false) {
+@govukLayoutWrapper(PageTitle(messages("whatNext.add.heading")), showBackLink = false) {
 
     <div id="confirmation" class="govuk-panel govuk-panel--confirmation govuk-!-padding-top-9 govuk-!-padding-bottom-9">
         <h1 id="title" class="govuk-panel__title">

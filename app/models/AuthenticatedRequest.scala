@@ -16,7 +16,17 @@
 
 package models
 
+import models.agent.Client
 import play.api.mvc.{Request, WrappedRequest}
 
-case class AuthenticatedRequest[A](empRef: EmpRef, name: UserName, request: Request[A], isAgent: Boolean)
-    extends WrappedRequest[A](request)
+case class AuthenticatedRequest[A](empRef: EmpRef, name: UserName, request: Request[A], client: Option[Client])
+    extends WrappedRequest[A](request) {
+
+  // its an agent logged in if we have a client info in the request
+  val isAgent: Boolean = client.isDefined
+
+  val clientName: Option[String] = client.flatMap(_.name)
+
+  val userType: String = if (isAgent) "agent" else "organisation"
+
+}

@@ -95,8 +95,7 @@ class StubbedRegistrationService @Inject() (
               allRegisteredListOption,
               nonLegislationBiks = List(0),
               decommissionedBiks = List(0),
-              biksAvailableCount = Some(biksAvailableCount),
-              empRef = request.empRef
+              biksAvailableCount = Some(biksAvailableCount)
             )
           )
         )
@@ -111,8 +110,7 @@ class StubbedRegistrationService @Inject() (
               registeredListOption,
               nonLegislationBiks = List(0),
               decommissionedBiks = List(0),
-              biksAvailableCount = Some(biksAvailableCount),
-              empRef = request.empRef
+              biksAvailableCount = Some(biksAvailableCount)
             )
           )
         )

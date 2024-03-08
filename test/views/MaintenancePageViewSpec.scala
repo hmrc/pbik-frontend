@@ -16,22 +16,17 @@
 
 package views
 
-import models.EmpRef
-import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
 import views.html.MaintenancePage
 
 class MaintenancePageViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi             = app.injector.instanceOf[MessagesApi]
   val MaintenancePageView: MaintenancePage = app.injector.instanceOf[MaintenancePage]
-  implicit def view: Html                  = MaintenancePageView("", Some(EmpRef("", "")))
+  implicit def view: Html                  = MaintenancePageView()(organisationRequest, messages)
 
   "MaintenancePageView" must {
-
     behave like pageWithHeader(messages("ErrorPage.title"))
     behave like pageWithIdAndText(messages("ErrorPage.try.later"), "tryLater")
-
   }
 }

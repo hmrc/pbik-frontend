@@ -41,7 +41,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(configMap)
-    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
@@ -438,7 +438,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           EmpRef("taxOfficeNumber", "taxOfficeReference"),
           UserName(Name(None, None)),
           request,
-          isAgent = false
+          None
         )
       val errorMsg                                                        = messagesApi("RemoveBenefits.reason.no.selection")
 

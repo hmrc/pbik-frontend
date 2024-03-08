@@ -16,7 +16,7 @@
 
 package views
 
-import models.{Bik, EmpRef}
+import models.{AuthenticatedRequest, Bik, EmpRef}
 import org.jsoup.Jsoup
 import play.api.i18n.MessagesApi
 import play.twirl.api.Html
@@ -27,17 +27,15 @@ import views.html.Summary
 //scalastyle:off magic.number
 class SummaryViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi            = app.injector.instanceOf[MessagesApi]
   implicit val bikListUtils: BikListUtils = app.injector.instanceOf[BikListUtils]
   val summaryView: Summary                = app.injector.instanceOf[Summary]
 
-  implicit def view: Html =
-    summaryView(cyAllowed = true, taxYearRange, List(), List(Bik("31", 30)), 200, 0, "", EmpRef("", ""))
+  def view(benefits: List[Bik])(implicit request: AuthenticatedRequest[_]): Html =
+    summaryView(cyAllowed = true, taxYearRange, List(), benefits, 200, 0, "")
 
-  def viewWithNoBenefits(): Html =
-    summaryView(cyAllowed = true, taxYearRange, List(), List(), 200, 0, "", EmpRef("", ""))
+  "overview with benefits - organisation" must {
+    implicit val html: Html = view(List(Bik("31", 30)))(organisationRequest)
 
-  "overview with benefits" must {
     behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))
     behave like pageWithHeader(
       messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
@@ -45,16 +43,38 @@ class SummaryViewSpec extends PBIKViewSpec {
     )
     behave like pageWithLink(messages("Overview.table.add.link"), "/payrollbik/cy/choose-benefit-expense")
     behave like pageWithBackLink()
+
+    "overview with no benefits" in {
+
+      val doc = Jsoup.parse(view(List.empty)(organisationRequest).toString())
+      doc.title must include(messages("Overview.noBenefitsRegistered.title"))
+      doc       must haveHeadingWithText(
+        messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
+          + " " + messages("Overview.noBenefitsRegistered.heading")
+      )
+    }
   }
 
-  "overview with no benefits" in {
+  "overview with benefits - Agent" must {
+    implicit val html: Html = view(List(Bik("31", 30)))(agentRequest)
 
-    val doc = Jsoup.parse(viewWithNoBenefits().toString())
-    doc.title must include(messages("Overview.noBenefitsRegistered.title"))
-    doc       must haveHeadingWithText(
+    behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))
+    behave like pageWithHeader(
       messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
-        + " " + messages("Overview.noBenefitsRegistered.heading")
+        + " " + messages("Overview.benefitsRegistered.heading")
     )
+    behave like pageWithLink(messages("Overview.table.add.link"), "/payrollbik/cy/choose-benefit-expense")
+    behave like pageWithBackLink()
+
+    "overview with no benefits" in {
+
+      val doc = Jsoup.parse(view(List.empty)(agentRequest).toString())
+      doc.title must include(messages("Overview.noBenefitsRegistered.title"))
+      doc       must haveHeadingWithText(
+        messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
+          + " " + messages("Overview.noBenefitsRegistered.heading")
+      )
+    }
   }
 
 }

@@ -22,7 +22,6 @@
 @this(
     govukLayoutWrapper: GovukLayoutWrapper,
     config: PbikAppConfig,
-
 )
 
 @(
@@ -32,11 +31,10 @@
         code: Int = 0,
         pageHeading: String ="An error has occurred",
         backLink: String= "overview",
-        empRef: Option[EmpRef],
         iabdString: String = ""
 )(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages("Service.title")), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(messages("Service.title"))) {
 
     <h1 id="title" class="govuk-heading-xl">
         @isCurrentTaxYear match{

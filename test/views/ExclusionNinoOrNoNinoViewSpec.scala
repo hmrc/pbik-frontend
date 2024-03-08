@@ -16,48 +16,54 @@
 
 package views
 
-import config.PbikAppConfig
-import models.EmpRef
+import models.{AuthenticatedRequest, MandatoryRadioButton}
 import org.jsoup.Jsoup
-import play.api.i18n.MessagesApi
+import play.api.data.Form
 import play.twirl.api.Html
-import utils.{FormMappings, TaxDateUtils}
+import utils.FormMappings
 import views.helper.PBIKViewSpec
 import views.html.exclusion.ExclusionNinoOrNoNinoForm
 
 class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi                                 = app.injector.instanceOf[MessagesApi]
-  val formMappings: FormMappings                               = app.injector.instanceOf[FormMappings]
-  val exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm = app.injector.instanceOf[ExclusionNinoOrNoNinoForm]
+  private val formMappings: FormMappings                               = app.injector.instanceOf[FormMappings]
+  private val form: Form[MandatoryRadioButton]                         = formMappings.binaryRadioButton
+  private val formWithErrors: Form[MandatoryRadioButton]               = form.withError("test", "error")
+  private val exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm =
+    app.injector.instanceOf[ExclusionNinoOrNoNinoForm]
 
-  implicit def view: Html = viewWithForm()
+  def viewWithForm(form: Form[MandatoryRadioButton])(implicit request: AuthenticatedRequest[_]): Html =
+    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "medical", "", form)
 
-  implicit val taxDateUtils: TaxDateUtils   = app.injector.instanceOf[TaxDateUtils]
-  implicit val pbikAppConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
+  "exclusionNinoOrNoNinoPage - organisation" must {
+    implicit val html: Html = viewWithForm(form)(organisationRequest)
 
-  def viewWithForm(): Html =
-    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "medical", "", formMappings.binaryRadioButton, EmpRef("", ""))
-
-  def viewWithFormWithErrors(): Html =
-    exclusionNinoOrNoNinoFormView(
-      taxYearRange,
-      "cyp1",
-      "medical",
-      "",
-      formMappings.binaryRadioButton.withError("test", "error"),
-      EmpRef("", "")
-    )
-
-  "exclusionNinoOrNoNinoPage" must {
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))
     behave like pageWithHeader(messages("ExclusionNinoDecision.title"))
     behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/employee-national-insurance-number", "Continue")
     behave like pageWithYesNoRadioButton("button-nino", "button-no-nino")
 
     "check the add benefit page for the errors" in {
+      val viewWithFormWithErrors = viewWithForm(formWithErrors)(organisationRequest)
+      val doc                    = Jsoup.parse(viewWithFormWithErrors.toString())
 
-      val doc = Jsoup.parse(viewWithFormWithErrors().toString())
+      doc must haveErrorSummary(messages("ExclusionDecision.noselection.error"))
+      doc must haveErrorNotification(messages("ExclusionDecision.noselection.error"))
+    }
+  }
+
+  "exclusionNinoOrNoNinoPage - Agent" must {
+    implicit val html: Html = viewWithForm(form)(agentRequest)
+
+    behave like pageWithTitle(messages("ExclusionNinoDecision.title"))
+    behave like pageWithHeader(messages("ExclusionNinoDecision.title"))
+    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/employee-national-insurance-number", "Continue")
+    behave like pageWithYesNoRadioButton("button-nino", "button-no-nino")
+
+    "check the add benefit page for the errors" in {
+      val viewWithFormWithErrors = viewWithForm(formWithErrors)(agentRequest)
+      val doc                    = Jsoup.parse(viewWithFormWithErrors.toString())
+
       doc must haveErrorSummary(messages("ExclusionDecision.noselection.error"))
       doc must haveErrorNotification(messages("ExclusionDecision.noselection.error"))
     }

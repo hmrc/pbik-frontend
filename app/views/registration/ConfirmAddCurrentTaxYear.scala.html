@@ -21,16 +21,15 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
         formWithCSRF: FormWithCSRF
 )
 
 @(
         bikForm:Form[RegistrationList],
-        taxYearRange:TaxYearRange, empRef: EmpRef
+        taxYearRange:TaxYearRange
 )(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages("AddBenefits.Confirm.Multiple.Title")), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(messages("AddBenefits.Confirm.Multiple.Title"))) {
 
     <h1 id="title" class="govuk-heading-xl">
         <span class="govuk-caption-xl">@messages("Overview.next.heading", s"${taxYearRange.cyminus1}", s"${taxYearRange.cy}")</span>

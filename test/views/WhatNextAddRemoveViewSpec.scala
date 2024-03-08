@@ -16,8 +16,7 @@
 
 package views
 
-import models.{EmpRef, RegistrationItem, RegistrationList}
-import play.api.i18n.MessagesApi
+import models.{AuthenticatedRequest, RegistrationItem, RegistrationList}
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -25,17 +24,18 @@ import views.html.registration.AddBenefitConfirmationNextTaxYear
 
 class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi                                                 = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings                                               = app.injector.instanceOf[FormMappings]
   val addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear =
     app.injector.instanceOf[AddBenefitConfirmationNextTaxYear]
 
-  implicit def view: Html = {
-    val regList = RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))
-    addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList, EmpRef("", ""))
-  }
+  val regList: RegistrationList = RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))
+
+  def view()(implicit request: AuthenticatedRequest[_]): Html =
+    addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList)
 
   "whatNextAddRemove" must {
+    implicit val html: Html = view()(organisationRequest)
+
     behave like pageWithTitle(messages("whatNext.add.heading"))
     behave like pageWithHeader(messages("whatNext.add.heading"))
     behave like pageWithLink(

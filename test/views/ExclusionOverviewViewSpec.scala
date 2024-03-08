@@ -16,9 +16,9 @@
 
 package views
 
-import models.EmpRef
+import models.{AuthenticatedRequest, MandatoryRadioButton}
 import org.jsoup.Jsoup
-import play.api.i18n.MessagesApi
+import play.api.data.Form
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -26,26 +26,19 @@ import views.html.exclusion.ExclusionOverview
 
 class ExclusionOverviewViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi                 = app.injector.instanceOf[MessagesApi]
-  val formMappings: FormMappings               = app.injector.instanceOf[FormMappings]
-  val exclusionOverviewView: ExclusionOverview = app.injector.instanceOf[ExclusionOverview]
+  val formMappings: FormMappings                         = app.injector.instanceOf[FormMappings]
+  val exclusionOverviewView: ExclusionOverview           = app.injector.instanceOf[ExclusionOverview]
+  private val form: Form[MandatoryRadioButton]           = formMappings.binaryRadioButton
+  private val formWithErrors: Form[MandatoryRadioButton] = form.withError("test", "error")
 
   private val (iabdType, iabdString) = ("31", "car")
 
-  implicit def view: Html =
-    exclusionOverviewView(taxYearRange, "cyp1", iabdString, List(), EmpRef("", ""), formMappings.binaryRadioButton)
+  def viewWithForm(form: Form[MandatoryRadioButton])(implicit request: AuthenticatedRequest[_]): Html =
+    exclusionOverviewView(taxYearRange, "cyp1", iabdString, List(), form)
 
-  def viewWithFormWithErrors(): Html =
-    exclusionOverviewView(
-      taxYearRange,
-      "cyp1",
-      iabdString,
-      List(),
-      EmpRef("", ""),
-      formMappings.binaryRadioButton.withError("test", "error")
-    )
+  "exclusionOverview - organisation" must {
+    implicit val html: Html = viewWithForm(form)(organisationRequest)
 
-  "exclusionOverview" must {
     behave like pageWithTitle(messages("ExclusionOverview.notExcludedEmployee.title"))
     behave like pageWithHeader(
       messages(s"BenefitInKind.label.$iabdType")
@@ -55,8 +48,30 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 
     "check the excluded employees page for the errors" in {
+      val viewWithFormWithErrors = viewWithForm(formWithErrors)(organisationRequest)
+      val doc                    = Jsoup.parse(viewWithFormWithErrors.toString())
 
-      val doc = Jsoup.parse(viewWithFormWithErrors().toString())
+      doc must haveErrorSummary(messages("ExclusionOverview.error.required"))
+      doc must haveErrorNotification(messages("ExclusionOverview.error.required"))
+    }
+
+  }
+
+  "exclusionOverview - Agent" must {
+    implicit val html: Html = viewWithForm(form)(agentRequest)
+
+    behave like pageWithTitle(messages("ExclusionOverview.notExcludedEmployee.title"))
+    behave like pageWithHeader(
+      messages(s"BenefitInKind.label.$iabdType")
+        + " " + messages("ExclusionOverview.notExcludedEmployee.title")
+    )
+    behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/$iabdString/excluded-employees", "Continue")
+    behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
+
+    "check the excluded employees page for the errors" in {
+      val viewWithFormWithErrors = viewWithForm(formWithErrors)(agentRequest)
+      val doc                    = Jsoup.parse(viewWithFormWithErrors.toString())
+
       doc must haveErrorSummary(messages("ExclusionOverview.error.required"))
       doc must haveErrorNotification(messages("ExclusionOverview.error.required"))
     }

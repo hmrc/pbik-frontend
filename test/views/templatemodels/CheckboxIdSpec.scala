@@ -16,9 +16,8 @@
 
 package views.templatemodels
 
-import models.{EmpRef, RegistrationList}
+import models.{AuthenticatedRequest, RegistrationList}
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -26,12 +25,11 @@ import views.html.registration.NextTaxYear
 
 class CheckboxIdSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi     = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings   = app.injector.instanceOf[FormMappings]
   val nextTaxYearView: NextTaxYear = app.injector.instanceOf[NextTaxYear]
 
-  def viewWithForm(form: Form[RegistrationList]): Html =
-    nextTaxYearView(form, additive = true, taxYearRange, List(), List(), List(), List(), Some(1), EmpRef("", ""))
+  def viewWithForm(form: Form[RegistrationList])(implicit request: AuthenticatedRequest[_]): Html =
+    nextTaxYearView(form, additive = true, taxYearRange, List(), List(), List(), List(), Some(1))
 
   "first" should {
     "return a link to the first form checkbox" in {
@@ -45,7 +43,7 @@ class CheckboxIdSpec extends PBIKViewSpec {
               "actives[1].uid" -> "32"
             )
           )
-      )
+      )(organisationRequest)
 
       doc must haveLinkWithUrlWithID("error-link", "checkbox-35")
     }
@@ -61,7 +59,7 @@ class CheckboxIdSpec extends PBIKViewSpec {
               "actives[2].uid" -> "35"
             )
           )
-      )
+      )(organisationRequest)
 
       doc must haveLinkWithUrlWithID("error-link", "checkbox-2")
     }
@@ -70,7 +68,7 @@ class CheckboxIdSpec extends PBIKViewSpec {
       implicit def view: Html = viewWithForm(
         formMappings.objSelectedForm
           .withError("actives", "error")
-      )
+      )(organisationRequest)
 
       doc must haveLinkWithUrlWithID("error-link", "")
     }

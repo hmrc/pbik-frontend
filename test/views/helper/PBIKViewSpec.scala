@@ -16,15 +16,17 @@
 
 package views.helper
 
-import models.TaxYearRange
+import models.agent.{AccountsOfficeReference, Client}
+import models.{AuthenticatedRequest, EmpRef, TaxYearRange, UserName}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.{I18nSupport, Lang, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
+import uk.gov.hmrc.auth.core.retrieve.Name
 
 trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
 
@@ -94,11 +96,29 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
     }
 }
 
-trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite with I18nSupport {
+trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite {
 
-  implicit val lang: Lang                                   = Lang("en-GB")
-  implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  implicit val messages: MessagesApi                        = app.injector.instanceOf[MessagesApi]
+  val empRef: EmpRef = EmpRef("123", "AB12345")
+
+  private val username: UserName = UserName(Name(Some("test"), Some("tester")))
+  private val organisationClient = None
+  private val agentClient        = Some(
+    Client(
+      uk.gov.hmrc.domain.EmpRef(empRef.taxOfficeNumber, empRef.taxOfficeReference),
+      AccountsOfficeReference("123AB12345678", "123", "A", "12345678"),
+      Some("client test name"),
+      lpAuthorisation = false,
+      None,
+      None
+    )
+  )
+
+  val organisationRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
+    AuthenticatedRequest(empRef, username, FakeRequest(), organisationClient)
+  val agentRequest: AuthenticatedRequest[AnyContentAsEmpty.type]        =
+    AuthenticatedRequest(empRef, username, FakeRequest(), agentClient)
+  implicit val messages: Messages                                       = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
+  val cyMessages: Messages                                              = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
 
   val (year2018, year2019, year2020): (Int, Int, Int) = (2018, 2019, 2020)
 

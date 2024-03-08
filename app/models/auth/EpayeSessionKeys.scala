@@ -17,6 +17,5 @@
 package models.auth
 
 object EpayeSessionKeys {
-  val EPAYE_USER_TYPE       = "EPAYE_USER_TYPE"
   val AGENT_FRONTEND_EMPREF = "epaye-empref"
 }

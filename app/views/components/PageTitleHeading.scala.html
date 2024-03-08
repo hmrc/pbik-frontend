@@ -14,16 +14,16 @@
  * limitations under the License.
  *@
 
-@import views.templatemodels.PageTitle
+@this()
 
-@this(govukLayoutWrapper: GovukLayoutWrapper)
+@(title: String)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
-@()(implicit request: Request[_], messages: Messages)
-
-@govukLayoutWrapper(PageTitle(messages("ErrorPage.title")), showBackLink = false) {
-
-<h1 class="govuk-heading-xl" id="title">@messages("ErrorPage.title")</h1>
-<p class="govuk-body" id="tryLater">
-    @Html(messages("ErrorPage.try.later"))
-</p>
-}
+<div id="heading">
+    @if(request.clientName.isDefined){
+        <span id="client-name" class="govuk-caption-l">@request.clientName</span>
+    }
+    <span id="empref" class="govuk-caption-l">@messages("Service.paye.label") @request.empRef</span>
+    <h1 id="title" class="govuk-heading-xl">
+        @title
+    </h1>
+</div>

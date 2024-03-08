@@ -17,14 +17,16 @@
 package controllers
 
 import controllers.actions.MinimalAuthAction
-import models.HeaderTags
+import models.agent.{AccountsOfficeReference, Client}
+import models.{EmpRef, HeaderTags, UserName}
 import org.scalatest.TestSuite
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, Cookie}
 import play.api.test.FakeRequest
+import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.SessionKeys
 import utils.TestMinimalAuthAction
 
@@ -53,6 +55,7 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   def mockWelshRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("GET", "?lang=cy")
+      .withCookies(Cookie("PLAY_LANG", "cy"))
       .withSession(
         SessionKeys.sessionId -> sessionId,
         HeaderTags.ETAG       -> HeaderTags.ETAG_DEFAULT_VALUE,
@@ -68,5 +71,20 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   def injected[T](c: Class[T]): T                    = app.injector.instanceOf(c)
   def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T]
+
+  private val empRef: EmpRef = EmpRef("123", "AB12345")
+
+  val username: UserName                 = UserName(Name(Some("test"), Some("tester")))
+  val organisationClient: Option[Client] = None
+  val agentClient: Option[Client]        = Some(
+    Client(
+      uk.gov.hmrc.domain.EmpRef(empRef.taxOfficeNumber, empRef.taxOfficeReference),
+      AccountsOfficeReference("123AB12345678", "123", "A", "12345678"),
+      Some("client test name"),
+      lpAuthorisation = false,
+      None,
+      None
+    )
+  )
 
 }
