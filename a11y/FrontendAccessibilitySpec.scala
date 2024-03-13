@@ -122,8 +122,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
         fixed(listOfBik("54", "44")),
         fixed(2),
         fixed(2),
-        fixed("false"),
-        arbRequest,
+        fixed(authenticatedRequest),
         arbMessages
       )
     case exclusionNinoOrNoNinoForm: ExclusionNinoOrNoNinoForm                       => render(exclusionNinoOrNoNinoForm)
@@ -162,7 +161,6 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
           active = registrationList.active.map(_.copy(id = "assets-transferred"))
         )
       )
-      implicit val arbAsciiString: Arbitrary[String]                = fixed("assets-transferred")
       render(removeBenefitNextTaxYear)
     case removeBenefitOtherReason: RemoveBenefitOtherReason                         =>
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")

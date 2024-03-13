@@ -20,6 +20,7 @@ import controllers.FakePBIKApplication
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import uk.gov.hmrc.time.TaxYear
 
 import java.time.LocalDate
 import java.time.Month.{APRIL, JULY, NOVEMBER}
@@ -51,7 +52,7 @@ class TaxDateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues w
 
     ".isCurrentTaxYear" should {
       "return true, if the year is the current year" in {
-        assert(taxDateUtils.isCurrentTaxYear(LocalDate.now().getYear))
+        assert(taxDateUtils.isCurrentTaxYear(TaxYear.current.startYear))
       }
 
       "return false, if the year is not the current year" in {

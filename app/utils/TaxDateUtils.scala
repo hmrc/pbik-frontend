@@ -35,6 +35,6 @@ class TaxDateUtils {
   def getCurrentTaxYear(dateToCheck: LocalDate = getDefaultDate): Int =
     TaxYear.taxYearFor(dateToCheck).currentYear
 
-  def isCurrentTaxYear(yearToCheck: Int): Boolean = yearToCheck == TaxYear(getDefaultDate.getYear).currentYear
+  def isCurrentTaxYear(yearToCheck: Int): Boolean = yearToCheck == getCurrentTaxYear(getDefaultDate)
 
 }
