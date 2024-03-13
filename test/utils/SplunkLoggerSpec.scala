@@ -160,7 +160,7 @@ class SplunkLoggerSpec
         models.EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference = "taxOfficeReference"),
         UserName(Name(Some("TEST_USER"), None)),
         FakeRequest(),
-        isAgent = false
+        None
       )
 
       val d: DataEvent =
@@ -188,7 +188,7 @@ class SplunkLoggerSpec
         models.EmpRef.empty,
         UserName(Name(Some("TEST_USER"), None)),
         FakeRequest(),
-        isAgent = false
+        None
       )
 
       val d: DataEvent = controller.createErrorEvent(controller.FRONTEND, controller.EXCEPTION, msg = "No Empref")
@@ -235,7 +235,7 @@ class SplunkLoggerSpec
         models.EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference = "taxOfficeReference"),
         UserName(Name(Some("TEST_USER"), None)),
         FakeRequest(),
-        isAgent = false
+        None
       )
       assert(controller.extractGovernmentGatewayString == "TEST_USER")
     }
@@ -248,7 +248,7 @@ class SplunkLoggerSpec
         models.EmpRef(taxOfficeNumber = "taxOfficeNumber", taxOfficeReference = "taxOfficeReference"),
         UserName(Name(None, None)),
         FakeRequest(),
-        isAgent = false
+        None
       )
       assert(controller.extractGovernmentGatewayString == SplunkLogger.pbik_no_ref)
     }

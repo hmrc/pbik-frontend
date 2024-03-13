@@ -46,7 +46,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(configMap)
-    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[EiLListService].to(classOf[StubEiLListService]))
     .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
@@ -125,7 +125,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
       EmpRef("taxOfficeNumber", "taxOfficeReference"),
       UserName(Name(None, None)),
       request,
-      isAgent = false
+      None
     )
 
   when(mockExclusionListController.tierConnector.getAllAvailableBiks(any[Int])(any[HeaderCarrier]))
@@ -726,7 +726,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
           EmpRef("taxOfficeNumber", "taxOfficeReference"),
           UserName(Name(None, None)),
           request,
-          isAgent = false
+          None
         )
       implicit val hc: HeaderCarrier                                      = HeaderCarrier()
 

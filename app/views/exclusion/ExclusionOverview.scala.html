@@ -21,7 +21,6 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
         govukRadios: GovukRadios,
         formWithCSRF: FormWithCSRF
 )
@@ -31,7 +30,6 @@
         isCurrentTaxYear: String,
         iabdString: String,
         current: List[EiLPerson],
-        empRef: EmpRef,
         form: Form[MandatoryRadioButton]
 )(implicit request:Request[_], messages: Messages)
 
@@ -43,7 +41,7 @@
     }
 }
 
-@govukLayoutWrapper(PageTitle(title, form.hasErrors), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(title, form.hasErrors)) {
 
     @defining( if(isCurrentTaxYear=="cy"){ taxYearRange.cyminus1 } else { taxYearRange.cy }){ yearvalue =>
 

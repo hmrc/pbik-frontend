@@ -16,8 +16,8 @@
 
 package controllers.actions
 
-import akka.util.Timeout
 import models.{AuthenticatedRequest, EmpRef, UserName}
+import org.apache.pekko.util.Timeout
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -49,7 +49,7 @@ class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneA
           UserName(Name(None, None)),
           FakeRequest("", "")
             .withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}"),
-          isAgent = false
+          None
         )
         val result               = new Harness().callTransform(requestWithSessionID)
         whenReady(result) {
@@ -61,7 +61,7 @@ class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneA
     "the session is not set" must {
       "redirect user to home page controller " in {
         val request =
-          AuthenticatedRequest(EmpRef.empty, UserName(Name(None, None)), FakeRequest("", ""), isAgent = false)
+          AuthenticatedRequest(EmpRef.empty, UserName(Name(None, None)), FakeRequest("", ""), None)
         val result  = new Harness().callTransform(request)
 
         whenReady(result) { call: Either[Result, AuthenticatedRequest[_]] =>

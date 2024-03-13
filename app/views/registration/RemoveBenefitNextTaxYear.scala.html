@@ -22,7 +22,6 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
         formWithCSRF: FormWithCSRF
 )
 
@@ -30,15 +29,14 @@
         bikList: RegistrationList,
         removalBik: Option[RegistrationItem],
         taxYearRange:TaxYearRange,
-        form: Form[BinaryRadioButtonWithDesc],
-        empRef: EmpRef
+        form: Form[BinaryRadioButtonWithDesc]
 )(implicit request:Request[_], messages: Messages)
 
 @benefitLabel = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(bikList.active.head.id)}")}
 
 @title = @{ messages("RemoveBenefits.Confirm.Title") }
 
-@govukLayoutWrapper(PageTitle(title, form.hasErrors), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(title, form.hasErrors)) {
     @if(form.hasErrors) {
         <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
             <h2 class="govuk-error-summary__title" id="error-summary-title">

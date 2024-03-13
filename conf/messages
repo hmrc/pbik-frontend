@@ -49,17 +49,31 @@ Service.error = Error
 # Start Page
 #*************************************************************
 
-StartPage.heading = Payrolling benefits and expenses
-StartPage.p1 = Use this service to:
-StartPage.p2 = register benefits and expenses
-StartPage.p3 = remove a benefit or expense from payroll
-StartPage.p4 = exclude employees from a benefit or an expense
-StartPage.p5 = The benefits and expenses you cannot register using this service are:
-StartPage.p6 = general expenses allowance for business travel
-StartPage.p7 = interest-free and low-interest loans
-StartPage.p8 = living accommodation
-StartPage.p9 = You must <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">use a P11D form (opens in a new window or tab).</a>
-StartPage.link = Start now
+StartPage.heading.organisation = Payrolling benefits and expenses
+StartPage.p1.organisation = Use this service to:
+StartPage.p2.organisation = register benefits and expenses to tax through payroll
+StartPage.p3.organisation = remove a benefit or expense from payroll
+StartPage.p4.organisation = exclude employees from a benefit or an expense
+StartPage.p5.organisation = Benefits and expenses you cannot register
+StartPage.p6.organisation = You cannot use this services to register:
+StartPage.p7.organisation = general expenses allowance for business travel
+StartPage.p8.organisation = interest-free and low-interest loans
+StartPage.p9.organisation = living accommodation
+StartPage.p10.organisation = To report these expenses you must <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">use a P11D form (opens in a new window or tab).</a>
+StartPage.link.organisation = Start now
+
+StartPage.heading.agent = Payrolling benefits and expenses for your client
+StartPage.p1.agent = If you have permission from your client yu can use this service to:
+StartPage.p2.agent = register benefits and expenses to tax through payroll
+StartPage.p3.agent = remove a benefit or expense from payroll
+StartPage.p4.agent = exclude employees from a benefit or an expense
+StartPage.p5.agent = Benefits and expenses you cannot register
+StartPage.p6.agent = You cannot use this services to register:
+StartPage.p7.agent = general expenses allowance for business travel
+StartPage.p8.agent = interest-free and low-interest loans
+StartPage.p9.agent = living accommodation
+StartPage.p10.agent = To report these expenses you must <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">use a P11D form (opens in a new window or tab).</a>
+StartPage.link.agent = Start now
 
 #*************************************************************
 # Overview

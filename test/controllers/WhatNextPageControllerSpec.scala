@@ -45,7 +45,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(configMap)
-    .overrides(bind[AuthAction].to(classOf[TestAuthAction]))
+    .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[BikListService].toInstance(mock(classOf[StubBikListService])))
     .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
@@ -59,7 +59,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
       EmpRef("taxOfficeNumber", "taxOfficeReference"),
       UserName(Name(None, None)),
       request,
-      isAgent = false
+      None
     )
 
   private lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), statusValue))

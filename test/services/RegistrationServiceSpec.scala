@@ -99,7 +99,7 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
           EmpRef("taxOfficeNumber", "taxOfficeReference"),
           UserName(Name(None, None)),
           request,
-          isAgent = false
+          None
         )
       implicit val hc: HeaderCarrier                                      = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       val taxDateUtils                                                    = injected[TaxDateUtils]
@@ -109,7 +109,7 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
         registrationService.generateViewForBikRegistrationSelection(
           YEAR_RANGE.cyminus1,
           "add",
-          nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _, EmpRef.empty)
+          nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _)
         )
 
       status(result)        shouldBe OK

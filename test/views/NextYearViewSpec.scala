@@ -16,11 +16,9 @@
 
 package views
 
-import config.PbikAppConfig
-import models.{EmpRef, RegistrationList}
+import models.{AuthenticatedRequest, RegistrationList}
 import org.jsoup.Jsoup
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -28,18 +26,15 @@ import views.html.registration.NextTaxYear
 
 class NextYearViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi     = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings   = app.injector.instanceOf[FormMappings]
   val nextTaxYearView: NextTaxYear = app.injector.instanceOf[NextTaxYear]
 
-  implicit def view: Html = viewWithForm(formMappings.objSelectedForm)
+  def viewWithForm(form: Form[RegistrationList])(implicit request: AuthenticatedRequest[_]): Html =
+    nextTaxYearView(form, additive = true, taxYearRange, List(), List(), List(), List(), Some(1))
 
-  implicit val appConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
+  "nextYearPage - organisation" must {
+    implicit def html: Html = viewWithForm(formMappings.objSelectedForm)(organisationRequest)
 
-  def viewWithForm(form: Form[RegistrationList]): Html =
-    nextTaxYearView(form, additive = true, taxYearRange, List(), List(), List(), List(), Some(1), EmpRef("", ""))
-
-  "nextYearPage" must {
     behave like pageWithTitle(messages("AddBenefits.Heading"))
     behave like pageWithHeader(
       messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
@@ -48,7 +43,27 @@ class NextYearViewSpec extends PBIKViewSpec {
     behave like pageWithContinueButtonForm("/payrollbik/cy1/choose-benefit-expense", "Continue")
 
     "check the add benefit page for the errors" in {
-      val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))
+      val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))(organisationRequest)
+      val doc  = Jsoup.parse(view.toString())
+
+      doc must haveErrorSummary(messages("AddBenefits.noselection.error"))
+      doc must haveErrorNotification(messages("AddBenefits.noselection.error"))
+    }
+
+  }
+
+  "nextYearPage - Agent" must {
+    implicit def html: Html = viewWithForm(formMappings.objSelectedForm)(agentRequest)
+
+    behave like pageWithTitle(messages("AddBenefits.Heading"))
+    behave like pageWithHeader(
+      messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
+        + " " + messages("AddBenefits.Heading")
+    )
+    behave like pageWithContinueButtonForm("/payrollbik/cy1/choose-benefit-expense", "Continue")
+
+    "check the add benefit page for the errors" in {
+      val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))(agentRequest)
       val doc  = Jsoup.parse(view.toString())
 
       doc must haveErrorSummary(messages("AddBenefits.noselection.error"))

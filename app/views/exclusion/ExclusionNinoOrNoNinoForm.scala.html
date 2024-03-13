@@ -20,7 +20,6 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
         formWithCSRF: FormWithCSRF
 )
 
@@ -29,12 +28,11 @@
         isCurrentTaxYear: String,
         iabdString: String,
         previousSelection: String = "",
-        form: Form[MandatoryRadioButton],
-        empRef: EmpRef
+        form: Form[MandatoryRadioButton]
 )(implicit request: Request[_], messages: Messages)
 
 @expenseOrBenefit = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
-@govukLayoutWrapper(PageTitle(messages("ExclusionNinoDecision.title", form.hasErrors), form.hasErrors), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(messages("ExclusionNinoDecision.title", form.hasErrors), form.hasErrors)) {
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
 

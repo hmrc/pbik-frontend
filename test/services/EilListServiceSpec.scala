@@ -67,7 +67,7 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
           EmpRef("taxOfficeNumber", "taxOfficeReference"),
           UserName(Name(None, None)),
           request,
-          isAgent = false
+          None
         )
       val result                                                                      = await(eilService.currentYearEiL("services", year))
       result.size shouldBe 0

@@ -18,6 +18,7 @@ package controllers.actions
 
 import com.google.inject.ImplementedBy
 import config.{PbikAppConfig, Service}
+import connectors.AgentPayeConnector
 import models.auth.EpayeSessionKeys
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import play.api.mvc.Results._
@@ -36,7 +37,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class AuthActionImpl @Inject() (
   override val authConnector: AuthConnector,
   val parser: BodyParsers.Default,
-  config: PbikAppConfig
+  config: PbikAppConfig,
+  agentPayeConnector: AgentPayeConnector
 )(implicit val executionContext: ExecutionContext)
     extends AuthAction
     with AuthorisedFunctions
@@ -46,35 +48,36 @@ class AuthActionImpl @Inject() (
     hc: HeaderCarrier
   ): Future[Result] =
     authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE"))
-      .retrieve(Retrievals.authorisedEnrolments and Retrievals.name and Retrievals.affinityGroup) {
-        case Enrolments(enrolments) ~ name ~ Some(_) =>
-          enrolments
-            .find(_.key == "IR-PAYE")
-            .map { enrolment =>
-              val taxOfficeNumber    = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
-              val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
+      .retrieve(
+        Retrievals.affinityGroup and Retrievals.authorisedEnrolments and Retrievals.name and Retrievals.agentCode
+      ) { case _ ~ Enrolments(enrolments) ~ name ~ _ =>
+        enrolments
+          .find(_.key == "IR-PAYE")
+          .map { enrolment =>
+            val taxOfficeNumber    = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
+            val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
 
-              (taxOfficeNumber, taxOfficeReference) match {
-                case (Some(number), Some(reference)) =>
-                  block(
-                    AuthenticatedRequest(
-                      EmpRef(number, reference),
-                      UserName(name.getOrElse(Name(None, None))),
-                      request,
-                      isAgent = false
-                    )
+            (taxOfficeNumber, taxOfficeReference) match {
+              case (Some(number), Some(reference)) =>
+                block(
+                  AuthenticatedRequest(
+                    EmpRef(number, reference),
+                    UserName(name.getOrElse(Name(None, None))),
+                    request,
+                    None
                   )
-                case _                               =>
-                  logger.warn(
-                    "[AuthAction][authAsEmployer] Authentication failed: invalid taxOfficeNumber and/or taxOfficeReference"
-                  )
-                  Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
-              }
+                )
+              case _                               =>
+                logger.warn(
+                  "[AuthAction][authAsEmployer] Authentication failed: invalid taxOfficeNumber and/or taxOfficeReference"
+                )
+                Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
             }
-            .getOrElse {
-              logger.warn("[AuthAction][authAsEmployer] Authentication failed - IR-PAYE key not found")
-              Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
-            }
+          }
+          .getOrElse {
+            logger.warn("[AuthAction][authAsEmployer] Authentication failed - IR-PAYE key not found")
+            Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
+          }
       } recover { case ex: InsufficientEnrolments =>
       logger.warn("[AuthAction][authAsEmployer] Insufficient enrolments provided with request")
       Results.Redirect(controllers.routes.AuthController.notAuthorised)
@@ -105,17 +108,23 @@ class AuthActionImpl @Inject() (
               .withIdentifier("TaxOfficeReference", empRef.taxOfficeReference)
               .withDelegatedAuthRule("lp-paye")
           )
-            .retrieve(Retrievals.allEnrolments and Retrievals.name and Retrievals.affinityGroup) {
-              case Enrolments(enrs) ~ name ~ Some(_) =>
-                block(
-                  AuthenticatedRequest(
-                    empRef,
-                    UserName(name.getOrElse(Name(None, None))),
-                    request,
-                    isAgent = true
-                  )
+            .retrieve(
+              Retrievals.affinityGroup and Retrievals.authorisedEnrolments and Retrievals.name and Retrievals.agentCode
+            ) { case _ ~ _ ~ name ~ agentCodeRetrieved =>
+              val req: Future[Future[Result]] = for {
+                client <- agentPayeConnector.getClient(agentCodeRetrieved, empRef)
+              } yield block(
+                AuthenticatedRequest(
+                  empRef,
+                  UserName(name.getOrElse(Name(None, None))),
+                  request,
+                  client
                 )
+              )
+
+              req.flatMap(identity)
             }
+
         }
     }
   }
@@ -125,7 +134,9 @@ class AuthActionImpl @Inject() (
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised()
-      .retrieve(Retrievals.name and Retrievals.affinityGroup) { case name ~ Some(affinityGroup) =>
+      .retrieve(
+        Retrievals.affinityGroup and Retrievals.authorisedEnrolments and Retrievals.name and Retrievals.agentCode
+      ) { case Some(affinityGroup) ~ _ ~ _ ~ _ =>
         affinityGroup match {
           case AffinityGroup.Agent        => authAsAgent(request, block)
           case AffinityGroup.Organisation => authAsEmployer(request, block) //default how it was before

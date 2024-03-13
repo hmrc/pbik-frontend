@@ -52,7 +52,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         EmpRef("taxOfficeNumber", "taxOfficeReference"),
         UserName(Name(None, None)),
         request,
-        isAgent = false
+        None
       )
     val p: Promise[Result]                                              = Promise[Result]()
   }

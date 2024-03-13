@@ -21,18 +21,16 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
 )
 
 @(
         isCurrentYear: Boolean,
         taxYearRange:TaxYearRange,
         bikList: RegistrationList,
-        iabdString:String,
-        empRef: EmpRef
+        iabdString:String
 )(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages("whatNext.remove.heading")), empRef = Some(empRef.toString), showBackLink = false) {
+@govukLayoutWrapper(PageTitle(messages("whatNext.remove.heading")), showBackLink = false) {
 
     <section id="print-section">
         <div id="printContainer"></div>

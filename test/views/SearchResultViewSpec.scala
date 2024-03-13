@@ -18,7 +18,6 @@ package views
 
 import models._
 import play.api.data.Form
-import play.api.i18n.MessagesApi
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -26,7 +25,6 @@ import views.html.exclusion.SearchResults
 
 class SearchResultViewSpec extends PBIKViewSpec {
 
-  val messagesApi: MessagesApi         = app.injector.instanceOf[MessagesApi]
   val formMappings: FormMappings       = app.injector.instanceOf[FormMappings]
   val searchResultsView: SearchResults = app.injector.instanceOf[SearchResults]
 
@@ -48,83 +46,163 @@ class SearchResultViewSpec extends PBIKViewSpec {
     )
   )
 
-  def viewWithForm(form: Form[ExclusionNino]): Html =
-    searchResultsView(taxYearRange, "cyp1", iabdString, listOfMatches, form, "", EmpRef("", ""))
+  def viewWithForm(form: Form[ExclusionNino])(implicit request: AuthenticatedRequest[_]): Html =
+    searchResultsView(taxYearRange, "cyp1", iabdString, listOfMatches, form, "")
 
-  "exclusionNinoOrNoNinoForm" should {
+  "organisation" must {
+    "exclusionNinoOrNoNinoForm" should {
 
-    implicit def view: Html = viewWithForm(formMappings.individualSelectionForm)
+      implicit def view: Html = viewWithForm(formMappings.individualSelectionForm)(organisationRequest)
 
-    behave like pageWithTitle(messages("ExclusionSearch.title.single"))
-    behave like pageWithHeader(
-      messages(s"BenefitInKind.label.$iabdType") + " " + messages("ExclusionSearch.title.single")
-    )
-    behave like pageWithElementAndText(
-      "button-confirm",
-      messages("Service.confirm")
-    )
-  }
+      behave like pageWithTitle(messages("ExclusionSearch.title.single"))
+      behave like pageWithHeader(
+        messages(s"BenefitInKind.label.$iabdType") + " " + messages("ExclusionSearch.title.single")
+      )
+      behave like pageWithElementAndText(
+        "button-confirm",
+        messages("Service.confirm")
+      )
+    }
 
-  "check the nino search page for text validation" should {
+    "check the nino search page for text validation" should {
 
-    implicit def view: Html =
-      viewWithForm(
-        formMappings.individualSelectionForm.bind(
-          Map[String, String](
-            ("individualNino", "AA111111")
+      implicit def view: Html =
+        viewWithForm(
+          formMappings.individualSelectionForm.bind(
+            Map[String, String](
+              ("individualNino", "AA111111")
+            )
+          )
+        )(organisationRequest)
+
+      behave like pageWithIdAndText("John Smith", "name")
+      behave like pageWithIdAndText("AA111111", "nino")
+      behave like pageWithIdAndText("123", "wpn")
+    }
+
+    "check the individual nino search page for multiple active matches" should {
+      val listOfActives = EiLPersonList(
+        List(
+          EiLPerson(
+            "AA111111",
+            "John",
+            Some("Stones"),
+            "Smith",
+            Some("123"),
+            Some("01/01/1980"),
+            Some("male"),
+            Some(status)
+          ),
+          EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None),
+          EiLPerson(
+            "AC111111",
+            "Humpty",
+            Some("Alexander"),
+            "Dumpty",
+            Some("123"),
+            Some("01/01/1980"),
+            Some("male"),
+            Some(status)
           )
         )
       )
 
-    behave like pageWithIdAndText("John Smith", "name")
-    behave like pageWithIdAndText("AA111111", "nino")
-    behave like pageWithIdAndText("123", "wpn")
+      implicit def view: Html = searchResultsView(
+        taxYearRange,
+        "cyp1",
+        iabdString,
+        listOfActives,
+        formMappings.individualSelectionForm,
+        ""
+      )(organisationRequest, messages)
+
+      behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
+      behave like pageWithHeader(
+        messages(s"BenefitInKind.label.$iabdType") + " " + messages("ExclusionSearch.title.multiple")
+      )
+      behave like pageWithContinueButtonForm(
+        s"/payrollbik/cyp1/$iabdString//exclude-employee-results",
+        "Confirm and continue"
+      )
+    }
   }
 
-  "check the individual nino search page for multiple active matches" should {
-    val listOfActives = EiLPersonList(
-      List(
-        EiLPerson(
-          "AA111111",
-          "John",
-          Some("Stones"),
-          "Smith",
-          Some("123"),
-          Some("01/01/1980"),
-          Some("male"),
-          Some(status)
-        ),
-        EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None),
-        EiLPerson(
-          "AC111111",
-          "Humpty",
-          Some("Alexander"),
-          "Dumpty",
-          Some("123"),
-          Some("01/01/1980"),
-          Some("male"),
-          Some(status)
+  "Agent" must {
+    "exclusionNinoOrNoNinoForm" should {
+
+      implicit def view: Html = viewWithForm(formMappings.individualSelectionForm)(agentRequest)
+
+      behave like pageWithTitle(messages("ExclusionSearch.title.single"))
+      behave like pageWithHeader(
+        messages(s"BenefitInKind.label.$iabdType") + " " + messages("ExclusionSearch.title.single")
+      )
+      behave like pageWithElementAndText(
+        "button-confirm",
+        messages("Service.confirm")
+      )
+    }
+
+    "check the nino search page for text validation" should {
+
+      implicit def view: Html =
+        viewWithForm(
+          formMappings.individualSelectionForm.bind(
+            Map[String, String](
+              ("individualNino", "AA111111")
+            )
+          )
+        )(agentRequest)
+
+      behave like pageWithIdAndText("John Smith", "name")
+      behave like pageWithIdAndText("AA111111", "nino")
+      behave like pageWithIdAndText("123", "wpn")
+    }
+
+    "check the individual nino search page for multiple active matches" should {
+      val listOfActives = EiLPersonList(
+        List(
+          EiLPerson(
+            "AA111111",
+            "John",
+            Some("Stones"),
+            "Smith",
+            Some("123"),
+            Some("01/01/1980"),
+            Some("male"),
+            Some(status)
+          ),
+          EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None),
+          EiLPerson(
+            "AC111111",
+            "Humpty",
+            Some("Alexander"),
+            "Dumpty",
+            Some("123"),
+            Some("01/01/1980"),
+            Some("male"),
+            Some(status)
+          )
         )
       )
-    )
 
-    implicit def view: Html = searchResultsView(
-      taxYearRange,
-      "cyp1",
-      iabdString,
-      listOfActives,
-      formMappings.individualSelectionForm,
-      "",
-      EmpRef("", "")
-    )
+      implicit def view: Html = searchResultsView(
+        taxYearRange,
+        "cyp1",
+        iabdString,
+        listOfActives,
+        formMappings.individualSelectionForm,
+        ""
+      )(agentRequest, messages)
 
-    behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
-    behave like pageWithHeader(
-      messages(s"BenefitInKind.label.$iabdType") + " " + messages("ExclusionSearch.title.multiple")
-    )
-    behave like pageWithContinueButtonForm(
-      s"/payrollbik/cyp1/$iabdString//exclude-employee-results",
-      "Confirm and continue"
-    )
+      behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
+      behave like pageWithHeader(
+        messages(s"BenefitInKind.label.$iabdType") + " " + messages("ExclusionSearch.title.multiple")
+      )
+      behave like pageWithContinueButtonForm(
+        s"/payrollbik/cyp1/$iabdString//exclude-employee-results",
+        "Confirm and continue"
+      )
+    }
   }
+
 }

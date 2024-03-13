@@ -43,7 +43,6 @@
         signOut: Boolean = true,
         timeoutActive: Boolean = true,
         showBackLink: Boolean = true,
-        empRef: Option[String] = None,
         showYTALink: Boolean = false
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
@@ -75,16 +74,6 @@
 
 @beforeContentBlock = {
     <header aria-label="HMRC and employer reference information">
-        <div class="hmrc-banner govuk-!-display-inline-block">
-            <div class="hmrc-organisation-logo">
-                <p class="govuk-body-s" style="padding-right:35px">
-                    @messages("Service.hmrcBanner")
-                </p>
-                @if(empRef.isDefined) {
-                    <p class="govuk-body-s">@messages("Service.paye.label") @empRef</p>
-                }
-            </div>
-        </div>
         @if(showYTALink) {
             <div>
                 <a id="yta-link" href="/account" class="govuk-link">@messages("Service.back.yta")</a>

@@ -23,7 +23,6 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
         repeatWithIndex: RepeatWithIndex,
         formWithCSRF: FormWithCSRF,
         govukInsetText: GovukInsetText
@@ -32,11 +31,10 @@
 @(
         taxYearRange: TaxYearRange,
         year: String, iabdString:String,
-        individualsToRemove: EiLPersonList,
-        empRef: EmpRef
+        individualsToRemove: EiLPersonList
 )(implicit request: Request[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages("ExclusionRemovalConfirmation.title")), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(messages("ExclusionRemovalConfirmation.title"))) {
     <span class="govuk-caption-xl">@messages("BenefitInKind.label."+ Bik.asNPSTypeValue(iabdString))</span>
     <h1 id="title" class="govuk-heading-xl">
         @messages("ExclusionRemovalConfirmation.title")

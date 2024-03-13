@@ -23,7 +23,6 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-
         repeatWithIndex: RepeatWithIndex,
         formWithCSRF: FormWithCSRF
 )
@@ -34,13 +33,12 @@
         iabdString: String,
         listOfMatches: EiLPersonList,
         listOfMatchesForm: Form[ExclusionNino],
-        formType: String,
-        empRef: EmpRef
+        formType: String
 )(implicit request: Request[_], messages: Messages)
 
 @expenseOrBenefit = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
 @title = @{if(listOfMatches.active.length > 1){ messages("ExclusionSearch.title.multiple") } else { messages("ExclusionSearch.title.single") }}
-@govukLayoutWrapper(PageTitle(title, listOfMatchesForm.hasErrors), empRef = Some(empRef.toString)) {
+@govukLayoutWrapper(PageTitle(title, listOfMatchesForm.hasErrors)) {
 
     @defining( if(year=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
 

@@ -57,8 +57,7 @@ class HomePageController @Inject() (
     Unauthorized(
       errorPageView(
         ControllersReferenceDataCodes.AUTHORISATION_ERROR,
-        taxDateUtils.getTaxYearRange(),
-        empRef = Some(request.empRef)
+        taxDateUtils.getTaxYearRange()
       )
     )
   }
@@ -108,8 +107,7 @@ class HomePageController @Inject() (
           nextYearList.bikList,
           biksListOptionCY.size,
           biksListOptionCYP1.size,
-          fromYTA.toString,
-          empRef = request.empRef
+          fromYTA.toString
         )
       )
         .addingToSession(nextYearList.headers.toSeq: _*)
