@@ -20,81 +20,42 @@ import controllers.FakePBIKApplication
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 
 import java.time.LocalDate
 import java.time.Month.{APRIL, JULY, NOVEMBER}
 
 class TaxDateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication {
 
-  private val (year2013, year2014, year2015): (Int, Int, Int) = (2013, 2014, 2015)
-  private val (day1, day7): (Int, Int)                        = (1, 7)
+  private val (year2013, year2014): (Int, Int) = (2013, 2014)
+  private val day1: Int                        = 1
 
-  private val conf: Map[String, Int] = Map(
-    "pbik.date.override.0" -> 2015,
-    "pbik.date.override.1" -> 7,
-    "pbik.date.override.2" -> 1
-  )
-
-  private lazy val appWithPbikDateOverride: Application    = GuiceApplicationBuilder().configure(conf).build()
-  private lazy val appWithoutPbikDateOverride: Application = GuiceApplicationBuilder().configure().build()
-
-  private class Test(app: Application = appWithoutPbikDateOverride) {
-    val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
-  }
+  private lazy val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
 
   "TaxDateUtils" when {
-    "getDefaultDate" when {
-      def test(app: Application, configurationMessage: String, date: LocalDate): Unit =
-        s"pbik.date.override is $configurationMessage" should {
-          s"return the date $date" in new Test(app) {
-            assert(taxDateUtils.getDefaultDate == date)
-          }
-        }
-
-      val inputArgs = Seq(
-        (appWithPbikDateOverride, "configured", LocalDate.of(year2015, day7, day1)),
-        (appWithoutPbikDateOverride, "not configured", LocalDate.now())
-      )
-
-      inputArgs.foreach(args => (test _).tupled(args))
-    }
-
-    "getDefaultYear" when {
-      def test(app: Application, configurationMessage: String, year: Int): Unit =
-        s"pbik.date.override is $configurationMessage" should {
-          s"return the year $year" in new Test(app) {
-            assert(taxDateUtils.getDefaultYear == year)
-          }
-        }
-
-      val inputArgs = Seq(
-        (appWithPbikDateOverride, "configured", LocalDate.now().getYear + 1),
-        (appWithoutPbikDateOverride, "not configured", LocalDate.now().getYear)
-      )
-
-      inputArgs.foreach(args => (test _).tupled(args))
-    }
-
-    "The current tax year" should {
-      "be the same as current year, if the current date is before 6th April in the current year" in new Test {
+    ".getCurrentTaxYear" should {
+      "return the same as current year, if the current date is before 6th April in the current year" in {
         val dateBeforeTaxYearButSameYearAsTaxYear: LocalDate = LocalDate.of(year2014, APRIL, day1)
         assert(taxDateUtils.getCurrentTaxYear(dateBeforeTaxYearButSameYearAsTaxYear) == year2013)
       }
-    }
 
-    "The current tax year" should {
-      "be current year, if the current date is before 6th April and in the previous year" in new Test {
+      "return current year, if the current date is before 6th April and in the previous year" in {
         val dateBeforeTaxYearInPreviousYear: LocalDate = LocalDate.of(year2013, NOVEMBER, day1)
         assert(taxDateUtils.getCurrentTaxYear(dateBeforeTaxYearInPreviousYear) == year2013)
       }
-    }
 
-    "The current tax year" should {
-      "be current year, if the current date is after 6th April in the current year" in new Test {
+      "return current year, if the current date is after 6th April in the current year" in {
         val dateAfterTaxYear: LocalDate = LocalDate.of(year2014, JULY, day1)
         assert(taxDateUtils.getCurrentTaxYear(dateAfterTaxYear) == year2014)
+      }
+    }
+
+    ".isCurrentTaxYear" should {
+      "return true, if the year is the current year" in {
+        assert(taxDateUtils.isCurrentTaxYear(LocalDate.now().getYear))
+      }
+
+      "return false, if the year is not the current year" in {
+        assert(!taxDateUtils.isCurrentTaxYear(year2013))
       }
     }
   }

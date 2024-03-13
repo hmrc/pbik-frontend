@@ -47,20 +47,6 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
   private val homePageController: HomePageController = app.injector.instanceOf[HomePageController]
 
   "HomePageController" should {
-    def test(value: Boolean, url: String): Unit =
-      s"return $value for isFromYTA if referer ends with $url" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withHeaders(
-          "referer" -> s"$url"
-        )
-        val result                                                = homePageController.isFromYTA(request)
-
-        result mustBe value
-      }
-
-    val inputArgs = Seq((true, "/account"), (true, "/business-account"), (false, "/someother"))
-
-    inputArgs.foreach(args => (test _).tupled(args))
-
     "return 401 (UNAUTHORIZED) for a notAuthorised method call" in {
       implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockRequest
       val result                                                = homePageController.notAuthorised()(request)
@@ -119,7 +105,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
       val result                                                = homePageController.onPageLoad(request)
 
       status(result) mustBe OK
-      contentAsString(result) must include("Buddiannau a threuliau rydych wedi’u cofrestru i’w trethu drwy’r gyflogres")
+      contentAsString(result) must include("Cofrestru buddiant neu draul")
     }
   }
 

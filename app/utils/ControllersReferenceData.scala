@@ -39,7 +39,6 @@ object ControllersReferenceDataCodes {
   val FORM_TYPE_NINO: String               = "nino"
   val FORM_TYPE_NONINO: String             = "no-nino"
   val NEXT_TAX_YEAR: String                = FormMappingsConstants.CYP1
-  val SESSION_FROM_YTA: String             = "fromYTA"
   val BIK_REMOVE_REASON_LIST: List[String] = List("software", "guidance", "not-clear", "not-offering", "other")
   val YES: String                          = "yes"
   val NO: String                           = "no"

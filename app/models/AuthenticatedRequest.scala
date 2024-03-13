@@ -22,11 +22,18 @@ import play.api.mvc.{Request, WrappedRequest}
 case class AuthenticatedRequest[A](empRef: EmpRef, name: UserName, request: Request[A], client: Option[Client])
     extends WrappedRequest[A](request) {
 
-  // its an agent logged in if we have a client info in the request
-  val isAgent: Boolean = client.isDefined
-
   val clientName: Option[String] = client.flatMap(_.name)
 
+  /**
+    * its an agent logged in if we have a client info in the request
+    */
+  val isAgent: Boolean        = client.isDefined
+  val isOrganisation: Boolean = !isAgent
+
   val userType: String = if (isAgent) "agent" else "organisation"
+
+  //TODO review this logic maybe to do it somehow clever way in govuk wrapper template
+  val showYTABackLink: Boolean = isOrganisation
+  val showECLBackLink: Boolean = isAgent
 
 }

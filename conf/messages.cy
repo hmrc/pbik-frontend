@@ -4,7 +4,6 @@
 
 Service.title = Talu buddiannau a threuliau drwy’r gyflogres - GOV.UK
 service.name = Talu buddiannau a threuliau drwy’r gyflogres
-Service.news.banner.message = Bydd newidiadau a wnewch yn effeithio ar godau treth eich cyflogeion ar gyfer y flwyddyn dreth nesaf, a gallai hyn arwain at anfon mwy nag un hysbysiad o god iddynt.
 
 Service.hmrcBanner = Cyllid a Thollau EF
 Service.yes = Iawn
@@ -17,7 +16,8 @@ Service.feedback.link = Beth oedd eich barn am y gwasanaeth hwn?
 Service.feedback = (mae’n cymryd 30 eiliad)
 Service.back.cancel = Yn ôl i’ch crynodeb
 Service.back.excluded = Yn ôl i’ch cyflogeion sydd wedi’u heithrio
-Service.back.yta = Eich Cyfrif Treth
+Service.back.yta = Yn ôl i’ch cyfrif treth
+Service.back.ecl = Yn ôl i’r rhestr o gleientiaid TWE
 Service.paye.label = Cyfeirnod TWE y cyflogwr:
 Service.nino.lastletter = (Nid yw’r llythyren olaf yn cael ei dangos)
 
@@ -59,7 +59,8 @@ StartPage.p6.organisation = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru�
 StartPage.p7.organisation = lwfans treuliau cyffredinol ar gyfer teithio busnes
 StartPage.p8.organisation = benthyciadau di-log a llog isel
 StartPage.p9.organisation = llety preswyl
-StartPage.p10.organisation = Er mwyn rhoi gwybod am y costau hyn, mae’n rhaid i chi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd).</a>
+StartPage.p10.text.organisation = Er mwyn rhoi gwybod am y costau hyn, mae’n rhaid i chi
+StartPage.p10.link.text.organisation = defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd).
 StartPage.link.organisation = Dechrau nawr
 
 StartPage.heading.agent = Talu buddiannau a threuliau drwy’r gyflogres ar gyfer eich cleient
@@ -72,25 +73,26 @@ StartPage.p6.agent = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru’r can
 StartPage.p7.agent = lwfans treuliau cyffredinol ar gyfer teithio busnes
 StartPage.p8.agent = benthyciadau di-log a llog isel
 StartPage.p9.agent = llety preswyl
-StartPage.p10.agent = Er mwyn rhoi gwybod am y costau hyn, mae’n rhaid i chi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd)</a>
+StartPage.p10.text.agent = Er mwyn rhoi gwybod am y costau hyn, mae’n rhaid i chi
+StartPage.p10.link.text.agent = defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd).
 StartPage.link.agent = Dechrau nawr
 
 #*************************************************************
 # Rwyf wedi cofrestru i dalu drwy’r gyflogres
 #*************************************************************
 
-Overview.benefitsRegistered.heading = Buddiannau a threuliau rydych wedi’u cofrestru i’w trethu drwy’r gyflogres
-Overview.noBenefitsRegistered.heading = Nid ydych wedi cofrestru unrhyw fuddiannau na threuliau i’w trethu drwy’r gyflogres
-Overview.noBenefitsRegistered.title = Nid ydych wedi cofrestru unrhyw fuddiannau na threuliau
+Overview.benefitsRegistered.heading = Cofrestru buddiant neu draul
 Overview.next.heading = 6 Ebrill {0} i 5 Ebrill {1}
 Overview.next.lead.empty = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu buddiant neu draul i’w trethu drwy’r gyflogres.
+Overview.empty.benefits.h2 = Crynodeb o dalu drwy’r gyflogres o 6 Ebrill ymlaen {0}
+Overview.empty.benefits.p = Nid ydych wedi cofrestru unrhyw fuddiannau na threuliau i’w trethu drwy’r gyflogres.
 Overview.current.from=o
 Overview.current.remove=Dileu
 Overview.current.payroll.p11d=y gyflogres ac adrodd ar P11D
 Overview.current.heading = 6 Ebrill {0} i 5 Ebrill {1}
 Overview.table.exclude.link = Rheoli cyflogeion sydd wedi’u heithrio
 Overview.table.exclude.none.link = Eithrio cyflogai
-Overview.table.remove.link = Tynnu oddi ar y gyflogres
+Overview.table.remove.link = Dileu
 Overview.table.add.link = Ychwanegu buddiant neu draul
 
 ManagingRegistration.add.exhausted = Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau sydd ar gael yn y categori hwn.

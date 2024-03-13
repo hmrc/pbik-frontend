@@ -1,9 +1,7 @@
-val appName = "pbik-frontend"
-
 ThisBuild / scalaVersion := "2.13.13"
 ThisBuild / majorVersion := 8
 
-lazy val microservice = Project(appName, file("."))
+lazy val microservice = Project("pbik-frontend", file("."))
   .enablePlugins(SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
