@@ -45,9 +45,9 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
   private val pbikConnectorWithMockClient: PbikConnector = new PbikConnector(mockHttpClient, configuration)
 
   private val fakeResponse: HttpResponse                   = HttpResponse(OK, "")
-  private val personOptimisticLockResponse                 = PersonOptimisticLockResponse("1", 1, 1, 1, 2)
+  private val employerOptimisticLockResponse               = EmployerOptimisticLockResponse("1", 1, 1, 1)
   private val fakePostResponseUpdateBenefits: HttpResponse =
-    HttpResponse(OK, Json.toJson(personOptimisticLockResponse).toString())
+    HttpResponse(OK, Json.toJson(BenefitListUpdateResponse(employerOptimisticLockResponse)).toString())
   private val pbikErrorResponseCode: String                = "64990"
   private val pbikErrorResponse: String                    = s"""{"errorCode":"$pbikErrorResponseCode"}"""
   private val responseHeaders: Map[String, String]         = HeaderTags.createResponseHeaders()
@@ -99,7 +99,8 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
   "PbikConnector" when {
     ".getRegisteredBiks" must {
       "return a list of benefits for an organisation on a specific year" in {
-        val fakeResponseWithListOfBiks = buildFakeResponseWithBody(listBikWithCount)
+        val fakeResponseWithListOfBiks =
+          buildFakeResponseWithBody(BenefitListResponse(listBikWithCount, employerOptimisticLockResponse))
 
         when(
           mockHttpClient.GET(
@@ -152,7 +153,7 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
           )
         }
 
-        result.errors.flatMap(_._2.map(_.message)) mustBe Seq("error.expected.jsarray")
+        result.errors.flatMap(_._2.map(_.message)) mustBe Seq("error.expected.jsobject")
 
       }
     }
@@ -295,7 +296,7 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         pbikConnectorWithMockClient
           .updateOrganisationsRegisteredBiks(year, listBiks)
-          .futureValue mustBe personOptimisticLockResponse.updatedOptimisticLock
+          .futureValue mustBe employerOptimisticLockResponse.currentOptimisticLock
       }
     }
 

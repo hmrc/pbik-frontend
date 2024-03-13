@@ -18,14 +18,13 @@ package models.v1
 
 import play.api.libs.json.{Json, OFormat}
 
-case class PersonOptimisticLockResponse(
+case class EmployerOptimisticLockResponse(
   payeSchemeType: String,
   employerNumber: Int,
   payeSequenceNo: Int,
-  currentOptimisticLock: Int,
-  updatedOptimisticLock: Int
+  currentOptimisticLock: Int
 )
 
-object PersonOptimisticLockResponse {
-  implicit val formats: OFormat[PersonOptimisticLockResponse] = Json.format[PersonOptimisticLockResponse]
+object EmployerOptimisticLockResponse {
+  implicit val formats: OFormat[EmployerOptimisticLockResponse] = Json.format[EmployerOptimisticLockResponse]
 }

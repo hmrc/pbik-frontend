@@ -18,7 +18,7 @@ package connectors
 
 import config.Service
 import models._
-import models.v1.{BenefitInKindRequest, BenefitInKindWithCount, PersonOptimisticLockResponse}
+import models.v1.{BenefitInKindRequest, BenefitListResponse, BenefitListUpdateResponse}
 import play.api.http.Status.BAD_REQUEST
 import play.api.mvc.Request
 import play.api.{Configuration, Logging}
@@ -43,9 +43,9 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
     client
       .GET(s"$baseUrl/${empRef.encodedEmpRef}/$year")
       .map { implicit response =>
-        val headers  = responseHeaders
-        val benefits = validateResponses("getRegisteredBiks").json.as[List[BenefitInKindWithCount]]
-        val biks     = benefits.map(benefit => Bik(benefit))
+        val headers = responseHeaders
+        val resp    = validateResponses("getRegisteredBiks").json.as[BenefitListResponse]
+        val biks    = resp.pbikRegistrationDetails.map(benefit => Bik(benefit))
         BikResponse(headers, biks)
       }
 
@@ -107,12 +107,12 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
       )
       .map { response =>
         val validatedResponse                     = validateResponses("updateOrganisationsRegisteredBiks")(response)
-        val lock                                  = validatedResponse.json.as[PersonOptimisticLockResponse]
-        val updatedHeaders: Seq[(String, String)] =
-          HeaderTags.createResponseHeaders(lock.updatedOptimisticLock.toString).toSeq
+        val benefitListUpdateResponse             = validatedResponse.json.as[BenefitListUpdateResponse]
+        val lockValue                             = benefitListUpdateResponse.employerOptimisticLockResponse.currentOptimisticLock
+        val updatedHeaders: Seq[(String, String)] = HeaderTags.createResponseHeaders(lockValue.toString).toSeq
 
         hc.withExtraHeaders(updatedHeaders: _*)
-        lock.updatedOptimisticLock
+        lockValue
       }
   }
 
