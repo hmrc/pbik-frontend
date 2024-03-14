@@ -16,7 +16,6 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
-@import uk.gov.hmrc.hmrcfrontend.views.Aliases.UserResearchBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcLanguageSelect
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, LanguageSelect}
 @import views.templatemodels.PageTitle
@@ -39,11 +38,12 @@
 
 @(
         title: PageTitle,
-        isUserResearchBannerVisible: Boolean = false,
         signOut: Boolean = true,
         timeoutActive: Boolean = true,
         showBackLink: Boolean = true,
-        showYTALink: Boolean = false
+        showYTABackLink: Boolean = false,
+        showECLBackLink: Boolean = false,
+        globalPageLayoutStyle: String = "govuk-grid-column-two-thirds"
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 
@@ -64,28 +64,13 @@
 
 }
 
-@userResearchBanner = @{
-    if(isUserResearchBannerVisible) {
-        Some(UserResearchBanner(url = config.urBannerLink))
-    } else {
-        None
-    }
-}
-
 @beforeContentBlock = {
-    <header aria-label="HMRC and employer reference information">
-        @if(showYTALink) {
-            <div>
-                <a id="yta-link" href="/account" class="govuk-link">@messages("Service.back.yta")</a>
-            </div>
-        }
-    </header>
     @hmrcLanguageSelect(LanguageSelect(
         if (messages.lang.code == "cy") Cy else En,
         (En, s"${controllers.routes.HomePageController.setLanguage()}?lang=en"),
         (Cy, s"${controllers.routes.HomePageController.setLanguage()}?lang=cy")
     ))
-    @if(showBackLink) {
+    @if(showBackLink && !showYTABackLink && !showECLBackLink) {
         @govukBackLink(BackLink(
             content = Text(messages("Service.back")),
             attributes = Map("id" -> "back-link")
@@ -93,10 +78,24 @@
         <script @{CSPNonce.attr}>
             document.getElementById("back-link").addEventListener("click", () => window.history.go(-1));
         </script>
+    } else if (showBackLink && showECLBackLink) {
+        @govukBackLink(BackLink(
+            href = config.agentClientListUrl,
+            content = Text(messages("Service.back.ecl")),
+            attributes = Map("id" -> "back-link")
+        ))
+    } else if (showBackLink && showYTABackLink) {
+        @govukBackLink(BackLink(
+            href = config.btaAccountUrl,
+            content = Text(messages("Service.back.yta")),
+            attributes = Map("id" -> "back-link")
+        ))
     }
 }
 
 @content = {
+<div class="govuk-grid-row">
+        <div class="@globalPageLayoutStyle">
     <div id="content">
         <div class="content__body">
             @contentBlock
@@ -105,40 +104,20 @@
             @hmrcReportTechnicalIssueHelper()
         </div>
     </div>
+        </div>
+</div>
 }
-@if(showYTALink) {
-    @govukTemplate(
-        pageTitle = Some(title.fullTitle()),
-        headBlock = Some(hmrcHead(headBlock = Some(head))),
-        headerBlock = hmrcStandardHeader(
-            serviceUrl = None,
-            serviceName = Some(messages("service.name")),
-            signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
-            userResearchBanner = userResearchBanner,
-            phaseBanner = None,
-            displayHmrcBanner = false
-        ),
-        beforeContentBlock = Some(beforeContentBlock),
-        bodyEndBlock = Some(hmrcScripts()),
-        mainClasses = Some("govuk-main-wrapper--auto-spacing"),
-        footerBlock = hmrcStandardFooter()
+
+@govukTemplate(
+    pageTitle = Some(title.fullTitle()),
+    headBlock = Some(hmrcHead(headBlock = Some(head))),
+    headerBlock = hmrcStandardHeader(
+    serviceUrl = None,
+    serviceName = Some(messages("service.name")),
+    signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
+    displayHmrcBanner = false),
+    beforeContentBlock = Some(beforeContentBlock),
+    bodyEndBlock = Some(hmrcScripts()),
+    mainClasses = Some("govuk-main-wrapper--auto-spacing"),
+    footerBlock = hmrcStandardFooter()
     )(content)
-} else {
-    @govukLayout(
-        pageTitle = Some(title.fullTitle()),
-        headBlock = Some(hmrcHead(headBlock = Some(head))),
-        headerBlock = Some(hmrcStandardHeader(
-            serviceUrl = None,
-            serviceName = Some(messages("service.name")),
-            signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
-            userResearchBanner = userResearchBanner,
-            phaseBanner = None,
-            displayHmrcBanner = false
-            )),
-        beforeContentBlock = Some(beforeContentBlock),
-        scriptsBlock = Some(hmrcScripts()),
-        footerBlock = Some(hmrcStandardFooter())
-        )(content)
-}
-
-

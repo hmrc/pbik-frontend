@@ -31,7 +31,6 @@ import views.html.{ErrorPage, Summary}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Success, Try}
 
 @Singleton
 class HomePageController @Inject() (
@@ -93,12 +92,9 @@ class HomePageController @Inject() (
     } yield {
       sessionService.storeCYRegisteredBiks(currentYearList.bikList)
       sessionService.storeNYRegisteredBiks(nextYearList.bikList)
-      val fromYTA = if (request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).isDefined) {
-        request.session.get(ControllersReferenceDataCodes.SESSION_FROM_YTA).get
-      } else {
-        isFromYTA
-      }
+
       auditHomePageView()
+
       Ok(
         summaryPage(
           pbikAppConfig.cyEnabled,
@@ -106,23 +102,11 @@ class HomePageController @Inject() (
           currentYearList.bikList,
           nextYearList.bikList,
           biksListOptionCY.size,
-          biksListOptionCYP1.size,
-          fromYTA.toString
+          biksListOptionCYP1.size
         )
-      )
-        .addingToSession(nextYearList.headers.toSeq: _*)
-        .addingToSession(ControllersReferenceDataCodes.SESSION_FROM_YTA -> fromYTA.toString)
+      ).addingToSession(nextYearList.headers.toSeq: _*)
     }
     controllersReferenceData.responseErrorHandler(pageLoadFuture)
-  }
-
-  def isFromYTA(implicit request: Request[_]): Boolean = {
-    val refererUrl = Try(request.headers("referer"))
-    refererUrl match {
-      case Success(url) if url.endsWith("/business-account") => true
-      case Success(url) if url.endsWith("/account")          => true
-      case _                                                 => false
-    }
   }
 
   private def auditHomePageView()(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[AuditResult] =

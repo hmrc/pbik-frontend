@@ -4,7 +4,6 @@
 
 Service.title = Payrolling benefits and expenses - GOV.UK
 service.name = Payrolling benefits and expenses
-Service.news.banner.message = Any changes you make will affect your employees’ tax codes for the next tax year and may result in them receiving more than one coding notice.
 
 Service.hmrcBanner = HM Revenue & Customs
 Service.yes = Yes
@@ -17,7 +16,8 @@ Service.feedback.link = What did you think of this service?
 Service.feedback = (takes 30 seconds)
 Service.back.cancel = Back to your summary
 Service.back.excluded = Back to your excluded employees
-Service.back.yta = Your tax account
+Service.back.yta = Back to your tax account
+Service.back.ecl = Return to PAYE client list
 Service.paye.label = Employer PAYE reference:
 Service.nino.lastletter = (Last letter not shown)
 
@@ -59,7 +59,8 @@ StartPage.p6.organisation = You cannot use this services to register:
 StartPage.p7.organisation = general expenses allowance for business travel
 StartPage.p8.organisation = interest-free and low-interest loans
 StartPage.p9.organisation = living accommodation
-StartPage.p10.organisation = To report these expenses you must <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">use a P11D form (opens in a new window or tab).</a>
+StartPage.p10.text.organisation = To report these expenses you must
+StartPage.p10.link.text.organisation = use a P11D form (opens in a new window or tab).
 StartPage.link.organisation = Start now
 
 StartPage.heading.agent = Payrolling benefits and expenses for your client
@@ -72,25 +73,26 @@ StartPage.p6.agent = You cannot use this services to register:
 StartPage.p7.agent = general expenses allowance for business travel
 StartPage.p8.agent = interest-free and low-interest loans
 StartPage.p9.agent = living accommodation
-StartPage.p10.agent = To report these expenses you must <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">use a P11D form (opens in a new window or tab).</a>
+StartPage.p10.text.agent = To report these expenses you must
+StartPage.p10.link.text.agent = use a P11D form (opens in a new window or tab).
 StartPage.link.agent = Start now
 
 #*************************************************************
 # Overview
 #*************************************************************
 
-Overview.benefitsRegistered.heading = Benefits and expenses you have registered to tax through payroll
-Overview.noBenefitsRegistered.heading = You have not registered any benefits or expenses to tax through payroll
-Overview.noBenefitsRegistered.title = You have not registered any benefits or expenses
+Overview.benefitsRegistered.heading = Register a benefit or an expense
 Overview.next.heading =6 April {0} to 5 April {1}
 Overview.next.lead.empty = You can use this service to add a benefit or expense to tax through payroll.
+Overview.empty.benefits.h2 = Payrolling summary from 6 April {0}
+Overview.empty.benefits.p = You have not registered any benefits or expenses to tax through payroll.
 Overview.current.from=from
 Overview.current.remove=Remove
 Overview.current.payroll.p11d=payroll and report on a P11D
 Overview.current.heading = 6 April {0} to 5 April {1}
 Overview.table.exclude.link = Manage excluded employees
 Overview.table.exclude.none.link = Exclude an employee
-Overview.table.remove.link = Remove from payroll
+Overview.table.remove.link = Remove
 Overview.table.add.link = Add a benefit or expense
 
 ManagingRegistration.add.exhausted = You’ve already added all of the benefits or expenses that are available in this category.

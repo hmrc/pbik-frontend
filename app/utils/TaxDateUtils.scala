@@ -17,58 +17,24 @@
 package utils
 
 import models.TaxYearRange
-import play.api.Configuration
 import uk.gov.hmrc.time.TaxYear
 
-import java.text.SimpleDateFormat
-import java.time.{LocalDate, LocalDateTime}
-import java.util.Date
-import javax.inject.{Inject, Singleton}
-import scala.jdk.CollectionConverters._
-import scala.util.{Failure, Success, Try}
+import java.time.LocalDate
+import javax.inject.Singleton
 
 @Singleton
-class TaxDateUtils @Inject() (configuration: Configuration) {
+class TaxDateUtils {
 
-  private val overriddenDateFromConfig: List[Integer] = Try {
-    configuration.underlying.getIntList("pbik.date.override")
-  } match {
-    case Success(value) => value.asScala.toList
-    case Failure(_)     => List.empty
-  }
+  private def getDefaultDate: LocalDate = LocalDate.now()
 
-  private val sdf                   = new SimpleDateFormat("dd-M-yyyy hh:mm:ss")
-  private val startDateBanner: Date =
-    sdf.parse(configuration.getOptional[String]("pbik.banner.date.start").getOrElse(""))
-  private val endDateBanner: Date   = sdf.parse(configuration.getOptional[String]("pbik.banner.date.end").getOrElse(""))
-
-  def getDefaultDate: LocalDate =
-    if (overriddenDateFromConfig.nonEmpty) {
-      LocalDate
-        .of(overriddenDateFromConfig.head, overriddenDateFromConfig(1), overriddenDateFromConfig(2))
-    } else { LocalDate.now() }
-
-  def getDefaultYear: Int = {
-    val year = LocalDateTime.now().getYear
-    if (overriddenDateFromConfig.nonEmpty) {
-      year + 1
-    } else {
-      year
-    }
-  }
+  private def generateTaxYearRange(year: Int): TaxYearRange =
+    TaxYearRange(year, year + 1, year + 2)
 
   def getTaxYearRange(year: Int = getCurrentTaxYear(getDefaultDate)): TaxYearRange = generateTaxYearRange(year)
 
   def getCurrentTaxYear(dateToCheck: LocalDate = getDefaultDate): Int =
     TaxYear.taxYearFor(dateToCheck).currentYear
 
-  def isCurrentTaxYear(yearToCheck: Int = getDefaultYear, dateToCheck: LocalDate = getDefaultDate): Boolean =
-    yearToCheck == TaxYear.taxYearFor(dateToCheck).currentYear
-
-  private def generateTaxYearRange(year: Int): TaxYearRange =
-    TaxYearRange(year, year + 1, year + 2)
-
-  def dateWithinAnnualCodingRun(today: Date): Boolean =
-    today.getTime >= startDateBanner.getTime && today.getTime <= endDateBanner.getTime
+  def isCurrentTaxYear(yearToCheck: Int): Boolean = yearToCheck == getCurrentTaxYear(getDefaultDate)
 
 }

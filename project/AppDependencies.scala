@@ -18,7 +18,7 @@ object AppDependencies {
     "uk.gov.hmrc"                  %% "bootstrap-test-play-30"  % bootstrapPlayVersion,
     "uk.gov.hmrc.mongo"            %% "hmrc-mongo-test-play-30" % hmrcMongoPlayVersion,
     "org.jsoup"                     % "jsoup"                   % "1.17.2",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala"    % "2.16.1"
+    "com.fasterxml.jackson.module" %% "jackson-module-scala"    % "2.16.2"
   ).map(_ % Test)
 
   def apply(): Seq[ModuleID]      = compile ++ test

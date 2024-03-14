@@ -61,8 +61,9 @@ class MessagesSpec extends PlaySpec with Logging {
     }
     "not have the same messages" in {
       val same = defaultMessages.keys.collect({
-        case key if defaultMessages.get(key) == welshMessages.get(key) && !key.contains(".url") =>
-          (key, defaultMessages.get(key))
+        case messageKey
+            if defaultMessages.get(messageKey) == welshMessages.get(messageKey) && !messageKey.contains(".url") =>
+          (messageKey, defaultMessages.get(messageKey))
       })
 
       // 94% of app needs to be translated into Welsh. 94% allows for:
@@ -80,28 +81,32 @@ class MessagesSpec extends PlaySpec with Logging {
       assertCorrectUseOfQuotesForWelshMessages()
     }
     "have a resolvable message for keys which take args" in {
-      val englishWithArgsMsgKeys = defaultMessages collect { case (key, value) if countArgs(value) > 0 => key }
-      val welshWithArgsMsgKeys   = welshMessages collect { case (key, value) if countArgs(value) > 0 => key }
+      val englishWithArgsMsgKeys = defaultMessages collect {
+        case (messagesKey, messagesValue) if countArgs(messagesValue) > 0 => messagesKey
+      }
+      val welshWithArgsMsgKeys   = welshMessages collect {
+        case (messagesKey, messagesValue) if countArgs(messagesValue) > 0 => messagesKey
+      }
       val missingFromEnglish     = englishWithArgsMsgKeys.toList diff welshWithArgsMsgKeys.toList
       val missingFromWelsh       = welshWithArgsMsgKeys.toList diff englishWithArgsMsgKeys.toList
-      missingFromEnglish foreach { key =>
-        logger.info(s"Key which has arguments in English but not in Welsh: $key")
+      missingFromEnglish foreach { messagesKey =>
+        logger.info(s"Key which has arguments in English but not in Welsh: $messagesKey")
       }
-      missingFromWelsh foreach { key =>
-        logger.info(s"Key which has arguments in Welsh but not in English: $key")
+      missingFromWelsh foreach { messagesKey =>
+        logger.info(s"Key which has arguments in Welsh but not in English: $messagesKey")
       }
       englishWithArgsMsgKeys.size mustBe welshWithArgsMsgKeys.size
     }
     "have the same args in the same order for all keys which take args" in {
       val englishWithArgsMsgKeysAndArgList = defaultMessages collect {
-        case (key, value) if countArgs(value) > 0 => (key, listArgs(value))
+        case (messageKey, messageValue) if countArgs(messageValue) > 0 => (messageKey, listArgs(messageValue))
       }
       val welshWithArgsMsgKeysAndArgList   = welshMessages collect {
-        case (key, value) if countArgs(value) > 0 => (key, listArgs(value))
+        case (messageKey, messageValue) if countArgs(messageValue) > 0 => (messageKey, listArgs(messageValue))
       }
       val mismatchedArgSequences           = englishWithArgsMsgKeysAndArgList collect {
-        case (key, engArgSeq) if engArgSeq != welshWithArgsMsgKeysAndArgList(key) =>
-          (key, engArgSeq, welshWithArgsMsgKeysAndArgList(key))
+        case (messageKey, engArgSeq) if engArgSeq != welshWithArgsMsgKeysAndArgList(messageKey) =>
+          (messageKey, engArgSeq, welshWithArgsMsgKeysAndArgList(messageKey))
       }
       mismatchedArgSequences foreach { case (key, engArgSeq, welshArgSeq) =>
         logger.info(

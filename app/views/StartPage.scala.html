@@ -39,7 +39,12 @@
             <li>@messages("StartPage.p9." + request.userType)</li>
         </ul>
 
-        <p class="govuk-body  govuk-!-margin-bottom-7">@Html(messages("StartPage.p10." + request.userType))</p>
+        <p class="govuk-body  govuk-!-margin-bottom-7">
+            @messages("StartPage.p10.text." + request.userType)
+            <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Start page:P11D(b)">
+                @messages("StartPage.p10.link.text." + request.userType)
+            </a>
+        </p>
 
         <a href="@routes.HomePageController.onPageLoad" role="button" class="govuk-button govuk-button--start" data-module="govuk-button" id="start-link">
             @messages("StartPage.link." + request.userType)

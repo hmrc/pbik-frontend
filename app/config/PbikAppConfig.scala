@@ -30,7 +30,6 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
   lazy val biksNotSupported: Seq[Int]          = configuration.get[Seq[Int]]("pbik.unsupported.biks.cy1")
   lazy val biksNotSupportedCY: Seq[Int]        = configuration.get[Seq[Int]]("pbik.unsupported.biks.cy")
   lazy val biksDecommissioned: Seq[Int]        = configuration.get[Seq[Int]]("pbik.decommissioned.biks")
-  lazy val urBannerLink: String                = configuration.get[String]("urBanner.link")
   lazy val feedbackUrl: String                 = configuration.get[String]("feedback.url")
   lazy val signOut: String                     = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
   private lazy val timedOutRedirectUrl: String = configuration.get[String]("timedOutUrl")
@@ -54,5 +53,11 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
   private lazy val agentFrontendPath: String = configuration.get[String]("agent-frontend.clientListPath")
 
   lazy val agentClientListUrl: String = s"$agentFrontendHost$agentFrontendPath"
+
+  private lazy val btaFrontendHost: String =
+    configuration.getOptional[String]("business-tax-account.host").getOrElse("")
+  private lazy val btaFrontendPath: String = configuration.get[String]("business-tax-account.url")
+
+  lazy val btaAccountUrl: String = s"$btaFrontendHost$btaFrontendPath"
 
 }
