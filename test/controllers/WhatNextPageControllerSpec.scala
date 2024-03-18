@@ -132,7 +132,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
           status(result) mustBe OK
           contentAsString(result) must include("Registration complete")
           contentAsString(result) must include(
-            "Benefits and expenses you have just registered to tax through your payroll from 6 April"
+            "Benefits and expenses you have registered to tax through your payroll from 6 April"
           )
         }
 

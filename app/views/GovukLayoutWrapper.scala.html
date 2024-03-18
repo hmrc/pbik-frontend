@@ -94,18 +94,18 @@
 }
 
 @content = {
-<div class="govuk-grid-row">
-        <div class="@globalPageLayoutStyle">
-    <div id="content">
-        <div class="content__body">
-            @contentBlock
-        </div>
-        <div class="govuk-!-margin-top-5" id="report-technical-issue">
-            @hmrcReportTechnicalIssueHelper()
-        </div>
+    <div class="govuk-grid-row">
+            <div class="@globalPageLayoutStyle">
+                <div id="content">
+                    <div class="content__body">
+                        @contentBlock
+                    </div>
+                    <div class="govuk-!-margin-top-5" id="report-technical-issue">
+                        @hmrcReportTechnicalIssueHelper()
+                    </div>
+                </div>
+            </div>
     </div>
-        </div>
-</div>
 }
 
 @govukTemplate(

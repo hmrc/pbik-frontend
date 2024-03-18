@@ -23,7 +23,6 @@ import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.scalatestaccessibilitylinter.views.AutomaticAccessibilitySpec
 import utils.FormMappings
 import views.html._
-import views.html.components.PageTitleHeading
 import views.html.exclusion._
 import views.html.registration._
 
@@ -147,11 +146,16 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       render(whatNextRescind)
     case page_not_found_template: page_not_found_template                           => render(page_not_found_template)
     case addBenefitConfirmationNextTaxYear: AddBenefitConfirmationNextTaxYear       =>
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(addBenefitConfirmationNextTaxYear)
     case confirmAddCurrentTaxYear: ConfirmAddCurrentTaxYear                         => render(confirmAddCurrentTaxYear)
-    case confirmUpdateNextTaxYear: ConfirmUpdateNextTaxYear                         => render(confirmUpdateNextTaxYear)
+    case confirmUpdateNextTaxYear: ConfirmUpdateNextTaxYear                         =>
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
+      render(confirmUpdateNextTaxYear)
     case currentTaxYear: CurrentTaxYear                                             => render(currentTaxYear)
-    case nextTaxYear: NextTaxYear                                                   => render(nextTaxYear)
+    case nextTaxYear: NextTaxYear                                                   =>
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
+      render(nextTaxYear)
     case removeBenefitConfirmationNextTaxYear: RemoveBenefitConfirmationNextTaxYear =>
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
       render(removeBenefitConfirmationNextTaxYear)
@@ -165,9 +169,6 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     case removeBenefitOtherReason: RemoveBenefitOtherReason                         =>
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
       render(removeBenefitOtherReason)
-    case pageTitleHeading: PageTitleHeading                                         =>
-      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
-      render(pageTitleHeading)
   }
 
   override def viewPackageName: String = "views.html"
