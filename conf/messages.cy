@@ -5,15 +5,12 @@
 Service.title = Talu buddiannau a threuliau drwy’r gyflogres - GOV.UK
 service.name = Talu buddiannau a threuliau drwy’r gyflogres
 
-Service.hmrcBanner = Cyllid a Thollau EF
 Service.yes = Iawn
 Service.no = Na
 Service.back = Yn ôl
 Service.back.overview = Yn ôl i’ch crynodeb
 Service.back.overview.whatNext = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 Service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
-Service.feedback.link = Beth oedd eich barn am y gwasanaeth hwn?
-Service.feedback = (mae’n cymryd 30 eiliad)
 Service.back.cancel = Yn ôl i’ch crynodeb
 Service.back.excluded = Yn ôl i’ch cyflogeion sydd wedi’u heithrio
 Service.back.yta = Yn ôl i’ch cyfrif treth
@@ -101,12 +98,17 @@ ManagingRegistration.add.exhausted = Rydych eisoes wedi ychwanegu’r holl fuddi
 # Add benefits
 #*************************************************************
 
-AddBenefits.Heading = Pa fuddiannau neu dreuliau y byddwch yn eu trethu drwy’ch cyflogres?
+AddBenefits.Heading = Pa fuddiannau neu dreuliau y byddwch yn eu trethu drwy’r gyflogres?
+AddBenefits.p = Dewiswch ba fuddiannau a threuliau y byddwch yn eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
 AddBenefits.selectAll = Dewiswch bob un sy’n gymwys
 
 AddBenefits.noselection.error = Mae’n rhaid i chi ddewis o leiaf 1 buddiant neu draul cyn i chi allu mynd yn eich blaen
 
-AddBenefits.Confirm.Multiple.Title = Gwiriwch y buddiannau a’r treuliau rydych am eu cofrestru
+AddBenefits.Confirm.Multiple.Title = Datgan y buddiannau a’r treuliau rydych am eu cofrestru
+AddBenefits.Confirm.Multiple.Heading = Datgan y buddiannau a’r treuliau rydych am eu cofrestru
+AddBenefits.Confirm.Multiple.p.organisation = Trwy gadarnhau eich bod yn rhoi gwybod i CThEF y bydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen.
+AddBenefits.Confirm.Multiple.p.agent = Trwy gadarnhau eich bod yn rhoi gwybod i CThEF y bydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen.
+AddBenefits.Confirm.Multiple.key = Buddiannau a threuliau dethol
 AddBenefits.Confirm.help.desc = Gallwch eithrio cyflogeion rhag talu’r buddiannau drwy’r gyflogres ar ôl i chi gofrestru, ond bydd yn rhaid i chi anfon ffurflen P11D er mwyn datgan y buddiannau sydd heb eu talu drwy’r gyflogres. Os nad yw cyflogai wedi cael y buddiant, does dim rhaid i chi ei eithrio gan nad oes treth yn ddyledus.
 
 #*************************************************************
@@ -371,7 +373,18 @@ error.exclusion.multi.selection = Mae’n rhaid i chi ddewis pa gyflogai yr ydyc
 
 whatNext.add.heading = Cofrestriad wedi’i gwblhau
 whatNext.remove.heading = Buddiant wedi’i ddileu
-whatNext.cy1.add.table.header = Buddiannau a threuliau rydych newydd eu cofrestru i’w trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen.
+
+whatNext.print.link = Argraffwch y dudalen hon
+
+whatNext.add.p.organisation = Buddiannau a threuliau rydych wedi eu cofrestru i’w trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen.
+whatNext.add.p.agent = Buddiannau a threuliau rydych wedi eu cofrestru i’w trethu drwy gyflogres {0} o 6 Ebrill {1} ymlaen.
+
+whatNext.add.list.heading = Manylion cofrestru
+
+whatNext.add.list.table.key1 = Enw’r cleient
+whatNext.add.list.table.key2 = Cyfeirnod TWE y cyflogwr
+whatNext.add.list.table.key3 = Buddiannau a threuliau sydd wedi cael eu dewis
+
 whatNext.add.p1 = O 6 Ebrill {0} ymlaen, mae angen i chi ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog eich cyflogeion a’u trethu drwy’ch cyflogres.
 whatNext.add.p2 = Gallwch roi’r gorau i anfon y ffurflenni P11D atom ar gyfer unrhyw gyflogeion y mae eu buddiannau a’u treuliau bellach yn cael eu trethu drwy’r gyflogres.
 whatNext.add.p3 = Mae’n dal i fod yn rhaid i chi <a class="govuk-link" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db.cy">anfon ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd).</a>
@@ -385,7 +398,47 @@ whatNext.exclude.p1 = O hyn ymlaen, dylech roi gwybod am werth y buddiant hwn dr
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 whatNext.remove.link.P11D.Text = Os ydych yn dal i roi {0} i’ch cyflogeion, bydd yn rhaid i chi lenwi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Removal page:P11D(b)">ffurflen P11D ar eu cyfer ar ddiwedd y flwyddyn dreth (yn agor ffenestr neu dab newydd).</a>
 
-whatYouNeedToKnow.subHeading = Yr hyn y mae angen i chi ei wneud nawr
+whatYouNeedToKnow.subHeading.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
+whatYouNeedToKnow.subHeading.agent = Beth ddylech chi ddweud wrth eich cleient
+
+whatYouNeedToKnow.subHeading.before.h3.organisation = Cyn 6 Ebrill {0}
+whatYouNeedToKnow.subHeading.before.p1.organisation = Mae’n rhaid i chi anfon llythyr at eich staff yn egluro’r canlynol:
+whatYouNeedToKnow.subHeading.before.li1.organisation = bydd eu fuddiannau a threuliau yn cael eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen
+whatYouNeedToKnow.subHeading.before.li2.organisation = bydd eu codau treth yn newid
+whatYouNeedToKnow.subHeading.before.li3.organisation = byddant yn cael llythyr gan CThEF gyda’u cod treth newydd
+whatYouNeedToKnow.subHeading.before.p2.organisation = Mae’n rhaid i chi gyflwyno ffurflen P11Ds i roi gwybod am unrhyw fuddiannau a threuliau nad ydynt yn cael eu trethu drwy’r gyflogres yn y flwyddyn dreth hon.
+
+whatYouNeedToKnow.subHeading.before.h3.agent = Cyn 6 Ebrill {0}
+whatYouNeedToKnow.subHeading.before.p1.agent = Mae’n rhaid i’ch cleient anfon llythyr at eich staff yn egluro’r canlynol:
+whatYouNeedToKnow.subHeading.before.li1.agent = bydd eu fuddiannau a threuliau yn cael eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen
+whatYouNeedToKnow.subHeading.before.li2.agent = bydd eu codau treth yn newid
+whatYouNeedToKnow.subHeading.before.li3.agent = byddant yn cael llythyr gan CThEF gyda’u cod treth newydd
+whatYouNeedToKnow.subHeading.before.p2.agent = Mae’n rhaid i’ch cleient gyflwyno ffurflen P11Ds i roi gwybod am unrhyw fuddiannau a threuliau nad ydynt yn cael eu trethu drwy’r gyflogres yn y flwyddyn dreth hon.
+
+whatYouNeedToKnow.subHeading.after.h3.organisation = Ar ôl 6 Ebrill {0}
+whatYouNeedToKnow.subHeading.after.p1.organisation = Gallwch roi’r gorau i gyflwyno’r ffurflenni P11D atom ar gyfer cyflogeion y mae eu buddiannau a’u treuliau bellach yn cael eu trethu drwy’r gyflogres.
+whatYouNeedToKnow.subHeading.after.p2.organisation = Bydd angen i chi wneud y canlynol:
+whatYouNeedToKnow.subHeading.after.li1.organisation = ychwanegu’r arian sy’n cyfateb i gyflog cyflogai
+whatYouNeedToKnow.subHeading.after.li2.organisation = trethu ei fuddiannau a threuliau drwy’ch cyflogres
+whatYouNeedToKnow.subHeading.after.p3.text.organisation = Mae’n rhaid i chi dal
+whatYouNeedToKnow.subHeading.after.p3.link.organisation = cyflwyno ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd).
+
+whatYouNeedToKnow.subHeading.after.h3.agent = Ar ôl 6 Ebrill {0}
+whatYouNeedToKnow.subHeading.after.p1.agent = Gallwch eich cleient rhoi’r gorau i anfon y ffurflenni P11D atom ar gyfer unrhyw gyflogeion y mae eu buddiannau a’u treuliau bellach yn cael eu trethu drwy’r gyflogres.
+whatYouNeedToKnow.subHeading.after.p2.agent = Mae angen i’ch cleient wneud y canlynol:
+whatYouNeedToKnow.subHeading.after.li1.agent = ychwanegu’r arian sy’n cyfateb i gyflog cyflogai
+whatYouNeedToKnow.subHeading.after.li2.agent = trethu buddiannau a threuliau cyflogeion drwy’r gyflogres
+whatYouNeedToKnow.subHeading.after.p3.text.agent = Mae’n rhaid i’ch cleient dal
+whatYouNeedToKnow.subHeading.after.p3.link.agent = cyflwyno ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd).
+
+whatYouCanDoNext.subHeading.h2 = Yr hyn y gallwch ei wneud nesaf
+whatYouCanDoNext.subHeading.p.text.before = Gallwch
+whatYouCanDoNext.subHeading.p.link = yn ôl i’ch buddiannau a threuliau cofrestredig
+whatYouCanDoNext.subHeading.p.text.after = er mwyn :
+whatYouCanDoNext.subHeading.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau rydych wedi’u cofrestru
+whatYouCanDoNext.subHeading.li2 = cofrestru rhagor o buddiannau a threuliau
+whatYouCanDoNext.subHeading.li3 = tynnu buddiannau neu dreuliau nad ydych am eu trethu drwy’r gyflogres mwyach
+
 whatYouNeedToTellYourEmployees.subHeading = Yr hyn y mae angen i chi ei ddweud wrth eich cyflogeion
 whatYouNeedToTellYourEmployees.add.p1 = Mae angen i chi anfon llythyr at eich cyflogeion, gan esbonio y byddwch yn trethu’r buddiannau hyn drwy’r gyflogres.
 whatYouNeedToTellYourEmployees.add.p2 = Mae hefyd angen i chi roi gwybod iddynt y bydd eu codau treth yn newid. Byddwn yn anfon llythyr atynt ynghylch eu cod treth newydd.

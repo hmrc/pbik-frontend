@@ -14,26 +14,24 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
-
 @import views.templatemodels.PageTitle
 
 @this(
-        govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
+    govukLayoutWrapper: GovukLayoutWrapper,
+    printLink: components.PrintLink
 )
 
 @(
         isCurrentYear: Boolean,
         taxYearRange:TaxYearRange,
         bikList: RegistrationList
-)(implicit request:Request[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[_], messages: Messages)
 
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(isCurrentYear) cyminus1 else cy}
 
-@govukLayoutWrapper(PageTitle(messages("whatNext.add.heading")), showBackLink = false) {
+@govukLayoutWrapper(PageTitle(messages("whatNext.add.heading")), showBackLink = true, showYTABackLink = request.showYTABackLink, showECLBackLink = request.showECLBackLink) {
 
     <div id="confirmation" class="govuk-panel govuk-panel--confirmation govuk-!-padding-top-9 govuk-!-padding-bottom-9">
         <h1 id="title" class="govuk-panel__title">
@@ -41,47 +39,110 @@
         </h1>
     </div>
 
-    <p class="govuk-body">@messages("whatNext.cy1.add.table.header", taxYear)</p>
+    @printLink(messages("whatNext.print.link"))
 
-    <dl class="govuk-summary-list" id="list-of-confirmation-benefits">
-        @for(item <- bikList.active.indices) {
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__value">
-                @messages("BenefitInKind.label." + bikList.active(item).id.toString)
-            </dt>
-            <dd class="hide-dd"></dd>
-        </div>
-        }
-    </dl>
+    @if(request.isAgent) {
+        <p class="govuk-body">@messages("whatNext.add.p.agent", request.clientName.get, taxYear)</p>
+    } else {
+        <p class="govuk-body">@messages("whatNext.add.p.organisation", taxYear)</p>
+    }
 
     <h2 class="govuk-heading-m">
-        @messages("whatYouNeedToKnow.subHeading")
+        @messages("whatNext.add.list.heading")
+    </h2>
+
+    <dl class="govuk-summary-list" id="list-of-confirmation-benefits">
+        @if(request.isAgent) {
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    @messages("whatNext.add.list.table.key1")
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">@request.clientName.get</p>
+                </dd>
+            </div>
+        }
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("whatNext.add.list.table.key2")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@request.empRef</p>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("whatNext.add.list.table.key3")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @for(item <- bikList.active.indices) {
+                    <p class="govuk-body">@messages("BenefitInKind.label." + bikList.active(item).id.toString)</p>
+                }
+            </dd>
+        </div>
+    </dl>
+
+    <h2 class="govuk-heading-l">
+        @messages("whatYouNeedToKnow.subHeading." + request.userType)
     </h2>
 
     <div class="govuk-form-group" id="next-steps">
+        @if(request.isAgent) {
+            <h3 class="govuk-heading-m">
+                @messages("whatYouNeedToKnow.subHeading.before.h3." + request.userType, taxYear)
+            </h3>
+        }
+
+        <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.before.p1." + request.userType)</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("whatYouNeedToKnow.subHeading.before.li1." + request.userType, taxYear)</li>
+            <li>@messages("whatYouNeedToKnow.subHeading.before.li2." + request.userType)</li>
+            <li>@messages("whatYouNeedToKnow.subHeading.before.li3." + request.userType)</li>
+        </ul>
+
+        <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.before.p2." + request.userType)</p>
+
+        <h3 class="govuk-heading-m">
+            @messages("whatYouNeedToKnow.subHeading.after.h3." + request.userType, taxYear)
+        </h3>
+
+        <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.after.p1." + request.userType)</p>
+        <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.after.p2." + request.userType)</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("whatYouNeedToKnow.subHeading.after.li1." + request.userType)</li>
+            <li>@messages("whatYouNeedToKnow.subHeading.after.li2." + request.userType)</li>
+        </ul>
+
         <p class="govuk-body">
-            @messages("whatNext.add.p1", taxYear)</p>
-        <p class="govuk-body">@messages("whatNext.add.p2")</p>
-        <p class="govuk-body">@Html(messages("whatNext.add.p3"))</p>
+            @messages("whatYouNeedToKnow.subHeading.after.p3.text." + request.userType)
+            <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/employer-reporting-expenses-benefits/reporting-and-paying">
+                @messages("whatYouNeedToKnow.subHeading.after.p3.link." + request.userType)
+            </a>
+        </p>
+
     </div>
 
-    <h2 class="govuk-heading-m">
-        @messages("whatYouNeedToTellYourEmployees.subHeading")
+    <h2 class="govuk-heading-l">
+        @messages("whatYouCanDoNext.subHeading.h2")
     </h2>
 
+    <p class="govuk-body">
+        @messages("whatYouCanDoNext.subHeading.p.text.before")
+        <a class="govuk-link" id="link-back" href = "@routes.HomePageController.onPageLoad">
+            @messages("whatYouCanDoNext.subHeading.p.link")
+        </a>
+        @messages("whatYouCanDoNext.subHeading.p.text.after")
+    </p>
+
     <div class="govuk-form-group" id="what-you-need-to-tell">
-        <p class="govuk-body">
-        @Html(messages("whatYouNeedToTellYourEmployees.add.p1")) </p>
-        <p class="govuk-body">@Html(messages("whatYouNeedToTellYourEmployees.add.p2"))</p>
+        <p class="govuk-body">@messages("whatYouNeedToTellYourEmployees.add.p1")</p>
+        <p class="govuk-body">@messages("whatYouNeedToTellYourEmployees.add.p2")</p>
     </div>
 
-    <p class="govuk-body">
-        <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
-        @messages("Service.back.overview.ViewYourSummary")
-        </a>
-    </p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("whatYouCanDoNext.subHeading.li1")</li>
+        <li>@messages("whatYouCanDoNext.subHeading.li2")</li>
+        <li>@messages("whatYouCanDoNext.subHeading.li3")</li>
+    </ul>
 
-    <p class="govuk-body">
-    <a class="govuk-link" href="@config.feedbackUrl">@messages("Service.feedback.link")</a> @messages("Service.feedback")
-    </p>
 }

@@ -3,7 +3,7 @@ import sbt.*
 object AppDependencies {
 
   private val bootstrapPlayVersion = "8.5.0"
-  private val hmrcMongoPlayVersion = "1.7.0"
+  private val hmrcMongoPlayVersion = "1.8.0"
 
   private val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"       %% "tax-year"                   % "4.0.0",
@@ -14,11 +14,10 @@ object AppDependencies {
   )
 
   private val test: Seq[ModuleID] = Seq(
-    "org.mockito"                  %% "mockito-scala-scalatest" % "1.17.30",
-    "uk.gov.hmrc"                  %% "bootstrap-test-play-30"  % bootstrapPlayVersion,
-    "uk.gov.hmrc.mongo"            %% "hmrc-mongo-test-play-30" % hmrcMongoPlayVersion,
-    "org.jsoup"                     % "jsoup"                   % "1.17.2",
-    "com.fasterxml.jackson.module" %% "jackson-module-scala"    % "2.16.2"
+    "org.mockito"       %% "mockito-scala-scalatest" % "1.17.30",
+    "uk.gov.hmrc"       %% "bootstrap-test-play-30"  % bootstrapPlayVersion,
+    "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30" % hmrcMongoPlayVersion,
+    "org.jsoup"          % "jsoup"                   % "1.17.2"
   ).map(_ % Test)
 
   def apply(): Seq[ModuleID]      = compile ++ test

@@ -39,7 +39,7 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
     behave like pageWithTitle(messages("whatNext.add.heading"))
     behave like pageWithHeader(messages("whatNext.add.heading"))
     behave like pageWithLink(
-      messages("Service.back.overview.ViewYourSummary"),
+      messages("whatYouCanDoNext.subHeading.p.link"),
       "/payrollbik/registered-benefits-expenses"
     )
 

@@ -23,7 +23,8 @@
     govukLayoutWrapper: GovukLayoutWrapper,
     config:PbikAppConfig,
     repeatWithIndex: RepeatWithIndex,
-    formWithCSRF: FormWithCSRF
+    formWithCSRF: FormWithCSRF,
+    pageTitleHeading: components.PageTitleHeading
 )
 
 @(
@@ -35,7 +36,7 @@
     nonLegislationBiks: Seq[Int],
     decommissionedBiks: Seq[Int],
     biksAvailableCount: Option[Int]
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 @title = @{if(additive) {messages("AddBenefits.Heading", "" + taxYearRange.cy, "" + taxYearRange.cyplus1)} else {messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)}}
 
@@ -56,10 +57,9 @@
             </div>
         }
 
-        <h1 id="title" class="govuk-heading-xl">
-            <span class="govuk-caption-xl">@messages("Overview.next.heading", s"${taxYearRange.cy}", s"${taxYearRange.cyplus1}")</span>
-            @messages("AddBenefits.Heading")
-        </h1>
+        @pageTitleHeading(messages("AddBenefits.Heading"))
+
+        <p class="govuk-body">@messages("AddBenefits.p", s"${taxYearRange.cy}")</p>
 
         @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.checkYourAnswersAddNextTaxYear) {
 
