@@ -64,7 +64,7 @@ StartPage.p10.link.text.organisation = use a P11D form (opens in a new window or
 StartPage.link.organisation = Start now
 
 StartPage.heading.agent = Payrolling benefits and expenses for your client
-StartPage.p1.agent = If you have permission from your client yu can use this service to:
+StartPage.p1.agent = If you have permission from your client you can use this service to:
 StartPage.p2.agent = register benefits and expenses to tax through payroll
 StartPage.p3.agent = remove a benefit or expense from payroll
 StartPage.p4.agent = exclude employees from a benefit or an expense
