@@ -66,7 +66,8 @@ class ManageRegistrationController @Inject() (
       val staticDataRequest = registrationService.generateViewForBikRegistrationSelection(
         controllersReferenceData.yearRange.cy,
         cachingSuffix = "add",
-        generateViewBasedOnFormItems = nextTaxYearView(_, true, controllersReferenceData.yearRange, _, _, _, _, _)
+        generateViewBasedOnFormItems =
+          nextTaxYearView(_, additive = true, controllersReferenceData.yearRange, _, _, _, _, _)
       )
       controllersReferenceData.responseErrorHandler(staticDataRequest)
     }

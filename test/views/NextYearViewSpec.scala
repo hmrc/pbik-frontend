@@ -36,10 +36,7 @@ class NextYearViewSpec extends PBIKViewSpec {
     implicit def html: Html = viewWithForm(formMappings.objSelectedForm)(organisationRequest)
 
     behave like pageWithTitle(messages("AddBenefits.Heading"))
-    behave like pageWithHeader(
-      messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
-        + " " + messages("AddBenefits.Heading")
-    )
+    behave like pageWithHeader(messages("AddBenefits.Heading"))
     behave like pageWithContinueButtonForm("/payrollbik/cy1/choose-benefit-expense", "Continue")
 
     "check the add benefit page for the errors" in {
@@ -56,10 +53,7 @@ class NextYearViewSpec extends PBIKViewSpec {
     implicit def html: Html = viewWithForm(formMappings.objSelectedForm)(agentRequest)
 
     behave like pageWithTitle(messages("AddBenefits.Heading"))
-    behave like pageWithHeader(
-      messages("Overview.next.heading", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
-        + " " + messages("AddBenefits.Heading")
-    )
+    behave like pageWithHeader(messages("AddBenefits.Heading"))
     behave like pageWithContinueButtonForm("/payrollbik/cy1/choose-benefit-expense", "Continue")
 
     "check the add benefit page for the errors" in {
