@@ -21,134 +21,48 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-        printLink: components.PrintLink
 )
 
-@(
-    taxYearRange:TaxYearRange,
-    year:String,
-    iabdString:String,
-    person:EiLPerson)(implicit request:AuthenticatedRequest[_], messages: Messages)
+@(taxYearRange:TaxYearRange,
+  year:String, iabdString:String,
+  name:String)(implicit request:Request[_], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
+@govukLayoutWrapper(PageTitle(messages("whatNext.exclude.heading")), showBackLink = false) {
 
-@govukLayoutWrapper(PageTitle(messages("whatNext.exclude.heading")),
-    showBackLink = true,
-    showYTABackLink = request.showYTABackLink,
-    showECLBackLink = request.showECLBackLink) {
+    <section id="print-section">
+        <div id="printContainer"></div>
+    </section>
 
     <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
         <h1 id="title" class="govuk-panel__title">
             @messages("whatNext.exclude.heading")
         </h1>
     </div>
-
-    @printLink(messages("whatNext.print.link"))
-
     <p id="confirmation-p" class="govuk-body">
         @if(year=="cy"){
-            @messages("whatNext.exclude.lede", person.fullName, benefitLabel, s"${taxYearRange.cyminus1}")
+            @messages("whatNext.exclude.lede", name, messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), s"${taxYearRange.cyminus1}")
         }else {
-            @messages("whatNext.exclude.lede", person.fullName, benefitLabel, s"${taxYearRange.cy}")
+            @messages("whatNext.exclude.lede", name, messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), s"${taxYearRange.cy}")
         }
     </p>
-
     <h2 class="govuk-heading-m">
-        @messages("whatNext.exclude.table.heading")
+        @messages("whatNext.subHeading")
     </h2>
 
-    <dl class="govuk-summary-list" id="list-of-excluded-info">
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                @messages("Service.field.employee.name")
-            </dt>
-            <dd class="govuk-summary-list__value">
-                <p class="govuk-body">@person.fullName</p>
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                @messages("Service.field.nino") @messages("Service.nino.lastletter")
-            </dt>
-            <dd class="govuk-summary-list__value">
-                <p class="govuk-body">@person.nino</p>
-            </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                @messages("Service.field.worksnumber")
-            </dt>
-            <dd class="govuk-summary-list__value">
-                <p class="govuk-body">@person.getWorksPayrollNumber</p>
-            </dd>
-        </div>
-        @if(request.isAgent) {
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @messages("Service.field.client.name")
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    <p class="govuk-body">@request.clientName.get</p>
-                </dd>
-            </div>
-        }
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                @messages("Service.field.employer.paye")
-            </dt>
-            <dd class="govuk-summary-list__value">
-                <p class="govuk-body">@request.empRef</p>
-            </dd>
-        </div>
-    </dl>
-
-    <h2 class="govuk-heading-m">
-        @messages("whatNext.exclude.h2." + request.userType)
-    </h2>
-
-    <p id="next-steps-info" class="govuk-body">
-        @if(request.isAgent) {
-            @messages("whatNext.exclude.p1.before.agent")
-            <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">
-                @messages("whatNext.exclude.p1.link.agent")
-            </a> @messages("whatNext.exclude.p1.after.agent", person.fullName)
-        } else {
-            @messages("whatNext.exclude.p1.before.organisation")
-            <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">
-                @messages("whatNext.exclude.p1.link.organisation")
-            </a> @messages("whatNext.exclude.p1.after.organisation", person.fullName)
-        }
+    <p id="exclude-text" class="govuk-body">
+        @Html(messages("whatNext.exclude.p1", name,messages("whatNext.exclude.heading")))
     </p>
 
-    <h2 class="govuk-heading-m">
-        @messages("whatNext.exclude.you.do.h2")
-    </h2>
+    <div class="govuk-form-group">
+        <p  class="govuk-body">
+            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdString)" id="link-back-excluded">
+                @messages("Service.finish.excluded")
+            </a>
+        </p>
 
-    <p id="you-can-do-next-info" class="govuk-body">
-        @messages("whatNext.exclude.you.do.p.before." + request.userType)
-        <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back"> @messages("whatNext.exclude.you.do.p.link." + request.userType) </a>
-        @messages("whatNext.exclude.you.do.p.after." + request.userType)
-    </p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("whatNext.exclude.you.do.li1")</li>
-        <li>@messages("whatNext.exclude.you.do.li2")</li>
-        <li>@messages("whatNext.exclude.you.do.li3")</li>
-    </ul>
+        <p class="govuk-body">
+            <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back"> @messages("Service.back.overview.whatNext") </a>
+        </p>
 
-    <h3 class="govuk-heading-m">
-        @messages("whatNext.exclude.more.h3")
-    </h3>
-
-    <p id="back-to-benefits" class="govuk-body">
-        @messages("whatNext.exclude.more.p.before")
-        <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdString)" id="link-back-excluded">
-            @messages("whatNext.exclude.more.p.link", benefitLabel)
-        </a>
-        @messages("whatNext.exclude.more.p.after")
-    </p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("whatNext.exclude.more.li1")</li>
-        <li>@messages("whatNext.exclude.more.li2")</li>
-    </ul>
-
+    </div>
 }

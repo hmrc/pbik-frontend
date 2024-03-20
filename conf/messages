@@ -9,6 +9,7 @@ Service.yes = Yes
 Service.no = No
 Service.back = Back
 Service.back.overview = Back to your summary
+Service.back.overview.whatNext = View your summary of registered benefits and expenses
 Service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses.
 Service.back.cancel = Back to your summary
 Service.back.excluded = Back to your excluded employees
@@ -32,6 +33,7 @@ Service.notEnrolled.text4 = You’ll then be able to use payrolling benefits and
 Service.notEnrolled.button = Enrol
 
 Service.removeexclusion = Cancel exclusion
+Service.finish.excluded = View your excluded employees
 Service.finish.rescinded = View excluded employees
 Service.for = for
 
@@ -137,24 +139,20 @@ RemoveBenefits.other.error.length = Why you want to remove the benefit or expens
 
 ExclusionOverview.excludecount.exceeded = You can’t exclude any more employees.
 
-ExclusionOverview.notExcludedEmployee.p1 = {0} is taxed through payroll for all employees from 6 April {1}.
-
-ExclusionOverview.p1.organisation = You can only exclude employees who get this benefit or expense.
-ExclusionOverview.p2.organisation = For excluded employees, you need to report the value of this benefit or expense by submitting a P11D to HMRC. You should do this at the end of the tax year.
-
-ExclusionOverview.p1.agent = You can only exclude employees who get this benefit or expense.
-ExclusionOverview.p2.agent = For excluded employees, your client needs to report the value of this benefit or expense by submitting a P11D to HMRC. They should do this at the end of the tax year.
-
+ExclusionOverview.notExcludedEmployee.title = You have not excluded any employees
+ExclusionOverview.notExcludedEmployee.p1 = All of your employees are having {0} taxed through your payroll.
+ExclusionOverview.p1 = You can only exclude employees who get this expense or benefit.
+ExclusionOverview.p2 = For excluded employees, you need to report the value of this benefit or expense by sending us a P11D. You should do this at the end of the tax year.
 ExclusionOverview.h2 = Do you need to exclude an employee?
 ExclusionOverview.h2.hint = You can exclude up to {0} employees.
-
 ExclusionOverview.error.required = Select yes if you need to exclude an employee.
+ExclusionOverview.excludedEmployee.title = Your excluded employees
 
 ExclusionDecision.noselection.error = Select yes if you know the employee’s National Insurance number.
 ExclusionNinoDecision.title = Do you know the National Insurance number of the employee you want to exclude?
 
-ExclusionSearch.title.multiple = Which employee do you want to exclude?
-ExclusionSearch.title.single = Declare the employee to exclude from this benefit or expense
+ExclusionSearch.title.multiple = Choose which employee to exclude
+ExclusionSearch.title.single = Check the details of the employee you want to exclude
 ExclusionSearch.form.title = Search for the employee to exclude
 ExclusionSearch.form.header = Search for the employee you want to exclude
 ExclusionSearch.caption = Employee to be excluded
@@ -163,6 +161,7 @@ ExclusionSearch.Fail.Desc = This employee can’t be found.
 ExclusionSearch.Fail.Exists.Desc = This employee has already been excluded for {0}. You can see them in your {1}excluded employee list{2}.
 ExclusionSearch.Fail.Exists.P = Search again for a different employee
 
+ExclusionImportant.ExcludeEmployee = For excluded employees, you need to report the value of this benefit or expense by sending us a P11D. You should do this at the end of the tax year.
 ExclusionImportant.Reminder = By confirming, you will exclude this employee from having {0} taxed through your payroll from 6 April {1}.
 ExclusionRemovalConfirmation.title = Check the details of the employee you want to add back to payroll
 ExclusionRemovalConfirmation.inset.text = By confirming, you will start taxing this employee for {0} through your payroll from 6 April {1}.
@@ -324,10 +323,6 @@ Service.field.dob.year = Year
 Service.field.gender = Gender
 Service.field.gender.male = Male
 Service.field.gender.female = Female
-Service.field.employee.name = Employee name
-Service.field.client.name = Client name
-Service.field.employer.paye = Employer PAYE reference
-Service.field.selected.benefits = Selected benefits and expenses
 Service.action = Action
 
 #*************************************************************
@@ -385,46 +380,20 @@ whatNext.add.p.organisation = Benefits and expenses you have registered to tax t
 whatNext.add.p.agent = Benefits and expenses you have registered to tax through {0}''s payroll from 6 April {1}.
 
 whatNext.add.list.heading = Registration details
+whatNext.add.list.table.key1 = Client name
+whatNext.add.list.table.key2 = Employer PAYE reference
+whatNext.add.list.table.key3 = Selected benefits and expenses
 
-whatNext.exclude.heading = Exclusion complete
-whatNext.exclude.table.heading = Exclusion details
-
-whatNext.exclude.h2.organisation = What you must do
-whatNext.exclude.h2.agent = What you must tell your client
-
-whatNext.exclude.p1.before.organisation = You should report the value of this benefit by
-whatNext.exclude.p1.link.organisation = submitting a P11D to HMRC
-whatNext.exclude.p1.after.organisation = for {0}. You should do this at the end of the tax year.
-
-whatNext.exclude.p1.before.agent = Your client should report the value of this benefit by
-whatNext.exclude.p1.link.agent = submitting a P11D to HMRC
-whatNext.exclude.p1.after.agent = for {0}. They should do this at the end of the tax year.
-
-whatNext.exclude.you.do.h2 = What you can do next
-
-whatNext.exclude.you.do.p.before.organisation = You can
-whatNext.exclude.you.do.p.link.organisation = return to your registered benefits and expenses
-whatNext.exclude.you.do.p.after.organisation = to:
-
-whatNext.exclude.you.do.p.before.agent = You can
-whatNext.exclude.you.do.p.link.agent = return to your client''s registered benefits and expenses
-whatNext.exclude.you.do.p.after.agent = to:
-
-whatNext.exclude.you.do.li1 = exclude employees from the benefits and expenses you have registered
-whatNext.exclude.you.do.li2 = register more benefits or expenses
-whatNext.exclude.you.do.li3 = remove benefits or expenses you no longer want to tax through payroll
-
-whatNext.exclude.more.h3 = If you want to exclude another employee from this benefit or expense
-whatNext.exclude.more.p.before = You can
-whatNext.exclude.more.p.link = return to {0}
-whatNext.exclude.more.p.after = to:
-whatNext.exclude.more.li1 = exclude another employee from this benefit or expense
-whatNext.exclude.more.li2 = add an employee back to this benefit or expense
+whatNext.add.p1 = From 6 April {0}, you need to add the cash equivalent or relevant amount to your employees’ pay and tax them through your payroll.
+whatNext.add.p2 = You can stop sending us the P11Ds for any employees who now have their benefits and expenses taxed through payroll.
+whatNext.add.p3 = You must still <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db" data-journey-click="link - click:Registration complete:P11D(b)">send a P11D(b) to report Class 1A National Insurance contributions(opens in a new window or tab).</a>
 
 whatNext.subHeading = Next steps
 whatNext.remove.p = You will not be taxing {0} through your payroll from 6 April {1}.
+whatNext.exclude.heading = Exclusion complete
 whatNext.rescind.heading = Registration complete
 whatNext.exclude.lede = {0} will not have {1} taxed through your payroll from 6 April {2}.
+whatNext.exclude.p1 = From now on, you should report the value of this benefit by sending us a <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">P11D employment benefit form - (opens in a new window or tab)</a> for {0}. You should do this at the end of the tax year.
 whatNext.service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses
 whatNext.remove.link.P11D.Text =  If you are still providing this {0} to any of your employees, you will need to <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Removal page:P11D(b)">complete a P11D for them at the end of the tax year (opens in a new window or tab).</a>
 
