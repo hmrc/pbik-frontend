@@ -22,7 +22,8 @@
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
         govukRadios: GovukRadios,
-        formWithCSRF: FormWithCSRF
+        formWithCSRF: FormWithCSRF,
+        pageTitleHeading: components.PageTitleHeading
 )
 
 @(
@@ -31,17 +32,9 @@
         iabdString: String,
         current: List[EiLPerson],
         form: Form[MandatoryRadioButton]
-)(implicit request:Request[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@title = @{
-    if(current.isEmpty) {
-        messages("ExclusionOverview.notExcludedEmployee.title")
-    } else {
-        messages("ExclusionOverview.excludedEmployee.title")
-    }
-}
-
-@govukLayoutWrapper(PageTitle(title, form.hasErrors)) {
+@govukLayoutWrapper(PageTitle(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), form.hasErrors)) {
 
     @defining( if(isCurrentTaxYear=="cy"){ taxYearRange.cyminus1 } else { taxYearRange.cy }){ yearvalue =>
 
@@ -58,29 +51,28 @@
             </div>
         }
 
-        <h1 id="title" class="govuk-heading-xl">
-            <span class="govuk-caption-xl">@messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")</span>
-            @if(current.isEmpty){@messages("ExclusionOverview.notExcludedEmployee.title")}else{@messages("ExclusionOverview.excludedEmployee.title")}
-        </h1>
+        @pageTitleHeading(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))
 
         @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdString)) {
 
             @if(current.isEmpty) {
-                <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))</p>
-
+                <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), yearvalue.toString())</p>
+                <p class="govuk-body">@messages("ExclusionOverview.p1." + request.userType)</p>
             } else {
+                <p class="govuk-body">@messages("ExclusionOverview.p1." + request.userType)</p>
+                <h2 class="govuk-heading-l">@messages("Overview.empty.benefits.h2", s"${taxYearRange.cy}")</h2>
                 <table class="govuk-table">
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">@messages("Service.field.name")</th>
-                            <th scope="col" class="govuk-table__header">@messages("Service.field.nino")<span> @Html(messages("Service.nino.lastletter"))</span></th>
+                            <th scope="col" class="govuk-table__header">@messages("Service.field.nino")</th>
                             <th scope="col" class="govuk-table__header">@messages("Service.field.worksnumber")</th>
                             <th scope="col" class="govuk-table__header">@messages("Service.action")</th>
                         </tr>
                     </thead>
                     @for( (person, index) <- current.zipWithIndex ) {
                         <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header" id="name-@person.nino">@person.firstForename @person.surname</th>
+                            <td class="govuk-table__cell" id="name-@person.nino">@person.firstForename @person.surname</td>
                             <td class="govuk-table__cell" id="nino-@person.nino">@person.nino</td>
                             <td class="govuk-table__cell" id="wpn-@person.nino">@person.worksPayrollNumber</td>
                             <td class="govuk-table__cell">
@@ -94,8 +86,7 @@
 
             }
 
-            <p class="govuk-body">@messages("ExclusionOverview.p1")</p>
-            <p class="govuk-body">@messages("ExclusionOverview.p2")</p>
+            <p class="govuk-body">@messages("ExclusionOverview.p2." + request.userType)</p>
 
             @if(current.size < config.maximumExclusions ) {
                 <div class="govuk-form-group @if(form.hasErrors){govuk-form-group--error}">

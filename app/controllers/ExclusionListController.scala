@@ -537,7 +537,7 @@ class ExclusionListController @Inject() (
           taxDateUtils.getTaxYearRange(),
           year,
           iabdString,
-          session.get.listOfMatches.get.head.firstForename + " " + session.get.listOfMatches.get.head.surname
+          session.get.listOfMatches.get.head
         )
       )
       controllersReferenceData.responseErrorHandler(resultFuture)

@@ -36,6 +36,11 @@ case class EiLPerson(
   }
 
   override def hashCode: Int = nino.hashCode
+
+  def fullName: String = s"$firstForename $surname"
+
+  def getWorksPayrollNumber: String = worksPayrollNumber.getOrElse("UNKNOWN")
+
 }
 
 object EiLPerson {

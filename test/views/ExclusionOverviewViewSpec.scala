@@ -16,7 +16,7 @@
 
 package views
 
-import models.{AuthenticatedRequest, MandatoryRadioButton}
+import models.{AuthenticatedRequest, Bik, MandatoryRadioButton}
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.twirl.api.Html
@@ -39,11 +39,8 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   "exclusionOverview - organisation" must {
     implicit val html: Html = viewWithForm(form)(organisationRequest)
 
-    behave like pageWithTitle(messages("ExclusionOverview.notExcludedEmployee.title"))
-    behave like pageWithHeader(
-      messages(s"BenefitInKind.label.$iabdType")
-        + " " + messages("ExclusionOverview.notExcludedEmployee.title")
-    )
+    behave like pageWithTitle(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))
+    behave like pageWithHeader(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/$iabdString/excluded-employees", "Continue")
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 
@@ -60,11 +57,8 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   "exclusionOverview - Agent" must {
     implicit val html: Html = viewWithForm(form)(agentRequest)
 
-    behave like pageWithTitle(messages("ExclusionOverview.notExcludedEmployee.title"))
-    behave like pageWithHeader(
-      messages(s"BenefitInKind.label.$iabdType")
-        + " " + messages("ExclusionOverview.notExcludedEmployee.title")
-    )
+    behave like pageWithTitle(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))
+    behave like pageWithHeader(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/$iabdString/excluded-employees", "Continue")
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 
