@@ -9,7 +9,6 @@ Service.yes = Iawn
 Service.no = Na
 Service.back = Yn ôl
 Service.back.overview = Yn ôl i’ch crynodeb
-Service.back.overview.whatNext = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 Service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 Service.back.cancel = Yn ôl i’ch crynodeb
 Service.back.excluded = Yn ôl i’ch cyflogeion sydd wedi’u heithrio
@@ -33,7 +32,6 @@ Service.notEnrolled.text4 = Byddwch wedyn yn gallu defnyddio’r gwasanaeth Talu
 Service.notEnrolled.button = Ymrestru
 
 Service.removeexclusion = Canslo’r gwaharddiad
-Service.finish.excluded = Bwrw golwg dros eich cyflogeion sydd wedi’u heithrio
 Service.finish.rescinded = Gweld cyflogeion sydd wedi’u heithrio
 Service.for = ar gyfer
 
@@ -139,20 +137,23 @@ RemoveBenefits.other.error.length = Mae’n rhaid i ‘Pam yr ydych am ddileu’
 
 ExclusionOverview.excludecount.exceeded = Ni allwch wahardd rhagor o weithwyr.
 
-ExclusionOverview.notExcludedEmployee.title = Nid ydych wedi eithrio unrhyw gyflogeion
-ExclusionOverview.notExcludedEmployee.p1 = Trethir {0} pob un o’ch cyflogeion drwy’ch cyflogres.
-ExclusionOverview.p1 = Gallwch ond eithrio cyflogeion sy’n cael y draul neu’r buddiant hwn.
-ExclusionOverview.p2 = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant neu’r draul hon drwy anfon P11D atom. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+ExclusionOverview.notExcludedEmployee.p1 = Mae {0} yn cael ei drethu drwy’r gyflogres ar gyfer pob cyflogai o 6 Ebrill {1} ymlaen.
+
+ExclusionOverview.p1.organisation = Dylech ond eithrio cyflogeion sy’n cael y buddiant neu’r draul hon.
+ExclusionOverview.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy gyflwyno P11D i CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+
+ExclusionOverview.p1.agent = Dylech ond eithrio cyflogeion sy’n cael y buddiant neu’r draul hon.
+ExclusionOverview.p2.agent = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i’ch cleient roi gwybod am werth y buddiant hwn neu’r draul hon gyflwyno P11D i CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
+
 ExclusionOverview.h2 = A oes angen i chi eithrio cyflogai?
 ExclusionOverview.h2.hint = Gallwch eithrio hyd at {0} o gyflogeion.
 ExclusionOverview.error.required = Dewiswch ‘Iawn’ os oes angen i chi eithrio cyflogai.
-ExclusionOverview.excludedEmployee.title = Eich cyflogeion sydd wedi’u heithrio
 
 ExclusionDecision.noselection.error = Dewiswch ‘Iawn’ os ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai.
 ExclusionNinoDecision.title = A ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai yr hoffech ei eithrio?
 
-ExclusionSearch.title.multiple = Dewiswch pa gyflogai i’w eithrio
-ExclusionSearch.title.single = Gwiriwch fanylion y cyflogai rydych am ei eithrio
+ExclusionSearch.title.multiple = Pa gyflogai ydych am ei eithrio?
+ExclusionSearch.title.single = Datgan y cyflogai i eithrio o’r buddiant neu’r draul hon
 ExclusionSearch.form.title = Chwiliwch am y cyflogai i’w eithrio
 ExclusionSearch.form.header = Chwiliwch am y cyflogai rydych am ei eithrio
 ExclusionSearch.caption = Cyflogai i’w eithrio
@@ -161,7 +162,6 @@ ExclusionSearch.Fail.Desc = Nid oedd modd dod o hyd i’r cyflogai hwn
 ExclusionSearch.Fail.Exists.Desc = Mae’r cyflogai hwn eisoes wedi’i eithrio ar gyfer {0}. Gallwch ei weld yn eich {1}rhestr o gyflogeion sydd wedi’u heithrio{2}.
 ExclusionSearch.Fail.Exists.P = Chwilio eto am gyflogai gwahanol
 
-ExclusionImportant.ExcludeEmployee = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy anfon P11D atom. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu ar {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
 ExclusionRemovalConfirmation.title = Gwiriwch fanylion y cyflogai rydych am ei ychwanegu yn ôl i’r gyflogres
 ExclusionRemovalConfirmation.inset.text = Drwy gadarnhau, byddwch yn dechrau trethu’r cyflogai hwn ar ''{0}'' drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
@@ -323,6 +323,11 @@ Service.field.dob.year = Blwyddyn
 Service.field.gender = Rhywedd
 Service.field.gender.male = Gwryw
 Service.field.gender.female = Benyw
+#TODO welsh translation need
+Service.field.employee.name = Employee name
+Service.field.client.name = Enw’r cleient
+Service.field.employer.paye = Cyfeirnod TWE y cyflogwr
+Service.field.selected.benefits = Buddiannau a threuliau sydd wedi cael eu dewis
 Service.action = Gweithred
 
 #*************************************************************
@@ -381,20 +386,45 @@ whatNext.add.p.agent = Buddiannau a threuliau rydych wedi eu cofrestru i’w tre
 
 whatNext.add.list.heading = Manylion cofrestru
 
-whatNext.add.list.table.key1 = Enw’r cleient
-whatNext.add.list.table.key2 = Cyfeirnod TWE y cyflogwr
-whatNext.add.list.table.key3 = Buddiannau a threuliau sydd wedi cael eu dewis
+whatNext.exclude.heading = Eithriad wedi’i gyflawni
+whatNext.exclude.table.heading = Manylion y gwaharddiad
 
-whatNext.add.p1 = O 6 Ebrill {0} ymlaen, mae angen i chi ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog eich cyflogeion a’u trethu drwy’ch cyflogres.
-whatNext.add.p2 = Gallwch roi’r gorau i anfon y ffurflenni P11D atom ar gyfer unrhyw gyflogeion y mae eu buddiannau a’u treuliau bellach yn cael eu trethu drwy’r gyflogres.
-whatNext.add.p3 = Mae’n dal i fod yn rhaid i chi <a class="govuk-link" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11db.cy">anfon ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd).</a>
+whatNext.exclude.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud
+whatNext.exclude.h2.agent = Beth ddylech chi ddweud wrth eich cleient
+
+whatNext.exclude.p1.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
+whatNext.exclude.p1.link.organisation = cyflwyno P11D i CThEF
+whatNext.exclude.p1.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+
+whatNext.exclude.p1.before.agent = Dylai’ch cleient roi gwybod am werth y buddiant hwn drwy
+whatNext.exclude.p1.link.agent = cyflwyno P11D i CThEF
+whatNext.exclude.p1.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
+
+whatNext.exclude.you.do.h2 = Yr hyn y gallwch ei wneud nesaf
+
+whatNext.exclude.you.do.p.before.organisation = Gallwch
+whatNext.exclude.you.do.p.link.organisation = yn ôl i’ch buddiannau a threuliau cofrestredig
+whatNext.exclude.you.do.p.after.organisation = er mwyn:
+
+whatNext.exclude.you.do.p.before.agent = Gallwch
+whatNext.exclude.you.do.p.link.agent = yn ôl i fuddiannau a threuliau cofrestredig eich cleient
+whatNext.exclude.you.do.p.after.agent = er mwyn:
+
+whatNext.exclude.you.do.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau rydych wedi’u cofrestru
+whatNext.exclude.you.do.li2 = cofrestru rhagor o fuddiannau a threuliau
+whatNext.exclude.you.do.li3 = tynnu buddiannau neu dreuliau nad ydych am eu trethu drwy’r gyflogres mwyach
+
+whatNext.exclude.more.h3 = Os ydych am eithrio cyflogai arall o’r buddiant neu’r draul hon
+whatNext.exclude.more.p.before = Gallwch
+whatNext.exclude.more.p.link = yn ôl {0}
+whatNext.exclude.more.p.after = er mwyn:
+whatNext.exclude.more.li1 = eithrio cyflogai arall o’r buddiant neu’r draul hon
+whatNext.exclude.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r draul hon
 
 whatNext.subHeading = Camau nesaf
 whatNext.remove.p = Ni fyddwch yn trethu {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
-whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
 whatNext.exclude.lede = Ni threthir {0} {1} drwy’ch cyflogres o 6 Ebrill {2} ymlaen.
-whatNext.exclude.p1 = O hyn ymlaen, dylech roi gwybod am werth y buddiant hwn drwy anfon ffurflen <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">Ffurflen Budd-dal Cyflogaeth P11D - (yn agor ffenestr neu dab newydd)</a> ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 whatNext.remove.link.P11D.Text = Os ydych yn dal i roi {0} i’ch cyflogeion, bydd yn rhaid i chi lenwi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Removal page:P11D(b)">ffurflen P11D ar eu cyfer ar ddiwedd y flwyddyn dreth (yn agor ffenestr neu dab newydd).</a>
 
