@@ -55,7 +55,7 @@
         @if(request.isAgent) {
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    @messages("whatNext.add.list.table.key1")
+                    @messages("Service.field.client.name")
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <p class="govuk-body">@request.clientName.get</p>
@@ -64,7 +64,7 @@
         }
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                @messages("whatNext.add.list.table.key2")
+                @messages("Service.field.employer.paye")
             </dt>
             <dd class="govuk-summary-list__value">
                 <p class="govuk-body">@request.empRef</p>
@@ -72,7 +72,7 @@
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                @messages("whatNext.add.list.table.key3")
+                @messages("Service.field.selected.benefits")
             </dt>
             <dd class="govuk-summary-list__value">
                 @for(item <- bikList.active.indices) {
