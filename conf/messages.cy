@@ -440,8 +440,6 @@ whatYouCanDoNext.subHeading.li2 = cofrestru rhagor o buddiannau a threuliau
 whatYouCanDoNext.subHeading.li3 = tynnu buddiannau neu dreuliau nad ydych am eu trethu drwy’r gyflogres mwyach
 
 whatYouNeedToTellYourEmployees.subHeading = Yr hyn y mae angen i chi ei ddweud wrth eich cyflogeion
-whatYouNeedToTellYourEmployees.add.p1 = Mae angen i chi anfon llythyr at eich cyflogeion, gan esbonio y byddwch yn trethu’r buddiannau hyn drwy’r gyflogres.
-whatYouNeedToTellYourEmployees.add.p2 = Mae hefyd angen i chi roi gwybod iddynt y bydd eu codau treth yn newid. Byddwn yn anfon llythyr atynt ynghylch eu cod treth newydd.
 
 global.page.not.found.error.title=Heb ddod o hyd i’r dudalen
 global.page.not.found.error.check.web.address.correct=Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.
