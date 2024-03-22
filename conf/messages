@@ -439,8 +439,6 @@ whatYouCanDoNext.subHeading.li2 = register more benefits and expenses
 whatYouCanDoNext.subHeading.li3 = remove benefits or expenses you no longer want to tax through payroll
 
 whatYouNeedToTellYourEmployees.subHeading = What you need to tell your employees
-whatYouNeedToTellYourEmployees.add.p1 = You need to send your employees a letter explaining that you’ll be taxing these benefits through payroll.
-whatYouNeedToTellYourEmployees.add.p2 = You also need to tell them that their tax codes will change. We will send them a letter about their new tax code.
 
 global.page.not.found.error.title=Page not found
 global.page.not.found.error.check.web.address.correct=If you typed the web address, check it is correct.
