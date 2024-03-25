@@ -125,7 +125,9 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
         arbMessages
       )
     case exclusionNinoOrNoNinoForm: ExclusionNinoOrNoNinoForm                       => render(exclusionNinoOrNoNinoForm)
-    case exclusionOverview: ExclusionOverview                                       => render(exclusionOverview)
+    case exclusionOverview: ExclusionOverview                                       =>
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
+      render(exclusionOverview)
     case ninoExclusionSearchForm: NinoExclusionSearchForm                           =>
       implicit val exclusionSearchFormWithNino: Arbitrary[Form[EiLPerson]] = fixed(
         forms.exclusionSearchFormWithNino(fakeRequest)
@@ -140,7 +142,9 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
       render(removalConfirmation)
     case searchResults: SearchResults                                               => render(searchResults)
-    case whatNextExclusion: WhatNextExclusion                                       => render(whatNextExclusion)
+    case whatNextExclusion: WhatNextExclusion                                       =>
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
+      render(whatNextExclusion)
     case whatNextRescind: WhatNextRescind                                           =>
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
       render(whatNextRescind)

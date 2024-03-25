@@ -88,18 +88,12 @@
 
                 @textInput(searchForm("surname"), Symbol("_label") -> messages("Service.field.surname"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
 
-                @textInput(searchForm("nino"), Symbol("_label") -> messages("Service.field.nino"), Symbol("_inputHint") ->  messages("Service.field.ninohint"), Symbol("_inputClass") -> "govuk-!-width-one-half")
+                @textInput(searchForm("nino"), Symbol("_label") -> messages("Service.field.nino"), Symbol("_inputHint") ->  messages("Service.field.ninohint"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
             </fieldset>
 
             <input type="hidden" name="status" id="status" value="10"/>
             <input type="hidden" name="perOptLock" id="perOptLock"/>
 
-            <input type="submit" class="govuk-button" role="button" id="button-search" value="@messages("Service.continue")"/>
-
-        <p class="govuk-body">
-        <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdString)">
-            @messages("Service.back.excluded")
-        </a>
-        </p>
+            <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.continue")"/>
     }
 }

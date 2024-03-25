@@ -84,7 +84,7 @@
     }
 
     <h1 id="title" class="govuk-heading-xl">
-        <span class="govuk-caption-xl">@messages("BenefitInKind.label." + s"${Bik.asNPSTypeValue(iabdString)}")"</span>
+        <span class="govuk-caption-xl">@messages("BenefitInKind.label." + s"${Bik.asNPSTypeValue(iabdString)}")</span>
         @messages("ExclusionSearch.form.header")
     </h1>
 
@@ -135,15 +135,8 @@
         </div>
 
         <div class="govuk-form-group">
-            <input type="submit" class="govuk-button" role="button" id="button-search" value="@messages("Service.continue")">
+            <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.continue")">
         </div>
-
-       <p class="govuk-body">
-           <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdString)">
-                @messages("Service.back.excluded")
-           </a>
-       </p>
-
 
 }
 }
