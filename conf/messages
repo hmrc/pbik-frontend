@@ -50,12 +50,12 @@ StartPage.p2.organisation = register benefits and expenses to tax through payrol
 StartPage.p3.organisation = remove a benefit or expense from payroll
 StartPage.p4.organisation = exclude employees from a benefit or an expense
 StartPage.p5.organisation = Benefits and expenses you cannot register
-StartPage.p6.organisation = You cannot use this services to register:
+StartPage.p6.organisation = You cannot use this service to register:
 StartPage.p7.organisation = general expenses allowance for business travel
 StartPage.p8.organisation = interest-free and low-interest loans
 StartPage.p9.organisation = living accommodation
 StartPage.p10.text.organisation = To report these expenses you must
-StartPage.p10.link.text.organisation = use a P11D form (opens in a new window or tab).
+StartPage.p10.link.text.organisation = use a P11D form (opens in a new window or tab)
 StartPage.link.organisation = Start now
 
 StartPage.heading.agent = Payrolling benefits and expenses for your client
@@ -64,12 +64,12 @@ StartPage.p2.agent = register benefits and expenses to tax through payroll
 StartPage.p3.agent = remove a benefit or expense from payroll
 StartPage.p4.agent = exclude employees from a benefit or an expense
 StartPage.p5.agent = Benefits and expenses you cannot register
-StartPage.p6.agent = You cannot use this services to register:
+StartPage.p6.agent = You cannot use this service to register:
 StartPage.p7.agent = general expenses allowance for business travel
 StartPage.p8.agent = interest-free and low-interest loans
 StartPage.p9.agent = living accommodation
 StartPage.p10.text.agent = To report these expenses you must
-StartPage.p10.link.text.agent = use a P11D form (opens in a new window or tab).
+StartPage.p10.link.text.agent = use a P11D form (opens in a new window or tab)
 StartPage.link.agent = Start now
 
 #*************************************************************
@@ -451,7 +451,7 @@ whatYouNeedToKnow.subHeading.after.p2.organisation = You will need to:
 whatYouNeedToKnow.subHeading.after.li1.organisation = add the cash equivalent to employee''s pay
 whatYouNeedToKnow.subHeading.after.li2.organisation = tax their benefits and expenses through your payroll
 whatYouNeedToKnow.subHeading.after.p3.text.organisation = You must still
-whatYouNeedToKnow.subHeading.after.p3.link.organisation = submit a P11D(b) to report Class 1A National Insurance contributions (opens in a new window or tab).
+whatYouNeedToKnow.subHeading.after.p3.link.organisation = submit a P11D(b) to report Class 1A National Insurance contributions (opens in a new window or tab)
 
 whatYouNeedToKnow.subHeading.after.h3.agent = After 6 April {0}
 whatYouNeedToKnow.subHeading.after.p1.agent = Your client can stop submitting P11Ds for employees who now have their benefits and expenses taxed through payroll.
@@ -459,7 +459,7 @@ whatYouNeedToKnow.subHeading.after.p2.agent = Your client will need to:
 whatYouNeedToKnow.subHeading.after.li1.agent = add the cash equivalent to employee''s pay
 whatYouNeedToKnow.subHeading.after.li2.agent = tax employees'' benefits and expenses through payroll
 whatYouNeedToKnow.subHeading.after.p3.text.agent = Your client must still
-whatYouNeedToKnow.subHeading.after.p3.link.agent = submit a P11D(b) to report Class 1A National Insurance contributions (opens in a new window or tab).
+whatYouNeedToKnow.subHeading.after.p3.link.agent = submit a P11D(b) to report Class 1A National Insurance contributions (opens in a new window or tab)
 
 whatYouCanDoNext.subHeading.h2 = What you can do next
 whatYouCanDoNext.subHeading.p.text.before = You can

@@ -55,7 +55,7 @@ StartPage.p7.organisation = lwfans treuliau cyffredinol ar gyfer teithio busnes
 StartPage.p8.organisation = benthyciadau di-log a llog isel
 StartPage.p9.organisation = llety preswyl
 StartPage.p10.text.organisation = Er mwyn rhoi gwybod am y costau hyn, mae’n rhaid i chi
-StartPage.p10.link.text.organisation = defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd).
+StartPage.p10.link.text.organisation = defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd)
 StartPage.link.organisation = Dechrau nawr
 
 StartPage.heading.agent = Talu buddiannau a threuliau drwy’r gyflogres ar gyfer eich cleient
@@ -69,7 +69,7 @@ StartPage.p7.agent = lwfans treuliau cyffredinol ar gyfer teithio busnes
 StartPage.p8.agent = benthyciadau di-log a llog isel
 StartPage.p9.agent = llety preswyl
 StartPage.p10.text.agent = Er mwyn rhoi gwybod am y costau hyn, mae’n rhaid i chi
-StartPage.p10.link.text.agent = defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd).
+StartPage.p10.link.text.agent = defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd)
 StartPage.link.agent = Dechrau nawr
 
 #*************************************************************
@@ -451,7 +451,7 @@ whatYouNeedToKnow.subHeading.after.p2.organisation = Bydd angen i chi wneud y ca
 whatYouNeedToKnow.subHeading.after.li1.organisation = ychwanegu’r arian sy’n cyfateb i gyflog cyflogai
 whatYouNeedToKnow.subHeading.after.li2.organisation = trethu ei fuddiannau a threuliau drwy’ch cyflogres
 whatYouNeedToKnow.subHeading.after.p3.text.organisation = Mae’n rhaid i chi dal
-whatYouNeedToKnow.subHeading.after.p3.link.organisation = cyflwyno ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd).
+whatYouNeedToKnow.subHeading.after.p3.link.organisation = cyflwyno ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd)
 
 whatYouNeedToKnow.subHeading.after.h3.agent = Ar ôl 6 Ebrill {0}
 whatYouNeedToKnow.subHeading.after.p1.agent = Gallwch eich cleient rhoi’r gorau i anfon y ffurflenni P11D atom ar gyfer unrhyw gyflogeion y mae eu buddiannau a’u treuliau bellach yn cael eu trethu drwy’r gyflogres.
@@ -459,7 +459,7 @@ whatYouNeedToKnow.subHeading.after.p2.agent = Mae angen i’ch cleient wneud y c
 whatYouNeedToKnow.subHeading.after.li1.agent = ychwanegu’r arian sy’n cyfateb i gyflog cyflogai
 whatYouNeedToKnow.subHeading.after.li2.agent = trethu buddiannau a threuliau cyflogeion drwy’r gyflogres
 whatYouNeedToKnow.subHeading.after.p3.text.agent = Mae’n rhaid i’ch cleient dal
-whatYouNeedToKnow.subHeading.after.p3.link.agent = cyflwyno ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd).
+whatYouNeedToKnow.subHeading.after.p3.link.agent = cyflwyno ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd)
 
 whatYouCanDoNext.subHeading.h2 = Yr hyn y gallwch ei wneud nesaf
 whatYouCanDoNext.subHeading.p.text.before = Gallwch
