@@ -18,11 +18,11 @@ package controllers.actions
 
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import org.apache.pekko.util.Timeout
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc._
 import play.api.test.FakeRequest
+import play.api.test.Helpers.await
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.SessionKeys
 
@@ -32,7 +32,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneAppPerSuite {
+class NoSessionCheckActionSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   class Harness extends NoSessionCheckActionImpl {
     def callTransform[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
@@ -51,26 +51,22 @@ class NoSessionCheckActionSpec extends PlaySpec with ScalaFutures with GuiceOneA
             .withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}"),
           None
         )
-        val result               = new Harness().callTransform(requestWithSessionID)
-        whenReady(result) {
-          _ mustBe Right(requestWithSessionID)
-        }
+        val result               = await(new Harness().callTransform(requestWithSessionID))
+        result mustBe Right(requestWithSessionID)
       }
     }
 
     "the session is not set" must {
       "redirect user to home page controller " in {
-        val request =
+        val request                                       =
           AuthenticatedRequest(EmpRef.empty, UserName(Name(None, None)), FakeRequest("", ""), None)
-        val result  = new Harness().callTransform(request)
-
-        whenReady(result) { call: Either[Result, AuthenticatedRequest[_]] =>
-          call match {
-            case Left(callResult) =>
-              val headers: Map[String, String] = callResult.header.headers
-              headers.getOrElse("Location", "") must include("/payrollbik/registered-benefits-expenses")
-            case Right(_)         => fail("Result not a Left")
-          }
+        val result                                        = new Harness().callTransform(request)
+        val call: Either[Result, AuthenticatedRequest[_]] = await(result)
+        call match {
+          case Left(callResult) =>
+            val headers: Map[String, String] = callResult.header.headers
+            headers.getOrElse("Location", "") must include("/payrollbik/registered-benefits-expenses")
+          case Right(_)         => fail("Result not a Left")
         }
       }
     }

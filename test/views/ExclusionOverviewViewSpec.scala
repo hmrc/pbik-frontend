@@ -31,7 +31,7 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   private val form: Form[MandatoryRadioButton]           = formMappings.binaryRadioButton
   private val formWithErrors: Form[MandatoryRadioButton] = form.withError("test", "error")
 
-  private val (iabdType, iabdString) = ("31", "car")
+  private val iabdString = "car"
 
   def viewWithForm(form: Form[MandatoryRadioButton])(implicit request: AuthenticatedRequest[_]): Html =
     exclusionOverviewView(taxYearRange, "cyp1", iabdString, List(), form)
