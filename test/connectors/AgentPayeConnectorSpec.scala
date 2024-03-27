@@ -20,20 +20,18 @@ import controllers.FakePBIKApplication
 import models._
 import org.mockito.ArgumentMatchersSugar.{any, eqTo}
 import org.mockito.MockitoSugar.{mock, when}
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.Status._
 import play.api.libs.json.{Json, Writes}
-import play.api.mvc.Results
-import support.TestAuthUser
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplication with TestAuthUser with Results {
+class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplication {
 
   private val mockHttpClient: HttpClient                           = mock[HttpClient]
   private val configuration: ServicesConfig                        = app.injector.instanceOf[ServicesConfig]
@@ -52,7 +50,7 @@ class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKAppl
   "AgentPayeConnector" when {
     ".getClient" must {
       "return none if no agent code provided" in {
-        agentPayeConnectorWithMockClient.getClient(None, empRef).futureValue mustBe None
+        await(agentPayeConnectorWithMockClient.getClient(None, empRef)) mustBe None
       }
 
       "return none if an exception is received" in {
@@ -64,7 +62,7 @@ class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKAppl
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.failed(new Exception("test error")))
 
-        agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef).futureValue mustBe None
+        await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
 
       "return none if an invalid json body with OK is received" in {
@@ -78,7 +76,7 @@ class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKAppl
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
 
-        agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef).futureValue mustBe None
+        await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
 
       "return none if an invalid empty body with OK is received" in {
@@ -92,7 +90,7 @@ class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKAppl
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
 
-        agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef).futureValue mustBe None
+        await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
 
       "return none if an invalid empty body with ACCEPTED is received" in {
@@ -106,7 +104,7 @@ class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKAppl
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
 
-        agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef).futureValue mustBe None
+        await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
 
       "return none if an invalid empty body with NOT_FOUND is received" in {
@@ -120,7 +118,7 @@ class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKAppl
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
 
-        agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef).futureValue mustBe None
+        await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
 
       "return none if an invalid empty body with INTERNAL_SERVER_ERROR is received" in {
@@ -134,7 +132,7 @@ class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKAppl
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
 
-        agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef).futureValue mustBe None
+        await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
 
       "return client if a valid body with OK is received" in {
@@ -148,7 +146,7 @@ class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKAppl
           )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
         ).thenReturn(Future.successful(fakeResponseWithValidJson))
 
-        agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef).futureValue mustBe agentClient
+        await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe agentClient
       }
     }
   }

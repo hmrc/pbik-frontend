@@ -23,7 +23,6 @@ import controllers.actions.AuthConnector
 import models.auth.EpayeSessionKeys
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
@@ -37,7 +36,7 @@ import uk.gov.hmrc.http.HttpClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar with ScalaFutures {
+class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
   private class Harness(authAction: AuthAction, cc: ControllerComponents = Helpers.stubMessagesControllerComponents())
       extends AbstractController(cc) {
@@ -268,7 +267,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
           val controller: Harness    = retrievals(affinityGroup = Some(AffinityGroup.Individual))
           val result: Future[Result] = controller.onPageLoad()(fakeRequestForAgent)
 
-          result.failed.futureValue.getMessage mustBe "AffinityGroup not supported: Individual"
+          await(result.failed).getMessage mustBe "AffinityGroup not supported: Individual"
         }
       }
     }

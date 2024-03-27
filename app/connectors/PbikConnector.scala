@@ -18,8 +18,9 @@ package connectors
 
 import config.Service
 import models._
-import models.v1.{BenefitInKindRequest, BenefitListResponse, BenefitListUpdateResponse}
+import models.v1.{BenefitInKindRequest, BenefitListResponse, BenefitListUpdateResponse, NPSErrors}
 import play.api.http.Status.BAD_REQUEST
+import play.api.libs.json.{JsError, JsSuccess}
 import play.api.mvc.Request
 import play.api.{Configuration, Logging}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
@@ -131,23 +132,48 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
     HeaderTags.createResponseHeaders(etagFromSession, xtxidFromSession)
   }
 
-  private def validateResponses(fromMethod: String)(implicit response: HttpResponse): HttpResponse =
-    if (response.status >= BAD_REQUEST) {
-      logger.error(s"[PbikConnector][$fromMethod] An unexpected status was returned: ${response.status}")
-      throw new GenericServerErrorException(response.body)
-    } else if (response.body.length <= maxEmptyBodyLength) {
-      response
-    } else {
-      val isOldError = response.body.contains("errorCode")
-      val isNewError = response.body.contains("reason") && response.body.contains("code")
-
-      if (isOldError || isNewError) {
+  private def parseOldErrorBody(response: HttpResponse): HttpResponse =
+    response.json.validate[PbikError] match {
+      case JsSuccess(value, _) =>
+        logger.error(s"[PbikConnector][parseOldErrorBody] a pbik error code was returned. Error: ${value.errorCode}")
+        throw new GenericServerErrorException(value.errorCode)
+      case JsError(_)          =>
         logger.error(
-          s"[PbikConnector][$fromMethod] a pbik error code was returned. Error: ${response.body}"
+          s"[PbikConnector][parseOldErrorBody] an error was returned but it was not a PbikError. Error: ${response.body}"
         )
         throw new GenericServerErrorException(response.body)
-      } else {
-        response
-      }
     }
+
+  private def parseNewErrorBody(response: HttpResponse): HttpResponse =
+    response.json.validate[NPSErrors] match {
+      case JsSuccess(value, _) =>
+        // new error code has the format "400.12345" where 400 is the status code and 12345 is the error code
+        val prefix    = s"${response.status}."
+        val errorCode = value.failures.head.code.replace(prefix, "")
+        logger.error(s"[PbikConnector][parseNewErrorBody] a pbik error code was returned. Error: $errorCode")
+        throw new GenericServerErrorException(errorCode)
+      case JsError(_)          =>
+        logger.error(
+          s"[PbikConnector][parseNewErrorBody] an error was returned but it was not NPSErrors. Error: ${response.body}"
+        )
+        throw new GenericServerErrorException(response.body)
+    }
+
+  private def validateResponses(fromMethod: String)(implicit response: HttpResponse): HttpResponse = {
+    val isOldError = response.body.contains("errorCode")
+    val isNewError = response.body.contains("reason") && response.body.contains("code")
+
+    if (isOldError) {
+      logger.error(s"[PbikConnector][$fromMethod] a pbik error code was returned. Error: ${response.body}")
+      parseOldErrorBody(response)
+    } else if (isNewError) {
+      logger.error(s"[PbikConnector][$fromMethod] a pbik error code was returned. Error: ${response.body}")
+      parseNewErrorBody(response)
+    } else if (response.status >= BAD_REQUEST) {
+      logger.error(s"[PbikConnector][$fromMethod] an error code was returned. Error: ${response.body}")
+      throw new GenericServerErrorException(response.body)
+    } else {
+      response
+    }
+  }
 }
