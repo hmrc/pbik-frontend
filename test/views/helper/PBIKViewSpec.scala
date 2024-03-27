@@ -71,6 +71,13 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
       a.text.trim mustBe text.trim
     }
 
+  def pageWithLinkHiddenText(linkId: String, expectedText: String)(implicit view: Html): Unit =
+    s"have a link with with id=$linkId and hidden text $expectedText" in {
+      val a = doc.select(s"#$linkId .govuk-visually-hidden").first()
+      a must not be None.orNull
+      a.text.trim mustBe expectedText.trim
+    }
+
   def pageWithTextBox(id: String, label: String)(implicit view: Html): Unit =
     s"have  a text box with label $label" in {
       doc must haveInputLabelWithText(id, label)

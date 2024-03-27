@@ -16,29 +16,35 @@
 
 package views
 
+import models.v1.{IabdType, PbikStatus}
 import models.{AuthenticatedRequest, Bik}
 import org.jsoup.Jsoup
 import play.twirl.api.Html
-import utils.BikListUtils
 import views.helper.PBIKViewSpec
 import views.html.Summary
 
-//scalastyle:off magic.number
 class SummaryViewSpec extends PBIKViewSpec {
 
-  implicit val bikListUtils: BikListUtils = app.injector.instanceOf[BikListUtils]
-  val summaryView: Summary                = app.injector.instanceOf[Summary]
+  private val summaryView: Summary      = app.injector.instanceOf[Summary]
+  private val carIabdType: String       = IabdType.CarBenefit.id.toString
+  private val carBik: Bik               = Bik(carIabdType, PbikStatus.ValidPayrollingBenefitInKind.id)
+  private val serviceBiksCountCY: Int   = 200
+  private val serviceBiksCountCYP1: Int = 0
 
   def view(benefits: List[Bik])(implicit request: AuthenticatedRequest[_]): Html =
-    summaryView(cyAllowed = true, taxYearRange, List(), benefits, 200, 0)
+    summaryView(cyAllowed = true, taxYearRange, List(), benefits, serviceBiksCountCY, serviceBiksCountCYP1)
 
   "overview with benefits - organisation" must {
-    implicit val html: Html = view(List(Bik("31", 30)))(organisationRequest)
+    implicit val html: Html = view(List(carBik))(organisationRequest)
 
     behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))
     behave like pageWithHeader(messages("Overview.benefitsRegistered.heading"))
     behave like pageWithLink(messages("Overview.table.add.link"), "/payrollbik/cy/choose-benefit-expense")
     behave like pageWithBackLink()
+    behave like pageWithLinkHiddenText(
+      s"cy1-remove-$carIabdType",
+      s"${messages("BenefitInKind.label." + carIabdType)} ${messages("Overview.current.from")} ${messages("Overview.current.payroll.p11d")}"
+    )
 
     "overview with no benefits" in {
 
@@ -49,7 +55,7 @@ class SummaryViewSpec extends PBIKViewSpec {
   }
 
   "overview with benefits - Agent" must {
-    implicit val html: Html = view(List(Bik("31", 30)))(agentRequest)
+    implicit val html: Html = view(List(carBik))(agentRequest)
 
     behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))
     behave like pageWithHeader(messages("Overview.benefitsRegistered.heading"))
