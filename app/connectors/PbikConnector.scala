@@ -170,7 +170,7 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
       logger.error(s"[PbikConnector][$fromMethod] a pbik error code was returned. Error: ${response.body}")
       parseNewErrorBody(response)
     } else if (response.status >= BAD_REQUEST) {
-      logger.error(s"[PbikConnector][$fromMethod] a error code was returned. Error: ${response.body}")
+      logger.error(s"[PbikConnector][$fromMethod] an error code was returned. Error: ${response.body}")
       throw new GenericServerErrorException(response.body)
     } else {
       response
