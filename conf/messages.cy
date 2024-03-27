@@ -82,7 +82,6 @@ Overview.next.lead.empty = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu bud
 Overview.empty.benefits.h2 = Crynodeb o dalu drwy’r gyflogres o 6 Ebrill ymlaen {0}
 Overview.empty.benefits.p = Nid ydych wedi cofrestru unrhyw fuddiannau na threuliau i’w trethu drwy’r gyflogres.
 Overview.current.from=o
-Overview.current.remove=Dileu
 Overview.current.payroll.p11d=y gyflogres ac adrodd ar P11D
 Overview.current.heading = 6 Ebrill {0} i 5 Ebrill {1}
 Overview.table.exclude.link = Rheoli cyflogeion
