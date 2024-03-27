@@ -139,7 +139,7 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
         throw new GenericServerErrorException(value.errorCode)
       case JsError(_)          =>
         logger.error(
-          s"[PbikConnector][parseOldErrorBody] a error was returned but it is not PbikError returned. Error: ${response.body}"
+          s"[PbikConnector][parseOldErrorBody] an error was returned but it was not a PbikError. Error: ${response.body}"
         )
         throw new GenericServerErrorException(response.body)
     }
