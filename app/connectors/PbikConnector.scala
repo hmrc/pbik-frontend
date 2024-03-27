@@ -154,7 +154,7 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
         throw new GenericServerErrorException(errorCode)
       case JsError(_)          =>
         logger.error(
-          s"[PbikConnector][parseNewErrorBody] a error was returned but it is not NPSErrors returned. Error: ${response.body}"
+          s"[PbikConnector][parseNewErrorBody] an error was returned but it was not NPSErrors. Error: ${response.body}"
         )
         throw new GenericServerErrorException(response.body)
     }
