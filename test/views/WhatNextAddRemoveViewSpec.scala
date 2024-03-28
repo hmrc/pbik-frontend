@@ -33,15 +33,25 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
   def view()(implicit request: AuthenticatedRequest[_]): Html =
     addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList)
 
-  "whatNextAddRemove" must {
+  "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)
 
     behave like pageWithTitle(messages("whatNext.add.heading"))
     behave like pageWithHeader(messages("whatNext.add.heading"))
     behave like pageWithLink(
-      messages("whatYouCanDoNext.subHeading.p.link"),
+      messages("whatYouCanDoNext.subHeading.p.link." + organisationRequest.userType),
       "/payrollbik/registered-benefits-expenses"
     )
+  }
 
+  "whatNextAddRemove - agent" must {
+    implicit val html: Html = view()(agentRequest)
+
+    behave like pageWithTitle(messages("whatNext.add.heading"))
+    behave like pageWithHeader(messages("whatNext.add.heading"))
+    behave like pageWithLink(
+      messages("whatYouCanDoNext.subHeading.p.link." + agentRequest.userType),
+      "/payrollbik/registered-benefits-expenses"
+    )
   }
 }

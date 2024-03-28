@@ -196,7 +196,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
         status(result) mustBe OK
         contentAsString(result) must include("Benefit removed")
         contentAsString(result) must include(
-          "You will not be taxing Private medical treatment or insurance through your payroll from 6 April"
+          "You have removed Private medical treatment or insurance from being taxed through payroll from 6 April"
         )
       }
     }

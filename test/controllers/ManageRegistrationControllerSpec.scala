@@ -382,7 +382,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             val result               = registrationController.removeNextYearRegisteredBenefitTypes(iabdString).apply(mockRequestForm)
 
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/benefit-removed")
+            redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/declare-remove-benefit-expense")
           }
 
         Seq("software", "guidance", "not-clear", "not-offering").foreach(test)
@@ -522,7 +522,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val result               = registrationController.submitRemoveBenefitOtherReason(iabdString)(mockRequestForm)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/benefit-removed")
+        redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/declare-remove-benefit-expense")
       }
 
       "return to the same page with an error when other reason is not provided" in {

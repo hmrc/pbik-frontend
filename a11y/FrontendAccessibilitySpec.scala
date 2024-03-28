@@ -162,6 +162,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       render(nextTaxYear)
     case removeBenefitConfirmationNextTaxYear: RemoveBenefitConfirmationNextTaxYear =>
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(removeBenefitConfirmationNextTaxYear)
     case removeBenefitNextTaxYear: RemoveBenefitNextTaxYear                         =>
       implicit val arbRegistrationList: Arbitrary[RegistrationList] = fixed(
@@ -169,9 +170,11 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
           active = registrationList.active.map(_.copy(id = "assets-transferred"))
         )
       )
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(removeBenefitNextTaxYear)
     case removeBenefitOtherReason: RemoveBenefitOtherReason                         =>
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(removeBenefitOtherReason)
   }
 

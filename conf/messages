@@ -22,6 +22,8 @@ Service.confirm = Confirm
 Service.confirmAndContinue = Confirm and continue
 Service.tryagain = Try again
 
+Service.print.link = Print this page
+
 Service.notEnrolled.title = Enrol to use this service
 Service.notEnrolled.text1 = You’re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue.
 Service.notEnrolled.text2 = To enrol you’ll need:
@@ -114,7 +116,6 @@ AddBenefits.Confirm.help.desc = You can exclude employees from payrolling once y
 
 RemoveBenefits.Confirm.Title = Why do you want to remove the benefit or expense
 RemoveBenefits.Confirm.Heading = Why do you want to remove {0}?
-RemoveBenefits.Confirm.Desc = By confirming, you will stop taxing {0} through your payroll from 6 April {1}.
 RemoveBenefits.Heading = Remove benefits or expenses from the tax year starting 6 April {0}
 
 RemoveBenefits.reason.no.selection = Select why you want to remove the benefit or expense
@@ -123,12 +124,22 @@ RemoveBenefits.reason.guidance = The guidance for this service was not clear
 RemoveBenefits.reason.not-clear = The purpose of this service was not clear
 RemoveBenefits.reason.not-offering = We are no longer offering {0} to our employees
 RemoveBenefits.reason.other = Other
-RemoveBenefits.back.summary = Back to your summary of registered benefits and expenses
 
 RemoveBenefits.other.title = Tell us why you want to remove the benefit or expense
 RemoveBenefits.other.heading = Tell us why you want to remove {0}
 RemoveBenefits.other.error.required = Enter why you want to remove the benefit or expense
 RemoveBenefits.other.error.length = Why you want to remove the benefit or expense must be 100 characters or less
+
+RemoveBenefits.confirm.title = Declare the benefit or expense to stop taxing through payroll
+RemoveBenefits.confirm.heading = Declare the benefit or expense to stop taxing through payroll
+
+RemoveBenefits.confirm.p1.organisation = By confirming, you will stop taxing {0} through payroll from 6 April {1}.
+RemoveBenefits.confirm.p2.organisation = You must report the value of any benefit or expense for the current tax year by submitting a P11D to HMRC. You should do this at the end of the tax year.
+
+RemoveBenefits.confirm.p1.agent = By confirming, you will stop taxing {0} through payroll from 6 April {1}.
+RemoveBenefits.confirm.p2.agent = Your client must report the value of any benefit or expense for the current tax year by submitting a P11D to HMRC. They should do this at the end of the tax year.
+
+RemoveBenefits.confirm.table.key1 = Benefit or expense
 
 #*************************************************************
 # Exclusion overview
@@ -327,6 +338,7 @@ Service.field.employee.name = Employee name
 Service.field.client.name = Client name
 Service.field.employer.paye = Employer PAYE reference
 Service.field.selected.benefits = Selected benefits and expenses
+Service.field.removed.benefits = Removed benefits and expenses
 Service.action = Action
 
 #*************************************************************
@@ -378,8 +390,6 @@ error.exclusion.multi.selection = You need to choose which employee you want to 
 whatNext.add.heading = Registration complete
 whatNext.remove.heading = Benefit removed
 
-whatNext.print.link = Print this page
-
 whatNext.add.p.organisation = Benefits and expenses you have registered to tax through your payroll from 6 April {0}.
 whatNext.add.p.agent = Benefits and expenses you have registered to tax through {0}''s payroll from 6 April {1}.
 
@@ -421,11 +431,20 @@ whatNext.exclude.more.li1 = exclude another employee from this benefit or expens
 whatNext.exclude.more.li2 = add an employee back to this benefit or expense
 
 whatNext.subHeading = Next steps
-whatNext.remove.p = You will not be taxing {0} through your payroll from 6 April {1}.
 whatNext.rescind.heading = Registration complete
 whatNext.exclude.lede = {0} will not have {1} taxed through your payroll from 6 April {2}.
 whatNext.service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses
-whatNext.remove.link.P11D.Text =  If you are still providing this {0} to any of your employees, you will need to <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Removal page:P11D(b)">complete a P11D for them at the end of the tax year (opens in a new window or tab).</a>
+
+whatNext.remove.p1 = You have removed {0} from being taxed through payroll from 6 April {1}.
+whatNext.remove.table.heading = Benefit or expense details
+
+whatNext.remove.h2.organisation = What you must do
+whatNext.remove.p2.before.organisation = If you are still providing this benefit or expense to any of your employees, you will need to
+whatNext.remove.p2.link.organisation = submit a P11D to HMRC for them at the end of the tax year (opens in new window or tab)
+
+whatNext.remove.h2.agent = What you must tell your client
+whatNext.remove.p2.before.agent = If your client is still providing this benefit or expense to any of their employees, they will need to
+whatNext.remove.p2.link.agent = submit a P11D to HMRC for them at the end of the tax year (opens in new window or tab)
 
 whatYouNeedToKnow.subHeading.organisation = What you must do now
 whatYouNeedToKnow.subHeading.agent = What you must tell your client
@@ -462,7 +481,8 @@ whatYouNeedToKnow.subHeading.after.p3.link.agent = submit a P11D(b) to report Cl
 
 whatYouCanDoNext.subHeading.h2 = What you can do next
 whatYouCanDoNext.subHeading.p.text.before = You can
-whatYouCanDoNext.subHeading.p.link = return to your registered benefits and expenses
+whatYouCanDoNext.subHeading.p.link.organisation = return to your registered benefits and expenses
+whatYouCanDoNext.subHeading.p.link.agent = return to your client''s registered benefits and expenses
 whatYouCanDoNext.subHeading.p.text.after = to :
 whatYouCanDoNext.subHeading.li1 = exclude employees from the benefits and expenses you have registered
 whatYouCanDoNext.subHeading.li2 = register more benefits and expenses

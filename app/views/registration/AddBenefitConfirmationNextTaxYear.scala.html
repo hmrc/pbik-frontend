@@ -39,7 +39,7 @@
         </h1>
     </div>
 
-    @printLink(messages("whatNext.print.link"))
+    @printLink(messages("Service.print.link"))
 
     @if(request.isAgent) {
         <p class="govuk-body">@messages("whatNext.add.p.agent", request.clientName.get, taxYear)</p>
@@ -129,7 +129,7 @@
     <p class="govuk-body">
         @messages("whatYouCanDoNext.subHeading.p.text.before")
         <a class="govuk-link" id="link-back" href = "@routes.HomePageController.onPageLoad">
-            @messages("whatYouCanDoNext.subHeading.p.link")
+            @messages("whatYouCanDoNext.subHeading.p.link." + request.userType)
         </a>
         @messages("whatYouCanDoNext.subHeading.p.text.after")
     </p>
