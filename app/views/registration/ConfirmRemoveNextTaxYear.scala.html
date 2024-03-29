@@ -38,10 +38,10 @@
     <div class="data">
             <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
+                            <dt class="govuk-summary-list__key" id="table-key">
                                 @messages("RemoveBenefits.confirm.table.key1")
                             </dt>
-                            <dd class="govuk-summary-list__value">
+                            <dd class="govuk-summary-list__value" id="table-value">
                                     <p class="govuk-body">
                                         @messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString))
                                     </p>
@@ -49,15 +49,15 @@
                         </div>
             </dl>
 
-            <p class="govuk-body">
+            <p class="govuk-body" id="benefit-info">
                 @messages("RemoveBenefits.confirm.p1." + request.userType, messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)), taxYearRange.cy)
             </p>
 
-            <div class="govuk-inset-text">
+            <div class="govuk-inset-text" id="user-info">
                 @messages("RemoveBenefits.confirm.p2." + request.userType)
             </div>
 
-            <a class="govuk-button" href="@controllers.registration.routes.ManageRegistrationController.submitConfirmRemoveNextTaxYear(iabdString)" id="confirm-and-continue">
+            <a class="govuk-button" href="@controllers.registration.routes.ManageRegistrationController.submitConfirmRemoveNextTaxYear(iabdString)" id="button-confirm">
                 @messages("Service.confirmAndContinue")
             </a>
     </div>

@@ -60,7 +60,7 @@ class WhatNextExclusionViewSpec extends PBIKViewSpec {
     )
   }
 
-  "whatNextAddRemove - Agent" must {
+  "whatNextAddRemove - agent" must {
     implicit val html: Html = view()(agentRequest)
 
     behave like pageWithTitle(messages("whatNext.exclude.heading"))

@@ -114,8 +114,8 @@ AddBenefits.Confirm.help.desc = You can exclude employees from payrolling once y
 # Remove benefits
 #*************************************************************
 
-RemoveBenefits.Confirm.Title = Why do you want to remove the benefit or expense
-RemoveBenefits.Confirm.Heading = Why do you want to remove {0}?
+RemoveBenefits.reason.Title = Why do you want to remove the benefit or expense
+RemoveBenefits.reason.Heading = Why do you want to remove {0}?
 RemoveBenefits.Heading = Remove benefits or expenses from the tax year starting 6 April {0}
 
 RemoveBenefits.reason.no.selection = Select why you want to remove the benefit or expense

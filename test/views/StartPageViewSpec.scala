@@ -38,7 +38,7 @@ class StartPageViewSpec extends PBIKViewSpec {
     )
   }
 
-  "startPage - Agent" must {
+  "startPage - agent" must {
     implicit val html: Html = view()(agentRequest)
 
     behave like pageWithTitle(messages(s"StartPage.heading.${agentRequest.userType}"))

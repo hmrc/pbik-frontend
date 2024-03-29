@@ -60,7 +60,7 @@ class StartPageControllerAgentSpec extends PlaySpec with FakePBIKApplication {
   private val cyMessages: Messages                     = app.injector.instanceOf[MessagesApi].preferred(Seq(cyLang))
   private val startPageController: StartPageController = app.injector.instanceOf[StartPageController]
 
-  "StartPageController - Agent" must {
+  "StartPageController - agent" must {
     "return OK and the correct view for a GET - English" in {
       val result = startPageController.onPageLoad().apply(agentRequest)
 

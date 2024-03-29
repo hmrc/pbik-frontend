@@ -217,7 +217,7 @@ class ManageRegistrationController @Inject() (
             val bikToRemove    = Bik(bikId, ControllersReferenceDataCodes.BIK_REMOVE_STATUS)
             val listWithReason = session
               .flatMap(_.registrations.filter(_.reason.isDefined))
-              .getOrElse(throw new Exception("No reason found"))
+              .getOrElse(RegistrationList(None, List.empty[RegistrationItem], None))
             val persistentBiks = List(bikToRemove)
             val changes        = bikListUtils.normaliseSelectedBenefits(registeredResponse.bikList, persistentBiks)
 

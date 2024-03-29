@@ -256,7 +256,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
               )
             )
           )
-        val title  = messagesApi("RemoveBenefits.Confirm.Title").substring(beginIndex, endIndex)
+        val title  = messagesApi("RemoveBenefits.reason.Title").substring(beginIndex, endIndex)
         val result = registrationController.checkYourAnswersRemoveNextTaxYear(iabdString)(mockRequest)
 
         status(result) mustBe OK
@@ -548,6 +548,66 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
         status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(errorMsg)
+      }
+    }
+
+    "loading showConfirmRemoveNextTaxYear, an authorised user" should {
+      "be directed cy + 1 confirmation page to confirm remove bik" in {
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  sessionId,
+                  Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+
+        val title  = messagesApi("RemoveBenefits.confirm.heading")
+        val result = registrationController.showConfirmRemoveNextTaxYear(iabdString)(mockRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) must include(title)
+      }
+    }
+
+    "loading submitConfirmRemoveNextTaxYear, an authorised user" should {
+      "be directed cy + 1 removal confirmation page" in {
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  sessionId,
+                  Some(
+                    RegistrationList(
+                      active = List(RegistrationItem(iabdType, active = true, enabled = true)),
+                      reason = Some(BinaryRadioButtonWithDesc("other", None))
+                    )
+                  ),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+
+        val result = registrationController.submitConfirmRemoveNextTaxYear(iabdString)(mockRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/payrollbik/cy1/car/benefit-removed")
       }
     }
   }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.registration
 
 import models.v1.IabdType
 import models.{AuthenticatedRequest, RegistrationItem, RegistrationList}

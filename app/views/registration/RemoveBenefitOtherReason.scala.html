@@ -23,8 +23,7 @@
      formWithCSRF: FormWithCSRF,
      hmrcCharacterCount : HmrcCharacterCount,
      errorSummary: localhelpers.errorSummary,
-     govukButton: GovukButton,
-     pageTitleHeading: components.PageTitleHeading
+     govukButton: GovukButton
 )
 
 @(
@@ -38,8 +37,6 @@
 
 @errorSummary(form.errors)
 
-@pageTitleHeading(messages("RemoveBenefits.other.heading", benefitLabel))
-
     @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdString)) {
 
         @hmrcCharacterCount(CharacterCount(
@@ -48,9 +45,10 @@
             maxLength = Some(100),
             value = form("otherReason").value,
             label = Label(
-                isPageHeading = false,
-                classes = "govuk-label--m",
-                content = Text(messages("RemoveBenefits.other.heading", benefitLabel))),
+                isPageHeading = true,
+                classes = "govuk-label--xl",
+                content = Text(messages("RemoveBenefits.other.heading", benefitLabel)),
+                attributes = Map("id" -> "title")),
             errorMessage = form("otherReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 

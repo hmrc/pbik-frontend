@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.registration
 
 import config.PbikAppConfig
 import models.v1.IabdType
@@ -24,7 +24,7 @@ import utils.FormMappings
 import views.helper.PBIKViewSpec
 import views.html.registration.ConfirmUpdateNextTaxYear
 
-class ConfirmNextYearViewSpec extends PBIKViewSpec {
+class ConfirmUpdateNextTaxYearViewSpec extends PBIKViewSpec {
 
   val formMappings: FormMappings                             = app.injector.instanceOf[FormMappings]
   val confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear = app.injector.instanceOf[ConfirmUpdateNextTaxYear]
@@ -48,7 +48,7 @@ class ConfirmNextYearViewSpec extends PBIKViewSpec {
     behave like pageWithContinueButtonForm("/payrollbik/cy1/check-the-benefits", "Confirm and continue")
   }
 
-  "nextYearPage - Agent" must {
+  "nextYearPage - agent" must {
     implicit def html: Html = view(agentRequest)
 
     behave like pageWithTitle(messages("AddBenefits.Confirm.Multiple.Title"))

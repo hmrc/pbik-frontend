@@ -77,7 +77,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
     }
   }
 
-  "NinoExclusionSearchView - Agent" must {
+  "NinoExclusionSearchView - agent" must {
     implicit def view: Html =
       viewWithForm(formMappings.exclusionSearchFormWithoutNino(agentRequest))(agentRequest)
 

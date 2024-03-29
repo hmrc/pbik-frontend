@@ -35,7 +35,7 @@
 
 @benefitLabel = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(bikList.active.head.id)}")}
 
-@title = @{ messages("RemoveBenefits.Confirm.Title") }
+@title = @{ messages("RemoveBenefits.reason.Title") }
 
 @govukLayoutWrapper(PageTitle(title, form.hasErrors)) {
     @if(form.hasErrors) {
@@ -55,7 +55,7 @@
         </div>
     }
 
-    @pageTitleHeading(messages("RemoveBenefits.Confirm.Heading", benefitLabel))
+    @pageTitleHeading(messages("RemoveBenefits.reason.Heading", benefitLabel))
 
     <div class="data">
         @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.id), Symbol("id") -> "form-remove") {

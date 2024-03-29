@@ -114,8 +114,8 @@ AddBenefits.Confirm.help.desc = Gallwch eithrio cyflogeion rhag talu’r buddian
 # Remove benefits
 #*************************************************************
 
-RemoveBenefits.Confirm.Title = Pam yr ydych am ddileu’r buddiant neu’r draul?
-RemoveBenefits.Confirm.Heading = Pam yr ydych am ddileu {0}?
+RemoveBenefits.reason.Title = Pam yr ydych am ddileu’r buddiant neu’r draul?
+RemoveBenefits.reason.Heading = Pam yr ydych am ddileu {0}?
 RemoveBenefits.Heading = Dileu buddiannau neu dreuliau o’r flwyddyn dreth sy’n dechrau ar 6 Ebrill {0}
 
 RemoveBenefits.reason.no.selection = Dewis pam yr ydych am ddileu’r buddiant neu’r draul

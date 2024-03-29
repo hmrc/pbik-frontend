@@ -32,7 +32,7 @@ class SignedOutViewSpec extends PBIKViewSpec {
     behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/registered-benefits-expenses")
   }
 
-  "signedOutView - Agent" must {
+  "signedOutView - agent" must {
     implicit val view: Html = signedOutView()(organisationRequest, messages)
 
     behave like pageWithTitle(messages("signedOut.title"))
