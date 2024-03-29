@@ -16,7 +16,8 @@
 
 import models._
 import models.agent.{AccountsOfficeReference, Client}
-import org.scalacheck.Arbitrary
+import models.v1.{IabdType, PbikAction, PbikStatus}
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.retrieve.Name
@@ -26,24 +27,29 @@ import views.html._
 import views.html.exclusion._
 import views.html.registration._
 
+import scala.util.Random
+
 class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
 
   private val forms: FormMappings = app.injector.instanceOf[FormMappings]
 
   private val (cyMinus1, cy, cyPlus1): (Int, Int, Int) = (2019, 2020, 2021)
 
-  private val (status1, status2): (Int, Int) = (10, 12)
+  private def bikSize = new Random().between(0, IabdType.values.size)
 
-  private def listOfBik(iabdType1: String, iabdType2: String): List[Bik] = List(
-    Bik(
-      iabdType = iabdType1,
-      status = status1
-    ),
-    Bik(
-      iabdType = iabdType2,
-      status = status2
-    )
-  )
+  private val arbBik: Arbitrary[Bik] =
+    Arbitrary {
+      for {
+        iabd   <- Gen.oneOf(IabdType.values.toSeq.map(_.id.toString))
+        status <- Gen.oneOf(PbikStatus.values.toSeq.map(_.id) ++ PbikAction.values.toSeq.map(_.id))
+      } yield Bik(iabd, status)
+    }
+
+  private val arbListOfBiks: Arbitrary[List[Bik]] = Arbitrary {
+    for {
+      biks <- Gen.listOfN(bikSize, arbBik.arbitrary).map(_.distinct)
+    } yield biks
+  }
 
   private val listOfEiLPerson: List[EiLPerson] = List(
     EiLPerson(
@@ -62,7 +68,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
   private val registrationList: RegistrationList = RegistrationList(
     active = List(
       RegistrationItem(
-        id = "30",
+        id = IabdType.MedicalInsurance.id.toString,
         active = true,
         enabled = true
       )
@@ -117,8 +123,8 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       render(summary)(
         fixed(true),
         arbTaxYearRange,
-        fixed(listOfBik("40", "48")),
-        fixed(listOfBik("54", "44")),
+        arbListOfBiks,
+        arbListOfBiks,
         fixed(2),
         fixed(2),
         fixed(authenticatedRequest),
@@ -161,7 +167,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(nextTaxYear)
     case removeBenefitConfirmationNextTaxYear: RemoveBenefitConfirmationNextTaxYear =>
-      implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
+      implicit val arbAsciiString: Arbitrary[String]              = fixed("assets-transferred")
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(removeBenefitConfirmationNextTaxYear)
     case removeBenefitNextTaxYear: RemoveBenefitNextTaxYear                         =>
@@ -170,12 +176,15 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
           active = registrationList.active.map(_.copy(id = "assets-transferred"))
         )
       )
-      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]]   = fixed(authenticatedRequest)
       render(removeBenefitNextTaxYear)
     case removeBenefitOtherReason: RemoveBenefitOtherReason                         =>
-      implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
+      implicit val arbAsciiString: Arbitrary[String]              = fixed("assets-transferred")
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(removeBenefitOtherReason)
+    case confirmRemoveNextTaxYear: ConfirmRemoveNextTaxYear                         =>
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
+      render(confirmRemoveNextTaxYear)
   }
 
   override def viewPackageName: String = "views.html"
@@ -183,4 +192,5 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
   override def layoutClasses: Seq[Class[GovukLayoutWrapper]] = Seq(classOf[GovukLayoutWrapper])
 
   runAccessibilityTests()
+
 }

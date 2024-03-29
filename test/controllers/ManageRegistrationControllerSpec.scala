@@ -20,6 +20,7 @@ import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
 import models._
+import models.v1.IabdType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
@@ -427,7 +428,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         None,
         List(
           RegistrationItem(iabdType, active = true, enabled = true),
-          RegistrationItem("8", active = true, enabled = true)
+          RegistrationItem(IabdType.EmployerProvidedServices.id.toString, active = true, enabled = true)
         ),
         None
       )

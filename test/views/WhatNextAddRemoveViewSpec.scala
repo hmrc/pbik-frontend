@@ -16,6 +16,7 @@
 
 package views
 
+import models.v1.IabdType
 import models.{AuthenticatedRequest, RegistrationItem, RegistrationList}
 import play.twirl.api.Html
 import utils.FormMappings
@@ -28,7 +29,9 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
   val addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear =
     app.injector.instanceOf[AddBenefitConfirmationNextTaxYear]
 
-  val regList: RegistrationList = RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))
+  val regList: RegistrationList = RegistrationList(active =
+    List(RegistrationItem(IabdType.MedicalInsurance.id.toString, active = true, enabled = true))
+  )
 
   def view()(implicit request: AuthenticatedRequest[_]): Html =
     addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList)

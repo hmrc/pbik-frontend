@@ -19,10 +19,7 @@ package models.v1
 import models.v1
 import play.api.libs.json.{Format, Json}
 
-/*
-string (EnumPbikactv)
-Enum: "No Action" "Reinstate Payrolled Benefit In Kind (PBIK)" "Remove Payrolled Benefit In Kind (PBIK)"
- */
+// scalastyle:off magic.number
 object PbikAction extends Enumeration {
 
   type PbikAction = Value
@@ -34,3 +31,4 @@ object PbikAction extends Enumeration {
   implicit val formats: Format[PbikAction] = Json.formatEnum(this)
 
 }
+// scalastyle:on magic.number

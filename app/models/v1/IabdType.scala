@@ -19,6 +19,7 @@ package models.v1
 import models.v1
 import play.api.libs.json.{Format, Json}
 
+// scalastyle:off magic.number
 object IabdType extends Enumeration {
 
   type IabdType = Value
@@ -47,3 +48,4 @@ object IabdType extends Enumeration {
   implicit val formats: Format[IabdType] = Json.formatEnum(this)
 
 }
+// scalastyle:off magic.number

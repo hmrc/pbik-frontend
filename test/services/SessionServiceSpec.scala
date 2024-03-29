@@ -18,6 +18,7 @@ package services
 
 import controllers.FakePBIKApplication
 import models._
+import models.v1.{IabdType, PbikAction}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.matchers.should.Matchers
@@ -33,7 +34,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
-import scala.language.postfixOps
 
 class SessionServiceSpec
     extends AnyWordSpecLike
@@ -50,17 +50,20 @@ class SessionServiceSpec
     .overrides(bind[SessionService].toInstance(mockSessionService))
     .build()
 
-  private val timeout: FiniteDuration                  = 5 seconds
+  private val timeout: FiniteDuration                  = 5.seconds
   implicit val hc: HeaderCarrier                       = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
   private val mockSessionRepository: SessionRepository = mock[SessionRepository]
   private val sessionService: SessionService           = new SessionService(mockSessionRepository)
   private val pbikSession: PbikSession                 = PbikSession(sessionId)
-  private val bikStatus: Int                           = 30
 
   "The SessionService" should {
 
     "cache a list of registrations" in {
-      val regList = RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), None)
+      val regList = RegistrationList(
+        None,
+        List(RegistrationItem(IabdType.CarBenefit.id.toString, active = true, enabled = true)),
+        None
+      )
       val session = pbikSession.copy(registrations = Some(regList))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -70,7 +73,7 @@ class SessionServiceSpec
     }
 
     "cache a bik to remove" in {
-      val bikRemoved = RegistrationItem("31", active = true, enabled = true)
+      val bikRemoved = RegistrationItem(IabdType.CarBenefit.id.toString, active = true, enabled = true)
       val session    = pbikSession.copy(bikRemoved = Some(bikRemoved))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -110,7 +113,7 @@ class SessionServiceSpec
     }
 
     "cache the current year registered biks" in {
-      val cyRegisteredBiks = List(Bik("31", bikStatus))
+      val cyRegisteredBiks = List(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
       val session          = pbikSession.copy(cyRegisteredBiks = Some(cyRegisteredBiks))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -120,7 +123,7 @@ class SessionServiceSpec
     }
 
     "cache the next year registered biks" in {
-      val nyRegisteredBiks = List(Bik("31", bikStatus))
+      val nyRegisteredBiks = List(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
       val session          = pbikSession.copy(nyRegisteredBiks = Some(nyRegisteredBiks))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -133,7 +136,7 @@ class SessionServiceSpec
       val pbikSession = PbikSession(
         sessionId,
         None,
-        Some(RegistrationItem("31", active = true, enabled = true)),
+        Some(RegistrationItem(IabdType.CarBenefit.id.toString, active = true, enabled = true)),
         None,
         None,
         None,

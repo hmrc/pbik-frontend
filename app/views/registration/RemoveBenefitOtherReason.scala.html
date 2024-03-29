@@ -47,6 +47,10 @@
             name = "otherReason",
             maxLength = Some(100),
             value = form("otherReason").value,
+            label = Label(
+                isPageHeading = false,
+                classes = "govuk-label--m",
+                content = Text(messages("RemoveBenefits.other.heading", benefitLabel))),
             errorMessage = form("otherReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 

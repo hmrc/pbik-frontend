@@ -20,6 +20,7 @@ import config._
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
+import models.v1.IabdType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
@@ -65,7 +66,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
   private lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), statusValue))
 
   private val (noOfElements, statusValue): (Int, Int)        = (21, 10)
-  private val (iabdType, iabdString): (String, String)       = ("30", "medical")
+  private val (iabdType, iabdString): (String, String)       = (IabdType.MedicalInsurance.id.toString, "medical")
   private val whatNextPageController: WhatNextPageController = app.injector.instanceOf[WhatNextPageController]
 
   private class StubBikListService @Inject() (
@@ -149,7 +150,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
                     RegistrationList(active =
                       List(
                         RegistrationItem(iabdType, active = true, enabled = true),
-                        RegistrationItem("8", active = true, enabled = true)
+                        RegistrationItem(IabdType.EmployerProvidedServices.id.toString, active = true, enabled = true)
                       )
                     )
                   ),

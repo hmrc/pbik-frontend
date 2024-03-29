@@ -18,6 +18,8 @@ package utils
 
 import controllers.FakePBIKApplication
 import models.Bik
+import models.v1.IabdType._
+import models.v1.{IabdType, PbikAction, PbikStatus}
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -27,36 +29,50 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
   val bikListUtils: BikListUtils                            = app.injector.instanceOf[BikListUtils]
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-  // scalastyle:off magic.number
-  private val alphaSorted = List(39, 40, 31, 42, 43, 52, 44, 45, 47, 32, 48, 30, 50, 8, 53, 36, 35, 54)
+  private val alphaSorted = List(
+    Assets,
+    AssetTransfer,
+    CarBenefit,
+    Entertaining,
+    Expenses,
+    IncomeTaxPaidButNotDeductedFromDirectorRemuneration,
+    Mileage,
+    NonQualifyingRelocationExpenses,
+    OtherItems,
+    Telephone,
+    PaymentsOnEmployeeBehalf,
+    MedicalInsurance,
+    QualifyingRelocationExpenses,
+    EmployerProvidedServices,
+    TravelAndSubsistence,
+    VanFuelBenefit,
+    VanBenefit,
+    VouchersAndCreditCards
+  ).map(x => x.id)
 
-  val biks: List[Bik] = List(
-    Bik("" + 40, 10),
-    Bik("" + 48, 10),
-    Bik("" + 54, 10),
-    Bik("" + 44, 10),
-    Bik("" + 31, 10),
-    Bik("" + 35, 10),
-    Bik("" + 36, 10),
-    Bik("" + 30, 10),
-    Bik("" + 50, 10),
-    Bik("" + 8, 10),
-    Bik("" + 39, 10),
-    Bik("" + 47, 10),
-    Bik("" + 52, 10),
-    Bik("" + 53, 10),
-    Bik("" + 42, 10),
-    Bik("" + 43, 10),
-    Bik("" + 32, 10),
-    Bik("" + 45, 10)
+  val biks: List[Bik] = IabdType.values.toList
+    .filter(x => x.id != IabdType.CarFuelBenefit.id)
+    .map(x => Bik(x.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
+
+  private val registered: List[Bik]      =
+    List(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, VanBenefit, Mileage).map(x =>
+      Bik(x.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id)
+    )
+  private val modifications: List[Bik]   = List(
+    Bik(AssetTransfer.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
+    Bik(PaymentsOnEmployeeBehalf.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
+    Bik(VouchersAndCreditCards.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
+    Bik(NonQualifyingRelocationExpenses.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
+    Bik(OtherItems.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id),
+    Bik(IncomeTaxPaidButNotDeductedFromDirectorRemuneration.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id)
   )
-
-  private val registered                 =
-    List(Bik("" + 40, 30), Bik("" + 48, 30), Bik("" + 54, 30), Bik("" + 35, 30), Bik("" + 44, 30))
-  private val modifications              =
-    List(Bik("" + 40, 40), Bik("" + 48, 40), Bik("" + 54, 40), Bik("" + 45, 40), Bik("" + 47, 30), Bik("" + 52, 30))
-  private val normaliseResult: List[Int] = List(40, 47, 48, 52, 54).sorted
-  // scalastyle:on magic.number
+  private val normaliseResult: List[Int] = List(
+    AssetTransfer.id,
+    OtherItems.id,
+    PaymentsOnEmployeeBehalf.id,
+    IncomeTaxPaidButNotDeductedFromDirectorRemuneration.id,
+    VouchersAndCreditCards.id
+  ).sorted
 
   "The Biks, when sorted Alphabetically according to labels" should {
     "result in the correct order" in {

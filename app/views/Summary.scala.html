@@ -102,7 +102,7 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
                             <dl class="govuk-summary-list">
                                 @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
                                     <div class="govuk-summary-list__row">
-                                        <dt class="govuk-summary-list__key" id="cy1-@n.iabdType">
+                                        <dt class="govuk-summary-list__key" id="cy-@n.iabdType">
                                             @messages("BenefitInKind.label." + n.iabdType)
                                         </dt>
                                         <dd class="govuk-summary-list__actions">

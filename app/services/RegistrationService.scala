@@ -19,6 +19,7 @@ package services
 import config.PbikAppConfig
 import connectors.PbikConnector
 import models._
+import models.v1.PbikAction
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results._
@@ -58,7 +59,7 @@ class RegistrationService @Inject() (
     ) => HtmlFormat.Appendable
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     val decommissionedBikIds: Seq[Int] = pbikAppConfig.biksDecommissioned
-    val status: Int                    = 30
+    val status: Int                    = PbikAction.ReinstatePayrolledBenefitInKind.id
     val nonLegislationBiks: Seq[Int]   = if (taxDateUtils.isCurrentTaxYear(year)) {
       pbikAppConfig.biksNotSupportedCY
     } else {

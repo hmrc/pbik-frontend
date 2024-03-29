@@ -16,6 +16,8 @@
 
 package utils
 
+import models.v1.PbikAction
+
 import javax.inject.{Inject, Singleton}
 import models.{Bik, RegistrationItem, RegistrationList}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -23,9 +25,6 @@ import play.api.mvc.Request
 
 @Singleton
 class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport {
-
-  private val STATUS_ADD    = 30
-  private val STATUS_REMOVE = 40
 
   /**
     * sort the input list according to the labels in the messages files and create a new list based on this order
@@ -65,13 +64,16 @@ class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     */
   def normaliseSelectedBenefits(registeredBiks: List[Bik], selectedBiks: List[Bik]): List[Bik] = {
 
-    val selectedBiksToRemove = selectedBiks.filter(x => x.status == STATUS_REMOVE)
+    val selectedBiksToRemove = selectedBiks.filter(x => x.status == PbikAction.RemovePayrolledBenefitInKind.id)
 
     val biksToRemove = registeredBiks.foldLeft(List.empty[Bik])((acc, bik) =>
-      if (selectedBiksToRemove.contains(bik)) Bik(bik.iabdType, STATUS_REMOVE, bik.eilCount) :: acc else acc
+      if (selectedBiksToRemove.contains(bik))
+        Bik(bik.iabdType, PbikAction.RemovePayrolledBenefitInKind.id, bik.eilCount) :: acc
+      else acc
     )
 
-    val biksToAdd = selectedBiks.filter(x => x.status == STATUS_ADD && !registeredBiks.contains(x))
+    val biksToAdd =
+      selectedBiks.filter(x => x.status == PbikAction.ReinstatePayrolledBenefitInKind.id && !registeredBiks.contains(x))
 
     biksToRemove ++ biksToAdd
 
@@ -87,11 +89,9 @@ class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     */
   def mergeSelected(initialList: List[Bik], checkedList: List[Bik]): RegistrationList = {
 
-    val items: List[RegistrationItem] = initialList map { bik: Bik =>
-      bik match {
-        case a if checkedList.contains(a) => RegistrationItem(a.iabdType, active = true, enabled = false)
-        case _                            => RegistrationItem(bik.iabdType, active = false, enabled = true)
-      }
+    val items: List[RegistrationItem] = initialList map {
+      case a if checkedList.contains(a) => RegistrationItem(a.iabdType, active = true, enabled = false)
+      case bik                          => RegistrationItem(bik.iabdType, active = false, enabled = true)
     }
     RegistrationList(None, items)
   }
