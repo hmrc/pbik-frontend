@@ -105,8 +105,8 @@ AddBenefits.noselection.error = Mae’n rhaid i chi ddewis o leiaf 1 buddiant ne
 
 AddBenefits.Confirm.Multiple.Title = Datgan y buddiannau a’r treuliau rydych am eu cofrestru
 AddBenefits.Confirm.Multiple.Heading = Datgan y buddiannau a’r treuliau rydych am eu cofrestru
-AddBenefits.Confirm.Multiple.p.organisation = Trwy gadarnhau eich bod yn rhoi gwybod i CThEF y bydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen.
-AddBenefits.Confirm.Multiple.p.agent = Trwy gadarnhau eich bod yn rhoi gwybod i CThEF y bydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen.
+AddBenefits.Confirm.Multiple.p.organisation = Trwy gadarnhau eich bod yn rhoi gwybod i CThEF y bydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen:
+AddBenefits.Confirm.Multiple.p.agent = Trwy gadarnhau eich bod yn rhoi gwybod i CThEF y bydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen:
 AddBenefits.Confirm.Multiple.key = Buddiannau a threuliau dethol
 AddBenefits.Confirm.help.desc = Gallwch eithrio cyflogeion rhag talu’r buddiannau drwy’r gyflogres ar ôl i chi gofrestru, ond bydd yn rhaid i chi anfon ffurflen P11D er mwyn datgan y buddiannau sydd heb eu talu drwy’r gyflogres. Os nad yw cyflogai wedi cael y buddiant, does dim rhaid i chi ei eithrio gan nad oes treth yn ddyledus.
 
@@ -149,6 +149,8 @@ ExclusionOverview.excludecount.exceeded = Ni allwch wahardd rhagor o weithwyr.
 
 ExclusionOverview.notExcludedEmployee.p1 = Mae {0} yn cael ei drethu drwy’r gyflogres ar gyfer pob cyflogai o 6 Ebrill {1} ymlaen.
 
+ExclusionOverview.excludedEmployee.h2 = Cyflogeion sydd wedi’u heithrio
+
 ExclusionOverview.p1.organisation = Dylech ond eithrio cyflogeion sy’n cael y buddiant neu’r draul hon.
 ExclusionOverview.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy gyflwyno P11D i CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 
@@ -173,8 +175,8 @@ ExclusionSearch.Fail.Exists.Desc = Mae’r cyflogai hwn eisoes wedi’i eithrio 
 ExclusionSearch.Fail.Exists.P = Chwilio eto am gyflogai gwahanol
 
 ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu ar {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
-ExclusionRemovalConfirmation.title = Gwiriwch fanylion y cyflogai rydych am ei ychwanegu yn ôl i’r gyflogres
-ExclusionRemovalConfirmation.inset.text = Drwy gadarnhau, byddwch yn dechrau trethu’r cyflogai hwn ar ''{0}'' drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
+ExclusionRemovalConfirmation.title = Datgan y cyflogai i ychwanegu’r buddiant neu’r draul hon
+ExclusionRemovalConfirmation.p = Drwy gadarnhau, byddwch yn dechrau trethu’r cyflogai hwn ar ''{0}'' drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
 
 ExclusionRemoval.WhatNext.p1 = Trethir {0} {1} drwy’ch cyflogres o 6 Ebrill {2}.
 ExclusionRemoval.whatYouNeedToKnow.subHeading = Yr hyn y mae angen i chi ei wneud nawr
@@ -395,6 +397,28 @@ whatNext.add.p.agent = Buddiannau a threuliau rydych wedi eu cofrestru i’w tre
 
 whatNext.add.list.heading = Manylion cofrestru
 
+whatNext.rescind.list.heading = Manylion cofrestru
+
+whatNext.rescind.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
+whatNext.rescind.p1.organisation = Mae’n rhaid i chi anfon llythyr i {0} yn egluro’r canlynol:
+
+whatNext.rescind.h2.agent = Yr hyn y mae’n rhaid i’ch cleient ei wneud nawr
+whatNext.rescind.p1.agent = Mae’n rhaid ‘ch cleient anfon llythyr i {0} yn egluro’r canlynol:
+
+whatNext.rescind.li1 = bydd {0} yn cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen
+whatNext.rescind.li2 = bydd eu cod treth yn newid
+whatNext.rescind.li3 = byddant yn cael llythyr gan CThEF gyda’u cod treth newydd
+
+whatNext.rescind.p2.organisation = O 6 Ebrill {0} ymlaen, mae angen i chi ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog {1} a’u trethu drwy’ch cyflogres.
+whatNext.rescind.p2.agent = O 6 Ebrill {0} ymlaen, mae angen i’ch cleient ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog {1} a’u trethu drwy gyflogres {2}.
+
+whatNext.rescind.you.do.h3 = Os ydych am reoli cyflogeion eraill sydd wedi’u heithrio ar gyfer y buddiant neu draul hon
+whatNext.rescind.more.p.before = Gallwch
+whatNext.rescind.more.p.link = yn ôl {0}
+whatNext.rescind.more.p.after = er mwyn:
+whatNext.rescind.more.li1 = eithrio cyflogai arall o’r buddiant neu’r draul hon
+whatNext.rescind.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r draul hon
+
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.exclude.table.heading = Manylion y gwaharddiad
 
@@ -483,7 +507,7 @@ whatYouCanDoNext.subHeading.h2 = Yr hyn y gallwch ei wneud nesaf
 whatYouCanDoNext.subHeading.p.text.before = Gallwch
 whatYouCanDoNext.subHeading.p.link.organisation = yn ôl i’ch buddiannau a threuliau cofrestredig
 whatYouCanDoNext.subHeading.p.link.agent = yn ôl i fuddiannau a threuliau cofrestredig eich cleient
-whatYouCanDoNext.subHeading.p.text.after = er mwyn :
+whatYouCanDoNext.subHeading.p.text.after = er mwyn:
 whatYouCanDoNext.subHeading.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau rydych wedi’u cofrestru
 whatYouCanDoNext.subHeading.li2 = cofrestru rhagor o buddiannau a threuliau
 whatYouCanDoNext.subHeading.li3 = tynnu buddiannau neu dreuliau nad ydych am eu trethu drwy’r gyflogres mwyach

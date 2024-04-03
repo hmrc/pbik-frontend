@@ -24,8 +24,7 @@
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
         repeatWithIndex: RepeatWithIndex,
-        formWithCSRF: FormWithCSRF,
-        govukInsetText: GovukInsetText
+        formWithCSRF: FormWithCSRF
 )
 
 @(
@@ -39,6 +38,10 @@
     <h1 id="title" class="govuk-heading-xl">
         @messages("ExclusionRemovalConfirmation.title")
     </h1>
+
+    <p class="govuk-body">
+        @messages("ExclusionRemovalConfirmation.p", messages("BenefitInKind.label."+ Bik.asNPSTypeValue(iabdString)), ""+taxYearRange.cy)
+    </p>
 
     @formWithCSRF(action=routes.ExclusionListController.removeExclusionsCommit(iabdString)) {
         @for(index <- 0 until individualsToRemove.active.length) {
@@ -69,12 +72,8 @@
                 }
             </table>
         }
-        @govukInsetText(InsetText(
-            content = Text(messages("ExclusionRemovalConfirmation.inset.text", messages("BenefitInKind.label."+ Bik.asNPSTypeValue(iabdString)), ""+taxYearRange.cy))
-        ))
+
         <input type="submit" class="govuk-button" role="button" id="button-confirm" value="@messages("Service.confirmAndContinue")">
     }
-    <p><a id ="link-back" class="govuk-link" href='@routes.ExclusionListController.performPageLoad(year,iabdString)'>
-        @messages("Service.back.excluded")
-    </a></p>
+
 }

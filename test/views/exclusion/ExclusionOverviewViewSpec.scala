@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.exclusion
 
 import models.{AuthenticatedRequest, Bik, MandatoryRadioButton}
 import org.jsoup.Jsoup

@@ -28,7 +28,8 @@
     taxYearRange:TaxYearRange,
     year:String,
     iabdString:String,
-    person:EiLPerson)(implicit request:AuthenticatedRequest[_], messages: Messages)
+    person:EiLPerson
+)(implicit request:AuthenticatedRequest[_], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.exclusion
 
 import config.PbikAppConfig
 import models.{AuthenticatedRequest, EiLPerson}

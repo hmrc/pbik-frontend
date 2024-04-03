@@ -153,6 +153,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       render(whatNextExclusion)
     case whatNextRescind: WhatNextRescind                                           =>
       implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(whatNextRescind)
     case page_not_found_template: page_not_found_template                           => render(page_not_found_template)
     case addBenefitConfirmationNextTaxYear: AddBenefitConfirmationNextTaxYear       =>
