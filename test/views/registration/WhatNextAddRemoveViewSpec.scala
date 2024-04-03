@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package views
+package views.registration
 
+import models.v1.IabdType
 import models.{AuthenticatedRequest, RegistrationItem, RegistrationList}
 import play.twirl.api.Html
 import utils.FormMappings
@@ -28,20 +29,32 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
   val addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear =
     app.injector.instanceOf[AddBenefitConfirmationNextTaxYear]
 
-  val regList: RegistrationList = RegistrationList(active = List(RegistrationItem("30", active = true, enabled = true)))
+  val regList: RegistrationList = RegistrationList(active =
+    List(RegistrationItem(IabdType.MedicalInsurance.id.toString, active = true, enabled = true))
+  )
 
   def view()(implicit request: AuthenticatedRequest[_]): Html =
     addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList)
 
-  "whatNextAddRemove" must {
+  "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)
 
     behave like pageWithTitle(messages("whatNext.add.heading"))
     behave like pageWithHeader(messages("whatNext.add.heading"))
     behave like pageWithLink(
-      messages("whatYouCanDoNext.subHeading.p.link"),
+      messages("whatYouCanDoNext.subHeading.p.link." + organisationRequest.userType),
       "/payrollbik/registered-benefits-expenses"
     )
+  }
 
+  "whatNextAddRemove - agent" must {
+    implicit val html: Html = view()(agentRequest)
+
+    behave like pageWithTitle(messages("whatNext.add.heading"))
+    behave like pageWithHeader(messages("whatNext.add.heading"))
+    behave like pageWithLink(
+      messages("whatYouCanDoNext.subHeading.p.link." + agentRequest.userType),
+      "/payrollbik/registered-benefits-expenses"
+    )
   }
 }

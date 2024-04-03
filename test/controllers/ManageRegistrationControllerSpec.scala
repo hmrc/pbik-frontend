@@ -20,6 +20,7 @@ import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
 import models._
+import models.v1.IabdType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
@@ -255,7 +256,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
               )
             )
           )
-        val title  = messagesApi("RemoveBenefits.Confirm.Title").substring(beginIndex, endIndex)
+        val title  = messagesApi("RemoveBenefits.reason.Title").substring(beginIndex, endIndex)
         val result = registrationController.checkYourAnswersRemoveNextTaxYear(iabdString)(mockRequest)
 
         status(result) mustBe OK
@@ -382,7 +383,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             val result               = registrationController.removeNextYearRegisteredBenefitTypes(iabdString).apply(mockRequestForm)
 
             status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/benefit-removed")
+            redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/declare-remove-benefit-expense")
           }
 
         Seq("software", "guidance", "not-clear", "not-offering").foreach(test)
@@ -427,7 +428,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         None,
         List(
           RegistrationItem(iabdType, active = true, enabled = true),
-          RegistrationItem("8", active = true, enabled = true)
+          RegistrationItem(IabdType.EmployerProvidedServices.id.toString, active = true, enabled = true)
         ),
         None
       )
@@ -522,7 +523,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val result               = registrationController.submitRemoveBenefitOtherReason(iabdString)(mockRequestForm)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/benefit-removed")
+        redirectLocation(result) mustBe Some(s"/payrollbik/cy1/$iabdString/declare-remove-benefit-expense")
       }
 
       "return to the same page with an error when other reason is not provided" in {
@@ -547,6 +548,66 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
         status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(errorMsg)
+      }
+    }
+
+    "loading showConfirmRemoveNextTaxYear, an authorised user" should {
+      "be directed cy + 1 confirmation page to confirm remove bik" in {
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  sessionId,
+                  Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+
+        val title  = messagesApi("RemoveBenefits.confirm.heading")
+        val result = registrationController.showConfirmRemoveNextTaxYear(iabdString)(mockRequest)
+
+        status(result) mustBe OK
+        contentAsString(result) must include(title)
+      }
+    }
+
+    "loading submitConfirmRemoveNextTaxYear, an authorised user" should {
+      "be directed cy + 1 removal confirmation page" in {
+        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  sessionId,
+                  Some(
+                    RegistrationList(
+                      active = List(RegistrationItem(iabdType, active = true, enabled = true)),
+                      reason = Some(BinaryRadioButtonWithDesc("other", None))
+                    )
+                  ),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+
+        val result = registrationController.submitConfirmRemoveNextTaxYear(iabdString)(mockRequest)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/payrollbik/cy1/car/benefit-removed")
       }
     }
   }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.registration
 
 import models.{AuthenticatedRequest, RegistrationList}
 import org.jsoup.Jsoup
@@ -49,7 +49,7 @@ class NextYearViewSpec extends PBIKViewSpec {
 
   }
 
-  "nextYearPage - Agent" must {
+  "nextYearPage - agent" must {
     implicit def html: Html = viewWithForm(formMappings.objSelectedForm)(agentRequest)
 
     behave like pageWithTitle(messages("AddBenefits.Heading"))

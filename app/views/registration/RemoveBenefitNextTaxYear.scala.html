@@ -22,7 +22,8 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
-        formWithCSRF: FormWithCSRF
+        formWithCSRF: FormWithCSRF,
+        pageTitleHeading: components.PageTitleHeading
 )
 
 @(
@@ -30,11 +31,11 @@
         removalBik: Option[RegistrationItem],
         taxYearRange:TaxYearRange,
         form: Form[BinaryRadioButtonWithDesc]
-)(implicit request:Request[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[_], messages: Messages)
 
 @benefitLabel = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(bikList.active.head.id)}")}
 
-@title = @{ messages("RemoveBenefits.Confirm.Title") }
+@title = @{ messages("RemoveBenefits.reason.Title") }
 
 @govukLayoutWrapper(PageTitle(title, form.hasErrors)) {
     @if(form.hasErrors) {
@@ -45,12 +46,8 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li>
-                        <a href="#error-list-1">
-                            @if(form.errors.head.message == "error.required") {
-                                @Messages("RemoveBenefits.reason.no.selection")
-                            } else {
-                                @form.errors.head.message
-                            }
+                        <a href="#radio-software">
+                            @messages("RemoveBenefits.reason.no.selection")
                         </a>
                     </li>
                 </ul>
@@ -58,19 +55,15 @@
         </div>
     }
 
+    @pageTitleHeading(messages("RemoveBenefits.reason.Heading", benefitLabel))
+
     <div class="data">
         @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.id), Symbol("id") -> "form-remove") {
             <div class='govuk-form-group @if(form.hasErrors) {govuk-form-group--error}'>
                 <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="error-list-1" }>
-                    <legend><h1 id="title" class="govuk-heading-xl">
-                        @messages("RemoveBenefits.Confirm.Heading", benefitLabel)
-                    </h1></legend>
                     @if(form.hasErrors) {
                         <span id="error-list-1" class="govuk-error-message">
-                            @if(form.errors.head.message == "error.required") {@Messages("RemoveBenefits.reason.no.selection")
-                        } else {
-                            @form.errors.head.message
-                        }
+                            @messages("RemoveBenefits.reason.no.selection")
                         </span>
                     }
                     <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
@@ -98,13 +91,9 @@
                 </fieldset>
             </div>
 
-            <div class="govuk-inset-text">
-                @messages("RemoveBenefits.Confirm.Desc", benefitLabel, ""+taxYearRange.cy, ""+taxYearRange.cyplus1)
-            </div>
-
-            <input type="submit" role="button" class="govuk-button" id="button-confirm" value="@messages("Service.confirmAndContinue")">
+            <input type="submit" role="button" class="govuk-button" id="button-confirm" value="@messages("Service.continue")">
         }
-        <a class="govuk-link" id="link-back" href='@routes.HomePageController.onPageLoad'>@messages("RemoveBenefits.back.summary")</a>
+
         <script @{CSPNonce.attr}>document.getElementById("link-back").addEventListener("click", () => gaEventLinkOverview());</script>
     </div>
 }

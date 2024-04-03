@@ -52,7 +52,7 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
     }
   }
 
-  "exclusionNinoOrNoNinoPage - Agent" must {
+  "exclusionNinoOrNoNinoPage - agent" must {
     implicit val html: Html = viewWithForm(form)(agentRequest)
 
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))

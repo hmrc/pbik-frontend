@@ -54,7 +54,7 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
 
   }
 
-  "exclusionOverview - Agent" must {
+  "exclusionOverview - agent" must {
     implicit val html: Html = viewWithForm(form)(agentRequest)
 
     behave like pageWithTitle(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))

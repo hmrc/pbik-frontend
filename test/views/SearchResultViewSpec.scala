@@ -17,6 +17,7 @@
 package views
 
 import models._
+import models.v1.IabdType
 import play.api.data.Form
 import play.twirl.api.Html
 import utils.FormMappings
@@ -29,7 +30,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
   val searchResultsView: SearchResults = app.injector.instanceOf[SearchResults]
 
   private val status: Int            = 10
-  private val (iabdType, iabdString) = ("30", "medical")
+  private val (iabdType, iabdString) = (IabdType.MedicalInsurance.id.toString, "medical")
 
   val listOfMatches: EiLPersonList = EiLPersonList(
     List(

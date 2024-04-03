@@ -19,6 +19,7 @@ package support
 import config.PbikAppConfig
 import connectors.PbikConnector
 import models._
+import models.v1.{IabdType, PbikStatus}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results._
@@ -59,16 +60,16 @@ class StubbedRegistrationService @Inject() (
     )
     with I18nSupport {
 
-  val dateRange: TaxYearRange                                            = taxDateUtils.getTaxYearRange()
-  val (numberOfElements, bikStatus, biksAvailableCount): (Int, Int, Int) = (21, 10, 17)
-  lazy val CYCache: List[Bik]                                            =
-    List.tabulate(numberOfElements)(n => Bik("" + (n + 1), bikStatus))
-  lazy val CYRegistrationItems: List[RegistrationItem]                   =
-    List.tabulate(numberOfElements)(n => RegistrationItem("" + (n + 1), active = true, enabled = true))
-  val registeredListOption: List[Bik]                                    = List.empty[Bik]
-  val allRegisteredListOption: List[Bik]                                 = CYCache
-  val mockRegistrationItemList: List[RegistrationItem]                   = List.empty[RegistrationItem]
-  val mockFormRegistrationList: Form[RegistrationList]                   =
+  val dateRange: TaxYearRange                          = taxDateUtils.getTaxYearRange()
+  val biksAvailableCount: Int                          = 17
+  lazy val CYCache: List[Bik]                          = IabdType.values.toList
+    .map(value => Bik(value.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
+  lazy val CYRegistrationItems: List[RegistrationItem] = IabdType.values.toList
+    .map(value => RegistrationItem(value.id.toString, active = true, enabled = true))
+  val registeredListOption: List[Bik]                  = List.empty[Bik]
+  val allRegisteredListOption: List[Bik]               = CYCache
+  val mockRegistrationItemList: List[RegistrationItem] = List.empty[RegistrationItem]
+  val mockFormRegistrationList: Form[RegistrationList] =
     formMappings.objSelectedForm.fill(RegistrationList(None, CYRegistrationItems))
 
   //TODO: Why is this test returning different views to the real code?

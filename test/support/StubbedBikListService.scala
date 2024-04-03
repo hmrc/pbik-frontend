@@ -19,6 +19,7 @@ package support
 import config.PbikAppConfig
 import connectors.PbikConnector
 import models._
+import models.v1.{IabdType, PbikAction, PbikStatus}
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.ControllersReferenceData
@@ -37,10 +38,8 @@ class StubbedBikListService @Inject() (
       controllersReferenceData
     ) {
 
-  //scalastyle:off magic.number
-  lazy val CYCache: List[Bik] = List.range(3, 32).map(n => Bik("" + n, 10))
-  //scalastyle:on magic.number
-  /*(n => new Bik("" + (n + 1), 10))*/
+  lazy val CYCache: List[Bik] = IabdType.values.toList
+    .map(value => Bik(value.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
 
   override def currentYearList(implicit
     hc: HeaderCarrier,
@@ -49,9 +48,7 @@ class StubbedBikListService @Inject() (
     Future.successful(
       BikResponse(
         HeaderTags.createResponseHeaders(),
-        CYCache.filter { x: Bik =>
-          Integer.parseInt(x.iabdType) == 31
-        }
+        List(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
       )
     )
 
@@ -62,9 +59,7 @@ class StubbedBikListService @Inject() (
     Future.successful(
       BikResponse(
         HeaderTags.createResponseHeaders(),
-        CYCache.filter { x: Bik =>
-          Integer.parseInt(x.iabdType) == 31
-        }
+        List(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
       )
     )
 

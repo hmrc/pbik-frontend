@@ -39,6 +39,8 @@ GET         /:year/registration-complete                         controllers.Wha
 ## Remove registrations
 GET         /cy1/:iabdString/remove-benefit-expense                controllers.registration.ManageRegistrationController.checkYourAnswersRemoveNextTaxYear(iabdString: String)
 POST        /cy1/:iabdString/remove-benefit-expense                controllers.registration.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(iabdString: String)
+GET         /cy1/:iabdString/declare-remove-benefit-expense        controllers.registration.ManageRegistrationController.showConfirmRemoveNextTaxYear(iabdString: String)
+GET         /cy1/:iabdString/confirm-remove-benefit-expense        controllers.registration.ManageRegistrationController.submitConfirmRemoveNextTaxYear(iabdString: String)
 
 GET         /cy1/:iabdString/benefit-removed                       controllers.WhatNextPageController.showWhatNextRemovedBik(iabdString: String)
 

@@ -21,6 +21,7 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
+        printLink: components.PrintLink
 )
 
 @(
@@ -28,35 +29,90 @@
         taxYearRange:TaxYearRange,
         bikList: RegistrationList,
         iabdString:String
-)(implicit request:Request[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages("whatNext.remove.heading")), showBackLink = false) {
+@cyminus1 = @{""+taxYearRange.cyminus1}
+@cy = @{""+taxYearRange.cy}
+@taxYear = @{if(isCurrentYear) cyminus1 else cy}
+@benefitLabel = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
 
-    <section id="print-section">
-        <div id="printContainer"></div>
-    </section>
+@govukLayoutWrapper(PageTitle(messages("whatNext.remove.heading")), showBackLink = true, showYTABackLink = request.showYTABackLink, showECLBackLink = request.showECLBackLink) {
 
     <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
         <h1 id="title" class="govuk-panel__title">
             @messages("whatNext.remove.heading")
         </h1>
     </div>
-    <p class="govuk-body">
-        @messages("whatNext.remove.p", messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), s"${taxYearRange.cy}")
-    </p>
+
+    @printLink(messages("Service.print.link"))
+
+    <p class="govuk-body">@messages("whatNext.remove.p1", benefitLabel, taxYear)</p>
 
     <h2 class="govuk-heading-m">
-      @messages("whatNext.subHeading")
+        @messages("whatNext.remove.table.heading")
     </h2>
 
-    <p class="govuk-body  govuk-!-margin-bottom-7">
-        @Html(messages("whatNext.remove.link.P11D.Text",messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")))
-    </p>
+    <dl class="govuk-summary-list" id="list-of-confirmation-benefits">
+        @if(request.isAgent) {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.client.name")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@request.clientName.get</p>
+            </dd>
+        </div>
+        }
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.employer.paye")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@request.empRef</p>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.removed.benefits")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @for(item <- bikList.active.indices) {
+                <p class="govuk-body">@messages("BenefitInKind.label." + bikList.active(item).id.toString)</p>
+                }
+            </dd>
+        </div>
+    </dl>
+
+    <h2 class="govuk-heading-l">
+        @messages("whatNext.remove.h2." + request.userType)
+    </h2>
+
+    <div class="govuk-form-group" id="next-steps">
+        <p class="govuk-body">
+            @messages("whatNext.remove.p2.before." + request.userType)
+            <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Removal page:P11D(b)">
+                @messages("whatNext.remove.p2.link." + request.userType)
+            </a>.
+        </p>
+
+    </div>
+
+    <h2 class="govuk-heading-l">
+        @messages("whatYouCanDoNext.subHeading.h2")
+    </h2>
 
     <p class="govuk-body">
-    <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
-      @messages("whatNext.service.back.overview.ViewYourSummary")
-    </a>
+        @messages("whatYouCanDoNext.subHeading.p.text.before")
+        <a class="govuk-link" id="link-back" href = "@routes.HomePageController.onPageLoad">
+            @messages("whatYouCanDoNext.subHeading.p.link." + request.userType)
+        </a>
+        @messages("whatYouCanDoNext.subHeading.p.text.after")
     </p>
 
-}
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("whatYouCanDoNext.subHeading.li1")</li>
+        <li>@messages("whatYouCanDoNext.subHeading.li2")</li>
+        <li>@messages("whatYouCanDoNext.subHeading.li3")</li>
+    </ul>
+
+    }

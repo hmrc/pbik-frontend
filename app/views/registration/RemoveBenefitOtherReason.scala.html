@@ -29,15 +29,15 @@
 @(
     form: Form[OtherReason],
     iabdString: String
-)(implicit request:Request[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[_], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
 
 @govukLayoutWrapper( PageTitle(messages("RemoveBenefits.other.title"), form.hasErrors)) {
 
-    @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdString)) {
+@errorSummary(form.errors)
 
-        @errorSummary(form.errors)
+    @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdString)) {
 
         @hmrcCharacterCount(CharacterCount(
             id = "otherReason",
@@ -48,18 +48,16 @@
                 isPageHeading = true,
                 classes = "govuk-label--xl",
                 content = Text(messages("RemoveBenefits.other.heading", benefitLabel)),
-                attributes = Map("id" -> "title")
-            ),
+                attributes = Map("id" -> "title")),
             errorMessage = form("otherReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
 
         @govukButton(Button(
-            content = Text(messages("Service.confirmAndContinue")),
+            content = Text(messages("Service.continue")),
             attributes = Map("id" -> "button-confirm")
         ))
 
     }
 
-    <a class="govuk-link" id="link-back" href='@routes.HomePageController.onPageLoad'>@messages("RemoveBenefits.back.summary")</a>
     <script @{CSPNonce.attr}>document.getElementById("link-back").addEventListener("click", () => gaEventLinkOverview());</script>
 }

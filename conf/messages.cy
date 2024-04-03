@@ -22,6 +22,8 @@ Service.confirm = Cadarnhau
 Service.confirmAndContinue = Cadarnhau ac yn eich blaen
 Service.tryagain = Rhowch gynnig arall arni
 
+Service.print.link = Argraffwch y dudalen hon
+
 Service.notEnrolled.title = Ymrestru i ddefnyddio’r gwasanaeth hwn
 Service.notEnrolled.text1 = Rydych wedi’ch mewngofnodi i Wasanaethau Ar-lein CThEF, ond mae’n rhaid i’ch cyflogwr gofrestru ar gyfer Talu Wrth Ennill (TWE) y Cyflogwr cyn i chi allu mynd yn eich blaen.
 Service.notEnrolled.text2 = Er mwyn ymrestru, bydd angen y rhain arnoch:
@@ -112,9 +114,8 @@ AddBenefits.Confirm.help.desc = Gallwch eithrio cyflogeion rhag talu’r buddian
 # Remove benefits
 #*************************************************************
 
-RemoveBenefits.Confirm.Title = Pam yr ydych am ddileu’r buddiant neu’r draul?
-RemoveBenefits.Confirm.Heading = Pam yr ydych am ddileu {0}?
-RemoveBenefits.Confirm.Desc = Drwy gadarnhau, byddwch yn stopio trethu {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
+RemoveBenefits.reason.Title = Pam yr ydych am ddileu’r buddiant neu’r draul?
+RemoveBenefits.reason.Heading = Pam yr ydych am ddileu {0}?
 RemoveBenefits.Heading = Dileu buddiannau neu dreuliau o’r flwyddyn dreth sy’n dechrau ar 6 Ebrill {0}
 
 RemoveBenefits.reason.no.selection = Dewis pam yr ydych am ddileu’r buddiant neu’r draul
@@ -123,12 +124,22 @@ RemoveBenefits.reason.guidance = Nid oedd yr arweiniad ar gyfer y gwasanaeth hwn
 RemoveBenefits.reason.not-clear = Nid oedd diben y gwasanaeth hwn yn eglur
 RemoveBenefits.reason.not-offering = Nid ydym mwyach yn cynnig {0} i’n cyflogeion
 RemoveBenefits.reason.other = Arall
-RemoveBenefits.back.summary = Yn ôl i’ch crynodeb o fuddiannau a threuliau cofrestredig
 
 RemoveBenefits.other.title = Rhowch wybod i ni pam yr ydych am ddileu’r buddiant neu’r draul
 RemoveBenefits.other.heading = Rhowch wybod i ni pam yr ydych am ddileu {0}
 RemoveBenefits.other.error.required = Nodwch pam yr ydych am ddileu’r buddiant neu’r draul
 RemoveBenefits.other.error.length = Mae’n rhaid i ‘Pam yr ydych am ddileu’r buddiant neu’r draul’ fod yn 100 o gymeriadau neu lai
+
+RemoveBenefits.confirm.title = Datgan y buddiant neu’r draul i roi’r gorau i drethu drwy’r gyflogres
+RemoveBenefits.confirm.heading = Datgan y buddiant neu’r draul i roi’r gorau i drethu drwy’r gyflogres
+
+RemoveBenefits.confirm.p1.organisation = Drwy gadarnhau, byddwch yn rhoi’r gorau i drethu {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen.
+RemoveBenefits.confirm.p2.organisation = Mae’n rhaid i chi roi gwybod am werth unrhyw fuddiant neu draul ar gyfer y flwyddyn dreth gyfredol drwy gyflwyno P11D i CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+
+RemoveBenefits.confirm.p1.agent = Drwy gadarnhau, byddwch yn rhoi’r gorau i drethu {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen.
+RemoveBenefits.confirm.p2.agent = Mae’n rhaid i’ch cleient rhoi gwybod am werth unrhyw fuddiant neu draul ar gyfer y flwyddyn dreth gyfredol drwy gyflwyno P11D i CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
+#TODO update
+RemoveBenefits.confirm.table.key1 = Benefit or expense
 
 #*************************************************************
 # Exclusion Overview
@@ -322,11 +333,12 @@ Service.field.dob.year = Blwyddyn
 Service.field.gender = Rhywedd
 Service.field.gender.male = Gwryw
 Service.field.gender.female = Benyw
-#TODO welsh translation need
-Service.field.employee.name = Employee name
+Service.field.employee.name = Enw’r cyflogai
 Service.field.client.name = Enw’r cleient
 Service.field.employer.paye = Cyfeirnod TWE y cyflogwr
 Service.field.selected.benefits = Buddiannau a threuliau sydd wedi cael eu dewis
+#TODO welsh translation need
+Service.field.removed.benefits = Removed benefits and expenses
 Service.action = Gweithred
 
 #*************************************************************
@@ -378,8 +390,6 @@ error.exclusion.multi.selection = Mae’n rhaid i chi ddewis pa gyflogai yr ydyc
 whatNext.add.heading = Cofrestriad wedi’i gwblhau
 whatNext.remove.heading = Buddiant wedi’i ddileu
 
-whatNext.print.link = Argraffwch y dudalen hon
-
 whatNext.add.p.organisation = Buddiannau a threuliau rydych wedi eu cofrestru i’w trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen.
 whatNext.add.p.agent = Buddiannau a threuliau rydych wedi eu cofrestru i’w trethu drwy gyflogres {0} o 6 Ebrill {1} ymlaen.
 
@@ -421,11 +431,20 @@ whatNext.exclude.more.li1 = eithrio cyflogai arall o’r buddiant neu’r draul 
 whatNext.exclude.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r draul hon
 
 whatNext.subHeading = Camau nesaf
-whatNext.remove.p = Ni fyddwch yn trethu {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
 whatNext.exclude.lede = Ni threthir {0} {1} drwy’ch cyflogres o 6 Ebrill {2} ymlaen.
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
-whatNext.remove.link.P11D.Text = Os ydych yn dal i roi {0} i’ch cyflogeion, bydd yn rhaid i chi lenwi <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/guidance/report-end-of-year-expenses-and-benefits-online" data-journey-click="link - click:Removal page:P11D(b)">ffurflen P11D ar eu cyfer ar ddiwedd y flwyddyn dreth (yn agor ffenestr neu dab newydd).</a>
+
+whatNext.remove.p1 = Rydych wedi tynnu {0} rhag cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen.
+whatNext.remove.table.heading = Manylion y buddiant neu draul
+
+whatNext.remove.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
+whatNext.remove.p2.before.organisation = Os ydych chi’n dal i ddarparu’r buddiant neu’r draul hon i unrhyw un o’ch cyflogeion, bydd angen i chi
+whatNext.remove.p2.link.organisation = cyflwyno P11D i CThEF ar eu cyfer ar ddiwedd y flwyddyn dreth (yn agor ffenestr neu dab newydd)
+
+whatNext.remove.h2.agent = Beth ddylech chi ddweud wrth eich cleient
+whatNext.remove.p2.before.agent = Os yw’ch cleient yn dal i ddarparu’r buddiant neu’r draul hon i unrhyw un o’ch cyflogeion, bydd angen i chi
+whatNext.remove.p2.link.agent = cyflwyno P11D i CThEF ar eu cyfer ar ddiwedd y flwyddyn dreth (yn agor ffenestr neu dab newydd)
 
 whatYouNeedToKnow.subHeading.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
 whatYouNeedToKnow.subHeading.agent = Beth ddylech chi ddweud wrth eich cleient
@@ -462,7 +481,8 @@ whatYouNeedToKnow.subHeading.after.p3.link.agent = cyflwyno ffurflen P11D(b) er 
 
 whatYouCanDoNext.subHeading.h2 = Yr hyn y gallwch ei wneud nesaf
 whatYouCanDoNext.subHeading.p.text.before = Gallwch
-whatYouCanDoNext.subHeading.p.link = yn ôl i’ch buddiannau a threuliau cofrestredig
+whatYouCanDoNext.subHeading.p.link.organisation = yn ôl i’ch buddiannau a threuliau cofrestredig
+whatYouCanDoNext.subHeading.p.link.agent = yn ôl i fuddiannau a threuliau cofrestredig eich cleient
 whatYouCanDoNext.subHeading.p.text.after = er mwyn :
 whatYouCanDoNext.subHeading.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau rydych wedi’u cofrestru
 whatYouCanDoNext.subHeading.li2 = cofrestru rhagor o buddiannau a threuliau

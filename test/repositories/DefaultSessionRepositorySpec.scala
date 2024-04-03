@@ -19,6 +19,7 @@ package repositories
 import config.PbikAppConfig
 import controllers.FakePBIKApplication
 import models._
+import models.v1.IabdType
 import org.mongodb.scala.model.Filters
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -59,7 +60,13 @@ class DefaultSessionRepositorySpec
 
       "update data when there is already data" in {
         val updatedSession = pbikSession.copy(registrations =
-          Some(RegistrationList(None, List(RegistrationItem("31", active = true, enabled = true)), None))
+          Some(
+            RegistrationList(
+              None,
+              List(RegistrationItem(IabdType.CarBenefit.id.toString, active = true, enabled = true)),
+              None
+            )
+          )
         )
 
         val result = await(sessionRepository.upsert(pbikSession))

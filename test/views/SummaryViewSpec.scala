@@ -54,7 +54,7 @@ class SummaryViewSpec extends PBIKViewSpec {
     }
   }
 
-  "overview with benefits - Agent" must {
+  "overview with benefits - agent" must {
     implicit val html: Html = view(List(carBik))(agentRequest)
 
     behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))

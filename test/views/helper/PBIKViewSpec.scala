@@ -83,6 +83,16 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
       doc must haveInputLabelWithText(id, label)
     }
 
+  def pageWithConfirmAndContinueButtonAndLinkAndText(id: String, link: String, text: String)(implicit
+    view: Html
+  ): Unit =
+    s"have a link with id=$id and href=$link" in {
+      val a = doc.select(s"a[id=$id]").first()
+      a must not be None.orNull
+      a.attr("href") mustBe link
+      a.text().trim mustBe text
+    }
+
   def pageWithContinueButtonForm(submitUrl: String, buttonText: String)(implicit view: Html): Unit =
     pageWithButtonForm(submitUrl, buttonText)
 

@@ -16,6 +16,7 @@
 
 package models
 
+import models.v1.{IabdType, PbikAction, PbikStatus}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -24,15 +25,16 @@ class BikSpec extends AnyWordSpec with Matchers {
     ".equals" must {
 
       "return true if 2 Bik instances have the same iabdType" in {
-        val bik: Bik          = Bik("30", 0, 2)
-        val bikToCompare: Bik = Bik("30", 1, 3)
+        val bik: Bik          = Bik(IabdType.MedicalInsurance.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id, 2)
+        val bikToCompare: Bik =
+          Bik(IabdType.MedicalInsurance.id.toString, PbikStatus.InvalidPayrollingBenefitInKind.id, 3)
 
         bik.equals(bikToCompare) mustBe true
       }
 
       "return false if 2 Bik instances have different iabdType" in {
-        val bik: Bik          = Bik("30", 0, 1)
-        val bikToCompare: Bik = Bik("31", 0, 1)
+        val bik: Bik          = Bik(IabdType.MedicalInsurance.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id, 1)
+        val bikToCompare: Bik = Bik(IabdType.Expenses.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id, 1)
 
         bik.equals(bikToCompare) mustBe false
       }
@@ -40,8 +42,9 @@ class BikSpec extends AnyWordSpec with Matchers {
 
     ".hashCode" must {
       "return a hash integer for the iabdType rather than the Bik instance" in {
-        val generatedHash: Int = "30".hashCode
-        val bik: Bik           = Bik("30", 0, 2)
+        val iabd               = IabdType.MedicalInsurance.id.toString
+        val generatedHash: Int = iabd.hashCode
+        val bik: Bik           = Bik(iabd, PbikAction.NoAction.id, 2)
 
         bik.hashCode mustBe generatedHash
       }
