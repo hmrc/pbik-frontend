@@ -105,8 +105,8 @@ AddBenefits.noselection.error = You need to select at least 1 benefit or expense
 
 AddBenefits.Confirm.Multiple.Title = Declare the benefits and expenses you want to register
 AddBenefits.Confirm.Multiple.Heading = Declare the benefits and expenses you want to register
-AddBenefits.Confirm.Multiple.p.organisation = By confirming you are telling HMRC that the following benefits and expenses will be taxed through your payroll from 6 April {0}.
-AddBenefits.Confirm.Multiple.p.agent = By confirming you are telling HMRC that the following benefits and expenses will be taxed through your client''s payroll from 6 April {0}.
+AddBenefits.Confirm.Multiple.p.organisation = By confirming you are telling HMRC that the following benefits and expenses will be taxed through your payroll from 6 April {0}:
+AddBenefits.Confirm.Multiple.p.agent = By confirming you are telling HMRC that the following benefits and expenses will be taxed through your client''s payroll from 6 April {0}:
 AddBenefits.Confirm.Multiple.key = Selected benefits and expenses
 AddBenefits.Confirm.help.desc = You can exclude employees from payrolling once you’re registered, but you’ll need to send a P11D to declare the non-payrolled benefits. If an employee did not receive the benefit, there is no need to exclude them as there is no tax due.
 
@@ -149,6 +149,8 @@ ExclusionOverview.excludecount.exceeded = You can’t exclude any more employees
 
 ExclusionOverview.notExcludedEmployee.p1 = {0} is taxed through payroll for all employees from 6 April {1}.
 
+ExclusionOverview.excludedEmployee.h2 = Excluded employees
+
 ExclusionOverview.p1.organisation = You can only exclude employees who get this benefit or expense.
 ExclusionOverview.p2.organisation = For excluded employees, you need to report the value of this benefit or expense by submitting a P11D to HMRC. You should do this at the end of the tax year.
 
@@ -174,8 +176,8 @@ ExclusionSearch.Fail.Exists.Desc = This employee has already been excluded for {
 ExclusionSearch.Fail.Exists.P = Search again for a different employee
 
 ExclusionImportant.Reminder = By confirming, you will exclude this employee from having {0} taxed through your payroll from 6 April {1}.
-ExclusionRemovalConfirmation.title = Check the details of the employee you want to add back to payroll
-ExclusionRemovalConfirmation.inset.text = By confirming, you will start taxing this employee for {0} through your payroll from 6 April {1}.
+ExclusionRemovalConfirmation.title = Declare the employee to add to this benefit or expense
+ExclusionRemovalConfirmation.p = By confirming, you will start taxing this employee for {0} through your payroll from 6 April {1}.
 
 ExclusionRemoval.WhatNext.p1 = {0} will have {1} taxed through your payroll from 6 April {2}.
 ExclusionRemoval.whatYouNeedToKnow.subHeading = What you need to do now
@@ -395,6 +397,28 @@ whatNext.add.p.agent = Benefits and expenses you have registered to tax through 
 
 whatNext.add.list.heading = Registration details
 
+whatNext.rescind.list.heading = Registration details
+
+whatNext.rescind.h2.organisation = What you must do
+whatNext.rescind.p1.organisation = You must send a letter to {0} explaining that:
+
+whatNext.rescind.h2.agent = What your client must do now
+whatNext.rescind.p1.agent = Your client must send a letter to {0} explaining that:
+
+whatNext.rescind.li1 = {0} will be taxed through payroll from 6 April {1}
+whatNext.rescind.li2 = their tax code will change
+whatNext.rescind.li3 = they will receive a letter from HMRC with their new tax code
+
+whatNext.rescind.p2.organisation = From 6 April {0}, you must add the cash equivalent or relevant amount to {1}''s pay and tax them through your payroll.
+whatNext.rescind.p2.agent = From 6 April {0}, your client must add the cash equivalent or relevant amount to {1}''s pay and tax them through {2}''s payroll.
+
+whatNext.rescind.you.do.h3 = If you want to manage other excluded employees for this benefit or expense
+whatNext.rescind.more.p.before = You can
+whatNext.rescind.more.p.link = return to {0}
+whatNext.rescind.more.p.after = to:
+whatNext.rescind.more.li1 = exclude another employee from this benefit or expense
+whatNext.rescind.more.li2 = add an employee back to this benefit or expense
+
 whatNext.exclude.heading = Exclusion complete
 whatNext.exclude.table.heading = Exclusion details
 
@@ -483,7 +507,7 @@ whatYouCanDoNext.subHeading.h2 = What you can do next
 whatYouCanDoNext.subHeading.p.text.before = You can
 whatYouCanDoNext.subHeading.p.link.organisation = return to your registered benefits and expenses
 whatYouCanDoNext.subHeading.p.link.agent = return to your client''s registered benefits and expenses
-whatYouCanDoNext.subHeading.p.text.after = to :
+whatYouCanDoNext.subHeading.p.text.after = to:
 whatYouCanDoNext.subHeading.li1 = exclude employees from the benefits and expenses you have registered
 whatYouCanDoNext.subHeading.li2 = register more benefits and expenses
 whatYouCanDoNext.subHeading.li3 = remove benefits or expenses you no longer want to tax through payroll

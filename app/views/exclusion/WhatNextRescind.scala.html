@@ -21,52 +21,139 @@
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         config:PbikAppConfig,
+        printLink: components.PrintLink
 )
 
 @(
         taxYearRange:TaxYearRange,
-        year:String, iabdString:String,
-        name:String
-)(implicit request:Request[_], messages: Messages)
+        year:String,
+        iabdString:String,
+        person:EiLPerson
+)(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages("whatNext.rescind.heading")), showBackLink = true) {
+@benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
+@cyminus1 = @{""+taxYearRange.cyminus1}
+@cy = @{""+taxYearRange.cy}
+@taxYear = @{if(year=="cy") cyminus1 else cy}
 
-    <section id="print-section">
-        <div id="printContainer"></div>
-    </section>
+@govukLayoutWrapper(PageTitle(messages("whatNext.rescind.heading")),
+showBackLink = true,
+showYTABackLink = request.showYTABackLink,
+showECLBackLink = request.showECLBackLink) {
+
     <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
         <h1 id="title" class="govuk-panel__title">
             @messages("whatNext.rescind.heading")
         </h1>
     </div>
 
-    <div class="govuk-form-group">
-        <p class="govuk-body" id="confirmation-p">
-            @messages("ExclusionRemoval.WhatNext.p1", name, messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)), s"${taxYearRange.cy}")
-        </p>
-        <h2 class="govuk-heading-m">
-            @messages("ExclusionRemoval.whatYouNeedToKnow.subHeading")
-        </h2>
-        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToKnow.p1", s"${taxYearRange.cy}")</p>
-        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToKnow.p2")</p>
-        <p class="govuk-body">@Html(messages("ExclusionRemoval.whatYouNeedToKnow.p3"))</p>
+    @printLink(messages("Service.print.link"))
 
-        <h2 class="govuk-heading-m">
-            @messages("ExclusionRemoval.whatYouNeedToTellYourEmployees.subHeading")
-        </h2>
-        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToTellYourEmployees.p1", messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)))</p>
-        <p class="govuk-body">@messages("ExclusionRemoval.whatYouNeedToTellYourEmployees.p2")</p>
+    <p class="govuk-body" id="confirmation-p">
+        @messages("ExclusionRemoval.WhatNext.p1", person.fullName, messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)), s"${taxYearRange.cy}")
+    </p>
 
-    </div>
-        <p class="govuk-body">
-            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year,iabdString)" id="link-back-excluded">
-                    @messages("ExclusionRemoval.Service.finish.rescinded")
-            </a>
-        </p>
-        <p class="govuk-body">
+    <h2 class="govuk-heading-m">
+        @messages("whatNext.rescind.list.heading")
+    </h2>
 
-            <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back">
-                            @messages("ExclusionRemoval.Service.back.overview.ViewYourSummary")
-                        </a>
-        </p>
+    <dl class="govuk-summary-list" id="list-of-rescind-info">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.employee.name")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@person.fullName</p>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.nino") @messages("Service.nino.lastletter")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@person.nino</p>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.worksnumber")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@person.getWorksPayrollNumber</p>
+            </dd>
+        </div>
+        @if(request.isAgent) {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.client.name")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@request.clientName.get</p>
+            </dd>
+        </div>
+        }
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.employer.paye")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@request.empRef</p>
+            </dd>
+        </div>
+    </dl>
+
+    <h2 class="govuk-heading-m">
+        @messages("whatNext.rescind.h2." + request.userType)
+    </h2>
+
+    <p id="you-must-do-next-info-before" class="govuk-body">
+        @messages("whatNext.rescind.p1." + request.userType, person.fullName)
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("whatNext.rescind.li1", benefitLabel, taxYear)</li>
+        <li>@messages("whatNext.rescind.li2")</li>
+        <li>@messages("whatNext.rescind.li3")</li>
+    </ul>
+
+    @if(request.isAgent) {
+    <p id="you-must-do-next-info-after" class="govuk-body">
+        @messages("whatNext.rescind.p2.agent", taxYear, person.fullName, request.clientName.get)
+    </p>
+    } else {
+    <p id="you-must-do-next-info-after" class="govuk-body">
+        @messages("whatNext.rescind.p2.organisation", taxYear, person.fullName)
+    </p>
+    }
+
+    <h2 class="govuk-heading-m">
+        @messages("whatNext.exclude.you.do.h2")
+    </h2>
+
+    <p id="you-can-do-next-info" class="govuk-body">
+        @messages("whatNext.exclude.you.do.p.before." + request.userType)
+        <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back"> @messages("whatNext.exclude.you.do.p.link." + request.userType) </a>
+        @messages("whatNext.exclude.you.do.p.after." + request.userType)
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("whatNext.exclude.you.do.li1")</li>
+        <li>@messages("whatNext.exclude.you.do.li2")</li>
+        <li>@messages("whatNext.exclude.you.do.li3")</li>
+    </ul>
+
+    <h3 class="govuk-heading-x">
+        @messages("whatNext.rescind.you.do.h3")
+    </h3>
+
+    <p id="back-to-benefit" class="govuk-body">
+        @messages("whatNext.rescind.more.p.before")
+        <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdString)" id="link-back-excluded">
+            @messages("whatNext.rescind.more.p.link", benefitLabel)
+        </a>
+        @messages("whatNext.rescind.more.p.after")
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("whatNext.rescind.more.li1")</li>
+        <li>@messages("whatNext.rescind.more.li2")</li>
+    </ul>
+
 }

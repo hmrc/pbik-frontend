@@ -685,7 +685,7 @@ class ExclusionListController @Inject() (
             taxDateUtils.getTaxYearRange(),
             ControllersReferenceDataCodes.NEXT_TAX_YEAR,
             iabdString,
-            individual.firstForename + " " + individual.surname
+            individual
           )
         )
       }
