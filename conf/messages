@@ -175,7 +175,7 @@ ExclusionSearch.Fail.Desc = This employee can’t be found.
 ExclusionSearch.Fail.Exists.Desc = This employee has already been excluded for {0}. You can see them in your {1}excluded employee list{2}.
 ExclusionSearch.Fail.Exists.P = Search again for a different employee
 
-ExclusionImportant.Reminder = By confirming, you will exclude this employee from having {0} taxed through your payroll from 6 April {1}.
+ExclusionImportant.Reminder = By confirming, you will exclude this employee from having {0} taxed through payroll from 6 April {1}.
 ExclusionRemovalConfirmation.title = Declare the employee to add to this benefit or expense
 ExclusionRemovalConfirmation.p = By confirming, you will start taxing this employee for {0} through your payroll from 6 April {1}.
 
@@ -456,7 +456,7 @@ whatNext.exclude.more.li2 = add an employee back to this benefit or expense
 
 whatNext.subHeading = Next steps
 whatNext.rescind.heading = Registration complete
-whatNext.exclude.lede = {0} will not have {1} taxed through your payroll from 6 April {2}.
+whatNext.exclude.lede = {0} will not have {1} taxed through payroll from 6 April {2}.
 whatNext.service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses
 
 whatNext.remove.p1 = You have removed {0} from being taxed through payroll from 6 April {1}.

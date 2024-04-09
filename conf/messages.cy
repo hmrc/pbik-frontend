@@ -174,7 +174,7 @@ ExclusionSearch.Fail.Desc = Nid oedd modd dod o hyd i’r cyflogai hwn
 ExclusionSearch.Fail.Exists.Desc = Mae’r cyflogai hwn eisoes wedi’i eithrio ar gyfer {0}. Gallwch ei weld yn eich {1}rhestr o gyflogeion sydd wedi’u heithrio{2}.
 ExclusionSearch.Fail.Exists.P = Chwilio eto am gyflogai gwahanol
 
-ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu ar {0} drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
+ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu ar {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 ExclusionRemovalConfirmation.title = Datgan y cyflogai i ychwanegu’r buddiant neu’r draul hon
 ExclusionRemovalConfirmation.p = Drwy gadarnhau, byddwch yn dechrau trethu’r cyflogai hwn ar ''{0}'' drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
 
@@ -456,7 +456,7 @@ whatNext.exclude.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r dra
 
 whatNext.subHeading = Camau nesaf
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
-whatNext.exclude.lede = Ni threthir {0} {1} drwy’ch cyflogres o 6 Ebrill {2} ymlaen.
+whatNext.exclude.lede = Ni fydd {0} wedi trethu {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
 whatNext.remove.p1 = Rydych wedi tynnu {0} rhag cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen.
