@@ -119,11 +119,18 @@ RemoveBenefits.reason.Heading = Why do you want to remove {0}?
 RemoveBenefits.Heading = Remove benefits or expenses from the tax year starting 6 April {0}
 
 RemoveBenefits.reason.no.selection = Select why you want to remove the benefit or expense
-RemoveBenefits.reason.software = Our software does not support taxing benefits and expenses through payroll
-RemoveBenefits.reason.guidance = The guidance for this service was not clear
-RemoveBenefits.reason.not-clear = The purpose of this service was not clear
-RemoveBenefits.reason.not-offering = We are no longer offering {0} to our employees
-RemoveBenefits.reason.other = Other
+
+RemoveBenefits.reason.software.organisation = Our software does not support taxing benefits and expenses through payroll
+RemoveBenefits.reason.guidance.organisation = The guidance for this service was not clear
+RemoveBenefits.reason.not-clear.organisation = The purpose of this service was not clear
+RemoveBenefits.reason.not-offering.organisation = We are no longer offering this benefit to our employees
+RemoveBenefits.reason.other.organisation = Other
+
+RemoveBenefits.reason.software.agent = The client''s software does not support taxing benefits and expenses through payroll
+RemoveBenefits.reason.guidance.agent = The guidance for this service was not clear
+RemoveBenefits.reason.not-clear.agent = The purpose of this service was not clear
+RemoveBenefits.reason.not-offering.agent = The client is no longer offering this benefit to their employees
+RemoveBenefits.reason.other.agent = Other
 
 RemoveBenefits.other.title = Tell us why you want to remove the benefit or expense
 RemoveBenefits.other.heading = Tell us why you want to remove {0}
@@ -138,8 +145,6 @@ RemoveBenefits.confirm.p2.organisation = You must report the value of any benefi
 
 RemoveBenefits.confirm.p1.agent = By confirming, you will stop taxing {0} through payroll from 6 April {1}.
 RemoveBenefits.confirm.p2.agent = Your client must report the value of any benefit or expense for the current tax year by submitting a P11D to HMRC. They should do this at the end of the tax year.
-
-RemoveBenefits.confirm.table.key1 = Benefit or expense
 
 #*************************************************************
 # Exclusion overview
@@ -340,7 +345,8 @@ Service.field.employee.name = Employee name
 Service.field.client.name = Client name
 Service.field.employer.paye = Employer PAYE reference
 Service.field.selected.benefits = Selected benefits and expenses
-Service.field.removed.benefits = Removed benefits and expenses
+Service.field.removed.benefit = Removed benefit or expense
+Service.field.stop.benefit = Benefit or expense
 Service.action = Action
 
 #*************************************************************

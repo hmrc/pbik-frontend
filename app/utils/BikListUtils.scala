@@ -67,9 +67,11 @@ class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     val selectedBiksToRemove = selectedBiks.filter(x => x.status == PbikAction.RemovePayrolledBenefitInKind.id)
 
     val biksToRemove = registeredBiks.foldLeft(List.empty[Bik])((acc, bik) =>
-      if (selectedBiksToRemove.contains(bik))
+      if (selectedBiksToRemove.contains(bik)) {
         Bik(bik.iabdType, PbikAction.RemovePayrolledBenefitInKind.id, bik.eilCount) :: acc
-      else acc
+      } else {
+        acc
+      }
     )
 
     val biksToAdd =
