@@ -51,19 +51,20 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     } yield biks
   }
 
-  private val listOfEiLPerson: List[EiLPerson] = List(
+  private val eiLPerson: EiLPerson =
     EiLPerson(
       nino = "AB123456C",
       firstForename = "John",
       secondForename = Some("Smith"),
       surname = "Smith",
       worksPayrollNumber = Some("123/AB123456C"),
-      dateOfBirth = None,
-      gender = None,
+      dateOfBirth = Some("01/01/1990"),
+      gender = Some("Male"),
       status = None,
       perOptLock = 1
     )
-  )
+
+  private val listOfEiLPerson: List[EiLPerson] = List(eiLPerson)
 
   private val registrationList: RegistrationList = RegistrationList(
     active = List(
@@ -105,6 +106,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
 
   override implicit val arbAsciiString: Arbitrary[String]       = fixed("assets-transferred")
   implicit val arbRegistrationList: Arbitrary[RegistrationList] = fixed(registrationList)
+  implicit val arbEiLPerson: Arbitrary[EiLPerson]               = fixed(eiLPerson)
   implicit val arbListOfEiLPerson: Arbitrary[List[EiLPerson]]   = fixed(listOfEiLPerson)
   implicit val arbEilPersonList: Arbitrary[EiLPersonList]       = fixed(EiLPersonList(listOfEiLPerson))
   implicit val arbTaxYearRange: Arbitrary[TaxYearRange]         = fixed(TaxYearRange(cyMinus1, cy, cyPlus1))
@@ -145,14 +147,15 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       )
       render(noNinoExclusionSearchForm)
     case removalConfirmation: RemovalConfirmation                                   =>
-      implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
+      implicit val arbAsciiString: Arbitrary[String]              = fixed("assets-transferred")
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(removalConfirmation)
     case searchResults: SearchResults                                               => render(searchResults)
     case whatNextExclusion: WhatNextExclusion                                       =>
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(whatNextExclusion)
     case whatNextRescind: WhatNextRescind                                           =>
-      implicit val arbAsciiString: Arbitrary[String] = fixed("assets-transferred")
+      implicit val arbAsciiString: Arbitrary[String]              = fixed("assets-transferred")
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(whatNextRescind)
     case page_not_found_template: page_not_found_template                           => render(page_not_found_template)

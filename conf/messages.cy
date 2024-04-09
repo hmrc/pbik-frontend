@@ -154,7 +154,7 @@ ExclusionOverview.excludecount.exceeded = Ni allwch wahardd rhagor o weithwyr.
 
 ExclusionOverview.notExcludedEmployee.p1 = Mae {0} yn cael ei drethu drwy’r gyflogres ar gyfer pob cyflogai o 6 Ebrill {1} ymlaen.
 
-ExclusionOverview.excludedEmployee.h2 = Cyflogeion sydd wedi’u heithrio
+ExclusionOverview.excludedEmployee.table.title = Cyflogeion sydd wedi’u heithrio
 
 ExclusionOverview.p1.organisation = Dylech ond eithrio cyflogeion sy’n cael y buddiant neu’r draul hon.
 ExclusionOverview.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy gyflwyno P11D i CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
@@ -181,9 +181,10 @@ ExclusionSearch.Fail.Exists.P = Chwilio eto am gyflogai gwahanol
 
 ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu ar {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 ExclusionRemovalConfirmation.title = Datgan y cyflogai i ychwanegu’r buddiant neu’r draul hon
-ExclusionRemovalConfirmation.p = Drwy gadarnhau, byddwch yn dechrau trethu’r cyflogai hwn ar ''{0}'' drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
+ExclusionRemovalConfirmation.table.title = Manylion gweithwyr
+ExclusionRemovalConfirmation.p = Trwy gadarnhau, fydd {0} wedi trethu {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
 
-ExclusionRemoval.WhatNext.p1 = Trethir {0} {1} drwy’ch cyflogres o 6 Ebrill {2}.
+ExclusionRemoval.WhatNext.p1 = Bydd {0} wedi trethu {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
 ExclusionRemoval.whatYouNeedToKnow.subHeading = Yr hyn y mae angen i chi ei wneud nawr
 ExclusionRemoval.whatYouNeedToKnow.p1 = O 6 Ebrill {0}, mae angen i chi ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog eich cyflogai a’i drethu drwy’ch cyflogres.
 ExclusionRemoval.whatYouNeedToKnow.p2 = Gallwch roi’r gorau i anfon ffurflenni P11D atom ar gyfer y cyflogai hwn.

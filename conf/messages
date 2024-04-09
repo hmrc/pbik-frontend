@@ -154,7 +154,7 @@ ExclusionOverview.excludecount.exceeded = You can’t exclude any more employees
 
 ExclusionOverview.notExcludedEmployee.p1 = {0} is taxed through payroll for all employees from 6 April {1}.
 
-ExclusionOverview.excludedEmployee.h2 = Excluded employees
+ExclusionOverview.excludedEmployee.table.title = Excluded employees
 
 ExclusionOverview.p1.organisation = You can only exclude employees who get this benefit or expense.
 ExclusionOverview.p2.organisation = For excluded employees, you need to report the value of this benefit or expense by submitting a P11D to HMRC. You should do this at the end of the tax year.
@@ -182,9 +182,10 @@ ExclusionSearch.Fail.Exists.P = Search again for a different employee
 
 ExclusionImportant.Reminder = By confirming, you will exclude this employee from having {0} taxed through payroll from 6 April {1}.
 ExclusionRemovalConfirmation.title = Declare the employee to add to this benefit or expense
-ExclusionRemovalConfirmation.p = By confirming, you will start taxing this employee for {0} through your payroll from 6 April {1}.
+ExclusionRemovalConfirmation.table.title = Employee details
+ExclusionRemovalConfirmation.p = By confirming, {0} will have {1} taxed through payroll from 6 April {2}.
 
-ExclusionRemoval.WhatNext.p1 = {0} will have {1} taxed through your payroll from 6 April {2}.
+ExclusionRemoval.WhatNext.p1 = {0} will have {1} taxed through payroll from 6 April {2}.
 ExclusionRemoval.whatYouNeedToKnow.subHeading = What you need to do now
 ExclusionRemoval.whatYouNeedToKnow.p1 = From 6 April {0}, you need to add the cash equivalent or relevant amount to your employee’s pay and tax them through your payroll.
 ExclusionRemoval.whatYouNeedToKnow.p2 = You can stop sending us the P11Ds for this employee.
@@ -405,7 +406,7 @@ whatNext.add.list.heading = Registration details
 
 whatNext.rescind.list.heading = Registration details
 
-whatNext.rescind.h2.organisation = What you must do
+whatNext.rescind.h2.organisation = What you must do now
 whatNext.rescind.p1.organisation = You must send a letter to {0} explaining that:
 
 whatNext.rescind.h2.agent = What your client must do now
