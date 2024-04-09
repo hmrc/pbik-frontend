@@ -69,23 +69,23 @@
                     <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input"  id="radio-software" type="radio" name="selectionValue" value="software" >
-                            <label class="govuk-label govuk-radios__label" for="radio-software">@messages("RemoveBenefits.reason.software")</label>
+                            <label class="govuk-label govuk-radios__label" for="radio-software">@messages("RemoveBenefits.reason.software." + request.userType)</label>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="radio-guidance" type="radio" name="selectionValue" value="guidance" >
-                            <label class="govuk-label govuk-radios__label" for="radio-guidance">@messages("RemoveBenefits.reason.guidance")</label>
+                            <label class="govuk-label govuk-radios__label" for="radio-guidance">@messages("RemoveBenefits.reason.guidance." + request.userType)</label>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="radio-not-clear" type="radio" name="selectionValue" value="not-clear" >
-                            <label class="govuk-label govuk-radios__label" for="radio-not-clear">@messages("RemoveBenefits.reason.not-clear")</label>
+                            <label class="govuk-label govuk-radios__label" for="radio-not-clear">@messages("RemoveBenefits.reason.not-clear." + request.userType)</label>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="radio-not-offering" type="radio" name="selectionValue" value="not-offering" >
-                            <label class="govuk-label govuk-radios__label" for="radio-not-offering">@messages("RemoveBenefits.reason.not-offering", benefitLabel)</label>
+                            <label class="govuk-label govuk-radios__label" for="radio-not-offering">@messages("RemoveBenefits.reason.not-offering." + request.userType, benefitLabel)</label>
                         </div>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="radio-other" type="radio" name="selectionValue" value="other">
-                            <label class="govuk-label govuk-radios__label" for="radio-other">@messages("RemoveBenefits.reason.other")</label>
+                            <label class="govuk-label govuk-radios__label" for="radio-other">@messages("RemoveBenefits.reason.other." + request.userType)</label>
                         </div>
                     </div>
                 </fieldset>

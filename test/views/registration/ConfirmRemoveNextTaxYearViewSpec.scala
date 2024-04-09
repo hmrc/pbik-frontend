@@ -36,7 +36,7 @@ class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("RemoveBenefits.confirm.title"))
     behave like pageWithHeader(messages("RemoveBenefits.confirm.heading"))
-    behave like pageWithIdAndText(messages("RemoveBenefits.confirm.table.key1"), "table-key")
+    behave like pageWithIdAndText(messages("Service.field.stop.benefit"), "table-key")
     behave like pageWithIdAndText(messages("BenefitInKind.label." + benefit.id), "table-value")
     behave like pageWithIdAndText(
       messages(
@@ -59,7 +59,7 @@ class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("RemoveBenefits.confirm.title"))
     behave like pageWithHeader(messages("RemoveBenefits.confirm.heading"))
-    behave like pageWithIdAndText(messages("RemoveBenefits.confirm.table.key1"), "table-key")
+    behave like pageWithIdAndText(messages("Service.field.stop.benefit"), "table-key")
     behave like pageWithIdAndText(messages("BenefitInKind.label." + benefit.id), "table-value")
     behave like pageWithIdAndText(
       messages(

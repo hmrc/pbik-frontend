@@ -119,14 +119,21 @@ RemoveBenefits.reason.Heading = Pam yr ydych am ddileu {0}?
 RemoveBenefits.Heading = Dileu buddiannau neu dreuliau o’r flwyddyn dreth sy’n dechrau ar 6 Ebrill {0}
 
 RemoveBenefits.reason.no.selection = Dewis pam yr ydych am ddileu’r buddiant neu’r draul
-RemoveBenefits.reason.software = Nid yw ein meddalwedd yn cynnal y gallu i drethu buddiannau a threuliau drwy’r gyflogres
-RemoveBenefits.reason.guidance = Nid oedd yr arweiniad ar gyfer y gwasanaeth hwn yn eglur
-RemoveBenefits.reason.not-clear = Nid oedd diben y gwasanaeth hwn yn eglur
-RemoveBenefits.reason.not-offering = Nid ydym mwyach yn cynnig {0} i’n cyflogeion
-RemoveBenefits.reason.other = Arall
 
-RemoveBenefits.other.title = Rhowch wybod i ni pam yr ydych am ddileu’r buddiant neu’r draul
-RemoveBenefits.other.heading = Rhowch wybod i ni pam yr ydych am ddileu {0}
+RemoveBenefits.reason.software.organisation = Nid yw ein meddalwedd yn cynnal y gallu i drethu buddiannau a threuliau drwy’r gyflogres
+RemoveBenefits.reason.guidance.organisation = Nid oedd yr arweiniad ar gyfer y gwasanaeth hwn yn eglur
+RemoveBenefits.reason.not-clear.organisation = Nid oedd diben y gwasanaeth hwn yn eglur
+RemoveBenefits.reason.not-offering.organisation = Nid ydym yn cynnig y buddiant hwn i’n cyflogeion mwyach
+RemoveBenefits.reason.other.organisation = Arall
+
+RemoveBenefits.reason.software.agent = Nid yw meddalwedd ein cleient yn cynnal y gallu i drethu buddiannau a threuliau drwy’r gyflogres
+RemoveBenefits.reason.guidance.agent = Nid oedd yr arweiniad ar gyfer y gwasanaeth hwn yn eglur
+RemoveBenefits.reason.not-clear.agent = Nid oedd diben y gwasanaeth hwn yn eglur
+RemoveBenefits.reason.not-offering.agent = Nid yw’r cleient yn cynnig y buddiant hwn i’w cyflogeion mwyach
+RemoveBenefits.reason.other.agent = Arall
+
+RemoveBenefits.other.title = Rhoi gwybod i ni pam rydych am ddileu’r buddiant neu’r draul
+RemoveBenefits.other.heading = Rhoi gwybod i ni pam rydych am ddileu {0}
 RemoveBenefits.other.error.required = Nodwch pam yr ydych am ddileu’r buddiant neu’r draul
 RemoveBenefits.other.error.length = Mae’n rhaid i ‘Pam yr ydych am ddileu’r buddiant neu’r draul’ fod yn 100 o gymeriadau neu lai
 
@@ -138,8 +145,6 @@ RemoveBenefits.confirm.p2.organisation = Mae’n rhaid i chi roi gwybod am werth
 
 RemoveBenefits.confirm.p1.agent = Drwy gadarnhau, byddwch yn rhoi’r gorau i drethu {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 RemoveBenefits.confirm.p2.agent = Mae’n rhaid i’ch cleient rhoi gwybod am werth unrhyw fuddiant neu draul ar gyfer y flwyddyn dreth gyfredol drwy gyflwyno P11D i CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
-#TODO update
-RemoveBenefits.confirm.table.key1 = Benefit or expense
 
 #*************************************************************
 # Exclusion Overview
@@ -339,8 +344,8 @@ Service.field.employee.name = Enw’r cyflogai
 Service.field.client.name = Enw’r cleient
 Service.field.employer.paye = Cyfeirnod TWE y cyflogwr
 Service.field.selected.benefits = Buddiannau a threuliau sydd wedi cael eu dewis
-#TODO welsh translation need
-Service.field.removed.benefits = Removed benefits and expenses
+Service.field.removed.benefit = Wedi dileu’r buddiant neu’r draul
+Service.field.stop.benefit = Buddiant neu draul
 Service.action = Gweithred
 
 #*************************************************************
