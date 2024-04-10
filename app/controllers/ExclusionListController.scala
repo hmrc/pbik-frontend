@@ -626,9 +626,8 @@ class ExclusionListController @Inject() (
         Ok(
           removalConfirmationView(
             controllersReferenceData.yearRange,
-            year,
             iabdString,
-            EiLPersonList(List(session.get.eiLPerson.get))
+            session.get.eiLPerson.get
           )
         )
       }

@@ -533,10 +533,9 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
         status(result) mustBe OK
         contentAsString(result) must include(
-          "By confirming, you will start taxing this employee for Car and car fuel through your payroll"
+          "By confirming, John Smith will have Car and car fuel taxed through payroll from 6 April"
         )
-        contentAsString(result) must include("John")
-        contentAsString(result) must include("Smith")
+        contentAsString(result) must include("John Smith")
       }
 
       "show the removal what next screen" in {
@@ -544,7 +543,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
 
         status(result) mustBe OK
         contentAsString(result) must include(
-          "John Smith will have Car and car fuel taxed through your payroll from 6 April"
+          "John Smith will have Car and car fuel taxed through payroll from 6 April"
         )
       }
     }

@@ -60,14 +60,18 @@
                 <p class="govuk-body">@messages("ExclusionOverview.p1." + request.userType)</p>
             } else {
                 <p class="govuk-body">@messages("ExclusionOverview.p1." + request.userType)</p>
-                <h2 class="govuk-heading-l">@messages("ExclusionOverview.excludedEmployee.h2", s"${taxYearRange.cy}")</h2>
                 <table class="govuk-table">
+                    <caption class="govuk-table__caption govuk-table__caption--l">
+                        @messages("ExclusionOverview.excludedEmployee.table.title")
+                    </caption>
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">@messages("Service.field.name")</th>
                             <th scope="col" class="govuk-table__header">@messages("Service.field.nino")</th>
                             <th scope="col" class="govuk-table__header">@messages("Service.field.worksnumber")</th>
-                            <th scope="col" class="govuk-table__header">@messages("Service.action")</th>
+                            <th scope="col" class="govuk-table__header">
+                                <span class="govuk-visually-hidden">@messages("Service.action")</span>
+                            </th>
                         </tr>
                     </thead>
                     @for( (person, index) <- current.zipWithIndex ) {

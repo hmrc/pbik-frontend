@@ -15,23 +15,20 @@
  *@
 
 @import utils._
-@import config.PbikAppConfig
-
-@import views.html.RepeatWithIndex
 @import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
-        repeatWithIndex: RepeatWithIndex,
         formWithCSRF: FormWithCSRF
 )
 
 @(
         taxYearRange: TaxYearRange,
-        year: String, iabdString:String,
-        individualsToRemove: EiLPersonList
-)(implicit request: Request[_], messages: Messages)
+        iabdString:String,
+        person:EiLPerson
+)(implicit request: AuthenticatedRequest[_], messages: Messages)
+
+@benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
 
 @govukLayoutWrapper(PageTitle(messages("ExclusionRemovalConfirmation.title"))) {
     <span class="govuk-caption-xl">@messages("BenefitInKind.label."+ Bik.asNPSTypeValue(iabdString))</span>
@@ -40,38 +37,37 @@
     </h1>
 
     <p class="govuk-body">
-        @messages("ExclusionRemovalConfirmation.p", messages("BenefitInKind.label."+ Bik.asNPSTypeValue(iabdString)), ""+taxYearRange.cy)
+        @messages("ExclusionRemovalConfirmation.p", person.fullName, benefitLabel, ""+taxYearRange.cy)
     </p>
 
     @formWithCSRF(action=routes.ExclusionListController.removeExclusionsCommit(iabdString)) {
-        @for(index <- 0 until individualsToRemove.active.length) {
             <table class="govuk-table">
+                <caption class="govuk-table__caption govuk-visually-hidden">
+                    @messages("ExclusionRemovalConfirmation.table.title")
+                </caption>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">@messages("Service.field.name")</th>
                     <td class="govuk-table__cell" id="name">
-                        @individualsToRemove.active(index).firstForename
-                        @if(individualsToRemove.active(index).secondForename.isDefined) { @individualsToRemove.active(index).secondForename.get }
-                        @individualsToRemove.active(index).surname
+                        @person.fullName
                     </td>
                 </tr>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__header">@messages("Service.field.nino") @messages("Service.nino.lastletter")</th>
-                    <td class="govuk-table__cell" id="nino">@individualsToRemove.active(index).nino</td>
+                    <td class="govuk-table__cell" id="nino">@person.nino</td>
                 </tr>
-                @if(individualsToRemove.active(index).worksPayrollNumber.isDefined) {
+                @if(person.worksPayrollNumber.isDefined) {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">@messages("Service.field.worksnumber")</th>
-                        <td class="govuk-table__cell" id="wpn">@individualsToRemove.active(index).worksPayrollNumber.get</td>
+                        <td class="govuk-table__cell" id="wpn">@person.worksPayrollNumber.get</td>
                     </tr>
                 }
-                @if(individualsToRemove.active(index).dateOfBirth.isDefined) {
+                @if(person.dateOfBirth.isDefined) {
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">@messages("Service.field.dob")</th>
-                        <td class="govuk-table__cell" id="dob">@DateUtils.npsDateConversionFormat(individualsToRemove.active(index).dateOfBirth.get)</td>
+                        <td class="govuk-table__cell" id="dob">@DateUtils.npsDateConversionFormat(person.dateOfBirth.get)</td>
                     </tr>
                 }
             </table>
-        }
 
         <input type="submit" class="govuk-button" role="button" id="button-confirm" value="@messages("Service.confirmAndContinue")">
     }
