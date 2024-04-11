@@ -42,7 +42,7 @@ class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
       messages(
         "RemoveBenefits.confirm.p1." + organisationRequest.userType,
         messages("BenefitInKind.label." + benefit.id),
-        taxYearRange.cy
+        taxYearRange.cy.toString
       ),
       "benefit-info"
     )
@@ -65,7 +65,7 @@ class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
       messages(
         "RemoveBenefits.confirm.p1." + agentRequest.userType,
         messages("BenefitInKind.label." + benefit.id),
-        taxYearRange.cy
+        taxYearRange.cy.toString
       ),
       "benefit-info"
     )

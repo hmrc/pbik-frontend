@@ -50,7 +50,7 @@
             </dl>
 
             <p class="govuk-body" id="benefit-info">
-                @messages("RemoveBenefits.confirm.p1." + request.userType, messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)), taxYearRange.cy)
+                @messages("RemoveBenefits.confirm.p1." + request.userType, messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)), ""+taxYearRange.cy)
             </p>
 
             <div class="govuk-inset-text" id="user-info">
