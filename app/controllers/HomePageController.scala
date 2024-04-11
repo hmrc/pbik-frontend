@@ -78,19 +78,15 @@ class HomePageController @Inject() (
       .withLang(newLang)(messagesApi)
   }
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
+  def onPageLoadCY1: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val taxYearRange: TaxYearRange     = taxDateUtils.getTaxYearRange()
     val pageLoadFuture: Future[Result] = for {
       _                             <- sessionService.resetAll()
       // Get the available count of biks available for each tax year
-      biksListOptionCY: List[Bik]   <-
-        bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef.empty)
       biksListOptionCYP1: List[Bik] <-
         bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cy, EmpRef.empty)
-      currentYearList               <- bikListService.currentYearList
       nextYearList                  <- bikListService.nextYearList
     } yield {
-      sessionService.storeCYRegisteredBiks(currentYearList.bikList)
       sessionService.storeNYRegisteredBiks(nextYearList.bikList)
 
       auditHomePageView()
@@ -99,12 +95,39 @@ class HomePageController @Inject() (
         summaryPage(
           pbikAppConfig.cyEnabled,
           taxYearRange,
-          currentYearList.bikList,
+          List.empty,
           nextYearList.bikList,
-          biksListOptionCY.size,
+          0,
           biksListOptionCYP1.size
         )
       ).addingToSession(nextYearList.headers.toSeq: _*)
+    }
+    controllersReferenceData.responseErrorHandler(pageLoadFuture)
+  }
+
+  def onPageLoadCY: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
+    val taxYearRange: TaxYearRange     = taxDateUtils.getTaxYearRange()
+    val pageLoadFuture: Future[Result] = for {
+      _                           <- sessionService.resetAll()
+      // Get the available count of biks available for each tax year
+      biksListOptionCY: List[Bik] <-
+        bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef.empty)
+      currentYearList             <- bikListService.currentYearList
+    } yield {
+      sessionService.storeCYRegisteredBiks(currentYearList.bikList)
+
+      auditHomePageView()
+
+      Ok(
+        summaryPage(
+          pbikAppConfig.cyEnabled,
+          taxYearRange,
+          currentYearList.bikList,
+          List.empty,
+          biksListOptionCY.size,
+          0
+        )
+      ).addingToSession(currentYearList.headers.toSeq: _*)
     }
     controllersReferenceData.responseErrorHandler(pageLoadFuture)
   }

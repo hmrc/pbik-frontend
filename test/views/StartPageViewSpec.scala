@@ -34,7 +34,7 @@ class StartPageViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages(s"StartPage.heading.${organisationRequest.userType}"))
     behave like pageWithLink(
       messages(s"StartPage.link.${organisationRequest.userType}"),
-      "/payrollbik/registered-benefits-expenses"
+      "/payrollbik/select-year"
     )
   }
 
@@ -45,7 +45,7 @@ class StartPageViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages(s"StartPage.heading.${agentRequest.userType}"))
     behave like pageWithLink(
       messages(s"StartPage.link.${agentRequest.userType}"),
-      "/payrollbik/registered-benefits-expenses"
+      "/payrollbik/select-year"
     )
   }
 

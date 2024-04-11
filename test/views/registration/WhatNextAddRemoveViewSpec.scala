@@ -43,7 +43,7 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages("whatNext.add.heading"))
     behave like pageWithLink(
       messages("whatYouCanDoNext.subHeading.p.link." + organisationRequest.userType),
-      "/payrollbik/registered-benefits-expenses"
+      "/payrollbik/cy/registered-benefits-expenses"
     )
   }
 
@@ -54,7 +54,7 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages("whatNext.add.heading"))
     behave like pageWithLink(
       messages("whatYouCanDoNext.subHeading.p.link." + agentRequest.userType),
-      "/payrollbik/registered-benefits-expenses"
+      "/payrollbik/cy/registered-benefits-expenses"
     )
   }
 }

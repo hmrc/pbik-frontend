@@ -33,6 +33,14 @@
 
 @benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
 
+@summaryLink = @{
+    if(year=="cy"){
+        routes.HomePageController.onPageLoadCY
+    } else {
+        routes.HomePageController.onPageLoadCY1
+    }
+}
+
 @govukLayoutWrapper(PageTitle(messages("whatNext.exclude.heading")),
     showBackLink = true,
     showYTABackLink = request.showYTABackLink,
@@ -127,7 +135,7 @@
 
     <p id="you-can-do-next-info" class="govuk-body">
         @messages("whatNext.exclude.you.do.p.before." + request.userType)
-        <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back"> @messages("whatNext.exclude.you.do.p.link." + request.userType) </a>
+        <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("whatNext.exclude.you.do.p.link." + request.userType) </a>
         @messages("whatNext.exclude.you.do.p.after." + request.userType)
     </p>
     <ul class="govuk-list govuk-list--bullet">

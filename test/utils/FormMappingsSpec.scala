@@ -17,7 +17,7 @@
 package utils
 
 import controllers.FakePBIKApplication
-import models.{EiLPerson, EiLPersonList, ExclusionNino, MandatoryRadioButton}
+import models.{EiLPerson, EiLPersonList, ExclusionNino, MandatoryRadioButton, SelectYear}
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 
@@ -209,6 +209,13 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication with Matchers {
       "result in correct result" in {
         formMappings.navigationRadioButton.fill(MandatoryRadioButton("cy")) mustBe
           formMappings.navigationRadioButton.bind(Map(("navigation", "cy")))
+      }
+    }
+
+    "selectYearForm is filled" should {
+      "result in correct result" in {
+        formMappings.selectYearForm.fill(SelectYear("cy")) mustBe
+          formMappings.selectYearForm.bind(Map(("year", "cy")))
       }
     }
   }

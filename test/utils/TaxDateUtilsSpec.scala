@@ -16,21 +16,21 @@
 
 package utils
 
-import controllers.FakePBIKApplication
-import org.scalatest.OptionValues
-import org.scalatest.matchers.should.Matchers
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.wordspec.AnyWordSpecLike
+import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.time.TaxYear
+import utils.Exceptions.InvalidYearURIException
 
 import java.time.LocalDate
 import java.time.Month.{APRIL, JULY, NOVEMBER}
 
-class TaxDateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication {
+class TaxDateUtilsSpec extends AnyWordSpecLike {
 
   private val (year2013, year2014): (Int, Int) = (2013, 2014)
   private val day1: Int                        = 1
 
-  private lazy val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
+  private lazy val taxDateUtils: TaxDateUtils = new TaxDateUtils()
 
   "TaxDateUtils" when {
     ".getCurrentTaxYear" should {
@@ -57,6 +57,28 @@ class TaxDateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues w
 
       "return false, if the year is not the current year" in {
         assert(!taxDateUtils.isCurrentTaxYear(year2013))
+      }
+    }
+
+    ".mapYearStringToInt" should {
+      "return the CY year for the given URIYearString" in {
+        val yearRange = taxDateUtils.getTaxYearRange(year2013)
+
+        assert(taxDateUtils.mapYearStringToInt(FormMappingsConstants.CY, yearRange).futureValue == year2013)
+      }
+
+      "return the CY1 year for the given URIYearString" in {
+        val yearRange = taxDateUtils.getTaxYearRange(year2013)
+
+        assert(taxDateUtils.mapYearStringToInt(FormMappingsConstants.CYP1, yearRange).futureValue == year2014)
+      }
+
+      "mapping an unknown string throw an InvalidYearURIException" in {
+        val yearRange = taxDateUtils.getTaxYearRange(year2013)
+
+        intercept[InvalidYearURIException] {
+          await(taxDateUtils.mapYearStringToInt("ceeewhyploosWon", yearRange))
+        }
       }
     }
   }

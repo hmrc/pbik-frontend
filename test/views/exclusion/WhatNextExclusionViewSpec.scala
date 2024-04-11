@@ -52,7 +52,7 @@ class WhatNextExclusionViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     behave like pageWithLink(
       messages("whatNext.exclude.you.do.p.link." + organisationRequest.userType),
-      "/payrollbik/registered-benefits-expenses"
+      "/payrollbik/cy1/registered-benefits-expenses"
     )
     behave like pageWithLink(
       messages("whatNext.exclude.more.p.link", "Private medical treatment or insurance"),
@@ -67,7 +67,7 @@ class WhatNextExclusionViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     behave like pageWithLink(
       messages("whatNext.exclude.you.do.p.link." + agentRequest.userType),
-      "/payrollbik/registered-benefits-expenses"
+      "/payrollbik/cy1/registered-benefits-expenses"
     )
     behave like pageWithLink(
       messages("whatNext.exclude.more.p.link", "Private medical treatment or insurance"),

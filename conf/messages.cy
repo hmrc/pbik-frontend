@@ -75,6 +75,16 @@ StartPage.p10.link.text.agent = defnyddio ffurflen P11D (yn agor ffenestr neu da
 StartPage.link.agent = Dechrau nawr
 
 #*************************************************************
+# Select Year
+#*************************************************************
+
+SelectYear.title = Beth hoffech chi ei wneud
+SelectYear.heading = Beth hoffech chi ei wneud?
+SelectYear.option1 = Cofrestru a rheoli buddiannau a threuliau o 6 Ebrill {0} ymlaen
+SelectYear.option2 = Eithrio cyflogeion rhag buddiannau a threuliau yn y flwyddyn dreth bresennol
+SelectYear.error.empty = Dewiswch os hoffech gofrestru a rheoli buddiannau a threuliau o 6 Ebrill {0} ymlaen neu eithrio cyflogeion rhag buddiannau a threuliau yn y flwyddyn dreth bresennol
+
+#*************************************************************
 # Rwyf wedi cofrestru i dalu drwy’r gyflogres
 #*************************************************************
 

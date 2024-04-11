@@ -103,6 +103,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
   implicit val arbOtherReasonForm: Arbitrary[Form[OtherReason]]                 = fixed(forms.removalOtherReasonForm)
   implicit val arbRemovalReasonForm: Arbitrary[Form[BinaryRadioButtonWithDesc]] = fixed(forms.removalReasonForm)
   implicit val arbBinaryRadioButtonForm: Arbitrary[Form[MandatoryRadioButton]]  = fixed(forms.binaryRadioButton)
+  implicit val arbSelectYearForm: Arbitrary[Form[SelectYear]]                   = fixed(forms.selectYearForm)
 
   override implicit val arbAsciiString: Arbitrary[String]       = fixed("assets-transferred")
   implicit val arbRegistrationList: Arbitrary[RegistrationList] = fixed(registrationList)
@@ -189,6 +190,9 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     case confirmRemoveNextTaxYear: ConfirmRemoveNextTaxYear                         =>
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(confirmRemoveNextTaxYear)
+    case selectYearPage: SelectYearPage                                             =>
+      implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
+      render(selectYearPage)
   }
 
   override def viewPackageName: String = "views.html"

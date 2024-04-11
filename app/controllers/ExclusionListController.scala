@@ -29,7 +29,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utils.Exceptions.{InvalidBikTypeException, InvalidYearURIException}
+import utils.Exceptions.InvalidBikTypeException
 import utils._
 import views.html.ErrorPage
 import views.html.exclusion._
@@ -70,18 +70,11 @@ class ExclusionListController @Inject() (
 
   lazy val exclusionsAllowed: Boolean = configuration.get[Boolean]("pbik.enabled.eil")
 
-  def mapYearStringToInt(URIYearString: String): Future[Int] =
-    URIYearString match {
-      case utils.FormMappingsConstants.CY   => Future.successful(controllersReferenceData.yearRange.cyminus1)
-      case utils.FormMappingsConstants.CYP1 => Future.successful(controllersReferenceData.yearRange.cy)
-      case _                                => Future.failed(throw new InvalidYearURIException())
-    }
-
   def validateRequest(isCurrentYear: String, iabdString: String)(implicit
     request: AuthenticatedRequest[_]
   ): Future[Int] =
     for {
-      year                          <- mapYearStringToInt(isCurrentYear)
+      year                          <- taxDateUtils.mapYearStringToInt(isCurrentYear, controllersReferenceData.yearRange)
       registeredBenefits: List[Bik] <-
         bikListService.registeredBenefitsList(year, request.empRef)
     } yield
@@ -152,7 +145,11 @@ class ExclusionListController @Inject() (
                     .withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdString)
                 )
               case ControllersReferenceDataCodes.NO  =>
-                Redirect(routes.HomePageController.onPageLoad)
+                if (isCurrentTaxYear == utils.FormMappingsConstants.CY) {
+                  Redirect(routes.HomePageController.onPageLoadCY)
+                } else {
+                  Redirect(routes.HomePageController.onPageLoadCY1)
+                }
             }
           }
         )

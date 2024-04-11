@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import views.templatemodels.PageTitle
+package models
 
-@this(govukLayoutWrapper: GovukLayoutWrapper)
+import play.api.libs.json.{Json, OFormat}
 
-@()(implicit request:Request[_], messages: Messages)
+case class SelectYear(year: String)
 
-@govukLayoutWrapper(PageTitle(messages("signedOut.title")), timeoutActive = false, signOut = false) {
-
-    <h1 class="govuk-heading-xl">@messages("signedOut.title")</h1>
-
-    <div>
-        <a class="govuk-button" role="button" href="@routes.StartPageController.onPageLoad">@messages("signedOut.signIn")</a>
-    </div>
-
+object SelectYear {
+  implicit val formats: OFormat[SelectYear] = Json.format[SelectYear]
 }
