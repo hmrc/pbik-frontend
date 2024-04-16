@@ -37,22 +37,45 @@
         registeredBenefitsNextYear: List[Bik],
         serviceBiksCountCY: Int,
         serviceBiksCountCYP1: Int,
+        showChangeYearLink: Boolean
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages("Overview.benefitsRegistered.heading")),
+@title = @{if(registeredBenefitsCurrentYear.isEmpty){ messages("Overview.benefitsRegistered.heading") } else { messages("Overview.benefitsManage.heading") }}
+@year = @{if(registeredBenefitsCurrentYear.isEmpty){ ""+taxYearRange.cy } else { ""+taxYearRange.cyminus1 }}
+
+@govukLayoutWrapper(PageTitle(title),
 showBackLink = true,
 showYTABackLink = request.showYTABackLink,
 showECLBackLink = request.showECLBackLink,
 globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
 
-    @pageTitleHeading(messages("Overview.benefitsRegistered.heading"))
+    @pageTitleHeading(title)
 
-    <p class="govuk-body">
-        @messages("Overview.next.lead.empty")
-    </p>
+    @if(showChangeYearLink) {
+        <p class="govuk-body" id="tax-year-select">
+            @messages("Overview.change.year.link.before")
+            <a class="govuk-link" id="link-exclusion-back" href="@routes.StartPageController.selectYearPage">
+                @messages("Overview.change.year.text.link")
+            </a> @messages("Overview.change.year.link.after", ""+taxYearRange.cy)
+        </p>
+    }
+
+    @if(year == ""+taxYearRange.cyminus1) {
+        <p class="govuk-body">
+            @messages("Overview.benefitsManage.p2")
+        </p>
+
+        <div class="govuk-inset-text">
+            @messages("Overview.benefitsManage.inset")
+        </div>
+    } else {
+        <p class="govuk-body">
+            @messages("Overview.next.lead.empty")
+        </p>
+    }
 
     <h2 class="govuk-heading-l">
-        @messages("Overview.empty.benefits.h2", s"${taxYearRange.cy}")
+        @messages("Overview.empty.benefits.h2", year)
     </h2>
 
                 @if(!registeredBenefitsNextYear.isEmpty) {
@@ -81,7 +104,7 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
                             </div>
                         }
                     </dl>
-                } else {
+                }  else {
                     <p id="no-benefits" class="govuk-body">
                         @messages("Overview.empty.benefits.p")
                     </p>
@@ -91,44 +114,41 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
                 <a class="govuk-button" role="button" id="add-next-tax-year" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
                     @messages("Overview.table.add.link")
                 </a>
-            }
+            } else if(cyAllowed || !registeredBenefitsCurrentYear.isEmpty) {
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-three-quarters">
+                        <div class="govuk-form-group">
+                            @if(!registeredBenefitsCurrentYear.isEmpty) {
+                                <dl class="govuk-summary-list">
+                                    @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
+                                        <div class="govuk-summary-list__row">
+                                            <dt class="govuk-summary-list__key" id="cy-@n.iabdType">
+                                                @messages("BenefitInKind.label." + n.iabdType)
+                                            </dt>
+                                            <dd class="govuk-summary-list__actions">
+                                                <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", Bik.asBenefitString(n.iabdType))' class="govuk-link">
+                                                    @if(n.eilCount == 0) {@messages("Overview.table.exclude.none.link")} else {@messages("Overview.table.exclude.link")}
+                                                <span class="govuk-visually-hidden"> @messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType)</span>
+                                                </a>
+                                            </dd>
+                                        </div>
+                                    }
+                                </dl>
+                            } else {
+                                <p id="no-benefits-cy" class="govuk-body">
+                                    @messages("Overview.empty.benefits.p")
+                                </p>
+                            }
+                            </div>
 
-    @if(cyAllowed || !registeredBenefitsCurrentYear.isEmpty) {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-three-quarters">
-                <h2 class="govuk-heading-m">@messages("Overview.current.heading", s"${taxYearRange.cyminus1}", s"${taxYearRange.cy}")</h2>
-                    <div class="govuk-form-group">
-                        @if(!registeredBenefitsCurrentYear.isEmpty) {
-                            <dl class="govuk-summary-list">
-                                @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
-                                    <div class="govuk-summary-list__row">
-                                        <dt class="govuk-summary-list__key" id="cy-@n.iabdType">
-                                            @messages("BenefitInKind.label." + n.iabdType)
-                                        </dt>
-                                        <dd class="govuk-summary-list__actions">
-                                            <a id="cy-exclude-@n.iabdType" href='@controllers.routes.ExclusionListController.performPageLoad("cy", Bik.asBenefitString(n.iabdType))' class="govuk-link">
-                                                @if(n.eilCount == 0) {@messages("Overview.table.exclude.none.link")} else {@messages("Overview.table.exclude.link")}
-                                            <span class="govuk-visually-hidden"> @messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType)</span>
-                                            </a>
-                                        </dd>
-                                    </div>
-                                }
-                            </dl>
-                        } else {
-                            <p id="no-benefits-cy" class="govuk-body">
-                                @messages("Overview.empty.benefits.p")
-                            </p>
+                    @if(cyAllowed) {
+                        @if(registeredBenefitsCurrentYear.size < (serviceBiksCountCY - pbikAppConfig.biksDecommissioned.size)) {
+                            <a class="govuk-button" role="button" id="add-next-current" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
+                                @messages("Overview.table.add.link")
+                            </a>
                         }
-                        </div>
-
-                @if(cyAllowed) {
-                    @if(registeredBenefitsCurrentYear.size < (serviceBiksCountCY - pbikAppConfig.biksDecommissioned.size)) {
-                        <a class="govuk-button" role="button" id="add-next-current" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
-                            @messages("Overview.table.add.link")
-                        </a>
                     }
-                }
+                </div>
             </div>
-        </div>
     }
 }
