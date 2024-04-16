@@ -64,7 +64,8 @@ class StubbedBikListService @Inject() (
     )
 
   override def registeredBenefitsList(year: Int, empRef: EmpRef)(implicit
-    hc: HeaderCarrier
+    hc: HeaderCarrier,
+    request: AuthenticatedRequest[_]
   ): Future[List[Bik]] =
     Future.successful(CYCache)
 

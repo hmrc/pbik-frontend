@@ -135,7 +135,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     mockExclusionListController.tierConnector.getRegisteredBiks(
       any[EmpRef],
       any[Int]
-    )(any[HeaderCarrier])
+    )(any[HeaderCarrier], any[AuthenticatedRequest[_]])
   ).thenReturn(
     Future.successful(
       BikResponse(
@@ -150,7 +150,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
   when(
     mockExclusionListController.tierConnector
       .getRegisteredBiks(any[EmpRef], argEq(year))(
-        any[HeaderCarrier]
+        any[HeaderCarrier],
+        any[AuthenticatedRequest[_]]
       )
   ).thenReturn(
     Future.successful(
@@ -164,7 +165,8 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
   )
 
   when(
-    mockExclusionListController.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(any[HeaderCarrier])
+    mockExclusionListController.tierConnector
+      .getRegisteredBiks(any[EmpRef], any[Int])(any[HeaderCarrier], any[AuthenticatedRequest[_]])
   ).thenReturn(
     Future.successful(
       BikResponse(

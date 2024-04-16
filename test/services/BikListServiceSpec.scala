@@ -71,7 +71,8 @@ class BikListServiceSpec
 
       when(
         bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
-          any[HeaderCarrier]
+          any[HeaderCarrier],
+          any[AuthenticatedRequest[_]]
         )
       ).thenReturn(Future.successful(BikResponse(responseHeaders, listBiks)))
 
@@ -82,7 +83,8 @@ class BikListServiceSpec
     "Be able to get the BIKS for the current year - no biks returned" in {
       when(
         bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
-          any[HeaderCarrier]
+          any[HeaderCarrier],
+          any[AuthenticatedRequest[_]]
         )
       ).thenThrow(new IllegalStateException())
       // Intercept exception
@@ -96,7 +98,8 @@ class BikListServiceSpec
 
       when(
         bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
-          any[HeaderCarrier]
+          any[HeaderCarrier],
+          any[AuthenticatedRequest[_]]
         )
       ).thenReturn(Future.successful(BikResponse(responseHeaders, listBiks)))
       implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -109,7 +112,8 @@ class BikListServiceSpec
     "Be able to get the BIKS for the next year - no biks returned" in {
       when(
         bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
-          any[HeaderCarrier]
+          any[HeaderCarrier],
+          any[AuthenticatedRequest[_]]
         )
       ).thenThrow(new IllegalStateException())
 

@@ -81,7 +81,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
       .getRegisteredBiks(
         any[EmpRef],
         any[Int]
-      )(any[HeaderCarrier])
+      )(any[HeaderCarrier], any[AuthenticatedRequest[_]])
   ).thenReturn(
     Future.successful(
       BikResponse(
