@@ -130,6 +130,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
         arbListOfBiks,
         fixed(2),
         fixed(2),
+        fixed(true),
         fixed(authenticatedRequest),
         arbMessages
       )

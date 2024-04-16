@@ -28,45 +28,73 @@ class SummaryViewSpec extends PBIKViewSpec {
   private val summaryView: Summary      = app.injector.instanceOf[Summary]
   private val carIabdType: String       = IabdType.CarBenefit.id.toString
   private val carBik: Bik               = Bik(carIabdType, PbikStatus.ValidPayrollingBenefitInKind.id)
-  private val serviceBiksCountCY: Int   = 200
-  private val serviceBiksCountCYP1: Int = 0
+  private val serviceBiksCountCY: Int   = 0
+  private val serviceBiksCountCYP1: Int = 200
 
-  def view(benefits: List[Bik])(implicit request: AuthenticatedRequest[_]): Html =
-    summaryView(cyAllowed = true, taxYearRange, List(), benefits, serviceBiksCountCY, serviceBiksCountCYP1)
+  def view(benefitsCY: List[Bik], benefitsCY1: List[Bik], showChangeYearLink: Boolean = true)(implicit
+    request: AuthenticatedRequest[_]
+  ): Html =
+    summaryView(
+      cyAllowed = true,
+      taxYearRange,
+      benefitsCY,
+      benefitsCY1,
+      serviceBiksCountCY,
+      serviceBiksCountCYP1,
+      showChangeYearLink
+    )
 
   "overview with benefits - organisation" must {
-    implicit val html: Html = view(List(carBik))(organisationRequest)
+    implicit val html: Html = view(List.empty, List(carBik))(organisationRequest)
 
     behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))
     behave like pageWithHeader(messages("Overview.benefitsRegistered.heading"))
-    behave like pageWithLink(messages("Overview.table.add.link"), "/payrollbik/cy/choose-benefit-expense")
+    behave like pageWithLink(messages("Overview.table.add.link"), "/payrollbik/cy1/choose-benefit-expense")
     behave like pageWithBackLink()
     behave like pageWithLinkHiddenText(
       s"cy1-remove-$carIabdType",
       s"${messages("BenefitInKind.label." + carIabdType)} ${messages("Overview.current.from")} ${messages("Overview.current.payroll.p11d")}"
     )
+    behave like pageWithLink(messages("Overview.change.year.text.link"), "/payrollbik/select-year")
 
     "overview with no benefits" in {
-
-      val doc = Jsoup.parse(view(List.empty)(organisationRequest).toString())
+      val doc = Jsoup.parse(view(List.empty, List.empty)(organisationRequest).toString())
       doc.title must include(messages("Overview.benefitsRegistered.heading"))
       doc       must haveHeadingWithText(messages("Overview.benefitsRegistered.heading"))
+    }
+
+    "overview without change year link" in {
+      val doc = Jsoup.parse(view(List.empty, List.empty, showChangeYearLink = false)(organisationRequest).toString())
+      doc.title must include(messages("Overview.benefitsRegistered.heading"))
+      doc       must haveHeadingWithText(messages("Overview.benefitsRegistered.heading"))
+      doc.select(s"#tax-year-select").first() mustBe None.orNull
     }
   }
 
   "overview with benefits - agent" must {
-    implicit val html: Html = view(List(carBik))(agentRequest)
+    implicit val html: Html = view(List.empty, List(carBik))(agentRequest)
 
     behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))
     behave like pageWithHeader(messages("Overview.benefitsRegistered.heading"))
-    behave like pageWithLink(messages("Overview.table.add.link"), "/payrollbik/cy/choose-benefit-expense")
+    behave like pageWithLink(messages("Overview.table.add.link"), "/payrollbik/cy1/choose-benefit-expense")
     behave like pageWithBackLink()
+    behave like pageWithLinkHiddenText(
+      s"cy1-remove-$carIabdType",
+      s"${messages("BenefitInKind.label." + carIabdType)} ${messages("Overview.current.from")} ${messages("Overview.current.payroll.p11d")}"
+    )
+    behave like pageWithLink(messages("Overview.change.year.text.link"), "/payrollbik/select-year")
 
     "overview with no benefits" in {
-
-      val doc = Jsoup.parse(view(List.empty)(agentRequest).toString())
+      val doc = Jsoup.parse(view(List.empty, List.empty)(agentRequest).toString())
       doc.title must include(messages("Overview.benefitsRegistered.heading"))
       doc       must haveHeadingWithText(messages("Overview.benefitsRegistered.heading"))
+    }
+
+    "overview without change year link" in {
+      val doc = Jsoup.parse(view(List.empty, List.empty, showChangeYearLink = false)(organisationRequest).toString())
+      doc.title must include(messages("Overview.benefitsRegistered.heading"))
+      doc       must haveHeadingWithText(messages("Overview.benefitsRegistered.heading"))
+      doc.select(s"#tax-year-select").first() mustBe None.orNull
     }
   }
 

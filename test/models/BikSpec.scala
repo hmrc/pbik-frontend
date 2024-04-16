@@ -38,6 +38,12 @@ class BikSpec extends AnyWordSpec with Matchers {
 
         bik.equals(bikToCompare) mustBe false
       }
+
+      "return false if Bik equals wrong object" in {
+        val bik: Bik = Bik(IabdType.MedicalInsurance.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id, 1)
+
+        bik.equals(BigDecimal(123)) mustBe false
+      }
     }
 
     ".hashCode" must {

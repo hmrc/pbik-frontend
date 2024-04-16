@@ -157,7 +157,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
         val result                                                = homePageController.onPageLoadCY(request)
 
         status(result) mustBe OK
-        contentAsString(result) must include("Cofrestru buddiant neu draul")
+        contentAsString(result) must include("Rheoli buddiant neu draul")
       }
     }
   }

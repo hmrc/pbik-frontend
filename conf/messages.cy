@@ -89,19 +89,26 @@ SelectYear.error.empty = Dewiswch os hoffech gofrestru a rheoli buddiannau a thr
 #*************************************************************
 
 Overview.benefitsRegistered.heading = Cofrestru buddiant neu draul
+Overview.benefitsManage.heading = Rheoli buddiant neu draul
 Overview.next.heading = 6 Ebrill {0} i 5 Ebrill {1}
 Overview.next.lead.empty = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu buddiant neu draul i’w trethu drwy’r gyflogres.
 Overview.empty.benefits.h2 = Crynodeb o dalu drwy’r gyflogres o 6 Ebrill ymlaen {0}
 Overview.empty.benefits.p = Nid ydych wedi cofrestru unrhyw fuddiannau na threuliau i’w trethu drwy’r gyflogres.
 Overview.current.from=o
 Overview.current.payroll.p11d=y gyflogres ac adrodd ar P11D
-Overview.current.heading = 6 Ebrill {0} i 5 Ebrill {1}
 Overview.table.exclude.link = Rheoli cyflogeion
 Overview.table.exclude.none.link = Eithrio cyflogai
 Overview.table.remove.link = Dileu
 Overview.table.add.link = Ychwanegu buddiant neu draul
 
 ManagingRegistration.add.exhausted = Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau sydd ar gael yn y categori hwn.
+
+Overview.change.year.link.before = Gallwch
+Overview.change.year.text.link = newid y flwyddyn dreth
+Overview.change.year.link.after = er mwyn ychwanegu buddiannau a threuliau at y gyflogres o 6 Ebrill {0} ymlaen.
+
+Overview.benefitsManage.p2 = Os ydych chi’n eithrio cyflogeion rhag buddiannau a threuliau ar gyfer y flwyddyn dreth bresennol, mae’n rhaid i chi roi gwybod am y buddiant neu’r draul drwy gyflwyno P11D i CThEF.
+Overview.benefitsManage.inset = Ni allwch ailddechrau talu drwy’r gyflogres yn y flwyddyn dreth bresennol ar gyfer cyflogeion sydd wedi’u heithrio.
 
 #*************************************************************
 # Add benefits

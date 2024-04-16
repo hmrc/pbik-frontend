@@ -86,6 +86,7 @@ class HomePageController @Inject() (
       biksListOptionCYP1: List[Bik] <-
         bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cy, EmpRef.empty)
       nextYearList                  <- bikListService.nextYearList
+      currentYearList               <- bikListService.currentYearList
     } yield {
       sessionService.storeNYRegisteredBiks(nextYearList.bikList)
 
@@ -98,7 +99,8 @@ class HomePageController @Inject() (
           List.empty,
           nextYearList.bikList,
           0,
-          biksListOptionCYP1.size
+          biksListOptionCYP1.size,
+          currentYearList.bikList.nonEmpty
         )
       ).addingToSession(nextYearList.headers.toSeq: _*)
     }
@@ -125,7 +127,8 @@ class HomePageController @Inject() (
           currentYearList.bikList,
           List.empty,
           biksListOptionCY.size,
-          0
+          0,
+          showChangeYearLink = true
         )
       ).addingToSession(currentYearList.headers.toSeq: _*)
     }
