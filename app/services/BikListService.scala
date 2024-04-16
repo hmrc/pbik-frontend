@@ -42,7 +42,10 @@ class BikListService @Inject() (
       .getRegisteredBiks(request.empRef, controllersReferenceData.yearRange.cy)
       .map(response => BikResponse(response.headers, response.bikList.distinct))
 
-  def registeredBenefitsList(year: Int, empRef: EmpRef)(implicit hc: HeaderCarrier): Future[List[Bik]] =
+  def registeredBenefitsList(year: Int, empRef: EmpRef)(implicit
+    hc: HeaderCarrier,
+    request: AuthenticatedRequest[_]
+  ): Future[List[Bik]] =
     if (empRef.taxOfficeNumber == "" && empRef.taxOfficeReference == "") {
       tierConnector.getAllAvailableBiks(year)
     } else {

@@ -58,13 +58,19 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
 
     lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), bikStatus))
 
-    when(service.bikListService.registeredBenefitsList(any[Int], any[EmpRef])(any[HeaderCarrier]))
+    when(
+      service.bikListService
+        .registeredBenefitsList(any[Int], any[EmpRef])(any[HeaderCarrier], any[AuthenticatedRequest[_]])
+    )
       .thenReturn(Future.successful(CYCache))
 
     // Return instance where not all Biks have been registered for CY
     when(
       service.tierConnector
-        .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear()))(any[HeaderCarrier])
+        .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear()))(
+          any[HeaderCarrier],
+          any[AuthenticatedRequest[_]]
+        )
     ) thenReturn Future.successful(
       BikResponse(
         responseHeaders,
@@ -77,7 +83,10 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
     // Return instance where not all Biks have been registered for CYP1
     when(
       service.tierConnector
-        .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(any[HeaderCarrier])
+        .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(
+          any[HeaderCarrier],
+          any[AuthenticatedRequest[_]]
+        )
     ) thenReturn Future.successful(
       BikResponse(
         responseHeaders,

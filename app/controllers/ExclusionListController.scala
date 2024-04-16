@@ -112,7 +112,7 @@ class ExclusionListController @Inject() (
             currentYearEIL.sortWith(_.surname < _.surname),
             form
           )
-        ).removingFromSession(HeaderTags.ETAG).addingToSession(nextYearList.headers.toSeq: _*)
+        ).removingFromSession(HeaderTags.ETAG, HeaderTags.X_TXID).addingToSession(nextYearList.headers.toSeq: _*)
       }
 
     } else {

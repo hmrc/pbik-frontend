@@ -40,15 +40,27 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
   def getRegisteredBiks(
     empRef: EmpRef,
     year: Int
-  )(implicit hc: HeaderCarrier): Future[BikResponse] =
+  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BikResponse] = {
+    val etagFromSession      = request.session.get(HeaderTags.ETAG).getOrElse("UNKNOWN_ETAG")
+    val xtxidFromSession     = request.session.get(HeaderTags.X_TXID).getOrElse("UNKNOWN_XTXID")
+    val requestSessionHeader = HeaderTags.createResponseHeaders(etagFromSession, xtxidFromSession)
+
+    logger.info(s"[PbikConnector][getRegisteredBiks] GET benefits with headers: $requestSessionHeader")
+
     client
       .GET(s"$baseUrl/${empRef.encodedEmpRef}/$year")
       .map { implicit response =>
-        val headers = responseHeaders
-        val resp    = validateResponses("getRegisteredBiks").json.as[BenefitListResponse]
-        val biks    = resp.pbikRegistrationDetails.map(benefit => Bik(benefit))
-        BikResponse(headers, biks)
+        val resp                                  = validateResponses("getRegisteredBiks").json.as[BenefitListResponse]
+        val updatedHeaders: Seq[(String, String)] =
+          HeaderTags.createResponseHeaders(resp.employerOptimisticLockResponse.currentOptimisticLock.toString).toSeq
+        val biks                                  = resp.pbikRegistrationDetails.map(benefit => Bik(benefit))
+
+        logger.info(
+          s"[PbikConnector][getRegisteredBiks] Got registered BIKs ${biks.size} with headers: $updatedHeaders"
+        )
+        BikResponse(updatedHeaders.toMap, biks)
       }
+  }
 
   def getAllAvailableBiks(year: Int)(implicit hc: HeaderCarrier): Future[List[Bik]] =
     client
@@ -107,21 +119,16 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
         headers.toSeq
       )
       .map { response =>
-        val validatedResponse                     = validateResponses("updateOrganisationsRegisteredBiks")(response)
-        val benefitListUpdateResponse             = validatedResponse.json.as[BenefitListUpdateResponse]
-        val lockValue                             = benefitListUpdateResponse.employerOptimisticLockResponse.currentOptimisticLock
-        val updatedHeaders: Seq[(String, String)] = HeaderTags.createResponseHeaders(lockValue.toString).toSeq
+        val validatedResponse         = validateResponses("updateOrganisationsRegisteredBiks")(response)
+        val benefitListUpdateResponse = validatedResponse.json.as[BenefitListUpdateResponse]
+        val lockValue                 = benefitListUpdateResponse.employerOptimisticLockResponse.currentOptimisticLock
 
-        hc.withExtraHeaders(updatedHeaders: _*)
+        logger.info(
+          s"[PbikConnector][updateOrganisationsRegisteredBiks] Updated BIKs ${updatedBiks.size} with lock value: $lockValue"
+        )
         lockValue
       }
   }
-
-  private def responseHeaders(implicit response: HttpResponse): Map[String, String] =
-    Map(
-      HeaderTags.ETAG   -> response.header(HeaderTags.ETAG).getOrElse(HeaderTags.ETAG_DEFAULT_VALUE),
-      HeaderTags.X_TXID -> response.header(HeaderTags.X_TXID).getOrElse(HeaderTags.X_TXID_DEFAULT_VALUE)
-    )
 
   private def createOrCheckForRequiredHeaders(implicit request: Request[_]): Map[String, String] = {
     val etagFromSession  = request.session.get(HeaderTags.ETAG).getOrElse(HeaderTags.ETAG_DEFAULT_VALUE)
