@@ -19,7 +19,7 @@ package models.v1
 import play.api.libs.json.{Json, OFormat}
 
 case class EmployerOptimisticLockResponse(
-  payeSchemeType: String,
+  payeSchemeType: Int,
   employerNumber: Int,
   payeSequenceNo: Int,
   currentOptimisticLock: Int

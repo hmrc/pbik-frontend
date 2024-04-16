@@ -44,7 +44,7 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
   private val pbikConnectorWithMockClient: PbikConnector = new PbikConnector(mockHttpClient, configuration)
 
   private val fakeResponse: HttpResponse                   = HttpResponse(OK, "")
-  private val employerOptimisticLockResponse               = EmployerOptimisticLockResponse("1", 1, 1, 1)
+  private val employerOptimisticLockResponse               = EmployerOptimisticLockResponse(1, 1, 1, 1)
   private val fakePostResponseUpdateBenefits: HttpResponse =
     HttpResponse(OK, Json.toJson(BenefitListUpdateResponse(employerOptimisticLockResponse)).toString())
   private val pbikErrorResponseCode: String                = "64990"
