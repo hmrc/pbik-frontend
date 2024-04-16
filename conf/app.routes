@@ -7,6 +7,8 @@ GET         /assets/*file                                        controllers.Ass
 ## Point old urls to new dashboard url
 GET         /                                                    controllers.RedirectController.redirectIfFromRoot
 GET         /start                                               controllers.RedirectController.redirectIfFromStart
+GET         /select-year                                         controllers.StartPageController.selectYearPage
+POST        /select-year                                         controllers.StartPageController.submitSelectYearPage
 GET         /overview                                            controllers.RedirectController.redirectIfFromOldOverview
 GET         /payrolled-benefits-expenses                         controllers.RedirectController.redirectIfFromOldOverview
 
@@ -18,7 +20,8 @@ GET         /signout                                             controllers.Hom
 
 GET         /setLanguage                                         controllers.HomePageController.setLanguage()
 
-GET         /registered-benefits-expenses                        controllers.HomePageController.onPageLoad
+GET         /cy/registered-benefits-expenses                    controllers.HomePageController.onPageLoadCY
+GET         /cy1/registered-benefits-expenses                   controllers.HomePageController.onPageLoadCY1
 
 ## Add registrations
 GET         /cy1/choose-benefit-expense                          controllers.registration.ManageRegistrationController.nextTaxYearAddOnPageLoad

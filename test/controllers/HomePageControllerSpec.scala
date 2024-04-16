@@ -42,71 +42,123 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()
 
-  override def messagesApi: MessagesApi              = app.injector.instanceOf[MessagesApi]
+  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+
   implicit val taxDateUtils: TaxDateUtils            = app.injector.instanceOf[TaxDateUtils]
   private val homePageController: HomePageController = app.injector.instanceOf[HomePageController]
 
-  "HomePageController" should {
-    "return 401 (UNAUTHORIZED) for a notAuthorised method call" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockRequest
-      val result                                                = homePageController.notAuthorised()(request)
+  "HomePageController" when {
+    ".notAuthorised" should {
+      "return 401 (UNAUTHORIZED) for a notAuthorised method call" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockRequest
+        val result                                                = homePageController.notAuthorised()(request)
 
-      status(result) mustBe UNAUTHORIZED
-      contentAsString(result) must include(Messages("ErrorPage.authorisationError"))
+        status(result) mustBe UNAUTHORIZED
+        contentAsString(result) must include(Messages("ErrorPage.authorisationError"))
+      }
     }
 
-    "return 401 (UNAUTHORIZED) if the session is not authenticated" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-        FakeRequest().withSession(SessionKeys.sessionId -> "hackmeister")
-      val result                                                = homePageController.onPageLoad(request)
+    ".onPageLoadCY1" should {
+      "return 401 (UNAUTHORIZED) if the session is not authenticated" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest().withSession(SessionKeys.sessionId -> "hackmeister")
+        val result                                                = homePageController.onPageLoadCY1(request)
 
-      status(result) mustBe UNAUTHORIZED
-      contentAsString(result) mustBe "Request was not authenticated user should be redirected"
+        status(result) mustBe UNAUTHORIZED
+        contentAsString(result) mustBe "Request was not authenticated user should be redirected"
+      }
+
+      "logout and redirect to feed back page" in {
+        val result = homePageController.signout(FakeRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get must include("/feedback/PBIK")
+      }
+
+      "display the navigation page" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
+        val result                                                = homePageController.onPageLoadCY1(request)
+
+        status(result) mustBe OK
+        contentAsString(result) must include(Messages("StartPage.heading.organisation"))
+        contentAsString(result) must include(
+          "Is this page not working properly? (opens in new tab)"
+        )
+      }
+
+      "set the request language and redirect with no referer header" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
+        val result                                                = homePageController.setLanguage()(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("https://www.tax.service.gov.uk/payrollbik/payrolled-benefits-expenses")
+      }
+
+      "set the request language and reload page based on referer header - Welsh" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
+          .withHeaders("Referer" -> "/payrollbik/payrolled-benefits-expenses")
+        val result                                                = homePageController.setLanguage()(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/payrollbik/payrolled-benefits-expenses")
+      }
+
+      "display the navigation page - Welsh" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
+        val result                                                = homePageController.onPageLoadCY1(request)
+
+        status(result) mustBe OK
+        contentAsString(result) must include("Cofrestru buddiant neu draul")
+      }
     }
 
-    "logout and redirect to feed back page" in {
-      val result = homePageController.signout(FakeRequest())
+    ".onPageLoadCY" should {
+      "return 401 (UNAUTHORIZED) if the session is not authenticated" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest().withSession(SessionKeys.sessionId -> "hackmeister")
+        val result                                                = homePageController.onPageLoadCY(request)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result).get must include("/feedback/PBIK")
-    }
+        status(result) mustBe UNAUTHORIZED
+        contentAsString(result) mustBe "Request was not authenticated user should be redirected"
+      }
 
-    "display the navigation page" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-        FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
-      val result                                                = homePageController.onPageLoad(request)
+      "display the navigation page" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
+        val result                                                = homePageController.onPageLoadCY(request)
 
-      status(result) mustBe OK
-      contentAsString(result) must include(Messages("StartPage.heading.organisation"))
-      contentAsString(result) must include(
-        "Is this page not working properly? (opens in new tab)"
-      )
-    }
+        status(result) mustBe OK
+        contentAsString(result) must include(Messages("StartPage.heading.organisation"))
+        contentAsString(result) must include(
+          "Is this page not working properly? (opens in new tab)"
+        )
+      }
 
-    "set the request language and redirect with no referer header" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
-      val result                                                = homePageController.setLanguage()(request)
+      "set the request language and redirect with no referer header" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
+        val result                                                = homePageController.setLanguage()(request)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some("https://www.tax.service.gov.uk/payrollbik/payrolled-benefits-expenses")
-    }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("https://www.tax.service.gov.uk/payrollbik/payrolled-benefits-expenses")
+      }
 
-    "set the request language and reload page based on referer header - Welsh" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
-        .withHeaders("Referer" -> "/payrollbik/payrolled-benefits-expenses")
-      val result                                                = homePageController.setLanguage()(request)
+      "set the request language and reload page based on referer header - Welsh" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
+          .withHeaders("Referer" -> "/payrollbik/payrolled-benefits-expenses")
+        val result                                                = homePageController.setLanguage()(request)
 
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some("/payrollbik/payrolled-benefits-expenses")
-    }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/payrollbik/payrolled-benefits-expenses")
+      }
 
-    "display the navigation page - Welsh" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
-      val result                                                = homePageController.onPageLoad(request)
+      "display the navigation page - Welsh" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = mockWelshRequest
+        val result                                                = homePageController.onPageLoadCY(request)
 
-      status(result) mustBe OK
-      contentAsString(result) must include("Cofrestru buddiant neu draul")
+        status(result) mustBe OK
+        contentAsString(result) must include("Cofrestru buddiant neu draul")
+      }
     }
   }
-
 }

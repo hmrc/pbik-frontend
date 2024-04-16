@@ -278,4 +278,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
       )(OtherReason.apply)(OtherReason.unapply)
     )
 
+  val selectYearForm: Form[SelectYear] =
+    Form(mapping("year" -> nonEmptyText)(SelectYear.apply)(SelectYear.unapply))
+
 }

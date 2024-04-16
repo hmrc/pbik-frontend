@@ -29,7 +29,7 @@ class SignedOutViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("signedOut.title"))
     behave like pageWithHeader(messages("signedOut.title"))
-    behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/registered-benefits-expenses")
+    behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/start-payrolling-benefits-expenses")
   }
 
   "signedOutView - agent" must {
@@ -37,7 +37,7 @@ class SignedOutViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("signedOut.title"))
     behave like pageWithHeader(messages("signedOut.title"))
-    behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/registered-benefits-expenses")
+    behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/start-payrolling-benefits-expenses")
   }
 
 }

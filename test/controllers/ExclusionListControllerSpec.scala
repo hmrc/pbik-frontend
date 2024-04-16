@@ -35,7 +35,7 @@ import services.{EiLListService, SessionService}
 import support._
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.Exceptions.{InvalidBikTypeException, InvalidYearURIException}
+import utils.Exceptions.InvalidBikTypeException
 import utils._
 
 import java.time.LocalDate
@@ -195,30 +195,6 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
       }
     }
 
-    "mapping the CY string, the date returned" must {
-      "be the first year in the CY pair (e.g CY in range 15/16-16/17 would be 15)" in {
-        val result = await(mockExclusionListController.mapYearStringToInt(cy))
-
-        result mustBe dateRange.cyminus1
-      }
-    }
-
-    "mapping the CY+1 string, the date returned" must {
-      "be the first year in the CYP1 pair (e.g CYP1 in range 15/16-16/17 would be 16) " in {
-        val result = await(mockExclusionListController.mapYearStringToInt(cyp1))
-
-        result mustBe dateRange.cy
-      }
-    }
-
-    "mapping an unknown string" must {
-      "throw an InvalidYearURIException" in {
-        intercept[InvalidYearURIException] {
-          await(mockExclusionListController.mapYearStringToInt("ceeewhyploosWon"))
-        }
-      }
-    }
-
     "checking the Bik's IABD value is valid for CY" must {
       "return the start year of the CY pair, when the IABD value is valid" in {
         val result = await(mockExclusionListController.validateRequest(cy, iabdString))
@@ -259,12 +235,12 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
       }
     }
 
-    def submitExcludedEmployeesTest(selectionValue: String, page: String, url: String): Unit = {
+    def submitExcludedEmployeesTest(selectionValue: String, page: String, url: String, year: String): Unit = {
       val formData                                                      =
         controllersReferenceData.binaryRadioButton.fill(MandatoryRadioButton(selectionValue))
       implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockRequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
-      val result                                                        = mockExclusionListController.submitExcludedEmployees(cyp1, iabdString)(formRequest)
+      val result                                                        = mockExclusionListController.submitExcludedEmployees(year, iabdString)(formRequest)
 
       s"loading the submitExcludedEmployees with valid form selecting $selectionValue" must {
         s"proceed to $page" in {
@@ -274,8 +250,14 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
       }
     }
     val submitExcludedEmployeesInputArgs = Seq(
-      ("yes", "Exclude an employee form page", s"/payrollbik/cyp1/$iabdString/employee-national-insurance-number"),
-      ("no", "Payrolling summary form page", "/payrollbik/registered-benefits-expenses")
+      (
+        "yes",
+        "Exclude an employee form page",
+        s"/payrollbik/cyp1/$iabdString/employee-national-insurance-number",
+        cyp1
+      ),
+      ("no", "Payrolling summary form page for CY", "/payrollbik/cy/registered-benefits-expenses", cy),
+      ("no", "Payrolling summary form page for CY1", "/payrollbik/cy1/registered-benefits-expenses", cyp1)
     )
     submitExcludedEmployeesInputArgs.foreach(args => (submitExcludedEmployeesTest _).tupled(args))
 

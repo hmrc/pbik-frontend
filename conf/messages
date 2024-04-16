@@ -75,6 +75,16 @@ StartPage.p10.link.text.agent = use a P11D form (opens in a new window or tab)
 StartPage.link.agent = Start now
 
 #*************************************************************
+# Select Year
+#*************************************************************
+
+SelectYear.title = What do you want to do
+SelectYear.heading = What do you want to do?
+SelectYear.option1 = Register and manage benefits and expenses from 6 April {0}
+SelectYear.option2 = Exclude employees from benefits and expenses in the current tax year
+SelectYear.error.empty = Select if you want to register and manage benefits and expenses from 6 April {0} or exclude employees from benefits and expenses in the current tax year
+
+#*************************************************************
 # Overview
 #*************************************************************
 

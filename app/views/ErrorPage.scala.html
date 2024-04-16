@@ -91,12 +91,12 @@
 
     @backLink match {
         case _ if(code != 0 && code != 10001 && code != 65176 && code!=65355)=>{
-            <a class="govuk-link" id="link-back-summary" href='@routes.HomePageController.onPageLoad'>
+            <a class="govuk-link" id="link-back-summary" href='@routes.StartPageController.selectYearPage'>
                 @messages("Service.back.overview")
             </a>
         }
         case _ => {
-            <a class="govuk-link" id="link-back-summary" href='@routes.HomePageController.onPageLoad'>
+            <a class="govuk-link" id="link-back-summary" href='@routes.StartPageController.selectYearPage'>
                 @messages("Service.back.overview")
             </a>
         }

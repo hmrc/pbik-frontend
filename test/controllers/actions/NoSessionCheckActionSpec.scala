@@ -65,7 +65,7 @@ class NoSessionCheckActionSpec extends PlaySpec with GuiceOneAppPerSuite {
         call match {
           case Left(callResult) =>
             val headers: Map[String, String] = callResult.header.headers
-            headers.getOrElse("Location", "") must include("/payrollbik/registered-benefits-expenses")
+            headers.getOrElse("Location", "") must include("/payrollbik/start-payrolling-benefits-expenses")
           case Right(_)         => fail("Result not a Left")
         }
       }

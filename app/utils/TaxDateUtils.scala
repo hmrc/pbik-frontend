@@ -18,9 +18,11 @@ package utils
 
 import models.TaxYearRange
 import uk.gov.hmrc.time.TaxYear
+import utils.Exceptions.InvalidYearURIException
 
 import java.time.LocalDate
 import javax.inject.Singleton
+import scala.concurrent.Future
 
 @Singleton
 class TaxDateUtils {
@@ -36,5 +38,12 @@ class TaxDateUtils {
     TaxYear.taxYearFor(dateToCheck).currentYear
 
   def isCurrentTaxYear(yearToCheck: Int): Boolean = yearToCheck == getCurrentTaxYear(getDefaultDate)
+
+  def mapYearStringToInt(URIYearString: String, yearRange: TaxYearRange): Future[Int] =
+    URIYearString match {
+      case utils.FormMappingsConstants.CY   => Future.successful(yearRange.cyminus1)
+      case utils.FormMappingsConstants.CYP1 => Future.successful(yearRange.cy)
+      case _                                => Future.failed(throw new InvalidYearURIException())
+    }
 
 }

@@ -35,7 +35,13 @@
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(year=="cy") cyminus1 else cy}
-
+@summaryLink = @{
+    if(year=="cy"){
+        routes.HomePageController.onPageLoadCY
+    } else {
+        routes.HomePageController.onPageLoadCY1
+    }
+}
 @govukLayoutWrapper(PageTitle(messages("whatNext.rescind.heading")),
 showBackLink = true,
 showYTABackLink = request.showYTABackLink,
@@ -131,7 +137,7 @@ showECLBackLink = request.showECLBackLink) {
 
     <p id="you-can-do-next-info" class="govuk-body">
         @messages("whatNext.exclude.you.do.p.before." + request.userType)
-        <a class="govuk-link" href="@routes.HomePageController.onPageLoad" id="link-back"> @messages("whatNext.exclude.you.do.p.link." + request.userType) </a>
+        <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("whatNext.exclude.you.do.p.link." + request.userType) </a>
         @messages("whatNext.exclude.you.do.p.after." + request.userType)
     </p>
     <ul class="govuk-list govuk-list--bullet">

@@ -20,25 +20,70 @@ import controllers.actions.{AuthAction, NoSessionCheckAction}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.BikListService
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.StartPage
+import utils.Exceptions.InvalidYearURIException
+import utils.{ControllersReferenceData, FormMappings, TaxDateUtils}
+import views.html.{SelectYearPage, StartPage}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class StartPageController @Inject() (
   cc: MessagesControllerComponents,
   authenticate: AuthAction,
-  val noSessionCheck: NoSessionCheckAction,
-  startPageView: StartPage
+  noSessionCheck: NoSessionCheckAction,
+  bikListService: BikListService,
+  formMappings: FormMappings,
+  controllersReferenceData: ControllersReferenceData,
+  taxDateUtils: TaxDateUtils,
+  startPageView: StartPage,
+  selectYearPageView: SelectYearPage
 )(implicit val ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport
-    with Logging {
+    with Logging
+    with WithUnsafeDefaultFormBinding {
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck) { implicit request =>
     Ok(startPageView())
+  }
+
+  def selectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
+    val taxYearRange                 = controllersReferenceData.yearRange
+    val resultFuture: Future[Result] = for {
+      currentYearList <- bikListService.currentYearList
+    } yield
+      if (currentYearList.bikList.isEmpty) {
+        Redirect(routes.HomePageController.onPageLoadCY1)
+      } else {
+        Ok(selectYearPageView(taxYearRange, formMappings.selectYearForm))
+      }
+
+    controllersReferenceData.responseErrorHandler(resultFuture)
+  }
+
+  def submitSelectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
+    val taxYearRange                 = controllersReferenceData.yearRange
+    val resultFuture: Future[Result] = formMappings.selectYearForm
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(selectYearPageView(taxYearRange, formWithErrors))),
+        values => {
+          val selectedValue = values.year
+          for {
+            _ <- taxDateUtils.mapYearStringToInt(selectedValue, controllersReferenceData.yearRange)
+          } yield selectedValue match {
+            case utils.FormMappingsConstants.CY   => Redirect(routes.HomePageController.onPageLoadCY)
+            case utils.FormMappingsConstants.CYP1 => Redirect(routes.HomePageController.onPageLoadCY1)
+            case _                                => throw new InvalidYearURIException()
+          }
+        }
+      )
+
+    controllersReferenceData.responseErrorHandler(resultFuture)
   }
 
 }

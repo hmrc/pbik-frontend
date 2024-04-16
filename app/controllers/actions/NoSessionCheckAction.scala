@@ -43,7 +43,7 @@ class NoSessionCheckActionImpl @Inject() ()(implicit val executionContext: Execu
         Future.successful(
           Left(
             Results
-              .Redirect(controllers.routes.HomePageController.onPageLoad)
+              .Redirect(controllers.routes.StartPageController.onPageLoad)
               .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
           )
         )
