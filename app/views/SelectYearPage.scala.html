@@ -39,12 +39,13 @@
             </div>
         }
 
-        @pageTitleHeading(messages("SelectYear.heading"))
-
         @formWithCSRF(action = routes.StartPageController.submitSelectYearPage) {
 
             <div class="govuk-form-group @if(form.hasErrors) {govuk-form-group--error}">
                 <fieldset class="govuk-fieldset" @if(form.hasErrors){aria-describedby="selection-error"}>
+                    <legend class="govuk-fieldset__legend">
+                        @pageTitleHeading(messages("SelectYear.heading"))
+                    </legend>
                     @if(form.hasErrors) {
                     <span id="selection-error" class="govuk-error-message">
                         @messages("SelectYear.error.empty", ""+taxYearRange.cy)
