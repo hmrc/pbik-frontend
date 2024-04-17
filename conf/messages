@@ -5,6 +5,21 @@
 Service.title = Payrolling benefits and expenses - GOV.UK
 service.name = Payrolling benefits and expenses
 
+site.warning = Warning
+
+Service.month.1 = January
+Service.month.2 = February
+Service.month.3 = March
+Service.month.4 = April
+Service.month.5 = May
+Service.month.6 = June
+Service.month.7 = July
+Service.month.8 = August
+Service.month.9 = September
+Service.month.10 = October
+Service.month.11 = November
+Service.month.12 = December
+
 Service.yes = Yes
 Service.no = No
 Service.back = Back
@@ -197,7 +212,9 @@ ExclusionSearch.Fail.Desc = This employee can’t be found.
 ExclusionSearch.Fail.Exists.Desc = This employee has already been excluded for {0}. You can see them in your {1}excluded employee list{2}.
 ExclusionSearch.Fail.Exists.P = Search again for a different employee
 
-ExclusionImportant.Reminder = By confirming, you will exclude this employee from having {0} taxed through payroll from 6 April {1}.
+ExclusionSearch.warning = You will not be able to payroll this benefit or expense for this employee again in this tax year.
+
+ExclusionImportant.Reminder = By confirming, you will exclude this employee from having {0} taxed through payroll from {1}.
 ExclusionRemovalConfirmation.title = Declare the employee to add to this benefit or expense
 ExclusionRemovalConfirmation.table.title = Employee details
 ExclusionRemovalConfirmation.p = By confirming, {0} will have {1} taxed through payroll from 6 April {2}.
@@ -365,6 +382,7 @@ Service.field.employer.paye = Employer PAYE reference
 Service.field.selected.benefits = Selected benefits and expenses
 Service.field.removed.benefit = Removed benefit or expense
 Service.field.stop.benefit = Benefit or expense
+Service.field.date.of.exclusion = Date of exclusion
 Service.action = Action
 
 #*************************************************************
@@ -457,7 +475,29 @@ whatNext.exclude.p1.before.agent = Your client should report the value of this b
 whatNext.exclude.p1.link.agent = submitting a P11D to HMRC
 whatNext.exclude.p1.after.agent = for {0}. They should do this at the end of the tax year.
 
+whatNext.exclude.p1.cy.before.organisation = You must report the value of this benefit by
+whatNext.exclude.p1.cy.link.organisation = submitting a P11D to HMRC
+whatNext.exclude.p1.cy.after.organisation = for {0}. You must:
+
+whatNext.exclude.p1.cy.before.agent = Your client must report the value of this benefit by
+whatNext.exclude.p1.cy.link.agent = submitting a P11D to HMRC
+whatNext.exclude.p1.cy.after.agent = for {0}. They must:
+
+whatNext.exclude.li1.cy = calculate the full cash equivalent value of the benefit for the employee
+whatNext.exclude.li2.cy = deduct any payments that they have made in the current tax year
+whatNext.exclude.li3.cy = report the remaining value on the P11D
+
+whatNext.exclude.p2.cy = You should do this at the end of the tax year.
+
 whatNext.exclude.you.do.h2 = What you can do next
+
+whatNext.exclude.you.do.p.cy.before.organisation = You can
+whatNext.exclude.you.do.p.cy.link.organisation = return to this year’s benefits and expenses
+whatNext.exclude.you.do.p.cy.after.organisation = to exclude employees from this year’s benefits and expenses.
+
+whatNext.exclude.you.do.p.cy.before.agent = You can
+whatNext.exclude.you.do.p.cy.link.agent = return to this year’s benefits and expenses
+whatNext.exclude.you.do.p.cy.after.agent = to exclude employees from this year’s benefits and expenses for this client.
 
 whatNext.exclude.you.do.p.before.organisation = You can
 whatNext.exclude.you.do.p.link.organisation = return to your registered benefits and expenses
@@ -472,6 +512,11 @@ whatNext.exclude.you.do.li2 = register more benefits or expenses
 whatNext.exclude.you.do.li3 = remove benefits or expenses you no longer want to tax through payroll
 
 whatNext.exclude.more.h3 = If you want to exclude another employee from this benefit or expense
+
+whatNext.exclude.more.p.cy.before = You can
+whatNext.exclude.more.p.cy.link = return to {0}
+whatNext.exclude.more.p.cy.after = to exclude another employee from this benefit or expense.
+
 whatNext.exclude.more.p.before = You can
 whatNext.exclude.more.p.link = return to {0}
 whatNext.exclude.more.p.after = to:
@@ -480,7 +525,7 @@ whatNext.exclude.more.li2 = add an employee back to this benefit or expense
 
 whatNext.subHeading = Next steps
 whatNext.rescind.heading = Registration complete
-whatNext.exclude.lede = {0} will not have {1} taxed through payroll from 6 April {2}.
+whatNext.exclude.lede = {0} will not have {1} taxed through payroll from {2}.
 whatNext.service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses
 
 whatNext.remove.p1 = You have removed {0} from being taxed through payroll from 6 April {1}.

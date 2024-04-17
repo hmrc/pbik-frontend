@@ -16,21 +16,29 @@
 
 package utils
 
+import controllers.FakePBIKApplication
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.wordspec.AnyWordSpecLike
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.time.TaxYear
 import utils.Exceptions.InvalidYearURIException
 
-import java.time.LocalDate
 import java.time.Month.{APRIL, JULY, NOVEMBER}
+import java.time.{LocalDate, Month}
 
-class TaxDateUtilsSpec extends AnyWordSpecLike {
+class TaxDateUtilsSpec extends AnyWordSpecLike with FakePBIKApplication {
 
   private val (year2013, year2014): (Int, Int) = (2013, 2014)
   private val day1: Int                        = 1
+  private val inputDates                       = Month.values().toList.map(month => LocalDate.of(year2013, month, day1))
 
   private lazy val taxDateUtils: TaxDateUtils = new TaxDateUtils()
+  private lazy val lang: Lang                 = Lang("en")
+  private lazy val cyLang: Lang               = Lang("cy")
+
+  private val messages: Messages   = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
+  private val cyMessages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(cyLang))
 
   "TaxDateUtils" when {
     ".getCurrentTaxYear" should {
@@ -81,5 +89,26 @@ class TaxDateUtilsSpec extends AnyWordSpecLike {
         }
       }
     }
+
+    ".getDisplayTodayDate" should {
+      inputDates.foreach(date =>
+        s"return the correct date for ${date.getMonth} ${date.getYear} - English" in {
+          assert(
+            taxDateUtils
+              .getDisplayTodayDate(date)(messages) == s"$day1 ${messages(s"Service.month.${date.getMonthValue}")} ${date.getYear}"
+          )
+        }
+      )
+
+      inputDates.foreach(date =>
+        s"return the correct date for ${date.getMonth} ${date.getYear} - Welsh" in {
+          assert(
+            taxDateUtils
+              .getDisplayTodayDate(date)(cyMessages) == s"$day1 ${cyMessages(s"Service.month.${date.getMonthValue}")} ${date.getYear}"
+          )
+        }
+      )
+    }
   }
+
 }
