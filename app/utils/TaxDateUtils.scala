@@ -17,6 +17,7 @@
 package utils
 
 import models.TaxYearRange
+import play.api.i18n.Messages
 import uk.gov.hmrc.time.TaxYear
 import utils.Exceptions.InvalidYearURIException
 
@@ -45,5 +46,8 @@ class TaxDateUtils {
       case utils.FormMappingsConstants.CYP1 => Future.successful(yearRange.cy)
       case _                                => Future.failed(throw new InvalidYearURIException())
     }
+
+  def getDisplayTodayDate(today: LocalDate = getDefaultDate)(implicit messages: Messages): String =
+    s"${today.getDayOfMonth} ${messages("Service.month." + today.getMonth.getValue)} ${today.getYear}"
 
 }

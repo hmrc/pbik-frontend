@@ -5,6 +5,21 @@
 Service.title = Talu buddiannau a threuliau drwy’r gyflogres - GOV.UK
 service.name = Talu buddiannau a threuliau drwy’r gyflogres
 
+site.warning = Rhybudd
+
+Service.month.1 = Ionawr
+Service.month.2 = Chwefror
+Service.month.3 = Mawrth
+Service.month.4 = Ebrill
+Service.month.5 = Mai
+Service.month.6 = Mehefin
+Service.month.7 = Gorffennaf
+Service.month.8 = Awst
+Service.month.9 = Medi
+Service.month.10 = Hydref
+Service.month.11 = Tachwedd
+Service.month.12 = Rhagfyr
+
 Service.yes = Iawn
 Service.no = Na
 Service.back = Yn ôl
@@ -196,7 +211,9 @@ ExclusionSearch.Fail.Desc = Nid oedd modd dod o hyd i’r cyflogai hwn
 ExclusionSearch.Fail.Exists.Desc = Mae’r cyflogai hwn eisoes wedi’i eithrio ar gyfer {0}. Gallwch ei weld yn eich {1}rhestr o gyflogeion sydd wedi’u heithrio{2}.
 ExclusionSearch.Fail.Exists.P = Chwilio eto am gyflogai gwahanol
 
-ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu ar {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen.
+ExclusionSearch.warning = Ni fyddwch yn gallu rhoi’r buddiant neu’r draul sydd dan sylw drwy’r gyflogres ar gyfer y cyflogai hwn eto yn y flwyddyn dreth hon.
+
+ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu ar {0} drwy’r gyflogres o {1} ymlaen.
 ExclusionRemovalConfirmation.title = Datgan y cyflogai i ychwanegu’r buddiant neu’r draul hon
 ExclusionRemovalConfirmation.table.title = Manylion gweithwyr
 ExclusionRemovalConfirmation.p = Trwy gadarnhau, fydd {0} wedi trethu {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
@@ -364,6 +381,7 @@ Service.field.employer.paye = Cyfeirnod TWE y cyflogwr
 Service.field.selected.benefits = Buddiannau a threuliau sydd wedi cael eu dewis
 Service.field.removed.benefit = Wedi dileu’r buddiant neu’r draul
 Service.field.stop.benefit = Buddiant neu draul
+Service.field.date.of.exclusion = Dyddiad eithrio
 Service.action = Gweithred
 
 #*************************************************************
@@ -456,7 +474,29 @@ whatNext.exclude.p1.before.agent = Dylai’ch cleient roi gwybod am werth y budd
 whatNext.exclude.p1.link.agent = cyflwyno P11D i CThEF
 whatNext.exclude.p1.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
 
+whatNext.exclude.p1.cy.before.organisation = Mae’n rhaid i chi roi gwybod am werth y buddiant hwn drwy
+whatNext.exclude.p1.cy.link.organisation = gyflwyno P11D i CThEF
+whatNext.exclude.p1.cy.after.organisation = ar gyfer {0}. Mae’n rhaid i chi wneud y canlynol:
+
+whatNext.exclude.p1.cy.before.agent = Mae’n rhaid i’ch cleient roi gwybod am werth y buddiant hwn drwy
+whatNext.exclude.p1.cy.link.agent = gyflwyno P11D i CThEF
+whatNext.exclude.p1.cy.after.agent = ar gyfer {0}. Mae’n rhaid iddo wneud y canlynol:
+
+whatNext.exclude.li1.cy = cyfrifo cyfwerth llawn y buddiant ar gyfer y cyflogai mewn arian parod
+whatNext.exclude.li2.cy = didynnu unrhyw daliadau y mae wedi’u gwneud yn y flwyddyn dreth bresennol
+whatNext.exclude.li3.cy = rhoi gwybod am y gwerth sy’n weddill ar y P11D
+
+whatNext.exclude.p2.cy = Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+
 whatNext.exclude.you.do.h2 = Yr hyn y gallwch ei wneud nesaf
+
+whatNext.exclude.you.do.p.cy.before.organisation = Gallwch
+whatNext.exclude.you.do.p.cy.link.organisation = ddychwelyd i fuddiannau a threuliau’r flwyddyn hon
+whatNext.exclude.you.do.p.cy.after.organisation = i eithrio cyflogeion rhag buddiannau a threuliau’r flwyddyn hon.
+
+whatNext.exclude.you.do.p.cy.before.agent = Gallwch
+whatNext.exclude.you.do.p.cy.link.agent = ddychwelyd i fuddiannau a threuliau’r flwyddyn hon
+whatNext.exclude.you.do.p.cy.after.agent = i eithrio cyflogeion rhag buddiannau a threuliau’r flwyddyn hon ar gyfer y cleient hwn.
 
 whatNext.exclude.you.do.p.before.organisation = Gallwch
 whatNext.exclude.you.do.p.link.organisation = yn ôl i’ch buddiannau a threuliau cofrestredig
@@ -471,6 +511,11 @@ whatNext.exclude.you.do.li2 = cofrestru rhagor o fuddiannau a threuliau
 whatNext.exclude.you.do.li3 = tynnu buddiannau neu dreuliau nad ydych am eu trethu drwy’r gyflogres mwyach
 
 whatNext.exclude.more.h3 = Os ydych am eithrio cyflogai arall o’r buddiant neu’r draul hon
+
+whatNext.exclude.more.p.cy.before = Gallwch
+whatNext.exclude.more.p.cy.link = ddychwelyd i’r adran {0}
+whatNext.exclude.more.p.cy.after = i eithrio cyflogai arall rhag y buddiant neu’r draul sydd dan sylw.
+
 whatNext.exclude.more.p.before = Gallwch
 whatNext.exclude.more.p.link = yn ôl {0}
 whatNext.exclude.more.p.after = er mwyn:
@@ -479,7 +524,7 @@ whatNext.exclude.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r dra
 
 whatNext.subHeading = Camau nesaf
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
-whatNext.exclude.lede = Ni fydd {0} wedi trethu {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
+whatNext.exclude.lede = Ni fydd {0} wedi trethu {1} drwy’r gyflogres o {2} ymlaen.
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
 whatNext.remove.p1 = Rydych wedi tynnu {0} rhag cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen.
