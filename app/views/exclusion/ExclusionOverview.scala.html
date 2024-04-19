@@ -59,7 +59,15 @@
                 <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), yearvalue.toString())</p>
                 <p class="govuk-body">@messages("ExclusionOverview.p1." + request.userType)</p>
             } else {
-                <p class="govuk-body">@messages("ExclusionOverview.p1." + request.userType)</p>
+                @if(isCurrentTaxYear=="cy"){
+                    <div class="govuk-inset-text">
+                        @messages("ExclusionOverview.p1.cy")
+                    </div>
+
+                    <p class="govuk-body">@messages("ExclusionOverview.p2.cy")</p>
+                } else {
+                    <p class="govuk-body">@messages("ExclusionOverview.p1." + request.userType)</p>
+                }
                 <table class="govuk-table">
                     <caption class="govuk-table__caption govuk-table__caption--l">
                         @messages("ExclusionOverview.excludedEmployee.table.title")
@@ -88,6 +96,10 @@
                     }
                 </table>
 
+            }
+
+            @if(isCurrentTaxYear=="cy"){
+                <p class="govuk-body">@messages("ExclusionOverview.p1." + request.userType)</p>
             }
 
             <p class="govuk-body">@messages("ExclusionOverview.p2." + request.userType)</p>

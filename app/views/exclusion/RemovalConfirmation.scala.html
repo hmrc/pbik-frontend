@@ -67,6 +67,10 @@
                         <td class="govuk-table__cell" id="dob">@DateUtils.npsDateConversionFormat(person.dateOfBirth.get)</td>
                     </tr>
                 }
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">@messages("Service.field.payroll.date")</th>
+                    <td class="govuk-table__cell" id="payroll-date">@messages("ExclusionSearch.payroll.date", ""+taxYearRange.cy)</td>
+                </tr>
             </table>
 
         <input type="submit" class="govuk-button" role="button" id="button-confirm" value="@messages("Service.confirmAndContinue")">

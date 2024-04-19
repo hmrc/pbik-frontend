@@ -194,6 +194,9 @@ ExclusionOverview.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, 
 ExclusionOverview.p1.agent = Dylech ond eithrio cyflogeion sy’n cael y buddiant neu’r draul hon.
 ExclusionOverview.p2.agent = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i’ch cleient roi gwybod am werth y buddiant hwn neu’r draul hon gyflwyno P11D i CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
 
+ExclusionOverview.p1.cy = Ni allwch ailddechrau talu drwy’r gyflogres yn y flwyddyn dreth bresennol ar gyfer cyflogeion sydd wedi’u heithrio.
+ExclusionOverview.p2.cy = Os ydych chi’n tynnu cyflogai o’r rhestr cyflogeion wedi’u heithrio, trethir y buddiant neu’r draul sydd dan sylw drwy gyflog y cyflogai hwnnw o ddechrau’r flwyddyn dreth nesaf.
+
 ExclusionOverview.h2 = A oes angen i chi eithrio cyflogai?
 ExclusionOverview.h2.hint = Gallwch eithrio hyd at {0} o gyflogeion.
 ExclusionOverview.error.required = Dewiswch ‘Iawn’ os oes angen i chi eithrio cyflogai.
@@ -206,6 +209,7 @@ ExclusionSearch.title.single = Datgan y cyflogai i eithrio o’r buddiant neu’
 ExclusionSearch.form.title = Chwiliwch am y cyflogai i’w eithrio
 ExclusionSearch.form.header = Chwiliwch am y cyflogai rydych am ei eithrio
 ExclusionSearch.caption = Cyflogai i’w eithrio
+ExclusionSearch.payroll.date = 6 Ebrill {0}
 
 ExclusionSearch.Fail.Desc = Nid oedd modd dod o hyd i’r cyflogai hwn
 ExclusionSearch.Fail.Exists.Desc = Mae’r cyflogai hwn eisoes wedi’i eithrio ar gyfer {0}. Gallwch ei weld yn eich {1}rhestr o gyflogeion sydd wedi’u heithrio{2}.
@@ -382,6 +386,7 @@ Service.field.selected.benefits = Buddiannau a threuliau sydd wedi cael eu dewis
 Service.field.removed.benefit = Wedi dileu’r buddiant neu’r draul
 Service.field.stop.benefit = Buddiant neu draul
 Service.field.date.of.exclusion = Dyddiad eithrio
+Service.field.payroll.date = Dyddiad dechrau talu drwy’r gyflogres
 Service.action = Gweithred
 
 #*************************************************************
