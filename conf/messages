@@ -194,6 +194,9 @@ ExclusionOverview.p2.organisation = For excluded employees, you need to report t
 ExclusionOverview.p1.agent = You can only exclude employees who get this benefit or expense.
 ExclusionOverview.p2.agent = For excluded employees, your client needs to report the value of this benefit or expense by submitting a P11D to HMRC. They should do this at the end of the tax year.
 
+ExclusionOverview.p1.cy = You cannot restart payrolling for excluded employees in the current tax year.
+ExclusionOverview.p2.cy = If you remove an employee from the excluded employee list they will have this benefit or expense taxed through their pay from the beginning of the next tax year.
+
 ExclusionOverview.h2 = Do you need to exclude an employee?
 ExclusionOverview.h2.hint = You can exclude up to {0} employees.
 
@@ -207,6 +210,7 @@ ExclusionSearch.title.single = Declare the employee to exclude from this benefit
 ExclusionSearch.form.title = Search for the employee to exclude
 ExclusionSearch.form.header = Search for the employee you want to exclude
 ExclusionSearch.caption = Employee to be excluded
+ExclusionSearch.payroll.date = 6 April {0}
 
 ExclusionSearch.Fail.Desc = This employee can’t be found.
 ExclusionSearch.Fail.Exists.Desc = This employee has already been excluded for {0}. You can see them in your {1}excluded employee list{2}.
@@ -383,6 +387,7 @@ Service.field.selected.benefits = Selected benefits and expenses
 Service.field.removed.benefit = Removed benefit or expense
 Service.field.stop.benefit = Benefit or expense
 Service.field.date.of.exclusion = Date of exclusion
+Service.field.payroll.date = Payrolling start date
 Service.action = Action
 
 #*************************************************************
