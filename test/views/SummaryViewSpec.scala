@@ -55,7 +55,7 @@ class SummaryViewSpec extends PBIKViewSpec {
       s"cy1-remove-$carIabdType",
       s"${messages("BenefitInKind.label." + carIabdType)} ${messages("Overview.current.from")} ${messages("Overview.current.payroll.p11d")}"
     )
-    behave like pageWithLink(messages("Overview.change.year.text.link"), "/payrollbik/select-year")
+    behave like pageWithLink(messages("Overview.change.year.cy1.text.link"), "/payrollbik/select-year")
 
     "overview with no benefits" in {
       val doc = Jsoup.parse(view(List.empty, List.empty)(organisationRequest).toString())
@@ -82,7 +82,7 @@ class SummaryViewSpec extends PBIKViewSpec {
       s"cy1-remove-$carIabdType",
       s"${messages("BenefitInKind.label." + carIabdType)} ${messages("Overview.current.from")} ${messages("Overview.current.payroll.p11d")}"
     )
-    behave like pageWithLink(messages("Overview.change.year.text.link"), "/payrollbik/select-year")
+    behave like pageWithLink(messages("Overview.change.year.cy1.text.link"), "/payrollbik/select-year")
 
     "overview with no benefits" in {
       val doc = Jsoup.parse(view(List.empty, List.empty)(agentRequest).toString())
