@@ -107,7 +107,7 @@ Overview.benefitsRegistered.heading = Cofrestru buddiant neu draul
 Overview.benefitsManage.heading = Rheoli buddiant neu draul
 Overview.next.heading = 6 Ebrill {0} i 5 Ebrill {1}
 Overview.next.lead.empty = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu buddiant neu draul i’w trethu drwy’r gyflogres.
-Overview.empty.benefits.h2 = Crynodeb o dalu drwy’r gyflogres o 6 Ebrill ymlaen {0}
+Overview.empty.benefits.h2 = Crynodeb o dalu drwy’r gyflogres o 6 Ebrill {0} ymlaen
 Overview.empty.benefits.p = Nid ydych wedi cofrestru unrhyw fuddiannau na threuliau i’w trethu drwy’r gyflogres.
 Overview.current.from=o
 Overview.current.payroll.p11d=y gyflogres ac adrodd ar P11D
@@ -209,7 +209,7 @@ ExclusionDecision.noselection.error = Dewiswch ‘Iawn’ os ydych yn gwybod bet
 ExclusionNinoDecision.title = A ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai yr hoffech ei eithrio?
 
 ExclusionSearch.title.multiple = Pa gyflogai ydych am ei eithrio?
-ExclusionSearch.title.single = Datgan y cyflogai i eithrio o’r buddiant neu’r draul hon
+ExclusionSearch.title.single = Datgan y cyflogai sydd i’w eithrio rhag y buddiant neu’r draul sydd dan sylw
 ExclusionSearch.form.title = Chwiliwch am y cyflogai i’w eithrio
 ExclusionSearch.form.header = Chwiliwch am y cyflogai rydych am ei eithrio
 ExclusionSearch.caption = Cyflogai i’w eithrio
@@ -221,7 +221,7 @@ ExclusionSearch.Fail.Exists.P = Chwilio eto am gyflogai gwahanol
 
 ExclusionSearch.warning = Ni fyddwch yn gallu rhoi’r buddiant neu’r draul sydd dan sylw drwy’r gyflogres ar gyfer y cyflogai hwn eto yn y flwyddyn dreth hon.
 
-ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu ar {0} drwy’r gyflogres o {1} ymlaen.
+ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu o ran {0} drwy’r gyflogres o {1} ymlaen.
 ExclusionRemovalConfirmation.title = Datgan y cyflogai i ychwanegu’r buddiant neu’r draul hon
 ExclusionRemovalConfirmation.table.title = Manylion gweithwyr
 ExclusionRemovalConfirmation.p = Trwy gadarnhau, fydd {0} wedi trethu {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
@@ -470,7 +470,7 @@ whatNext.rescind.more.li1 = eithrio cyflogai arall o’r buddiant neu’r draul 
 whatNext.rescind.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r draul hon
 
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
-whatNext.exclude.table.heading = Manylion y gwaharddiad
+whatNext.exclude.table.heading = Manylion yr eithriad
 
 whatNext.exclude.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud
 whatNext.exclude.h2.agent = Beth ddylech chi ddweud wrth eich cleient
@@ -519,7 +519,7 @@ whatNext.exclude.you.do.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau
 whatNext.exclude.you.do.li2 = cofrestru rhagor o fuddiannau a threuliau
 whatNext.exclude.you.do.li3 = tynnu buddiannau neu dreuliau nad ydych am eu trethu drwy’r gyflogres mwyach
 
-whatNext.exclude.more.h3 = Os ydych am eithrio cyflogai arall o’r buddiant neu’r draul hon
+whatNext.exclude.more.h3 = Os ydych chi am eithrio cyflogai arall rhag y buddiant neu’r draul sydd dan sylw
 
 whatNext.exclude.more.p.cy.before = Gallwch
 whatNext.exclude.more.p.cy.link = ddychwelyd i’r adran {0}
@@ -533,7 +533,7 @@ whatNext.exclude.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r dra
 
 whatNext.subHeading = Camau nesaf
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
-whatNext.exclude.lede = Ni fydd {0} wedi trethu {1} drwy’r gyflogres o {2} ymlaen.
+whatNext.exclude.lede = Ni fydd {0} yn cael ei drethu drwy’r gyflogres o ran {1} o {2} ymlaen.
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
 whatNext.remove.p1 = Rydych wedi tynnu {0} rhag cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen.
@@ -582,11 +582,11 @@ whatYouNeedToKnow.subHeading.after.p3.link.agent = cyflwyno ffurflen P11D(b) er 
 
 whatYouCanDoNext.subHeading.h2 = Yr hyn y gallwch ei wneud nesaf
 whatYouCanDoNext.subHeading.p.text.before = Gallwch
-whatYouCanDoNext.subHeading.p.link.organisation = yn ôl i’ch buddiannau a threuliau cofrestredig
-whatYouCanDoNext.subHeading.p.link.agent = yn ôl i fuddiannau a threuliau cofrestredig eich cleient
+whatYouCanDoNext.subHeading.p.link.organisation = fynd yn ôl i’ch buddiannau a threuliau cofrestredig
+whatYouCanDoNext.subHeading.p.link.agent = fynd yn ôl i fuddiannau a threuliau cofrestredig eich cleient
 whatYouCanDoNext.subHeading.p.text.after = er mwyn:
 whatYouCanDoNext.subHeading.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau rydych wedi’u cofrestru
-whatYouCanDoNext.subHeading.li2 = cofrestru rhagor o buddiannau a threuliau
+whatYouCanDoNext.subHeading.li2 = cofrestru rhagor o fuddiannau a threuliau
 whatYouCanDoNext.subHeading.li3 = tynnu buddiannau neu dreuliau nad ydych am eu trethu drwy’r gyflogres mwyach
 
 whatYouNeedToTellYourEmployees.subHeading = Yr hyn y mae angen i chi ei ddweud wrth eich cyflogeion
