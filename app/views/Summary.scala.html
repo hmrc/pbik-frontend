@@ -124,9 +124,6 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
                     @messages("Overview.table.add.link")
                 </a>
             } else if(cyAllowed || !registeredBenefitsCurrentYear.isEmpty) {
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-three-quarters">
-                        <div class="govuk-form-group">
                             @if(!registeredBenefitsCurrentYear.isEmpty) {
                                 <dl class="govuk-summary-list">
                                     @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
@@ -148,7 +145,6 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
                                     @messages("Overview.empty.benefits.p")
                                 </p>
                             }
-                            </div>
 
                     @if(cyAllowed) {
                         @if(registeredBenefitsCurrentYear.size < (serviceBiksCountCY - pbikAppConfig.biksDecommissioned.size)) {
@@ -157,7 +153,5 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
                             </a>
                         }
                     }
-                </div>
-            </div>
     }
 }

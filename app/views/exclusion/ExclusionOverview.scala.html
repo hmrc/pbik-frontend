@@ -57,7 +57,6 @@
 
             @if(current.isEmpty) {
                 <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), yearvalue.toString())</p>
-                <p class="govuk-body">@messages("ExclusionOverview.p1." + request.userType)</p>
             } else {
                 @if(isCurrentTaxYear=="cy"){
                     <div class="govuk-inset-text">
