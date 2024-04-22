@@ -118,9 +118,13 @@ Overview.table.add.link = Ychwanegu buddiant neu draul
 
 ManagingRegistration.add.exhausted = Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau sydd ar gael yn y categori hwn.
 
-Overview.change.year.link.before = Gallwch
-Overview.change.year.text.link = newid y flwyddyn dreth
-Overview.change.year.link.after = er mwyn ychwanegu buddiannau a threuliau at y gyflogres o 6 Ebrill {0} ymlaen.
+Overview.change.year.cy0.link.before = Gallwch
+Overview.change.year.cy0.text.link = newid y flwyddyn dreth
+Overview.change.year.cy0.link.after = er mwyn ychwanegu buddiannau a threuliau at y gyflogres o 6 Ebrill {0} ymlaen.
+
+Overview.change.year.cy1.link.before = Gallwch
+Overview.change.year.cy1.text.link = newid y flwyddyn dreth
+Overview.change.year.cy1.link.after = er mwyn eithrio cyflogeion rhag buddiannau a threuliau yn y flwyddyn dreth bresennol.
 
 Overview.benefitsManage.p2 = Os ydych chi’n eithrio cyflogeion rhag buddiannau a threuliau ar gyfer y flwyddyn dreth bresennol, mae’n rhaid i chi roi gwybod am y buddiant neu’r draul drwy gyflwyno P11D i CThEF.
 Overview.benefitsManage.inset = Ni allwch ailddechrau talu drwy’r gyflogres yn y flwyddyn dreth bresennol ar gyfer cyflogeion sydd wedi’u heithrio.

@@ -118,9 +118,13 @@ Overview.table.add.link = Add a benefit or expense
 
 ManagingRegistration.add.exhausted = You’ve already added all of the benefits or expenses that are available in this category.
 
-Overview.change.year.link.before = You can
-Overview.change.year.text.link = change tax year
-Overview.change.year.link.after = to add benefits and expenses to payroll from 6 April {0}.
+Overview.change.year.cy0.link.before = You can
+Overview.change.year.cy0.text.link = change tax year
+Overview.change.year.cy0.link.after = to add benefits and expenses to payroll from 6 April {0}.
+
+Overview.change.year.cy1.link.before = You can
+Overview.change.year.cy1.text.link = change tax year
+Overview.change.year.cy1.link.after = to exclude employees from benefits and expenses in the current tax year.
 
 Overview.benefitsManage.p2 = If you exclude employees from benefits or expenses for the current tax year you must report the benefit or expense by submitting a P11D to HMRC.
 Overview.benefitsManage.inset = You cannot restart payrolling for excluded employees in the current tax year.
