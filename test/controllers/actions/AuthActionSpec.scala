@@ -38,12 +38,7 @@ import scala.concurrent.Future
 
 class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
 
-  private class Harness(authAction: AuthAction, cc: ControllerComponents = Helpers.stubMessagesControllerComponents())
-      extends AbstractController(cc) {
-    def onPageLoad(): Action[AnyContent] = authAction(_ => Ok)
-  }
-
-  private val enrolment: Enrolment = Enrolment(
+  private val enrolment: Enrolment                       = Enrolment(
     key = "IR-PAYE",
     identifiers = Seq(
       EnrolmentIdentifier("TaxOfficeNumber", "840"),
@@ -51,22 +46,23 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
     ),
     state = "activated"
   )
-
-  private val pbikConfig = app.injector.instanceOf[PbikAppConfig]
-
+  private val pbikConfig                                 = app.injector.instanceOf[PbikAppConfig]
   private val mockAgentPayeConnector: AgentPayeConnector = mock[AgentPayeConnector]
+  private val fakeRequestForOrganisation                 = FakeRequest("GET", "/url")
 
   when(mockAgentPayeConnector.getClient(any(), any())(any(), any()))
     .thenReturn(Future.successful(None))
-
-  private val fakeRequestForOrganisation = FakeRequest("GET", "/url")
-  private val fakeRequestForAgent        =
+  private val fakeRequestForAgent =
     FakeRequest("GET", "/url").withSession(EpayeSessionKeys.AGENT_FRONTEND_EMPREF -> "123/AB12345")
 
-  private class Test(enrolment: Enrolment) {
-    private val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  private class Harness(authAction: AuthAction, cc: ControllerComponents = Helpers.stubMessagesControllerComponents())
+      extends AbstractController(cc) {
+    def onPageLoad(): Action[AnyContent] = authAction(_ => Ok)
+  }
 
+  private class Test(enrolment: Enrolment) {
     private type RetrievalType = Option[AffinityGroup] ~ Enrolments ~ Option[Name] ~ Option[String]
+    private val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
     def retrievals(
       affinityGroup: Option[AffinityGroup],

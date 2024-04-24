@@ -19,7 +19,7 @@ package utils
 import controllers.FakePBIKApplication
 import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.wordspec.AnyWordSpecLike
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.time.TaxYear
 import utils.Exceptions.InvalidYearURIException
@@ -29,16 +29,12 @@ import java.time.{LocalDate, Month}
 
 class TaxDateUtilsSpec extends AnyWordSpecLike with FakePBIKApplication {
 
+  private lazy val taxDateUtils: TaxDateUtils  = new TaxDateUtils()
   private val (year2013, year2014): (Int, Int) = (2013, 2014)
   private val day1: Int                        = 1
   private val inputDates                       = Month.values().toList.map(month => LocalDate.of(year2013, month, day1))
-
-  private lazy val taxDateUtils: TaxDateUtils = new TaxDateUtils()
-  private lazy val lang: Lang                 = Lang("en")
-  private lazy val cyLang: Lang               = Lang("cy")
-
-  private val messages: Messages   = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
-  private val cyMessages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(cyLang))
+  private val messages: Messages               = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
+  private val cyMessages: Messages             = app.injector.instanceOf[MessagesApi].preferred(Seq(cyLang))
 
   "TaxDateUtils" when {
     ".getCurrentTaxYear" should {

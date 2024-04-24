@@ -25,7 +25,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
-import play.api.i18n.{Lang, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
@@ -48,10 +48,9 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
-  implicit val lang: Lang                 = Lang("en-GB")
   implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
 
-  private val messagesApi: MessagesApi                             = app.injector.instanceOf[MessagesApi]
+  private val messages: Messages                                   = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
   private val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
   private val (numberOfElements, bikStatus): (Int, Int)            = (21, 10)
   private val (beginIndex, endIndex): (Int, Int)                   = (0, 10)
@@ -102,25 +101,25 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
   "ManageRegistrationController" when {
     "loading the currentTaxYearOnPageLoad, an authorised user" should {
       "be directed to cy page with list of biks" in {
-        val title  = messagesApi("AddBenefits.Heading")
+        val title  = messages("AddBenefits.Heading")
         val result = registrationController.currentTaxYearOnPageLoad()(mockRequest)
 
         status(result) mustBe OK
         contentAsString(result) must include(title)
-        contentAsString(result) must include(messagesApi("BenefitInKind.label.1"))
-        contentAsString(result) must include(messagesApi("BenefitInKind.label.3"))
+        contentAsString(result) must include(messages("BenefitInKind.label.1"))
+        contentAsString(result) must include(messages("BenefitInKind.label.3"))
       }
     }
 
     "loading the nextTaxYearAddOnPageLoad, an authorised user" should {
       "be directed to cy + 1 page with list of biks" in {
-        val title  = messagesApi("AddBenefits.Heading")
+        val title  = messages("AddBenefits.Heading")
         val result = registrationController.nextTaxYearAddOnPageLoad()(mockRequest)
 
         status(result) mustBe OK
         contentAsString(result) must include(title)
-        contentAsString(result) must include(messagesApi("BenefitInKind.label.1"))
-        contentAsString(result) must include(messagesApi("BenefitInKind.label.3"))
+        contentAsString(result) must include(messages("BenefitInKind.label.1"))
+        contentAsString(result) must include(messages("BenefitInKind.label.3"))
       }
     }
 
@@ -150,7 +149,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
 
         status(result) mustBe BAD_REQUEST
-        contentAsString(result) must include(messagesApi("AddBenefits.noselection.error"))
+        contentAsString(result) must include(messages("AddBenefits.noselection.error"))
       }
     }
 
@@ -176,8 +175,8 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val result = registrationController.showCheckYourAnswersAddCurrentTaxYear()(mockRequest)
 
         status(result) mustBe OK
-        contentAsString(result) must include(messagesApi("AddBenefits.Confirm.Multiple.Title"))
-        contentAsString(result) must include(messagesApi(s"BenefitInKind.label.$iabdType"))
+        contentAsString(result) must include(messages("AddBenefits.Confirm.Multiple.Title"))
+        contentAsString(result) must include(messages(s"BenefitInKind.label.$iabdType"))
       }
     }
 
@@ -207,7 +206,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
 
         status(result) mustBe BAD_REQUEST
-        contentAsString(result) must include(messagesApi("AddBenefits.noselection.error"))
+        contentAsString(result) must include(messages("AddBenefits.noselection.error"))
       }
     }
 
@@ -233,7 +232,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         val result = registrationController.showCheckYourAnswersAddNextTaxYear()(mockRequest)
 
         status(result) mustBe OK
-        contentAsString(result) must include(messagesApi(s"BenefitInKind.label.$iabdType"))
+        contentAsString(result) must include(messages(s"BenefitInKind.label.$iabdType"))
       }
     }
 
@@ -256,7 +255,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
               )
             )
           )
-        val title  = messagesApi("RemoveBenefits.reason.Title").substring(beginIndex, endIndex)
+        val title  = messages("RemoveBenefits.reason.Title").substring(beginIndex, endIndex)
         val result = registrationController.checkYourAnswersRemoveNextTaxYear(iabdString)(mockRequest)
 
         status(result) mustBe OK
@@ -441,7 +440,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           request,
           None
         )
-      val errorMsg                                                        = messagesApi("RemoveBenefits.reason.no.selection")
+      val errorMsg                                                        = messages("RemoveBenefits.reason.no.selection")
 
       val result =
         registrationController.removeBenefitReasonValidation(mockRegistrationList, year, bikList, bikList, "")
@@ -486,7 +485,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             )
           )
 
-        val title  = messagesApi("RemoveBenefits.other.title").substring(beginIndex, endIndex)
+        val title  = messages("RemoveBenefits.other.title").substring(beginIndex, endIndex)
         val result = registrationController.showRemoveBenefitOtherReason(iabdString)(mockRequest)
 
         status(result) mustBe OK
@@ -527,7 +526,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
       }
 
       "return to the same page with an error when other reason is not provided" in {
-        val errorMsg        = messagesApi("RemoveBenefits.other.error.required")
+        val errorMsg        = messages("RemoveBenefits.other.error.required")
         val form            = formMappings.removalOtherReasonForm.fill(OtherReason(""))
         val mockRequestForm = mockRequest
           .withFormUrlEncodedBody(form.data.toSeq: _*)
@@ -538,7 +537,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
       }
 
       "return to the same page with an error when other reason of more than 100 chars is provided" in {
-        val errorMsg        = messagesApi("RemoveBenefits.other.error.length")
+        val errorMsg        = messages("RemoveBenefits.other.error.length")
         val reason          =
           "this is a test other reason to remove the benefits, if user wants to remove the benefits from payroll"
         val form            = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
@@ -571,7 +570,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
             )
           )
 
-        val title  = messagesApi("RemoveBenefits.confirm.heading")
+        val title  = messages("RemoveBenefits.confirm.heading")
         val result = registrationController.showConfirmRemoveNextTaxYear(iabdString)(mockRequest)
 
         status(result) mustBe OK

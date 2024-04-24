@@ -16,26 +16,49 @@
 
 package utils
 
-import org.scalatest.OptionValues
+import controllers.FakePBIKApplication
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import play.api.i18n.{Messages, MessagesApi}
 import utils.DateUtils._
 
-class DateUtilsSpec extends AnyWordSpecLike with Matchers with OptionValues {
+class DateUtilsSpec extends AnyWordSpecLike with Matchers with FakePBIKApplication {
 
-  "NPS date conversion" should {
-    " output 1 January 1980" in {
-      val date: String  = "01/01/1980"
-      val convertedDate = npsDateConversionFormat(date)
+  private val messages: Messages   = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
+  private val cyMessages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(cyLang))
 
-      convertedDate shouldBe "1 January 1980"
-    }
+  private val npsMonths = Seq(
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12"
+  )
 
-    " output 30 August 2015" in {
-      val date: String  = "30/08/2015"
-      val convertedDate = npsDateConversionFormat(date)
+  "DateUtils" should {
+    npsMonths.foreach { month =>
+      s"output 1 $month 1980 - English" in {
+        val date: String  = s"01/$month/1980"
+        val convertedDate = npsDateConversionFormat(date)(messages)
+        val expectedMonth = messages(s"Service.month.$month")
 
-      convertedDate shouldBe "30 August 2015"
+        convertedDate shouldBe s"1 $expectedMonth 1980"
+      }
+
+      s"output 1 $month 1980 - Welsh" in {
+        val date: String  = s"01/$month/1980"
+        val convertedDate = npsDateConversionFormat(date)(cyMessages)
+        val expectedMonth = cyMessages(s"Service.month.$month")
+
+        convertedDate shouldBe s"1 $expectedMonth 1980"
+      }
     }
   }
 

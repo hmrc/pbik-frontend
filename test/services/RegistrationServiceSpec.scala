@@ -41,15 +41,12 @@ import scala.concurrent.Future
 
 class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKApplication with I18nSupport {
 
-  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .overrides(bind[BikListService].toInstance(mock(classOf[BikListService])))
     .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .build()
-
   private val registrationService: RegistrationService = {
     val responseHeaders: Map[String, String] = HeaderTags.createResponseHeaders()
 
@@ -98,6 +95,8 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
 
     service
   }
+
+  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
 
   "When generating a page which allows registrations, the service" should {
     "return the selection page" in {

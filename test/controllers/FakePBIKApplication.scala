@@ -22,6 +22,7 @@ import models.{EmpRef, HeaderTags, UserName}
 import org.scalatest.TestSuite
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
+import play.api.i18n.Lang
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContentAsEmpty, Cookie}
@@ -37,14 +38,33 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   this: TestSuite =>
 
-  val configMap: Map[String, Any] = Map(
+  val lang: Lang     = Lang("en")
+  val cyLang: Lang   = Lang("cy")
+  val empRef: EmpRef = EmpRef("780", "MODES16")
+
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+    .configure(configMap)
+    .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
+    .build()
+  val configMap: Map[String, Any]                = Map(
     "auditing.enabled"            -> false,
     "sessionId"                   -> "a-session-id",
     "pbik.enabled.cy"             -> true,
     "mongodb.timeToLiveInSeconds" -> 3600
   )
-
-  val sessionId = s"session-${UUID.randomUUID}"
+  val sessionId                                  = s"session-${UUID.randomUUID}"
+  val username: UserName                         = UserName(Name(Some("test"), Some("tester")))
+  val organisationClient: Option[Client]         = None
+  val agentClient: Option[Client]                = Some(
+    Client(
+      uk.gov.hmrc.domain.EmpRef(empRef.taxOfficeNumber, empRef.taxOfficeReference),
+      AccountsOfficeReference("123AB12345678", "123", "A", "12345678"),
+      Some("client test name"),
+      lpAuthorisation = false,
+      None,
+      None
+    )
+  )
 
   def mockRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().withSession(
@@ -64,27 +84,8 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
 
   def noSessionIdRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession()
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
-    .configure(configMap)
-    .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
-    .build()
+  def injected[T](c: Class[T]): T = app.injector.instanceOf(c)
 
-  def injected[T](c: Class[T]): T                    = app.injector.instanceOf(c)
   def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T]
-
-  private val empRef: EmpRef = EmpRef("123", "AB12345")
-
-  val username: UserName                 = UserName(Name(Some("test"), Some("tester")))
-  val organisationClient: Option[Client] = None
-  val agentClient: Option[Client]        = Some(
-    Client(
-      uk.gov.hmrc.domain.EmpRef(empRef.taxOfficeNumber, empRef.taxOfficeReference),
-      AccountsOfficeReference("123AB12345678", "123", "A", "12345678"),
-      Some("client test name"),
-      lpAuthorisation = false,
-      None,
-      None
-    )
-  )
 
 }

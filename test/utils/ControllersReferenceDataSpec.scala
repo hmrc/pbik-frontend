@@ -20,7 +20,7 @@ import controllers.FakePBIKApplication
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import org.scalatestplus.play.PlaySpec
 import play.api.http.HttpEntity.Strict
-import play.api.i18n.{Lang, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Result, Results}
@@ -34,8 +34,6 @@ import scala.concurrent.{Future, Promise}
 
 class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication with Results {
 
-  implicit val lang: Lang = Lang("en-GB")
-
   override val configMap: Map[String, Any] = Map(
     "auditing.enabled" -> false,
     "sessionId"        -> "a-session-id",
@@ -43,7 +41,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
   )
 
   private val mockControllersReferenceData: ControllersReferenceData = app.injector.instanceOf[ControllersReferenceData]
-  private val messagesApi: MessagesApi                               = app.injector.instanceOf[MessagesApi]
+  private val messages: Messages                                     = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
 
   private trait Test {
     implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
@@ -65,8 +63,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         }(scala.concurrent.ExecutionContext.Implicits.global))(authenticatedRequest))
 
         result.header.status mustBe FORBIDDEN
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ServiceMessage.10003.1"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ServiceMessage.10003.2"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.10003.1"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.10003.2"))
       }
     }
 
@@ -90,7 +88,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe NOT_FOUND
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.validationError"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.validationError"))
       }
 
       "show an error page when the Future completes with a InvalidYearURIException" in new Test {
@@ -98,7 +96,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe BAD_REQUEST
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.invalidYear"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.invalidYear"))
       }
 
       "show an error page when the Future completes with a InvalidBikTypeException" in new Test {
@@ -106,7 +104,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe BAD_REQUEST
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.invalidBikType"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.invalidBikType"))
       }
 
       "show an error page when the Future completes with a Upstream5xxResponse" in new Test {
@@ -114,8 +112,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.title"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.try.later"))
       }
 
       "show the default error page if the Upstream5xxResponse error message is null" in new Test {
@@ -123,8 +121,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.title"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.try.later"))
       }
 
       "show the default error page if the Upstream5xxResponse error has no number" in new Test {
@@ -132,8 +130,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.title"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.try.later"))
       }
 
       "show the default error page if the Upstream5xxResponse error omits the comma delimeter" in new Test {
@@ -141,8 +139,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.title"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.try.later"))
       }
 
       "show the default error page when the Future completes with a GenericServerErrorException" in new Test {
@@ -150,8 +148,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.title"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.try.later"))
       }
 
       "show the default error page when the Future completes with a GenericServerErrorException and empty message" in new Test {
@@ -159,8 +157,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.title"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.try.later"))
       }
 
       "show an error page when the Future completes with a GenericServerErrorException" in new Test {
@@ -168,7 +166,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ServiceMessage.63082.h1"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.63082.h1"))
       }
 
       "show the default error page if the GenericServerErrorException cannot be parsed" in new Test {
@@ -176,8 +174,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.try.later"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.title"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.try.later"))
       }
 
       "show the default error page when exception is unknown" in new Test {
@@ -185,7 +183,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR
-        result.body.asInstanceOf[Strict].data.utf8String must include(messagesApi("ErrorPage.title"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.title"))
       }
     }
   }

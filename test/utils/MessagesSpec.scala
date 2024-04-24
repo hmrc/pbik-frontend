@@ -31,13 +31,11 @@ class MessagesSpec extends PlaySpec with Logging {
       Map("play.i18n.langs" -> "en,cy", "features.welsh-language-support" -> true)
     )
     .build()
+  private lazy val displayLine          = "\n" + ("@" * 42) + "\n"
 
-  def messagesApi: MessagesApi = injector().instanceOf[MessagesApi]
-
-  implicit lazy val messages: Messages = messagesApi.preferred(Seq(Lang("en"), Lang("cy")))
-
-  val MatchSingleQuoteOnly: Regex   = """\w+'{1}\w+""".r
-  val MatchBacktickQuoteOnly: Regex = """`+""".r
+  implicit lazy val messages: Messages                  = messagesApi.preferred(Seq(Lang("en"), Lang("cy")))
+  private lazy val defaultMessages: Map[String, String] = getExpectedMessages("default")
+  private lazy val welshMessages: Map[String, String]   = getExpectedMessages("cy")
 
   "Application" should {
     "have the correct message configs" in {
@@ -118,12 +116,14 @@ class MessagesSpec extends PlaySpec with Logging {
       mismatchedArgSequences must be(empty)
     }
   }
+  val MatchSingleQuoteOnly: Regex = """\w+'{1}\w+""".r
+  val MatchBacktickQuoteOnly: Regex = """`+""".r
 
-  private def isInteger(s: String): Boolean = s forall Character.isDigit
+  private def countArgs(msg: String) = toArgArray(msg).length
 
   private def toArgArray(msg: String) = msg.split("[{}]").map(_.trim()).filter(isInteger)
 
-  private def countArgs(msg: String) = toArgArray(msg).length
+  private def isInteger(s: String): Boolean = s forall Character.isDigit
 
   private def listArgs(msg: String) = toArgArray(msg).mkString
 
@@ -132,16 +132,14 @@ class MessagesSpec extends PlaySpec with Logging {
 
   private def assertNonEmptyValuesForWelshMessages(): Unit = assertNonEmptyNonTemporaryValues("Welsh", welshMessages)
 
-  private def assertCorrectUseOfQuotesForDefaultMessages(): Unit = assertCorrectUseOfQuotes("Default", defaultMessages)
-
-  private def assertCorrectUseOfQuotesForWelshMessages(): Unit = assertCorrectUseOfQuotes("Welsh", welshMessages)
-
   private def assertNonEmptyNonTemporaryValues(label: String, messages: Map[String, String]): Unit = messages.foreach {
     case (key: String, value: String) =>
       withClue(s"In $label, there is an empty value for the key:[$key][$value]") {
         value.trim.isEmpty mustBe false
       }
   }
+
+  private def assertCorrectUseOfQuotesForDefaultMessages(): Unit = assertCorrectUseOfQuotes("Default", defaultMessages)
 
   private def assertCorrectUseOfQuotes(label: String, messages: Map[String, String]): Unit = messages.foreach {
     case (key: String, value: String) =>
@@ -151,17 +149,12 @@ class MessagesSpec extends PlaySpec with Logging {
       }
   }
 
-  private def listMissingMessageKeys(header: String, missingKeys: Set[String]) =
-    missingKeys.toList.sorted.mkString(header + displayLine, "\n", displayLine)
-
-  private lazy val displayLine = "\n" + ("@" * 42) + "\n"
-
-  private lazy val defaultMessages: Map[String, String] = getExpectedMessages("default")
-
-  private lazy val welshMessages: Map[String, String] = getExpectedMessages("cy")
+  private def assertCorrectUseOfQuotesForWelshMessages(): Unit = assertCorrectUseOfQuotes("Welsh", welshMessages)
 
   private def getExpectedMessages(languageCode: String) =
     messagesApi.messages.getOrElse(languageCode, throw new Exception(s"Missing messages for $languageCode"))
+
+  def messagesApi: MessagesApi = injector().instanceOf[MessagesApi]
 
   private def mismatchingKeys(defaultKeySet: Set[String], welshKeySet: Set[String]) = {
     val test1 =
@@ -173,4 +166,7 @@ class MessagesSpec extends PlaySpec with Logging {
 
     test1 ++ test2
   }
+
+  private def listMissingMessageKeys(header: String, missingKeys: Set[String]) =
+    missingKeys.toList.sorted.mkString(header + displayLine, "\n", displayLine)
 }

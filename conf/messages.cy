@@ -8,14 +8,23 @@ service.name = Talu buddiannau a threuliau drwy’r gyflogres
 site.warning = Rhybudd
 
 Service.month.1 = Ionawr
+Service.month.01 = Ionawr
 Service.month.2 = Chwefror
+Service.month.02 = Chwefror
 Service.month.3 = Mawrth
+Service.month.03 = Mawrth
 Service.month.4 = Ebrill
+Service.month.04 = Ebrill
 Service.month.5 = Mai
+Service.month.05 = Mai
 Service.month.6 = Mehefin
+Service.month.06 = Mehefin
 Service.month.7 = Gorffennaf
+Service.month.07 = Gorffennaf
 Service.month.8 = Awst
+Service.month.08 = Awst
 Service.month.9 = Medi
+Service.month.09 = Medi
 Service.month.10 = Hydref
 Service.month.11 = Tachwedd
 Service.month.12 = Rhagfyr
@@ -222,11 +231,11 @@ ExclusionSearch.Fail.Exists.P = Chwilio eto am gyflogai gwahanol
 ExclusionSearch.warning = Ni fyddwch yn gallu rhoi’r buddiant neu’r draul sydd dan sylw drwy’r gyflogres ar gyfer y cyflogai hwn eto yn y flwyddyn dreth hon.
 
 ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu o ran {0} drwy’r gyflogres o {1} ymlaen.
-ExclusionRemovalConfirmation.title = Datgan y cyflogai i ychwanegu’r buddiant neu’r draul hon
+ExclusionRemovalConfirmation.title = Datgan y cyflogai sydd i’w ychwanegu at y buddiant neu’r draul sydd dan sylw
 ExclusionRemovalConfirmation.table.title = Manylion gweithwyr
-ExclusionRemovalConfirmation.p = Trwy gadarnhau, fydd {0} wedi trethu {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
+ExclusionRemovalConfirmation.p = Drwy gadarnhau, bydd {0} yn cael ei drethu o ran {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
 
-ExclusionRemoval.WhatNext.p1 = Bydd {0} wedi trethu {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
+ExclusionRemoval.WhatNext.p1 = Bydd {0} yn cael ei drethu o ran {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
 ExclusionRemoval.whatYouNeedToKnow.subHeading = Yr hyn y mae angen i chi ei wneud nawr
 ExclusionRemoval.whatYouNeedToKnow.p1 = O 6 Ebrill {0}, mae angen i chi ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog eich cyflogai a’i drethu drwy’ch cyflogres.
 ExclusionRemoval.whatYouNeedToKnow.p2 = Gallwch roi’r gorau i anfon ffurflenni P11D atom ar gyfer y cyflogai hwn.
@@ -456,18 +465,18 @@ whatNext.rescind.h2.agent = Yr hyn y mae’n rhaid i’ch cleient ei wneud nawr
 whatNext.rescind.p1.agent = Mae’n rhaid ‘ch cleient anfon llythyr i {0} yn egluro’r canlynol:
 
 whatNext.rescind.li1 = bydd {0} yn cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen
-whatNext.rescind.li2 = bydd eu cod treth yn newid
-whatNext.rescind.li3 = byddant yn cael llythyr gan CThEF gyda’u cod treth newydd
+whatNext.rescind.li2 = bydd ei god treth yn newid
+whatNext.rescind.li3 = bydd yn cael llythyr gan CThEF gyda’i god treth newydd
 
 whatNext.rescind.p2.organisation = O 6 Ebrill {0} ymlaen, mae angen i chi ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog {1} a’u trethu drwy’ch cyflogres.
 whatNext.rescind.p2.agent = O 6 Ebrill {0} ymlaen, mae angen i’ch cleient ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog {1} a’u trethu drwy gyflogres {2}.
 
-whatNext.rescind.you.do.h3 = Os ydych am reoli cyflogeion eraill sydd wedi’u heithrio ar gyfer y buddiant neu draul hon
+whatNext.rescind.you.do.h3 = Os ydych am reoli cyflogeion eraill sydd wedi’u heithrio ar gyfer y buddiant neu’r draul sydd dan sylw
 whatNext.rescind.more.p.before = Gallwch
-whatNext.rescind.more.p.link = yn ôl {0}
+whatNext.rescind.more.p.link = fynd yn ôl {0}
 whatNext.rescind.more.p.after = er mwyn:
-whatNext.rescind.more.li1 = eithrio cyflogai arall o’r buddiant neu’r draul hon
-whatNext.rescind.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r draul hon
+whatNext.rescind.more.li1 = eithrio cyflogai arall rhag y buddiant neu’r draul sydd dan sylw
+whatNext.rescind.more.li2 = ychwanegu cyflogai’n ôl at y buddiant neu’r draul sydd dan sylw
 
 whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.exclude.table.heading = Manylion yr eithriad

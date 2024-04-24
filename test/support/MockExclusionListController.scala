@@ -91,9 +91,8 @@ class MockExclusionListController @Inject() (
     val fiveHundredMillis = 500
     PatienceConfig(timeout = Span(fiveSeconds, Seconds), interval = Span(fiveHundredMillis, Millis))
   }
+  override lazy val exclusionsAllowed: Boolean = true
 
   def logSplunkEvent(dataEvent: DataEvent): Future[AuditResult] =
     Future.successful(AuditResult.Success)
-
-  override lazy val exclusionsAllowed: Boolean = true
 }

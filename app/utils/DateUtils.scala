@@ -16,18 +16,18 @@
 
 package utils
 
-import java.text.{DateFormat, SimpleDateFormat}
-import java.util.Date
+import play.api.i18n.Messages
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 object DateUtils {
 
-  def npsDateConversionFormat(dateAsString: String): String = {
-    val sourceFormat: DateFormat = new SimpleDateFormat("dd/MM/yyyy")
-    val date: Date               = sourceFormat.parse(dateAsString)
+  def npsDateConversionFormat(dateAsString: String)(implicit messages: Messages): String = {
+    val sourceFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val date: LocalDate                 = LocalDate.parse(dateAsString, sourceFormat)
 
-    val outputFormat: String               = "d MMMMM yyyy"
-    val simpleDateFormat: SimpleDateFormat = new SimpleDateFormat(outputFormat)
-    simpleDateFormat.format(date)
+    s"${date.getDayOfMonth} ${messages("Service.month." + date.getMonth.getValue)} ${date.getYear}"
   }
 
 }

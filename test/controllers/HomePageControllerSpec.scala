@@ -34,18 +34,18 @@ import utils._
 
 class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18nSupport {
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+  override lazy val fakeApplication: Application     = GuiceApplicationBuilder()
     .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .overrides(bind[BikListService].to(classOf[StubbedBikListService]))
     .overrides(bind[SplunkLogger].to(classOf[TestSplunkLogger]))
     .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()
+  private val homePageController: HomePageController = app.injector.instanceOf[HomePageController]
+
+  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
 
   override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-
-  implicit val taxDateUtils: TaxDateUtils            = app.injector.instanceOf[TaxDateUtils]
-  private val homePageController: HomePageController = app.injector.instanceOf[HomePageController]
 
   "HomePageController" when {
     ".notAuthorised" should {
