@@ -44,7 +44,7 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
   private val pbikConnectorWithMockClient: PbikConnector = new PbikConnector(mockHttpClient, configuration)
 
   private val fakeResponse: HttpResponse                   = HttpResponse(OK, "")
-  private val employerOptimisticLockResponse               = EmployerOptimisticLockResponse(1, 1, 1, 0)
+  private val employerOptimisticLockResponse               = EmployerOptimisticLockResponse(0)
   private val fakePostResponseUpdateBenefits: HttpResponse =
     HttpResponse(OK, Json.toJson(BenefitListUpdateResponse(employerOptimisticLockResponse)).toString())
   private val pbikErrorResponseCode: String                = "64990"
@@ -75,8 +75,7 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
     BenefitInKindWithCount(
       IabdType(bik.iabdType.toInt),
       PbikStatus.ValidPayrollingBenefitInKind,
-      bik.eilCount,
-      isAgentSubmission = false
+      bik.eilCount
     )
   )
 
@@ -102,7 +101,7 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
     ".getRegisteredBiks" must {
       "return a list of benefits for an organisation on a specific year" in {
         val fakeResponseWithListOfBiks =
-          buildFakeResponseWithBody(BenefitListResponse(listBikWithCount, employerOptimisticLockResponse))
+          buildFakeResponseWithBody(BenefitListResponse(Option(listBikWithCount), employerOptimisticLockResponse))
 
         when(
           mockHttpClient.GET(
@@ -155,7 +154,7 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
           )
         }
 
-        result.errors.flatMap(_._2.map(_.message)) mustBe Seq("error.expected.jsobject")
+        result.errors.flatMap(_._2.map(_.message)) mustBe Seq("error.path.missing")
       }
 
       "throw an exception when invalid json is received in BAD_REQUEST" in {

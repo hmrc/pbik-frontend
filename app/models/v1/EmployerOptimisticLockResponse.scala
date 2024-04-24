@@ -16,15 +16,20 @@
 
 package models.v1
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OWrites, Reads}
 
 case class EmployerOptimisticLockResponse(
-  payeSchemeType: Int,
-  employerNumber: Int,
-  payeSequenceNo: Int,
   currentOptimisticLock: Int
 )
 
 object EmployerOptimisticLockResponse {
-  implicit val formats: OFormat[EmployerOptimisticLockResponse] = Json.format[EmployerOptimisticLockResponse]
+
+  implicit val writes: OWrites[EmployerOptimisticLockResponse] = Json.writes[EmployerOptimisticLockResponse]
+
+  implicit val reads: Reads[EmployerOptimisticLockResponse] = {
+    import play.api.libs.json._
+
+    (__ \ "currentOptimisticLock").read[Int].map(EmployerOptimisticLockResponse.apply)
+  }
+
 }
