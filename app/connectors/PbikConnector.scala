@@ -53,7 +53,7 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
         val resp                                  = validateResponses("getRegisteredBiks").json.as[BenefitListResponse]
         val updatedHeaders: Seq[(String, String)] =
           HeaderTags.createResponseHeaders(resp.employerOptimisticLockResponse.currentOptimisticLock.toString).toSeq
-        val biks                                  = resp.pbikRegistrationDetails.map(benefit => Bik(benefit))
+        val biks                                  = resp.pbikRegistrationDetails.getOrElse(List.empty).map(benefit => Bik(benefit))
 
         logger.info(
           s"[PbikConnector][getRegisteredBiks] Got registered BIKs ${biks.size} with headers: $updatedHeaders"

@@ -16,13 +16,25 @@
 
 package models.v1
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OWrites, Reads}
 
 case class BenefitListResponse(
-  pbikRegistrationDetails: List[BenefitInKindWithCount],
+  pbikRegistrationDetails: Option[List[BenefitInKindWithCount]],
   employerOptimisticLockResponse: EmployerOptimisticLockResponse
 )
 
 object BenefitListResponse {
-  implicit val formats: OFormat[BenefitListResponse] = Json.format[BenefitListResponse]
+
+  implicit val writes: OWrites[BenefitListResponse] = Json.writes[BenefitListResponse]
+
+  implicit val reads: Reads[BenefitListResponse] = {
+    import play.api.libs.functional.syntax._
+    import play.api.libs.json._
+
+    (
+      (__ \ "pbikRegistrationDetails").readNullable[List[BenefitInKindWithCount]] and
+        (__ \ "employerOptimisticLockResponse").read[EmployerOptimisticLockResponse]
+    )(BenefitListResponse.apply _)
+  }
+
 }

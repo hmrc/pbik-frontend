@@ -18,15 +18,27 @@ package models.v1
 
 import models.v1.IabdType.IabdType
 import models.v1.PbikStatus.PbikStatus
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OWrites, Reads}
 
 case class BenefitInKindWithCount(
   iabdType: IabdType,
   payrolledBenefitInKindStatus: PbikStatus,
-  payrolledBenefitInKindExclusionCount: Int,
-  isAgentSubmission: Boolean
+  payrolledBenefitInKindExclusionCount: Int
 )
 
 object BenefitInKindWithCount {
-  implicit val formats: OFormat[BenefitInKindWithCount] = Json.format[BenefitInKindWithCount]
+
+  implicit val writes: OWrites[BenefitInKindWithCount] = Json.writes[BenefitInKindWithCount]
+
+  implicit val reads: Reads[BenefitInKindWithCount] = {
+    import play.api.libs.functional.syntax._
+    import play.api.libs.json._
+
+    (
+      (__ \ "iabdType").read[IabdType] and
+        (__ \ "payrolledBenefitInKindStatus").read[PbikStatus] and
+        (__ \ "payrolledBenefitInKindExclusionCount").read[Int]
+    )(BenefitInKindWithCount.apply _)
+  }
+
 }
