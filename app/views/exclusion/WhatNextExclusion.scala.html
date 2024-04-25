@@ -146,17 +146,19 @@
             @messages("whatNext.exclude.p2.cy")
         </p>
     } else {
-        @if(request.isAgent) {
-            @messages("whatNext.exclude.p1.before.agent")
-            <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">
-                @messages("whatNext.exclude.p1.link.agent")
-            </a> @messages("whatNext.exclude.p1.after.agent", person.fullName)
-        } else {
-            @messages("whatNext.exclude.p1.before.organisation")
-            <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">
-                @messages("whatNext.exclude.p1.link.organisation")
-            </a> @messages("whatNext.exclude.p1.after.organisation", person.fullName)
-        }
+        <p id="next-steps-info" class="govuk-body">
+            @if(request.isAgent) {
+                @messages("whatNext.exclude.p1.before.agent")
+                <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">
+                    @messages("whatNext.exclude.p1.link.agent")
+                </a> @messages("whatNext.exclude.p1.after.agent", person.fullName)
+            } else {
+                @messages("whatNext.exclude.p1.before.organisation")
+                <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">
+                    @messages("whatNext.exclude.p1.link.organisation")
+                </a> @messages("whatNext.exclude.p1.after.organisation", person.fullName)
+            }
+        </p>
     }
 
     <h2 class="govuk-heading-m">
