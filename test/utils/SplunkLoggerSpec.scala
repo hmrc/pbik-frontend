@@ -49,16 +49,7 @@ class SplunkLoggerSpec
     val msg                          = "Hello"
 
     val csrfTokenSigner: CSRFTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
-
-    def csrfToken: (String, String) =
-      "csrfToken" -> csrfTokenSigner.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
-
-    def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
-
-    def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] =
-      FakeRequest().withSession(csrfToken).withHeaders()
-
-    val pbikDataEvent: DataEvent = DataEvent(
+    val pbikDataEvent: DataEvent         = DataEvent(
       auditSource = SplunkLogger.pbik_audit_source,
       auditType = SplunkLogger.pbik_benefit_type,
       detail = Map(
@@ -74,6 +65,14 @@ class SplunkLoggerSpec
         SplunkLogger.key_message      -> msg
       )
     )
+
+    def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
+
+    def csrfToken: (String, String) =
+      "csrfToken" -> csrfTokenSigner.generateToken //"csrfToken"Name -> UnsignedTokenProvider.generateToken
+
+    def fakeAuthenticatedRequest: FakeRequest[AnyContentAsEmpty.type] =
+      FakeRequest().withSession(csrfToken).withHeaders()
   }
 
   "When logging events, the SplunkLogger" should {

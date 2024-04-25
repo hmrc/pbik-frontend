@@ -60,12 +60,12 @@ class StubbedRegistrationService @Inject() (
     )
     with I18nSupport {
 
-  val dateRange: TaxYearRange                          = taxDateUtils.getTaxYearRange()
-  val biksAvailableCount: Int                          = 17
   lazy val CYCache: List[Bik]                          = IabdType.values.toList
     .map(value => Bik(value.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
   lazy val CYRegistrationItems: List[RegistrationItem] = IabdType.values.toList
     .map(value => RegistrationItem(value.id.toString, active = true, enabled = true))
+  val dateRange: TaxYearRange                          = taxDateUtils.getTaxYearRange()
+  val biksAvailableCount: Int                          = 17
   val registeredListOption: List[Bik]                  = List.empty[Bik]
   val allRegisteredListOption: List[Bik]               = CYCache
   val mockRegistrationItemList: List[RegistrationItem] = List.empty[RegistrationItem]

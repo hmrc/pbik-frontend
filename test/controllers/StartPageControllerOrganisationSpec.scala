@@ -24,7 +24,7 @@ import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
@@ -47,9 +47,6 @@ class StartPageControllerOrganisationSpec extends PlaySpec with FakePBIKApplicat
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[BikListService].to(bikListService))
     .build()
-
-  val lang: Lang   = Lang("en")
-  val cyLang: Lang = Lang("cy")
 
   private val messages: Messages                                 = fakeApplication.injector.instanceOf[MessagesApi].preferred(Seq(lang))
   private val cyMessages: Messages                               = fakeApplication.injector.instanceOf[MessagesApi].preferred(Seq(cyLang))

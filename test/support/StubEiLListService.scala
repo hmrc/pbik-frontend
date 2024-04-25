@@ -31,7 +31,6 @@ class StubEiLListService @Inject() (
 )(implicit ec: ExecutionContext)
     extends EiLListService(pbikAppConfig, tierConnector) {
 
-  val status                                     = 10
   private lazy val ListOfPeople: List[EiLPerson] = List(
     EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(status)),
     EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None),
@@ -67,6 +66,7 @@ class StubEiLListService @Inject() (
       Some(status)
     )
   )
+  val status                                     = 10
 
   override def currentYearEiL(iabdType: String, year: Int)(implicit
     hc: HeaderCarrier,

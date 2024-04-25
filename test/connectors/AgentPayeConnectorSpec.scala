@@ -17,7 +17,6 @@
 package connectors
 
 import controllers.FakePBIKApplication
-import models._
 import org.mockito.ArgumentMatchersSugar.{any, eqTo}
 import org.mockito.MockitoSugar.{mock, when}
 import org.scalatest.matchers.must.Matchers
@@ -40,7 +39,6 @@ class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKAppl
 
   private val baseUrl: String   = s"${configuration.baseUrl("agent-paye")}/agent"
   private val agentCode: String = "agentCode"
-  private val empRef: EmpRef    = EmpRef("780", "MODES16")
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

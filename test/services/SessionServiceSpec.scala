@@ -42,14 +42,11 @@ class SessionServiceSpec
     with FakePBIKApplication
     with BeforeAndAfterEach
     with MockitoSugar {
-
-  val mockSessionService: SessionService = mock[SessionService]
-
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+  override lazy val fakeApplication: Application       = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[SessionService].toInstance(mockSessionService))
     .build()
-
+  val mockSessionService: SessionService               = mock[SessionService]
   private val timeout: FiniteDuration                  = 5.seconds
   implicit val hc: HeaderCarrier                       = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
   private val mockSessionRepository: SessionRepository = mock[SessionRepository]

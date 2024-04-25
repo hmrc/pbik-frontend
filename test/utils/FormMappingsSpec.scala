@@ -17,7 +17,7 @@
 package utils
 
 import controllers.FakePBIKApplication
-import models.{EiLPerson, EiLPersonList, ExclusionNino, MandatoryRadioButton, SelectYear}
+import models._
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.play.PlaySpec
 

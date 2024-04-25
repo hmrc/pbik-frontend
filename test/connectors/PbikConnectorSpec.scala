@@ -38,48 +38,37 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplication with TestAuthUser with Results {
-
-  private val mockHttpClient: HttpClient                 = mock[HttpClient]
-  private val configuration: Configuration               = app.injector.instanceOf[Configuration]
-  private val pbikConnectorWithMockClient: PbikConnector = new PbikConnector(mockHttpClient, configuration)
-
-  private val fakeResponse: HttpResponse                   = HttpResponse(OK, "")
-  private val employerOptimisticLockResponse               = EmployerOptimisticLockResponse(0)
-  private val fakePostResponseUpdateBenefits: HttpResponse =
-    HttpResponse(OK, Json.toJson(BenefitListUpdateResponse(employerOptimisticLockResponse)).toString())
-  private val pbikErrorResponseCode: String                = "64990"
-  private val pbikError: PbikError                         = PbikError(pbikErrorResponseCode)
-  private val responseHeaders: Map[String, String]         = HeaderTags.createResponseHeaders()
-  private val baseUrl: String                              = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
-
-  private def pbikNpsErrorResponse(statusCode: Int, pbikErrorCode: String = pbikErrorResponseCode): NPSErrors =
-    NPSErrors(Seq(NPSError("reason", s"$statusCode.$pbikErrorCode")))
-
-  private val year: Int              = 2015
-  private val bikEilCount: Int       = 10
-  private val empRef: EmpRef         = EmpRef("780", "MODES16")
-  private val (iabdType, iabdString) = (IabdType.CarBenefit.id.toString, "car")
-
   val request: Request[List[Bik]]                                    = FakeRequest().asInstanceOf[Request[List[Bik]]]
-  implicit val hc: HeaderCarrier                                     = HeaderCarrier()
-  implicit val authenticatedRequest: AuthenticatedRequest[List[Bik]] =
-    AuthenticatedRequest[List[Bik]](empRef, username, request, None)
-
-  private val listBiks: List[Bik] =
+  private val mockHttpClient: HttpClient                             = mock[HttpClient]
+  private val configuration: Configuration                           = app.injector.instanceOf[Configuration]
+  private val pbikConnectorWithMockClient: PbikConnector             = new PbikConnector(mockHttpClient, configuration)
+  private val fakeResponse: HttpResponse                             = HttpResponse(OK, "")
+  private val employerOptimisticLockResponse                         = EmployerOptimisticLockResponse(0)
+  private val fakePostResponseUpdateBenefits: HttpResponse           =
+    HttpResponse(OK, Json.toJson(BenefitListUpdateResponse(employerOptimisticLockResponse)).toString())
+  private val pbikErrorResponseCode: String                          = "64990"
+  private val pbikError: PbikError                                   = PbikError(pbikErrorResponseCode)
+  private val responseHeaders: Map[String, String]                   = HeaderTags.createResponseHeaders()
+  private val baseUrl: String                                        = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
+  private val year: Int                                              = 2015
+  private val bikEilCount: Int                                       = 10
+  private val (iabdType, iabdString)                                 = (IabdType.CarBenefit.id.toString, "car")
+  private val listBiks: List[Bik]                                    =
     List(
       Bik(iabdType, PbikAction.ReinstatePayrolledBenefitInKind.id, bikEilCount),
       Bik(IabdType.VanFuelBenefit.id.toString, PbikAction.RemovePayrolledBenefitInKind.id, bikEilCount)
     )
-
-  private val listBikWithCount = listBiks.map(bik =>
+  implicit val hc: HeaderCarrier                                     = HeaderCarrier()
+  implicit val authenticatedRequest: AuthenticatedRequest[List[Bik]] =
+    AuthenticatedRequest[List[Bik]](empRef, username, request, None)
+  private val listBikWithCount                                       = listBiks.map(bik =>
     BenefitInKindWithCount(
       IabdType(bik.iabdType.toInt),
       PbikStatus.ValidPayrollingBenefitInKind,
       bik.eilCount
     )
   )
-
-  private val listOfEiLPerson = List(
+  private val listOfEiLPerson                                        = List(
     EiLPerson(
       nino = "AB123456C",
       firstForename = "John",
@@ -96,6 +85,9 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
   def buildFakeResponseWithBody[A](body: A, status: Int = OK)(implicit w: Writes[A]): HttpResponse =
     HttpResponse(status, Json.toJson(body), Map.empty[String, Seq[String]])
+
+  private def pbikNpsErrorResponse(statusCode: Int, pbikErrorCode: String = pbikErrorResponseCode): NPSErrors =
+    NPSErrors(Seq(NPSError("reason", s"$statusCode.$pbikErrorCode")))
 
   "PbikConnector" when {
     ".getRegisteredBiks" must {

@@ -28,8 +28,10 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   val bikListUtils: BikListUtils                            = app.injector.instanceOf[BikListUtils]
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-
-  private val alphaSorted = List(
+  val biks: List[Bik]                                       = IabdType.values.toList
+    .filter(x => x.id != IabdType.CarFuelBenefit.id)
+    .map(x => Bik(x.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
+  private val alphaSorted                                   = List(
     Assets,
     AssetTransfer,
     CarBenefit,
@@ -49,16 +51,11 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
     VanBenefit,
     VouchersAndCreditCards
   ).map(x => x.id)
-
-  val biks: List[Bik] = IabdType.values.toList
-    .filter(x => x.id != IabdType.CarFuelBenefit.id)
-    .map(x => Bik(x.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
-
-  private val registered: List[Bik]      =
+  private val registered: List[Bik]                         =
     List(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, VanBenefit, Mileage).map(x =>
       Bik(x.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id)
     )
-  private val modifications: List[Bik]   = List(
+  private val modifications: List[Bik]                      = List(
     Bik(AssetTransfer.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
     Bik(PaymentsOnEmployeeBehalf.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
     Bik(VouchersAndCreditCards.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
@@ -66,7 +63,7 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
     Bik(OtherItems.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id),
     Bik(IncomeTaxPaidButNotDeductedFromDirectorRemuneration.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id)
   )
-  private val normaliseResult: List[Int] = List(
+  private val normaliseResult: List[Int]                    = List(
     AssetTransfer.id,
     OtherItems.id,
     PaymentsOnEmployeeBehalf.id,

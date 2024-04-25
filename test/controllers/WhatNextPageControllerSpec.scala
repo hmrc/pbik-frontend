@@ -25,7 +25,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
-import play.api.i18n.Lang
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
@@ -53,7 +52,6 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
 
-  implicit val lang: Lang                                             = Lang("en-GB")
   implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
   implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
     AuthenticatedRequest(

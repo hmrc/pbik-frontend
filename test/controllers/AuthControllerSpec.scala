@@ -27,11 +27,13 @@ import scala.concurrent.Future
 
 class AuthControllerSpec extends PlaySpec with FakePBIKApplication {
 
-  implicit val hc: HeaderCarrier                               = HeaderCarrier()
-  private val csrfTokenSigner: CSRFTokenSigner                 = app.injector.instanceOf[CSRFTokenSigner]
-  private val controller: AuthController                       = app.injector.instanceOf[AuthController]
-  private def csrfToken: (String, String)                      = "csrfToken" -> csrfTokenSigner.generateToken
+  implicit val hc: HeaderCarrier               = HeaderCarrier()
+  private val csrfTokenSigner: CSRFTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
+  private val controller: AuthController       = app.injector.instanceOf[AuthController]
+
   private def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
+
+  private def csrfToken: (String, String) = "csrfToken" -> csrfTokenSigner.generateToken
 
   "When an valid user logs in, and their action is not authorised the controller" should {
     "return a 401 status with enrolment message" in {
