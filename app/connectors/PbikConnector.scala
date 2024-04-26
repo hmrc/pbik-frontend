@@ -111,7 +111,7 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
     request: AuthenticatedRequest[_]
   ): Future[Int] = {
     val updatedBiks                  = changes.map(bik => BenefitInKindRequest(bik, request.isAgent))
-    val prefix                       = if (request.isAgent) "agent" else "org"
+    val suffix                       = if (request.isAgent) "agent" else "org"
     val headers: Map[String, String] = createOrCheckForRequiredHeaders
     client
       .POST(
