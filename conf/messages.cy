@@ -473,7 +473,7 @@ whatNext.rescind.p2.agent = O 6 Ebrill {0} ymlaen, mae angen i’ch cleient ychw
 
 whatNext.rescind.you.do.h3 = Os ydych am reoli cyflogeion eraill sydd wedi’u heithrio ar gyfer y buddiant neu’r draul sydd dan sylw
 whatNext.rescind.more.p.before = Gallwch
-whatNext.rescind.more.p.link = fynd yn ôl {0}
+whatNext.rescind.more.p.link = fynd yn ôl i {0}
 whatNext.rescind.more.p.after = er mwyn:
 whatNext.rescind.more.li1 = eithrio cyflogai arall rhag y buddiant neu’r draul sydd dan sylw
 whatNext.rescind.more.li2 = ychwanegu cyflogai’n ôl at y buddiant neu’r draul sydd dan sylw
@@ -517,11 +517,11 @@ whatNext.exclude.you.do.p.cy.link.agent = ddychwelyd i fuddiannau a threuliau’
 whatNext.exclude.you.do.p.cy.after.agent = i eithrio cyflogeion rhag buddiannau a threuliau’r flwyddyn hon ar gyfer y cleient hwn.
 
 whatNext.exclude.you.do.p.before.organisation = Gallwch
-whatNext.exclude.you.do.p.link.organisation = yn ôl i’ch buddiannau a threuliau cofrestredig
+whatNext.exclude.you.do.p.link.organisation = fynd yn ôl i’ch buddiannau a threuliau cofrestredig
 whatNext.exclude.you.do.p.after.organisation = er mwyn:
 
 whatNext.exclude.you.do.p.before.agent = Gallwch
-whatNext.exclude.you.do.p.link.agent = yn ôl i fuddiannau a threuliau cofrestredig eich cleient
+whatNext.exclude.you.do.p.link.agent = fynd yn ôl i fuddiannau a threuliau cofrestredig eich cleient
 whatNext.exclude.you.do.p.after.agent = er mwyn:
 
 whatNext.exclude.you.do.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau rydych wedi’u cofrestru
@@ -535,7 +535,7 @@ whatNext.exclude.more.p.cy.link = ddychwelyd i’r adran {0}
 whatNext.exclude.more.p.cy.after = i eithrio cyflogai arall rhag y buddiant neu’r draul sydd dan sylw.
 
 whatNext.exclude.more.p.before = Gallwch
-whatNext.exclude.more.p.link = yn ôl {0}
+whatNext.exclude.more.p.link = yn ôl i {0}
 whatNext.exclude.more.p.after = er mwyn:
 whatNext.exclude.more.li1 = eithrio cyflogai arall o’r buddiant neu’r draul hon
 whatNext.exclude.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r draul hon
