@@ -38,37 +38,39 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplication with TestAuthUser with Results {
-  val request: Request[List[Bik]]                                    = FakeRequest().asInstanceOf[Request[List[Bik]]]
-  private val mockHttpClient: HttpClient                             = mock[HttpClient]
-  private val configuration: Configuration                           = app.injector.instanceOf[Configuration]
-  private val pbikConnectorWithMockClient: PbikConnector             = new PbikConnector(mockHttpClient, configuration)
-  private val fakeResponse: HttpResponse                             = HttpResponse(OK, "")
-  private val employerOptimisticLockResponse                         = EmployerOptimisticLockResponse(0)
-  private val fakePostResponseUpdateBenefits: HttpResponse           =
+  val request: Request[List[Bik]]                                        = FakeRequest().asInstanceOf[Request[List[Bik]]]
+  private val mockHttpClient: HttpClient                                 = mock[HttpClient]
+  private val configuration: Configuration                               = app.injector.instanceOf[Configuration]
+  private val pbikConnectorWithMockClient: PbikConnector                 = new PbikConnector(mockHttpClient, configuration)
+  private val fakeResponse: HttpResponse                                 = HttpResponse(OK, "")
+  private val employerOptimisticLockResponse                             = EmployerOptimisticLockResponse(0)
+  private val fakePostResponseUpdateBenefits: HttpResponse               =
     HttpResponse(OK, Json.toJson(BenefitListUpdateResponse(employerOptimisticLockResponse)).toString())
-  private val pbikErrorResponseCode: String                          = "64990"
-  private val pbikError: PbikError                                   = PbikError(pbikErrorResponseCode)
-  private val responseHeaders: Map[String, String]                   = HeaderTags.createResponseHeaders()
-  private val baseUrl: String                                        = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
-  private val year: Int                                              = 2015
-  private val bikEilCount: Int                                       = 10
-  private val (iabdType, iabdString)                                 = (IabdType.CarBenefit.id.toString, "car")
-  private val listBiks: List[Bik]                                    =
+  private val pbikErrorResponseCode: String                              = "64990"
+  private val pbikError: PbikError                                       = PbikError(pbikErrorResponseCode)
+  private val responseHeaders: Map[String, String]                       = HeaderTags.createResponseHeaders()
+  private val baseUrl: String                                            = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
+  private val year: Int                                                  = 2015
+  private val bikEilCount: Int                                           = 10
+  private val (iabdType, iabdString)                                     = (IabdType.CarBenefit.id.toString, "car")
+  private val listBiks: List[Bik]                                        =
     List(
       Bik(iabdType, PbikAction.ReinstatePayrolledBenefitInKind.id, bikEilCount),
       Bik(IabdType.VanFuelBenefit.id.toString, PbikAction.RemovePayrolledBenefitInKind.id, bikEilCount)
     )
-  implicit val hc: HeaderCarrier                                     = HeaderCarrier()
-  implicit val authenticatedRequest: AuthenticatedRequest[List[Bik]] =
+  implicit val hc: HeaderCarrier                                         = HeaderCarrier()
+  implicit val authenticatedRequestOrg: AuthenticatedRequest[List[Bik]]  =
     AuthenticatedRequest[List[Bik]](empRef, username, request, None)
-  private val listBikWithCount                                       = listBiks.map(bik =>
+  private val authenticatedRequestAgent: AuthenticatedRequest[List[Bik]] =
+    AuthenticatedRequest[List[Bik]](empRef, username, request, agentClient)
+  private val listBikWithCount                                           = listBiks.map(bik =>
     BenefitInKindWithCount(
       IabdType(bik.iabdType.toInt),
       PbikStatus.ValidPayrollingBenefitInKind,
       bik.eilCount
     )
   )
-  private val listOfEiLPerson                                        = List(
+  private val listOfEiLPerson                                            = List(
     EiLPerson(
       nino = "AB123456C",
       firstForename = "John",
@@ -684,7 +686,7 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
       "return OK (200) when successfully changing an organisations registered benefits" in {
         when(
           mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/updatebenefittypes"),
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/updatebenefittypes/org"),
             any[List[BenefitInKindRequest]],
             eqTo(responseHeaders.toSeq)
           )(
@@ -697,7 +699,27 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
 
         await(
           pbikConnectorWithMockClient
-            .updateOrganisationsRegisteredBiks(year, listBiks)
+            .updateOrganisationsRegisteredBiks(year, listBiks)(hc, authenticatedRequestOrg)
+        ) mustBe employerOptimisticLockResponse.currentOptimisticLock
+      }
+
+      "return OK (200) when successfully changing a agent registered benefits" in {
+        when(
+          mockHttpClient.POST(
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/updatebenefittypes/agent"),
+            any[List[BenefitInKindRequest]],
+            eqTo(responseHeaders.toSeq)
+          )(
+            any[Writes[List[BenefitInKindRequest]]],
+            any[HttpReads[HttpResponse]],
+            any[HeaderCarrier],
+            any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(fakePostResponseUpdateBenefits))
+
+        await(
+          pbikConnectorWithMockClient
+            .updateOrganisationsRegisteredBiks(year, listBiks)(hc, authenticatedRequestAgent)
         ) mustBe employerOptimisticLockResponse.currentOptimisticLock
       }
     }
