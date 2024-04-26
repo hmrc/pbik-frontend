@@ -115,7 +115,7 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
     val headers: Map[String, String] = createOrCheckForRequiredHeaders
     client
       .POST(
-        s"$baseUrl/${request.empRef.encodedEmpRef}/$year/updatebenefittypes/$prefix",
+        s"$baseUrl/${request.empRef.encodedEmpRef}/$year/updatebenefittypes/$suffix",
         updatedBiks,
         headers.toSeq
       )
