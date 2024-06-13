@@ -18,7 +18,7 @@ package controllers.actions
 
 import config.PbikAppConfig
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{mock, when}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
@@ -32,7 +32,7 @@ import uk.gov.hmrc.http.HttpClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
+class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   private class Harness(
     authAction: MinimalAuthAction,
@@ -46,7 +46,7 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
   "Minimal Auth Action" when {
     "the user is logged in" must {
       "return OK" in {
-        val mockAuthConnector: AuthConnector = mock[AuthConnector]
+        val mockAuthConnector: AuthConnector = mock(classOf[AuthConnector])
 
         when(mockAuthConnector.authorise[Unit](any(), any())(any(), any()))
           .thenReturn(Future.successful(()))
@@ -66,7 +66,11 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with Mocki
     "the user is not logged in" must {
       "redirect the user to log in" in {
         val minimalAuthAction = new MinimalAuthActionImpl(
-          new BrokenAuthConnector(new MissingBearerToken, mock[HttpClient], app.injector.instanceOf[Configuration]),
+          new BrokenAuthConnector(
+            new MissingBearerToken,
+            mock(classOf[HttpClient]),
+            app.injector.instanceOf[Configuration]
+          ),
           app.injector.instanceOf[BodyParsers.Default],
           app.injector.instanceOf[PbikAppConfig]
         )

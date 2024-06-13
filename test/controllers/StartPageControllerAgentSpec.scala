@@ -20,8 +20,7 @@ import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import models.v1.{IabdType, PbikAction}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.mock
+import org.mockito.Mockito.{mock, when}
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
@@ -39,7 +38,7 @@ import scala.concurrent.Future
 
 class StartPageControllerAgentSpec extends PlaySpec with FakePBIKApplication {
 
-  private val bikListService: BikListService = mock[BikListService]
+  private val bikListService: BikListService = mock(classOf[BikListService])
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(configMap)

@@ -16,16 +16,17 @@
 
 package models.v1
 
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.play.PlaySpec
 
-class BenefitListResponseSpec extends AnyWordSpec with Matchers {
+class BenefitListResponseSpec extends PlaySpec {
 
-  private val lock                        = EmployerOptimisticLockResponse(99)
+  private val (currentOptimisticLock, payrolledBenefitInKindExclusionCount): (Int, Int) = (99, 9)
+
+  private val lock                        = EmployerOptimisticLockResponse(currentOptimisticLock)
   private val bik: BenefitInKindWithCount = BenefitInKindWithCount(
     IabdType.CarBenefit,
     PbikStatus.ValidPayrollingBenefitInKind,
-    9
+    payrolledBenefitInKindExclusionCount
   )
 
   "BenefitInKindWithCount" when {

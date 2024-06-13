@@ -17,13 +17,13 @@
 package models
 
 import models.v1.{IabdType, PbikAction, PbikStatus}
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.play.PlaySpec
+import utils.Exceptions.InvalidBikTypeException
 
-class BikSpec extends AnyWordSpec with Matchers {
+class BikSpec extends PlaySpec {
+
   "Bik" when {
     ".equals" must {
-
       "return true if 2 Bik instances have the same iabdType" in {
         val bik: Bik          = Bik(IabdType.MedicalInsurance.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id, 2)
         val bikToCompare: Bik =
@@ -42,13 +42,14 @@ class BikSpec extends AnyWordSpec with Matchers {
       "return false if Bik equals wrong object" in {
         val bik: Bik = Bik(IabdType.MedicalInsurance.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id, 1)
 
-        bik.equals(BigDecimal(123)) mustBe false
+        //noinspection ComparingUnrelatedTypes
+        bik.equals(BigDecimal("123")) mustBe false
       }
     }
 
     ".hashCode" must {
       "return a hash integer for the iabdType rather than the Bik instance" in {
-        val iabd               = IabdType.MedicalInsurance.id.toString
+        val iabd: String       = IabdType.MedicalInsurance.id.toString
         val generatedHash: Int = iabd.hashCode
         val bik: Bik           = Bik(iabd, PbikAction.NoAction.id, 2)
 
@@ -56,6 +57,32 @@ class BikSpec extends AnyWordSpec with Matchers {
       }
     }
 
-    //TODO add tests for rest of BIK methods
+    ".asBenefitString" must {
+      "return the mapped benefit as string when iabdType passed is mapped" in {
+        val iabdType: String = IabdType.CarBenefit.id.toString
+
+        Bik.asBenefitString(iabdType) mustBe "car"
+      }
+
+      "return InvalidBikTypeException when iabdType passed is not mapped" in {
+        intercept[InvalidBikTypeException] {
+          Bik.asBenefitString("90")
+        }
+      }
+    }
+
+    ".asNPSTypeValue" must {
+      "return the mapped NPS type value when iabdString passed is mapped" in {
+        val iabdString: String = "mileage"
+
+        Bik.asNPSTypeValue(iabdString) mustBe IabdType.Mileage.id.toString
+      }
+
+      "return InvalidBikTypeException when iabdString passed is not mapped" in {
+        intercept[InvalidBikTypeException] {
+          Bik.asNPSTypeValue("bus")
+        }
+      }
+    }
   }
 }

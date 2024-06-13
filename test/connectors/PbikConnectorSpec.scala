@@ -20,26 +20,24 @@ import config.Service
 import controllers.FakePBIKApplication
 import models._
 import models.v1._
-import org.mockito.ArgumentMatchersSugar.{any, eqTo}
-import org.mockito.MockitoSugar.{mock, when}
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{mock, when}
+import org.scalatestplus.play.PlaySpec
 import play.api.Configuration
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
 import play.api.libs.json.{JsResultException, JsString, Json, Writes}
-import play.api.mvc.{Request, Results}
+import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import support.TestAuthUser
 import uk.gov.hmrc.http._
 import utils.Exceptions.GenericServerErrorException
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplication with TestAuthUser with Results {
+class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
   val request: Request[List[Bik]]                                        = FakeRequest().asInstanceOf[Request[List[Bik]]]
-  private val mockHttpClient: HttpClient                                 = mock[HttpClient]
+  private val mockHttpClient: HttpClient                                 = mock(classOf[HttpClient])
   private val configuration: Configuration                               = app.injector.instanceOf[Configuration]
   private val pbikConnectorWithMockClient: PbikConnector                 = new PbikConnector(mockHttpClient, configuration)
   private val fakeResponse: HttpResponse                                 = HttpResponse(OK, "")
@@ -95,7 +93,7 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
     ".getRegisteredBiks" must {
       "return a list of benefits for an organisation on a specific year" in {
         val fakeResponseWithListOfBiks =
-          buildFakeResponseWithBody(BenefitListResponse(Option(listBikWithCount), employerOptimisticLockResponse))
+          buildFakeResponseWithBody(BenefitListResponse(Some(listBikWithCount), employerOptimisticLockResponse))
 
         when(
           mockHttpClient.GET(
@@ -108,6 +106,24 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
         await(pbikConnectorWithMockClient.getRegisteredBiks(empRef, year)) mustBe BikResponse(
           responseHeaders,
           listBiks
+        )
+      }
+
+      "return an empty list of benefits for an organisation on a specific year" in {
+        val fakeResponseWithListOfBiks =
+          buildFakeResponseWithBody(BenefitListResponse(None, employerOptimisticLockResponse))
+
+        when(
+          mockHttpClient.GET(
+            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year"),
+            any[Seq[(String, String)]],
+            any[Seq[(String, String)]]
+          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
+        ).thenReturn(Future.successful(fakeResponseWithListOfBiks))
+
+        await(pbikConnectorWithMockClient.getRegisteredBiks(empRef, year)) mustBe BikResponse(
+          responseHeaders,
+          List()
         )
       }
 
@@ -723,7 +739,5 @@ class PbikConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplicati
         ) mustBe employerOptimisticLockResponse.currentOptimisticLock
       }
     }
-
   }
-
 }
