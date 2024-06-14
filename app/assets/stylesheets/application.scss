@@ -1,6 +1,4 @@
-$govuk-assets-path: "/play-mtp-frontend/assets/lib/govuk-frontend/govuk/assets/";
-
-@import "lib/govuk-frontend/govuk/all";
+@import "lib/govuk-frontend/dist/govuk/all";
 
 .app-reference-number {
   display: block;

@@ -20,6 +20,12 @@ sbt 'testOnly *TierConnectorSpec'
 sbt 'testOnly *TierConnectorSpec -- -z partialTextOnTheTestName'
 ```
 
+- To format and check the code style, compile code, run tests with coverage, run A11y tests, generate a coverage report, and check for dependency updates:
+
+```bash
+./run_all_tests.sh
+```
+
 ### Overview 
 
 #### Summary Section

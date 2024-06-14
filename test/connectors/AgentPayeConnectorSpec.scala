@@ -17,10 +17,9 @@
 package connectors
 
 import controllers.FakePBIKApplication
-import org.mockito.ArgumentMatchersSugar.{any, eqTo}
-import org.mockito.MockitoSugar.{mock, when}
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{mock, when}
+import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
 import play.api.libs.json.{Json, Writes}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
@@ -30,9 +29,9 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKApplication {
+class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication {
 
-  private val mockHttpClient: HttpClient                           = mock[HttpClient]
+  private val mockHttpClient: HttpClient                           = mock(classOf[HttpClient])
   private val configuration: ServicesConfig                        = app.injector.instanceOf[ServicesConfig]
   private val agentPayeConnectorWithMockClient: AgentPayeConnector =
     new AgentPayeConnector(mockHttpClient, configuration)
@@ -148,5 +147,4 @@ class AgentPayeConnectorSpec extends AnyWordSpec with Matchers with FakePBIKAppl
       }
     }
   }
-
 }

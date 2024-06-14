@@ -22,7 +22,7 @@ import controllers.actions.AuthActionSpec.AuthRetrievals
 import controllers.actions.AuthConnector
 import models.auth.EpayeSessionKeys
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{mock, when}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
@@ -36,7 +36,7 @@ import uk.gov.hmrc.http.HttpClient
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar {
+class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   private val enrolment: Enrolment                       = Enrolment(
     key = "IR-PAYE",
@@ -47,7 +47,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
     state = "activated"
   )
   private val pbikConfig                                 = app.injector.instanceOf[PbikAppConfig]
-  private val mockAgentPayeConnector: AgentPayeConnector = mock[AgentPayeConnector]
+  private val mockAgentPayeConnector: AgentPayeConnector = mock(classOf[AgentPayeConnector])
   private val fakeRequestForOrganisation                 = FakeRequest("GET", "/url")
 
   when(mockAgentPayeConnector.getClient(any(), any())(any(), any()))
@@ -62,7 +62,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
 
   private class Test(enrolment: Enrolment) {
     private type RetrievalType = Option[AffinityGroup] ~ Enrolments ~ Option[Name] ~ Option[String]
-    private val mockAuthConnector: AuthConnector = mock[AuthConnector]
+    private val mockAuthConnector: AuthConnector = mock(classOf[AuthConnector])
 
     def retrievals(
       affinityGroup: Option[AffinityGroup],
@@ -136,7 +136,11 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
       "the user is not logged in" must {
         "redirect the user to log in" in {
           val authAction = new AuthActionImpl(
-            new BrokenAuthConnector(new MissingBearerToken, mock[HttpClient], app.injector.instanceOf[Configuration]),
+            new BrokenAuthConnector(
+              new MissingBearerToken,
+              mock(classOf[HttpClient]),
+              app.injector.instanceOf[Configuration]
+            ),
             app.injector.instanceOf[BodyParsers.Default],
             app.injector.instanceOf[PbikAppConfig],
             mockAgentPayeConnector
@@ -157,7 +161,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
           val authAction = new AuthActionImpl(
             new BrokenAuthConnector(
               InsufficientEnrolments("Insufficient enrolments test exception"),
-              mock[HttpClient],
+              mock(classOf[HttpClient]),
               app.injector.instanceOf[Configuration]
             ),
             app.injector.instanceOf[BodyParsers.Default],
@@ -241,7 +245,11 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite with MockitoSugar
       "the user is not logged in" must {
         "redirect the user to log in" in {
           val authAction = new AuthActionImpl(
-            new BrokenAuthConnector(new MissingBearerToken, mock[HttpClient], app.injector.instanceOf[Configuration]),
+            new BrokenAuthConnector(
+              new MissingBearerToken,
+              mock(classOf[HttpClient]),
+              app.injector.instanceOf[Configuration]
+            ),
             app.injector.instanceOf[BodyParsers.Default],
             app.injector.instanceOf[PbikAppConfig],
             mockAgentPayeConnector

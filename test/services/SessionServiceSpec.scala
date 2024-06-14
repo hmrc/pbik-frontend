@@ -18,15 +18,12 @@ package services
 
 import controllers.FakePBIKApplication
 import models._
+import models.cache.MissingSessionIdException
 import models.v1.{IabdType, PbikAction}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{mock, when}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
-import play.api.Application
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.await
 import repositories.SessionRepository
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
@@ -35,21 +32,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
-class SessionServiceSpec
-    extends AnyWordSpecLike
-    with Matchers
-    with OptionValues
-    with FakePBIKApplication
-    with BeforeAndAfterEach
-    with MockitoSugar {
-  override lazy val fakeApplication: Application       = GuiceApplicationBuilder()
-    .configure(configMap)
-    .overrides(bind[SessionService].toInstance(mockSessionService))
-    .build()
-  val mockSessionService: SessionService               = mock[SessionService]
+class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKApplication {
+
   private val timeout: FiniteDuration                  = 5.seconds
   implicit val hc: HeaderCarrier                       = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-  private val mockSessionRepository: SessionRepository = mock[SessionRepository]
+  private val mockSessionRepository: SessionRepository = mock(classOf[SessionRepository])
   private val sessionService: SessionService           = new SessionService(mockSessionRepository)
   private val pbikSession: PbikSession                 = PbikSession(sessionId)
 
@@ -109,6 +96,16 @@ class SessionServiceSpec
       result shouldBe session
     }
 
+    "return MissingSessionIdException when caching the current exclusions with session ID absent in header carrier" in {
+      implicit val hc: HeaderCarrier = HeaderCarrier()
+
+      val currentExclusions = List(EiLPerson("AA111111A", "John", None, "Smith", None, None, None, None))
+
+      intercept[MissingSessionIdException] {
+        await(sessionService.storeCurrentExclusions(currentExclusions))(timeout)
+      }.getMessage shouldBe "Unable to retrieve session ID"
+    }
+
     "cache the current year registered biks" in {
       val cyRegisteredBiks = List(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
       val session          = pbikSession.copy(cyRegisteredBiks = Some(cyRegisteredBiks))
@@ -146,13 +143,50 @@ class SessionServiceSpec
       result shouldBe Some(pbikSession)
     }
 
-    "return nothing if no session is found" in {
-      when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
-      val result = await(sessionService.fetchPbikSession())(timeout)
+    "not be able to fetch the pbik session and return None" when {
+      "session ID is present in header carrier and no session is found" in {
+        when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
 
-      result shouldBe None
+        val result = await(sessionService.fetchPbikSession())(timeout)
+
+        result shouldBe None
+      }
+
+      "session ID is absent in header carrier" in {
+        implicit val hc: HeaderCarrier = HeaderCarrier()
+
+        val result = await(sessionService.fetchPbikSession())(timeout)
+
+        result shouldBe None
+      }
     }
 
-  }
+    "be able to reset all and return true" when {
+      "session ID is present in header carrier and data exists" in {
+        when(mockSessionRepository.remove(any())).thenReturn(Future.successful(true))
 
+        val result = await(sessionService.resetAll())(timeout)
+
+        result shouldBe true
+      }
+    }
+
+    "not be able to reset all and return false" when {
+      "session ID is present in header carrier and data does not exist" in {
+        when(mockSessionRepository.remove(any())).thenReturn(Future.successful(false))
+
+        val result = await(sessionService.resetAll())(timeout)
+
+        result shouldBe false
+      }
+
+      "session ID is absent in header carrier" in {
+        implicit val hc: HeaderCarrier = HeaderCarrier()
+
+        val result = await(sessionService.resetAll())(timeout)
+
+        result shouldBe false
+      }
+    }
+  }
 }
