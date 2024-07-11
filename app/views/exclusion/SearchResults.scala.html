@@ -23,6 +23,7 @@
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
+        govukWarningText: GovukWarningText,
         config:PbikAppConfig,
         repeatWithIndex: RepeatWithIndex,
         formWithCSRF: FormWithCSRF,
@@ -92,26 +93,20 @@
 
                 <p class="govuk-body">@messages("ExclusionImportant.Reminder", expenseOrBenefit, taxDateUtils.getDisplayTodayDate())</p>
 
-                <div class="govuk-warning-text">
-                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text">
-                        <span class="govuk-warning-text__assistive">@messages("site.warning")</span>
-                        @messages("ExclusionSearch.warning")
-                    </strong>
-                </div>
+                @govukWarningText(WarningText(
+                    iconFallbackText = Some(messages("site.warning")),
+                    content = Text(messages("ExclusionSearch.warning"))
+                ))
 
                  <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.confirmAndContinue")">
             }
         } else {
                 <p class="govuk-body">@messages("ExclusionImportant.Reminder", expenseOrBenefit, taxDateUtils.getDisplayTodayDate())</p>
 
-                <div class="govuk-warning-text">
-                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text">
-                        <span class="govuk-warning-text__assistive">@messages("site.warning")</span>
-                        @messages("ExclusionSearch.warning")
-                    </strong>
-                </div>
+                @govukWarningText(WarningText(
+                    iconFallbackText = Some(messages("site.warning")),
+                    content = Text(messages("ExclusionSearch.warning"))
+                ))
 
                 <table class="govuk-table">
                     <caption class="govuk-table__caption govuk-visually-hidden">@messages("ExclusionSearch.caption")</caption>
