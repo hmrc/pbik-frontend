@@ -24,8 +24,7 @@ case class AuthenticatedRequest[A](empRef: EmpRef, name: UserName, request: Requ
 
   val clientName: Option[String] = client.flatMap(_.name)
 
-  /**
-    * its an agent logged in if we have a client info in the request
+  /** its an agent logged in if we have a client info in the request
     */
   val isAgent: Boolean        = client.isDefined
   val isOrganisation: Boolean = !isAgent

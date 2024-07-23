@@ -20,22 +20,33 @@ import config.Service
 import models._
 import models.v1.{BenefitInKindRequest, BenefitListResponse, BenefitListUpdateResponse, NPSErrors}
 import play.api.http.Status.BAD_REQUEST
-import play.api.libs.json.{JsError, JsSuccess}
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.mvc.Request
 import play.api.{Configuration, Logging}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.Exceptions.GenericServerErrorException
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)(implicit ec: ExecutionContext)
+class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuration)(implicit ec: ExecutionContext)
     extends Logging {
 
-  private val maxEmptyBodyLength: Int = 4
-  private val baseUrl: String         = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
+  private val maxEmptyBodyLength: Int                                              = 4
+  private val baseUrl: String                                                      = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
+  private def getRegisteredBiksURL(empRef: EmpRef, year: Int)                      = s"$baseUrl/${empRef.encodedEmpRef}/$year"
+  private def getBenefitTypesURL(year: Int)                                        = s"$baseUrl/$year/getbenefittypes"
+  private def getAllExclusionsURL(iabdString: String, empRef: EmpRef, year: Int)   =
+    s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion"
+  private def getExcludedPersonsURL(iabdString: String, empRef: EmpRef, year: Int) =
+    s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion/update"
+  private def getRemoveExclusionURL(iabdString: String, empRef: EmpRef, year: Int) =
+    s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion/remove"
+  private def getUpdateBenefitURL(year: Int, suffix: String, empRef: EmpRef)       =
+    s"$baseUrl/${empRef.encodedEmpRef}/$year/updatebenefittypes/$suffix"
 
   def getRegisteredBiks(
     empRef: EmpRef,
@@ -48,7 +59,8 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
     logger.info(s"[PbikConnector][getRegisteredBiks] GET benefits with headers: $requestSessionHeader")
 
     client
-      .GET(s"$baseUrl/${empRef.encodedEmpRef}/$year")
+      .get(url"${getRegisteredBiksURL(empRef, year)}")
+      .execute[HttpResponse]
       .map { implicit response =>
         val resp                                  = validateResponses("getRegisteredBiks").json.as[BenefitListResponse]
         val updatedHeaders: Seq[(String, String)] =
@@ -64,14 +76,16 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
 
   def getAllAvailableBiks(year: Int)(implicit hc: HeaderCarrier): Future[List[Bik]] =
     client
-      .GET(s"$baseUrl/$year/getbenefittypes")
+      .get(url"${getBenefitTypesURL(year)}")
+      .execute[HttpResponse]
       .map(implicit response => validateResponses("getAllAvailableBiks").json.as[List[Bik]])
 
   def getAllExcludedEiLPersonForBik(iabdString: String, empRef: EmpRef, year: Int)(implicit
     hc: HeaderCarrier
   ): Future[List[EiLPerson]] =
     client
-      .GET(s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion")
+      .get(url"${getAllExclusionsURL(iabdString, empRef, year)}")
+      .execute[HttpResponse]
       .map(implicit response => validateResponses("getAllExcludedEiLPersonForBik").json.as[List[EiLPerson]])
 
   def excludeEiLPersonFromBik(iabdString: String, empRef: EmpRef, year: Int, individual: EiLPerson)(implicit
@@ -79,11 +93,10 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
     request: Request[_]
   ): Future[EiLResponse] =
     client
-      .POST(
-        s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion/update",
-        individual,
-        createOrCheckForRequiredHeaders.toSeq
-      )
+      .post(url"${getExcludedPersonsURL(iabdString, empRef, year)}")
+      .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
+      .withBody(Json.toJson(individual))
+      .execute[HttpResponse]
       .map {
         case response if response.body.length <= maxEmptyBodyLength =>
           EiLResponse(validateResponses("excludeEiLPersonFromBik")(response).status, List.empty)
@@ -97,11 +110,10 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
     request: Request[_]
   ): Future[Int] =
     client
-      .POST(
-        s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion/remove",
-        individualToRemove,
-        createOrCheckForRequiredHeaders.toSeq
-      )
+      .post(url"${getRemoveExclusionURL(iabdString, empRef, year)}")
+      .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
+      .withBody(Json.toJson(individualToRemove))
+      .execute[HttpResponse]
       .map { implicit response =>
         validateResponses("removeEiLPersonExclusionFromBik").status
       }
@@ -114,11 +126,10 @@ class PbikConnector @Inject() (client: HttpClient, configuration: Configuration)
     val suffix                       = if (request.isAgent) "agent" else "org"
     val headers: Map[String, String] = createOrCheckForRequiredHeaders
     client
-      .POST(
-        s"$baseUrl/${request.empRef.encodedEmpRef}/$year/updatebenefittypes/$suffix",
-        updatedBiks,
-        headers.toSeq
-      )
+      .post(url"${getUpdateBenefitURL(year, suffix, request.empRef)}")
+      .setHeader(headers.toSeq: _*)
+      .withBody(Json.toJson(updatedBiks))
+      .execute[HttpResponse]
       .map { response =>
         val validatedResponse         = validateResponses("updateOrganisationsRegisteredBiks")(response)
         val benefitListUpdateResponse = validatedResponse.json.as[BenefitListUpdateResponse]

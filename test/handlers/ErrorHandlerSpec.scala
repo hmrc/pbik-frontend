@@ -25,6 +25,9 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import views.html.{ErrorTemplate, page_not_found_template}
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
 class ErrorHandlerSpec
     extends AnyWordSpec
     with DefaultAwaitTimeout
@@ -43,7 +46,7 @@ class ErrorHandlerSpec
     "handle notFoundTemplate" in {
       implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-      val result = errorHandler.notFoundTemplate(fakeRequest)
+      val result = Await.result(errorHandler.notFoundTemplate(fakeRequest), Duration.Inf)
 
       result mustBe page_not_found_template()
     }
@@ -51,7 +54,7 @@ class ErrorHandlerSpec
     "handle standardErrorTemplate" in {
       implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
 
-      val result = errorHandler.standardErrorTemplate("title", "heading", "msg test")
+      val result = Await.result(errorHandler.standardErrorTemplate("title", "heading", "msg test"), Duration.Inf)
 
       result mustBe errorTemplateView("title", "heading", "msg test")
     }

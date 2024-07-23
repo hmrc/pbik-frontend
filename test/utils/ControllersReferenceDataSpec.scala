@@ -117,7 +117,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       }
 
       "show the default error page if the Upstream5xxResponse error message is null" in new Test {
-        p.failure(UpstreamErrorResponse(null, INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR)) // scalastyle:ignore
+        p.failure(UpstreamErrorResponse(null, INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR))
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR

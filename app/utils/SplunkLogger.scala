@@ -78,21 +78,25 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
   case object SCHEDULED_OUTAGE extends SpError
   case object EXCEPTION extends SpError
 
-  /**
-    * Method creates a PBIK Specific DataEvent which will be sent to splunk so product owners
-    * can get granularity on the actions a user of PBIks is under-taking.
-    * For example, an audit message may supply createEvent(tier.FRONTEND, action.ADD, Target.EIL, Period.CY ) which
-    * would allow the Product Owners to know the specific Employer ( as determined by the implicit User ) has
-    * used the Frontend to Add an Exclusion for the current year ( the details of which may be in the message )
-    * By creating the fixed format, we can ustilise Splunk's query and daashboards to give the product owner some
-    * easily accessible metrics.
+  /** Method creates a PBIK Specific DataEvent which will be sent to splunk so product owners can get granularity on the
+    * actions a user of PBIks is under-taking. For example, an audit message may supply createEvent(tier.FRONTEND,
+    * action.ADD, Target.EIL, Period.CY ) which would allow the Product Owners to know the specific Employer ( as
+    * determined by the implicit User ) has used the Frontend to Add an Exclusion for the current year ( the details of
+    * which may be in the message ) By creating the fixed format, we can ustilise Splunk's query and daashboards to give
+    * the product owner some easily accessible metrics.
     *
-    * @param tier   - either the FRONTEND MicroService or the GATEWAY Microservice response
-    * @param action - LOGIN, LIST, ADD or REMOVE
-    * @param target - BIK, EIL
-    * @param period - CY, CYP1, BOTH ( actions such as overview screen apply to both CY & CYP1 )
-    * @param msg    - free text message. Note - ensure no personal or sensitive details are included )
-    * @return - a properly formed PBIK DataEvent which may be sent using the logSplunkEvent method.
+    * @param tier
+    *   - either the FRONTEND MicroService or the GATEWAY Microservice response
+    * @param action
+    *   - LOGIN, LIST, ADD or REMOVE
+    * @param target
+    *   - BIK, EIL
+    * @param period
+    *   - CY, CYP1, BOTH ( actions such as overview screen apply to both CY & CYP1 )
+    * @param msg
+    *   - free text message. Note - ensure no personal or sensitive details are included )
+    * @return
+    *   - a properly formed PBIK DataEvent which may be sent using the logSplunkEvent method.
     */
   def createDataEvent(
     tier: SpTier,
@@ -133,13 +137,15 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
     DataEvent(auditSource = pbik_audit_source, auditType = derivedAuditType, detail = Map(entities: _*))
   }
 
-  /**
-    * Method creates a PBIK Specific Error which will be sent to splunk so product owners
-    * can get granularity on the actions a user cannot undertake.
+  /** Method creates a PBIK Specific Error which will be sent to splunk so product owners can get granularity on the
+    * actions a user cannot undertake.
     *
-    * @param tier - either the FRONTEND MicroService or GATEWAY Microservice response
-    * @param msg  - free text message. Note - ensure no personal or sensitive details are included )
-    * @return A DataEvent with the PBIK specific error payload which may be sent using the logSplunkEvent method.
+    * @param tier
+    *   - either the FRONTEND MicroService or GATEWAY Microservice response
+    * @param msg
+    *   - free text message. Note - ensure no personal or sensitive details are included )
+    * @return
+    *   A DataEvent with the PBIK specific error payload which may be sent using the logSplunkEvent method.
     */
   def createErrorEvent(tier: SpTier, error: SpError, msg: String)(implicit
     request: AuthenticatedRequest[_]
@@ -157,12 +163,14 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
       )
     )
 
-  /**
-    * This sends explicit DataEvents to Splunk for auditing specific actions or events
+  /** This sends explicit DataEvents to Splunk for auditing specific actions or events
     *
-    * @param dataEvent The Event which will be persisted to Splunk and may contain an audit payload or an error payload
-    * @param hc        HeaderCarrier infomration
-    * @return an AuditResult which will determine if the auditing was successful or not
+    * @param dataEvent
+    *   The Event which will be persisted to Splunk and may contain an audit payload or an error payload
+    * @param hc
+    *   HeaderCarrier infomration
+    * @return
+    *   an AuditResult which will determine if the auditing was successful or not
     */
   def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] =
     auditConnector.sendEvent(dataEvent)

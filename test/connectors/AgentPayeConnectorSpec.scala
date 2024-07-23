@@ -17,21 +17,26 @@
 package connectors
 
 import controllers.FakePBIKApplication
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{mock, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{mock, reset, when}
+import org.mockito.stubbing.OngoingStubbing
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
 import play.api.libs.json.{Json, Writes}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication {
+class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication with BeforeAndAfterEach {
 
-  private val mockHttpClient: HttpClient                           = mock(classOf[HttpClient])
+  private val mockHttpClient: HttpClientV2          = mock(classOf[HttpClientV2])
+  private val mockRequestBuilderGet: RequestBuilder = mock(classOf[RequestBuilder])
+
   private val configuration: ServicesConfig                        = app.injector.instanceOf[ServicesConfig]
   private val agentPayeConnectorWithMockClient: AgentPayeConnector =
     new AgentPayeConnector(mockHttpClient, configuration)
@@ -44,6 +49,26 @@ class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication {
   def buildFakeResponseWithBody[A](body: A, status: Int = OK)(implicit w: Writes[A]): HttpResponse =
     HttpResponse(status, Json.toJson(body), Map.empty[String, Seq[String]])
 
+  private def mockExecute(
+    builder: RequestBuilder,
+    expectedResponse: Future[HttpResponse]
+  ): OngoingStubbing[Future[HttpResponse]] =
+    when(builder.execute(any[HttpReads[HttpResponse]], any())).thenReturn(expectedResponse)
+
+  def mockGetEndpoint(expectedResponse: Future[HttpResponse]): OngoingStubbing[Future[HttpResponse]] =
+    mockExecute(mockRequestBuilderGet, expectedResponse)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(mockHttpClient)
+    reset(mockRequestBuilderGet)
+
+    when(mockHttpClient.get(any())(any())).thenReturn(mockRequestBuilderGet)
+    when(mockRequestBuilderGet.setHeader(any())).thenReturn(mockRequestBuilderGet)
+
+  }
+
   "AgentPayeConnector" when {
     ".getClient" must {
       "return none if no agent code provided" in {
@@ -51,13 +76,7 @@ class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication {
       }
 
       "return none if an exception is received" in {
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/$agentCode/client/${empRef.encodedEmpRef}"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.failed(new Exception("test error")))
+        mockGetEndpoint(Future.failed(new Exception("test error")))
 
         await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
@@ -65,13 +84,7 @@ class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication {
       "return none if an invalid json body with OK is received" in {
         val fakeResponseWithInvalidJson = buildFakeResponseWithBody("invalid json")
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/$agentCode/client/${empRef.encodedEmpRef}"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
+        mockGetEndpoint(Future.successful(fakeResponseWithInvalidJson))
 
         await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
@@ -79,13 +92,7 @@ class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication {
       "return none if an invalid empty body with OK is received" in {
         val fakeResponseWithInvalidJson = buildFakeResponseWithBody("")
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/$agentCode/client/${empRef.encodedEmpRef}"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
+        mockGetEndpoint(Future.successful(fakeResponseWithInvalidJson))
 
         await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
@@ -93,13 +100,7 @@ class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication {
       "return none if an invalid empty body with ACCEPTED is received" in {
         val fakeResponseWithInvalidJson = buildFakeResponseWithBody("", ACCEPTED)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/$agentCode/client/${empRef.encodedEmpRef}"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
+        mockGetEndpoint(Future.successful(fakeResponseWithInvalidJson))
 
         await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
@@ -107,13 +108,7 @@ class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication {
       "return none if an invalid empty body with NOT_FOUND is received" in {
         val fakeResponseWithInvalidJson = buildFakeResponseWithBody("", NOT_FOUND)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/$agentCode/client/${empRef.encodedEmpRef}"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
+        mockGetEndpoint(Future.successful(fakeResponseWithInvalidJson))
 
         await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
@@ -121,13 +116,7 @@ class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication {
       "return none if an invalid empty body with INTERNAL_SERVER_ERROR is received" in {
         val fakeResponseWithInvalidJson = buildFakeResponseWithBody("", INTERNAL_SERVER_ERROR)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/$agentCode/client/${empRef.encodedEmpRef}"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
+        mockGetEndpoint(Future.successful(fakeResponseWithInvalidJson))
 
         await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
@@ -135,13 +124,7 @@ class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication {
       "return client if a valid body with OK is received" in {
         val fakeResponseWithValidJson = buildFakeResponseWithBody(agentClient)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/$agentCode/client/${empRef.encodedEmpRef}"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithValidJson))
+        mockGetEndpoint(Future.successful(fakeResponseWithValidJson))
 
         await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe agentClient
       }

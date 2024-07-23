@@ -23,4 +23,3 @@ lazy val microservice = Project("pbik-frontend", file("."))
   )
 
 addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt A11y/scalafmt")
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle A11y/scalastyle")

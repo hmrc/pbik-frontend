@@ -22,14 +22,15 @@ import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AgentPayeConnector @Inject() (http: HttpClient, servicesConfig: ServicesConfig) extends Logging {
+class AgentPayeConnector @Inject() (http: HttpClientV2, servicesConfig: ServicesConfig) extends Logging {
 
   def getClient(agentCode: Option[String], empRef: EmpRef)(implicit
     hc: HeaderCarrier,
@@ -41,7 +42,8 @@ class AgentPayeConnector @Inject() (http: HttpClient, servicesConfig: ServicesCo
     } else {
       val url = s"${servicesConfig.baseUrl("agent-paye")}/agent/${agentCode.get}/client/${empRef.encodedEmpRef}"
       http
-        .GET[HttpResponse](url)
+        .get(url"$url")
+        .execute[HttpResponse]
         .map { response =>
           response.status match {
             case OK                   =>

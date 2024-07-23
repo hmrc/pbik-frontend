@@ -16,12 +16,11 @@
 
 package models
 
-/**
-  * The Header Tags are used to control a simple optimistic lock feature which prevents race conditions.
-  * Each time a call is made for an employer-specific URL, the current value of the current optimistic lock is returned
-  * That value should be send back each time we wish to change the employer record ( i.e by updating the registered benefits or
-  * excluding an individual ). On receipt by the server, if the Etag value does not match, the update will be rejected, indicating some other source
-  * has changed the record, thereby invalidating our changes.
+/** The Header Tags are used to control a simple optimistic lock feature which prevents race conditions. Each time a
+  * call is made for an employer-specific URL, the current value of the current optimistic lock is returned That value
+  * should be sent back each time we wish to change the employer record ( i.e by updating the registered benefits or
+  * excluding an individual ). On receipt by the server, if the Etag value does not match, the update will be rejected,
+  * indicating some other source has changed the record, thereby invalidating our changes.
   */
 object HeaderTags {
   val ETAG: String   = "ETag"

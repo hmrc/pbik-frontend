@@ -19,11 +19,12 @@ package controllers.actions
 import play.api.Configuration
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class BrokenAuthConnector(exception: Throwable, httpClient: HttpClient, configuration: Configuration)
+class BrokenAuthConnector(exception: Throwable, httpClient: HttpClientV2, configuration: Configuration)
     extends AuthConnector(httpClient, configuration) {
   override val serviceUrl: String = ""
 

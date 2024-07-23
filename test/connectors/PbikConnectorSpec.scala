@@ -16,28 +16,33 @@
 
 package connectors
 
-import config.Service
 import controllers.FakePBIKApplication
 import models._
 import models.v1._
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{mock, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{mock, reset, when}
+import org.mockito.stubbing.OngoingStubbing
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.play.PlaySpec
 import play.api.Configuration
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK}
-import play.api.libs.json.{JsResultException, JsString, Json, Writes}
+import play.api.libs.json._
 import play.api.mvc.Request
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import utils.Exceptions.GenericServerErrorException
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
-  val request: Request[List[Bik]]                                        = FakeRequest().asInstanceOf[Request[List[Bik]]]
-  private val mockHttpClient: HttpClient                                 = mock(classOf[HttpClient])
+class PbikConnectorSpec extends PlaySpec with FakePBIKApplication with BeforeAndAfterEach {
+  val request: Request[List[Bik]]                    = FakeRequest().asInstanceOf[Request[List[Bik]]]
+  private val mockHttpClient: HttpClientV2           = mock(classOf[HttpClientV2])
+  private val mockRequestBuilderGet: RequestBuilder  = mock(classOf[RequestBuilder])
+  private val mockRequestBuilderPost: RequestBuilder = mock(classOf[RequestBuilder])
+
   private val configuration: Configuration                               = app.injector.instanceOf[Configuration]
   private val pbikConnectorWithMockClient: PbikConnector                 = new PbikConnector(mockHttpClient, configuration)
   private val fakeResponse: HttpResponse                                 = HttpResponse(OK, "")
@@ -47,7 +52,6 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
   private val pbikErrorResponseCode: String                              = "64990"
   private val pbikError: PbikError                                       = PbikError(pbikErrorResponseCode)
   private val responseHeaders: Map[String, String]                       = HeaderTags.createResponseHeaders()
-  private val baseUrl: String                                            = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
   private val year: Int                                                  = 2015
   private val bikEilCount: Int                                           = 10
   private val (iabdType, iabdString)                                     = (IabdType.CarBenefit.id.toString, "car")
@@ -89,19 +93,40 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
   private def pbikNpsErrorResponse(statusCode: Int, pbikErrorCode: String = pbikErrorResponseCode): NPSErrors =
     NPSErrors(Seq(NPSError("reason", s"$statusCode.$pbikErrorCode")))
 
+  private def mockExecute(
+    builder: RequestBuilder,
+    expectedResponse: Future[HttpResponse]
+  ): OngoingStubbing[Future[HttpResponse]] =
+    when(builder.execute(any[HttpReads[HttpResponse]], any())).thenReturn(expectedResponse)
+
+  def mockGetEndpoint(expectedResponse: Future[HttpResponse]): OngoingStubbing[Future[HttpResponse]] =
+    mockExecute(mockRequestBuilderGet, expectedResponse)
+
+  def mockPostEndpoint(expectedResponse: Future[HttpResponse]): OngoingStubbing[RequestBuilder] = {
+    mockExecute(mockRequestBuilderPost, expectedResponse)
+    when(mockRequestBuilderPost.withBody(any[JsValue])(any(), any(), any())).thenReturn(mockRequestBuilderPost)
+  }
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(mockRequestBuilderGet)
+    reset(mockRequestBuilderPost)
+
+    when(mockHttpClient.get(any())(any())).thenReturn(mockRequestBuilderGet)
+    when(mockHttpClient.post(any())(any())).thenReturn(mockRequestBuilderPost)
+
+    when(mockRequestBuilderGet.setHeader(any())).thenReturn(mockRequestBuilderGet)
+    when(mockRequestBuilderPost.setHeader(any())).thenReturn(mockRequestBuilderPost)
+  }
+
   "PbikConnector" when {
     ".getRegisteredBiks" must {
       "return a list of benefits for an organisation on a specific year" in {
         val fakeResponseWithListOfBiks =
           buildFakeResponseWithBody(BenefitListResponse(Some(listBikWithCount), employerOptimisticLockResponse))
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithListOfBiks))
+        mockGetEndpoint(Future.successful(fakeResponseWithListOfBiks))
 
         await(pbikConnectorWithMockClient.getRegisteredBiks(empRef, year)) mustBe BikResponse(
           responseHeaders,
@@ -113,13 +138,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
         val fakeResponseWithListOfBiks =
           buildFakeResponseWithBody(BenefitListResponse(None, employerOptimisticLockResponse))
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithListOfBiks))
+        mockGetEndpoint(Future.successful(fakeResponseWithListOfBiks))
 
         await(pbikConnectorWithMockClient.getRegisteredBiks(empRef, year)) mustBe BikResponse(
           responseHeaders,
@@ -130,13 +149,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a PbikError is received" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikError)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockGetEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -150,13 +163,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when invalid json is received" in {
         val fakeResponseWithInvalidJson = buildFakeResponseWithBody("invalid json")
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
+        mockGetEndpoint(Future.successful(fakeResponseWithInvalidJson))
 
         val result = intercept[JsResultException] {
           await(
@@ -170,13 +177,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when invalid json is received in BAD_REQUEST" in {
         val fakeResponseWithInvalidJson = buildFakeResponseWithBody("invalid json", BAD_REQUEST)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithInvalidJson))
+        mockGetEndpoint(Future.successful(fakeResponseWithInvalidJson))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -192,13 +193,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "return a list of all benefits available to register on a specific year" in {
         val fakeResponseWithListOfBiks: HttpResponse = buildFakeResponseWithBody(listBiks)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/$year/getbenefittypes"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithListOfBiks))
+        mockGetEndpoint(Future.successful(fakeResponseWithListOfBiks))
 
         await(pbikConnectorWithMockClient.getAllAvailableBiks(year)) mustBe listBiks
       }
@@ -208,13 +203,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "return a list of all employees in an organisation for a specific benefit on a specific year" in {
         val fakeResponseWithListOfEiLs = buildFakeResponseWithBody(listOfEiLPerson)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithListOfEiLs))
+        mockGetEndpoint(Future.successful(fakeResponseWithListOfEiLs))
 
         await(
           pbikConnectorWithMockClient
@@ -225,13 +214,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a PbikError is received if http response status OK" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikError, OK)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockGetEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -246,13 +229,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a PbikError is received if http response status BAD_REQUEST" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikError, BAD_REQUEST)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockGetEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -267,13 +244,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a PbikError is received if http response status INTERNAL_SERVER_ERROR" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikError, INTERNAL_SERVER_ERROR)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockGetEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -288,13 +259,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a NPSErrors is received if http response status OK" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikNpsErrorResponse(OK), OK)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockGetEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -309,13 +274,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a NPSErrors is received if http response status BAD_REQUEST" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikNpsErrorResponse(BAD_REQUEST), BAD_REQUEST)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockGetEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -331,13 +290,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
         val fakeResponseWithPbikErrorCode =
           buildFakeResponseWithBody(pbikNpsErrorResponse(INTERNAL_SERVER_ERROR), INTERNAL_SERVER_ERROR)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockGetEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -352,13 +305,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when 2 PbikErrors are received if http response status OK" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(Seq(pbikError), OK)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockGetEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -373,13 +320,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a NPSError is received if http response status OK" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikNpsErrorResponse(OK).failures.head, OK)
 
-        when(
-          mockHttpClient.GET(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion"),
-            any[Seq[(String, String)]],
-            any[Seq[(String, String)]]
-          )(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockGetEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -396,13 +337,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "excludes an individual from for a specific benefit on a specific year and return the current list of excluded employees" in {
         val fakeResponseWithListOfEiLs = buildFakeResponseWithBody(listOfEiLPerson)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
-            any[List[Bik]],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithListOfEiLs))
+        mockPostEndpoint(Future.successful(fakeResponseWithListOfEiLs))
 
         await(
           pbikConnectorWithMockClient
@@ -411,13 +346,9 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       }
 
       "return no excluded individual matches on the requested benefit" in {
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
-            any[List[Bik]],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(buildFakeResponseWithBody(List.empty[EiLPerson], OK)))
+        val fakeResponseWithListOfEiLs = buildFakeResponseWithBody(List.empty[EiLPerson], OK)
+
+        mockPostEndpoint(Future.successful(fakeResponseWithListOfEiLs))
 
         await(
           pbikConnectorWithMockClient
@@ -428,13 +359,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a PbikError is received if http response status OK" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikError, OK)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
-            any[List[Bik]],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -449,13 +374,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a PbikError is received if http response status BAD_REQUEST" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikError, BAD_REQUEST)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
-            any[List[Bik]],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -470,13 +389,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a PbikError is received if http response status INTERNAL_SERVER_ERROR" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikError, INTERNAL_SERVER_ERROR)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
-            any[List[Bik]],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -491,13 +404,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a NPSErrors is received if http response status OK" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikNpsErrorResponse(OK), OK)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
-            any[List[Bik]],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -512,13 +419,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a NPSErrors is received if http response status BAD_REQUEST" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikNpsErrorResponse(BAD_REQUEST), BAD_REQUEST)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
-            any[List[Bik]],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -534,13 +435,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
         val fakeResponseWithPbikErrorCode =
           buildFakeResponseWithBody(pbikNpsErrorResponse(INTERNAL_SERVER_ERROR), INTERNAL_SERVER_ERROR)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/update"),
-            any[List[Bik]],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[List[Bik]]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -555,14 +450,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
 
     ".removeEiLPersonExclusionFromBik" must {
       "return OK (200) when an individual is removed from a benefit" in {
-
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/remove"),
-            any[EiLPerson],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[EiLPerson]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponse))
+        mockPostEndpoint(Future.successful(fakeResponse))
 
         await(
           pbikConnectorWithMockClient
@@ -573,13 +461,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a PbikError is received if http response status OK" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikError, OK)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/remove"),
-            any[EiLPerson],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[EiLPerson]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -594,13 +476,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a PbikError is received if http response status BAD_REQUEST" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikError, BAD_REQUEST)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/remove"),
-            any[EiLPerson],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[EiLPerson]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -615,13 +491,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a PbikError is received if http response status INTERNAL_SERVER_ERROR" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikError, INTERNAL_SERVER_ERROR)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/remove"),
-            any[EiLPerson],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[EiLPerson]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -636,13 +506,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a NPSErrors is received if http response status OK" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikNpsErrorResponse(OK), OK)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/remove"),
-            any[EiLPerson],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[EiLPerson]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -657,13 +521,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       "throw an exception when a NPSErrors is received if http response status BAD_REQUEST" in {
         val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody(pbikNpsErrorResponse(BAD_REQUEST), BAD_REQUEST)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/remove"),
-            any[EiLPerson],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[EiLPerson]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -679,13 +537,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
         val fakeResponseWithPbikErrorCode =
           buildFakeResponseWithBody(pbikNpsErrorResponse(INTERNAL_SERVER_ERROR), INTERNAL_SERVER_ERROR)
 
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/$iabdType/exclusion/remove"),
-            any[EiLPerson],
-            eqTo(responseHeaders.toSeq)
-          )(any[Writes[EiLPerson]], any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext])
-        ).thenReturn(Future.successful(fakeResponseWithPbikErrorCode))
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
 
         val result = intercept[GenericServerErrorException] {
           await(
@@ -700,18 +552,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
 
     ".updateOrganisationsRegisteredBiks" must {
       "return OK (200) when successfully changing an organisations registered benefits" in {
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/updatebenefittypes/org"),
-            any[List[BenefitInKindRequest]],
-            eqTo(responseHeaders.toSeq)
-          )(
-            any[Writes[List[BenefitInKindRequest]]],
-            any[HttpReads[HttpResponse]],
-            any[HeaderCarrier],
-            any[ExecutionContext]
-          )
-        ).thenReturn(Future.successful(fakePostResponseUpdateBenefits))
+        mockPostEndpoint(Future.successful(fakePostResponseUpdateBenefits))
 
         await(
           pbikConnectorWithMockClient
@@ -720,18 +561,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication {
       }
 
       "return OK (200) when successfully changing a agent registered benefits" in {
-        when(
-          mockHttpClient.POST(
-            eqTo(s"$baseUrl/${empRef.encodedEmpRef}/$year/updatebenefittypes/agent"),
-            any[List[BenefitInKindRequest]],
-            eqTo(responseHeaders.toSeq)
-          )(
-            any[Writes[List[BenefitInKindRequest]]],
-            any[HttpReads[HttpResponse]],
-            any[HeaderCarrier],
-            any[ExecutionContext]
-          )
-        ).thenReturn(Future.successful(fakePostResponseUpdateBenefits))
+        mockPostEndpoint(Future.successful(fakePostResponseUpdateBenefits))
 
         await(
           pbikConnectorWithMockClient

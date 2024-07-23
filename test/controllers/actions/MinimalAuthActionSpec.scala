@@ -27,7 +27,7 @@ import play.api.mvc._
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.auth.core.MissingBearerToken
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -68,7 +68,7 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
         val minimalAuthAction = new MinimalAuthActionImpl(
           new BrokenAuthConnector(
             new MissingBearerToken,
-            mock(classOf[HttpClient]),
+            mock(classOf[HttpClientV2]),
             app.injector.instanceOf[Configuration]
           ),
           app.injector.instanceOf[BodyParsers.Default],
