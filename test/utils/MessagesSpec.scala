@@ -58,11 +58,11 @@ class MessagesSpec extends PlaySpec with Logging {
       }
     }
     "not have the same messages" in {
-      val same = defaultMessages.keys.collect({
+      val same = defaultMessages.keys.collect {
         case messageKey
             if defaultMessages.get(messageKey) == welshMessages.get(messageKey) && !messageKey.contains(".url") =>
           (messageKey, defaultMessages.get(messageKey))
-      })
+      }
 
       // 94% of app needs to be translated into Welsh. 94% allows for:
       //   - Messages which just can't be different from English

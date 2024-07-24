@@ -19,6 +19,7 @@ import models.agent.{AccountsOfficeReference, Client}
 import models.v1.{IabdType, PbikAction, PbikStatus}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
+import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.scalatestaccessibilitylinter.views.AutomaticAccessibilitySpec
@@ -96,6 +97,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     agentClient
   )
 
+  implicit val arbRequestHeader: Arbitrary[RequestHeader]                            = fixed(fakeRequest)
   implicit val arbObjSelectedForm: Arbitrary[Form[RegistrationList]]            = fixed(
     forms.objSelectedForm.fill(registrationList)
   )

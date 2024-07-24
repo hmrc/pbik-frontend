@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
-import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -138,7 +138,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
           val authAction = new AuthActionImpl(
             new BrokenAuthConnector(
               new MissingBearerToken,
-              mock(classOf[HttpClient]),
+              mock(classOf[HttpClientV2]),
               app.injector.instanceOf[Configuration]
             ),
             app.injector.instanceOf[BodyParsers.Default],
@@ -161,7 +161,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
           val authAction = new AuthActionImpl(
             new BrokenAuthConnector(
               InsufficientEnrolments("Insufficient enrolments test exception"),
-              mock(classOf[HttpClient]),
+              mock(classOf[HttpClientV2]),
               app.injector.instanceOf[Configuration]
             ),
             app.injector.instanceOf[BodyParsers.Default],
@@ -247,7 +247,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
           val authAction = new AuthActionImpl(
             new BrokenAuthConnector(
               new MissingBearerToken,
-              mock(classOf[HttpClient]),
+              mock(classOf[HttpClientV2]),
               app.injector.instanceOf[Configuration]
             ),
             app.injector.instanceOf[BodyParsers.Default],

@@ -27,7 +27,8 @@ import play.api.{Configuration, Logging}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.{Inject, Singleton}
@@ -168,7 +169,7 @@ trait AuthAction
     extends ActionBuilder[AuthenticatedRequest, AnyContent]
     with ActionFunction[Request, AuthenticatedRequest]
 
-class AuthConnector @Inject() (val http: HttpClient, configuration: Configuration) extends PlayAuthConnector {
+class AuthConnector @Inject() (val httpClientV2: HttpClientV2, configuration: Configuration) extends PlayAuthConnector {
 
   override val serviceUrl: String = configuration.get[Service]("microservice.services.auth")
 

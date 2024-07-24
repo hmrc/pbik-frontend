@@ -34,7 +34,7 @@ object CheckboxId {
   }
 
   private def extractIdFromKey(key: String): Int = {
-    val str = key.slice(8, key.length - 5) //scalastyle:ignore
+    val str = key.slice(8, key.length - 5)
     if (str.isEmpty) { -1 }
     else { str.toInt }
   }

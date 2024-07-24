@@ -19,7 +19,6 @@ package models.v1
 import models.v1
 import play.api.libs.json.{Format, Json}
 
-// scalastyle:off magic.number
 object PbikStatus extends Enumeration {
 
   type PbikStatus = Value
@@ -30,4 +29,3 @@ object PbikStatus extends Enumeration {
   implicit val formats: Format[PbikStatus] = Json.formatEnum(this)
 
 }
-// scalastyle:on magic.number

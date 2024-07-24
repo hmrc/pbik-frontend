@@ -26,8 +26,7 @@ import play.api.mvc.Request
 @Singleton
 class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport {
 
-  /**
-    * sort the input list according to the labels in the messages files and create a new list based on this order
+  /** sort the input list according to the labels in the messages files and create a new list based on this order
     * @param biks
     * @return
     */
@@ -39,8 +38,7 @@ class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     sortedListOfIdLabelPairs.map(pair => pair._1)
   }
 
-  /**
-    * sort the input list according to the labels in the messages files and create a new list based on this order
+  /** sort the input list according to the labels in the messages files and create a new list based on this order
     * @param registeredBiksList
     * @return
     */
@@ -56,8 +54,7 @@ class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     RegistrationList(registeredBiksList.selectAll, registrationItemList)
   }
 
-  /**
-    * normalise the selection list to match the protocol agreed with the NPS backend team
+  /** normalise the selection list to match the protocol agreed with the NPS backend team
     * @param registeredBiks
     * @param selectedBiks
     * @return
@@ -81,13 +78,15 @@ class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
 
   }
 
-  /**
-    * Merges two lists of Biks. If the Bik exists in both lists, a registrationItem is created which
-    * is marked as already active ( checked in a checkbox ) and its enabled flag is set to false ( which would
-    * normally indicate it can't be unselected in a checkbox )
-    * @param initialList Normally the superset list of  of Biks ( such as the total Biks that can be registered )
-    * @param checkedList Noramlly the subset of Biks ( such as those already registered )
-    * @return RegistrationList containing the union of the Bik Lists with additional attributes set
+  /** Merges two lists of Biks. If the Bik exists in both lists, a registrationItem is created which is marked as
+    * already active ( checked in a checkbox ) and its enabled flag is set to false ( which would normally indicate it
+    * can't be unselected in a checkbox )
+    * @param initialList
+    *   Normally the superset list of of Biks ( such as the total Biks that can be registered )
+    * @param checkedList
+    *   Normally the subset of Biks ( such as those already registered )
+    * @return
+    *   RegistrationList containing the union of the Bik Lists with additional attributes set
     */
   def mergeSelected(initialList: List[Bik], checkedList: List[Bik]): RegistrationList = {
 
@@ -98,11 +97,13 @@ class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     RegistrationList(None, items)
   }
 
-  /**
-    * Returns a RegistrationList containing those Biks who do not appear in both lists
-    * @param initialList Normally the superset list of  of Biks ( such as the total Biks that can be registered )
-    * @param checkedList Normally the subset of Biks ( such as those already registered )
-    * @return RegistrationList containing the intersection of the Bik Lists with additional attributes set
+  /** Returns a RegistrationList containing those Biks who do not appear in both lists
+    * @param initialList
+    *   Normally the superset list of of Biks ( such as the total Biks that can be registered )
+    * @param checkedList
+    *   Normally the subset of Biks ( such as those already registered )
+    * @return
+    *   RegistrationList containing the intersection of the Bik Lists with additional attributes set
     */
   def removeMatches(initialList: List[Bik], checkedList: List[Bik]): RegistrationList = {
     val diff: List[Bik] = initialList.diff(checkedList)

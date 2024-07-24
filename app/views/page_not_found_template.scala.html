@@ -24,7 +24,7 @@
 
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: RequestHeader, messages: Messages)
 
 @anchor(text: String, url: String) = {<a class="govuk-link" href="@url" target="_blank">@text</a>}
 
