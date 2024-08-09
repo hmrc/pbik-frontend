@@ -648,7 +648,7 @@ class ExclusionListController @Inject() (
                 Redirect(routes.ExclusionListController.showRemovalWhatsNext(iabdString))
               case unexpectedStatus =>
                 logger.warn(
-                  s"[ExclusionListController][processRemovalCommit] Exclusion list update operation was unable to be executed successfully:" +
+                  s"[ExclusionListController][removeExclusionsCommit] Exclusion list update operation was unable to be executed successfully:" +
                     s" received $unexpectedStatus response"
                 )
                 Ok(

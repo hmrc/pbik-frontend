@@ -88,10 +88,10 @@ class MessagesSpec extends PlaySpec with Logging {
       val missingFromEnglish     = englishWithArgsMsgKeys.toList diff welshWithArgsMsgKeys.toList
       val missingFromWelsh       = welshWithArgsMsgKeys.toList diff englishWithArgsMsgKeys.toList
       missingFromEnglish foreach { messagesKey =>
-        logger.info(s"Key which has arguments in English but not in Welsh: $messagesKey")
+        logger.error(s"Key which has arguments in English but not in Welsh: $messagesKey")
       }
       missingFromWelsh foreach { messagesKey =>
-        logger.info(s"Key which has arguments in Welsh but not in English: $messagesKey")
+        logger.error(s"Key which has arguments in Welsh but not in English: $messagesKey")
       }
       englishWithArgsMsgKeys.size mustBe welshWithArgsMsgKeys.size
     }
@@ -107,7 +107,7 @@ class MessagesSpec extends PlaySpec with Logging {
           (messageKey, engArgSeq, welshWithArgsMsgKeysAndArgList(messageKey))
       }
       mismatchedArgSequences foreach { case (key, engArgSeq, welshArgSeq) =>
-        logger.info(
+        logger.error(
           s"key which has different arguments or order of arguments between English and Welsh:" +
             s" $key -- English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq"
         )

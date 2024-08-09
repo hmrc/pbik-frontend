@@ -91,13 +91,13 @@ class AuthActionImpl @Inject() (
 
     clientEmpRef match {
       case None                         =>
-        logger.warn("[AuthFunction][authAsAgent] No client EmpRef found in session")
+        logger.warn("[AuthAction][authAsAgent] No client EmpRef found in session")
         Future.successful(Redirect(config.agentClientListUrl))
       case Some(agentEmployerReference) =>
         val empRefs = agentEmployerReference.split("/")
 
         if (empRefs.size != 2) {
-          logger.warn("[AuthFunction][authAsAgent] Invalid client EmpRef found in session")
+          logger.warn("[AuthAction][authAsAgent] Invalid client EmpRef found in session")
           Future.successful(Redirect(config.agentClientListUrl))
         } else {
 
