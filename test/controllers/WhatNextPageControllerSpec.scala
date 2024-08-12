@@ -61,7 +61,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
       None
     )
 
-  private lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), statusValue))
+  private lazy val CYCache: Set[Bik] = Set.tabulate(noOfElements)(n => Bik("" + (n + 1), statusValue))
 
   private val (noOfElements, statusValue): (Int, Int)        = (21, 10)
   private val (iabdType, iabdString): (String, String)       = (IabdType.MedicalInsurance.id.toString, "medical")

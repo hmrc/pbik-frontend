@@ -17,9 +17,9 @@
 package utils
 
 import controllers.FakePBIKApplication
-import models.Bik
 import models.v1.IabdType._
 import models.v1.{IabdType, PbikAction, PbikStatus}
+import models.{Bik, RegistrationItem}
 import org.scalatestplus.play.PlaySpec
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -28,9 +28,12 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   val bikListUtils: BikListUtils                            = app.injector.instanceOf[BikListUtils]
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val biks: List[Bik]                                       = IabdType.values.toList
+  val iabds: Set[IabdType]                                  = IabdType.values
+    .filter(x => x.id != IabdType.CarFuelBenefit.id)
+  val biks: List[Bik]                                       = iabds
     .filter(x => x.id != IabdType.CarFuelBenefit.id)
     .map(x => Bik(x.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
+    .toList
   private val alphaSorted                                   = List(
     Assets,
     AssetTransfer,
@@ -51,10 +54,9 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
     VanBenefit,
     VouchersAndCreditCards
   ).map(x => x.id)
-  private val registered: List[Bik]                         =
-    List(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, VanBenefit, Mileage).map(x =>
-      Bik(x.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id)
-    )
+  private val registeredIabs                                = Set(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, VanBenefit, Mileage)
+  private val registered: Set[Bik]                          =
+    registeredIabs.map(x => Bik(x.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
   private val modifications: List[Bik]                      = List(
     Bik(AssetTransfer.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
     Bik(PaymentsOnEmployeeBehalf.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
@@ -122,17 +124,23 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   "When removing matches is supplied the same list for the initial & checked lists, the remainder" should {
     "should be empty" in {
-      val shouldBeEmpty = bikListUtils.removeMatches(registered, registered)
+      val shouldBeEmpty = bikListUtils.removeMatches(registeredIabs, registered)
       assert(shouldBeEmpty.active.isEmpty)
     }
   }
 
   "When removing matches the head element, the remainder" should {
     "should be the tail" in {
-      val expectedTail = bikListUtils.removeMatches(biks, List()).active.tail // manually remove an element
-      val shouldBeTail =
-        bikListUtils.removeMatches(biks, List(biks.head)).active // check the function does the same
-      assert(shouldBeTail == expectedTail)
+      val fullIabds = Set(IabdType.Assets, IabdType.CarFuelBenefit, IabdType.CarBenefit, IabdType.VanBenefit)
+      val finalBiks = Bik(IabdType.Assets.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id)
+
+      val expectedRegistrationList = fullIabds.tail.map { x =>
+        RegistrationItem(x.id.toString, active = false, enabled = true)
+      }
+
+      val shouldBeTail = bikListUtils.removeMatches(fullIabds, Set(finalBiks)).active
+
+      expectedRegistrationList must contain allElementsOf shouldBeTail
     }
   }
 
@@ -144,7 +152,7 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   "When merging a large list, with a subset of that list, the size of the merge results" should {
     "equal the size of the superset" in {
-      assert(bikListUtils.mergeSelected(biks, registered).active.size == biks.size)
+      assert(bikListUtils.mergeSelected(biks, registered.toList).active.size == biks.size)
     }
   }
 
@@ -166,19 +174,19 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
 
   "When removing two identical lists , the size of the merge results" should {
     "equal zero" in {
-      assert(bikListUtils.removeMatches(biks, biks).active.isEmpty)
+      assert(bikListUtils.removeMatches(iabds, biks.toSet).active.isEmpty)
     }
   }
 
   "When removing lists where one list has different elements the size" should {
     "equal the size of the different elements" in {
-      assert(bikListUtils.removeMatches(biks, biks).active.isEmpty)
+      assert(bikListUtils.removeMatches(iabds, biks.toSet).active.isEmpty)
     }
   }
 
   "When removing lists where both list have unique elements the size" should {
     "of the result should equal the total number of differences" in {
-      assert(bikListUtils.removeMatches(biks, registered).active.size == biks.size - registered.size)
+      assert(bikListUtils.removeMatches(iabds, registered).active.size == biks.size - registered.size)
     }
   }
 

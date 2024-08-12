@@ -20,7 +20,7 @@ import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
 import models._
-import models.v1.IabdType
+import models.v1.{BenefitTypes, IabdType, PbikStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
 import org.scalatestplus.play.PlaySpec
@@ -52,7 +52,6 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
   private val messages: Messages                                   = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
   private val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
-  private val (numberOfElements, bikStatus): (Int, Int)            = (21, 10)
   private val (beginIndex, endIndex): (Int, Int)                   = (0, 10)
   private val (iabdType, iabdString): (String, String)             = ("31", "car")
   private val registrationController: ManageRegistrationController =
@@ -60,10 +59,12 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
   val responseHeaders: Map[String, String] = HeaderTags.createResponseHeaders()
 
-  private lazy val CYCache: List[Bik] = List.tabulate(numberOfElements)(n => Bik("" + (n + 1), bikStatus))
+  private val cyBenefitTypes: BenefitTypes = BenefitTypes(IabdType.values)
+  private val cyBiks: Set[Bik]             =
+    cyBenefitTypes.benefitTypes.map(x => Bik(x.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
 
   when(app.injector.instanceOf[PbikConnector].getAllAvailableBiks(any[Int])(any[HeaderCarrier]))
-    .thenReturn(Future.successful(CYCache))
+    .thenReturn(Future.successful(Right(cyBenefitTypes)))
 
   when(
     app.injector
@@ -85,7 +86,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
     Future.successful(
       BikResponse(
         responseHeaders,
-        CYCache.filter { x: Bik =>
+        cyBiks.filter { x: Bik =>
           Integer.parseInt(x.iabdType) >= 15
         }
       )
@@ -106,8 +107,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
         status(result) mustBe OK
         contentAsString(result) must include(title)
-        contentAsString(result) must include(messages("BenefitInKind.label.1"))
-        contentAsString(result) must include(messages("BenefitInKind.label.3"))
+        contentAsString(result) must include(messages("BenefitInKind.label.8"))
       }
     }
 
@@ -118,8 +118,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
         status(result) mustBe OK
         contentAsString(result) must include(title)
-        contentAsString(result) must include(messages("BenefitInKind.label.1"))
-        contentAsString(result) must include(messages("BenefitInKind.label.3"))
+        contentAsString(result) must include(messages("BenefitInKind.label.8"))
       }
     }
 

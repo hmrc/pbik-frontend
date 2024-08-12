@@ -18,9 +18,12 @@ package services
 
 import config.PbikAppConfig
 import connectors.PbikConnector
+import models.v1.IabdType.IabdType
 import models.{AuthenticatedRequest, Bik, BikResponse, EmpRef}
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.ControllersReferenceData
+import utils.Exceptions.GenericServerErrorException
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,25 +33,31 @@ class BikListService @Inject() (
   val pbikAppConfig: PbikAppConfig,
   val tierConnector: PbikConnector,
   controllersReferenceData: ControllersReferenceData
-)(implicit ec: ExecutionContext) {
+)(implicit ec: ExecutionContext) extends Logging {
 
   def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BikResponse] =
     tierConnector
       .getRegisteredBiks(request.empRef, controllersReferenceData.yearRange.cyminus1)
-      .map(response => BikResponse(response.headers, response.bikList.distinct))
+      .map(response => BikResponse(response.headers, response.bikList))
 
   def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BikResponse] =
     tierConnector
       .getRegisteredBiks(request.empRef, controllersReferenceData.yearRange.cy)
-      .map(response => BikResponse(response.headers, response.bikList.distinct))
+      .map(response => BikResponse(response.headers, response.bikList))
 
   def registeredBenefitsList(year: Int, empRef: EmpRef)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
   ): Future[List[Bik]] =
-    if (empRef.taxOfficeNumber == "" && empRef.taxOfficeReference == "") {
-      tierConnector.getAllAvailableBiks(year)
-    } else {
-      tierConnector.getRegisteredBiks(empRef, year).map(_.bikList)
+    tierConnector.getRegisteredBiks(empRef, year).map(_.bikList.toList)
+
+  //TODO need to refactor this method to propagate up Either or other error handling mechanism to the controller
+  def getAllBenefitsForYear(year: Int)(implicit hc: HeaderCarrier): Future[Set[IabdType]] =
+    tierConnector.getAllAvailableBiks(year).map {
+      case Left(errors)        =>
+        logger.error(s"[BikListService][getAllBenefitsForYear] Error getting all benefits for year $year: $errors")
+        throw new GenericServerErrorException(errors.toString)
+      case Right(benefitTypes) => benefitTypes.benefitTypes
     }
+
 }
