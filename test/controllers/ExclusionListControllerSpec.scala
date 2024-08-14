@@ -19,6 +19,7 @@ package controllers
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
+import models.v1.{BenefitTypes, IabdType, PbikStatus}
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
 import org.scalatestplus.play.PlaySpec
@@ -66,11 +67,12 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     } else {
       models.TaxYearRange(date.getYear, date.getYear + 1, date.getYear + 2)
     }
-  private val (statusValue, year, start, end): (Int, Int, Int, Int)                  = (10, 2020, 3, 32)
+  private val (statusValue, year): (Int, Int)                                        = (10, 2020)
   private val (nino, cy, cyp1): (String, String, String)                             = ("AA111111A", "cy", "cyp1")
   private val (iabdType, iabdString): (String, String)                               = ("31", "car")
-  private val CYCache: List[Bik]                                                     =
-    List.range(start, end).map(n => Bik("" + n, statusValue))
+  private val cyBenefitTypes: BenefitTypes                                           = BenefitTypes(IabdType.values)
+  private val cyBiks                                                                 =
+    cyBenefitTypes.benefitTypes.map(x => Bik(x.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
 
   val responseHeaders: Map[String, String] = None.orNull
 
@@ -128,7 +130,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     )
 
   when(mockExclusionListController.tierConnector.getAllAvailableBiks(any[Int])(any[HeaderCarrier]))
-    .thenReturn(Future.successful(CYCache))
+    .thenReturn(Future.successful(Right(cyBenefitTypes)))
 
   when(
     mockExclusionListController.tierConnector.getRegisteredBiks(
@@ -139,7 +141,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     Future.successful(
       BikResponse(
         responseHeaders,
-        CYCache.filter { x: Bik =>
+        cyBiks.filter { x: Bik =>
           Integer.parseInt(x.iabdType) <= 10
         }
       )
@@ -156,7 +158,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     Future.successful(
       BikResponse(
         responseHeaders,
-        CYCache.filter { x: Bik =>
+        cyBiks.filter { x: Bik =>
           Integer.parseInt(x.iabdType) <= 5
         }
       )
@@ -170,7 +172,7 @@ class ExclusionListControllerSpec extends PlaySpec with FakePBIKApplication {
     Future.successful(
       BikResponse(
         responseHeaders,
-        CYCache.filter { x: Bik =>
+        cyBiks.filter { x: Bik =>
           Integer.parseInt(x.iabdType) >= 15
         }
       )

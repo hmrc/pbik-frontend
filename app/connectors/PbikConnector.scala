@@ -18,8 +18,8 @@ package connectors
 
 import config.Service
 import models._
-import models.v1.{BenefitInKindRequest, BenefitListResponse, BenefitListUpdateResponse, NPSErrors}
-import play.api.http.Status.BAD_REQUEST
+import models.v1._
+import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.mvc.Request
 import play.api.{Configuration, Logging}
@@ -70,15 +70,42 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
         logger.info(
           s"[PbikConnector][getRegisteredBiks] Got registered BIKs ${biks.size} with headers: $updatedHeaders"
         )
-        BikResponse(updatedHeaders.toMap, biks)
+        BikResponse(updatedHeaders.toMap, biks.toSet)
       }
   }
 
-  def getAllAvailableBiks(year: Int)(implicit hc: HeaderCarrier): Future[List[Bik]] =
+  def getAllAvailableBiks(year: Int)(implicit hc: HeaderCarrier): Future[Either[NPSErrors, BenefitTypes]] =
     client
       .get(url"${getBenefitTypesURL(year)}")
       .execute[HttpResponse]
-      .map(implicit response => validateResponses("getAllAvailableBiks").json.as[List[Bik]])
+      .flatMap { response =>
+        response.status match {
+          case OK          =>
+            response.json.validate[BenefitTypes] match {
+              case JsSuccess(value, _) => Future.successful(Right(value))
+              case JsError(errors)     =>
+                logger.error(s"[PbikConnector][getAllAvailableBiks] Failed to parse BenefitTypes: $errors")
+                Future.failed[Either[NPSErrors, BenefitTypes]](
+                  new GenericServerErrorException("Failed to get available BIKs, status: " + response.status)
+                )
+
+            }
+          case BAD_REQUEST =>
+            logger.error(
+              s"[PbikConnector][getAllAvailableBiks] a pbik error code was returned. Error: ${response.body}"
+            )
+            response.json.validate[NPSErrors] match {
+              case JsSuccess(value, _) => Future.successful(Left(value))
+              case JsError(errors)     =>
+                logger.error(s"[PbikConnector][getAllAvailableBiks] Failed to parse NPSErrors: $errors")
+                Future.failed[Either[NPSErrors, BenefitTypes]](
+                  new GenericServerErrorException("Failed to get available BIKs, status: " + response.status)
+                )
+            }
+          case _           =>
+            Future.failed(new GenericServerErrorException("Failed to get available BIKs, status: " + response.status))
+        }
+      }
 
   def getAllExcludedEiLPersonForBik(iabdString: String, empRef: EmpRef, year: Int)(implicit
     hc: HeaderCarrier

@@ -55,11 +55,11 @@ class StartPageControllerAgentSpec extends PlaySpec with FakePBIKApplication {
     fakeApplication.injector.instanceOf[ControllersReferenceData]
   private val bikResponseWithBenefits                            = BikResponse(
     Map.empty,
-    List(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
+    Set(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
   )
   private val bikResponseEmpty                                   = BikResponse(
     Map.empty,
-    List.empty
+    Set.empty
   )
   implicit val hc: HeaderCarrier                                 = HeaderCarrier()
 

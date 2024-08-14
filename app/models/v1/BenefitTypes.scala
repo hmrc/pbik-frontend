@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
-package models
+package models.v1
 
-case class BikResponse(headers: Map[String, String], bikList: Set[Bik])
+import models.v1.IabdType.IabdType
+import play.api.libs.json.{Json, OFormat}
+
+case class BenefitTypes(benefitTypes: Set[IabdType])
+
+object BenefitTypes {
+  implicit val formats: OFormat[BenefitTypes] = Json.format[BenefitTypes]
+
+  val empty = BenefitTypes(Set.empty)
+}

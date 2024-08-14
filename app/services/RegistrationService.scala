@@ -19,7 +19,7 @@ package services
 import config.PbikAppConfig
 import connectors.PbikConnector
 import models._
-import models.v1.PbikAction
+import models.v1.IabdType.IabdType
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results._
@@ -58,9 +58,8 @@ class RegistrationService @Inject() (
       Option[Int]
     ) => HtmlFormat.Appendable
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    val decommissionedBikIds: Seq[Int] = pbikAppConfig.biksDecommissioned
-    val status: Int                    = PbikAction.ReinstatePayrolledBenefitInKind.id
-    val nonLegislationBiks: Seq[Int]   = if (taxDateUtils.isCurrentTaxYear(year)) {
+    val decommissionedBikIds: Set[IabdType] = pbikAppConfig.biksDecommissioned
+    val nonLegislationBiks: Set[IabdType]   = if (taxDateUtils.isCurrentTaxYear(year)) {
       pbikAppConfig.biksNotSupportedCY
     } else {
       pbikAppConfig.biksNotSupported
@@ -74,21 +73,19 @@ class RegistrationService @Inject() (
     }
 
     for {
-      biksListOption       <- bikListService.registeredBenefitsList(year, EmpRef.empty)
+      biksListOption       <- bikListService.getAllBenefitsForYear(year)
       registeredListOption <- tierConnector.getRegisteredBiks(request.empRef, year).map(_.bikList)
-      nonLegislationList    = nonLegislationBiks.map(x => Bik("" + x, status))
-      decommissionedBikList = decommissionedBikIds.map(x => Bik("" + x, status))
+      nonLegislationList    = nonLegislationBiks
+      decommissionedBikList = decommissionedBikIds
 
       // During transition, we have to ensure we handle the existing decommissioned IABDs (e.g 47 ) being sent by the server
       // and after the NPS R38 config release, when it wont be. Therefore, aas this is a list, we remove the
       // decommissioned values ( if they exist ) and then add them back in
-      hybridList = biksListOption.filterNot(y =>
-                     decommissionedBikIds.contains(y.iabdType.toInt)
-                   ) ++ nonLegislationList ++ decommissionedBikList
+      hybridList = biksListOption.diff(decommissionedBikIds) ++ nonLegislationList ++ decommissionedBikList
 
     } yield result(
       hybridList,
-      registeredListOption,
+      registeredListOption.toList,
       nonLegislationBiks,
       biksListOption,
       isCurrentYear,
@@ -97,10 +94,10 @@ class RegistrationService @Inject() (
   }
 
   private def result(
-    hybridList: List[Bik],
+    hybridList: Set[IabdType],
     registeredListOption: List[Bik],
-    nonLegislationBiks: Seq[Int],
-    biksListOption: List[Bik],
+    nonLegislationBiks: Set[IabdType],
+    biksListOption: Set[IabdType],
     isCurrentYear: String,
     generateViewBasedOnFormItems: (
       Form[RegistrationList],
@@ -113,7 +110,7 @@ class RegistrationService @Inject() (
   )(implicit request: AuthenticatedRequest[AnyContent]): Result = {
     val fetchFromCacheMapBiksValue = List.empty[RegistrationItem]
 
-    val mergedData: RegistrationList      = bikListUtils.removeMatches(hybridList, registeredListOption)
+    val mergedData: RegistrationList      = bikListUtils.removeMatches(hybridList, registeredListOption.toSet)
     val sortedMegedData: RegistrationList = bikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
 
     if (sortedMegedData.active.isEmpty) {
@@ -132,8 +129,10 @@ class RegistrationService @Inject() (
           formMappings.objSelectedForm.fill(sortedMegedData),
           fetchFromCacheMapBiksValue,
           registeredListOption,
-          nonLegislationBiks,
-          pbikAppConfig.biksDecommissioned,
+          nonLegislationBiks.map(_.id).toList, //TODO change view to Set instead of list it must be unique list
+          pbikAppConfig.biksDecommissioned
+            .map(_.id)
+            .toList, //TODO change view to Set instead of list it must be unique list
           Some(biksListOption.size)
         )
       )

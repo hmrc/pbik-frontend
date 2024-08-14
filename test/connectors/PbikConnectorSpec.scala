@@ -54,12 +54,12 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication with BeforeAnd
   private val responseHeaders: Map[String, String]                       = HeaderTags.createResponseHeaders()
   private val year: Int                                                  = 2015
   private val bikEilCount: Int                                           = 10
-  private val (iabdType, iabdString)                                     = (IabdType.CarBenefit.id.toString, "car")
+  private val iabdString                                                 = "car"
+  private val benefitTypes                                               = BenefitTypes(Set(IabdType.CarBenefit, IabdType.VanFuelBenefit))
   private val listBiks: List[Bik]                                        =
-    List(
-      Bik(iabdType, PbikAction.ReinstatePayrolledBenefitInKind.id, bikEilCount),
-      Bik(IabdType.VanFuelBenefit.id.toString, PbikAction.RemovePayrolledBenefitInKind.id, bikEilCount)
-    )
+    benefitTypes.benefitTypes
+      .map(iabdType => Bik(iabdType.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id, bikEilCount))
+      .toList
   implicit val hc: HeaderCarrier                                         = HeaderCarrier()
   implicit val authenticatedRequestOrg: AuthenticatedRequest[List[Bik]]  =
     AuthenticatedRequest[List[Bik]](empRef, username, request, None)
@@ -91,7 +91,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication with BeforeAnd
     HttpResponse(status, Json.toJson(body), Map.empty[String, Seq[String]])
 
   private def pbikNpsErrorResponse(statusCode: Int, pbikErrorCode: String = pbikErrorResponseCode): NPSErrors =
-    NPSErrors(Seq(NPSError("reason", s"$statusCode.$pbikErrorCode")))
+    NPSErrors(Seq(NPSError("test reason", s"$statusCode.$pbikErrorCode")))
 
   private def mockExecute(
     builder: RequestBuilder,
@@ -130,7 +130,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication with BeforeAnd
 
         await(pbikConnectorWithMockClient.getRegisteredBiks(empRef, year)) mustBe BikResponse(
           responseHeaders,
-          listBiks
+          listBiks.toSet
         )
       }
 
@@ -142,7 +142,7 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication with BeforeAnd
 
         await(pbikConnectorWithMockClient.getRegisteredBiks(empRef, year)) mustBe BikResponse(
           responseHeaders,
-          List()
+          Set.empty
         )
       }
 
@@ -191,11 +191,53 @@ class PbikConnectorSpec extends PlaySpec with FakePBIKApplication with BeforeAnd
 
     ".getAllAvailableBiks" must {
       "return a list of all benefits available to register on a specific year" in {
-        val fakeResponseWithListOfBiks: HttpResponse = buildFakeResponseWithBody(listBiks)
+        val fakeResponseWithListOfBiks: HttpResponse = buildFakeResponseWithBody(benefitTypes)
 
         mockGetEndpoint(Future.successful(fakeResponseWithListOfBiks))
 
-        await(pbikConnectorWithMockClient.getAllAvailableBiks(year)) mustBe listBiks
+        await(pbikConnectorWithMockClient.getAllAvailableBiks(year)) mustBe Right(benefitTypes)
+      }
+
+      "return a error when body dont match expected object" in {
+        val fakeResponseWithListOfBiks: HttpResponse = buildFakeResponseWithBody("Random test string")
+
+        mockGetEndpoint(Future.successful(fakeResponseWithListOfBiks))
+
+        intercept[GenericServerErrorException] {
+          await(pbikConnectorWithMockClient.getAllAvailableBiks(year))
+        }
+      }
+
+      "return a NPSErrors when BAD_REQUEST" in {
+        val npsErrors                                = pbikNpsErrorResponse(BAD_REQUEST, "xx_test_xx")
+        val fakeResponseWithListOfBiks: HttpResponse =
+          buildFakeResponseWithBody(npsErrors, BAD_REQUEST)
+
+        mockGetEndpoint(Future.successful(fakeResponseWithListOfBiks))
+
+        await(pbikConnectorWithMockClient.getAllAvailableBiks(year)) mustBe Left(npsErrors)
+      }
+
+      "return an exception when BAD_REQUEST with non NPSError" in {
+        val fakeResponseWithListOfBiks: HttpResponse =
+          buildFakeResponseWithBody("random test string", BAD_REQUEST)
+
+        mockGetEndpoint(Future.successful(fakeResponseWithListOfBiks))
+
+        intercept[GenericServerErrorException] {
+          await(pbikConnectorWithMockClient.getAllAvailableBiks(year))
+        }
+      }
+
+      "return an exception when INTERNAL_SERVER_ERROR" in {
+        val fakeResponseWithListOfBiks: HttpResponse =
+          buildFakeResponseWithBody("random test string", INTERNAL_SERVER_ERROR)
+
+        mockGetEndpoint(Future.successful(fakeResponseWithListOfBiks))
+
+        intercept[GenericServerErrorException] {
+          await(pbikConnectorWithMockClient.getAllAvailableBiks(year))
+        }
       }
     }
 

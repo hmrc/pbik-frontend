@@ -67,7 +67,7 @@ class BikListServiceSpec
   "The BIK service" should {
 
     "Be able to get the BIKS for the current year - 2 returned" in {
-      val listBiks = List(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
+      val listBiks = Set(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
 
       when(
         bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
@@ -94,7 +94,7 @@ class BikListServiceSpec
     }
 
     "Be able to get the BIKS for the next year - 2 returned" in {
-      val listBiks = List(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
+      val listBiks = Set(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
 
       when(
         bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(

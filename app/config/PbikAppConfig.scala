@@ -16,6 +16,8 @@
 
 package config
 
+import models.v1.IabdType
+import models.v1.IabdType.IabdType
 import play.api.Configuration
 
 import javax.inject.{Inject, Singleton}
@@ -27,9 +29,12 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
   lazy val maximumExclusions: Int         = configuration.get[Int]("pbik.exclusions.maximum")
 
   lazy val cyEnabled: Boolean                  = configuration.get[Boolean]("pbik.enabled.cy")
-  lazy val biksNotSupported: Seq[Int]          = configuration.get[Seq[Int]]("pbik.unsupported.biks.cy1")
-  lazy val biksNotSupportedCY: Seq[Int]        = configuration.get[Seq[Int]]("pbik.unsupported.biks.cy")
-  lazy val biksDecommissioned: Seq[Int]        = configuration.get[Seq[Int]]("pbik.decommissioned.biks")
+  lazy val biksNotSupported: Set[IabdType]     =
+    configuration.get[Seq[Int]]("pbik.unsupported.biks.cy1").map(IabdType(_)).toSet
+  lazy val biksNotSupportedCY: Set[IabdType]   =
+    configuration.get[Seq[Int]]("pbik.unsupported.biks.cy").map(IabdType(_)).toSet
+  lazy val biksDecommissioned: Set[IabdType]   =
+    configuration.get[Seq[Int]]("pbik.decommissioned.biks").map(IabdType(_)).toSet
   lazy val feedbackUrl: String                 = configuration.get[String]("feedback.url")
   lazy val signOut: String                     = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
   private lazy val timedOutRedirectUrl: String = configuration.get[String]("timedOutUrl")

@@ -81,14 +81,13 @@ class HomePageController @Inject() (
   def onPageLoadCY1: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val taxYearRange: TaxYearRange     = taxDateUtils.getTaxYearRange()
     val pageLoadFuture: Future[Result] = for {
-      _                             <- sessionService.resetAll()
+      _                  <- sessionService.resetAll()
       // Get the available count of biks available for each tax year
-      biksListOptionCYP1: List[Bik] <-
-        bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cy, EmpRef.empty)
-      nextYearList                  <- bikListService.nextYearList
-      currentYearList               <- bikListService.currentYearList
+      biksListOptionCYP1 <- bikListService.getAllBenefitsForYear(controllersReferenceData.yearRange.cy)
+      nextYearList       <- bikListService.nextYearList
+      currentYearList    <- bikListService.currentYearList
     } yield {
-      sessionService.storeNYRegisteredBiks(nextYearList.bikList)
+      sessionService.storeNYRegisteredBiks(nextYearList.bikList.toList)
 
       auditHomePageView()
 
@@ -97,7 +96,7 @@ class HomePageController @Inject() (
           pbikAppConfig.cyEnabled,
           taxYearRange,
           List.empty,
-          nextYearList.bikList,
+          nextYearList.bikList.toList,
           0,
           biksListOptionCYP1.size,
           currentYearList.bikList.nonEmpty
@@ -110,13 +109,12 @@ class HomePageController @Inject() (
   def onPageLoadCY: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val taxYearRange: TaxYearRange     = taxDateUtils.getTaxYearRange()
     val pageLoadFuture: Future[Result] = for {
-      _                           <- sessionService.resetAll()
+      _                <- sessionService.resetAll()
       // Get the available count of biks available for each tax year
-      biksListOptionCY: List[Bik] <-
-        bikListService.registeredBenefitsList(controllersReferenceData.yearRange.cyminus1, EmpRef.empty)
-      currentYearList             <- bikListService.currentYearList
+      biksListOptionCY <- bikListService.getAllBenefitsForYear(controllersReferenceData.yearRange.cyminus1)
+      currentYearList  <- bikListService.currentYearList
     } yield {
-      sessionService.storeCYRegisteredBiks(currentYearList.bikList)
+      sessionService.storeCYRegisteredBiks(currentYearList.bikList.toList)
 
       auditHomePageView()
 
@@ -124,7 +122,7 @@ class HomePageController @Inject() (
         summaryPage(
           pbikAppConfig.cyEnabled,
           taxYearRange,
-          currentYearList.bikList,
+          currentYearList.bikList.toList,
           List.empty,
           biksListOptionCY.size,
           0,

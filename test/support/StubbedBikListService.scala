@@ -19,6 +19,7 @@ package support
 import config.PbikAppConfig
 import connectors.PbikConnector
 import models._
+import models.v1.IabdType.IabdType
 import models.v1.{IabdType, PbikAction, PbikStatus}
 import services.BikListService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -48,7 +49,7 @@ class StubbedBikListService @Inject() (
     Future.successful(
       BikResponse(
         HeaderTags.createResponseHeaders(),
-        List(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
+        Set(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
       )
     )
 
@@ -59,7 +60,7 @@ class StubbedBikListService @Inject() (
     Future.successful(
       BikResponse(
         HeaderTags.createResponseHeaders(),
-        List(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
+        Set(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
       )
     )
 
@@ -68,5 +69,8 @@ class StubbedBikListService @Inject() (
     request: AuthenticatedRequest[_]
   ): Future[List[Bik]] =
     Future.successful(CYCache)
+
+  override def getAllBenefitsForYear(year: Int)(implicit hc: HeaderCarrier): Future[Set[IabdType]] =
+    Future.successful(IabdType.values)
 
 }

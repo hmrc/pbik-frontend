@@ -20,6 +20,8 @@ import connectors.PbikConnector
 import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
 import models._
+import models.v1.{IabdType, PbikStatus}
+import models.v1.IabdType.IabdType
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito._
 import org.scalatest.matchers.should.Matchers
@@ -50,16 +52,12 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
   private val registrationService: RegistrationService = {
     val responseHeaders: Map[String, String] = HeaderTags.createResponseHeaders()
 
-    val service                   = app.injector.instanceOf[RegistrationService]
-    val (noOfElements, bikStatus) = (5, 10)
+    val service                          = app.injector.instanceOf[RegistrationService]
+    lazy val benefitTypes: Set[IabdType] = IabdType.values
+    lazy val CYCache: Set[Bik]           = benefitTypes.map(n => Bik("" + n.id, PbikStatus.ValidPayrollingBenefitInKind.id))
 
-    lazy val CYCache: List[Bik] = List.tabulate(noOfElements)(n => Bik("" + (n + 1), bikStatus))
-
-    when(
-      service.bikListService
-        .registeredBenefitsList(any[Int], any[EmpRef])(any[HeaderCarrier], any[AuthenticatedRequest[_]])
-    )
-      .thenReturn(Future.successful(CYCache))
+    when(service.bikListService.getAllBenefitsForYear(any[Int])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(benefitTypes))
 
     // Return instance where not all Biks have been registered for CY
     when(
@@ -122,7 +120,7 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
 
       status(result)        shouldBe OK
       contentAsString(result) should include(Messages("AddBenefits.Heading"))
-      contentAsString(result) should include(Messages("BenefitInKind.label.4"))
+      contentAsString(result) should include(Messages("BenefitInKind.label.47"))
     }
   }
 

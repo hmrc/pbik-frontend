@@ -16,12 +16,13 @@
 
 package utils
 
+import models.v1.IabdType.IabdType
 import models.v1.PbikAction
-
-import javax.inject.{Inject, Singleton}
 import models.{Bik, RegistrationItem, RegistrationList}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Request
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport {
@@ -59,7 +60,7 @@ class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     * @param selectedBiks
     * @return
     */
-  def normaliseSelectedBenefits(registeredBiks: List[Bik], selectedBiks: List[Bik]): List[Bik] = {
+  def normaliseSelectedBenefits(registeredBiks: Set[Bik], selectedBiks: List[Bik]): List[Bik] = {
 
     val selectedBiksToRemove = selectedBiks.filter(x => x.status == PbikAction.RemovePayrolledBenefitInKind.id)
 
@@ -105,14 +106,15 @@ class BikListUtils @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     * @return
     *   RegistrationList containing the intersection of the Bik Lists with additional attributes set
     */
-  def removeMatches(initialList: List[Bik], checkedList: List[Bik]): RegistrationList = {
-    val diff: List[Bik] = initialList.diff(checkedList)
+  def removeMatches(initialList: Set[IabdType], checkedList: Set[Bik]): RegistrationList = {
+    val diff: Set[Int] = initialList.map(_.id).diff(checkedList.map(_.iabdType.toInt))
     RegistrationList(
       None,
       diff.map { x =>
-        RegistrationItem(x.iabdType, active = false, enabled = true)
-      }
+        RegistrationItem(x.toString, active = false, enabled = true)
+      }.toList
     )
 
   }
+
 }
