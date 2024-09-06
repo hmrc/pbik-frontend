@@ -18,8 +18,10 @@ package services
 
 import config.PbikAppConfig
 import connectors.PbikConnector
+import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
 import models.{AuthenticatedRequest, EiLPerson}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.Exceptions.GenericServerErrorException
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,22 +35,26 @@ class EiLListService @Inject() (
   def currentYearEiL(iabdString: String, year: Int)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
-  ): Future[List[EiLPerson]] = {
+  ): Future[PbikExclusions] = {
     val response = tierConnector.getAllExcludedEiLPersonForBik(
       iabdString,
       request.empRef,
       year
     )
 
-    response.map { resultList: List[EiLPerson] =>
-      resultList.distinct
+    response.flatMap {
+      case Right(eilList) => Future.successful(eilList)
+      case Left(error)    =>
+        Future.failed(
+          new GenericServerErrorException(s"Error getting pbik exclusions for $iabdString and $year: $error")
+        )
     }
   }
 
   def searchResultsRemoveAlreadyExcluded(
-    existingEiL: List[EiLPerson],
-    searchResultsEiL: List[EiLPerson]
-  ): List[EiLPerson] =
+    existingEiL: List[PbikExclusionPerson],
+    searchResultsEiL: List[PbikExclusionPerson]
+  ): List[PbikExclusionPerson] =
     searchResultsEiL diff existingEiL
 
 }

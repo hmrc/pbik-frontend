@@ -33,7 +33,8 @@ class BikListService @Inject() (
   val pbikAppConfig: PbikAppConfig,
   val tierConnector: PbikConnector,
   controllersReferenceData: ControllersReferenceData
-)(implicit ec: ExecutionContext) extends Logging {
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
   def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BikResponse] =
     tierConnector

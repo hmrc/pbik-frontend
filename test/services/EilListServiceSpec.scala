@@ -18,8 +18,9 @@ package services
 
 import connectors.PbikConnector
 import controllers.FakePBIKApplication
-import models.{AuthenticatedRequest, EiLPerson, EmpRef, UserName}
-import org.mockito.ArgumentMatchers.any
+import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
+import models.{AuthenticatedRequest, EmpRef, UserName}
+import org.mockito.ArgumentMatchers.{any, anyInt, anyString}
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
@@ -33,7 +34,6 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
-import scala.collection.immutable
 import scala.concurrent.Future
 
 class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication {
@@ -47,11 +47,8 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
 
     val els = app.injector.instanceOf[EiLListService]
 
-    when(
-      els.tierConnector.getAllExcludedEiLPersonForBik(any[String], any[EmpRef], any[Int])(
-        any[HeaderCarrier]
-      )
-    ).thenReturn(Future.successful(List.empty[EiLPerson]))
+    when(els.tierConnector.getAllExcludedEiLPersonForBik(anyString(), any(), anyInt())(any()))
+      .thenReturn(Future.successful(Right(PbikExclusions(List.empty[PbikExclusionPerson]))))
 
     els
   }
@@ -70,20 +67,21 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
           None
         )
       val result                                                                      = await(eilService.currentYearEiL("services", year))
-      result.size shouldBe 0
+      result.getPBIKExclusionList.size shouldBe 0
     }
 
     "return a subset of List(EiL) search results - already excluded" in {
-      val eilService                          = mockEiLListService
-      val eiL1                                = new EiLPerson("QQ123456", "Humpty", None, "Dumpty", Some("123"), Some("01/01/1980"), None, None)
-      val eiL2                                = new EiLPerson("QQ123457", "Humpty", None, "Dumpty", Some("789"), Some("01/01/1980"), None, None)
-      val searchResultsEiL: List[EiLPerson]   = List(eiL1, eiL2)
-      val alreadyExcludedEiL: List[EiLPerson] = List(eiL1)
+      val eilService                                    = mockEiLListService
+      val exclusionPerson1                              =
+        PbikExclusionPerson("QQ123456", "Humpty", None, "Dumpty", "123", "01/01/1980", "01/01/1980", 456, 345, 22)
+      val exclusionPerson2                              =
+        PbikExclusionPerson("QQ123456", "Humpty", None, "Dumpty", "789", "01/01/1980", "01/01/1980", 456, 345, 22)
+      val searchResultsEiL: List[PbikExclusionPerson]   = List(exclusionPerson1, exclusionPerson2)
+      val alreadyExcludedEiL: List[PbikExclusionPerson] = List(exclusionPerson1)
 
-      val result: immutable.Seq[EiLPerson] =
-        eilService.searchResultsRemoveAlreadyExcluded(alreadyExcludedEiL, searchResultsEiL)
-      result.size shouldBe 1
-      result.head shouldBe eiL2
+      val result = eilService.searchResultsRemoveAlreadyExcluded(alreadyExcludedEiL, searchResultsEiL)
+
+      result shouldBe List(exclusionPerson2)
     }
   }
 

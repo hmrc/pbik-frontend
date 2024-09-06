@@ -107,7 +107,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
 
   "WhatNextPageController" when {
     "showWhatNextRegisteredBik" should {
-      when(whatNextPageController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+      when(whatNextPageController.sessionService.fetchPbikSession()(any()))
         .thenReturn(
           Future.successful(
             Some(
@@ -138,7 +138,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
       Seq("cy1", "cy").foreach(test)
 
       "state the status is ok and display correct page for Multiple benefits (Register a BIK)" in {
-        when(whatNextPageController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(whatNextPageController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -173,7 +173,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "showWhatNextRemovedBik" should {
       "state the status is ok and display correct page (Remove a BIK)" in {
-        when(whatNextPageController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(whatNextPageController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(

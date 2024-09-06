@@ -34,13 +34,13 @@
         taxYearRange: TaxYearRange,
         year: String,
         iabdString: String,
-        listOfMatches: EiLPersonList,
+        listOfMatches: List[PbikExclusionPerson],
         listOfMatchesForm: Form[ExclusionNino],
         formType: String
 )(implicit request: Request[_], messages: Messages)
 
 @expenseOrBenefit = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
-@title = @{if(listOfMatches.active.length > 1){ messages("ExclusionSearch.title.multiple") } else { messages("ExclusionSearch.title.single") }}
+@title = @{if(listOfMatches.length > 1){ messages("ExclusionSearch.title.multiple") } else { messages("ExclusionSearch.title.single") }}
 @govukLayoutWrapper(PageTitle(title, listOfMatchesForm.hasErrors)) {
 
     @if(listOfMatchesForm("individualNino").hasErrors) {
@@ -65,7 +65,7 @@
     </h1>
 
     @defining( if(year=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
-        @if(listOfMatches.active.length > 1) {
+        @if(listOfMatches.length > 1) {
              @formWithCSRF(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdString, formType)) {
                  <div class="govuk-form-group @if(listOfMatchesForm("individualNino").hasErrors){govuk-form-group--error}">
                      <fieldset class="govuk-fieldset" @if(listOfMatchesForm("individualNino").hasErrors){aria-describedby="selection-error"}>
@@ -75,15 +75,15 @@
                              </span>
                          }
                          <div class="govuk-radios">
-                         @for(index <- 0 until listOfMatches.active.length) {
+                         @for(index <- 0 until listOfMatches.length) {
                              <div class="govuk-radios__item">
-                                 <input class="govuk-radios__input" id="employee-radio-@index" type="radio" aria-describedby="employee-hint-@index" name="individualNino" value='@listOfMatches.active(index).nino'>
+                                 <input class="govuk-radios__input" id="employee-radio-@index" type="radio" aria-describedby="employee-hint-@index" name="individualNino" value='@listOfMatches(index).nationalInsuranceNumber'>
                                  <label class="govuk-label govuk-radios__label govuk-label--s" for="employee-radio-@index">
-                                     @listOfMatches.active(index).firstForename @listOfMatches.active(index).surname
+                                     @listOfMatches(index).firstForename @listOfMatches(index).surname
                                  </label>
                                  <span id="employee-hint-@index" class="govuk-hint govuk-radios__hint">
-                                     @messages("Service.field.nino"): @listOfMatches.active(index).nino <br>
-                                     @messages("Service.field.worksnumber"): @listOfMatches.active(index).worksPayrollNumber.getOrElse("")
+                                     @messages("Service.field.nino"): @listOfMatches(index).nationalInsuranceNumber <br>
+                                     @messages("Service.field.worksnumber"): @listOfMatches(index).worksPayrollNumber
                                  </span>
                              </div>
                          }
@@ -113,15 +113,15 @@
                     <tbody class="govuk-table__body">
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">@messages("Service.field.name")</th>
-                        <td class="govuk-table__cell" id="name">@listOfMatches.active.head.firstForename @listOfMatches.active.head.surname</td>
+                        <td class="govuk-table__cell" id="name">@listOfMatches.head.firstForename @listOfMatches.head.surname</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">@messages("Service.field.nino.2lines") @messages("Service.nino.lastletter")</th>
-                        <td class="govuk-table__cell" id="nino">@listOfMatches.active.head.nino</td>
+                        <td class="govuk-table__cell" id="nino">@listOfMatches.head.nationalInsuranceNumber</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">@messages("Service.field.worksnumber")</th>
-                        <td class="govuk-table__cell" id="wpn">@listOfMatches.active.head.worksPayrollNumber.getOrElse("")</td>
+                        <td class="govuk-table__cell" id="wpn">@listOfMatches.head.worksPayrollNumber</td>
                     </tr>
                     </tbody>
                 </table>

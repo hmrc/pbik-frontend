@@ -17,6 +17,7 @@
 package utils
 
 import models._
+import models.v1.exclusion.PbikExclusionPerson
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.DataEvent
@@ -191,6 +192,12 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
   def extractListNino(headlist: List[EiLPerson]): String =
     headlist.headOption match {
       case Some(x) => x.nino
+      case None    => SplunkLogger.pbik_no_ref
+    }
+
+  def extractListNinoFromExclusions(headlist: List[PbikExclusionPerson]): String =
+    headlist.headOption match {
+      case Some(x) => x.nationalInsuranceNumber
       case None    => SplunkLogger.pbik_no_ref
     }
 

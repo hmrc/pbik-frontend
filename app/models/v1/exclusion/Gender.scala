@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
-package models.v1
+package models.v1.exclusion
 
-import play.api.libs.json.{Json, OFormat}
+import models.v1
+import play.api.libs.json.{Format, Json}
 
-case class EmployerOptimisticLockResponse(
-  employmentIdentifier: String,
-  updatedOptimisticLock: Int
-)
+object Gender extends Enumeration {
 
-object EmployerOptimisticLockResponse {
+  type Gender = Value
 
-  implicit val formats: OFormat[EmployerOptimisticLockResponse] = Json.format[EmployerOptimisticLockResponse]
+  val Female: v1.exclusion.Gender.Value  = Value(0, "female")
+  val Male: v1.exclusion.Gender.Value    = Value(1, "male")
+  val Unknown: v1.exclusion.Gender.Value = Value(99, "not known")
+
+  implicit val formats: Format[Gender] = Json.formatEnum(this)
+
+  def fromString(value: Option[String]): Gender =
+    value.getOrElse("not known").strip().toLowerCase match {
+      case "female" => Female
+      case "male"   => Male
+      case _        => Unknown
+    }
 
 }

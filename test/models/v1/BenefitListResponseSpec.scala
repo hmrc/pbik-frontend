@@ -22,7 +22,6 @@ class BenefitListResponseSpec extends PlaySpec {
 
   private val (currentOptimisticLock, payrolledBenefitInKindExclusionCount): (Int, Int) = (99, 9)
 
-  private val lock                        = EmployerOptimisticLockResponse(currentOptimisticLock)
   private val bik: BenefitInKindWithCount = BenefitInKindWithCount(
     IabdType.CarBenefit,
     PbikStatus.ValidPayrollingBenefitInKind,
@@ -34,7 +33,7 @@ class BenefitListResponseSpec extends PlaySpec {
       "serialize and deserialize BenefitListResponse without benefit list" in {
         val response: BenefitListResponse = BenefitListResponse(
           None,
-          lock
+          currentOptimisticLock
         )
         val json                          = BenefitListResponse.writes.writes(response)
         val deserialized                  = BenefitListResponse.reads.reads(json).get
@@ -45,7 +44,7 @@ class BenefitListResponseSpec extends PlaySpec {
       "serialize and deserialize BenefitListResponse with benefit list empty" in {
         val response: BenefitListResponse = BenefitListResponse(
           Some(List()),
-          lock
+          currentOptimisticLock
         )
         val json                          = BenefitListResponse.writes.writes(response)
         val deserialized                  = BenefitListResponse.reads.reads(json).get
@@ -56,7 +55,7 @@ class BenefitListResponseSpec extends PlaySpec {
       "serialize and deserialize BenefitListResponse with benefit list" in {
         val response: BenefitListResponse = BenefitListResponse(
           Some(List(bik, bik)),
-          lock
+          currentOptimisticLock
         )
         val json                          = BenefitListResponse.writes.writes(response)
         val deserialized                  = BenefitListResponse.reads.reads(json).get

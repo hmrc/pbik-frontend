@@ -22,16 +22,15 @@ package models
   * excluding an individual ). On receipt by the server, if the Etag value does not match, the update will be rejected,
   * indicating some other source has changed the record, thereby invalidating our changes.
   */
+//TODO delete it, migrate the logic to mongo or cookie or session or cache....
+@deprecated
 object HeaderTags {
-  val ETAG: String   = "ETag"
-  val X_TXID: String = "X-TXID"
+  @deprecated
+  val ETAG: String               = "ETag"
+  @deprecated
+  val ETAG_DEFAULT_VALUE: String = "0"
 
-  val ETAG_DEFAULT_VALUE: String   = "0"
-  val X_TXID_DEFAULT_VALUE: String = "1"
-
-  def createResponseHeaders(
-    etag: String = ETAG_DEFAULT_VALUE,
-    txid: String = X_TXID_DEFAULT_VALUE
-  ): Map[String, String] = Map(ETAG -> etag, X_TXID -> txid)
+  @deprecated
+  def createResponseHeaders(etag: String = ETAG_DEFAULT_VALUE): Map[String, String] = Map(ETAG -> etag)
 
 }

@@ -208,8 +208,7 @@ class ManageRegistrationController @Inject() (
   def submitConfirmRemoveNextTaxYear(iabdString: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       val registeredFuture = sessionService.fetchPbikSession().flatMap { session =>
-        tierConnector
-          .getRegisteredBiks(request.empRef, controllersReferenceData.yearRange.cy)
+        bikListService.nextYearList
           .flatMap { registeredResponse =>
             val bikId          = session.flatMap(_.bikRemoved.map(_.id)).getOrElse("")
             val bikToRemove    = Bik(bikId, ControllersReferenceDataCodes.BIK_REMOVE_STATUS)
@@ -237,7 +236,7 @@ class ManageRegistrationController @Inject() (
       val registeredFuture = sessionService.fetchPbikSession().flatMap { session =>
         val bikId       = session.flatMap(_.bikRemoved.map(_.id)).getOrElse("")
         val bikToRemove = Bik(bikId, ControllersReferenceDataCodes.BIK_REMOVE_STATUS)
-        updateBiksFutureAction(controllersReferenceData.yearRange.cy, List(bikToRemove), iabdString, additive = false)
+        updateBiksFutureAction(controllersReferenceData.yearRange.cy, List(bikToRemove), additive = false)
       }
       controllersReferenceData.responseErrorHandler(registeredFuture)
     }
@@ -295,7 +294,7 @@ class ManageRegistrationController @Inject() (
       controllersReferenceData.responseErrorHandler(actionFuture)
   }
 
-  def updateBiksFutureAction(year: Int, persistentBiks: List[Bik], iabdString: String = "", additive: Boolean)(implicit
+  def updateBiksFutureAction(year: Int, persistentBiks: List[Bik], additive: Boolean)(implicit
     request: AuthenticatedRequest[AnyContent]
   ): Future[Result] =
     tierConnector

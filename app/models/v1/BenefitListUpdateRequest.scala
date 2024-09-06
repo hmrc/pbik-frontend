@@ -16,15 +16,13 @@
 
 package models.v1
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json}
 
-case class EmployerOptimisticLockResponse(
-  employmentIdentifier: String,
-  updatedOptimisticLock: Int
+case class BenefitListUpdateRequest(
+  pbikRegistrationUpdate: List[BenefitInKindRequest],
+  employerOptimisticLockRequest: EmployerOptimisticLockRequest
 )
 
-object EmployerOptimisticLockResponse {
-
-  implicit val formats: OFormat[EmployerOptimisticLockResponse] = Json.format[EmployerOptimisticLockResponse]
-
+object BenefitListUpdateRequest {
+  implicit val formats: Format[BenefitListUpdateRequest] = Json.format[BenefitListUpdateRequest]
 }

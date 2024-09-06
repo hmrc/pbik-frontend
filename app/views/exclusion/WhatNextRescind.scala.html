@@ -28,7 +28,7 @@
         taxYearRange:TaxYearRange,
         year:String,
         iabdString:String,
-        person:EiLPerson
+        person:PbikExclusionPerson
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
@@ -77,7 +77,7 @@ showECLBackLink = request.showECLBackLink) {
                 @messages("Service.field.nino") @messages("Service.nino.lastletter")
             </dt>
             <dd class="govuk-summary-list__value">
-                <p class="govuk-body">@person.nino</p>
+                <p class="govuk-body">@person.nationalInsuranceNumber</p>
             </dd>
         </div>
         <div class="govuk-summary-list__row">
@@ -85,7 +85,7 @@ showECLBackLink = request.showECLBackLink) {
                 @messages("Service.field.worksnumber")
             </dt>
             <dd class="govuk-summary-list__value">
-                <p class="govuk-body">@person.getWorksPayrollNumber</p>
+                <p class="govuk-body">@person.worksPayrollNumber</p>
             </dd>
         </div>
         @if(request.isAgent) {

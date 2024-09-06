@@ -17,7 +17,7 @@
 package views.exclusion
 
 import config.PbikAppConfig
-import models.{AuthenticatedRequest, EiLPerson}
+import models.AuthenticatedRequest
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -30,20 +30,8 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
 
   implicit val appConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
 
-  private val person = EiLPerson(
-    nino = "AB123456C",
-    firstForename = "John",
-    secondForename = Some("Smith"),
-    surname = "Smith",
-    worksPayrollNumber = Some("123/AB123456C"),
-    dateOfBirth = None,
-    gender = None,
-    status = None,
-    perOptLock = 1
-  )
-
   implicit def view()(implicit request: AuthenticatedRequest[_]): Html =
-    whatNextExclusionView(taxYearRange, "cy", "vans", person)
+    whatNextExclusionView(taxYearRange, "cy", "vans", exclusionPerson)
 
   "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)
