@@ -22,7 +22,7 @@ import controllers.actions.MinimalAuthAction
 import models._
 import models.v1.{IabdType, PbikStatus}
 import models.v1.IabdType.IabdType
-import org.mockito.ArgumentMatchers.{any, eq => argEq}
+import org.mockito.ArgumentMatchers.{any, anyInt, eq => argEq}
 import org.mockito.Mockito._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -56,16 +56,13 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
     lazy val benefitTypes: Set[IabdType] = IabdType.values
     lazy val CYCache: Set[Bik]           = benefitTypes.map(n => Bik("" + n.id, PbikStatus.ValidPayrollingBenefitInKind.id))
 
-    when(service.bikListService.getAllBenefitsForYear(any[Int])(any[HeaderCarrier]))
+    when(service.bikListService.getAllBenefitsForYear(anyInt())(any()))
       .thenReturn(Future.successful(benefitTypes))
 
     // Return instance where not all Biks have been registered for CY
     when(
       service.tierConnector
-        .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear()))(
-          any[HeaderCarrier],
-          any[AuthenticatedRequest[_]]
-        )
+        .getRegisteredBiks(any(), argEq(injected[TaxDateUtils].getCurrentTaxYear()))(any())
     ) thenReturn Future.successful(
       BikResponse(
         responseHeaders,
@@ -78,10 +75,7 @@ class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBI
     // Return instance where not all Biks have been registered for CYP1
     when(
       service.tierConnector
-        .getRegisteredBiks(any[EmpRef], argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(
-          any[HeaderCarrier],
-          any[AuthenticatedRequest[_]]
-        )
+        .getRegisteredBiks(any(), argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(any())
     ) thenReturn Future.successful(
       BikResponse(
         responseHeaders,

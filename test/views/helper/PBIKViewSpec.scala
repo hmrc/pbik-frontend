@@ -17,6 +17,7 @@
 package views.helper
 
 import models.agent.{AccountsOfficeReference, Client}
+import models.v1.exclusion.PbikExclusionPerson
 import models.{AuthenticatedRequest, EmpRef, TaxYearRange, UserName}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -140,6 +141,10 @@ trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite {
   val (year2018, year2019, year2020): (Int, Int, Int) = (2018, 2019, 2020)
 
   def taxYearRange: TaxYearRange = TaxYearRange(year2018, year2019, year2020)
+
+  val exclusionPerson: PbikExclusionPerson =
+    PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+
 }
 
 trait PBIKViewSpec extends PBIKBaseViewSpec with PBIKViewBehaviours

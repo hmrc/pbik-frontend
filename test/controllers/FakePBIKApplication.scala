@@ -69,8 +69,7 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
   def mockRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().withSession(
       SessionKeys.sessionId -> sessionId,
-      HeaderTags.ETAG       -> HeaderTags.ETAG_DEFAULT_VALUE,
-      HeaderTags.X_TXID     -> HeaderTags.X_TXID_DEFAULT_VALUE
+      HeaderTags.ETAG       -> HeaderTags.ETAG_DEFAULT_VALUE
     )
 
   def mockWelshRequest: FakeRequest[AnyContentAsEmpty.type] =
@@ -78,8 +77,7 @@ trait FakePBIKApplication extends GuiceOneAppPerSuite {
       .withCookies(Cookie("PLAY_LANG", "cy"))
       .withSession(
         SessionKeys.sessionId -> sessionId,
-        HeaderTags.ETAG       -> HeaderTags.ETAG_DEFAULT_VALUE,
-        HeaderTags.X_TXID     -> HeaderTags.X_TXID_DEFAULT_VALUE
+        HeaderTags.ETAG       -> HeaderTags.ETAG_DEFAULT_VALUE
       )
 
   def noSessionIdRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession()

@@ -17,7 +17,7 @@
 package views.exclusion
 
 import models.v1.IabdType
-import models.{AuthenticatedRequest, Bik, EiLPerson}
+import models.{AuthenticatedRequest, Bik}
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
 import views.html.exclusion.WhatNextRescind
@@ -26,23 +26,12 @@ class WhatNextRescindViewSpec extends PBIKViewSpec {
 
   private val whatNextRescindView: WhatNextRescind = app.injector.instanceOf[WhatNextRescind]
   private val benefit: IabdType.Value              = IabdType.CarFuelBenefit
-  private val person: EiLPerson                    = EiLPerson(
-    nino = "AB123456C",
-    firstForename = "John",
-    secondForename = Some("Smith"),
-    surname = "Smith",
-    worksPayrollNumber = Some("123/AB123456C"),
-    dateOfBirth = None,
-    gender = None,
-    status = None,
-    perOptLock = 1
-  )
 
   private def view(implicit request: AuthenticatedRequest[_]): Html = whatNextRescindView(
     taxYearRange,
     "cyp1",
     Bik.asBenefitString(benefit.id.toString),
-    person
+    exclusionPerson
   )
 
   "whatNextRescind - organisation" must {

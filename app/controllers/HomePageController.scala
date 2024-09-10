@@ -101,7 +101,7 @@ class HomePageController @Inject() (
           biksListOptionCYP1.size,
           currentYearList.bikList.nonEmpty
         )
-      ).removingFromSession(HeaderTags.ETAG, HeaderTags.X_TXID).addingToSession(nextYearList.headers.toSeq: _*)
+      ).removingFromSession(HeaderTags.ETAG).addingToSession(nextYearList.headers.toSeq: _*)
     }
     controllersReferenceData.responseErrorHandler(pageLoadFuture)
   }
@@ -128,7 +128,7 @@ class HomePageController @Inject() (
           0,
           showChangeYearLink = true
         )
-      ).removingFromSession(HeaderTags.ETAG, HeaderTags.X_TXID).addingToSession(currentYearList.headers.toSeq: _*)
+      ).removingFromSession(HeaderTags.ETAG).addingToSession(currentYearList.headers.toSeq: _*)
     }
     controllersReferenceData.responseErrorHandler(pageLoadFuture)
   }

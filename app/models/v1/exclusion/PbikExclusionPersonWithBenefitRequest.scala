@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package models.v1
+package models.v1.exclusion
 
+import models.v1.IabdType.IabdType
 import play.api.libs.json.{Json, OFormat}
 
-case class EmployerOptimisticLockResponse(
-  employmentIdentifier: String,
-  updatedOptimisticLock: Int
+case class PbikExclusionPersonWithBenefitRequest(
+  currentOptimisticLock: Int,
+  deletePBIKExclusionDetails: PbikExclusionPersonWithBenefit
 )
 
-object EmployerOptimisticLockResponse {
+object PbikExclusionPersonWithBenefitRequest {
+  implicit val formats: OFormat[PbikExclusionPersonWithBenefitRequest] =
+    Json.format[PbikExclusionPersonWithBenefitRequest]
 
-  implicit val formats: OFormat[EmployerOptimisticLockResponse] = Json.format[EmployerOptimisticLockResponse]
+  def from(iabdType: IabdType, person: PbikExclusionPerson): PbikExclusionPersonWithBenefitRequest =
+    PbikExclusionPersonWithBenefitRequest(
+      person.optimisticLock,
+      person.withBenefit(iabdType)
+    )
 
 }

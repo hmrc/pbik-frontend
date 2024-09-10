@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package models.v1
+package models.v1.exclusion
 
 import play.api.libs.json.{Json, OFormat}
 
-case class EmployerOptimisticLockResponse(
-  employmentIdentifier: String,
-  updatedOptimisticLock: Int
-)
+case class PbikExclusions(getPBIKExclusionList: List[PbikExclusionPerson])
 
-object EmployerOptimisticLockResponse {
-
-  implicit val formats: OFormat[EmployerOptimisticLockResponse] = Json.format[EmployerOptimisticLockResponse]
-
+object PbikExclusions {
+  implicit val formats: OFormat[PbikExclusions] = Json.format[PbikExclusions]
 }

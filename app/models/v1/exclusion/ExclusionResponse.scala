@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 
-package models.v1
+package models.v1.exclusion
 
-import play.api.libs.json.{Json, OFormat}
-
-case class EmployerOptimisticLockResponse(
-  employmentIdentifier: String,
-  updatedOptimisticLock: Int
-)
-
-object EmployerOptimisticLockResponse {
-
-  implicit val formats: OFormat[EmployerOptimisticLockResponse] = Json.format[EmployerOptimisticLockResponse]
-
-}
+case class ExclusionResponse(status: Int, response: UpdateExclusionPersonForABenefitResponse)

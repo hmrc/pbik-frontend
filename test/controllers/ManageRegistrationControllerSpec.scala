@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
 import models._
 import models.v1.{BenefitTypes, IabdType, PbikStatus}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, anyInt}
 import org.mockito.Mockito.{mock, when}
 import org.scalatestplus.play.PlaySpec
 import play.api.Application
@@ -63,25 +63,25 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
   private val cyBiks: Set[Bik]             =
     cyBenefitTypes.benefitTypes.map(x => Bik(x.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
 
-  when(app.injector.instanceOf[PbikConnector].getAllAvailableBiks(any[Int])(any[HeaderCarrier]))
+  when(app.injector.instanceOf[PbikConnector].getAllAvailableBiks(anyInt())(any()))
     .thenReturn(Future.successful(Right(cyBenefitTypes)))
 
   when(
     app.injector
       .instanceOf[PbikConnector]
       .updateOrganisationsRegisteredBiks(
-        any[Int],
+        anyInt(),
         any
-      )(any[HeaderCarrier], any[AuthenticatedRequest[_]])
+      )(any(), any[AuthenticatedRequest[_]])
   ).thenReturn(Future.successful(OK))
 
   when(
     app.injector
       .instanceOf[PbikConnector]
       .getRegisteredBiks(
-        any[EmpRef],
-        any[Int]
-      )(any[HeaderCarrier], any[AuthenticatedRequest[_]])
+        any(),
+        anyInt()
+      )(any())
   ).thenReturn(
     Future.successful(
       BikResponse(
@@ -96,7 +96,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
   when(
     app.injector
       .instanceOf[SessionService]
-      .storeRegistrationList(any[RegistrationList])(any[HeaderCarrier])
+      .storeRegistrationList(any())(any())
   ).thenReturn(Future.successful(PbikSession(sessionId)))
 
   "ManageRegistrationController" when {
@@ -154,7 +154,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
     "loading showCheckYourAnswersAddCurrentTaxYear, an authorised user" should {
       "be shown the check your answers screen if correct data is present in the cache" in {
-        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -211,7 +211,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
     "loading showCheckYourAnswersNextCurrentTaxYear, an authorised user" should {
       "be shown the check your answers screen if correct data is present in the cache" in {
-        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -237,7 +237,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
     "loading checkYourAnswersRemoveNextTaxYear, an authorised user" should {
       "be directed cy + 1 confirmation page to remove bik" in {
-        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -269,7 +269,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           List(RegistrationItem(iabdType, active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("software", None))
         )
-        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -303,7 +303,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           List(RegistrationItem(iabdType, active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("software", None))
         )
-        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -358,7 +358,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
               List(RegistrationItem(iabdType, active = true, enabled = true)),
               Some(BinaryRadioButtonWithDesc(selectionValue, None))
             )
-            when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+            when(registrationController.sessionService.fetchPbikSession()(any()))
               .thenReturn(
                 Future.successful(
                   Some(
@@ -393,7 +393,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           List(RegistrationItem(iabdType, active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("other", Some("Here's our other info")))
         )
-        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -466,7 +466,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
     "loading why-remove-benefit-expense, an authorised user" should {
       "be directed cy + 1 confirmation page to remove bik for other reason" in {
-        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -498,7 +498,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
           List(RegistrationItem(iabdType, active = true, enabled = true)),
           Some(BinaryRadioButtonWithDesc("other", Some(otherReason)))
         )
-        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -551,7 +551,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
     "loading showConfirmRemoveNextTaxYear, an authorised user" should {
       "be directed cy + 1 confirmation page to confirm remove bik" in {
-        when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+        when(registrationController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -583,7 +583,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
         BinaryRadioButtonWithDesc("software", None)
       ).foreach { reason =>
         s"be directed cy + 1 removal confirmation page for reason $reason" in {
-          when(registrationController.sessionService.fetchPbikSession()(any[HeaderCarrier]))
+          when(registrationController.sessionService.fetchPbikSession()(any()))
             .thenReturn(
               Future.successful(
                 Some(

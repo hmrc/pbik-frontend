@@ -19,6 +19,7 @@ package connectors
 import config.Service
 import models._
 import models.v1._
+import models.v1.exclusion.{ExclusionResponse, PbikExclusionPersonWithBenefitRequest, PbikExclusions, UpdateExclusionPersonForABenefitRequest, UpdateExclusionPersonForABenefitResponse}
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.mvc.Request
@@ -35,44 +36,41 @@ import scala.concurrent.{ExecutionContext, Future}
 class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuration)(implicit ec: ExecutionContext)
     extends Logging {
 
-  private val maxEmptyBodyLength: Int                                              = 4
-  private val baseUrl: String                                                      = s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
-  private def getRegisteredBiksURL(empRef: EmpRef, year: Int)                      = s"$baseUrl/${empRef.encodedEmpRef}/$year"
-  private def getBenefitTypesURL(year: Int)                                        = s"$baseUrl/$year/getbenefittypes"
-  private def getAllExclusionsURL(iabdString: String, empRef: EmpRef, year: Int)   =
-    s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion"
-  private def getExcludedPersonsURL(iabdString: String, empRef: EmpRef, year: Int) =
-    s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion/update"
-  private def getRemoveExclusionURL(iabdString: String, empRef: EmpRef, year: Int) =
-    s"$baseUrl/${empRef.encodedEmpRef}/$year/${Bik.asNPSTypeValue(iabdString)}/exclusion/remove"
-  private def getUpdateBenefitURL(year: Int, suffix: String, empRef: EmpRef)       =
-    s"$baseUrl/${empRef.encodedEmpRef}/$year/updatebenefittypes/$suffix"
+  private val maxEmptyBodyLength: Int                                            = 4
+  private val baseUrl: String                                                    =
+    s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
+  private def getRegisteredBiksURL(empRef: EmpRef, year: Int)                    =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year"
+  private def getBenefitTypesURL(year: Int)                                      =
+    s"$baseUrl/$year/getbenefittypes"
+  private def getAllExclusionsURL(iabdString: String, empRef: EmpRef, year: Int) =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/$iabdString/exclusion"
+  private def getExcludedPersonsURL(empRef: EmpRef, year: Int)                   =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/exclusion/update"
+  private def getRemoveExclusionURL(empRef: EmpRef, year: Int)                   =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/exclusion/remove"
+  private def getUpdateBenefitURL(year: Int, suffix: String, empRef: EmpRef)     =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/updatebenefittypes/$suffix"
 
   def getRegisteredBiks(
     empRef: EmpRef,
     year: Int
-  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BikResponse] = {
-    val etagFromSession      = request.session.get(HeaderTags.ETAG).getOrElse("UNKNOWN_ETAG")
-    val xtxidFromSession     = request.session.get(HeaderTags.X_TXID).getOrElse("UNKNOWN_XTXID")
-    val requestSessionHeader = HeaderTags.createResponseHeaders(etagFromSession, xtxidFromSession)
-
-    logger.info(s"[PbikConnector][getRegisteredBiks] GET benefits with headers: $requestSessionHeader")
-
+  )(implicit hc: HeaderCarrier): Future[BikResponse] =
     client
       .get(url"${getRegisteredBiksURL(empRef, year)}")
       .execute[HttpResponse]
       .map { implicit response =>
+        //TODO refactor the logic and remove this generic body parsing do the same with Either[Error, T]
         val resp                                  = validateResponses("getRegisteredBiks").json.as[BenefitListResponse]
         val updatedHeaders: Seq[(String, String)] =
-          HeaderTags.createResponseHeaders(resp.employerOptimisticLockResponse.currentOptimisticLock.toString).toSeq
-        val biks                                  = resp.pbikRegistrationDetails.getOrElse(List.empty).map(benefit => Bik(benefit))
+          HeaderTags.createResponseHeaders(resp.currentOptimisticLock.toString).toSeq
+        val biks                                  = resp.getBenefitInKindWithCount.map(benefit => Bik(benefit))
 
         logger.info(
           s"[PbikConnector][getRegisteredBiks] Got registered BIKs ${biks.size} with headers: $updatedHeaders"
         )
         BikResponse(updatedHeaders.toMap, biks.toSet)
       }
-  }
 
   def getAllAvailableBiks(year: Int)(implicit hc: HeaderCarrier): Future[Either[NPSErrors, BenefitTypes]] =
     client
@@ -109,35 +107,68 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
 
   def getAllExcludedEiLPersonForBik(iabdString: String, empRef: EmpRef, year: Int)(implicit
     hc: HeaderCarrier
-  ): Future[List[EiLPerson]] =
+  ): Future[Either[NPSErrors, PbikExclusions]] =
     client
       .get(url"${getAllExclusionsURL(iabdString, empRef, year)}")
       .execute[HttpResponse]
-      .map(implicit response => validateResponses("getAllExcludedEiLPersonForBik").json.as[List[EiLPerson]])
-
-  def excludeEiLPersonFromBik(iabdString: String, empRef: EmpRef, year: Int, individual: EiLPerson)(implicit
-    hc: HeaderCarrier,
-    request: Request[_]
-  ): Future[EiLResponse] =
-    client
-      .post(url"${getExcludedPersonsURL(iabdString, empRef, year)}")
-      .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
-      .withBody(Json.toJson(individual))
-      .execute[HttpResponse]
-      .map {
-        case response if response.body.length <= maxEmptyBodyLength =>
-          EiLResponse(validateResponses("excludeEiLPersonFromBik")(response).status, List.empty)
-        case response                                               =>
-          EiLResponse(response.status, validateResponses("excludeEiLPersonFromBik")(response).json.as[List[EiLPerson]])
+      .flatMap { response =>
+        response.status match {
+          case OK          =>
+            response.json.validate[PbikExclusions] match {
+              case JsSuccess(value, _) => Future.successful(Right(value))
+              case JsError(errors)     =>
+                logger.error(s"[PbikConnector][getAllExcludedEiLPersonForBik] Failed to parse PbikExclusion: $errors")
+                Future.failed(
+                  new GenericServerErrorException("Failed to get excluded persons, status: " + response.status)
+                )
+            }
+          case BAD_REQUEST =>
+            logger.error(
+              s"[PbikConnector][getAllExcludedEiLPersonForBik] a pbik error code was returned. Error: ${response.body}"
+            )
+            response.json.validate[NPSErrors] match {
+              case JsSuccess(value, _) => Future.successful(Left(value))
+              case JsError(errors)     =>
+                logger.error(s"[PbikConnector][getAllExcludedEiLPersonForBik] Failed to parse NPSErrors: $errors")
+                Future.failed(
+                  new GenericServerErrorException("Failed to get excluded persons, status: " + response.status)
+                )
+            }
+          case _           =>
+            Future.failed(
+              new GenericServerErrorException("Failed to get available EilPerson, status: " + response.status)
+            )
+        }
       }
 
-  def removeEiLPersonExclusionFromBik(iabdString: String, empRef: EmpRef, year: Int, individualToRemove: EiLPerson)(
-    implicit
+  def excludeEiLPersonFromBik(empRef: EmpRef, year: Int, body: UpdateExclusionPersonForABenefitRequest)(implicit
+    hc: HeaderCarrier,
+    request: Request[_]
+  ): Future[ExclusionResponse] =
+    client
+      .post(url"${getExcludedPersonsURL(empRef, year)}")
+      .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
+      .withBody(Json.toJson(body))
+      .execute[HttpResponse]
+      .map { response =>
+        ExclusionResponse(
+          response.status,
+          validateResponses("excludeEiLPersonFromBik")(response).json.as[UpdateExclusionPersonForABenefitResponse]
+        )
+      }
+
+  def removeEiLPersonExclusionFromBik(
+    iabdString: String,
+    empRef: EmpRef,
+    year: Int,
+    individualToRemove: PbikExclusionPersonWithBenefitRequest
+  )(implicit
     hc: HeaderCarrier,
     request: Request[_]
   ): Future[Int] =
+    //TODO build correct body
     client
-      .post(url"${getRemoveExclusionURL(iabdString, empRef, year)}")
+      .delete(url"${getRemoveExclusionURL(empRef, year)}")
       .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
       .withBody(Json.toJson(individualToRemove))
       .execute[HttpResponse]
@@ -149,18 +180,20 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
   ): Future[Int] = {
+    val etagFromSession              = request.session.get(HeaderTags.ETAG).getOrElse("0").toInt
     val updatedBiks                  = changes.map(bik => BenefitInKindRequest(bik, request.isAgent))
+    val payload                      = BenefitListUpdateRequest(updatedBiks, EmployerOptimisticLockRequest(etagFromSession))
     val suffix                       = if (request.isAgent) "agent" else "org"
     val headers: Map[String, String] = createOrCheckForRequiredHeaders
     client
       .post(url"${getUpdateBenefitURL(year, suffix, request.empRef)}")
       .setHeader(headers.toSeq: _*)
-      .withBody(Json.toJson(updatedBiks))
+      .withBody(Json.toJson(payload))
       .execute[HttpResponse]
       .map { response =>
         val validatedResponse         = validateResponses("updateOrganisationsRegisteredBiks")(response)
         val benefitListUpdateResponse = validatedResponse.json.as[BenefitListUpdateResponse]
-        val lockValue                 = benefitListUpdateResponse.employerOptimisticLockResponse.currentOptimisticLock
+        val lockValue                 = benefitListUpdateResponse.employerOptimisticLockResponse.updatedOptimisticLock
 
         logger.info(
           s"[PbikConnector][updateOrganisationsRegisteredBiks] Updated BIKs ${updatedBiks.size} with lock value: $lockValue"
@@ -170,12 +203,9 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
   }
 
   private def createOrCheckForRequiredHeaders(implicit request: Request[_]): Map[String, String] = {
-    val etagFromSession  = request.session.get(HeaderTags.ETAG).getOrElse(HeaderTags.ETAG_DEFAULT_VALUE)
-    val xtxidFromSession = request.session.get(HeaderTags.X_TXID).getOrElse(HeaderTags.X_TXID_DEFAULT_VALUE)
-    logger.info(
-      "[PbikConnector][createOrCheckForRequiredHeaders] POST etagFromSession: " + etagFromSession + ", xtxidFromSession: " + xtxidFromSession
-    )
-    HeaderTags.createResponseHeaders(etagFromSession, xtxidFromSession)
+    val etagFromSession = request.session.get(HeaderTags.ETAG).getOrElse(HeaderTags.ETAG_DEFAULT_VALUE)
+    logger.info("[PbikConnector][createOrCheckForRequiredHeaders] POST etagFromSession: " + etagFromSession)
+    HeaderTags.createResponseHeaders(etagFromSession)
   }
 
   private def parseOldErrorBody(response: HttpResponse): HttpResponse =

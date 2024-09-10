@@ -14,6 +14,16 @@
  * limitations under the License.
  */
 
-package models
+package models.v1.exclusion
 
-case class EiLResponse(status: Int, eilList: List[EiLPerson])
+import play.api.libs.json.{Json, OFormat}
+
+case class UpdateExclusionPersonForABenefitResponse(
+  updatedOptimisticLock: Int,
+  putPBIKExclusionList: List[PbikExclusionPersonWithBenefitAndStatus]
+)
+
+object UpdateExclusionPersonForABenefitResponse {
+  implicit val formats: OFormat[UpdateExclusionPersonForABenefitResponse] =
+    Json.format[UpdateExclusionPersonForABenefitResponse]
+}

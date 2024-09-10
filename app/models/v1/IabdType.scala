@@ -16,8 +16,12 @@
 
 package models.v1
 
+import IabdType.IabdType
 import models.v1
 import play.api.libs.json.{Format, Json}
+
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 object IabdType extends Enumeration {
 
@@ -45,5 +49,10 @@ object IabdType extends Enumeration {
   val VouchersAndCreditCards: v1.IabdType.Value                              = Value(54, "Vouchers and Credit Cards")
 
   implicit val formats: Format[IabdType] = Json.formatEnum(this)
+
+  implicit class IabdTypeOps(value: IabdType) {
+    def encodedName: String =
+      URLEncoder.encode(value.toString, StandardCharsets.UTF_8.toString)
+  }
 
 }

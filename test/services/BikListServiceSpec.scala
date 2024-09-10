@@ -20,7 +20,7 @@ import connectors.PbikConnector
 import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
 import models._
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, anyInt}
 import org.mockito.Mockito._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -70,10 +70,7 @@ class BikListServiceSpec
       val listBiks = Set(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
 
       when(
-        bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
-          any[HeaderCarrier],
-          any[AuthenticatedRequest[_]]
-        )
+        bikListService.tierConnector.getRegisteredBiks(any(), anyInt())(any())
       ).thenReturn(Future.successful(BikResponse(responseHeaders, listBiks)))
 
       val result: BikResponse = Await.result(bikListService.currentYearList, 10 seconds)
@@ -82,10 +79,7 @@ class BikListServiceSpec
 
     "Be able to get the BIKS for the current year - no biks returned" in {
       when(
-        bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
-          any[HeaderCarrier],
-          any[AuthenticatedRequest[_]]
-        )
+        bikListService.tierConnector.getRegisteredBiks(any(), anyInt())(any())
       ).thenThrow(new IllegalStateException())
       // Intercept exception
       intercept[IllegalStateException] {
@@ -97,10 +91,7 @@ class BikListServiceSpec
       val listBiks = Set(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
 
       when(
-        bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
-          any[HeaderCarrier],
-          any[AuthenticatedRequest[_]]
-        )
+        bikListService.tierConnector.getRegisteredBiks(any(), anyInt())(any())
       ).thenReturn(Future.successful(BikResponse(responseHeaders, listBiks)))
       implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -111,10 +102,7 @@ class BikListServiceSpec
 
     "Be able to get the BIKS for the next year - no biks returned" in {
       when(
-        bikListService.tierConnector.getRegisteredBiks(any[EmpRef], any[Int])(
-          any[HeaderCarrier],
-          any[AuthenticatedRequest[_]]
-        )
+        bikListService.tierConnector.getRegisteredBiks(any(), anyInt())(any())
       ).thenThrow(new IllegalStateException())
 
       intercept[IllegalStateException] {

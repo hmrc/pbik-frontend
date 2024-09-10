@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package models.v1
+package models.v1.exclusion
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Format, Json}
 
-case class EmployerOptimisticLockResponse(
-  employmentIdentifier: String,
-  updatedOptimisticLock: Int
-)
+object PersonalEmploymentStatus extends Enumeration {
 
-object EmployerOptimisticLockResponse {
+  type PersonalEmploymentStatus = Value
 
-  implicit val formats: OFormat[EmployerOptimisticLockResponse] = Json.format[EmployerOptimisticLockResponse]
+  val Query: PersonalEmploymentStatus.Value = Value(0, "PBIK EXCLUSION LIST QUERY")
+  val Add: PersonalEmploymentStatus.Value   = Value(1, "PBIK EXCLUSION LIST ADD")
 
+  implicit val formats: Format[PersonalEmploymentStatus] = Json.formatEnum(this)
+
+  def fromInt(value: Option[Int]): PersonalEmploymentStatus =
+    value.getOrElse(0) match {
+      case 10 => Query
+      case _  => Add
+    }
 }

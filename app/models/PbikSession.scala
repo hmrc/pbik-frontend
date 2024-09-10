@@ -16,6 +16,7 @@
 
 package models
 
+import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
@@ -25,9 +26,9 @@ case class PbikSession(
   sessionId: String,
   registrations: Option[RegistrationList] = None,
   bikRemoved: Option[RegistrationItem] = None,
-  listOfMatches: Option[List[EiLPerson]] = None,
-  eiLPerson: Option[EiLPerson] = None,
-  currentExclusions: Option[List[EiLPerson]] = None,
+  listOfMatches: Option[List[PbikExclusionPerson]] = None,
+  eiLPerson: Option[PbikExclusionPerson] = None,
+  currentExclusions: Option[PbikExclusions] = None,
   cyRegisteredBiks: Option[List[Bik]] = None,
   nyRegisteredBiks: Option[List[Bik]] = None,
   lastUpdated: Instant = Instant.now()

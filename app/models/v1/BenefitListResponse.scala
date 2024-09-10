@@ -19,9 +19,13 @@ package models.v1
 import play.api.libs.json.{Json, OWrites, Reads}
 
 case class BenefitListResponse(
-  pbikRegistrationDetails: Option[List[BenefitInKindWithCount]],
-  employerOptimisticLockResponse: EmployerOptimisticLockResponse
-)
+  pbikRegistrationDetailsList: Option[List[BenefitInKindWithCount]],
+  currentOptimisticLock: Int
+) {
+
+  def getBenefitInKindWithCount: List[BenefitInKindWithCount] = pbikRegistrationDetailsList.getOrElse(List.empty)
+
+}
 
 object BenefitListResponse {
 
@@ -32,8 +36,8 @@ object BenefitListResponse {
     import play.api.libs.json._
 
     (
-      (__ \ "pbikRegistrationDetails").readNullable[List[BenefitInKindWithCount]] and
-        (__ \ "employerOptimisticLockResponse").read[EmployerOptimisticLockResponse]
+      (__ \ "pbikRegistrationDetailsList").readNullable[List[BenefitInKindWithCount]] and
+        (__ \ "currentOptimisticLock").read[Int]
     )(BenefitListResponse.apply _)
   }
 

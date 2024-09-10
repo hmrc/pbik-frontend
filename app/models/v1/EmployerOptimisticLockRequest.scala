@@ -18,13 +18,8 @@ package models.v1
 
 import play.api.libs.json.{Json, OFormat}
 
-case class EmployerOptimisticLockResponse(
-  employmentIdentifier: String,
-  updatedOptimisticLock: Int
-)
+case class EmployerOptimisticLockRequest(currentOptimisticLock: Int)
 
-object EmployerOptimisticLockResponse {
-
-  implicit val formats: OFormat[EmployerOptimisticLockResponse] = Json.format[EmployerOptimisticLockResponse]
-
+object EmployerOptimisticLockRequest {
+  implicit val formats: OFormat[EmployerOptimisticLockRequest] = Json.format[EmployerOptimisticLockRequest]
 }

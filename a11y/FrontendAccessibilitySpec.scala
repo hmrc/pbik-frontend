@@ -16,6 +16,7 @@
 
 import models._
 import models.agent.{AccountsOfficeReference, Client}
+import models.v1.exclusion.PbikExclusionPerson
 import models.v1.{IabdType, PbikAction, PbikStatus}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -51,6 +52,9 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       biks <- Gen.listOfN(bikSize, arbBik.arbitrary).map(_.distinct)
     } yield biks
   }
+
+  private val exclusionPerson: PbikExclusionPerson =
+    PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
 
   private val eiLPerson: EiLPerson =
     EiLPerson(
@@ -97,7 +101,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     agentClient
   )
 
-  implicit val arbRequestHeader: Arbitrary[RequestHeader]                            = fixed(fakeRequest)
+  implicit val arbRequestHeader: Arbitrary[RequestHeader]                       = fixed(fakeRequest)
   implicit val arbObjSelectedForm: Arbitrary[Form[RegistrationList]]            = fixed(
     forms.objSelectedForm.fill(registrationList)
   )
@@ -107,13 +111,14 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
   implicit val arbBinaryRadioButtonForm: Arbitrary[Form[MandatoryRadioButton]]  = fixed(forms.binaryRadioButton)
   implicit val arbSelectYearForm: Arbitrary[Form[SelectYear]]                   = fixed(forms.selectYearForm)
 
-  override implicit val arbAsciiString: Arbitrary[String]       = fixed("assets-transferred")
-  implicit val arbRegistrationList: Arbitrary[RegistrationList] = fixed(registrationList)
-  implicit val arbEiLPerson: Arbitrary[EiLPerson]               = fixed(eiLPerson)
-  implicit val arbListOfEiLPerson: Arbitrary[List[EiLPerson]]   = fixed(listOfEiLPerson)
-  implicit val arbEilPersonList: Arbitrary[EiLPersonList]       = fixed(EiLPersonList(listOfEiLPerson))
-  implicit val arbTaxYearRange: Arbitrary[TaxYearRange]         = fixed(TaxYearRange(cyMinus1, cy, cyPlus1))
-  implicit val arbEmpRef: Arbitrary[EmpRef]                     = fixed(empRef)
+  override implicit val arbAsciiString: Arbitrary[String]                   = fixed("assets-transferred")
+  implicit val arbRegistrationList: Arbitrary[RegistrationList]             = fixed(registrationList)
+  implicit val arbEiLPerson: Arbitrary[EiLPerson]                           = fixed(eiLPerson)
+  implicit val arbListOfEiLPerson: Arbitrary[List[EiLPerson]]               = fixed(listOfEiLPerson)
+  implicit val arbExclusionPersonList: Arbitrary[List[PbikExclusionPerson]] = fixed(List(exclusionPerson))
+  implicit val arbEilPersonList: Arbitrary[EiLPersonList]                   = fixed(EiLPersonList(listOfEiLPerson))
+  implicit val arbTaxYearRange: Arbitrary[TaxYearRange]                     = fixed(TaxYearRange(cyMinus1, cy, cyPlus1))
+  implicit val arbEmpRef: Arbitrary[EmpRef]                                 = fixed(empRef)
 
   override def renderViewByClass: PartialFunction[Any, Html] = {
     case enrol: Enrol                                                               => render(enrol)

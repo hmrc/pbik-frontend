@@ -18,6 +18,7 @@ package services
 
 import models._
 import models.cache.MissingSessionIdException
+import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
 import play.api.Logging
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -48,9 +49,9 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
       sessionId,
       cleanRegistrationList,
       cleanBikRemoved,
-      cleanEiLPersonList,
-      cleanEiLPerson,
-      cleanEiLPersonList,
+      None,
+      None,
+      None,
       cleanBikList,
       cleanBikList
     )
@@ -76,13 +77,13 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
   def storeBikRemoved(value: RegistrationItem)(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.BikRemoved, value)
 
-  def storeListOfMatches(value: List[EiLPerson])(implicit hc: HeaderCarrier): Future[PbikSession] =
+  def storeListOfMatches(value: List[PbikExclusionPerson])(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.ListOfMatches, value)
 
-  def storeEiLPerson(value: EiLPerson)(implicit hc: HeaderCarrier): Future[PbikSession] =
+  def storeEiLPerson(value: PbikExclusionPerson)(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.EiLPerson, value)
 
-  def storeCurrentExclusions(value: List[EiLPerson])(implicit hc: HeaderCarrier): Future[PbikSession] =
+  def storeCurrentExclusions(value: PbikExclusions)(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.CurrentExclusions, value)
 
   def storeCYRegisteredBiks(value: List[Bik])(implicit hc: HeaderCarrier): Future[PbikSession] =
@@ -106,10 +107,11 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
       key match {
         case CacheKeys.RegistrationList  => session.copy(registrations = Some(value.asInstanceOf[RegistrationList]))
         case CacheKeys.BikRemoved        => session.copy(bikRemoved = Some(value.asInstanceOf[RegistrationItem]))
-        case CacheKeys.ListOfMatches     => session.copy(listOfMatches = Some(value.asInstanceOf[List[EiLPerson]]))
-        case CacheKeys.EiLPerson         => session.copy(eiLPerson = Some(value.asInstanceOf[EiLPerson]))
+        case CacheKeys.ListOfMatches     =>
+          session.copy(listOfMatches = Some(value.asInstanceOf[List[PbikExclusionPerson]]))
+        case CacheKeys.EiLPerson         => session.copy(eiLPerson = Some(value.asInstanceOf[PbikExclusionPerson]))
         case CacheKeys.CurrentExclusions =>
-          session.copy(currentExclusions = Some(value.asInstanceOf[List[EiLPerson]]))
+          session.copy(currentExclusions = Some(value.asInstanceOf[PbikExclusions]))
         case CacheKeys.CYRegisteredBiks  => session.copy(cyRegisteredBiks = Some(value.asInstanceOf[List[Bik]]))
         case CacheKeys.NYRegisteredBiks  => session.copy(nyRegisteredBiks = Some(value.asInstanceOf[List[Bik]]))
         case _                           =>

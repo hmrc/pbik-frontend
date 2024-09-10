@@ -19,6 +19,7 @@ package services
 import controllers.FakePBIKApplication
 import models._
 import models.cache.MissingSessionIdException
+import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
 import models.v1.{IabdType, PbikAction}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
@@ -67,7 +68,10 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
     }
 
     "cache a list of matches" in {
-      val listOfMatches = List(EiLPerson("AA111111A", "John", None, "Smith", None, None, None, None))
+      val listOfMatches =
+        List(
+          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+        )
       val session       = pbikSession.copy(listOfMatches = Some(listOfMatches))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -77,7 +81,8 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
     }
 
     "cache an EiLPerson" in {
-      val eiLPerson = EiLPerson("AA111111A", "John", None, "Smith", None, None, None, None)
+      val eiLPerson =
+        PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
       val session   = pbikSession.copy(eiLPerson = Some(eiLPerson))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -87,7 +92,11 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
     }
 
     "cache the current exclusions" in {
-      val currentExclusions = List(EiLPerson("AA111111A", "John", None, "Smith", None, None, None, None))
+      val currentExclusions = PbikExclusions(
+        List(
+          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+        )
+      )
       val session           = pbikSession.copy(currentExclusions = Some(currentExclusions))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -99,7 +108,11 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
     "return MissingSessionIdException when caching the current exclusions with session ID absent in header carrier" in {
       implicit val hc: HeaderCarrier = HeaderCarrier()
 
-      val currentExclusions = List(EiLPerson("AA111111A", "John", None, "Smith", None, None, None, None))
+      val currentExclusions = PbikExclusions(
+        List(
+          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+        )
+      )
 
       intercept[MissingSessionIdException] {
         await(sessionService.storeCurrentExclusions(currentExclusions))(timeout)
