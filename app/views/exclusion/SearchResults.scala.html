@@ -77,12 +77,12 @@
                          <div class="govuk-radios">
                          @for(index <- 0 until listOfMatches.length) {
                              <div class="govuk-radios__item">
-                                 <input class="govuk-radios__input" id="employee-radio-@index" type="radio" aria-describedby="employee-hint-@index" name="individualNino" value='@listOfMatches(index).nationalInsuranceNumber'>
+                                 <input class="govuk-radios__input" id="employee-radio-@index" type="radio" aria-describedby="employee-hint-@index" name="individualNino" value='@listOfMatches(index).identifier'>
                                  <label class="govuk-label govuk-radios__label govuk-label--s" for="employee-radio-@index">
                                      @listOfMatches(index).firstForename @listOfMatches(index).surname
                                  </label>
                                  <span id="employee-hint-@index" class="govuk-hint govuk-radios__hint">
-                                     @messages("Service.field.nino"): @listOfMatches(index).nationalInsuranceNumber <br>
+                                     @messages("Service.field.nino"): @listOfMatches(index).identifier <br>
                                      @messages("Service.field.worksnumber"): @listOfMatches(index).worksPayrollNumber
                                  </span>
                              </div>
@@ -117,7 +117,7 @@
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">@messages("Service.field.nino.2lines") @messages("Service.nino.lastletter")</th>
-                        <td class="govuk-table__cell" id="nino">@listOfMatches.head.nationalInsuranceNumber</td>
+                        <td class="govuk-table__cell" id="nino">@listOfMatches.head.identifier</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">@messages("Service.field.worksnumber")</th>

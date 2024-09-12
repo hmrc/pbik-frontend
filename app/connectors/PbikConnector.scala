@@ -36,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuration)(implicit ec: ExecutionContext)
     extends Logging {
 
-  private val maxEmptyBodyLength: Int                                            = 4
   private val baseUrl: String                                                    =
     s"${configuration.get[Service]("microservice.services.pbik")}/epaye"
   private def getRegisteredBiksURL(empRef: EmpRef, year: Int)                    =

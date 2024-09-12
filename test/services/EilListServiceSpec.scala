@@ -71,13 +71,11 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
     }
 
     "return a subset of List(EiL) search results - already excluded" in {
-      val eilService                                    = mockEiLListService
-      val exclusionPerson1                              =
-        PbikExclusionPerson("QQ123456", "Humpty", None, "Dumpty", "123", "01/01/1980", "01/01/1980", 456, 345, 22)
-      val exclusionPerson2                              =
-        PbikExclusionPerson("QQ123456", "Humpty", None, "Dumpty", "789", "01/01/1980", "01/01/1980", 456, 345, 22)
-      val searchResultsEiL: List[PbikExclusionPerson]   = List(exclusionPerson1, exclusionPerson2)
-      val alreadyExcludedEiL: List[PbikExclusionPerson] = List(exclusionPerson1)
+      val eilService         = mockEiLListService
+      val exclusionPerson1   = PbikExclusionPerson("QQ123456", "Humpty", None, "Dumpty", "123", 22)
+      val exclusionPerson2   = PbikExclusionPerson("QQ123456", "Humpty", None, "Dumpty", "789", 22)
+      val searchResultsEiL   = List(exclusionPerson1, exclusionPerson2)
+      val alreadyExcludedEiL = List(exclusionPerson1)
 
       val result = eilService.searchResultsRemoveAlreadyExcluded(alreadyExcludedEiL, searchResultsEiL)
 

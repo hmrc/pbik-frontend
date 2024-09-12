@@ -142,8 +142,7 @@ trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   def taxYearRange: TaxYearRange = TaxYearRange(year2018, year2019, year2020)
 
-  val exclusionPerson: PbikExclusionPerson =
-    PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+  val exclusionPerson: PbikExclusionPerson = PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
 
 }
 

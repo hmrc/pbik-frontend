@@ -20,31 +20,27 @@ import models.v1.IabdType.IabdType
 import play.api.libs.json.{Json, OFormat}
 
 case class PbikExclusionPerson(
-  nationalInsuranceNumber: String,
+  identifier: String,
   firstForename: String,
   secondForename: Option[String],
   surname: String,
   worksPayrollNumber: String,
-  exclusionStartDate: String,
-  exclusionEndDate: String,
-  payrolledBenefitSequenceNumber: Int,
-  payrolledExclusionSequenceNumber: Int,
   optimisticLock: Int
 ) {
 
   override def equals(obj: Any): Boolean =
     obj.isInstanceOf[PbikExclusionPerson] && obj
       .asInstanceOf[PbikExclusionPerson]
-      .nationalInsuranceNumber == nationalInsuranceNumber
+      .identifier == identifier
 
-  override def hashCode: Int = nationalInsuranceNumber.hashCode
+  override def hashCode: Int = identifier.hashCode
 
   def fullName: String = s"$firstForename $surname"
 
   def withBenefit(iabdType: IabdType): PbikExclusionPersonWithBenefit =
     PbikExclusionPersonWithBenefit(
       iabdType,
-      nationalInsuranceNumber,
+      identifier,
       firstForename,
       secondForename,
       surname

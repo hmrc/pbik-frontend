@@ -16,7 +16,6 @@
 
 package models.v1
 
-import IabdType.IabdType
 import models.v1
 import play.api.libs.json.{Format, Json}
 

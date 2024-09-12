@@ -63,16 +63,16 @@ class SearchResultViewSpec extends PBIKViewSpec {
         )(organisationRequest)
 
       behave like pageWithIdAndText(s"${exclusionPerson.fullName}", "name")
-      behave like pageWithIdAndText(exclusionPerson.nationalInsuranceNumber, "nino")
+      behave like pageWithIdAndText(exclusionPerson.identifier, "nino")
       behave like pageWithIdAndText(exclusionPerson.worksPayrollNumber, "wpn")
     }
 
     "check the individual nino search page for multiple active matches" should {
       val listOfActives =
         List(
-          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22),
-          PbikExclusionPerson("AB123456D", "Jane", Some("B"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22),
-          PbikExclusionPerson("AB123456E", "Jora", Some("C"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22),
+          PbikExclusionPerson("AB123456D", "Jane", Some("B"), "Doe", "12345", 22),
+          PbikExclusionPerson("AB123456E", "Jora", Some("C"), "Doe", "12345", 22)
         )
 
       implicit def view: Html = searchResultsView(
@@ -122,16 +122,16 @@ class SearchResultViewSpec extends PBIKViewSpec {
         )(agentRequest)
 
       behave like pageWithIdAndText(s"${exclusionPerson.fullName}", "name")
-      behave like pageWithIdAndText(exclusionPerson.nationalInsuranceNumber, "nino")
+      behave like pageWithIdAndText(exclusionPerson.identifier, "nino")
       behave like pageWithIdAndText(exclusionPerson.worksPayrollNumber, "wpn")
     }
 
     "check the individual nino search page for multiple active matches" should {
       val listOfActives =
         List(
-          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22),
-          PbikExclusionPerson("AB123456D", "Jane", Some("B"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22),
-          PbikExclusionPerson("AB123456E", "Jora", Some("C"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22),
+          PbikExclusionPerson("AB123456D", "Jane", Some("B"), "Doe", "12345", 22),
+          PbikExclusionPerson("AB123456E", "Jora", Some("C"), "Doe", "12345", 22)
         )
 
       implicit def view: Html = searchResultsView(

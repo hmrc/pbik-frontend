@@ -114,16 +114,16 @@
 //    bikRemoved = None,
 //    listOfMatches = Some(
 //      List(
-//        PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+//        PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
 //      )
 //    ),
 //    eiLPerson = Some(
-//      PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+//      PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
 //    ),
 //    currentExclusions = Some(
 //      PbikExclusions(
 //        List(
-//          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+//          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
 //        )
 //      )
 //    ),

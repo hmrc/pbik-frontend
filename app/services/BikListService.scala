@@ -46,10 +46,7 @@ class BikListService @Inject() (
       .getRegisteredBiks(request.empRef, controllersReferenceData.yearRange.cy)
       .map(response => BikResponse(response.headers, response.bikList))
 
-  def registeredBenefitsList(year: Int, empRef: EmpRef)(implicit
-    hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]
-  ): Future[List[Bik]] =
+  def registeredBenefitsList(year: Int, empRef: EmpRef)(implicit hc: HeaderCarrier): Future[List[Bik]] =
     tierConnector.getRegisteredBiks(empRef, year).map(_.bikList.toList)
 
   //TODO need to refactor this method to propagate up Either or other error handling mechanism to the controller
