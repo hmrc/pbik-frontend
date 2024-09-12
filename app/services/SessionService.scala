@@ -41,8 +41,6 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
     RegistrationList(None, List.empty[RegistrationItem], None)
   )
   private val cleanBikRemoved: Option[RegistrationItem]       = Some(RegistrationItem("", active = false, enabled = false))
-  private val cleanEiLPersonList: Option[List[EiLPerson]]     = Some(List.empty[EiLPerson])
-  private val cleanEiLPerson: Option[EiLPerson]               = Some(EiLPerson("", "", None, "", None, None, None, None))
   private val cleanBikList: Option[List[Bik]]                 = Some(List.empty[Bik])
   private def cleanSession(sessionId: String): PbikSession    =
     PbikSession(

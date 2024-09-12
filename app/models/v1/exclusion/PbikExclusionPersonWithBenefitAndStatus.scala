@@ -42,10 +42,6 @@ case class PbikExclusionPersonWithBenefitAndStatus(
       secondForename,
       surname,
       worksPayrollNumber,
-      "",
-      "",
-      0,
-      0,
       0
     )
 }
@@ -75,7 +71,7 @@ object PbikExclusionPersonWithBenefitAndStatus {
   ): PbikExclusionPersonWithBenefitAndStatus =
     PbikExclusionPersonWithBenefitAndStatus(
       iabdType,
-      exclusion.nationalInsuranceNumber,
+      exclusion.identifier,
       exclusion.firstForename,
       exclusion.secondForename,
       exclusion.surname,

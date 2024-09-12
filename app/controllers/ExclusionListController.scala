@@ -20,10 +20,9 @@ import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import models.v1.IabdType
-import models.v1.exclusion.{PbikExclusionPerson, PbikExclusionPersonWithBenefit, PbikExclusionPersonWithBenefitAndStatus, PbikExclusionPersonWithBenefitRequest, PersonalEmploymentStatus, UpdateExclusionPersonForABenefitRequest}
+import models.v1.exclusion._
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.Codec.utf_8
 import play.api.mvc._
 import play.api.{Configuration, Logging}
 import services.{BikListService, EiLListService, SessionService}
@@ -410,21 +409,6 @@ class ExclusionListController @Inject() (
       }
     }
 
-  private def createExcludedPerson(individualsDetails: EiLPerson): Option[EiLPerson] =
-    Some(
-      EiLPerson(
-        individualsDetails.nino,
-        individualsDetails.firstForename,
-        individualsDetails.secondForename,
-        individualsDetails.surname,
-        individualsDetails.worksPayrollNumber,
-        individualsDetails.dateOfBirth,
-        individualsDetails.gender,
-        Some(ControllersReferenceDataCodes.EXCLUSION_ADD_STATUS),
-        individualsDetails.perOptLock
-      )
-    )
-
   def updateMultipleExclusions(year: String, iabdString: String, formType: String): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       if (exclusionsAllowed) {
@@ -447,7 +431,7 @@ class ExclusionListController @Inject() (
                 ),
               values => {
                 val individualsDetails: Option[PbikExclusionPerson] =
-                  session.get.listOfMatches.get.find(person => person.nationalInsuranceNumber == values.nino)
+                  session.get.listOfMatches.get.find(person => person.identifier == values.nino)
                 validateRequest(year, iabdString).flatMap { _ =>
                   commitExclusion(
                     year,
@@ -569,7 +553,7 @@ class ExclusionListController @Inject() (
       .map { response =>
         response.status match {
           case OK               =>
-            auditExclusion(exclusion = true, yearInt, excludedIndividual.get.nationalInsuranceNumber, iabdString)
+            auditExclusion(exclusion = true, yearInt, excludedIndividual.get.identifier, iabdString)
             Redirect(
               routes.ExclusionListController
                 .showExclusionConfirmation(year, iabdString)
@@ -612,7 +596,7 @@ class ExclusionListController @Inject() (
       if (exclusionsAllowed) {
         val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
           val selectedPerson: PbikExclusionPerson = session.get.currentExclusions.get.getPBIKExclusionList
-            .filter(person => person.nationalInsuranceNumber == nino)
+            .filter(person => person.identifier == nino)
             .head
           sessionService.storeEiLPerson(selectedPerson).map { _ =>
             Redirect(routes.ExclusionListController.showRemovalConfirmation(year, iabdString))

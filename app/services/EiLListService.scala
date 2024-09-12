@@ -18,8 +18,8 @@ package services
 
 import config.PbikAppConfig
 import connectors.PbikConnector
+import models.AuthenticatedRequest
 import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
-import models.{AuthenticatedRequest, EiLPerson}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Exceptions.GenericServerErrorException
 

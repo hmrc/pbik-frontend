@@ -54,7 +54,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
   }
 
   private val exclusionPerson: PbikExclusionPerson =
-    PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+    PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
 
   private val eiLPerson: EiLPerson =
     EiLPerson(

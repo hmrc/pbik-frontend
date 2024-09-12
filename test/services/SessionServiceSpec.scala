@@ -70,7 +70,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
     "cache a list of matches" in {
       val listOfMatches =
         List(
-          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
         )
       val session       = pbikSession.copy(listOfMatches = Some(listOfMatches))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
@@ -82,7 +82,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
     "cache an EiLPerson" in {
       val eiLPerson =
-        PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+        PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
       val session   = pbikSession.copy(eiLPerson = Some(eiLPerson))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -94,7 +94,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
     "cache the current exclusions" in {
       val currentExclusions = PbikExclusions(
         List(
-          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
         )
       )
       val session           = pbikSession.copy(currentExclusions = Some(currentExclusions))
@@ -110,7 +110,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
       val currentExclusions = PbikExclusions(
         List(
-          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", "2022-06-27", "2022-06-27", 456, 345, 22)
+          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
         )
       )
 
