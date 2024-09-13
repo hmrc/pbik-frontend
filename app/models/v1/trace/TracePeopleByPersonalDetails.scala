@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package models.v1.exclusion
+package models.v1.trace
 
-import play.api.libs.json.{Format, Json}
+import models.v1.exclusion.Gender.Gender
+import play.api.libs.json.{Json, OFormat}
 
-object PersonalEmploymentStatus extends Enumeration {
+case class TracePeopleByPersonalDetails(
+  firstForename: Option[String],
+  secondForename: Option[String],
+  surname: String,
+  dateOfBirth: String,
+  gender: Gender
+)
 
-  type PersonalEmploymentStatus = Value
-
-  val Query: PersonalEmploymentStatus.Value = Value(0, "PBIK EXCLUSION LIST QUERY")
-  val Add: PersonalEmploymentStatus.Value   = Value(1, "PBIK EXCLUSION LIST ADD")
-
-  implicit val formats: Format[PersonalEmploymentStatus] = Json.formatEnum(this)
-
-  def fromInt(value: Option[Int]): PersonalEmploymentStatus =
-    value.getOrElse(0) match {
-      case 10 => Query
-      case _  => Add
-    }
+object TracePeopleByPersonalDetails {
+  implicit val formats: OFormat[TracePeopleByPersonalDetails] = Json.format[TracePeopleByPersonalDetails]
 }

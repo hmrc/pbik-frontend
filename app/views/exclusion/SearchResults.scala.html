@@ -34,7 +34,7 @@
         taxYearRange: TaxYearRange,
         year: String,
         iabdString: String,
-        listOfMatches: List[PbikExclusionPerson],
+        listOfMatches: List[TracePerson],
         listOfMatchesForm: Form[ExclusionNino],
         formType: String
 )(implicit request: Request[_], messages: Messages)
@@ -79,11 +79,11 @@
                              <div class="govuk-radios__item">
                                  <input class="govuk-radios__input" id="employee-radio-@index" type="radio" aria-describedby="employee-hint-@index" name="individualNino" value='@listOfMatches(index).identifier'>
                                  <label class="govuk-label govuk-radios__label govuk-label--s" for="employee-radio-@index">
-                                     @listOfMatches(index).firstForename @listOfMatches(index).surname
+                                     @listOfMatches(index).fullName
                                  </label>
                                  <span id="employee-hint-@index" class="govuk-hint govuk-radios__hint">
                                      @messages("Service.field.nino"): @listOfMatches(index).identifier <br>
-                                     @messages("Service.field.worksnumber"): @listOfMatches(index).worksPayrollNumber
+                                     @messages("Service.field.worksnumber"): @listOfMatches(index).getWorksPayrollNumber
                                  </span>
                              </div>
                          }
@@ -113,7 +113,7 @@
                     <tbody class="govuk-table__body">
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">@messages("Service.field.name")</th>
-                        <td class="govuk-table__cell" id="name">@listOfMatches.head.firstForename @listOfMatches.head.surname</td>
+                        <td class="govuk-table__cell" id="name">@listOfMatches.head.fullName</td>
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">@messages("Service.field.nino.2lines") @messages("Service.nino.lastletter")</th>
@@ -121,7 +121,7 @@
                     </tr>
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">@messages("Service.field.worksnumber")</th>
-                        <td class="govuk-table__cell" id="wpn">@listOfMatches.head.worksPayrollNumber</td>
+                        <td class="govuk-table__cell" id="wpn">@listOfMatches.head.getWorksPayrollNumber</td>
                     </tr>
                     </tbody>
                 </table>

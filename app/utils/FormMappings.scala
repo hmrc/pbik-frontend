@@ -159,6 +159,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
   private def stripTrailingNinoCharacterForNPS(nino: String): String =
     ninoTrimmedRegex.r.findFirstIn(nino).getOrElse("").mkString
 
+  //TODO remove EiLPerson and make small form smaller without hidden fields
   def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[EiLPerson] =
     Form(
       mapping(

@@ -31,7 +31,7 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
   implicit val appConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
 
   implicit def view()(implicit request: AuthenticatedRequest[_]): Html =
-    whatNextExclusionView(taxYearRange, "cy", "vans", exclusionPerson)
+    whatNextExclusionView(taxYearRange, "cy", "vans", tracePerson)
 
   "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)

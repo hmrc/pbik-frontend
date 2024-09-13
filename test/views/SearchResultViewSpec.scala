@@ -18,7 +18,7 @@ package views
 
 import models._
 import models.v1.IabdType
-import models.v1.exclusion.PbikExclusionPerson
+import models.v1.trace.TracePerson
 import play.api.data.Form
 import play.twirl.api.Html
 import utils.FormMappings
@@ -30,11 +30,10 @@ class SearchResultViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings       = app.injector.instanceOf[FormMappings]
   val searchResultsView: SearchResults = app.injector.instanceOf[SearchResults]
 
-  private val status: Int            = 10
   private val (iabdType, iabdString) = (IabdType.MedicalInsurance.id.toString, "medical")
 
   def viewWithForm(form: Form[ExclusionNino])(implicit request: AuthenticatedRequest[_]): Html =
-    searchResultsView(taxYearRange, "cyp1", iabdString, List(exclusionPerson), form, "")
+    searchResultsView(taxYearRange, "cyp1", iabdString, List(tracePerson), form, "")
 
   "organisation" must {
     "exclusionNinoOrNoNinoForm" should {
@@ -62,17 +61,17 @@ class SearchResultViewSpec extends PBIKViewSpec {
           )
         )(organisationRequest)
 
-      behave like pageWithIdAndText(s"${exclusionPerson.fullName}", "name")
-      behave like pageWithIdAndText(exclusionPerson.identifier, "nino")
-      behave like pageWithIdAndText(exclusionPerson.worksPayrollNumber, "wpn")
+      behave like pageWithIdAndText(s"${tracePerson.fullName}", "name")
+      behave like pageWithIdAndText(tracePerson.identifier, "nino")
+      behave like pageWithIdAndText(tracePerson.getWorksPayrollNumber, "wpn")
     }
 
     "check the individual nino search page for multiple active matches" should {
       val listOfActives =
         List(
-          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22),
-          PbikExclusionPerson("AB123456D", "Jane", Some("B"), "Doe", "12345", 22),
-          PbikExclusionPerson("AB123456E", "Jora", Some("C"), "Doe", "12345", 22)
+          TracePerson("AB123456C", "John", Some("A"), "Doe", None, 22),
+          TracePerson("AB123456D", "Jane", Some("B"), "Doe", Some("12345"), 22),
+          TracePerson("AB123456E", "Jora", Some("C"), "Doe", Some("12345"), 22)
         )
 
       implicit def view: Html = searchResultsView(
@@ -121,17 +120,17 @@ class SearchResultViewSpec extends PBIKViewSpec {
           )
         )(agentRequest)
 
-      behave like pageWithIdAndText(s"${exclusionPerson.fullName}", "name")
-      behave like pageWithIdAndText(exclusionPerson.identifier, "nino")
-      behave like pageWithIdAndText(exclusionPerson.worksPayrollNumber, "wpn")
+      behave like pageWithIdAndText(s"${tracePerson.fullName}", "name")
+      behave like pageWithIdAndText(tracePerson.identifier, "nino")
+      behave like pageWithIdAndText(tracePerson.getWorksPayrollNumber, "wpn")
     }
 
     "check the individual nino search page for multiple active matches" should {
       val listOfActives =
         List(
-          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22),
-          PbikExclusionPerson("AB123456D", "Jane", Some("B"), "Doe", "12345", 22),
-          PbikExclusionPerson("AB123456E", "Jora", Some("C"), "Doe", "12345", 22)
+          TracePerson("AB123456C", "John", Some("A"), "Doe", None, 22),
+          TracePerson("AB123456D", "Jane", Some("B"), "Doe", None, 22),
+          TracePerson("AB123456E", "Jora", Some("C"), "Doe", Some("12345"), 22)
         )
 
       implicit def view: Html = searchResultsView(

@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package models.v1.exclusion
+package models.v1.trace
 
-import models.v1.trace.TracePerson
 import play.api.libs.json.{Json, OFormat}
 
-case class PbikExclusions(getPBIKExclusionList: List[PbikExclusionPerson]) {
+case class TracePeopleByPersonalDetailsResponse(
+  updatedEmployerOptimisticLock: Int,
+  pbikExclusionList: List[TracePerson]
+)
 
-  def mapToTracePerson: List[TracePerson] = getPBIKExclusionList.map { pbikExclusionPerson =>
-    TracePerson(
-      pbikExclusionPerson.identifier,
-      pbikExclusionPerson.firstForename,
-      pbikExclusionPerson.secondForename,
-      pbikExclusionPerson.surname,
-      Some(pbikExclusionPerson.worksPayrollNumber),
-      pbikExclusionPerson.optimisticLock
-    )
-  }
-}
-
-object PbikExclusions {
-  implicit val formats: OFormat[PbikExclusions] = Json.format[PbikExclusions]
+object TracePeopleByPersonalDetailsResponse {
+  implicit val formats: OFormat[TracePeopleByPersonalDetailsResponse] =
+    Json.format[TracePeopleByPersonalDetailsResponse]
 }

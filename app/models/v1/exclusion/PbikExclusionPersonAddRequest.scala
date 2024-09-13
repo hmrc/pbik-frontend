@@ -16,4 +16,19 @@
 
 package models.v1.exclusion
 
-case class ExclusionResponse(status: Int, response: UpdateExclusionPersonForABenefitResponse)
+import models.v1.IabdType.IabdType
+import models.v1.exclusion.Gender.Gender
+import play.api.libs.json.{Json, OFormat}
+
+case class PbikExclusionPersonAddRequest(
+  iabdType: IabdType,
+  identifier: String,
+  firstForename: String,
+  secondForename: Option[String],
+  surname: String
+)
+
+object PbikExclusionPersonAddRequest {
+  implicit val formats: OFormat[PbikExclusionPersonAddRequest] =
+    Json.format[PbikExclusionPersonAddRequest]
+}

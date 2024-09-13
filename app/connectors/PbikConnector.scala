@@ -19,7 +19,8 @@ package connectors
 import config.Service
 import models._
 import models.v1._
-import models.v1.exclusion.{ExclusionResponse, PbikExclusionPersonWithBenefitRequest, PbikExclusions, UpdateExclusionPersonForABenefitRequest, UpdateExclusionPersonForABenefitResponse}
+import models.v1.exclusion.{PbikExclusionPersonWithBenefitRequest, PbikExclusions, UpdateExclusionPersonForABenefitRequest}
+import models.v1.trace.{TracePeopleByPersonalDetailsRequest, TracePeopleByPersonalDetailsResponse}
 import play.api.http.Status.{BAD_REQUEST, OK}
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.mvc.Request
@@ -46,10 +47,12 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
     s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/$iabdString/exclusion"
   private def getExcludedPersonsURL(empRef: EmpRef, year: Int)                   =
     s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/exclusion/update"
-  private def getRemoveExclusionURL(empRef: EmpRef, year: Int)                   =
-    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/exclusion/remove"
+  private def getRemoveExclusionURL(empRef: EmpRef, year: Int, iabd: String)     =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/$iabd/exclusion/remove"
   private def getUpdateBenefitURL(year: Int, suffix: String, empRef: EmpRef)     =
     s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/updatebenefittypes/$suffix"
+  private def postTraceByPersonalDetailsURL(year: Int, empRef: EmpRef)           =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/trace"
 
   def getRegisteredBiks(
     empRef: EmpRef,
@@ -143,18 +146,13 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
   def excludeEiLPersonFromBik(empRef: EmpRef, year: Int, body: UpdateExclusionPersonForABenefitRequest)(implicit
     hc: HeaderCarrier,
     request: Request[_]
-  ): Future[ExclusionResponse] =
+  ): Future[Int] =
     client
       .post(url"${getExcludedPersonsURL(empRef, year)}")
       .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
       .withBody(Json.toJson(body))
       .execute[HttpResponse]
-      .map { response =>
-        ExclusionResponse(
-          response.status,
-          validateResponses("excludeEiLPersonFromBik")(response).json.as[UpdateExclusionPersonForABenefitResponse]
-        )
-      }
+      .map(_.status)
 
   def removeEiLPersonExclusionFromBik(
     iabdString: String,
@@ -165,9 +163,10 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
     hc: HeaderCarrier,
     request: Request[_]
   ): Future[Int] =
-    //TODO build correct body
     client
-      .delete(url"${getRemoveExclusionURL(empRef, year)}")
+      .delete(
+        url"${getRemoveExclusionURL(empRef, year, individualToRemove.deletePBIKExclusionDetails.iabdType.encodedName)}"
+      )
       .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
       .withBody(Json.toJson(individualToRemove))
       .execute[HttpResponse]
@@ -200,6 +199,45 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
         lockValue
       }
   }
+
+  def findPersonByPersonalDetails(empRef: EmpRef, year: Int, body: TracePeopleByPersonalDetailsRequest)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[NPSErrors, TracePeopleByPersonalDetailsResponse]] =
+    client
+      .post(url"${postTraceByPersonalDetailsURL(year, empRef)}")
+      .withBody(Json.toJson(body))
+      .execute[HttpResponse]
+      .flatMap { response =>
+        response.status match {
+          case OK          =>
+            response.json.validate[TracePeopleByPersonalDetailsResponse] match {
+              case JsSuccess(value, _) => Future.successful(Right(value))
+              case JsError(errors)     =>
+                logger.error(
+                  s"[PbikConnector][findPersonByPersonalDetails] Failed to parse TracePeopleByPersonalDetailsResponse: $errors"
+                )
+                Future.failed(
+                  new GenericServerErrorException("Failed to get excluded persons, status: " + response.status)
+                )
+            }
+          case BAD_REQUEST =>
+            logger.error(
+              s"[PbikConnector][getAllExcludedEiLPersonForBik] a pbik error code was returned. Error: ${response.body}"
+            )
+            response.json.validate[NPSErrors] match {
+              case JsSuccess(value, _) => Future.successful(Left(value))
+              case JsError(errors)     =>
+                logger.error(s"[PbikConnector][findPersonByPersonalDetails] Failed to parse NPSErrors: $errors")
+                Future.failed(
+                  new GenericServerErrorException("Failed to get excluded persons, status: " + response.status)
+                )
+            }
+          case _           =>
+            Future.failed(
+              new GenericServerErrorException("Failed to get available EilPerson, status: " + response.status)
+            )
+        }
+      }
 
   private def createOrCheckForRequiredHeaders(implicit request: Request[_]): Map[String, String] = {
     val etagFromSession = request.session.get(HeaderTags.ETAG).getOrElse(HeaderTags.ETAG_DEFAULT_VALUE)
