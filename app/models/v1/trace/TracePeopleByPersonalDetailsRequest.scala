@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package models.v1.exclusion
+package models.v1.trace
 
 import play.api.libs.json.{Json, OFormat}
 
-case class UpdateExclusionPersonForABenefitResponse(
-  updatedOptimisticLock: Int,
-  putPBIKExclusionList: List[PbikExclusionPersonWithBenefitAndStatus]
-)
+case class TracePeopleByPersonalDetailsRequest(employeeTraceDetails: TracePeopleByPersonalDetails)
 
-object UpdateExclusionPersonForABenefitResponse {
-  implicit val formats: OFormat[UpdateExclusionPersonForABenefitResponse] =
-    Json.format[UpdateExclusionPersonForABenefitResponse]
+object TracePeopleByPersonalDetailsRequest {
+  implicit val formats: OFormat[TracePeopleByPersonalDetailsRequest] = Json.format[TracePeopleByPersonalDetailsRequest]
 }

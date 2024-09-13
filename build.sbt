@@ -21,6 +21,7 @@ lazy val microservice = Project("pbik-frontend", file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "models.v1._",
       "models.v1.exclusion._",
+      "models.v1.trace._",
       "models.agent._",
       "models.auth._",
       "models.cache._"

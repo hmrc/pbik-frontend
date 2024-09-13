@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 case class UpdateExclusionPersonForABenefitRequest(
   currentOptimisticLock: Int,
-  putPBIKExclusionDetails: PbikExclusionPersonWithBenefitAndStatus
+  putPBIKExclusionDetails: PbikExclusionPersonAddRequest
 )
 
 object UpdateExclusionPersonForABenefitRequest {

@@ -30,7 +30,7 @@
     taxYearRange:TaxYearRange,
     year:String,
     iabdString:String,
-    person:PbikExclusionPerson
+    person:TracePerson
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
@@ -86,7 +86,7 @@
                 @messages("Service.field.worksnumber")
             </dt>
             <dd class="govuk-summary-list__value">
-                <p class="govuk-body">@person.worksPayrollNumber</p>
+                <p class="govuk-body">@person.getWorksPayrollNumber</p>
             </dd>
         </div>
         @if(request.isAgent) {

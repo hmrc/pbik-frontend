@@ -20,6 +20,7 @@ import controllers.FakePBIKApplication
 import models._
 import models.cache.MissingSessionIdException
 import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
+import models.v1.trace.TracePerson
 import models.v1.{IabdType, PbikAction}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
@@ -70,7 +71,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
     "cache a list of matches" in {
       val listOfMatches =
         List(
-          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
+          TracePerson("AB123456C", "John", Some("A"), "Doe", None, 22)
         )
       val session       = pbikSession.copy(listOfMatches = Some(listOfMatches))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))

@@ -19,6 +19,7 @@ package services
 import models._
 import models.cache.MissingSessionIdException
 import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
+import models.v1.trace.TracePerson
 import play.api.Logging
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -75,7 +76,7 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
   def storeBikRemoved(value: RegistrationItem)(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.BikRemoved, value)
 
-  def storeListOfMatches(value: List[PbikExclusionPerson])(implicit hc: HeaderCarrier): Future[PbikSession] =
+  def storeListOfMatches(value: List[TracePerson])(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.ListOfMatches, value)
 
   def storeEiLPerson(value: PbikExclusionPerson)(implicit hc: HeaderCarrier): Future[PbikSession] =
@@ -106,7 +107,7 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
         case CacheKeys.RegistrationList  => session.copy(registrations = Some(value.asInstanceOf[RegistrationList]))
         case CacheKeys.BikRemoved        => session.copy(bikRemoved = Some(value.asInstanceOf[RegistrationItem]))
         case CacheKeys.ListOfMatches     =>
-          session.copy(listOfMatches = Some(value.asInstanceOf[List[PbikExclusionPerson]]))
+          session.copy(listOfMatches = Some(value.asInstanceOf[List[TracePerson]]))
         case CacheKeys.EiLPerson         => session.copy(eiLPerson = Some(value.asInstanceOf[PbikExclusionPerson]))
         case CacheKeys.CurrentExclusions =>
           session.copy(currentExclusions = Some(value.asInstanceOf[PbikExclusions]))

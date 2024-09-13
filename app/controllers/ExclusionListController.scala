@@ -21,6 +21,7 @@ import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import models.v1.IabdType
 import models.v1.exclusion._
+import models.v1.trace.{TracePeopleByPersonalDetails, TracePeopleByPersonalDetailsRequest, TracePerson}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc._
@@ -276,17 +277,29 @@ class ExclusionListController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors => searchResultsHandleFormErrors(isCurrentTaxYear, formType, iabdString, formWithErrors),
-            validModel => {
-              val requestBody = UpdateExclusionPersonForABenefitRequest(
-                validModel.perOptLock,
-                PbikExclusionPersonWithBenefitAndStatus(IabdType(Bik.asNPSTypeValue(iabdString).toInt), validModel)
-              )
-              for {
-                year   <- validateRequest(isCurrentTaxYear, iabdString)
-                result <- tierConnector.excludeEiLPersonFromBik(request.empRef, year, requestBody)
-                _      <- sessionService.storeListOfMatches(result.response.putPBIKExclusionList.map(_.toExclusionPerson))
-              } yield Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdString, formType))
-            }
+            validModel =>
+              formType match {
+                case ControllersReferenceDataCodes.FORM_TYPE_NINO   => ??? // TODO add logic
+                case ControllersReferenceDataCodes.FORM_TYPE_NONINO =>
+                  val requestBody = TracePeopleByPersonalDetailsRequest(
+                    TracePeopleByPersonalDetails(
+                      Some(validModel.firstForename),
+                      validModel.secondForename,
+                      validModel.surname,
+                      validModel.dateOfBirth.get,
+                      Gender.fromString(validModel.gender)
+                    )
+                  )
+
+                  validateRequest(isCurrentTaxYear, iabdString).flatMap { year =>
+                    tierConnector.findPersonByPersonalDetails(request.empRef, year, requestBody).map {
+                      case Left(value)  => ??? //TODO add return error page view with right error code inside as param
+                      case Right(value) =>
+                        sessionService.storeListOfMatches(value.pbikExclusionList)
+                        Redirect(routes.ExclusionListController.showResults(isCurrentTaxYear, iabdString, formType))
+                    }
+                  }
+              }
           )
         controllersReferenceData.responseErrorHandler(futureResult)
       } else {
@@ -314,20 +327,20 @@ class ExclusionListController @Inject() (
           year,
           formType,
           iabdString,
-          session.currentExclusions.get.getPBIKExclusionList
+          session.currentExclusions.get.mapToTracePerson
         )
       }
       controllersReferenceData.responseErrorHandler(resultFuture)
     }
 
   def searchResultsHandleValidResult(
-    listOfMatches: List[PbikExclusionPerson],
+    listOfMatches: List[TracePerson],
     isCurrentTaxYear: String,
     formType: String,
     iabdString: String,
-    currentExclusions: List[PbikExclusionPerson]
+    currentExclusions: List[TracePerson]
   )(implicit request: AuthenticatedRequest[_]): Result = {
-    val uniqueListOfMatches: List[PbikExclusionPerson] =
+    val uniqueListOfMatches: List[TracePerson] =
       eiLListService.searchResultsRemoveAlreadyExcluded(currentExclusions, listOfMatches)
     uniqueListOfMatches.size match {
       case 0 =>
@@ -430,7 +443,7 @@ class ExclusionListController @Inject() (
                   )
                 ),
               values => {
-                val individualsDetails: Option[PbikExclusionPerson] =
+                val individualsDetails: Option[TracePerson] =
                   session.get.listOfMatches.get.find(person => person.identifier == values.nino)
                 validateRequest(year, iabdString).flatMap { _ =>
                   commitExclusion(
@@ -457,13 +470,13 @@ class ExclusionListController @Inject() (
       }
     }
 
-  private def getExcludedPerson(pbikSession: Option[PbikSession]): Option[PbikExclusionPerson] =
+  private def getExcludedPerson(pbikSession: Option[PbikSession]): Option[TracePerson] =
     pbikSession.flatMap { session =>
       (session.currentExclusions, session.listOfMatches) match {
         case (Some(currentExclusions), Some(listOfMatches)) =>
           Some(
             eiLListService
-              .searchResultsRemoveAlreadyExcluded(currentExclusions.getPBIKExclusionList, listOfMatches)
+              .searchResultsRemoveAlreadyExcluded(currentExclusions.mapToTracePerson, listOfMatches)
               .head
           )
         case _                                              => None
@@ -533,45 +546,46 @@ class ExclusionListController @Inject() (
     year: String,
     iabdString: String,
     taxYearRange: TaxYearRange,
-    excludedIndividual: Option[PbikExclusionPerson]
+    excludedIndividual: Option[TracePerson]
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    val yearInt          = if (year.equals(utils.FormMappingsConstants.CY)) taxYearRange.cyminus1 else taxYearRange.cy
+    val yearInt                                                   = if (year.equals(utils.FormMappingsConstants.CY)) taxYearRange.cyminus1 else taxYearRange.cy
     logger.info(
       s"[ExclusionListController][commitExclusion] Committing Exclusion for scheme ${request.empRef.toString}" +
         s", with employees Optimistic Lock: ${excludedIndividual.map(eiLPerson => eiLPerson.optimisticLock).getOrElse(0)}"
     )
-    val requestExclusion = UpdateExclusionPersonForABenefitRequest(
-      excludedIndividual.get.optimisticLock,
-      PbikExclusionPersonWithBenefitAndStatus(
-        IabdType(Bik.asNPSTypeValue(iabdString).toInt),
-        excludedIndividual.get,
-        PersonalEmploymentStatus.Add
+    val iabd                                                      = IabdType(Bik.asNPSTypeValue(iabdString).toInt)
+    val requestExclusion: UpdateExclusionPersonForABenefitRequest = UpdateExclusionPersonForABenefitRequest(
+      excludedIndividual.map(_.optimisticLock).getOrElse(0),
+      PbikExclusionPersonAddRequest(
+        iabd,
+        excludedIndividual.get.identifier,
+        excludedIndividual.get.firstForename,
+        excludedIndividual.get.secondForename,
+        excludedIndividual.get.surname
       )
     )
     tierConnector
       .excludeEiLPersonFromBik(request.empRef, yearInt, requestExclusion)
-      .map { response =>
-        response.status match {
-          case OK               =>
-            auditExclusion(exclusion = true, yearInt, excludedIndividual.get.identifier, iabdString)
-            Redirect(
-              routes.ExclusionListController
-                .showExclusionConfirmation(year, iabdString)
+      .map {
+        case OK               =>
+          auditExclusion(exclusion = true, yearInt, excludedIndividual.get.identifier, iabdString)
+          Redirect(
+            routes.ExclusionListController
+              .showExclusionConfirmation(year, iabdString)
+          )
+        case unexpectedStatus =>
+          logger.warn(
+            s"[ExclusionListController][commitExclusion] Exclusion list update operation was unable to be executed " +
+              s"successfully: received $unexpectedStatus response"
+          )
+          InternalServerError(
+            errorPageView(
+              "Could not perform update operation",
+              controllersReferenceData.yearRange,
+              isCurrentTaxYear = ""
             )
-          case unexpectedStatus =>
-            logger.warn(
-              s"[ExclusionListController][commitExclusion] Exclusion list update operation was unable to be executed " +
-                s"successfully: received $unexpectedStatus response"
-            )
-            InternalServerError(
-              errorPageView(
-                "Could not perform update operation",
-                controllersReferenceData.yearRange,
-                isCurrentTaxYear = ""
-              )
-            )
-              .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
-        }
+          )
+            .withSession(request.session + (SessionKeys.sessionId -> s"session-${UUID.randomUUID}"))
       }
   }
 
