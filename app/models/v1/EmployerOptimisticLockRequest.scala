@@ -18,7 +18,7 @@ package models.v1
 
 import play.api.libs.json.{Json, OFormat}
 
-case class EmployerOptimisticLockRequest(currentOptimisticLock: Int)
+case class EmployerOptimisticLockRequest(currentEmployerOptimisticLock: Int)
 
 object EmployerOptimisticLockRequest {
   implicit val formats: OFormat[EmployerOptimisticLockRequest] = Json.format[EmployerOptimisticLockRequest]

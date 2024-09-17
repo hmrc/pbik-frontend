@@ -65,7 +65,7 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
         //TODO refactor the logic and remove this generic body parsing do the same with Either[Error, T]
         val resp                                  = validateResponses("getRegisteredBiks").json.as[BenefitListResponse]
         val updatedHeaders: Seq[(String, String)] =
-          HeaderTags.createResponseHeaders(resp.currentOptimisticLock.toString).toSeq
+          HeaderTags.createResponseHeaders(resp.currentEmployerOptimisticLock.toString).toSeq
         val biks                                  = resp.getBenefitInKindWithCount.map(benefit => Bik(benefit))
 
         logger.info(

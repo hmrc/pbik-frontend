@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, OWrites, Reads}
 
 case class BenefitListResponse(
   pbikRegistrationDetailsList: Option[List[BenefitInKindWithCount]],
-  currentOptimisticLock: Int
+  currentEmployerOptimisticLock: Int
 ) {
 
   def getBenefitInKindWithCount: List[BenefitInKindWithCount] = pbikRegistrationDetailsList.getOrElse(List.empty)
@@ -37,7 +37,7 @@ object BenefitListResponse {
 
     (
       (__ \ "pbikRegistrationDetailsList").readNullable[List[BenefitInKindWithCount]] and
-        (__ \ "currentOptimisticLock").read[Int]
+        (__ \ "currentEmployerOptimisticLock").read[Int]
     )(BenefitListResponse.apply _)
   }
 
