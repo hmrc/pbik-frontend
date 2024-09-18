@@ -55,7 +55,7 @@ class RegistrationService @Inject() (
       Seq[Bik],
       Seq[Int],
       Seq[Int],
-      Option[Int]
+      Int
     ) => HtmlFormat.Appendable
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     val decommissionedBikIds: Set[IabdType] = pbikAppConfig.biksDecommissioned
@@ -105,7 +105,7 @@ class RegistrationService @Inject() (
       Seq[Bik],
       Seq[Int],
       Seq[Int],
-      Option[Int]
+      Int
     ) => HtmlFormat.Appendable
   )(implicit request: AuthenticatedRequest[AnyContent]): Result = {
     val fetchFromCacheMapBiksValue = List.empty[RegistrationItem]
@@ -133,7 +133,7 @@ class RegistrationService @Inject() (
           pbikAppConfig.biksDecommissioned
             .map(_.id)
             .toList, //TODO change view to Set instead of list it must be unique list
-          Some(biksListOption.size)
+          biksListOption.size
         )
       )
     }

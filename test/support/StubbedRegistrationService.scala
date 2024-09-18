@@ -82,7 +82,7 @@ class StubbedRegistrationService @Inject() (
       Seq[Bik],
       Seq[Int],
       Seq[Int],
-      Option[Int]
+      Int
     ) => HtmlFormat.Appendable
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] =
     year match {
@@ -96,7 +96,7 @@ class StubbedRegistrationService @Inject() (
               allRegisteredListOption,
               nonLegislationBiks = List(0),
               decommissionedBiks = List(0),
-              biksAvailableCount = Some(biksAvailableCount)
+              biksAvailableCount = biksAvailableCount
             )
           )
         )
@@ -111,7 +111,7 @@ class StubbedRegistrationService @Inject() (
               registeredListOption,
               nonLegislationBiks = List(0),
               decommissionedBiks = List(0),
-              biksAvailableCount = Some(biksAvailableCount)
+              biksAvailableCount = biksAvailableCount
             )
           )
         )

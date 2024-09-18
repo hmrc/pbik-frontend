@@ -61,7 +61,7 @@ class ManageRegistrationControllerSpec extends PlaySpec with FakePBIKApplication
 
   private val cyBenefitTypes: BenefitTypes = BenefitTypes(IabdType.values)
   private val cyBiks: Set[Bik]             =
-    cyBenefitTypes.benefitTypes.map(x => Bik(x.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
+    cyBenefitTypes.pbikTypes.map(x => Bik(x.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
 
   when(app.injector.instanceOf[PbikConnector].getAllAvailableBiks(anyInt())(any()))
     .thenReturn(Future.successful(Right(cyBenefitTypes)))

@@ -197,7 +197,7 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
 
   def extractListNinoFromExclusions(headlist: List[PbikExclusionPerson]): String =
     headlist.headOption match {
-      case Some(x) => x.identifier
+      case Some(x) => x.nationalInsuranceNumber
       case None    => SplunkLogger.pbik_no_ref
     }
 

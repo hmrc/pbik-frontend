@@ -83,12 +83,12 @@
                     </thead>
                     @for( (person, index) <- current.zipWithIndex ) {
                         <tr class="govuk-table__row">
-                            <td class="govuk-table__cell" id="name-@person.identifier">@person.firstForename @person.surname</td>
-                            <td class="govuk-table__cell" id="nino-@person.identifier">@person.identifier</td>
-                            <td class="govuk-table__cell" id="wpn-@person.identifier">@person.worksPayrollNumber</td>
+                            <td class="govuk-table__cell" id="name-@person.nationalInsuranceNumber">@person.firstForename @person.surname</td>
+                            <td class="govuk-table__cell" id="nino-@person.nationalInsuranceNumber">@person.nationalInsuranceNumber</td>
+                            <td class="govuk-table__cell" id="wpn-@person.nationalInsuranceNumber">@person.worksPayrollNumber</td>
                             <td class="govuk-table__cell">
-                                <a class="govuk-link" id='@person.identifier-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdString, person.identifier)">
-                                    @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.identifier</span>
+                                <a class="govuk-link" id='@person.nationalInsuranceNumber-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdString, person.nationalInsuranceNumber)">
+                                    @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nationalInsuranceNumber</span>
                                 </a>
                             </td>
                         </tr>

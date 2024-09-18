@@ -99,7 +99,7 @@ class ManageRegistrationController @Inject() (
                                       registeredBiks = List.empty[Bik],
                                       nonLegislationBiks = pbikAppConfig.biksNotSupportedCY.map(_.id).toList, //TODO List to Set
                                       decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id).toList, //TODO List to Set
-                                      biksAvailableCount = Some(biksListOption.size)
+                                      biksAvailableCount = biksListOption.size
                                     )
                                   )
                                 ),
@@ -143,7 +143,7 @@ class ManageRegistrationController @Inject() (
                                       taxYearRange = controllersReferenceData.yearRange,
                                       nonLegislationBiks = pbikAppConfig.biksNotSupported.map(_.id).toList, //TODO List to Set
                                       decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id).toList, //TODO List to Set
-                                      biksAvailableCount = Some(biksListOption.size)
+                                      biksAvailableCount = biksListOption.size
                                     )
                                   )
                                 ),

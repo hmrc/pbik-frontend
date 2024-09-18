@@ -19,8 +19,8 @@ package models.v1.exclusion
 import play.api.libs.json.{Json, OFormat}
 
 case class UpdateExclusionPersonForABenefitRequest(
-  currentOptimisticLock: Int,
-  putPBIKExclusionDetails: PbikExclusionPersonAddRequest
+  currentEmployerOptimisticLock: Int,
+  postPBIKExclusionDetails: PbikExclusionPersonAddRequest
 )
 
 object UpdateExclusionPersonForABenefitRequest {

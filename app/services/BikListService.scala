@@ -55,7 +55,7 @@ class BikListService @Inject() (
       case Left(errors)        =>
         logger.error(s"[BikListService][getAllBenefitsForYear] Error getting all benefits for year $year: $errors")
         throw new GenericServerErrorException(errors.toString)
-      case Right(benefitTypes) => benefitTypes.benefitTypes
+      case Right(benefitTypes) => benefitTypes.pbikTypes
     }
 
 }

@@ -18,6 +18,7 @@ package connectors
 
 import config.Service
 import models._
+import models.v1.IabdType.IabdType
 import models.v1._
 import models.v1.exclusion.{PbikExclusionPersonWithBenefitRequest, PbikExclusions, UpdateExclusionPersonForABenefitRequest}
 import models.v1.trace.{TracePeopleByPersonalDetailsRequest, TracePeopleByPersonalDetailsResponse}
@@ -155,7 +156,7 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
       .map(_.status)
 
   def removeEiLPersonExclusionFromBik(
-    iabdString: String,
+    iabdType: IabdType,
     empRef: EmpRef,
     year: Int,
     individualToRemove: PbikExclusionPersonWithBenefitRequest
@@ -164,15 +165,11 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
     request: Request[_]
   ): Future[Int] =
     client
-      .delete(
-        url"${getRemoveExclusionURL(empRef, year, individualToRemove.deletePBIKExclusionDetails.iabdType.encodedName)}"
-      )
+      .delete(url"${getRemoveExclusionURL(empRef, year, iabdType.encodedName)}")
       .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
       .withBody(Json.toJson(individualToRemove))
       .execute[HttpResponse]
-      .map { implicit response =>
-        validateResponses("removeEiLPersonExclusionFromBik").status
-      }
+      .map(_.status)
 
   def updateOrganisationsRegisteredBiks(year: Int, changes: List[Bik])(implicit
     hc: HeaderCarrier,
