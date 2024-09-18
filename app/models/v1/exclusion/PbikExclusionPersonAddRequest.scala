@@ -17,14 +17,12 @@
 package models.v1.exclusion
 
 import models.v1.IabdType.IabdType
-import models.v1.exclusion.Gender.Gender
 import play.api.libs.json.{Json, OFormat}
 
 case class PbikExclusionPersonAddRequest(
   iabdType: IabdType,
-  identifier: String,
+  nationalInsuranceNumber: String,
   firstForename: String,
-  secondForename: Option[String],
   surname: String
 )
 

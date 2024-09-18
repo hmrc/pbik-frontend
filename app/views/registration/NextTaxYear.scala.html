@@ -35,7 +35,7 @@
     registeredBiks: Seq[Bik] = List.empty[Bik],
     nonLegislationBiks: Seq[Int],
     decommissionedBiks: Seq[Int],
-    biksAvailableCount: Option[Int]
+    biksAvailableCount: Int
 )(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 @title = @{if(additive) {messages("AddBenefits.Heading", "" + taxYearRange.cy, "" + taxYearRange.cyplus1)} else {messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)}}
@@ -63,7 +63,7 @@
 
         @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.checkYourAnswersAddNextTaxYear) {
 
-            @if(registeredBiks.size == biksAvailableCount.get) {
+            @if(registeredBiks.size == biksAvailableCount) {
                 <div class="govuk-panel govuk-panel--confirmation">
                     <div class="govuk-panel__body">
                         @messages("ManagingRegistration.add.exhausted")

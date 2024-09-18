@@ -16,11 +16,10 @@
 
 package models.v1.exclusion
 
-import models.v1.IabdType.IabdType
 import play.api.libs.json.{Json, OFormat}
 
 case class PbikExclusionPerson(
-  identifier: String,
+  nationalInsuranceNumber: String,
   firstForename: String,
   secondForename: Option[String],
   surname: String,
@@ -31,20 +30,11 @@ case class PbikExclusionPerson(
   override def equals(obj: Any): Boolean =
     obj.isInstanceOf[PbikExclusionPerson] && obj
       .asInstanceOf[PbikExclusionPerson]
-      .identifier == identifier
+      .nationalInsuranceNumber == nationalInsuranceNumber
 
-  override def hashCode: Int = identifier.hashCode
+  override def hashCode: Int = nationalInsuranceNumber.hashCode
 
   def fullName: String = s"$firstForename $surname"
-
-  def withBenefit(iabdType: IabdType): PbikExclusionPersonWithBenefit =
-    PbikExclusionPersonWithBenefit(
-      iabdType,
-      identifier,
-      firstForename,
-      secondForename,
-      surname
-    )
 
 }
 

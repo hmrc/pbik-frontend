@@ -23,7 +23,7 @@ case class PbikExclusions(getPBIKExclusionList: List[PbikExclusionPerson]) {
 
   def mapToTracePerson: List[TracePerson] = getPBIKExclusionList.map { pbikExclusionPerson =>
     TracePerson(
-      pbikExclusionPerson.identifier,
+      pbikExclusionPerson.nationalInsuranceNumber,
       pbikExclusionPerson.firstForename,
       pbikExclusionPerson.secondForename,
       pbikExclusionPerson.surname,

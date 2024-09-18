@@ -33,7 +33,7 @@
         registeredBiks:Seq[Bik],
         nonLegislationBiks:Seq[Int],
         decommissionedBiks:Seq[Int],
-        biksAvailableCount: Option[Int]
+        biksAvailableCount: Int
 )(implicit request:Request[_], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy), form.hasErrors)) {
@@ -59,7 +59,7 @@
     </h1>
     @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.checkYourAnswersAddCurrentTaxYear) {
 
-        @if(registeredBiks.size == biksAvailableCount.get) {
+        @if(registeredBiks.size == biksAvailableCount) {
             <div class="govuk-panel govuk-panel--confirmation">
                 <div class="govuk-panel__body">
                 @messages("ManagingRegistration.add.exhausted")

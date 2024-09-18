@@ -19,10 +19,8 @@ package models.v1
 import models.v1.IabdType.IabdType
 import play.api.libs.json.{Json, OFormat}
 
-case class BenefitTypes(benefitTypes: Set[IabdType])
+case class BenefitTypes(pbikTypes: Set[IabdType])
 
 object BenefitTypes {
   implicit val formats: OFormat[BenefitTypes] = Json.format[BenefitTypes]
-
-  val empty = BenefitTypes(Set.empty)
 }

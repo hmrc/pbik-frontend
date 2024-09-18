@@ -16,28 +16,10 @@
 
 package models.v1.exclusion
 
-import models.EiLPerson
-import models.v1.IabdType.IabdType
 import play.api.libs.json.{Json, OFormat}
 
-case class PbikExclusionPersonWithBenefit(
-  iabdType: IabdType,
-  nationalInsuranceNumber: String,
-  firstForename: String,
-  secondForename: Option[String],
-  surname: String
-)
+case class PbikExclusionPersonDeleteRequest(nationalInsuranceNumber: String)
 
-object PbikExclusionPersonWithBenefit {
-  implicit val formats: OFormat[PbikExclusionPersonWithBenefit] = Json.format[PbikExclusionPersonWithBenefit]
-
-  def apply(iabdType: IabdType, eiLPerson: EiLPerson): PbikExclusionPersonWithBenefit =
-    PbikExclusionPersonWithBenefit(
-      iabdType,
-      eiLPerson.nino,
-      eiLPerson.firstForename,
-      eiLPerson.secondForename,
-      eiLPerson.surname
-    )
-
+object PbikExclusionPersonDeleteRequest {
+  implicit val formats: OFormat[PbikExclusionPersonDeleteRequest] = Json.format[PbikExclusionPersonDeleteRequest]
 }
