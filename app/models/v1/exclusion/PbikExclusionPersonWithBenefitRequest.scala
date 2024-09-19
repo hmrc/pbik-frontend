@@ -27,10 +27,10 @@ object PbikExclusionPersonWithBenefitRequest {
   implicit val formats: OFormat[PbikExclusionPersonWithBenefitRequest] =
     Json.format[PbikExclusionPersonWithBenefitRequest]
 
-  def apply(person: PbikExclusionPerson): PbikExclusionPersonWithBenefitRequest =
+  def apply(employerLock: Int, person: PbikExclusionPerson): PbikExclusionPersonWithBenefitRequest =
     PbikExclusionPersonWithBenefitRequest(
-      person.optimisticLock,
-      PbikExclusionPersonDeleteRequest(person.nationalInsuranceNumber)
+      employerLock,
+      PbikExclusionPersonDeleteRequest(person.nationalInsuranceNumber, person.optimisticLock)
     )
 
 }

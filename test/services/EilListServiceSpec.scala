@@ -19,7 +19,7 @@ package services
 import connectors.PbikConnector
 import controllers.FakePBIKApplication
 import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
-import models.v1.trace.TracePerson
+import models.v1.trace.TracePersonResponse
 import models.{AuthenticatedRequest, EmpRef, UserName}
 import org.mockito.ArgumentMatchers.{any, anyInt, anyString}
 import org.mockito.Mockito._
@@ -49,7 +49,7 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
     val els = app.injector.instanceOf[EiLListService]
 
     when(els.tierConnector.getAllExcludedEiLPersonForBik(anyString(), any(), anyInt())(any()))
-      .thenReturn(Future.successful(Right(PbikExclusions(List.empty[PbikExclusionPerson]))))
+      .thenReturn(Future.successful(Right(PbikExclusions(0, List.empty[PbikExclusionPerson]))))
 
     els
   }
@@ -73,8 +73,8 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
 
     "return a subset of List(EiL) search results - already excluded" in {
       val eilService         = mockEiLListService
-      val exclusionPerson1   = TracePerson("QQ123456", "Humpty", None, "Dumpty", Some("123"), 22)
-      val exclusionPerson2   = TracePerson("QQ123456", "Humpty", None, "Dumpty", Some("789"), 22)
+      val exclusionPerson1   = TracePersonResponse("QQ123456", "Humpty", None, "Dumpty", Some("123"), 22)
+      val exclusionPerson2   = TracePersonResponse("QQ123456", "Humpty", None, "Dumpty", Some("789"), 22)
       val searchResultsEiL   = List(exclusionPerson1, exclusionPerson2)
       val alreadyExcludedEiL = List(exclusionPerson1)
 

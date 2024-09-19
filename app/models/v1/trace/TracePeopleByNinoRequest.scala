@@ -16,17 +16,17 @@
 
 package models.v1.trace
 
-import models.v1.exclusion.Gender.Gender
+import models.v1.IabdType.IabdType
 import play.api.libs.json.{Json, OFormat}
 
-case class TracePeopleByPersonalDetails(
-  firstForename: Option[String],
+case class TracePeopleByNinoRequest(
+  iabdType: IabdType,
+  firstForename: String,
   secondForename: Option[String],
   surname: String,
-  dateOfBirth: String,
-  gender: Gender
+  nationalInsuranceNumber: String
 )
 
-object TracePeopleByPersonalDetails {
-  implicit val formats: OFormat[TracePeopleByPersonalDetails] = Json.format[TracePeopleByPersonalDetails]
+object TracePeopleByNinoRequest {
+  implicit val formats: OFormat[TracePeopleByNinoRequest] = Json.format[TracePeopleByNinoRequest]
 }

@@ -75,7 +75,7 @@ class StubEiLListService @Inject() (
     request: AuthenticatedRequest[_]
   ): Future[PbikExclusions] =
     //TODO use new migrated list here
-    Future.successful(PbikExclusions(List.empty))
+    Future.successful(PbikExclusions(0, List.empty))
 }
 
 class StubEiLListServiceOneExclusion @Inject() (
@@ -93,5 +93,5 @@ class StubEiLListServiceOneExclusion @Inject() (
     request: AuthenticatedRequest[_]
   ): Future[PbikExclusions] =
     //TODO use new migrated list here
-    Future.successful(PbikExclusions(List.empty))
+    Future.successful(PbikExclusions(1, List.empty))
 }

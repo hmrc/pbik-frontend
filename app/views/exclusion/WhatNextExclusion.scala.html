@@ -30,7 +30,7 @@
     taxYearRange:TaxYearRange,
     year:String,
     iabdString:String,
-    person:TracePerson
+    person:TracePersonResponse
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
@@ -78,7 +78,7 @@
                 @messages("Service.field.nino") @messages("Service.nino.lastletter")
             </dt>
             <dd class="govuk-summary-list__value">
-                <p class="govuk-body">@person.identifier</p>
+                <p class="govuk-body">@person.nationalInsuranceNumber</p>
             </dd>
         </div>
         <div class="govuk-summary-list__row">
