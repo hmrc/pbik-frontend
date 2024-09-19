@@ -19,8 +19,8 @@ package services
 import config.PbikAppConfig
 import connectors.PbikConnector
 import models.AuthenticatedRequest
-import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
-import models.v1.trace.TracePerson
+import models.v1.exclusion.PbikExclusions
+import models.v1.trace.TracePersonResponse
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Exceptions.GenericServerErrorException
 
@@ -53,9 +53,9 @@ class EiLListService @Inject() (
   }
 
   def searchResultsRemoveAlreadyExcluded(
-    existingEiL: List[TracePerson],
-    searchResultsEiL: List[TracePerson]
-  ): List[TracePerson] =
+    existingEiL: List[TracePersonResponse],
+    searchResultsEiL: List[TracePersonResponse]
+  ): List[TracePersonResponse] =
     searchResultsEiL diff existingEiL
 
 }

@@ -23,7 +23,8 @@ case class PbikExclusionPersonAddRequest(
   iabdType: IabdType,
   nationalInsuranceNumber: String,
   firstForename: String,
-  surname: String
+  surname: String,
+  optimisticLock: Int
 )
 
 object PbikExclusionPersonAddRequest {

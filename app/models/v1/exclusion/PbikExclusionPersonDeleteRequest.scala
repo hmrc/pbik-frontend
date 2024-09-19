@@ -18,7 +18,7 @@ package models.v1.exclusion
 
 import play.api.libs.json.{Json, OFormat}
 
-case class PbikExclusionPersonDeleteRequest(nationalInsuranceNumber: String)
+case class PbikExclusionPersonDeleteRequest(nationalInsuranceNumber: String, optimisticLock: Int)
 
 object PbikExclusionPersonDeleteRequest {
   implicit val formats: OFormat[PbikExclusionPersonDeleteRequest] = Json.format[PbikExclusionPersonDeleteRequest]

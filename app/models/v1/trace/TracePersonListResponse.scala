@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package models.v1
+package models.v1.trace
 
 import play.api.libs.json.{Json, OFormat}
 
-case class EmployerOptimisticLockResponse(
-  employmentIdentifier: String,
-  updatedEmployerOptimisticLock: Int
+case class TracePersonListResponse(
+  updatedEmployerOptimisticLock: Int,
+  pbikExclusionList: List[TracePersonResponse]
 )
 
-object EmployerOptimisticLockResponse {
-
-  implicit val formats: OFormat[EmployerOptimisticLockResponse] = Json.format[EmployerOptimisticLockResponse]
-
+object TracePersonListResponse {
+  implicit val formats: OFormat[TracePersonListResponse] = Json.format[TracePersonListResponse]
 }

@@ -21,9 +21,9 @@ import models._
 import models.v1.IabdType.IabdType
 import models.v1._
 import models.v1.exclusion.{PbikExclusionPersonWithBenefitRequest, PbikExclusions, UpdateExclusionPersonForABenefitRequest}
-import models.v1.trace.{TracePeopleByPersonalDetailsRequest, TracePeopleByPersonalDetailsResponse}
+import models.v1.trace.{TracePeopleByNinoRequest, TracePeopleByPersonalDetailsRequest, TracePersonListResponse}
 import play.api.http.Status.{BAD_REQUEST, OK}
-import play.api.libs.json.{JsError, JsSuccess, Json}
+import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.mvc.Request
 import play.api.{Configuration, Logging}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
@@ -188,7 +188,7 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
       .map { response =>
         val validatedResponse         = validateResponses("updateOrganisationsRegisteredBiks")(response)
         val benefitListUpdateResponse = validatedResponse.json.as[BenefitListUpdateResponse]
-        val lockValue                 = benefitListUpdateResponse.employerOptimisticLockResponse.updatedOptimisticLock
+        val lockValue                 = benefitListUpdateResponse.employerOptimisticLockResponse.updatedEmployerOptimisticLock
 
         logger.info(
           s"[PbikConnector][updateOrganisationsRegisteredBiks] Updated BIKs ${updatedBiks.size} with lock value: $lockValue"
@@ -197,21 +197,21 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
       }
   }
 
-  def findPersonByPersonalDetails(empRef: EmpRef, year: Int, body: TracePeopleByPersonalDetailsRequest)(implicit
+  private def findPerson(empRef: EmpRef, year: Int, body: JsValue)(implicit
     hc: HeaderCarrier
-  ): Future[Either[NPSErrors, TracePeopleByPersonalDetailsResponse]] =
+  ): Future[Either[NPSErrors, TracePersonListResponse]] =
     client
       .post(url"${postTraceByPersonalDetailsURL(year, empRef)}")
-      .withBody(Json.toJson(body))
+      .withBody(body)
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {
           case OK          =>
-            response.json.validate[TracePeopleByPersonalDetailsResponse] match {
+            response.json.validate[TracePersonListResponse] match {
               case JsSuccess(value, _) => Future.successful(Right(value))
               case JsError(errors)     =>
                 logger.error(
-                  s"[PbikConnector][findPersonByPersonalDetails] Failed to parse TracePeopleByPersonalDetailsResponse: $errors"
+                  s"[PbikConnector][findPerson] Failed to parse TracePersonListResponse: $errors"
                 )
                 Future.failed(
                   new GenericServerErrorException("Failed to get excluded persons, status: " + response.status)
@@ -224,7 +224,7 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
             response.json.validate[NPSErrors] match {
               case JsSuccess(value, _) => Future.successful(Left(value))
               case JsError(errors)     =>
-                logger.error(s"[PbikConnector][findPersonByPersonalDetails] Failed to parse NPSErrors: $errors")
+                logger.error(s"[PbikConnector][findPerson] Failed to parse NPSErrors: $errors")
                 Future.failed(
                   new GenericServerErrorException("Failed to get excluded persons, status: " + response.status)
                 )
@@ -235,6 +235,16 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
             )
         }
       }
+
+  def findPersonByPersonalDetails(empRef: EmpRef, year: Int, body: TracePeopleByPersonalDetailsRequest)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[NPSErrors, TracePersonListResponse]] =
+    findPerson(empRef, year, Json.toJson(body))
+
+  def findPersonByNino(empRef: EmpRef, year: Int, body: TracePeopleByNinoRequest)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[NPSErrors, TracePersonListResponse]] =
+    findPerson(empRef, year, Json.toJson(body))
 
   private def createOrCheckForRequiredHeaders(implicit request: Request[_]): Map[String, String] = {
     val etagFromSession = request.session.get(HeaderTags.ETAG).getOrElse(HeaderTags.ETAG_DEFAULT_VALUE)

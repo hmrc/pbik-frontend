@@ -18,8 +18,8 @@ package models.v1.trace
 
 import play.api.libs.json.{Json, OFormat}
 
-case class TracePerson(
-  identifier: String,
+case class TracePersonResponse(
+  nationalInsuranceNumber: String,
   firstForename: String,
   secondForename: Option[String],
   surname: String,
@@ -28,9 +28,11 @@ case class TracePerson(
 ) {
 
   override def equals(obj: Any): Boolean =
-    obj.isInstanceOf[TracePerson] && obj.asInstanceOf[TracePerson].identifier == identifier
+    obj.isInstanceOf[TracePersonResponse] && obj
+      .asInstanceOf[TracePersonResponse]
+      .nationalInsuranceNumber == nationalInsuranceNumber
 
-  override def hashCode: Int = identifier.hashCode
+  override def hashCode: Int = nationalInsuranceNumber.hashCode
 
   def fullName: String = s"$firstForename ${secondForename.getOrElse("")} $surname"
 
@@ -38,6 +40,6 @@ case class TracePerson(
 
 }
 
-object TracePerson {
-  implicit val formats: OFormat[TracePerson] = Json.format[TracePerson]
+object TracePersonResponse {
+  implicit val formats: OFormat[TracePersonResponse] = Json.format[TracePersonResponse]
 }

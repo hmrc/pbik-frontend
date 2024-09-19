@@ -16,13 +16,13 @@
 
 package models.v1.exclusion
 
-import models.v1.trace.TracePerson
+import models.v1.trace.TracePersonResponse
 import play.api.libs.json.{Json, OFormat}
 
-case class PbikExclusions(getPBIKExclusionList: List[PbikExclusionPerson]) {
+case class PbikExclusions(currentEmployerOptimisticLock: Int, getPBIKExclusionList: List[PbikExclusionPerson]) {
 
-  def mapToTracePerson: List[TracePerson] = getPBIKExclusionList.map { pbikExclusionPerson =>
-    TracePerson(
+  def mapToTracePerson: List[TracePersonResponse] = getPBIKExclusionList.map { pbikExclusionPerson =>
+    TracePersonResponse(
       pbikExclusionPerson.nationalInsuranceNumber,
       pbikExclusionPerson.firstForename,
       pbikExclusionPerson.secondForename,

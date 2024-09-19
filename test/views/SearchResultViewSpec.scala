@@ -18,7 +18,7 @@ package views
 
 import models._
 import models.v1.IabdType
-import models.v1.trace.TracePerson
+import models.v1.trace.TracePersonResponse
 import play.api.data.Form
 import play.twirl.api.Html
 import utils.FormMappings
@@ -62,16 +62,16 @@ class SearchResultViewSpec extends PBIKViewSpec {
         )(organisationRequest)
 
       behave like pageWithIdAndText(s"${tracePerson.fullName}", "name")
-      behave like pageWithIdAndText(tracePerson.identifier, "nino")
+      behave like pageWithIdAndText(tracePerson.nationalInsuranceNumber, "nino")
       behave like pageWithIdAndText(tracePerson.getWorksPayrollNumber, "wpn")
     }
 
     "check the individual nino search page for multiple active matches" should {
       val listOfActives =
         List(
-          TracePerson("AB123456C", "John", Some("A"), "Doe", None, 22),
-          TracePerson("AB123456D", "Jane", Some("B"), "Doe", Some("12345"), 22),
-          TracePerson("AB123456E", "Jora", Some("C"), "Doe", Some("12345"), 22)
+          TracePersonResponse("AB123456C", "John", Some("A"), "Doe", None, 22),
+          TracePersonResponse("AB123456D", "Jane", Some("B"), "Doe", Some("12345"), 22),
+          TracePersonResponse("AB123456E", "Jora", Some("C"), "Doe", Some("12345"), 22)
         )
 
       implicit def view: Html = searchResultsView(
@@ -121,16 +121,16 @@ class SearchResultViewSpec extends PBIKViewSpec {
         )(agentRequest)
 
       behave like pageWithIdAndText(s"${tracePerson.fullName}", "name")
-      behave like pageWithIdAndText(tracePerson.identifier, "nino")
+      behave like pageWithIdAndText(tracePerson.nationalInsuranceNumber, "nino")
       behave like pageWithIdAndText(tracePerson.getWorksPayrollNumber, "wpn")
     }
 
     "check the individual nino search page for multiple active matches" should {
       val listOfActives =
         List(
-          TracePerson("AB123456C", "John", Some("A"), "Doe", None, 22),
-          TracePerson("AB123456D", "Jane", Some("B"), "Doe", None, 22),
-          TracePerson("AB123456E", "Jora", Some("C"), "Doe", Some("12345"), 22)
+          TracePersonResponse("AB123456C", "John", Some("A"), "Doe", None, 22),
+          TracePersonResponse("AB123456D", "Jane", Some("B"), "Doe", None, 22),
+          TracePersonResponse("AB123456E", "Jora", Some("C"), "Doe", Some("12345"), 22)
         )
 
       implicit def view: Html = searchResultsView(

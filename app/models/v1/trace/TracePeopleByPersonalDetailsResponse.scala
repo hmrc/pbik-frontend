@@ -20,7 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 case class TracePeopleByPersonalDetailsResponse(
   updatedEmployerOptimisticLock: Int,
-  pbikExclusionList: List[TracePerson]
+  pbikExclusionList: List[TracePersonResponse]
 )
 
 object TracePeopleByPersonalDetailsResponse {

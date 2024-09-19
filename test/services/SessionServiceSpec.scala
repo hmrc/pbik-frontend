@@ -19,8 +19,8 @@ package services
 import controllers.FakePBIKApplication
 import models._
 import models.cache.MissingSessionIdException
-import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
-import models.v1.trace.TracePerson
+import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions, SelectedExclusionToRemove}
+import models.v1.trace.{TracePersonListResponse, TracePersonResponse}
 import models.v1.{IabdType, PbikAction}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
@@ -69,10 +69,12 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
     }
 
     "cache a list of matches" in {
-      val listOfMatches =
+      val listOfMatches = TracePersonListResponse(
+        0,
         List(
-          TracePerson("AB123456C", "John", Some("A"), "Doe", None, 22)
+          TracePersonResponse("AB123456C", "John", Some("A"), "Doe", None, 22)
         )
+      )
       val session       = pbikSession.copy(listOfMatches = Some(listOfMatches))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -83,7 +85,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
     "cache an EiLPerson" in {
       val eiLPerson =
-        PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
+        SelectedExclusionToRemove(1, PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22))
       val session   = pbikSession.copy(eiLPerson = Some(eiLPerson))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -94,6 +96,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
     "cache the current exclusions" in {
       val currentExclusions = PbikExclusions(
+        0,
         List(
           PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
         )
@@ -110,6 +113,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
       implicit val hc: HeaderCarrier = HeaderCarrier()
 
       val currentExclusions = PbikExclusions(
+        0,
         List(
           PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
         )

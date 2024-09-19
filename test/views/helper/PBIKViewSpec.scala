@@ -18,7 +18,7 @@ package views.helper
 
 import models.agent.{AccountsOfficeReference, Client}
 import models.v1.exclusion.PbikExclusionPerson
-import models.v1.trace.TracePerson
+import models.v1.trace.TracePersonResponse
 import models.{AuthenticatedRequest, EmpRef, TaxYearRange, UserName}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -144,7 +144,7 @@ trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite {
   def taxYearRange: TaxYearRange = TaxYearRange(year2018, year2019, year2020)
 
   val exclusionPerson: PbikExclusionPerson = PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
-  val tracePerson: TracePerson             = TracePerson("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22)
+  val tracePerson: TracePersonResponse     = TracePersonResponse("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22)
 
 }
 
