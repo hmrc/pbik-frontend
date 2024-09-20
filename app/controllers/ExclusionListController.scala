@@ -287,7 +287,6 @@ class ExclusionListController @Inject() (
                     val requestBody = TracePeopleByNinoRequest(
                       iabdType,
                       validModel.firstForename,
-                      validModel.secondForename,
                       validModel.surname,
                       validModel.nino
                     )
@@ -302,7 +301,6 @@ class ExclusionListController @Inject() (
                     val requestBody = TracePeopleByPersonalDetailsRequest(
                       iabdType,
                       Some(validModel.firstForename),
-                      validModel.secondForename,
                       validModel.surname,
                       validModel.dateOfBirthFormatForNPS.get,
                       Gender.fromString(validModel.gender)

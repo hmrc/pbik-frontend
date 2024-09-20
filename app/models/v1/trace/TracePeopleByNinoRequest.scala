@@ -22,7 +22,6 @@ import play.api.libs.json.{Json, OFormat}
 case class TracePeopleByNinoRequest(
   iabdType: IabdType,
   firstForename: String,
-  secondForename: Option[String],
   surname: String,
   nationalInsuranceNumber: String
 )

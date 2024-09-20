@@ -23,9 +23,9 @@ object Gender extends Enumeration {
 
   type Gender = Value
 
-  val Female: v1.exclusion.Gender.Value  = Value(0, "female")
-  val Male: v1.exclusion.Gender.Value    = Value(1, "male")
-  val Unknown: v1.exclusion.Gender.Value = Value(99, "not known")
+  val Female: v1.exclusion.Gender.Value  = Value(0, "FEMALE")
+  val Male: v1.exclusion.Gender.Value    = Value(1, "MALE")
+  val Unknown: v1.exclusion.Gender.Value = Value(99, "NOT KNOWN")
 
   implicit val formats: Format[Gender] = Json.formatEnum(this)
 

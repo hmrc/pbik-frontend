@@ -23,7 +23,6 @@ import play.api.libs.json.{Json, OFormat}
 case class TracePeopleByPersonalDetailsRequest(
   iabdType: IabdType,
   firstForename: Option[String],
-  secondForename: Option[String],
   surname: String,
   dateOfBirth: String,
   gender: Gender
