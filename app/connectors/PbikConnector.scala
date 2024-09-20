@@ -22,7 +22,7 @@ import models.v1.IabdType.IabdType
 import models.v1._
 import models.v1.exclusion.{PbikExclusionPersonWithBenefitRequest, PbikExclusions, UpdateExclusionPersonForABenefitRequest}
 import models.v1.trace.{TracePeopleByNinoRequest, TracePeopleByPersonalDetailsRequest, TracePersonListResponse}
-import play.api.http.Status.{BAD_REQUEST, OK}
+import play.api.http.Status.{BAD_REQUEST, OK, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.mvc.Request
 import play.api.{Configuration, Logging}
@@ -199,14 +199,15 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
 
   private def findPerson(empRef: EmpRef, year: Int, body: JsValue)(implicit
     hc: HeaderCarrier
-  ): Future[Either[NPSErrors, TracePersonListResponse]] =
+  ): Future[Either[NPSErrors, TracePersonListResponse]] = {
+    logger.info(s"[PbikConnector][findPerson] Finding person ${body.toString()} for empRef: $empRef and year: $year")
     client
       .post(url"${postTraceByPersonalDetailsURL(year, empRef)}")
       .withBody(body)
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {
-          case OK          =>
+          case OK                   =>
             response.json.validate[TracePersonListResponse] match {
               case JsSuccess(value, _) => Future.successful(Right(value))
               case JsError(errors)     =>
@@ -217,9 +218,9 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
                   new GenericServerErrorException("Failed to get excluded persons, status: " + response.status)
                 )
             }
-          case BAD_REQUEST =>
+          case UNPROCESSABLE_ENTITY =>
             logger.error(
-              s"[PbikConnector][getAllExcludedEiLPersonForBik] a pbik error code was returned. Error: ${response.body}"
+              s"[PbikConnector][findPerson] a pbik error code was returned. Error: ${response.body}"
             )
             response.json.validate[NPSErrors] match {
               case JsSuccess(value, _) => Future.successful(Left(value))
@@ -229,12 +230,13 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
                   new GenericServerErrorException("Failed to get excluded persons, status: " + response.status)
                 )
             }
-          case _           =>
+          case _                    =>
             Future.failed(
               new GenericServerErrorException("Failed to get available EilPerson, status: " + response.status)
             )
         }
       }
+  }
 
   def findPersonByPersonalDetails(empRef: EmpRef, year: Int, body: TracePeopleByPersonalDetailsRequest)(implicit
     hc: HeaderCarrier
