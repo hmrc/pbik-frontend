@@ -304,7 +304,7 @@ class ExclusionListController @Inject() (
                       Some(validModel.firstForename),
                       validModel.secondForename,
                       validModel.surname,
-                      validModel.dateOfBirth.get,
+                      validModel.dateOfBirthFormatForNPS.get,
                       Gender.fromString(validModel.gender)
                     )
 

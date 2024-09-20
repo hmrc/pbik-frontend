@@ -41,6 +41,11 @@ case class EiLPerson(
 
   def getWorksPayrollNumber: String = worksPayrollNumber.getOrElse("UNKNOWN")
 
+  def dateOfBirthFormatForNPS: Option[String] = dateOfBirth.map { dob =>
+    val date = dob.split("/")
+    s"${date(2)}-${date(1)}-${date(0)}"
+  }
+
 }
 
 object EiLPerson {
