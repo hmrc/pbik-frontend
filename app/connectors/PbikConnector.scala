@@ -108,11 +108,11 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
         }
       }
 
-  def getAllExcludedEiLPersonForBik(iabdString: String, empRef: EmpRef, year: Int)(implicit
+  def getAllExcludedEiLPersonForBik(iabdType: IabdType, empRef: EmpRef, year: Int)(implicit
     hc: HeaderCarrier
   ): Future[Either[NPSErrors, PbikExclusions]] =
     client
-      .get(url"${getAllExclusionsURL(iabdString, empRef, year)}")
+      .get(url"${getAllExclusionsURL(iabdType.convertToUrlParam, empRef, year)}")
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {
@@ -165,7 +165,7 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
     request: Request[_]
   ): Future[Int] =
     client
-      .delete(url"${getRemoveExclusionURL(empRef, year, iabdType.encodedName)}")
+      .delete(url"${getRemoveExclusionURL(empRef, year, iabdType.convertToUrlParam)}")
       .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
       .withBody(Json.toJson(individualToRemove))
       .execute[HttpResponse]

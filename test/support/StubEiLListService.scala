@@ -18,6 +18,7 @@ package support
 
 import config.PbikAppConfig
 import connectors.PbikConnector
+import models.v1.IabdType.IabdType
 import models.v1.exclusion.PbikExclusions
 import models.{AuthenticatedRequest, EiLPerson}
 import services.EiLListService
@@ -70,12 +71,12 @@ class StubEiLListService @Inject() (
   )
   val status                                     = 10
 
-  override def currentYearEiL(iabdType: String, year: Int)(implicit
+  override def currentYearEiL(iabdType: IabdType, year: Int)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
   ): Future[PbikExclusions] =
     //TODO use new migrated list here
-    Future.successful(PbikExclusions(0, List.empty))
+    Future.successful(PbikExclusions(0, None))
 }
 
 class StubEiLListServiceOneExclusion @Inject() (
@@ -88,10 +89,10 @@ class StubEiLListServiceOneExclusion @Inject() (
   private val john: EiLPerson =
     EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(status))
 
-  override def currentYearEiL(iabdType: String, year: Int)(implicit
+  override def currentYearEiL(iabdType: IabdType, year: Int)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
   ): Future[PbikExclusions] =
     //TODO use new migrated list here
-    Future.successful(PbikExclusions(1, List.empty))
+    Future.successful(PbikExclusions(1, None))
 }

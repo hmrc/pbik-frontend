@@ -19,9 +19,6 @@ package models.v1
 import models.v1
 import play.api.libs.json.{Format, Json}
 
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
-
 object IabdType extends Enumeration {
 
   type IabdType = Value
@@ -49,9 +46,31 @@ object IabdType extends Enumeration {
 
   implicit val formats: Format[IabdType] = Json.formatEnum(this)
 
+  private val iabdTypeToUrlParamNameMap: Map[IabdType, String] = Map(
+    "Asset-Transfer"                                                -> IabdType.AssetTransfer,
+    "Assets"                                                        -> IabdType.Assets,
+    "Car-Benefit"                                                   -> IabdType.CarBenefit,
+    "Car-Fuel-Benefit"                                              -> IabdType.CarFuelBenefit,
+    "Employer-Provided-Services"                                    -> IabdType.EmployerProvidedServices,
+    "Entertaining"                                                  -> IabdType.Entertaining,
+    "Expenses"                                                      -> IabdType.Expenses,
+    "Income-Tax-Paid-but-not-deducted-from-Director's-Remuneration" -> IabdType.IncomeTaxPaidButNotDeductedFromDirectorRemuneration,
+    "Medical-Insurance"                                             -> IabdType.MedicalInsurance,
+    "Mileage"                                                       -> IabdType.Mileage,
+    "Non-qualifying-Relocation-Expenses"                            -> IabdType.NonQualifyingRelocationExpenses,
+    "Other-Items"                                                   -> IabdType.OtherItems,
+    "Payments-on-Employee's-Behalf"                                 -> IabdType.PaymentsOnEmployeeBehalf,
+    "Qualifying-Relocation-Expenses"                                -> IabdType.QualifyingRelocationExpenses,
+    "Telephone"                                                     -> IabdType.Telephone,
+    "Travel-and-Subsistence"                                        -> IabdType.TravelAndSubsistence,
+    "Van-Benefit"                                                   -> IabdType.VanBenefit,
+    "Van-Fuel-Benefit"                                              -> IabdType.VanFuelBenefit,
+    "Vouchers-and-Credit-Cards"                                     -> IabdType.VouchersAndCreditCards
+  ).map(_.swap)
+
   implicit class IabdTypeOps(value: IabdType) {
-    def encodedName: String =
-      URLEncoder.encode(value.toString, StandardCharsets.UTF_8.toString)
+    def convertToUrlParam: String =
+      iabdTypeToUrlParamNameMap(value)
   }
 
 }
