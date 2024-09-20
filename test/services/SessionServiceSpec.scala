@@ -97,8 +97,10 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
     "cache the current exclusions" in {
       val currentExclusions = PbikExclusions(
         0,
-        List(
-          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
+        Some(
+          List(
+            PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
+          )
         )
       )
       val session           = pbikSession.copy(currentExclusions = Some(currentExclusions))
@@ -114,8 +116,10 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
       val currentExclusions = PbikExclusions(
         0,
-        List(
-          PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
+        Some(
+          List(
+            PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
+          )
         )
       )
 

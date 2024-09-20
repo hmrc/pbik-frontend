@@ -128,11 +128,11 @@ class ExclusionListController @Inject() (
     implicit val hc: HeaderCarrier =
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     if (exclusionsAllowed) {
-      val iabdType = IabdType(Bik.asNPSTypeValue(iabdString).toInt).encodedName
+      val iabd = IabdType(Bik.asNPSTypeValue(iabdString).toInt)
       for {
         year           <- validateRequest(isCurrentTaxYear, iabdString)
         nextYearList   <- bikListService.nextYearList
-        currentYearEIL <- eiLListService.currentYearEiL(iabdType, year)
+        currentYearEIL <- eiLListService.currentYearEiL(iabd, year)
       } yield {
         sessionService.storeCurrentExclusions(currentYearEIL)
         Ok(
@@ -140,7 +140,7 @@ class ExclusionListController @Inject() (
             controllersReferenceData.yearRange,
             isCurrentTaxYear,
             iabdString,
-            currentYearEIL.getPBIKExclusionList.sortWith(_.surname < _.surname),
+            currentYearEIL.exclusions.sortWith(_.surname < _.surname),
             form
           )
         ).removingFromSession(HeaderTags.ETAG).addingToSession(nextYearList.headers.toSeq: _*)
@@ -637,7 +637,7 @@ class ExclusionListController @Inject() (
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       if (exclusionsAllowed) {
         val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
-          val selectedPerson: PbikExclusionPerson = session.get.currentExclusions.get.getPBIKExclusionList
+          val selectedPerson: PbikExclusionPerson = session.get.currentExclusions.get.exclusions
             .filter(person => person.nationalInsuranceNumber == nino)
             .head
           sessionService

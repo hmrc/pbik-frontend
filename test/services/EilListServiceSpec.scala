@@ -18,10 +18,11 @@ package services
 
 import connectors.PbikConnector
 import controllers.FakePBIKApplication
+import models.v1.IabdType
 import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
 import models.v1.trace.TracePersonResponse
 import models.{AuthenticatedRequest, EmpRef, UserName}
-import org.mockito.ArgumentMatchers.{any, anyInt, anyString}
+import org.mockito.ArgumentMatchers.{any, anyInt}
 import org.mockito.Mockito._
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
@@ -48,8 +49,8 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
 
     val els = app.injector.instanceOf[EiLListService]
 
-    when(els.tierConnector.getAllExcludedEiLPersonForBik(anyString(), any(), anyInt())(any()))
-      .thenReturn(Future.successful(Right(PbikExclusions(0, List.empty[PbikExclusionPerson]))))
+    when(els.tierConnector.getAllExcludedEiLPersonForBik(any(), any(), anyInt())(any()))
+      .thenReturn(Future.successful(Right(PbikExclusions(0, None))))
 
     els
   }
@@ -67,7 +68,9 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
           request,
           None
         )
-      val result                                                                      = await(eilService.currentYearEiL("services", year))
+
+      val result = await(eilService.currentYearEiL(IabdType.Mileage, year))
+
       result.getPBIKExclusionList.size shouldBe 0
     }
 

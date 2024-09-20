@@ -19,6 +19,7 @@ package services
 import config.PbikAppConfig
 import connectors.PbikConnector
 import models.AuthenticatedRequest
+import models.v1.IabdType.IabdType
 import models.v1.exclusion.PbikExclusions
 import models.v1.trace.TracePersonResponse
 import uk.gov.hmrc.http.HeaderCarrier
@@ -33,12 +34,12 @@ class EiLListService @Inject() (
   val tierConnector: PbikConnector
 )(implicit ec: ExecutionContext) {
 
-  def currentYearEiL(iabdString: String, year: Int)(implicit
+  def currentYearEiL(iabdType: IabdType, year: Int)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[_]
   ): Future[PbikExclusions] = {
     val response = tierConnector.getAllExcludedEiLPersonForBik(
-      iabdString,
+      iabdType,
       request.empRef,
       year
     )
@@ -47,7 +48,7 @@ class EiLListService @Inject() (
       case Right(eilList) => Future.successful(eilList)
       case Left(error)    =>
         Future.failed(
-          new GenericServerErrorException(s"Error getting pbik exclusions for $iabdString and $year: $error")
+          new GenericServerErrorException(s"Error getting pbik exclusions for ${iabdType.toString} and $year: $error")
         )
     }
   }
