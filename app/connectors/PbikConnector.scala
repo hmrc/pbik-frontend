@@ -147,7 +147,10 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
   def excludeEiLPersonFromBik(empRef: EmpRef, year: Int, body: UpdateExclusionPersonForABenefitRequest)(implicit
     hc: HeaderCarrier,
     request: Request[_]
-  ): Future[Int] =
+  ): Future[Int] = {
+    logger.info(
+      s"[PbikConnector][excludeEiLPersonFromBik] Excluding EiL person from BIK, ${Json.toJson(body).toString()}"
+    )
     client
       .post(url"${getExcludedPersonsURL(empRef, year)}")
       .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
@@ -162,6 +165,7 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
         response
       }
       .map(_.status)
+  }
 
   def removeEiLPersonExclusionFromBik(
     iabdType: IabdType,
