@@ -30,7 +30,12 @@ object PbikExclusionPersonWithBenefitRequest {
   def apply(employerLock: Int, person: PbikExclusionPerson): PbikExclusionPersonWithBenefitRequest =
     PbikExclusionPersonWithBenefitRequest(
       employerLock,
-      PbikExclusionPersonDeleteRequest(person.nationalInsuranceNumber, person.optimisticLock)
+      PbikExclusionPersonDeleteRequest(
+        person.nationalInsuranceNumber,
+        person.firstForename,
+        person.surname,
+        person.optimisticLock
+      )
     )
 
 }
