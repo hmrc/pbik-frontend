@@ -153,6 +153,14 @@ class PbikConnector @Inject() (client: HttpClientV2, configuration: Configuratio
       .setHeader(createOrCheckForRequiredHeaders.toSeq: _*)
       .withBody(Json.toJson(body))
       .execute[HttpResponse]
+      .map { response =>
+        if (response.status >= 400) {
+          logger.error(
+            s"[PbikConnector][excludeEiLPersonFromBik] an error code was returned. status=${response.status} body=${response.body}"
+          )
+        }
+        response
+      }
       .map(_.status)
 
   def removeEiLPersonExclusionFromBik(
