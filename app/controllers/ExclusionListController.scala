@@ -31,6 +31,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc._
 import services.{BikListService, EiLListService, SessionService}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -552,7 +553,7 @@ class ExclusionListController @Inject() (
   private def auditExclusion(exclusion: Boolean, year: Int, employee: String, iabdType: IabdType)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[AnyContent]
-  ) =
+  ): Future[AuditResult] =
     splunkLogger.logSplunkEvent(
       splunkLogger.createDataEvent(
         tier = splunkLogger.FRONTEND,
@@ -643,13 +644,14 @@ class ExclusionListController @Inject() (
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       if (exclusionsAllowed) {
         val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
-          val selectedPerson: PbikExclusionPerson = session.get.currentExclusions.get.exclusions
-            .filter(person => person.nationalInsuranceNumber == nino)
-            .head
+          val employerOptimisticLock: Int                 = session.get.currentExclusions.get.currentEmployerOptimisticLock
+          val currentExclusions: Seq[PbikExclusionPerson] =
+            session.map(_.currentExclusions.map(_.exclusions).getOrElse(List.empty)).getOrElse(List.empty)
+          val selectedPerson: Option[PbikExclusionPerson] = currentExclusions
+            .find(person => person.nationalInsuranceNumber == nino)
+
           sessionService
-            .storeEiLPerson(
-              SelectedExclusionToRemove(session.get.currentExclusions.get.currentEmployerOptimisticLock, selectedPerson)
-            )
+            .storeEiLPerson(SelectedExclusionToRemove(employerOptimisticLock, selectedPerson.get))
             .map { _ =>
               Redirect(routes.ExclusionListController.showRemovalConfirmation(year, iabdType))
             }

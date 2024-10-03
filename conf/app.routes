@@ -61,8 +61,8 @@ GET         /:year/:iabdType/exclude-employee-results-single     controllers.Exc
 
 GET         /:year/:iabdType/exclusion-complete                  controllers.ExclusionListController.showExclusionConfirmation(year: String, iabdType: models.v1.IabdType.IabdType)
 
-GET         /:year/:iabdType/check-employee-details              controllers.ExclusionListController.showRemovalConfirmation(year: String, iabdType: models.v1.IabdType.IabdType)
 GET         /:year/:iabdType/exclude-employee-remove/:nino       controllers.ExclusionListController.remove(year: String, iabdType: models.v1.IabdType.IabdType, nino: String)
+GET         /:year/:iabdType/check-employee-details              controllers.ExclusionListController.showRemovalConfirmation(year: String, iabdType: models.v1.IabdType.IabdType)
 GET         /:iabdType/employee-registration-complete            controllers.ExclusionListController.showRemovalWhatsNext(iabdType: models.v1.IabdType.IabdType)
 POST        /:iabdType/employee-registration-complete            controllers.ExclusionListController.removeExclusionsCommit(iabdType: models.v1.IabdType.IabdType)
 
