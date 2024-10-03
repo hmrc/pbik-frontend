@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package models
+package models.form
 
-import play.api.libs.json.{Json, OFormat}
+import models.v1.exclusion.Gender.Gender
 
-case class PbikError(errorCode: String)
-
-object PbikError {
-  implicit val pbikErrorFormat: OFormat[PbikError] = Json.format[PbikError]
-}
+case class NoNinoForm(firstName: String, surname: String, dateOfBirth: DateOfBirth, gender: Gender)

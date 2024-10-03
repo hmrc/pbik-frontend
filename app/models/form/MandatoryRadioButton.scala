@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package models.form
 
 import play.api.libs.json.{Json, OFormat}
 
-case class BinaryRadioButton(selectionValue: Option[String])
+case class MandatoryRadioButton(selectionValue: String)
 
-object BinaryRadioButton {
-  implicit val addRemoveDecisionFormats: OFormat[BinaryRadioButton] = Json.format[BinaryRadioButton]
+object MandatoryRadioButton {
+  implicit val mandatoryDecisionFormats: OFormat[MandatoryRadioButton] = Json.format[MandatoryRadioButton]
 }

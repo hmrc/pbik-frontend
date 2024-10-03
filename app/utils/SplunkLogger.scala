@@ -16,8 +16,9 @@
 
 package utils
 
-import models._
+import models.auth.AuthenticatedRequest
 import models.v1.exclusion.PbikExclusionPerson
+import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.DataEvent
@@ -109,7 +110,7 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
     iabd: Option[String] = None,
     removeReason: Option[String] = None,
     removeReasonDesc: Option[String] = None,
-    name: Option[UserName],
+    name: Option[String],
     empRef: Option[EmpRef]
   ): DataEvent = {
 
@@ -126,7 +127,7 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
 
     val entities               = Seq(
       key_event_name   -> pbik_event_name,
-      key_gateway_user -> name.map(_.toString).getOrElse(pbik_no_ref),
+      key_gateway_user -> name.getOrElse(pbik_no_ref),
       key_empref       -> empRef.map(_.toString).getOrElse(pbik_no_ref),
       key_tier         -> tier.toString,
       key_action       -> action.toString,
@@ -156,8 +157,8 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
       auditType = pbik_error_type,
       detail = Map(
         key_event_name   -> pbik_event_name,
-        key_gateway_user -> request.name.getOrElse(pbik_no_ref),
-        key_empref       -> request.empRef.getOrElse(pbik_no_ref),
+        key_gateway_user -> request.userId.getOrElse(pbik_no_ref),
+        key_empref       -> request.empRef.toString,
         key_tier         -> tier.toString,
         key_error        -> error.toString,
         key_message      -> msg
@@ -183,25 +184,10 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
       CYP1
     }
 
-  def extractPersonListNino(headlist: EiLPersonList): String =
-    headlist.active.headOption match {
-      case Some(x) => x.nino
-      case None    => SplunkLogger.pbik_no_ref
-    }
-
-  def extractListNino(headlist: List[EiLPerson]): String =
-    headlist.headOption match {
-      case Some(x) => x.nino
-      case None    => SplunkLogger.pbik_no_ref
-    }
-
   def extractListNinoFromExclusions(headlist: List[PbikExclusionPerson]): String =
     headlist.headOption match {
       case Some(x) => x.nationalInsuranceNumber
       case None    => SplunkLogger.pbik_no_ref
     }
-
-  def extractGovernmentGatewayString(implicit request: AuthenticatedRequest[_]): String =
-    request.name.getOrElse(pbik_no_ref)
 
 }

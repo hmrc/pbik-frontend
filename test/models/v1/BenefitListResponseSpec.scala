@@ -16,9 +16,9 @@
 
 package models.v1
 
-import org.scalatestplus.play.PlaySpec
+import base.FakePBIKApplication
 
-class BenefitListResponseSpec extends PlaySpec {
+class BenefitListResponseSpec extends FakePBIKApplication {
 
   private val (currentOptimisticLock, payrolledBenefitInKindExclusionCount): (Int, Int) = (99, 9)
 

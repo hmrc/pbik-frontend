@@ -29,12 +29,14 @@
 @(
         taxYearRange: TaxYearRange,
         isCurrentTaxYear: String,
-        iabdString: String,
+        iabdType: IabdType,
         current: List[PbikExclusionPerson],
         form: Form[MandatoryRadioButton]
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), form.hasErrors)) {
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
+
+@govukLayoutWrapper(PageTitle(benefitLabel, form.hasErrors)) {
 
     @defining( if(isCurrentTaxYear=="cy"){ taxYearRange.cyminus1 } else { taxYearRange.cy }){ yearvalue =>
 
@@ -51,12 +53,12 @@
             </div>
         }
 
-        @pageTitleHeading(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))
+        @pageTitleHeading(benefitLabel)
 
-        @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdString)) {
+        @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdType)) {
 
             @if(current.isEmpty) {
-                <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), yearvalue.toString())</p>
+                <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", benefitLabel, yearvalue.toString())</p>
             } else {
                 @if(isCurrentTaxYear=="cy"){
                     <div class="govuk-inset-text">
@@ -87,7 +89,7 @@
                             <td class="govuk-table__cell" id="nino-@person.nationalInsuranceNumber">@person.nationalInsuranceNumber</td>
                             <td class="govuk-table__cell" id="wpn-@person.nationalInsuranceNumber">@person.worksPayrollNumber</td>
                             <td class="govuk-table__cell">
-                                <a class="govuk-link" id='@person.nationalInsuranceNumber-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdString, person.nationalInsuranceNumber)">
+                                <a class="govuk-link" id='@person.nationalInsuranceNumber-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdType, person.nationalInsuranceNumber)">
                                     @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nationalInsuranceNumber</span>
                                 </a>
                             </td>

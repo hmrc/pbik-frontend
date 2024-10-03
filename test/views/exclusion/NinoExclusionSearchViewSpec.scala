@@ -16,7 +16,9 @@
 
 package views.exclusion
 
-import models._
+import models.auth.AuthenticatedRequest
+import models.form.NinoForm
+import models.v1.IabdType
 import play.api.data.Form
 import play.twirl.api.Html
 import utils.FormMappings
@@ -28,16 +30,18 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
   val ninoExclusionSearchFormView: NinoExclusionSearchForm = app.injector.instanceOf[NinoExclusionSearchForm]
 
-  def viewWithForm(form: Form[EiLPerson])(implicit request: AuthenticatedRequest[_]): Html =
-    ninoExclusionSearchFormView(taxYearRange, "cyp1", "medical", form, alreadyExists = true)
+  private val iabdType = IabdType.Mileage
+
+  def viewWithForm(form: Form[NinoForm])(implicit request: AuthenticatedRequest[_]): Html =
+    ninoExclusionSearchFormView(taxYearRange, "cyp1", iabdType, form, alreadyExists = true)
 
   "NinoExclusionSearchView - organisation" must {
     implicit def view: Html =
-      viewWithForm(formMappings.exclusionSearchFormWithoutNino(organisationRequest))(organisationRequest)
+      viewWithForm(formMappings.exclusionSearchFormWithNino(organisationRequest))(organisationRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     behave like pageWithHeader(messages("ExclusionSearch.form.header"))
-    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/nino/search-for-employee", "Continue")
+    behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee", "Continue")
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
     behave like pageWithTextBox("surname", messages("Service.field.surname"))
@@ -79,11 +83,11 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   "NinoExclusionSearchView - agent" must {
     implicit def view: Html =
-      viewWithForm(formMappings.exclusionSearchFormWithoutNino(agentRequest))(agentRequest)
+      viewWithForm(formMappings.exclusionSearchFormWithNino(agentRequest))(agentRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     behave like pageWithHeader(messages("ExclusionSearch.form.header"))
-    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/nino/search-for-employee", "Continue")
+    behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee", "Continue")
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
     behave like pageWithTextBox("surname", messages("Service.field.surname"))

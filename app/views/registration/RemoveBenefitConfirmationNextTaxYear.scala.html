@@ -28,13 +28,13 @@
         isCurrentYear: Boolean,
         taxYearRange:TaxYearRange,
         bikList: RegistrationList,
-        iabdString:String
+        iabdType: IabdType
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(isCurrentYear) cyminus1 else cy}
-@benefitLabel = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
+@benefitLabel = @{messages(s"BenefitInKind.label.${iabdType.id}")}
 @summaryLink = @{
     if(isCurrentYear){
         routes.HomePageController.onPageLoadCY
@@ -83,7 +83,7 @@
             </dt>
             <dd class="govuk-summary-list__value">
                 @for(item <- bikList.active.indices) {
-                <p class="govuk-body">@messages("BenefitInKind.label." + bikList.active(item).id.toString)</p>
+                <p class="govuk-body">@messages("BenefitInKind.label." + bikList.active(item).iabdType.id)</p>
                 }
             </dd>
         </div>

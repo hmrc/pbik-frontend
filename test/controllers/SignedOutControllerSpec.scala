@@ -16,7 +16,7 @@
 
 package controllers
 
-import org.scalatestplus.play.PlaySpec
+import base.FakePBIKApplication
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -25,7 +25,7 @@ import views.html.SignedOut
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
-class SignedOutControllerSpec extends PlaySpec with FakePBIKApplication {
+class SignedOutControllerSpec extends FakePBIKApplication {
 
   implicit val ec: ExecutionContextExecutor                    = ExecutionContext.global
   private val messagesActionBuilder: MessagesActionBuilder     =

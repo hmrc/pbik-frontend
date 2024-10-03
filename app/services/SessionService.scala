@@ -18,7 +18,8 @@ package services
 
 import models._
 import models.cache.MissingSessionIdException
-import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions, SelectedExclusionToRemove}
+import models.v1.BenefitListResponse
+import models.v1.exclusion.{PbikExclusions, SelectedExclusionToRemove}
 import models.v1.trace.TracePersonListResponse
 import play.api.Logging
 import repositories.SessionRepository
@@ -37,22 +38,16 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
       Value
   }
 
-  //TODO investigate if we can remove all this default object creation
-  private val cleanRegistrationList: Option[RegistrationList] = Some(
-    RegistrationList(None, List.empty[RegistrationItem], None)
-  )
-  private val cleanBikRemoved: Option[RegistrationItem]       = Some(RegistrationItem("", active = false, enabled = false))
-  private val cleanBikList: Option[List[Bik]]                 = Some(List.empty[Bik])
-  private def cleanSession(sessionId: String): PbikSession    =
+  private def cleanSession(sessionId: String): PbikSession =
     PbikSession(
       sessionId,
-      cleanRegistrationList,
-      cleanBikRemoved,
       None,
       None,
       None,
-      cleanBikList,
-      cleanBikList
+      None,
+      None,
+      None,
+      None
     )
 
   private def getSessionFromHeaderCarrier(hc: HeaderCarrier): Either[Exception, String] =
@@ -85,10 +80,10 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
   def storeCurrentExclusions(value: PbikExclusions)(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.CurrentExclusions, value)
 
-  def storeCYRegisteredBiks(value: List[Bik])(implicit hc: HeaderCarrier): Future[PbikSession] =
+  def storeCYRegisteredBiks(value: BenefitListResponse)(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.CYRegisteredBiks, value)
 
-  def storeNYRegisteredBiks(value: List[Bik])(implicit hc: HeaderCarrier): Future[PbikSession] =
+  def storeNYRegisteredBiks(value: BenefitListResponse)(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.NYRegisteredBiks, value)
 
   def resetAll()(implicit hc: HeaderCarrier): Future[Boolean] =
@@ -111,8 +106,10 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
         case CacheKeys.EiLPerson         => session.copy(eiLPerson = Some(value.asInstanceOf[SelectedExclusionToRemove]))
         case CacheKeys.CurrentExclusions =>
           session.copy(currentExclusions = Some(value.asInstanceOf[PbikExclusions]))
-        case CacheKeys.CYRegisteredBiks  => session.copy(cyRegisteredBiks = Some(value.asInstanceOf[List[Bik]]))
-        case CacheKeys.NYRegisteredBiks  => session.copy(nyRegisteredBiks = Some(value.asInstanceOf[List[Bik]]))
+        case CacheKeys.CYRegisteredBiks  =>
+          session.copy(cyRegisteredBiks = Some(value.asInstanceOf[BenefitListResponse]))
+        case CacheKeys.NYRegisteredBiks  =>
+          session.copy(nyRegisteredBiks = Some(value.asInstanceOf[BenefitListResponse]))
         case _                           =>
           logger.warn(s"[SessionService][storeSession] No matching keys found - returning current session")
           session

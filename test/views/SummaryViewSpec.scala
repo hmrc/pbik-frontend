@@ -16,8 +16,8 @@
 
 package views
 
-import models.v1.{IabdType, PbikStatus}
-import models.{AuthenticatedRequest, Bik}
+import models.auth.AuthenticatedRequest
+import models.v1.{BenefitInKindWithCount, IabdType, PbikStatus}
 import org.jsoup.Jsoup
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
@@ -25,13 +25,20 @@ import views.html.Summary
 
 class SummaryViewSpec extends PBIKViewSpec {
 
-  private val summaryView: Summary      = app.injector.instanceOf[Summary]
-  private val carIabdType: String       = IabdType.CarBenefit.id.toString
-  private val carBik: Bik               = Bik(carIabdType, PbikStatus.ValidPayrollingBenefitInKind.id)
-  private val serviceBiksCountCY: Int   = 0
-  private val serviceBiksCountCYP1: Int = 200
+  private val summaryView: Summary               = app.injector.instanceOf[Summary]
+  private val carIabdType: String                = IabdType.CarBenefit.id.toString
+  private val carBik: BenefitInKindWithCount     =
+    BenefitInKindWithCount(IabdType.CarBenefit, PbikStatus.ValidPayrollingBenefitInKind, 2)
+  private val medicalBik: BenefitInKindWithCount =
+    BenefitInKindWithCount(IabdType.MedicalInsurance, PbikStatus.ValidPayrollingBenefitInKind, 2)
+  private val serviceBiksCountCY: Int            = 0
+  private val serviceBiksCountCYP1: Int          = 200
 
-  def view(benefitsCY: List[Bik], benefitsCY1: List[Bik], showChangeYearLink: Boolean = true)(implicit
+  def view(
+    benefitsCY: List[BenefitInKindWithCount],
+    benefitsCY1: List[BenefitInKindWithCount],
+    showChangeYearLink: Boolean = true
+  )(implicit
     request: AuthenticatedRequest[_]
   ): Html =
     summaryView(
@@ -45,7 +52,7 @@ class SummaryViewSpec extends PBIKViewSpec {
     )
 
   "overview with benefits - organisation" must {
-    implicit val html: Html = view(List.empty, List(carBik))(organisationRequest)
+    implicit val html: Html = view(List.empty, List(carBik, medicalBik))(organisationRequest)
 
     behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))
     behave like pageWithHeader(messages("Overview.benefitsRegistered.heading"))

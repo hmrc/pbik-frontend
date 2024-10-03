@@ -16,7 +16,9 @@
 
 package views.templatemodels
 
-import models.{AuthenticatedRequest, RegistrationList}
+import models.RegistrationList
+import models.auth.AuthenticatedRequest
+import models.v1.IabdType
 import play.api.data.Form
 import play.twirl.api.Html
 import utils.FormMappings
@@ -29,7 +31,7 @@ class CheckboxIdSpec extends PBIKViewSpec {
   val nextTaxYearView: NextTaxYear = app.injector.instanceOf[NextTaxYear]
 
   def viewWithForm(form: Form[RegistrationList])(implicit request: AuthenticatedRequest[_]): Html =
-    nextTaxYearView(form, additive = true, taxYearRange, List(), List(), List(), List(), 1)
+    nextTaxYearView(form, additive = true, taxYearRange, List(), isExhausted = false, List(), List())
 
   "first" should {
     "return a link to the first form checkbox" in {
@@ -38,14 +40,14 @@ class CheckboxIdSpec extends PBIKViewSpec {
           .withError("actives", "error")
           .bind(
             Map[String, String](
-              "actives[2].uid" -> "32",
-              "actives[0].uid" -> "35",
-              "actives[1].uid" -> "32"
+              "actives[2].uid" -> IabdType.Telephone.id.toString,
+              "actives[0].uid" -> IabdType.VanBenefit.id.toString,
+              "actives[1].uid" -> IabdType.Telephone.id.toString
             )
           )
       )(organisationRequest)
 
-      doc must haveLinkWithUrlWithID("error-link", "checkbox-35")
+      doc must haveLinkWithUrlWithID("error-link", s"checkbox-${IabdType.VanBenefit.id.toString}")
     }
 
     "return a link to the first form checkbox ignoring id of always last 'Other' field" in {
@@ -54,14 +56,14 @@ class CheckboxIdSpec extends PBIKViewSpec {
           .withError("actives", "error")
           .bind(
             Map[String, String](
-              "actives[0].uid" -> "47",
-              "actives[1].uid" -> "2",
-              "actives[2].uid" -> "35"
+              "actives[0].uid" -> IabdType.OtherItems.id.toString,
+              "actives[1].uid" -> IabdType.NonQualifyingRelocationExpenses.id.toString,
+              "actives[2].uid" -> IabdType.VanFuelBenefit.id.toString
             )
           )
       )(organisationRequest)
 
-      doc must haveLinkWithUrlWithID("error-link", "checkbox-2")
+      doc must haveLinkWithUrlWithID("error-link", s"checkbox-${IabdType.NonQualifyingRelocationExpenses.id.toString}")
     }
 
     "returns an empty link where a form is constructed with 0 elements" in {

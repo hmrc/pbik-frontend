@@ -18,10 +18,10 @@ package utils
 
 import controllers.actions.AuthAction
 import models.agent.{AccountsOfficeReference, Client}
-import models.{AuthenticatedRequest, EmpRef, UserName}
+import models.auth.AuthenticatedRequest
 import play.api.mvc.Results._
 import play.api.mvc.{BodyParsers, Request, Result}
-import uk.gov.hmrc.auth.core.retrieve.Name
+import uk.gov.hmrc.domain.EmpRef
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,7 +30,6 @@ class TestAuthActionAgent @Inject() (val parser: BodyParsers.Default)(implicit v
     extends AuthAction {
 
   private val empRef: EmpRef              = EmpRef("123", "AB12345")
-  private val username: UserName          = UserName(Name(Some("test"), Some("tester")))
   private val agentClient: Option[Client] = Some(
     Client(
       uk.gov.hmrc.domain.EmpRef(empRef.taxOfficeNumber, empRef.taxOfficeReference),
@@ -47,7 +46,7 @@ class TestAuthActionAgent @Inject() (val parser: BodyParsers.Default)(implicit v
       implicit val authenticatedRequest: AuthenticatedRequest[A] =
         AuthenticatedRequest(
           empRef,
-          username,
+          Some("tester"),
           request,
           agentClient
         )

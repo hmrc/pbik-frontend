@@ -16,8 +16,8 @@
 
 package views.exclusion
 
+import models.auth.AuthenticatedRequest
 import models.v1.IabdType
-import models.{AuthenticatedRequest, Bik}
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
 import views.html.exclusion.WhatNextRescind
@@ -30,7 +30,7 @@ class WhatNextRescindViewSpec extends PBIKViewSpec {
   private def view(implicit request: AuthenticatedRequest[_]): Html = whatNextRescindView(
     taxYearRange,
     "cyp1",
-    Bik.asBenefitString(benefit.id.toString),
+    benefit,
     exclusionPerson
   )
 
@@ -45,7 +45,7 @@ class WhatNextRescindViewSpec extends PBIKViewSpec {
     )
     behave like pageWithLink(
       messages("whatNext.exclude.more.p.link", "Car fuel"),
-      "/payrollbik/cyp1/car-fuel/excluded-employees"
+      s"/payrollbik/cyp1/${benefit.id}/excluded-employees"
     )
   }
 
@@ -60,7 +60,7 @@ class WhatNextRescindViewSpec extends PBIKViewSpec {
     )
     behave like pageWithLink(
       messages("whatNext.exclude.more.p.link", "Car fuel"),
-      "/payrollbik/cyp1/car-fuel/excluded-employees"
+      s"/payrollbik/cyp1/${benefit.id}/excluded-employees"
     )
   }
 }

@@ -23,7 +23,6 @@ import utils.Exceptions.InvalidYearURIException
 
 import java.time.LocalDate
 import javax.inject.Singleton
-import scala.concurrent.Future
 
 @Singleton
 class TaxDateUtils {
@@ -40,11 +39,11 @@ class TaxDateUtils {
 
   def isCurrentTaxYear(yearToCheck: Int): Boolean = yearToCheck == getCurrentTaxYear(getDefaultDate)
 
-  def mapYearStringToInt(URIYearString: String, yearRange: TaxYearRange): Future[Int] =
+  def mapYearStringToInt(URIYearString: String, yearRange: TaxYearRange): Int =
     URIYearString match {
-      case utils.FormMappingsConstants.CY   => Future.successful(yearRange.cyminus1)
-      case utils.FormMappingsConstants.CYP1 => Future.successful(yearRange.cy)
-      case _                                => Future.failed(throw new InvalidYearURIException())
+      case utils.FormMappingsConstants.CY   => yearRange.cyminus1
+      case utils.FormMappingsConstants.CYP1 => yearRange.cy
+      case _                                => throw new InvalidYearURIException()
     }
 
   def getDisplayTodayDate(today: LocalDate = getDefaultDate)(implicit messages: Messages): String =

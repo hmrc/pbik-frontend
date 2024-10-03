@@ -26,12 +26,12 @@
 @(
         taxYearRange: TaxYearRange,
         isCurrentTaxYear: String,
-        iabdString: String,
+        iabdType: IabdType,
         previousSelection: String = "",
         form: Form[MandatoryRadioButton]
 )(implicit request: Request[_], messages: Messages)
 
-@expenseOrBenefit = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
+@expenseOrBenefit = @{messages(s"BenefitInKind.label.${iabdType.id}")}
 @govukLayoutWrapper(PageTitle(messages("ExclusionNinoDecision.title", form.hasErrors), form.hasErrors)) {
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
@@ -49,7 +49,7 @@
             </div>
         }
 
-        @formWithCSRF(action = routes.ExclusionListController.withOrWithoutNinoDecision(isCurrentTaxYear, iabdString)) {
+        @formWithCSRF(action = routes.ExclusionListController.withOrWithoutNinoDecision(isCurrentTaxYear, iabdType)) {
 
             <div class="govuk-form-group @if(form.hasErrors){govuk-form-group--error}">
                 <fieldset class="govuk-fieldset" @if(form.hasErrors){aria-describedby="error-list-no-selection"}>

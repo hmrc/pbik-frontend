@@ -19,7 +19,6 @@ package support
 import config.PbikAppConfig
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.mvc.MessagesControllerComponents
 import services.{BikListService, EiLListService, SessionService}
@@ -41,7 +40,6 @@ class MockExclusionsDisallowedController @Inject() (
   bikListService: BikListService,
   sessionService: SessionService,
   tierConnector: PbikConnector,
-  runModeConfiguration: Configuration,
   taxDateUtils: TaxDateUtils,
   splunkLogger: SplunkLogger,
   controllersReferenceData: ControllersReferenceData,
@@ -66,7 +64,6 @@ class MockExclusionsDisallowedController @Inject() (
       bikListService,
       sessionService,
       tierConnector,
-      runModeConfiguration,
       taxDateUtils,
       splunkLogger,
       controllersReferenceData,
@@ -80,5 +77,5 @@ class MockExclusionsDisallowedController @Inject() (
       removalConfirmationView,
       whatNextRescindView
     ) {
-  override lazy val exclusionsAllowed = false
+  override val exclusionsAllowed = false
 }

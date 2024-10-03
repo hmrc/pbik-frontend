@@ -16,10 +16,12 @@
 
 package views.helper
 
+import base.FakePBIKApplication
 import models.agent.{AccountsOfficeReference, Client}
+import models.auth.AuthenticatedRequest
 import models.v1.exclusion.PbikExclusionPerson
 import models.v1.trace.TracePersonResponse
-import models.{AuthenticatedRequest, EmpRef, TaxYearRange, UserName}
+import models.TaxYearRange
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatestplus.play.PlaySpec
@@ -29,8 +31,9 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.retrieve.Name
+import uk.gov.hmrc.domain.EmpRef
 
-trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
+trait PBIKViewBehaviours extends FakePBIKApplication with JsoupMatchers {
 
   def doc(implicit view: Html): Document = Jsoup.parse(view.toString())
 
@@ -115,27 +118,12 @@ trait PBIKViewBehaviours extends PlaySpec with JsoupMatchers {
     }
 }
 
-trait PBIKBaseViewSpec extends PlaySpec with GuiceOneAppPerSuite {
-
-  val empRef: EmpRef = EmpRef("123", "AB12345")
-
-  private val username: UserName = UserName(Name(Some("test"), Some("tester")))
-  private val organisationClient = None
-  private val agentClient        = Some(
-    Client(
-      uk.gov.hmrc.domain.EmpRef(empRef.taxOfficeNumber, empRef.taxOfficeReference),
-      AccountsOfficeReference("123AB12345678", "123", "A", "12345678"),
-      Some("client test name"),
-      lpAuthorisation = false,
-      None,
-      None
-    )
-  )
+trait PBIKBaseViewSpec extends FakePBIKApplication {
 
   val organisationRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
-    AuthenticatedRequest(empRef, username, FakeRequest(), organisationClient)
+    AuthenticatedRequest(empRef, Some("tester"), FakeRequest(), organisationClient)
   val agentRequest: AuthenticatedRequest[AnyContentAsEmpty.type]        =
-    AuthenticatedRequest(empRef, username, FakeRequest(), agentClient)
+    AuthenticatedRequest(empRef, Some("tester"), FakeRequest(), agentClient)
   implicit val messages: Messages                                       = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
   val cyMessages: Messages                                              = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
 

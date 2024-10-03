@@ -16,16 +16,16 @@
 
 package controllers.actions
 
-import play.api.Configuration
+import config.PbikAppConfig
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class BrokenAuthConnector(exception: Throwable, httpClient: HttpClientV2, configuration: Configuration)
-    extends AuthConnector(httpClient, configuration) {
+class BrokenAuthConnector(exception: Throwable, httpClient: HttpClientV2, pbikAppConfig: PbikAppConfig)
+    extends AuthConnector(httpClient, pbikAppConfig) {
   override val serviceUrl: String = ""
 
   override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit

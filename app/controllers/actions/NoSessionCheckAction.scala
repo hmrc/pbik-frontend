@@ -19,9 +19,9 @@ package controllers.actions
 import java.util.UUID
 
 import com.google.inject.ImplementedBy
+import models.auth.AuthenticatedRequest
 
 import javax.inject.{Inject, Singleton}
-import models.AuthenticatedRequest
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 

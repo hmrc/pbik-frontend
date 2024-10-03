@@ -16,14 +16,12 @@
 
 package controllers.actions
 
-import models.{AuthenticatedRequest, EmpRef, UserName}
+import base.FakePBIKApplication
+import models.auth.AuthenticatedRequest
 import org.apache.pekko.util.Timeout
-import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.await
-import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.SessionKeys
 
 import java.util.UUID
@@ -32,7 +30,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-class NoSessionCheckActionSpec extends PlaySpec with GuiceOneAppPerSuite {
+class NoSessionCheckActionSpec extends FakePBIKApplication {
 
   class Harness extends NoSessionCheckActionImpl {
     def callTransform[A](request: AuthenticatedRequest[A]): Future[Either[Result, AuthenticatedRequest[A]]] =
@@ -45,8 +43,8 @@ class NoSessionCheckActionSpec extends PlaySpec with GuiceOneAppPerSuite {
     "there is a session" must {
       "leave the request unfiltered" in {
         val requestWithSessionID = AuthenticatedRequest(
-          EmpRef.empty,
-          UserName(Name(None, None)),
+          empRef,
+          None,
           FakeRequest("", "")
             .withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}"),
           None
@@ -59,7 +57,7 @@ class NoSessionCheckActionSpec extends PlaySpec with GuiceOneAppPerSuite {
     "the session is not set" must {
       "redirect user to home page controller " in {
         val request                                       =
-          AuthenticatedRequest(EmpRef.empty, UserName(Name(None, None)), FakeRequest("", ""), None)
+          AuthenticatedRequest(empRef, None, FakeRequest("", ""), None)
         val result                                        = new Harness().callTransform(request)
         val call: Either[Result, AuthenticatedRequest[_]] = await(result)
         call match {

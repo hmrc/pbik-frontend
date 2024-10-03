@@ -16,14 +16,14 @@
 
 package controllers
 
-import org.scalatestplus.play.PlaySpec
+import base.FakePBIKApplication
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 
 import scala.concurrent.Future
 
-class RedirectControllerSpec extends PlaySpec with FakePBIKApplication {
+class RedirectControllerSpec extends FakePBIKApplication {
 
   private val messagesControllerComponents: MessagesControllerComponents =
     app.injector.instanceOf[MessagesControllerComponents]

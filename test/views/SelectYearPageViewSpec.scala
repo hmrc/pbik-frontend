@@ -16,7 +16,7 @@
 
 package views
 
-import models.AuthenticatedRequest
+import models.auth.AuthenticatedRequest
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec

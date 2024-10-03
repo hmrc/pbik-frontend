@@ -16,9 +16,10 @@
 
 package models
 
+import models.v1.IabdType.IabdType
 import play.api.libs.json.{Json, OFormat}
 
-case class RegistrationItem(id: String, active: Boolean, enabled: Boolean)
+case class RegistrationItem(iabdType: IabdType, active: Boolean, enabled: Boolean)
 
 object RegistrationItem {
   implicit val registrationItemsFormats: OFormat[RegistrationItem] = Json.format[RegistrationItem]

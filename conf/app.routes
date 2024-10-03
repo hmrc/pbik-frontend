@@ -38,38 +38,37 @@ POST        /cy/check-the-benefits                              controllers.regi
 
 GET         /:year/registration-complete                         controllers.WhatNextPageController.showWhatNextRegisteredBik(year: String)
 
-
 ## Remove registrations
-GET         /cy1/:iabdString/remove-benefit-expense                controllers.registration.ManageRegistrationController.checkYourAnswersRemoveNextTaxYear(iabdString: String)
-POST        /cy1/:iabdString/remove-benefit-expense                controllers.registration.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(iabdString: String)
-GET         /cy1/:iabdString/declare-remove-benefit-expense        controllers.registration.ManageRegistrationController.showConfirmRemoveNextTaxYear(iabdString: String)
-GET         /cy1/:iabdString/confirm-remove-benefit-expense        controllers.registration.ManageRegistrationController.submitConfirmRemoveNextTaxYear(iabdString: String)
+GET         /cy1/:iabdType/remove-benefit-expense                controllers.registration.ManageRegistrationController.checkYourAnswersRemoveNextTaxYear(iabdType: models.v1.IabdType.IabdType)
+POST        /cy1/:iabdType/remove-benefit-expense                controllers.registration.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(iabdType: models.v1.IabdType.IabdType)
+GET         /cy1/:iabdType/declare-remove-benefit-expense        controllers.registration.ManageRegistrationController.showConfirmRemoveNextTaxYear(iabdType: models.v1.IabdType.IabdType)
+GET         /cy1/:iabdType/confirm-remove-benefit-expense        controllers.registration.ManageRegistrationController.submitConfirmRemoveNextTaxYear(iabdType: models.v1.IabdType.IabdType)
 
-GET         /cy1/:iabdString/benefit-removed                       controllers.WhatNextPageController.showWhatNextRemovedBik(iabdString: String)
+GET         /cy1/:iabdType/benefit-removed                       controllers.WhatNextPageController.showWhatNextRemovedBik(iabdType: models.v1.IabdType.IabdType)
 
 ## Manage exclusion list
-GET         /:year/:iabdString/excluded-employees                  controllers.ExclusionListController.performPageLoad(year: String, iabdString: String)
-POST        /:year/:iabdString/excluded-employees                  controllers.ExclusionListController.submitExcludedEmployees(year: String, iabdString: String)
+GET         /:year/:iabdType/excluded-employees                  controllers.ExclusionListController.performPageLoad(year: String, iabdType: models.v1.IabdType.IabdType)
+POST        /:year/:iabdType/excluded-employees                  controllers.ExclusionListController.submitExcludedEmployees(year: String, iabdType: models.v1.IabdType.IabdType)
 
-GET         /:year/:iabdString/employee-national-insurance-number  controllers.ExclusionListController.withOrWithoutNinoOnPageLoad(year: String, iabdString: String)
-POST        /:year/:iabdString/employee-national-insurance-number  controllers.ExclusionListController.withOrWithoutNinoDecision(year: String, iabdString: String)
+GET         /:year/:iabdType/employee-national-insurance-number  controllers.ExclusionListController.withOrWithoutNinoOnPageLoad(year: String, iabdType: models.v1.IabdType.IabdType)
+POST        /:year/:iabdType/employee-national-insurance-number  controllers.ExclusionListController.withOrWithoutNinoDecision(year: String, iabdType: models.v1.IabdType.IabdType)
 
-GET         /:year/:iabdString/:formType/search-for-employee       controllers.ExclusionListController.showExclusionSearchForm(year: String, iabdString: String, formType: String)
-POST        /:year/:iabdString/:formType/search-for-employee       controllers.ExclusionListController.searchResults(year: String, iabdString: String, formType: String)
-GET         /:year/:iabdString/:formType/exclude-employee-results  controllers.ExclusionListController.showResults(year: String, iabdString: String, formType: String)
-POST        /:year/:iabdString/:formType/exclude-employee-results  controllers.ExclusionListController.updateMultipleExclusions(year: String, iabdString: String, formType: String)
-GET         /:year/:iabdString/exclude-employee-results-single     controllers.ExclusionListController.updateExclusions(year: String, iabdString: String)
+GET         /:year/:iabdType/:formType/search-for-employee       controllers.ExclusionListController.showExclusionSearchForm(year: String, iabdType: models.v1.IabdType.IabdType, formType: String)
+POST        /:year/:iabdType/:formType/search-for-employee       controllers.ExclusionListController.searchResults(year: String, iabdType: models.v1.IabdType.IabdType, formType: String)
+GET         /:year/:iabdType/:formType/exclude-employee-results  controllers.ExclusionListController.showResults(year: String, iabdType: models.v1.IabdType.IabdType, formType: String)
+POST        /:year/:iabdType/:formType/exclude-employee-results  controllers.ExclusionListController.updateMultipleExclusions(year: String, iabdType: models.v1.IabdType.IabdType, formType: String)
+GET         /:year/:iabdType/exclude-employee-results-single     controllers.ExclusionListController.updateExclusions(year: String, iabdType: models.v1.IabdType.IabdType)
 
-GET         /:year/:iabdString/exclusion-complete                  controllers.ExclusionListController.showExclusionConfirmation(year: String, iabdString: String)
+GET         /:year/:iabdType/exclusion-complete                  controllers.ExclusionListController.showExclusionConfirmation(year: String, iabdType: models.v1.IabdType.IabdType)
 
-GET         /:year/:iabdString/check-employee-details              controllers.ExclusionListController.showRemovalConfirmation(year: String, iabdString: String)
-GET         /:year/:iabdString/exclude-employee-remove/:nino       controllers.ExclusionListController.remove(year: String, iabdString: String, nino: String)
-GET         /:iabdString/employee-registration-complete            controllers.ExclusionListController.showRemovalWhatsNext(iabdString: String)
-POST        /:iabdString/employee-registration-complete            controllers.ExclusionListController.removeExclusionsCommit(iabdString: String)
+GET         /:year/:iabdType/check-employee-details              controllers.ExclusionListController.showRemovalConfirmation(year: String, iabdType: models.v1.IabdType.IabdType)
+GET         /:year/:iabdType/exclude-employee-remove/:nino       controllers.ExclusionListController.remove(year: String, iabdType: models.v1.IabdType.IabdType, nino: String)
+GET         /:iabdType/employee-registration-complete            controllers.ExclusionListController.showRemovalWhatsNext(iabdType: models.v1.IabdType.IabdType)
+POST        /:iabdType/employee-registration-complete            controllers.ExclusionListController.removeExclusionsCommit(iabdType: models.v1.IabdType.IabdType)
 
 ## Remove registrations other
-GET         /cy1/:iabdString/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.showRemoveBenefitOtherReason(iabdString: String)
-POST        /cy1/:iabdString/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdString: String)
+GET         /cy1/:iabdType/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.showRemoveBenefitOtherReason(iabdType: models.v1.IabdType.IabdType)
+POST        /cy1/:iabdType/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdType: models.v1.IabdType.IabdType)
 
 GET         /keep-alive                                          controllers.SignedOutController.keepAlive()
 GET         /we-signed-you-out                                   controllers.SignedOutController.signedOut()

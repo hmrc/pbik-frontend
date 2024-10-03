@@ -32,10 +32,9 @@
     additive: Boolean,
     taxYearRange: TaxYearRange,
     previouslySelectedBenefits: Seq[RegistrationItem]= List.empty[RegistrationItem],
-    registeredBiks: Seq[Bik] = List.empty[Bik],
+    isExhausted: Boolean,
     nonLegislationBiks: Seq[Int],
-    decommissionedBiks: Seq[Int],
-    biksAvailableCount: Int
+    decommissionedBiks: Seq[Int]
 )(implicit request: AuthenticatedRequest[_], messages: Messages)
 
 @title = @{if(additive) {messages("AddBenefits.Heading", "" + taxYearRange.cy, "" + taxYearRange.cyplus1)} else {messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)}}
@@ -63,7 +62,7 @@
 
         @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.checkYourAnswersAddNextTaxYear) {
 
-            @if(registeredBiks.size == biksAvailableCount) {
+            @if(isExhausted) {
                 <div class="govuk-panel govuk-panel--confirmation">
                     <div class="govuk-panel__body">
                         @messages("ManagingRegistration.add.exhausted")
@@ -92,7 +91,7 @@
                                 @if(activeField("uid").value.isDefined && activeField("uid").value.get != "47" && !nonLegislationBiks.contains(activeField("uid").value.get.toInt) && !decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
                                     <div class="govuk-checkboxes__item">
                                         <input type="hidden" id='actives_@{index}_uid' name='actives[@index].uid' value='@activeField("uid").value.get'/>
-                                        <input class="govuk-checkboxes__input" type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true" @if(previouslySelectedBenefits.filter(x => x.id == activeField("uid").value.get && x.active).length == 1) {checked} @if(activeField("uid").value.get == "47"){aria-describedby="actives[@index].hint"}/>
+                                        <input class="govuk-checkboxes__input" type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true" @if(previouslySelectedBenefits.filter(x => x.iabdType.id.toString() == activeField("uid").value.get && x.active).length == 1) {checked} @if(activeField("uid").value.get == "47"){aria-describedby="actives[@index].hint"}/>
                                         <label class="govuk-label govuk-checkboxes__label" for="checkbox-@activeField("uid").value.get">@messages("BenefitInKind.label." + activeField("uid").value.get)</label>
                                         @if(activeField("uid").value.get == "47") {
                                             <div id="actives[@index].hint" class="govuk-hint govuk-checkboxes__hint">
@@ -108,7 +107,7 @@
                                         <input type="hidden" id='actives_@{
                                             index
                                         }_uid' name='actives[@index].uid' value='@activeField("uid").value.get'/>
-                                        <input class="govuk-checkboxes__input" type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true" @if(previouslySelectedBenefits.filter(x => x.id == activeField("uid").value.get && x.active).length == 1) {checked} @if(activeField("uid").value.get == "47") {aria-describedby="actives[@index].hint"}/>
+                                        <input class="govuk-checkboxes__input" type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true" @if(previouslySelectedBenefits.filter(x => x.iabdType.id.toString() == activeField("uid").value.get && x.active).length == 1) {checked} @if(activeField("uid").value.get == "47") {aria-describedby="actives[@index].hint"}/>
                                         <label class="govuk-label govuk-checkboxes__label" for="checkbox-@activeField("uid").value.get">@messages("BenefitInKind.label." + activeField("uid").value.get)</label>
                                         <div id="actives[@index].hint" class="govuk-hint govuk-checkboxes__hint">
                                             @messages("BenefitInKind.hint." + activeField("uid").value.get)

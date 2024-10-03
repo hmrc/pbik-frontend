@@ -17,8 +17,9 @@
 package views.registration
 
 import config.PbikAppConfig
+import models.auth.AuthenticatedRequest
 import models.v1.IabdType
-import models.{AuthenticatedRequest, RegistrationItem, RegistrationList}
+import models.{RegistrationItem, RegistrationList}
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -37,7 +38,7 @@ class ConfirmUpdateNextTaxYearViewSpec extends PBIKViewSpec {
   implicit val appConfig: PbikAppConfig    = app.injector.instanceOf[PbikAppConfig]
   val bikList: RegistrationList            = RegistrationList(active = List.empty[RegistrationItem])
   val removalBik: Option[RegistrationItem] = Some(
-    RegistrationItem(IabdType.MedicalInsurance.id.toString, active = true, enabled = true)
+    RegistrationItem(IabdType.MedicalInsurance, active = true, enabled = true)
   )
 
   "nextYearPage - organisation" must {

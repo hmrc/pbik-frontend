@@ -16,6 +16,7 @@
 
 package controllers.actions
 
+import base.FakePBIKApplication
 import config.PbikAppConfig
 import connectors.AgentPayeConnector
 import controllers.actions.AuthActionSpec.AuthRetrievals
@@ -23,9 +24,6 @@ import controllers.actions.AuthConnector
 import models.auth.EpayeSessionKeys
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
-import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Configuration
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers}
@@ -36,7 +34,7 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
+class AuthActionSpec extends FakePBIKApplication {
 
   private val enrolment: Enrolment                       = Enrolment(
     key = "IR-PAYE",
@@ -139,7 +137,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
             new BrokenAuthConnector(
               new MissingBearerToken,
               mock(classOf[HttpClientV2]),
-              app.injector.instanceOf[Configuration]
+              pbikConfig
             ),
             app.injector.instanceOf[BodyParsers.Default],
             app.injector.instanceOf[PbikAppConfig],
@@ -162,7 +160,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
             new BrokenAuthConnector(
               InsufficientEnrolments("Insufficient enrolments test exception"),
               mock(classOf[HttpClientV2]),
-              app.injector.instanceOf[Configuration]
+              pbikConfig
             ),
             app.injector.instanceOf[BodyParsers.Default],
             app.injector.instanceOf[PbikAppConfig],
@@ -248,7 +246,7 @@ class AuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
             new BrokenAuthConnector(
               new MissingBearerToken,
               mock(classOf[HttpClientV2]),
-              app.injector.instanceOf[Configuration]
+              pbikConfig
             ),
             app.injector.instanceOf[BodyParsers.Default],
             app.injector.instanceOf[PbikAppConfig],

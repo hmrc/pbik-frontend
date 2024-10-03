@@ -28,16 +28,16 @@
 
 @(
     form: Form[OtherReason],
-    iabdString: String
+    iabdType: IabdType
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
 @govukLayoutWrapper( PageTitle(messages("RemoveBenefits.other.title"), form.hasErrors)) {
 
 @errorSummary(form.errors)
 
-    @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdString)) {
+    @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdType)) {
 
         @hmrcCharacterCount(CharacterCount(
             id = "otherReason",

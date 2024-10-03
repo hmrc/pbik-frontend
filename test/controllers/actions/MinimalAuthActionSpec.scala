@@ -16,12 +16,10 @@
 
 package controllers.actions
 
+import base.FakePBIKApplication
 import config.PbikAppConfig
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
-import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Configuration
 import play.api.http.Status._
 import play.api.mvc._
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
@@ -32,7 +30,7 @@ import uk.gov.hmrc.http.client.HttpClientV2
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
+class MinimalAuthActionSpec extends FakePBIKApplication {
 
   private class Harness(
     authAction: MinimalAuthAction,
@@ -69,7 +67,7 @@ class MinimalAuthActionSpec extends PlaySpec with GuiceOneAppPerSuite {
           new BrokenAuthConnector(
             new MissingBearerToken,
             mock(classOf[HttpClientV2]),
-            app.injector.instanceOf[Configuration]
+            app.injector.instanceOf[PbikAppConfig]
           ),
           app.injector.instanceOf[BodyParsers.Default],
           app.injector.instanceOf[PbikAppConfig]

@@ -17,6 +17,9 @@
 package views.exclusion
 
 import models._
+import models.auth.AuthenticatedRequest
+import models.form.NoNinoForm
+import models.v1.IabdType
 import play.api.data.Form
 import play.twirl.api.Html
 import utils.FormMappings
@@ -28,15 +31,17 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
   private val formMappings: FormMappings    = app.injector.instanceOf[FormMappings]
   private val noNinoExclusionSearchFormView = app.injector.instanceOf[NoNinoExclusionSearchForm]
 
-  private def viewWithForm(form: Form[EiLPerson])(implicit request: AuthenticatedRequest[_]): Html =
-    noNinoExclusionSearchFormView(taxYearRange, "cyp1", "medical", form, alreadyExists = true)
+  private val iabdType = IabdType.Mileage
+
+  private def viewWithForm(form: Form[NoNinoForm])(implicit request: AuthenticatedRequest[_]): Html =
+    noNinoExclusionSearchFormView(taxYearRange, "cyp1", iabdType, form, alreadyExists = true)
 
   "NoNinoExclusionSearchView - organisation" must {
     implicit def view: Html =
       viewWithForm(formMappings.exclusionSearchFormWithoutNino(organisationRequest))(organisationRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
-    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/no-nino/search-for-employee", "Continue")
+    behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/no-nino/search-for-employee", "Continue")
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
     behave like pageWithTextBox("surname", messages("Service.field.surname"))
     behave like pageWithTextBox("dob.day", messages("Service.field.dob.day"))
@@ -101,7 +106,7 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
     implicit def view: Html = viewWithForm(formMappings.exclusionSearchFormWithoutNino(agentRequest))(agentRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
-    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/no-nino/search-for-employee", "Continue")
+    behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/no-nino/search-for-employee", "Continue")
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
     behave like pageWithTextBox("surname", messages("Service.field.surname"))
     behave like pageWithTextBox("dob.day", messages("Service.field.dob.day"))

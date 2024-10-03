@@ -24,14 +24,14 @@
 
 @(
         taxYearRange: TaxYearRange,
-        iabdString:String,
+        iabdType: IabdType,
         person:PbikExclusionPerson
 )(implicit request: AuthenticatedRequest[_], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
 @govukLayoutWrapper(PageTitle(messages("ExclusionRemovalConfirmation.title"))) {
-    <span class="govuk-caption-xl">@messages("BenefitInKind.label."+ Bik.asNPSTypeValue(iabdString))</span>
+    <span class="govuk-caption-xl">@benefitLabel</span>
     <h1 id="title" class="govuk-heading-xl">
         @messages("ExclusionRemovalConfirmation.title")
     </h1>
@@ -40,7 +40,7 @@
         @messages("ExclusionRemovalConfirmation.p", person.fullName, benefitLabel, ""+taxYearRange.cy)
     </p>
 
-    @formWithCSRF(action=routes.ExclusionListController.removeExclusionsCommit(iabdString)) {
+    @formWithCSRF(action=routes.ExclusionListController.removeExclusionsCommit(iabdType)) {
             <table class="govuk-table">
                 <caption class="govuk-table__caption govuk-visually-hidden">
                     @messages("ExclusionRemovalConfirmation.table.title")

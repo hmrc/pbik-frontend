@@ -16,105 +16,93 @@
 
 package services
 
+import base.FakePBIKApplication
 import connectors.PbikConnector
-import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
-import models._
-import models.v1.{IabdType, PbikStatus}
+import models.auth.AuthenticatedRequest
 import models.v1.IabdType.IabdType
+import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType, PbikStatus}
 import org.mockito.ArgumentMatchers.{any, anyInt, eq => argEq}
 import org.mockito.Mockito._
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.Application
 import play.api.http.Status.OK
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
-import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import utils.{TaxDateUtils, TestMinimalAuthAction}
 import views.html.registration.NextTaxYear
 
 import scala.concurrent.Future
 
-class RegistrationServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKApplication with I18nSupport {
+class RegistrationServiceSpec extends FakePBIKApplication {
+
+  private val mockConnector      = mock(classOf[PbikConnector])
+  private val mockBikListService = mock(classOf[BikListService])
+
+  private val benefitTypes: Set[IabdType]            = IabdType.values
+  private val cyCache: Set[BenefitInKindWithCount]   =
+    benefitTypes
+      .map(n => BenefitInKindWithCount(n, PbikStatus.ValidPayrollingBenefitInKind, 3))
+      .filter(_.iabdType != IabdType.OtherItems)
+  private val cyp1Cache: Set[BenefitInKindWithCount] =
+    benefitTypes.map(n => BenefitInKindWithCount(n, PbikStatus.ValidPayrollingBenefitInKind, 3))
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
-    .overrides(bind[BikListService].toInstance(mock(classOf[BikListService])))
-    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
+    .overrides(bind[BikListService].toInstance(mockBikListService))
+    .overrides(bind[PbikConnector].toInstance(mockConnector))
     .build()
-  private val registrationService: RegistrationService = {
-    val responseHeaders: Map[String, String] = HeaderTags.createResponseHeaders()
 
-    val service                          = app.injector.instanceOf[RegistrationService]
-    lazy val benefitTypes: Set[IabdType] = IabdType.values
-    lazy val CYCache: Set[Bik]           = benefitTypes.map(n => Bik("" + n.id, PbikStatus.ValidPayrollingBenefitInKind.id))
+  lazy val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
+  lazy val cy: Int                    = taxDateUtils.getCurrentTaxYear()
+  lazy val cyp1: Int                  = taxDateUtils.getCurrentTaxYear() + 1
 
-    when(service.bikListService.getAllBenefitsForYear(anyInt())(any()))
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockConnector)
+    reset(mockBikListService)
+
+    when(mockBikListService.getAllBenefitsForYear(anyInt())(any()))
       .thenReturn(Future.successful(benefitTypes))
 
     // Return instance where not all Biks have been registered for CY
     when(
-      service.tierConnector
-        .getRegisteredBiks(any(), argEq(injected[TaxDateUtils].getCurrentTaxYear()))(any())
-    ) thenReturn Future.successful(
-      BikResponse(
-        responseHeaders,
-        CYCache.filter { x: Bik =>
-          Integer.parseInt(x.iabdType) <= 3
-        }
-      )
-    )
+      mockConnector
+        .getRegisteredBiks(any(), argEq(cy))(any())
+    ).thenReturn(Future.successful(BenefitListResponse(Some(cyCache.toList), 9)))
 
     // Return instance where not all Biks have been registered for CYP1
     when(
-      service.tierConnector
-        .getRegisteredBiks(any(), argEq(injected[TaxDateUtils].getCurrentTaxYear() + 1))(any())
-    ) thenReturn Future.successful(
-      BikResponse(
-        responseHeaders,
-        CYCache.filter { x: Bik =>
-          Integer.parseInt(x.iabdType) <= 5
-        }
-      )
-    )
-
-    service
+      mockConnector
+        .getRegisteredBiks(any(), argEq(cyp1))(any())
+    ).thenReturn(Future.successful(BenefitListResponse(Some(cyp1Cache.toList), 19)))
   }
 
-  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  private val registrationService: RegistrationService = app.injector.instanceOf[RegistrationService]
+
+  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
+
+  val request: FakeRequest[AnyContentAsEmpty.type]                    = mockRequest
+  lazy val nextTaxYearView: NextTaxYear                               = app.injector.instanceOf[NextTaxYear]
+  implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(request)
+  implicit val hc: HeaderCarrier                                      = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
 
   "When generating a page which allows registrations, the service" should {
     "return the selection page" in {
-      val request: FakeRequest[AnyContentAsEmpty.type]                    = mockRequest
-      val nextTaxYearView                                                 = app.injector.instanceOf[NextTaxYear]
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(
-          EmpRef("taxOfficeNumber", "taxOfficeReference"),
-          UserName(Name(None, None)),
-          request,
-          None
-        )
-      implicit val hc: HeaderCarrier                                      = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      val taxDateUtils                                                    = injected[TaxDateUtils]
-      val YEAR_RANGE                                                      = taxDateUtils.getTaxYearRange()
-
       val result =
         registrationService.generateViewForBikRegistrationSelection(
-          YEAR_RANGE.cyminus1,
-          "add",
-          nextTaxYearView(_, additive = true, YEAR_RANGE, _, _, _, _, _)
+          taxDateUtils.getTaxYearRange().cyminus1,
+          nextTaxYearView(_, additive = true, taxDateUtils.getTaxYearRange(), _, _, _, _)
         )
 
-      status(result)        shouldBe OK
-      contentAsString(result) should include(Messages("AddBenefits.Heading"))
-      contentAsString(result) should include(Messages("BenefitInKind.label.47"))
+      status(result) mustBe OK
+      contentAsString(result) must include(messages("AddBenefits.Heading"))
+      contentAsString(result) must include(messages(s"BenefitInKind.label.${IabdType.OtherItems.id}"))
     }
   }
 

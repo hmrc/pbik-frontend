@@ -16,24 +16,24 @@
 
 package utils
 
-import controllers.FakePBIKApplication
+import base.FakePBIKApplication
+import models.RegistrationItem
 import models.v1.IabdType._
-import models.v1.{IabdType, PbikAction, PbikStatus}
-import models.{Bik, RegistrationItem}
-import org.scalatestplus.play.PlaySpec
+import models.v1.{BenefitInKindWithCount, IabdType, PbikStatus}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 
-class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
+class BikListUtilsSpec extends FakePBIKApplication {
 
   val bikListUtils: BikListUtils                            = app.injector.instanceOf[BikListUtils]
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val iabds: Set[IabdType]                                  = IabdType.values
     .filter(x => x.id != IabdType.CarFuelBenefit.id)
-  val biks: List[Bik]                                       = iabds
+  val biks: List[BenefitInKindWithCount]                    = iabds
     .filter(x => x.id != IabdType.CarFuelBenefit.id)
-    .map(x => Bik(x.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id))
+    .map(x => BenefitInKindWithCount(x, PbikStatus.ValidPayrollingBenefitInKind, 1))
     .toList
+  val bikIabds: Set[IabdType]                               = biks.map(x => x.iabdType).toSet
   private val alphaSorted                                   = List(
     Assets,
     AssetTransfer,
@@ -53,140 +53,63 @@ class BikListUtilsSpec extends PlaySpec with FakePBIKApplication {
     VanFuelBenefit,
     VanBenefit,
     VouchersAndCreditCards
-  ).map(x => x.id)
-  private val registeredIabs                                = Set(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, VanBenefit, Mileage)
-  private val registered: Set[Bik]                          =
-    registeredIabs.map(x => Bik(x.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
-  private val modifications: List[Bik]                      = List(
-    Bik(AssetTransfer.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
-    Bik(PaymentsOnEmployeeBehalf.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
-    Bik(VouchersAndCreditCards.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
-    Bik(NonQualifyingRelocationExpenses.id.toString, PbikAction.RemovePayrolledBenefitInKind.id),
-    Bik(OtherItems.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id),
-    Bik(IncomeTaxPaidButNotDeductedFromDirectorRemuneration.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id)
   )
-  private val normaliseResult: List[Int]                    = List(
-    AssetTransfer.id,
-    OtherItems.id,
-    PaymentsOnEmployeeBehalf.id,
-    IncomeTaxPaidButNotDeductedFromDirectorRemuneration.id,
-    VouchersAndCreditCards.id
-  ).sorted
+  private val registeredIabs                                = Set(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, VanBenefit, Mileage)
+  private val registered: Set[BenefitInKindWithCount]       =
+    registeredIabs.map(x => BenefitInKindWithCount(x, PbikStatus.ValidPayrollingBenefitInKind, 1))
 
   "The Biks, when sorted Alphabetically according to labels" should {
     "result in the correct order" in {
-      assert(bikListUtils.sortAlphabeticallyByLabels(biks).map(x => x.iabdType.toInt) == alphaSorted)
+      bikListUtils
+        .sortAlphabeticallyByLabels(biks)
+        .map(x => x.iabdType) must contain theSameElementsInOrderAs alphaSorted
     }
   }
 
   "The Biks, when sorted Alphabetically according to labels" should {
     "be the same size as the original list" in {
-      assert(bikListUtils.sortAlphabeticallyByLabels(biks).size == biks.size)
-    }
-  }
-
-  "The Registration Items, when sorted Alphabetically according to labels" should {
-    "result in the correct order" in {
-      assert(
-        bikListUtils
-          .sortRegistrationsAlphabeticallyByLabels(bikListUtils.mergeSelected(biks, biks))
-          .active
-          .map(x => x.id.toInt) == alphaSorted
-      )
-    }
-  }
-
-  "The Registration Items, when sorted Alphabetically according to labels" should {
-    "be the same size as the original list" in {
-      assert(
-        bikListUtils
-          .sortRegistrationsAlphabeticallyByLabels(bikListUtils.mergeSelected(biks, biks))
-          .active
-          .size == biks.size
-      )
-    }
-  }
-
-  "When normalising additions and removals from a registered list of Biks, the remainder" should {
-    "result in the correct values" in {
-      val ubinNormed =
-        bikListUtils.normaliseSelectedBenefits(registered, modifications).map(x => x.iabdType.toInt).sorted
-      assert(ubinNormed == normaliseResult)
-    }
-  }
-
-  "When normalising additions and removals from a registered list of Biks, the remainder" should {
-    "not contain duplicates" in {
-      val normalised = bikListUtils.normaliseSelectedBenefits(registered, modifications)
-      assert(normalised.size == normalised.distinct.size)
+      bikListUtils.sortAlphabeticallyByLabels(biks).size mustBe biks.size
     }
   }
 
   "When removing matches is supplied the same list for the initial & checked lists, the remainder" should {
     "should be empty" in {
-      val shouldBeEmpty = bikListUtils.removeMatches(registeredIabs, registered)
-      assert(shouldBeEmpty.active.isEmpty)
+      val mustBeEmpty = bikListUtils.removeMatches(registeredIabs, registered.map(_.iabdType))
+      mustBeEmpty.active must be(empty)
     }
   }
 
   "When removing matches the head element, the remainder" should {
     "should be the tail" in {
       val fullIabds = Set(IabdType.Assets, IabdType.CarFuelBenefit, IabdType.CarBenefit, IabdType.VanBenefit)
-      val finalBiks = Bik(IabdType.Assets.id.toString, PbikStatus.ValidPayrollingBenefitInKind.id)
+      val finalBiks = BenefitInKindWithCount(IabdType.Assets, PbikStatus.ValidPayrollingBenefitInKind, 3)
 
       val expectedRegistrationList = fullIabds.tail.map { x =>
-        RegistrationItem(x.id.toString, active = false, enabled = true)
+        RegistrationItem(x, active = false, enabled = true)
       }
 
-      val shouldBeTail = bikListUtils.removeMatches(fullIabds, Set(finalBiks)).active
+      val mustBeTail = bikListUtils.removeMatches(fullIabds, Set(finalBiks).map(_.iabdType)).active
 
-      expectedRegistrationList must contain allElementsOf shouldBeTail
-    }
-  }
-
-  "When merging the same list, the size of the matches" should {
-    "equal the size of the list" in {
-      assert(bikListUtils.mergeSelected(biks, biks).active.size == biks.size)
-    }
-  }
-
-  "When merging a large list, with a subset of that list, the size of the merge results" should {
-    "equal the size of the superset" in {
-      assert(bikListUtils.mergeSelected(biks, registered.toList).active.size == biks.size)
-    }
-  }
-
-  "When merging an original list, with an unconnected list, the size of the merge results" should {
-    "equal the size of the original list as the unconnected elements wont be added" in {
-      val iabdType1       = 100000
-      val iabdType2       = 100001
-      val status          = 40
-      val unconnectedList = List(Bik("" + iabdType1, status), Bik("" + iabdType2, status))
-      assert(bikListUtils.mergeSelected(biks, unconnectedList).active.size == biks.size)
-    }
-  }
-
-  "When merging selected lists  all of the results" should {
-    "have their active flags set as false" in {
-      assert(bikListUtils.mergeSelected(biks, biks).active.map(x => x.active).count(identity) == biks.size)
+      expectedRegistrationList must contain allElementsOf mustBeTail
     }
   }
 
   "When removing two identical lists , the size of the merge results" should {
     "equal zero" in {
-      assert(bikListUtils.removeMatches(iabds, biks.toSet).active.isEmpty)
+      bikListUtils.removeMatches(iabds, bikIabds).active must be(empty)
     }
   }
 
   "When removing lists where one list has different elements the size" should {
     "equal the size of the different elements" in {
-      assert(bikListUtils.removeMatches(iabds, biks.toSet).active.isEmpty)
+      bikListUtils.removeMatches(iabds, bikIabds).active must be(empty)
     }
   }
 
   "When removing lists where both list have unique elements the size" should {
     "of the result should equal the total number of differences" in {
-      assert(bikListUtils.removeMatches(iabds, registered).active.size == biks.size - registered.size)
+      val registeredIabds = registered.map(x => x.iabdType)
+      bikListUtils.removeMatches(iabds, registeredIabds).active.size mustBe biks.size - registered.size
     }
   }
 

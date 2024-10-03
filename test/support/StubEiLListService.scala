@@ -16,83 +16,33 @@
 
 package support
 
-import config.PbikAppConfig
 import connectors.PbikConnector
 import models.v1.IabdType.IabdType
-import models.v1.exclusion.PbikExclusions
-import models.{AuthenticatedRequest, EiLPerson}
+import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
 import services.EiLListService
+import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class StubEiLListService @Inject() (
-  pbikAppConfig: PbikAppConfig,
-  tierConnector: PbikConnector
-)(implicit ec: ExecutionContext)
-    extends EiLListService(pbikAppConfig, tierConnector) {
+class StubEiLListService @Inject() (tierConnector: PbikConnector)(implicit ec: ExecutionContext)
+    extends EiLListService(tierConnector) {
 
-  //TODO migrate to new model
-  private lazy val ListOfPeople: List[EiLPerson] = List(
-    EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(status)),
-    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None),
-    EiLPerson(
-      "AC111111",
-      "Humpty",
-      Some("Alexander"),
-      "Dumpty",
-      Some("123"),
-      Some("01/01/1980"),
-      Some("male"),
-      Some(status)
-    ),
-    EiLPerson("AD111111", "Peter", Some("James"), "Johnson", None, None, None, None),
-    EiLPerson(
-      "AE111111",
-      "Alice",
-      Some("In"),
-      "Wonderland",
-      Some("123"),
-      Some("03/02/1978"),
-      Some("female"),
-      Some(status)
-    ),
-    EiLPerson(
-      "AF111111",
-      "Humpty",
-      Some("Alexander"),
-      "Dumpty",
-      Some("123"),
-      Some("01/01/1980"),
-      Some("male"),
-      Some(status)
+  override def exclusionListForYear(iabdType: IabdType, year: Int, empRef: EmpRef)(implicit
+    hc: HeaderCarrier
+  ): Future[PbikExclusions] =
+    Future.successful(
+      PbikExclusions(
+        0,
+        Some(
+          List(
+            PbikExclusionPerson("AB123456A", "John", Some("A"), "Doe", "12345", 11),
+            PbikExclusionPerson("AB123456B", "John", Some("A"), "Smith", "12345", 22),
+            PbikExclusionPerson("AB123456C", "Victor", Some("A"), "Doe", "12345", 33),
+            PbikExclusionPerson("AB123456D", "Victor", Some("A"), "Doe", "12345", 44)
+          )
+        )
+      )
     )
-  )
-  val status                                     = 10
-
-  override def currentYearEiL(iabdType: IabdType, year: Int)(implicit
-    hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]
-  ): Future[PbikExclusions] =
-    //TODO use new migrated list here
-    Future.successful(PbikExclusions(0, None))
-}
-
-class StubEiLListServiceOneExclusion @Inject() (
-  pbikAppConfig: PbikAppConfig,
-  tierConnector: PbikConnector
-)(implicit ec: ExecutionContext)
-    extends StubEiLListService(pbikAppConfig, tierConnector) {
-
-  //TODO migrate to new model
-  private val john: EiLPerson =
-    EiLPerson("AA111111", "John", Some("Stones"), "Smith", Some("123"), Some("01/01/1980"), Some("male"), Some(status))
-
-  override def currentYearEiL(iabdType: IabdType, year: Int)(implicit
-    hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]
-  ): Future[PbikExclusions] =
-    //TODO use new migrated list here
-    Future.successful(PbikExclusions(1, None))
 }

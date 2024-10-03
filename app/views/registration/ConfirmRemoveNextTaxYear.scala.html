@@ -27,9 +27,11 @@
 )
 
 @(
-        iabdString: String,
+        iabdType: IabdType,
         taxYearRange:TaxYearRange
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
+
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
 @govukLayoutWrapper(PageTitle(messages("RemoveBenefits.confirm.title"))) {
 
@@ -43,21 +45,21 @@
                             </dt>
                             <dd class="govuk-summary-list__value" id="table-value">
                                     <p class="govuk-body">
-                                        @messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString))
+                                        @benefitLabel
                                     </p>
                             </dd>
                         </div>
             </dl>
 
             <p class="govuk-body" id="benefit-info">
-                @messages("RemoveBenefits.confirm.p1." + request.userType, messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)), ""+taxYearRange.cy)
+                @messages("RemoveBenefits.confirm.p1." + request.userType, benefitLabel, ""+taxYearRange.cy)
             </p>
 
             <div class="govuk-inset-text" id="user-info">
                 @messages("RemoveBenefits.confirm.p2." + request.userType)
             </div>
 
-            <a class="govuk-button" href="@controllers.registration.routes.ManageRegistrationController.submitConfirmRemoveNextTaxYear(iabdString)" id="button-confirm">
+            <a class="govuk-button" href="@controllers.registration.routes.ManageRegistrationController.submitConfirmRemoveNextTaxYear(iabdType)" id="button-confirm">
                 @messages("Service.confirmAndContinue")
             </a>
     </div>

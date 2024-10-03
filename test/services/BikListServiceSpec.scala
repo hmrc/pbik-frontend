@@ -16,98 +16,147 @@
 
 package services
 
+import base.FakePBIKApplication
 import connectors.PbikConnector
-import controllers.FakePBIKApplication
 import controllers.actions.MinimalAuthAction
-import models._
+import models.auth.AuthenticatedRequest
+import models.v1._
 import org.mockito.ArgumentMatchers.{any, anyInt}
 import org.mockito.Mockito._
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
-import support.TestAuthUser
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.TestMinimalAuthAction
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
+import utils.Exceptions.GenericServerErrorException
+import utils.{ControllersReferenceData, TestMinimalAuthAction}
 
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
-import scala.language.postfixOps
 
-class BikListServiceSpec
-    extends AnyWordSpecLike
-    with Matchers
-    with OptionValues
-    with TestAuthUser
-    with FakePBIKApplication
-    with BeforeAndAfterEach {
+class BikListServiceSpec extends FakePBIKApplication {
+
+  private val mockConnector = mock(classOf[PbikConnector])
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
-    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
+    .overrides(bind[PbikConnector].toInstance(mockConnector))
     .build()
 
   lazy val bikListService: BikListService                                  = app.injector.instanceOf[BikListService]
-  implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createDummyUser(mockRequest)
-  implicit val hc: HeaderCarrier                                           = HeaderCarrier()
+  lazy val controllersReferenceData: ControllersReferenceData              = app.injector.instanceOf[ControllersReferenceData]
+  implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createAuthenticatedRequest(mockRequest)
+  implicit val hc: HeaderCarrier                                           = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
 
-  val responseHeaders: Map[String, String] = HeaderTags.createResponseHeaders()
-
-  val bikStatus30 = 30
-  val bikStatus40 = 40
   val bikEilCount = 10
 
-  override def beforeEach(): Unit =
-    reset(bikListService.tierConnector)
+  private val employerOptimisticLockResponse = 0
+  private val benefitTypes                   = BenefitTypes(Set(IabdType.CarBenefit, IabdType.VanFuelBenefit))
+  private val listBikWithCount               = benefitTypes.pbikTypes
+    .map(benefitType =>
+      BenefitInKindWithCount(
+        benefitType,
+        PbikStatus.ValidPayrollingBenefitInKind,
+        bikEilCount
+      )
+    )
+    .toList
+  private val benefitListResponse            = BenefitListResponse(Some(listBikWithCount), employerOptimisticLockResponse)
 
-  "The BIK service" should {
+  override def beforeEach(): Unit = {
+    super.beforeEach()
 
-    "Be able to get the BIKS for the current year - 2 returned" in {
-      val listBiks = Set(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
+    reset(mockConnector)
+  }
 
-      when(
-        bikListService.tierConnector.getRegisteredBiks(any(), anyInt())(any())
-      ).thenReturn(Future.successful(BikResponse(responseHeaders, listBiks)))
+  "BikListService" when {
 
-      val result: BikResponse = Await.result(bikListService.currentYearList, 10 seconds)
-      result.bikList shouldBe listBiks
-    }
+    ".getRegisteredBenefitsForYear" should {
 
-    "Be able to get the BIKS for the current year - no biks returned" in {
-      when(
-        bikListService.tierConnector.getRegisteredBiks(any(), anyInt())(any())
-      ).thenThrow(new IllegalStateException())
-      // Intercept exception
-      intercept[IllegalStateException] {
-        bikListService.currentYearList
+      "return a BenefitListResponse for the current year" in {
+        when(mockConnector.getRegisteredBiks(any(), anyInt())(any())).thenReturn(Future.successful(benefitListResponse))
+
+        val result = Await.result(
+          bikListService.getRegisteredBenefitsForYear(controllersReferenceData.yearRange.cyminus1),
+          5.seconds
+        )
+
+        result mustBe benefitListResponse
       }
-    }
 
-    "Be able to get the BIKS for the next year - 2 returned" in {
-      val listBiks = Set(Bik("31", bikStatus30, bikEilCount), Bik("36", bikStatus40, bikEilCount))
+      "return a BenefitListResponse for the next year" in {
+        when(mockConnector.getRegisteredBiks(any(), anyInt())(any())).thenReturn(Future.successful(benefitListResponse))
 
-      when(
-        bikListService.tierConnector.getRegisteredBiks(any(), anyInt())(any())
-      ).thenReturn(Future.successful(BikResponse(responseHeaders, listBiks)))
-      implicit val hc: HeaderCarrier = HeaderCarrier()
+        val result = Await.result(
+          bikListService.getRegisteredBenefitsForYear(controllersReferenceData.yearRange.cy),
+          5.seconds
+        )
 
-      val result = Await.result(bikListService.nextYearList, 10 seconds)
-
-      result.bikList shouldBe listBiks
-    }
-
-    "Be able to get the BIKS for the next year - no biks returned" in {
-      when(
-        bikListService.tierConnector.getRegisteredBiks(any(), anyInt())(any())
-      ).thenThrow(new IllegalStateException())
-
-      intercept[IllegalStateException] {
-        bikListService.nextYearList
+        result mustBe benefitListResponse
       }
+
+      "return a BenefitListResponse for the next year + 1" in {
+        when(mockConnector.getRegisteredBiks(any(), anyInt())(any())).thenReturn(Future.successful(benefitListResponse))
+
+        val exception = intercept[GenericServerErrorException] {
+          Await.result(
+            bikListService.getRegisteredBenefitsForYear(controllersReferenceData.yearRange.cyplus1),
+            5.seconds
+          )
+        }
+
+        exception.message mustBe s"Invalid year to store registered benefits ${controllersReferenceData.yearRange.cyplus1}"
+      }
+
+    }
+
+    ".currentYearList" should {
+
+      "return a BenefitListResponse for the current year" in {
+        when(mockConnector.getRegisteredBiks(any(), anyInt())(any())).thenReturn(Future.successful(benefitListResponse))
+
+        val result = Await.result(bikListService.currentYearList, 5.seconds)
+
+        result mustBe benefitListResponse
+      }
+
+    }
+
+    ".nextYearList" should {
+
+      "return a BenefitListResponse for the next year" in {
+        when(mockConnector.getRegisteredBiks(any(), anyInt())(any())).thenReturn(Future.successful(benefitListResponse))
+
+        val result = Await.result(bikListService.nextYearList, 5.seconds)
+
+        result mustBe benefitListResponse
+      }
+
+    }
+
+    ".getAllBenefitsForYear" should {
+
+      "return a set of IabdType for the given year" in {
+        when(mockConnector.getAllAvailableBiks(anyInt())(any())).thenReturn(Future.successful(Right(benefitTypes)))
+
+        val result =
+          Await.result(bikListService.getAllBenefitsForYear(controllersReferenceData.yearRange.cyminus1), 5.seconds)
+
+        result mustBe benefitTypes.pbikTypes
+      }
+
+      "throw a GenericServerErrorException if an error occurs" in {
+        val error = NPSErrors(List(NPSError("500", "Internal Server Error")))
+        when(mockConnector.getAllAvailableBiks(anyInt())(any())).thenReturn(Future.successful(Left(error)))
+
+        val exception = intercept[GenericServerErrorException] {
+          Await.result(bikListService.getAllBenefitsForYear(controllersReferenceData.yearRange.cyminus1), 5.seconds)
+        }
+
+        exception.message mustBe error.toString
+      }
+
     }
 
   }

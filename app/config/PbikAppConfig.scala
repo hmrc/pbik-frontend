@@ -19,6 +19,7 @@ package config
 import models.v1.IabdType
 import models.v1.IabdType.IabdType
 import play.api.Configuration
+import uk.gov.hmrc.domain.EmpRef
 
 import javax.inject.{Inject, Singleton}
 
@@ -29,6 +30,7 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
   lazy val maximumExclusions: Int         = configuration.get[Int]("pbik.exclusions.maximum")
 
   lazy val cyEnabled: Boolean                  = configuration.get[Boolean]("pbik.enabled.cy")
+  lazy val exclusionsAllowed: Boolean          = configuration.get[Boolean]("pbik.enabled.eil")
   lazy val biksNotSupported: Set[IabdType]     =
     configuration.get[Seq[Int]]("pbik.unsupported.biks.cy1").map(IabdType(_)).toSet
   lazy val biksNotSupportedCY: Set[IabdType]   =
@@ -64,5 +66,30 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
   private lazy val btaFrontendPath: String = configuration.get[String]("business-tax-account.url")
 
   lazy val btaAccountUrl: String = s"$btaFrontendHost$btaFrontendPath"
+
+  val authUrl: String = configuration.get[Service]("microservice.services.auth").toString
+
+  // NPS HIP urls
+  lazy val baseUrl: String = s"${configuration.get[Service]("microservice.services.pbik").toString}/epaye"
+
+  def getRegisteredBiksURL(empRef: EmpRef, year: Int) =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year"
+
+  def getBenefitTypesURL(year: Int) = s"$baseUrl/$year/getbenefittypes"
+
+  def getAllExclusionsURL(iabdType: IabdType, empRef: EmpRef, year: Int) =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/${iabdType.convertToUrlParam}/exclusion"
+
+  def getExcludedPersonsURL(empRef: EmpRef, year: Int) =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/exclusion/update"
+
+  def getRemoveExclusionURL(empRef: EmpRef, year: Int, iabd: String) =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/$iabd/exclusion/remove"
+
+  def getUpdateBenefitURL(year: Int, suffix: String, empRef: EmpRef) =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/updatebenefittypes/$suffix"
+
+  def postTraceByPersonalDetailsURL(year: Int, empRef: EmpRef) =
+    s"$baseUrl/${empRef.taxOfficeNumber}/${empRef.taxOfficeReference}/$year/trace"
 
 }
