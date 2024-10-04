@@ -16,8 +16,8 @@
 
 package views.registration
 
+import models.auth.AuthenticatedRequest
 import models.v1.IabdType
-import models.{AuthenticatedRequest, Bik}
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
 import views.html.registration.ConfirmRemoveNextTaxYear
@@ -26,10 +26,8 @@ class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
 
   private val confirmUpdateNextTaxYearView: ConfirmRemoveNextTaxYear = app.injector.instanceOf[ConfirmRemoveNextTaxYear]
   private val benefit                                                = IabdType.CarFuelBenefit
-  private def view(implicit request: AuthenticatedRequest[_]): Html  = confirmUpdateNextTaxYearView(
-    Bik.asBenefitString(benefit.id.toString),
-    taxYearRange
-  )
+  private def view(implicit request: AuthenticatedRequest[_]): Html  =
+    confirmUpdateNextTaxYearView(benefit, taxYearRange)
 
   "confirmRemoveNextTaxYear - organisation" must {
     implicit def html: Html = view(organisationRequest)
@@ -49,7 +47,7 @@ class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
     behave like pageWithIdAndText(messages("RemoveBenefits.confirm.p2." + organisationRequest.userType), "user-info")
     behave like pageWithConfirmAndContinueButtonAndLinkAndText(
       "button-confirm",
-      "/payrollbik/cy1/car-fuel/confirm-remove-benefit-expense",
+      s"/payrollbik/cy1/${benefit.id}/confirm-remove-benefit-expense",
       "Confirm and continue"
     )
   }
@@ -72,7 +70,7 @@ class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
     behave like pageWithIdAndText(messages("RemoveBenefits.confirm.p2." + agentRequest.userType), "user-info")
     behave like pageWithConfirmAndContinueButtonAndLinkAndText(
       "button-confirm",
-      "/payrollbik/cy1/car-fuel/confirm-remove-benefit-expense",
+      s"/payrollbik/cy1/${benefit.id}/confirm-remove-benefit-expense",
       "Confirm and continue"
     )
   }

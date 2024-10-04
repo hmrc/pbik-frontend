@@ -16,25 +16,17 @@
 
 package repositories
 
+import base.FakePBIKApplication
 import config.PbikAppConfig
-import controllers.FakePBIKApplication
 import models._
 import models.v1.IabdType
 import org.mongodb.scala.model.Filters
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.mongo.MongoComponent
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class DefaultSessionRepositorySpec
-    extends AnyWordSpecLike
-    with Matchers
-    with FakePBIKApplication
-    with OptionValues
-    with BeforeAndAfterEach {
+class DefaultSessionRepositorySpec extends FakePBIKApplication {
 
   private val appConfig: PbikAppConfig       = injected[PbikAppConfig]
   private val mongoComponent: MongoComponent = injected[MongoComponent]
@@ -42,9 +34,9 @@ class DefaultSessionRepositorySpec
   private val pbikSession: PbikSession       = PbikSession(sessionId)
 
   private def assertSession(session: PbikSession, result: PbikSession): Unit = {
-    result.lastUpdated.isAfter(session.lastUpdated) shouldBe true
+    result.lastUpdated.isAfter(session.lastUpdated) mustBe true
 
-    session.copy(lastUpdated = result.lastUpdated) shouldBe result
+    session.copy(lastUpdated = result.lastUpdated) mustBe result
   }
 
   override def beforeEach(): Unit =
@@ -63,7 +55,7 @@ class DefaultSessionRepositorySpec
           Some(
             RegistrationList(
               None,
-              List(RegistrationItem(IabdType.CarBenefit.id.toString, active = true, enabled = true)),
+              List(RegistrationItem(IabdType.CarBenefit, active = true, enabled = true)),
               None
             )
           )
@@ -88,7 +80,7 @@ class DefaultSessionRepositorySpec
 
       "return None when there is no data" in {
         val result = await(sessionRepository.get(sessionId))
-        result shouldBe None
+        result mustBe None
       }
     }
 
@@ -98,16 +90,16 @@ class DefaultSessionRepositorySpec
         assertSession(pbikSession, result)
 
         val result2 = await(sessionRepository.remove(sessionId))
-        result2 shouldBe true
+        result2 mustBe true
       }
 
       "return false when there is no data" in {
         val id     = "non existing session id"
         val result = await(sessionRepository.get(id))
-        result shouldBe None
+        result mustBe None
 
         val result2 = await(sessionRepository.remove(id))
-        result2 shouldBe false
+        result2 mustBe false
       }
     }
   }

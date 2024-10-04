@@ -18,6 +18,7 @@ package utils
 
 import config.PbikAppConfig
 import models._
+import models.auth.AuthenticatedRequest
 import play.api.Logging
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results._
@@ -33,12 +34,8 @@ object ControllersReferenceDataCodes {
   val CY_RESTRICTED: String                = "ServiceMessage.10003"
   val FEATURE_RESTRICTED: String           = "ServiceMessage.10002"
   val DEFAULT_ERROR: String                = "ServiceMessage.10001"
-  val EXCLUSION_ADD_STATUS: Int            = 20
-  val BIK_REMOVE_STATUS: Int               = 40
-  val BIK_ADD_STATUS: Int                  = 30
   val FORM_TYPE_NINO: String               = "nino"
   val FORM_TYPE_NONINO: String             = "no-nino"
-  val NEXT_TAX_YEAR: String                = FormMappingsConstants.CYP1
   val BIK_REMOVE_REASON_LIST: List[String] = List("software", "guidance", "not-clear", "not-offering", "other")
   val YES: String                          = "yes"
   val NO: String                           = "no"

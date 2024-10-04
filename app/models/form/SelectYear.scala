@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models
+package models.form
 
 import play.api.libs.json.{Json, OFormat}
 
-case class ExclusionNino(nino: String)
+case class SelectYear(year: String)
 
-object ExclusionNino {
-  implicit val exclusionNinoFormats: OFormat[ExclusionNino] = Json.format[ExclusionNino]
+object SelectYear {
+  implicit val formats: OFormat[SelectYear] = Json.format[SelectYear]
 }

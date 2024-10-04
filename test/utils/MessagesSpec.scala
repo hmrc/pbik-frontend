@@ -16,22 +16,16 @@
 
 package utils
 
-import org.scalatestplus.play.PlaySpec
+import base.FakePBIKApplication
+import play.api.Logging
 import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.baseApplicationBuilder.injector
-import play.api.{Application, Logging}
 
 import scala.util.matching.Regex
 
-class MessagesSpec extends PlaySpec with Logging {
+class MessagesSpec extends FakePBIKApplication with Logging {
 
-  lazy val fakeApplication: Application = new GuiceApplicationBuilder()
-    .configure(
-      Map("play.i18n.langs" -> "en,cy", "features.welsh-language-support" -> true)
-    )
-    .build()
-  private lazy val displayLine          = "\n" + ("@" * 42) + "\n"
+  private lazy val displayLine = "\n" + ("@" * 42) + "\n"
 
   implicit lazy val messages: Messages                  = messagesApi.preferred(Seq(Lang("en"), Lang("cy")))
   private lazy val defaultMessages: Map[String, String] = getExpectedMessages("default")

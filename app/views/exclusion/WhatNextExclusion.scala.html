@@ -29,11 +29,11 @@
 @(
     taxYearRange:TaxYearRange,
     year:String,
-    iabdString:String,
+    iabdType:IabdType,
     person:TracePersonResponse
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
 @summaryLink = @{
     if(year=="cy"){
@@ -191,7 +191,7 @@
     @if(year=="cy"){
         <p id="back-to-benefits" class="govuk-body">
             @messages("whatNext.exclude.more.p.cy.before")
-            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdString)" id="link-back-excluded">
+            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdType)" id="link-back-excluded">
                 @messages("whatNext.exclude.more.p.cy.link", benefitLabel)
             </a>
             @messages("whatNext.exclude.more.p.cy.after")
@@ -199,7 +199,7 @@
     } else {
         <p id="back-to-benefits" class="govuk-body">
             @messages("whatNext.exclude.more.p.before")
-            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdString)" id="link-back-excluded">
+            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdType)" id="link-back-excluded">
                 @messages("whatNext.exclude.more.p.link", benefitLabel)
             </a>
             @messages("whatNext.exclude.more.p.after")

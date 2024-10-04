@@ -47,8 +47,8 @@
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 @for(item <- bikList.active.indices) {
-                                    <p class="govuk-body" id="benefit-@bikList.active(item).id.toString">
-                                        @messages("BenefitInKind.label." + bikList.active(item).id.toString)
+                                    <p class="govuk-body" id="benefit-@bikList.active(item).iabdType.id">
+                                        @messages("BenefitInKind.label." + bikList.active(item).iabdType.id)
                                     </p>
                                 }
                             </dd>

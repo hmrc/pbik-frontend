@@ -16,12 +16,13 @@
 
 package controllers
 
+import base.FakePBIKApplication
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models._
-import models.v1.{IabdType, PbikAction}
+import models.auth.AuthenticatedRequest
+import models.form.SelectYear
+import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType, PbikStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
-import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
@@ -29,14 +30,13 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.Helpers._
 import services.BikListService
-import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Exceptions.InvalidYearURIException
 import utils._
 
 import scala.concurrent.Future
 
-class StartPageControllerAgentSpec extends PlaySpec with FakePBIKApplication {
+class StartPageControllerAgentSpec extends FakePBIKApplication {
 
   private val bikListService: BikListService = mock(classOf[BikListService])
 
@@ -53,27 +53,24 @@ class StartPageControllerAgentSpec extends PlaySpec with FakePBIKApplication {
   private val formMappings: FormMappings                         = fakeApplication.injector.instanceOf[FormMappings]
   private val controllersReferenceData: ControllersReferenceData =
     fakeApplication.injector.instanceOf[ControllersReferenceData]
-  private val bikResponseWithBenefits                            = BikResponse(
-    Map.empty,
-    Set(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
+  private val bikResponseWithBenefits                            = BenefitListResponse(
+    Some(List(BenefitInKindWithCount(IabdType.CarBenefit, PbikStatus.ValidPayrollingBenefitInKind, 1))),
+    13
   )
-  private val bikResponseEmpty                                   = BikResponse(
-    Map.empty,
-    Set.empty
-  )
+  private val bikResponseEmpty                                   = BenefitListResponse(None, 0)
   implicit val hc: HeaderCarrier                                 = HeaderCarrier()
 
   val agentRequest: AuthenticatedRequest[AnyContentAsEmpty.type]      =
     AuthenticatedRequest(
-      EmpRef("taxOfficeNumber", "taxOfficeReference"),
-      UserName(Name(None, None)),
+      empRef,
+      None,
       mockRequest,
       agentClient
     )
   val agentRequestWelsh: AuthenticatedRequest[AnyContentAsEmpty.type] =
     AuthenticatedRequest(
-      EmpRef("taxOfficeNumber", "taxOfficeReference"),
-      UserName(Name(None, None)),
+      empRef,
+      None,
       mockWelshRequest,
       agentClient
     )

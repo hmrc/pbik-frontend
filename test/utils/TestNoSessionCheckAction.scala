@@ -17,7 +17,7 @@
 package utils
 
 import controllers.actions.NoSessionCheckAction
-import models.AuthenticatedRequest
+import models.auth.AuthenticatedRequest
 import play.api.mvc.{BodyParsers, Result}
 
 import javax.inject.Inject

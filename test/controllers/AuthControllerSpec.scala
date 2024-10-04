@@ -16,7 +16,7 @@
 
 package controllers
 
-import org.scalatestplus.play.PlaySpec
+import base.FakePBIKApplication
 import play.api.libs.crypto.CSRFTokenSigner
 import play.api.mvc._
 import play.api.test.FakeRequest
@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class AuthControllerSpec extends PlaySpec with FakePBIKApplication {
+class AuthControllerSpec extends FakePBIKApplication {
 
   implicit val hc: HeaderCarrier               = HeaderCarrier()
   private val csrfTokenSigner: CSRFTokenSigner = app.injector.instanceOf[CSRFTokenSigner]

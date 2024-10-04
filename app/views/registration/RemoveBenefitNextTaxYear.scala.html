@@ -14,26 +14,22 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
-
 @import views.templatemodels.PageTitle
 @import views.html.helper.CSPNonce
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
         formWithCSRF: FormWithCSRF,
         pageTitleHeading: components.PageTitleHeading
 )
 
 @(
-        bikList: RegistrationList,
         removalBik: Option[RegistrationItem],
         taxYearRange:TaxYearRange,
         form: Form[BinaryRadioButtonWithDesc]
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@benefitLabel = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(bikList.active.head.id)}")}
+@benefitLabel = @{messages(s"BenefitInKind.label.${removalBik.get.iabdType.id}")}
 
 @title = @{ messages("RemoveBenefits.reason.Title") }
 
@@ -58,7 +54,7 @@
     @pageTitleHeading(messages("RemoveBenefits.reason.Heading", benefitLabel))
 
     <div class="data">
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.id), Symbol("id") -> "form-remove") {
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.iabdType), Symbol("id") -> "form-remove") {
             <div class='govuk-form-group @if(form.hasErrors) {govuk-form-group--error}'>
                 <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="error-list-1" }>
                     <legend class="govuk-fieldset__legend">

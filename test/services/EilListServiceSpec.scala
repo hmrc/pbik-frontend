@@ -16,65 +16,71 @@
 
 package services
 
+import base.FakePBIKApplication
 import connectors.PbikConnector
-import controllers.FakePBIKApplication
-import models.v1.IabdType
-import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
+import models.auth.AuthenticatedRequest
+import models.v1.exclusion.PbikExclusions
 import models.v1.trace.TracePersonResponse
-import models.{AuthenticatedRequest, EmpRef, UserName}
+import models.v1.{IabdType, NPSError, NPSErrors}
 import org.mockito.ArgumentMatchers.{any, anyInt}
 import org.mockito.Mockito._
-import org.scalatest.OptionValues
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
+import utils.Exceptions.GenericServerErrorException
 
 import scala.concurrent.Future
 
-class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues with FakePBIKApplication {
+class EilListServiceSpec extends FakePBIKApplication {
+
+  private val mockConnector = mock(classOf[PbikConnector])
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(configMap)
-    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
+    .overrides(bind[PbikConnector].toInstance(mockConnector))
     .build()
 
-  val mockEiLListService: EiLListService = {
+  val mockEiLListService: EiLListService = app.injector.instanceOf[EiLListService]
 
-    val els = app.injector.instanceOf[EiLListService]
+  override def beforeEach(): Unit = {
+    super.beforeEach()
 
-    when(els.tierConnector.getAllExcludedEiLPersonForBik(any(), any(), anyInt())(any()))
+    reset(mockConnector)
+
+    when(mockConnector.getAllExcludedEiLPersonForBik(any(), any(), anyInt())(any()))
       .thenReturn(Future.successful(Right(PbikExclusions(0, None))))
-
-    els
   }
 
   "When calling the EILService it" should {
     "return an empty list" in {
+      when(mockConnector.getAllExcludedEiLPersonForBik(any(), any(), anyInt())(any()))
+        .thenReturn(Future.successful(Right(PbikExclusions(0, None))))
+
       val year                                                                        = 2015
       val eilService: EiLListService                                                  = mockEiLListService
       implicit val hc: HeaderCarrier                                                  = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
         AuthenticatedRequest(
-          EmpRef("taxOfficeNumber", "taxOfficeReference"),
-          UserName(Name(None, None)),
+          empRef,
+          None,
           request,
           None
         )
 
-      val result = await(eilService.currentYearEiL(IabdType.Mileage, year))
+      val result = await(eilService.exclusionListForYear(IabdType.Mileage, year, authenticatedRequest.empRef))
 
-      result.getPBIKExclusionList.size shouldBe 0
+      result.getPBIKExclusionList.size mustBe 0
     }
 
     "return a subset of List(EiL) search results - already excluded" in {
+      when(mockConnector.getAllExcludedEiLPersonForBik(any(), any(), anyInt())(any()))
+        .thenReturn(Future.successful(Right(PbikExclusions(0, None))))
+
       val eilService         = mockEiLListService
       val exclusionPerson1   = TracePersonResponse("QQ123456", "Humpty", None, "Dumpty", Some("123"), 22)
       val exclusionPerson2   = TracePersonResponse("QQ123456", "Humpty", None, "Dumpty", Some("789"), 22)
@@ -83,7 +89,30 @@ class EilListServiceSpec extends AnyWordSpecLike with Matchers with OptionValues
 
       val result = eilService.searchResultsRemoveAlreadyExcluded(alreadyExcludedEiL, searchResultsEiL)
 
-      result shouldBe List(exclusionPerson2)
+      result mustBe List(exclusionPerson2)
+    }
+
+    "throw exception when NPSError" in {
+      when(mockConnector.getAllExcludedEiLPersonForBik(any(), any(), anyInt())(any()))
+        .thenReturn(Future.successful(Left(NPSErrors(Seq(NPSError("test error", "test error 2"))))))
+
+      val year                                                                        = 2015
+      val eilService: EiLListService                                                  = mockEiLListService
+      implicit val hc: HeaderCarrier                                                  = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+      implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
+        AuthenticatedRequest(
+          empRef,
+          None,
+          request,
+          None
+        )
+
+      val result = intercept[GenericServerErrorException] {
+        await(eilService.exclusionListForYear(IabdType.Mileage, year, authenticatedRequest.empRef))
+      }
+
+      result.message mustBe s"Error getting pbik exclusions for ${IabdType.Mileage.toString} and $year"
     }
   }
 

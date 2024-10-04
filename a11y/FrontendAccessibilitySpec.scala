@@ -16,13 +16,16 @@
 
 import models._
 import models.agent.{AccountsOfficeReference, Client}
+import models.auth.AuthenticatedRequest
+import models.form._
+import models.v1.IabdType.IabdType
 import models.v1.exclusion.PbikExclusionPerson
-import models.v1.{IabdType, PbikAction, PbikStatus}
+import models.v1.{BenefitInKindWithCount, IabdType, PbikStatus}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.api.mvc.RequestHeader
 import play.twirl.api.Html
-import uk.gov.hmrc.auth.core.retrieve.Name
+import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.scalatestaccessibilitylinter.views.AutomaticAccessibilitySpec
 import utils.FormMappings
 import views.html._
@@ -39,15 +42,16 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
 
   private def bikSize = new Random().between(0, IabdType.values.size)
 
-  private val arbBik: Arbitrary[Bik] =
+  implicit val arbIabdType: Arbitrary[IabdType] = Arbitrary(Gen.oneOf(IabdType.values))
+
+  implicit val arbBik: Arbitrary[BenefitInKindWithCount] =
     Arbitrary {
       for {
-        iabd   <- Gen.oneOf(IabdType.values.toSeq.map(_.id.toString))
-        status <- Gen.oneOf(PbikStatus.values.toSeq.map(_.id) ++ PbikAction.values.toSeq.map(_.id))
-      } yield Bik(iabd, status)
+        iabd <- Gen.oneOf(IabdType.values)
+      } yield BenefitInKindWithCount(iabd, PbikStatus.ValidPayrollingBenefitInKind, 2)
     }
 
-  private val arbListOfBiks: Arbitrary[List[Bik]] = Arbitrary {
+  implicit val arbListOfBiks: Arbitrary[List[BenefitInKindWithCount]] = Arbitrary {
     for {
       biks <- Gen.listOfN(bikSize, arbBik.arbitrary).map(_.distinct)
     } yield biks
@@ -56,30 +60,9 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
   private val exclusionPerson: PbikExclusionPerson =
     PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
 
-  private val eiLPerson: EiLPerson =
-    EiLPerson(
-      nino = "AB123456C",
-      firstForename = "John",
-      secondForename = Some("Smith"),
-      surname = "Smith",
-      worksPayrollNumber = Some("123/AB123456C"),
-      dateOfBirth = Some("01/01/1990"),
-      gender = Some("Male"),
-      status = None,
-      perOptLock = 1
-    )
+  private val registrationItem = RegistrationItem(iabdType = IabdType.MedicalInsurance, active = true, enabled = true)
 
-  private val listOfEiLPerson: List[EiLPerson] = List(eiLPerson)
-
-  private val registrationList: RegistrationList = RegistrationList(
-    active = List(
-      RegistrationItem(
-        id = IabdType.MedicalInsurance.id.toString,
-        active = true,
-        enabled = true
-      )
-    )
-  )
+  private val registrationList: RegistrationList = RegistrationList(active = List(registrationItem))
 
   val empRef: EmpRef = EmpRef(taxOfficeNumber = "123", taxOfficeReference = "4567890")
 
@@ -96,7 +79,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
 
   val authenticatedRequest: AuthenticatedRequest[_] = AuthenticatedRequest(
     empRef,
-    UserName(Name(Some("test"), Some("tester"))),
+    None,
     fakeRequest,
     agentClient
   )
@@ -111,12 +94,8 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
   implicit val arbBinaryRadioButtonForm: Arbitrary[Form[MandatoryRadioButton]]  = fixed(forms.binaryRadioButton)
   implicit val arbSelectYearForm: Arbitrary[Form[SelectYear]]                   = fixed(forms.selectYearForm)
 
-  override implicit val arbAsciiString: Arbitrary[String]                   = fixed("assets-transferred")
   implicit val arbRegistrationList: Arbitrary[RegistrationList]             = fixed(registrationList)
-  implicit val arbEiLPerson: Arbitrary[EiLPerson]                           = fixed(eiLPerson)
-  implicit val arbListOfEiLPerson: Arbitrary[List[EiLPerson]]               = fixed(listOfEiLPerson)
   implicit val arbExclusionPersonList: Arbitrary[List[PbikExclusionPerson]] = fixed(List(exclusionPerson))
-  implicit val arbEilPersonList: Arbitrary[EiLPersonList]                   = fixed(EiLPersonList(listOfEiLPerson))
   implicit val arbTaxYearRange: Arbitrary[TaxYearRange]                     = fixed(TaxYearRange(cyMinus1, cy, cyPlus1))
   implicit val arbEmpRef: Arbitrary[EmpRef]                                 = fixed(empRef)
 
@@ -146,17 +125,16 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(exclusionOverview)
     case ninoExclusionSearchForm: NinoExclusionSearchForm                           =>
-      implicit val exclusionSearchFormWithNino: Arbitrary[Form[EiLPerson]] = fixed(
+      implicit val exclusionSearchFormWithNino: Arbitrary[Form[NinoForm]] = fixed(
         forms.exclusionSearchFormWithNino(fakeRequest)
       )
       render(ninoExclusionSearchForm)
     case noNinoExclusionSearchForm: NoNinoExclusionSearchForm                       =>
-      implicit val exclusionSearchFormWithoutNino: Arbitrary[Form[EiLPerson]] = fixed(
+      implicit val exclusionSearchFormWithoutNino: Arbitrary[Form[NoNinoForm]] = fixed(
         forms.exclusionSearchFormWithoutNino(fakeRequest)
       )
       render(noNinoExclusionSearchForm)
     case removalConfirmation: RemovalConfirmation                                   =>
-      implicit val arbAsciiString: Arbitrary[String]              = fixed("assets-transferred")
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(removalConfirmation)
     case searchResults: SearchResults                                               => render(searchResults)
@@ -164,7 +142,6 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(whatNextExclusion)
     case whatNextRescind: WhatNextRescind                                           =>
-      implicit val arbAsciiString: Arbitrary[String]              = fixed("assets-transferred")
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(whatNextRescind)
     case page_not_found_template: page_not_found_template                           => render(page_not_found_template)
@@ -180,19 +157,12 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(nextTaxYear)
     case removeBenefitConfirmationNextTaxYear: RemoveBenefitConfirmationNextTaxYear =>
-      implicit val arbAsciiString: Arbitrary[String]              = fixed("assets-transferred")
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(removeBenefitConfirmationNextTaxYear)
     case removeBenefitNextTaxYear: RemoveBenefitNextTaxYear                         =>
-      implicit val arbRegistrationList: Arbitrary[RegistrationList] = fixed(
-        RegistrationList(
-          active = registrationList.active.map(_.copy(id = "assets-transferred"))
-        )
-      )
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]]   = fixed(authenticatedRequest)
       render(removeBenefitNextTaxYear)
     case removeBenefitOtherReason: RemoveBenefitOtherReason                         =>
-      implicit val arbAsciiString: Arbitrary[String]              = fixed("assets-transferred")
       implicit val arbRequest: Arbitrary[AuthenticatedRequest[_]] = fixed(authenticatedRequest)
       render(removeBenefitOtherReason)
     case confirmRemoveNextTaxYear: ConfirmRemoveNextTaxYear                         =>

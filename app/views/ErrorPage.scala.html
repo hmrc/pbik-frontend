@@ -31,7 +31,7 @@
         code: Int = 0,
         pageHeading: String ="An error has occurred",
         backLink: String= "overview",
-        iabdString: String = ""
+        iabdType: Option[IabdType] = None
 )(implicit request:Request[_], messages: Messages)
 
 @summaryLink = @{ if(isCurrentTaxYear == utils.FormMappingsConstants.CY) {routes.HomePageController.onPageLoadCY} else {routes.HomePageController.onPageLoadCY1} }
@@ -83,9 +83,9 @@
         }
     </div>
 
-    @if(iabdString != "") {
+    @iabdType.map { iabd =>
         <div class="govuk-form-group">
-            <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdString)">
+            <a class="govuk-link" id="link-exclusion-back" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabd)">
                 @messages("Service.back.excluded")
             </a>
         </div>

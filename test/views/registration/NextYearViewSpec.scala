@@ -16,7 +16,8 @@
 
 package views.registration
 
-import models.{AuthenticatedRequest, RegistrationList}
+import models.RegistrationList
+import models.auth.AuthenticatedRequest
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.twirl.api.Html
@@ -30,7 +31,7 @@ class NextYearViewSpec extends PBIKViewSpec {
   val nextTaxYearView: NextTaxYear = app.injector.instanceOf[NextTaxYear]
 
   def viewWithForm(form: Form[RegistrationList])(implicit request: AuthenticatedRequest[_]): Html =
-    nextTaxYearView(form, additive = true, taxYearRange, List(), List(), List(), List(), 1)
+    nextTaxYearView(form, additive = true, taxYearRange, List(), isExhausted = false, List(), List())
 
   "nextYearPage - organisation" must {
     implicit def html: Html = viewWithForm(formMappings.objSelectedForm)(organisationRequest)

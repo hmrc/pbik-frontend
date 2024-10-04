@@ -16,11 +16,10 @@
 
 package models.v1
 
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
+import base.FakePBIKApplication
 import play.api.libs.json.{JsObject, Json}
 
-class BenefitInKindWithCountSpec extends AnyWordSpec with Matchers {
+class BenefitInKindWithCountSpec extends FakePBIKApplication {
 
   "BenefitInKindWithCount" when {
 

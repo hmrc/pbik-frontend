@@ -16,12 +16,12 @@
 
 package services
 
-import config.PbikAppConfig
 import connectors.PbikConnector
-import models.AuthenticatedRequest
 import models.v1.IabdType.IabdType
 import models.v1.exclusion.PbikExclusions
 import models.v1.trace.TracePersonResponse
+import play.api.Logging
+import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Exceptions.GenericServerErrorException
 
@@ -29,26 +29,26 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EiLListService @Inject() (
-  val pbikAppConfig: PbikAppConfig,
-  val tierConnector: PbikConnector
-)(implicit ec: ExecutionContext) {
+class EiLListService @Inject() (tierConnector: PbikConnector)(implicit ec: ExecutionContext) extends Logging {
 
-  def currentYearEiL(iabdType: IabdType, year: Int)(implicit
-    hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]
+  def exclusionListForYear(iabdType: IabdType, year: Int, empRef: EmpRef)(implicit
+    hc: HeaderCarrier
   ): Future[PbikExclusions] = {
     val response = tierConnector.getAllExcludedEiLPersonForBik(
       iabdType,
-      request.empRef,
+      empRef,
       year
     )
 
     response.flatMap {
-      case Right(eilList) => Future.successful(eilList)
+      case Right(eilList) =>
+        Future.successful(eilList)
       case Left(error)    =>
+        logger.error(
+          s"[EiLListService][currentYearEiL] Error getting pbik exclusions for ${iabdType.toString} and $year: $error"
+        )
         Future.failed(
-          new GenericServerErrorException(s"Error getting pbik exclusions for ${iabdType.toString} and $year: $error")
+          new GenericServerErrorException(s"Error getting pbik exclusions for ${iabdType.toString} and $year")
         )
     }
   }

@@ -16,7 +16,6 @@
 
 package models.v1
 
-import models.Bik
 import models.v1.IabdType.IabdType
 import models.v1.PbikAction.PbikAction
 import play.api.libs.json.{Format, Json}
@@ -29,7 +28,4 @@ case class BenefitInKindRequest(
 
 object BenefitInKindRequest {
   implicit val formats: Format[BenefitInKindRequest] = Json.format[BenefitInKindRequest]
-
-  def apply(bik: Bik, isAgentSubmission: Boolean): BenefitInKindRequest =
-    new BenefitInKindRequest(IabdType(bik.iabdType.toInt), PbikAction(bik.status), isAgentSubmission)
 }

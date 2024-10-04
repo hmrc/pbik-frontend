@@ -16,7 +16,9 @@
 
 package views.exclusion
 
-import models.{AuthenticatedRequest, Bik, MandatoryRadioButton}
+import models.auth.AuthenticatedRequest
+import models.form.MandatoryRadioButton
+import models.v1.IabdType
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.twirl.api.Html
@@ -31,17 +33,17 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   private val form: Form[MandatoryRadioButton]           = formMappings.binaryRadioButton
   private val formWithErrors: Form[MandatoryRadioButton] = form.withError("test", "error")
 
-  private val iabdString = "car"
+  private val iabdType = IabdType.Mileage
 
   def viewWithForm(form: Form[MandatoryRadioButton])(implicit request: AuthenticatedRequest[_]): Html =
-    exclusionOverviewView(taxYearRange, "cyp1", iabdString, List(), form)
+    exclusionOverviewView(taxYearRange, "cyp1", iabdType, List(), form)
 
   "exclusionOverview - organisation" must {
     implicit val html: Html = viewWithForm(form)(organisationRequest)
 
-    behave like pageWithTitle(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))
-    behave like pageWithHeader(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))
-    behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/$iabdString/excluded-employees", "Continue")
+    behave like pageWithTitle(messages(s"BenefitInKind.label.${iabdType.id}"))
+    behave like pageWithHeader(messages(s"BenefitInKind.label.${iabdType.id}"))
+    behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/excluded-employees", "Continue")
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 
     "check the excluded employees page for the errors" in {
@@ -57,9 +59,9 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   "exclusionOverview - agent" must {
     implicit val html: Html = viewWithForm(form)(agentRequest)
 
-    behave like pageWithTitle(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))
-    behave like pageWithHeader(messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"))
-    behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/$iabdString/excluded-employees", "Continue")
+    behave like pageWithTitle(messages(s"BenefitInKind.label.${iabdType.id}"))
+    behave like pageWithHeader(messages(s"BenefitInKind.label.${iabdType.id}"))
+    behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/excluded-employees", "Continue")
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 
     "check the excluded employees page for the errors" in {

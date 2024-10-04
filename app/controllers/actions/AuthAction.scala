@@ -17,16 +17,16 @@
 package controllers.actions
 
 import com.google.inject.ImplementedBy
-import config.{PbikAppConfig, Service}
+import config.PbikAppConfig
 import connectors.AgentPayeConnector
-import models.auth.EpayeSessionKeys
-import models.{AuthenticatedRequest, EmpRef, UserName}
+import models.auth.{AuthenticatedRequest, EpayeSessionKeys}
+import play.api.Logging
 import play.api.mvc.Results._
 import play.api.mvc._
-import play.api.{Configuration, Logging}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Name, ~}
+import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -45,38 +45,44 @@ class AuthActionImpl @Inject() (
     with AuthorisedFunctions
     with Logging {
 
+  private val enrolmentKey          = "IR-PAYE"
+  private val taxOfficeNumberKey    = "TaxOfficeNumber"
+  private val taxOfficeReferenceKey = "TaxOfficeReference"
+
   private def authAsEmployer[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result])(implicit
     hc: HeaderCarrier
   ): Future[Result] =
-    authorised(ConfidenceLevel.L50 and Enrolment("IR-PAYE"))
+    authorised(Enrolment(enrolmentKey))
       .retrieve(
-        Retrievals.affinityGroup and Retrievals.authorisedEnrolments and Retrievals.name and Retrievals.agentCode
-      ) { case _ ~ Enrolments(enrolments) ~ name ~ _ =>
+        Retrievals.affinityGroup and Retrievals.authorisedEnrolments and Retrievals.internalId and Retrievals.agentCode
+      ) { case _ ~ Enrolments(enrolments) ~ internalId ~ _ =>
         enrolments
-          .find(_.key == "IR-PAYE")
+          .find(_.key == enrolmentKey)
           .map { enrolment =>
-            val taxOfficeNumber    = enrolment.identifiers.find(id => id.key == "TaxOfficeNumber").map(_.value)
-            val taxOfficeReference = enrolment.identifiers.find(id => id.key == "TaxOfficeReference").map(_.value)
+            val taxOfficeNumber: Option[String]    =
+              enrolment.identifiers.find(id => id.key == taxOfficeNumberKey).map(_.value)
+            val taxOfficeReference: Option[String] =
+              enrolment.identifiers.find(id => id.key == taxOfficeReferenceKey).map(_.value)
 
             (taxOfficeNumber, taxOfficeReference) match {
               case (Some(number), Some(reference)) =>
                 block(
                   AuthenticatedRequest(
                     EmpRef(number, reference),
-                    UserName(name.getOrElse(Name(None, None))),
+                    internalId,
                     request,
                     None
                   )
                 )
               case _                               =>
                 logger.warn(
-                  "[AuthAction][authAsEmployer] Authentication failed: invalid taxOfficeNumber and/or taxOfficeReference"
+                  s"[AuthAction][authAsEmployer] Authentication failed: invalid $taxOfficeNumber and/or $taxOfficeReferenceKey"
                 )
                 Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
             }
           }
           .getOrElse {
-            logger.warn("[AuthAction][authAsEmployer] Authentication failed - IR-PAYE key not found")
+            logger.warn(s"[AuthAction][authAsEmployer] Authentication failed - $enrolmentKey key not found")
             Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
           }
       } recover { case ex: InsufficientEnrolments =>
@@ -104,20 +110,20 @@ class AuthActionImpl @Inject() (
           val empRef = EmpRef(empRefs.head, empRefs.last)
 
           authorised(
-            Enrolment("IR-PAYE")
-              .withIdentifier("TaxOfficeNumber", empRef.taxOfficeNumber)
-              .withIdentifier("TaxOfficeReference", empRef.taxOfficeReference)
+            Enrolment(enrolmentKey)
+              .withIdentifier(taxOfficeNumberKey, empRef.taxOfficeNumber)
+              .withIdentifier(taxOfficeReferenceKey, empRef.taxOfficeReference)
               .withDelegatedAuthRule("lp-paye")
           )
             .retrieve(
-              Retrievals.affinityGroup and Retrievals.authorisedEnrolments and Retrievals.name and Retrievals.agentCode
-            ) { case _ ~ _ ~ name ~ agentCodeRetrieved =>
+              Retrievals.affinityGroup and Retrievals.authorisedEnrolments and Retrievals.internalId and Retrievals.agentCode
+            ) { case _ ~ _ ~ internalId ~ agentCodeRetrieved =>
               val req: Future[Future[Result]] = for {
                 client <- agentPayeConnector.getClient(agentCodeRetrieved, empRef)
               } yield block(
                 AuthenticatedRequest(
                   empRef,
-                  UserName(name.getOrElse(Name(None, None))),
+                  internalId,
                   request,
                   client
                 )
@@ -136,18 +142,22 @@ class AuthActionImpl @Inject() (
 
     authorised()
       .retrieve(
-        Retrievals.affinityGroup and Retrievals.authorisedEnrolments and Retrievals.name and Retrievals.agentCode
-      ) { case Some(affinityGroup) ~ _ ~ _ ~ _ =>
-        affinityGroup match {
-          case AffinityGroup.Agent        => authAsAgent(request, block)
-          case AffinityGroup.Organisation => authAsEmployer(request, block) //default how it was before
-          //Individual
-          case _                          =>
-            logger.warn(
-              s"[AuthAction][invokeBlock] Authentication failed - AffinityGroup not supported: ${affinityGroup.toString}"
-            )
-            throw new IllegalArgumentException(s"AffinityGroup not supported: ${affinityGroup.toString}")
-        }
+        Retrievals.affinityGroup and Retrievals.authorisedEnrolments and Retrievals.internalId and Retrievals.agentCode
+      ) {
+        case Some(affinityGroup) ~ _ ~ _ ~ _ =>
+          affinityGroup match {
+            case AffinityGroup.Agent        => authAsAgent(request, block)
+            case AffinityGroup.Organisation => authAsEmployer(request, block) //default how it was before
+            //Individual
+            case _                          =>
+              logger.warn(
+                s"[AuthAction][invokeBlock] Authentication failed - AffinityGroup not supported: ${affinityGroup.toString}"
+              )
+              throw new IllegalArgumentException(s"AffinityGroup not supported: ${affinityGroup.toString}")
+          }
+        case _                               =>
+          logger.warn("[AuthAction][invokeBlock] Authentication failed - AffinityGroup not found")
+          throw new IllegalArgumentException("AffinityGroup not found")
       }
       .recover {
         case ex: NoActiveSession =>
@@ -169,8 +179,6 @@ trait AuthAction
     extends ActionBuilder[AuthenticatedRequest, AnyContent]
     with ActionFunction[Request, AuthenticatedRequest]
 
-class AuthConnector @Inject() (val httpClientV2: HttpClientV2, configuration: Configuration) extends PlayAuthConnector {
-
-  override val serviceUrl: String = configuration.get[Service]("microservice.services.auth")
-
+class AuthConnector @Inject() (val httpClientV2: HttpClientV2, pbikAppConfig: PbikAppConfig) extends PlayAuthConnector {
+  override val serviceUrl: String = pbikAppConfig.authUrl
 }

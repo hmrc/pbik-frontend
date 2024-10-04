@@ -16,18 +16,15 @@
 
 package utils
 
-import controllers.FakePBIKApplication
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
-import org.scalatest.wordspec.AnyWordSpecLike
+import base.FakePBIKApplication
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.time.TaxYear
 import utils.Exceptions.InvalidYearURIException
 
 import java.time.Month.{APRIL, JULY, NOVEMBER}
 import java.time.{LocalDate, Month}
 
-class TaxDateUtilsSpec extends AnyWordSpecLike with FakePBIKApplication {
+class TaxDateUtilsSpec extends FakePBIKApplication {
 
   private lazy val taxDateUtils: TaxDateUtils  = new TaxDateUtils()
   private val (year2013, year2014): (Int, Int) = (2013, 2014)
@@ -68,20 +65,20 @@ class TaxDateUtilsSpec extends AnyWordSpecLike with FakePBIKApplication {
       "return the CY year for the given URIYearString" in {
         val yearRange = taxDateUtils.getTaxYearRange(year2013)
 
-        assert(taxDateUtils.mapYearStringToInt(FormMappingsConstants.CY, yearRange).futureValue == year2013)
+        assert(taxDateUtils.mapYearStringToInt(FormMappingsConstants.CY, yearRange) == year2013)
       }
 
       "return the CY1 year for the given URIYearString" in {
         val yearRange = taxDateUtils.getTaxYearRange(year2013)
 
-        assert(taxDateUtils.mapYearStringToInt(FormMappingsConstants.CYP1, yearRange).futureValue == year2014)
+        assert(taxDateUtils.mapYearStringToInt(FormMappingsConstants.CYP1, yearRange) == year2014)
       }
 
       "mapping an unknown string throw an InvalidYearURIException" in {
         val yearRange = taxDateUtils.getTaxYearRange(year2013)
 
         intercept[InvalidYearURIException] {
-          await(taxDateUtils.mapYearStringToInt("ceeewhyploosWon", yearRange))
+          taxDateUtils.mapYearStringToInt("ceeewhyploosWon", yearRange)
         }
       }
     }

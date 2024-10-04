@@ -16,7 +16,9 @@
 
 package views.exclusion
 
-import models.{AuthenticatedRequest, MandatoryRadioButton}
+import models.auth.AuthenticatedRequest
+import models.form.MandatoryRadioButton
+import models.v1.IabdType
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.twirl.api.Html
@@ -32,15 +34,20 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
   private val exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm =
     app.injector.instanceOf[ExclusionNinoOrNoNinoForm]
 
+  private val iabdType = IabdType.MedicalInsurance
+
   def viewWithForm(form: Form[MandatoryRadioButton])(implicit request: AuthenticatedRequest[_]): Html =
-    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", "medical", "", form)
+    exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", iabdType, "", form)
 
   "exclusionNinoOrNoNinoPage - organisation" must {
     implicit val html: Html = viewWithForm(form)(organisationRequest)
 
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))
     behave like pageWithHeader(messages("ExclusionNinoDecision.title"))
-    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/employee-national-insurance-number", "Continue")
+    behave like pageWithContinueButtonForm(
+      s"/payrollbik/cyp1/${iabdType.id}/employee-national-insurance-number",
+      "Continue"
+    )
     behave like pageWithYesNoRadioButton("button-nino", "button-no-nino")
 
     "check the add benefit page for the errors" in {
@@ -57,7 +64,10 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("ExclusionNinoDecision.title"))
     behave like pageWithHeader(messages("ExclusionNinoDecision.title"))
-    behave like pageWithContinueButtonForm("/payrollbik/cyp1/medical/employee-national-insurance-number", "Continue")
+    behave like pageWithContinueButtonForm(
+      s"/payrollbik/cyp1/${iabdType.id}/employee-national-insurance-number",
+      "Continue"
+    )
     behave like pageWithYesNoRadioButton("button-nino", "button-no-nino")
 
     "check the add benefit page for the errors" in {

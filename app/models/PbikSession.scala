@@ -16,7 +16,8 @@
 
 package models
 
-import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions, SelectedExclusionToRemove}
+import models.v1.BenefitListResponse
+import models.v1.exclusion.{PbikExclusions, SelectedExclusionToRemove}
 import models.v1.trace.TracePersonListResponse
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
@@ -30,12 +31,12 @@ case class PbikSession(
   listOfMatches: Option[TracePersonListResponse] = None,
   eiLPerson: Option[SelectedExclusionToRemove] = None,
   currentExclusions: Option[PbikExclusions] = None,
-  cyRegisteredBiks: Option[List[Bik]] = None,
-  nyRegisteredBiks: Option[List[Bik]] = None,
+  cyRegisteredBiks: Option[BenefitListResponse] = None,
+  nyRegisteredBiks: Option[BenefitListResponse] = None,
   lastUpdated: Instant = Instant.now()
 ) {
 
-  def getActiveRegistrationItems(): Option[List[RegistrationItem]] = this.registrations.map(_.active.filter(_.active))
+  def getActiveRegistrationItems: Option[List[RegistrationItem]] = this.registrations.map(_.active.filter(_.active))
 
 }
 

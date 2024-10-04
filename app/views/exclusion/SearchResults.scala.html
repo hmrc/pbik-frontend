@@ -33,13 +33,13 @@
 @(
         taxYearRange: TaxYearRange,
         year: String,
-        iabdString: String,
+        iabdType: IabdType,
         listOfMatches: List[TracePersonResponse],
         listOfMatchesForm: Form[ExclusionNino],
         formType: String
 )(implicit request: Request[_], messages: Messages)
 
-@expenseOrBenefit = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
+@expenseOrBenefit = @{messages(s"BenefitInKind.label.${iabdType.id}")}
 @title = @{if(listOfMatches.length > 1){ messages("ExclusionSearch.title.multiple") } else { messages("ExclusionSearch.title.single") }}
 @govukLayoutWrapper(PageTitle(title, listOfMatchesForm.hasErrors)) {
 
@@ -66,7 +66,7 @@
 
     @defining( if(year=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
         @if(listOfMatches.length > 1) {
-             @formWithCSRF(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdString, formType)) {
+             @formWithCSRF(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdType, formType)) {
                  <div class="govuk-form-group @if(listOfMatchesForm("individualNino").hasErrors){govuk-form-group--error}">
                      <fieldset class="govuk-fieldset" @if(listOfMatchesForm("individualNino").hasErrors){aria-describedby="selection-error"}>
                          @if(listOfMatchesForm("individualNino").hasErrors) {
@@ -126,7 +126,7 @@
                     </tbody>
                 </table>
                 <div class="govuk-form-group">
-                    <a href="@routes.ExclusionListController.updateExclusions(year, iabdString)" class="govuk-button" role="button" id="button-confirm">@messages("Service.confirmAndContinue")</a>
+                    <a href="@routes.ExclusionListController.updateExclusions(year, iabdType)" class="govuk-button" role="button" id="button-confirm">@messages("Service.confirmAndContinue")</a>
                 </div>
         }
     }

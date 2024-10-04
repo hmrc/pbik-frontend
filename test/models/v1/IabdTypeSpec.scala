@@ -16,11 +16,10 @@
 
 package models.v1
 
+import base.FakePBIKApplication
 import models.v1.IabdType.IabdType
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 
-class IabdTypeSpec extends AnyWordSpec with Matchers {
+class IabdTypeSpec extends FakePBIKApplication {
 
   private val iabdInUrlParamValues: Set[(String, IabdType)] = Set(
     "Asset-Transfer"                                                -> IabdType.AssetTransfer,

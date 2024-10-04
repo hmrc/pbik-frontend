@@ -42,8 +42,8 @@
             <dl class="govuk-summary-list">
                 @for(item <- bikForm.value.get.active.indices) {
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__value" id="benefit-@bikForm.value.get.active(item).id.toString">
-                            @messages("BenefitInKind.label." + bikForm.value.get.active(item).id.toString)
+                        <dt class="govuk-summary-list__value" id="benefit-@bikForm.value.get.active(item).iabdType.id">
+                            @messages("BenefitInKind.label." + bikForm.value.get.active(item).iabdType.id)
                         </dt>
                         <dd class="hide-dd"></dd>
                     </div>

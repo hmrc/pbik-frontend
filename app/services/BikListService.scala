@@ -16,10 +16,10 @@
 
 package services
 
-import config.PbikAppConfig
 import connectors.PbikConnector
+import models.auth.AuthenticatedRequest
+import models.v1.BenefitListResponse
 import models.v1.IabdType.IabdType
-import models.{AuthenticatedRequest, Bik, BikResponse, EmpRef}
 import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.ControllersReferenceData
@@ -30,24 +30,33 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BikListService @Inject() (
-  val pbikAppConfig: PbikAppConfig,
-  val tierConnector: PbikConnector,
+  tierConnector: PbikConnector,
+  sessionService: SessionService,
   controllersReferenceData: ControllersReferenceData
 )(implicit ec: ExecutionContext)
     extends Logging {
 
-  def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BikResponse] =
-    tierConnector
-      .getRegisteredBiks(request.empRef, controllersReferenceData.yearRange.cyminus1)
-      .map(response => BikResponse(response.headers, response.bikList))
+  def getRegisteredBenefitsForYear(
+    year: Int
+  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BenefitListResponse] =
+    tierConnector.getRegisteredBiks(request.empRef, year).flatMap { response =>
+      val cy = controllersReferenceData.yearRange.cyminus1
+      val ny = controllersReferenceData.yearRange.cy
+      year match {
+        case x if x == cy =>
+          sessionService.storeCYRegisteredBiks(response).map(_ => response)
+        case x if x == ny =>
+          sessionService.storeNYRegisteredBiks(response).map(_ => response)
+        case _            =>
+          Future.failed(new GenericServerErrorException(s"Invalid year to store registered benefits $year"))
+      }
+    }
 
-  def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BikResponse] =
-    tierConnector
-      .getRegisteredBiks(request.empRef, controllersReferenceData.yearRange.cy)
-      .map(response => BikResponse(response.headers, response.bikList))
+  def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BenefitListResponse] =
+    getRegisteredBenefitsForYear(controllersReferenceData.yearRange.cyminus1)
 
-  def registeredBenefitsList(year: Int, empRef: EmpRef)(implicit hc: HeaderCarrier): Future[List[Bik]] =
-    tierConnector.getRegisteredBiks(empRef, year).map(_.bikList.toList)
+  def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BenefitListResponse] =
+    getRegisteredBenefitsForYear(controllersReferenceData.yearRange.cy)
 
   //TODO need to refactor this method to propagate up Either or other error handling mechanism to the controller
   def getAllBenefitsForYear(year: Int)(implicit hc: HeaderCarrier): Future[Set[IabdType]] =

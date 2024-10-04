@@ -29,25 +29,9 @@ class TestSplunkLogger @Inject() (taxDateUtils: TaxDateUtils, auditConnector: Au
 ) extends SplunkLogger(
       taxDateUtils,
       auditConnector
-    ) /*with TestAuditConnector*/ {
-
-  // Dont want to generate actual audit events.
-  // If you want to test these, comment out this and it will use the auditConnector
-  // If you want to test the auditConnectors disabled state, update the application config for the root level
-  // Test section and use the following
-  //    Test {
-  //      auditing {
-  //        enabled = true
-  //        traceRequests = false
-  //        consumer {
-  //          baseUri {
-  //            host = localhost
-  //            port = 8100
-  //          }
-  //        }
-  //      }
-  //    }
+    ) {
 
   override def logSplunkEvent(dataEvent: DataEvent)(implicit hc: HeaderCarrier): Future[AuditResult] =
     Future.successful(AuditResult.Success)
+
 }

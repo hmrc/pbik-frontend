@@ -27,11 +27,11 @@
 @(
         taxYearRange:TaxYearRange,
         year:String,
-        iabdString:String,
+        iabdType:IabdType,
         person:PbikExclusionPerson
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)) }
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(year=="cy") cyminus1 else cy}
@@ -56,7 +56,7 @@ showECLBackLink = request.showECLBackLink) {
     @printLink(messages("Service.print.link"))
 
     <p class="govuk-body" id="confirmation-p">
-        @messages("ExclusionRemoval.WhatNext.p1", person.fullName, messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)), s"${taxYearRange.cy}")
+        @messages("ExclusionRemoval.WhatNext.p1", person.fullName, messages("BenefitInKind.label." + iabdType.id), s"${taxYearRange.cy}")
     </p>
 
     <h2 class="govuk-heading-m">
@@ -160,7 +160,7 @@ showECLBackLink = request.showECLBackLink) {
 
     <p id="back-to-benefit" class="govuk-body">
         @messages("whatNext.rescind.more.p.before")
-        <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdString)" id="link-back-excluded">
+        <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdType)" id="link-back-excluded">
             @messages("whatNext.rescind.more.p.link", benefitLabel)
         </a>
         @messages("whatNext.rescind.more.p.after")

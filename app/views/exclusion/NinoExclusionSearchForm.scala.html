@@ -29,13 +29,14 @@
 @(
         taxYearRange:TaxYearRange,
         isCurrentTaxYear:String,
-        iabdString:String,
-        searchForm: Form[EiLPerson],
+        iabdType:IabdType,
+        searchForm: Form[NinoForm],
         alreadyExists: Boolean = false
 )(implicit request:Request[_], messages: Messages)
 
-@excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdString)">}
-@expenseOrBenefit = @{messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}")}
+@excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">}
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
+
 @govukLayoutWrapper(PageTitle(messages("ExclusionSearch.form.title"), searchForm.hasErrors)) {
 
     @if(searchForm.hasErrors){
@@ -46,7 +47,7 @@
             </h2>
             @if(searchForm("status").hasErrors) {
                 @if(alreadyExists) {
-                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages(s"BenefitInKind.label.${Bik.asNPSTypeValue(iabdString)}"), excludedEmployeesLink, "</a>"))
+                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", benefitLabel, excludedEmployeesLink, "</a>"))
                 } else {
                     @Html(messages("ExclusionSearch.Fail.Desc"))
                 }
@@ -70,10 +71,10 @@
         </div>
     }
 
-    @formWithCSRF(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdString, "nino"), Symbol("autocomplete") -> "off") {
+    @formWithCSRF(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdType, "nino"), Symbol("autocomplete") -> "off") {
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <span class="govuk-caption-l">@expenseOrBenefit</span>
+                    <span class="govuk-caption-l">@benefitLabel</span>
                     <h1 id="title" class="govuk-fieldset__heading">@messages("ExclusionSearch.form.header")</h1>
                 </legend>
 
@@ -90,9 +91,6 @@
 
                 @textInput(searchForm("nino"), Symbol("_label") -> messages("Service.field.nino"), Symbol("_inputHint") ->  messages("Service.field.ninohint"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
             </fieldset>
-
-            <input type="hidden" name="status" id="status" value="10"/>
-            <input type="hidden" name="perOptLock" id="perOptLock"/>
 
             <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.continue")"/>
     }

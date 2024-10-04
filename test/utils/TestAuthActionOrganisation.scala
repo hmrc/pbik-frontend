@@ -18,10 +18,10 @@ package utils
 
 import controllers.actions.AuthAction
 import models.agent.Client
-import models.{AuthenticatedRequest, EmpRef, UserName}
+import models.auth.AuthenticatedRequest
 import play.api.mvc.Results._
 import play.api.mvc.{BodyParsers, Request, Result}
-import uk.gov.hmrc.auth.core.retrieve.Name
+import uk.gov.hmrc.domain.EmpRef
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,14 +32,13 @@ class TestAuthActionOrganisation @Inject() (val parser: BodyParsers.Default)(imp
 
   private val organisationClient: Option[Client] = None
   private val empRef: EmpRef                     = EmpRef("123", "AB12345")
-  private val username: UserName                 = UserName(Name(Some("test"), Some("tester")))
 
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] =
     if (request.session.get("sessionId").getOrElse("").startsWith("session")) {
       implicit val authenticatedRequest: AuthenticatedRequest[A] =
         AuthenticatedRequest(
           empRef,
-          username,
+          Some("testr id"),
           request,
           organisationClient
         )

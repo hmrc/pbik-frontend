@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
-package models
+package models.form
 
-case class BikResponse(headers: Map[String, String], bikList: Set[Bik])
+case class DateOfBirth(day: String, month: String, year: String) {
+  def dateOfBirthFormatForNPS: String = s"$year-$month-$day"
+}

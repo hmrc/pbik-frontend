@@ -16,9 +16,8 @@
 
 package utils
 
-import controllers.FakePBIKApplication
-import models.{AuthenticatedRequest, EmpRef, UserName}
-import org.scalatestplus.play.PlaySpec
+import base.FakePBIKApplication
+import models.auth.AuthenticatedRequest
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
@@ -26,13 +25,12 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, AnyContentAsEmpty, Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.auth.core.retrieve.Name
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeException, InvalidYearURIException}
 
 import scala.concurrent.{Future, Promise}
 
-class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication with Results {
+class ControllersReferenceDataSpec extends FakePBIKApplication {
 
   override val configMap: Map[String, Any] = Map(
     "auditing.enabled" -> false,
@@ -47,8 +45,8 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
     implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
     implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
       AuthenticatedRequest(
-        EmpRef("taxOfficeNumber", "taxOfficeReference"),
-        UserName(Name(None, None)),
+        empRef,
+        None,
         request,
         None
       )
@@ -59,7 +57,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
     "CY mode is disabled" should {
       "display the result passed to it" in new Test {
         val result: Result = await(mockControllersReferenceData.responseCheckCYEnabled(Future {
-          Ok("Passed Test")
+          Results.Ok("Passed Test")
         }(scala.concurrent.ExecutionContext.Implicits.global))(authenticatedRequest))
 
         result.header.status mustBe FORBIDDEN
@@ -74,7 +72,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
         val mockControllersReferenceData: ControllersReferenceData = injector.instanceOf[ControllersReferenceData]
 
         val result: Result = await(mockControllersReferenceData.responseCheckCYEnabled(Future {
-          Ok("Passed Test")
+          Results.Ok("Passed Test")
         }(scala.concurrent.ExecutionContext.Implicits.global))(authenticatedRequest))
 
         result.header.status mustBe OK
@@ -100,7 +98,7 @@ class ControllersReferenceDataSpec extends PlaySpec with FakePBIKApplication wit
       }
 
       "show an error page when the Future completes with a InvalidBikTypeException" in new Test {
-        p.failure(new InvalidBikTypeException)
+        p.failure(new InvalidBikTypeException("Invalid Bik Type"))
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe BAD_REQUEST

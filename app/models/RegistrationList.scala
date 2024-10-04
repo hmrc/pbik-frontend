@@ -16,6 +16,7 @@
 
 package models
 
+import models.form.BinaryRadioButtonWithDesc
 import play.api.libs.json.{Json, OFormat}
 
 case class RegistrationList(

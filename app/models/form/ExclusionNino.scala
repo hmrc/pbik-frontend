@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package models.v1
+package models.form
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OFormat}
 
-case class BenefitListUpdateResponse(employerOptimisticLockResponse: EmployerOptimisticLockResponse)
+case class ExclusionNino(nino: String)
 
-object BenefitListUpdateResponse {
-  implicit val formats: Format[BenefitListUpdateResponse] = Json.format[BenefitListUpdateResponse]
+object ExclusionNino {
+  implicit val exclusionNinoFormats: OFormat[ExclusionNino] = Json.format[ExclusionNino]
 }

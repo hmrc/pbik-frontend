@@ -16,14 +16,15 @@
 
 package controllers
 
-import config._
+import base.FakePBIKApplication
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
-import models.v1.IabdType
+import models.auth.AuthenticatedRequest
+import models.v1.IabdType.IabdType
+import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType, PbikStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.scalatestplus.play.PlaySpec
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,101 +32,78 @@ import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, SessionService}
-import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.time.TaxYear
 import utils._
 
-import java.time.LocalDate
-import javax.inject.Inject
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
+class WhatNextPageControllerSpec extends FakePBIKApplication {
+
+  private val mockBikListService: BikListService = mock(classOf[BikListService])
+  private val mockConnector: PbikConnector       = mock(classOf[PbikConnector])
+  private val mockSessionService: SessionService = mock(classOf[SessionService])
 
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
-    .overrides(bind[BikListService].toInstance(mock(classOf[StubBikListService])))
-    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
-    .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
+    .overrides(bind[BikListService].toInstance(mockBikListService))
+    .overrides(bind[PbikConnector].toInstance(mockConnector))
+    .overrides(bind[SessionService].toInstance(mockSessionService))
     .build()
 
   implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
   implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
     AuthenticatedRequest(
-      EmpRef("taxOfficeNumber", "taxOfficeReference"),
-      UserName(Name(None, None)),
+      empRef,
+      None,
       request,
       None
     )
 
-  private lazy val CYCache: Set[Bik] = Set.tabulate(noOfElements)(n => Bik("" + (n + 1), statusValue))
-
-  private val (noOfElements, statusValue): (Int, Int)        = (21, 10)
-  private val (iabdType, iabdString): (String, String)       = (IabdType.MedicalInsurance.id.toString, "medical")
+  private val iabdType: IabdType                             = IabdType.MedicalInsurance
   private val whatNextPageController: WhatNextPageController = app.injector.instanceOf[WhatNextPageController]
 
-  private class StubBikListService @Inject() (
-    pbikAppConfig: PbikAppConfig,
-    tierConnector: PbikConnector,
-    controllersReferenceData: ControllersReferenceData
-  ) extends BikListService(
-        pbikAppConfig,
-        tierConnector,
-        controllersReferenceData
-      ) {
+  private val cyBenefits   = IabdType.values.toList
+    .slice(2, 7)
+    .map(iabd => BenefitInKindWithCount(iabd, PbikStatus.ValidPayrollingBenefitInKind, 1))
+  private val cyp1Benefits = IabdType.values.toList
+    .slice(10, 15)
+    .map(iabd => BenefitInKindWithCount(iabd, PbikStatus.ValidPayrollingBenefitInKind, 4))
 
-    override def currentYearList(implicit
-      hc: HeaderCarrier,
-      request: AuthenticatedRequest[_]
-    ): Future[BikResponse] =
-      Future.successful(
-        BikResponse(
-          HeaderTags.createResponseHeaders(),
-          CYCache.filter { x: Bik =>
-            Integer.parseInt(x.iabdType) <= 10
-          }
-        )
-      )
+  override def beforeEach(): Unit = {
+    super.beforeEach()
 
-    override def nextYearList(implicit
-      hc: HeaderCarrier,
-      request: AuthenticatedRequest[_]
-    ): Future[BikResponse] =
-      Future.successful(
-        BikResponse(
-          HeaderTags.createResponseHeaders(),
-          CYCache.filter { x: Bik =>
-            Integer.parseInt(x.iabdType) > 10
-          }
-        )
-      )
+    reset(mockBikListService)
+    reset(mockConnector)
+    reset(mockSessionService)
 
+    when(mockBikListService.currentYearList(any(), any()))
+      .thenReturn(Future.successful(BenefitListResponse(Some(cyBenefits), 5)))
+    when(mockBikListService.nextYearList(any(), any()))
+      .thenReturn(Future.successful(BenefitListResponse(Some(cyp1Benefits), 5)))
   }
 
   "WhatNextPageController" when {
     "showWhatNextRegisteredBik" should {
-      when(whatNextPageController.sessionService.fetchPbikSession()(any()))
-        .thenReturn(
-          Future.successful(
-            Some(
-              PbikSession(
-                sessionId,
-                Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
-                None,
-                None,
-                None,
-                None,
-                None,
-                None
-              )
-            )
-          )
-        )
       def test(year: String): Unit =
         s"state the status is ok and display correct page for year $year for a Single benefit (Register a BIK)" in {
+          when(mockSessionService.fetchPbikSession()(any()))
+            .thenReturn(
+              Future.successful(
+                Some(
+                  PbikSession(
+                    sessionId,
+                    Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
+                    None,
+                    None,
+                    None,
+                    None,
+                    None,
+                    None
+                  )
+                )
+              )
+            )
           val result = whatNextPageController.showWhatNextRegisteredBik(year).apply(authenticatedRequest)
 
           status(result) mustBe OK
@@ -138,7 +116,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
       Seq("cy1", "cy").foreach(test)
 
       "state the status is ok and display correct page for Multiple benefits (Register a BIK)" in {
-        when(whatNextPageController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -148,7 +126,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
                     RegistrationList(active =
                       List(
                         RegistrationItem(iabdType, active = true, enabled = true),
-                        RegistrationItem(IabdType.EmployerProvidedServices.id.toString, active = true, enabled = true)
+                        RegistrationItem(IabdType.EmployerProvidedServices, active = true, enabled = true)
                       )
                     )
                   ),
@@ -173,7 +151,7 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
 
     "showWhatNextRemovedBik" should {
       "state the status is ok and display correct page (Remove a BIK)" in {
-        when(whatNextPageController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -190,31 +168,13 @@ class WhatNextPageControllerSpec extends PlaySpec with FakePBIKApplication {
               )
             )
           )
-        val result = whatNextPageController.showWhatNextRemovedBik(iabdString).apply(authenticatedRequest)
+        val result = whatNextPageController.showWhatNextRemovedBik(iabdType).apply(authenticatedRequest)
 
         status(result) mustBe OK
         contentAsString(result) must include("Benefit removed")
         contentAsString(result) must include(
           "You have removed Private medical treatment or insurance from being taxed through payroll from 6 April"
         )
-      }
-    }
-
-    "calculateTaxYear" should {
-      val startYear = TaxYear.taxYearFor(LocalDate.now())
-
-      "return this tax year and next year if given true" in {
-        val result: (Int, Int) = whatNextPageController.calculateTaxYear(isCurrentTaxYear = true)
-
-        assert(result._1 == startYear.startYear)
-        assert(result._2 == startYear.startYear + 1)
-      }
-
-      "return next year and the year after if given false" in {
-        val result: (Int, Int) = whatNextPageController.calculateTaxYear(isCurrentTaxYear = false)
-
-        assert(result._1 == startYear.startYear + 1)
-        assert(result._2 == startYear.startYear + 2)
       }
     }
   }

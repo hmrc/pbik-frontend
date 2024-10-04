@@ -17,6 +17,10 @@
 package utils
 
 import models._
+import models.form._
+import models.v1.IabdType
+import models.v1.IabdType.IabdType
+import models.v1.exclusion.Gender
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
@@ -38,8 +42,7 @@ object FormMappingsConstants {
 class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport {
 
   private val nameValidationRegex        = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
-  private val ninoValidationRegex        = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]([a-zA-Z]?)"
-  private val ninoTrimmedRegex           = "([a-zA-Z])([a-zA-Z])[0-9][0-9][0-9][0-9][0-9][0-9]"
+  private val validNinoFormat            = "[[A-Z]&&[^DFIQUV]][[A-Z]&&[^DFIQUVO]] ?\\d{2} ?\\d{2} ?\\d{2} ?[A-D]?"
   private val dateDayRegex               = "([0-9])"
   private val dateMonthRegex             = "([0-9])"
   private val dateYearRegex              = "([0-9]){4}"
@@ -91,6 +94,9 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     !((dobYear + 130) < currentYear)
   }
 
+  private def cleanupNino(nino: String): String =
+    nino.replaceAll(" ", "").trim.toUpperCase
+
   val binaryRadioButton: Form[MandatoryRadioButton] = Form(
     mapping(
       "confirmation" -> nonEmptyText(1) //  must contain minimum characters for supported biks 1-99
@@ -108,7 +114,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
       "select-all" -> optional(text),
       "actives"    -> list(
         mapping(
-          "uid"     -> text,
+          "uid"     -> text.transform[IabdType](bik => IabdType(bik.trim.toInt), iabdType => iabdType.id.toString),
           "active"  -> boolean,
           "enabled" -> boolean
         )(RegistrationItem.apply)(RegistrationItem.unapply)
@@ -123,53 +129,39 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     )(RegistrationList.apply)(RegistrationList.unapply)
   )
 
-  def exclusionSearchFormWithNino[A](implicit request: Request[A]): Form[EiLPerson] = Form(
+  def exclusionSearchFormWithNino[A](implicit request: Request[A]): Form[NinoForm] = Form(
     mapping(
-      "firstname"  -> text
+      "firstname" -> text
         .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.nonEmpty)
         .verifying(Messages("error.incorrect.firstname"), firstname => firstname.matches(nameValidationRegex)),
-      "surname"    -> text
+      "surname"   -> text
         .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.nonEmpty)
         .verifying(Messages("error.incorrect.lastname"), lastname => lastname.matches(nameValidationRegex)),
-      "nino"       -> text
-        .verifying(Messages("error.empty.nino"), nino => nino.trim.nonEmpty)
+      "nino"      -> text
+        .verifying(Messages("error.empty.nino"), nino => cleanupNino(nino).nonEmpty)
         .verifying(
           Messages("error.incorrect.nino"),
-          nino => nino.trim.isEmpty || nino.replaceAll(" ", "").matches(ninoValidationRegex)
-        ),
-      "status"     -> optional(number),
-      "perOptLock" -> default(number, 0)
-    )((firstname, surname, nino, status, perOptLock) =>
-      EiLPerson(
-        stripTrailingNinoCharacterForNPS(nino.replaceAll(" ", "").toUpperCase),
+          nino => cleanupNino(nino).matches(validNinoFormat)
+        )
+    )((firstname, surname, nino) =>
+      NinoForm(
         firstname.trim,
-        EiLPerson.defaultSecondName,
         surname.trim,
-        EiLPerson.defaultWorksPayrollNumber,
-        EiLPerson.defaultDateOfBirth,
-        EiLPerson.defaultGender,
-        status,
-        perOptLock
+        cleanupNino(nino)
       )
-    )((eilPerson: EiLPerson) =>
-      Some((eilPerson.firstForename, eilPerson.surname, eilPerson.nino, eilPerson.status, eilPerson.perOptLock))
-    )
+    )((ninoForm: NinoForm) => Some((ninoForm.firstName, ninoForm.surname, ninoForm.nino)))
   )
 
-  private def stripTrailingNinoCharacterForNPS(nino: String): String =
-    ninoTrimmedRegex.r.findFirstIn(nino).getOrElse("").mkString
-
-  //TODO remove EiLPerson and make small form smaller without hidden fields
-  def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[EiLPerson] =
+  def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[NoNinoForm] =
     Form(
       mapping(
-        "firstname"  -> text
+        "firstname" -> text
           .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.nonEmpty)
           .verifying(Messages("error.incorrect.firstname"), firstname => firstname.matches(nameValidationRegex)),
-        "surname"    -> text
+        "surname"   -> text
           .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.nonEmpty)
           .verifying(Messages("error.incorrect.lastname"), lastname => lastname.matches(nameValidationRegex)),
-        "dob"        -> mapping(
+        "dob"       -> mapping(
           "day"   -> text,
           "month" -> text,
           "year"  -> text
@@ -181,77 +173,29 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
           .verifying(invalidMonthDateError, dob => !addZeroIfNeeded(dob._2).matches(dateMonthRegex))
           .verifying(invalidYearDateError, dob => dob._3.matches(dateYearRegex))
           .verifying(invalidDateError, dob => isValidDate(dob)),
-        "gender"     -> text.verifying("Error message goes here", gender => gender.nonEmpty),
-        "status"     -> optional(number),
-        "perOptLock" -> default(number, 0)
-      )((firstname, surname, dob, gender, status, perOptLock) =>
-        EiLPerson(
-          EiLPerson.defaultNino,
+        "gender"    -> text.verifying("Error message goes here", gender => gender.nonEmpty)
+      )((firstname, surname, dob, gender) =>
+        NoNinoForm(
           firstname.trim,
-          EiLPerson.defaultSecondName,
           surname.trim,
-          EiLPerson.defaultWorksPayrollNumber,
-          Some(addZeroIfNeeded(dob._1) + "/" + addZeroIfNeeded(dob._2) + "/" + dob._3),
-          Some(gender),
-          status,
-          perOptLock
+          DateOfBirth(addZeroIfNeeded(dob._1), addZeroIfNeeded(dob._2), dob._3),
+          Gender.fromString(gender)
         )
-      )((eilPerson: EiLPerson) =>
+      )((noNinoForm: NoNinoForm) =>
         Some(
           (
-            eilPerson.firstForename,
-            eilPerson.surname,
+            noNinoForm.firstName,
+            noNinoForm.surname,
             (
-              eilPerson.dateOfBirth.get.split('/')(0),
-              eilPerson.dateOfBirth.get.split('/')(1),
-              eilPerson.dateOfBirth.get.split('/')(2)
+              noNinoForm.dateOfBirth.day,
+              noNinoForm.dateOfBirth.month,
+              noNinoForm.dateOfBirth.year
             ),
-            eilPerson.gender.get,
-            eilPerson.status,
-            eilPerson.perOptLock
+            noNinoForm.gender.toString
           )
         )
       )
     )
-
-  val individualsForm: Form[EiLPersonList] = Form(
-    mapping(
-      "individuals" -> list(
-        mapping(
-          "nino"               -> text,
-          "firstName"          -> text,
-          "secondName"         -> optional(text),
-          "surname"            -> text,
-          "worksPayrollNumber" -> optional(text),
-          "dateOfBirth"        -> optional(text),
-          "gender"             -> optional(text),
-          "status"             -> optional(number),
-          "perOptLock"         -> default(number, 0)
-        )(EiLPerson.apply)(EiLPerson.unapply)
-      )
-    )(EiLPersonList.apply)(EiLPersonList.unapply)
-  )
-
-  val individualsFormWithRadio: Form[(String, EiLPersonList)] = Form(
-    mapping(
-      "individualSelection" -> text,
-      "individuals"         -> list(
-        mapping(
-          "nino"               -> text,
-          "firstName"          -> text,
-          "secondName"         -> optional(text),
-          "surname"            -> text,
-          "worksPayrollNumber" -> optional(text),
-          "dateOfBirth"        -> optional(text),
-          "gender"             -> optional(text),
-          "status"             -> optional(number),
-          "perOptLock"         -> default(number, 0)
-        )(EiLPerson.apply)(EiLPerson.unapply)
-      )
-    )((individualSelection, individuals) => (individualSelection, EiLPersonList(individuals)))(
-      (individualsTuple: (String, EiLPersonList)) => Some((individualsTuple._1, individualsTuple._2.active))
-    )
-  )
 
   val individualSelectionForm: Form[ExclusionNino] = Form(
     mapping(

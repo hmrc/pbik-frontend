@@ -16,36 +16,70 @@
 
 package controllers
 
+import base.FakePBIKApplication
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
+import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType, PbikStatus}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import org.scalatestplus.play.PlaySpec
 import play.api.Application
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.BikListService
-import support.{StubbedBikListService, TestSplunkLogger}
+import support.TestSplunkLogger
 import uk.gov.hmrc.http.SessionKeys
 import utils._
 
-class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18nSupport {
+import scala.concurrent.Future
 
-  override lazy val fakeApplication: Application     = GuiceApplicationBuilder()
-    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
-    .overrides(bind[BikListService].to(classOf[StubbedBikListService]))
+class HomePageControllerSpec extends FakePBIKApplication {
+
+  private val mockConnector: PbikConnector       = mock(classOf[PbikConnector])
+  private val mockBikListService: BikListService = mock(classOf[BikListService])
+
+  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+    .overrides(bind[PbikConnector].toInstance(mockConnector))
+    .overrides(bind[BikListService].to(mockBikListService))
     .overrides(bind[SplunkLogger].to(classOf[TestSplunkLogger]))
     .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()
+
   private val homePageController: HomePageController = app.injector.instanceOf[HomePageController]
+  private val messages: Messages                     = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
 
-  implicit val taxDateUtils: TaxDateUtils = app.injector.instanceOf[TaxDateUtils]
+  override def beforeEach(): Unit = {
+    super.beforeEach()
 
-  override def messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+    reset(mockConnector)
+    reset(mockBikListService)
+
+    when(mockBikListService.currentYearList(any(), any()))
+      .thenReturn(
+        Future.successful(
+          BenefitListResponse(
+            Some(List(BenefitInKindWithCount(IabdType.CarBenefit, PbikStatus.ValidPayrollingBenefitInKind, 34))),
+            5
+          )
+        )
+      )
+    when(mockBikListService.nextYearList(any(), any()))
+      .thenReturn(
+        Future.successful(
+          BenefitListResponse(
+            Some(List(BenefitInKindWithCount(IabdType.MedicalInsurance, PbikStatus.ValidPayrollingBenefitInKind, 35))),
+            5
+          )
+        )
+      )
+
+    when(mockBikListService.getAllBenefitsForYear(any())(any()))
+      .thenReturn(Future.successful(IabdType.values))
+  }
 
   "HomePageController" when {
     ".notAuthorised" should {
@@ -54,14 +88,14 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
         val result                                                = homePageController.notAuthorised()(request)
 
         status(result) mustBe UNAUTHORIZED
-        contentAsString(result) must include(Messages("ErrorPage.authorisationError"))
+        contentAsString(result) must include(messages("ErrorPage.authorisationError"))
       }
     }
 
     ".onPageLoadCY1" should {
       "return 401 (UNAUTHORIZED) if the session is not authenticated" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-          FakeRequest().withSession(SessionKeys.sessionId -> "hackmeister")
+          FakeRequest().withSession(SessionKeys.sessionId -> "test-session-id")
         val result                                                = homePageController.onPageLoadCY1(request)
 
         status(result) mustBe UNAUTHORIZED
@@ -81,7 +115,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
         val result                                                = homePageController.onPageLoadCY1(request)
 
         status(result) mustBe OK
-        contentAsString(result) must include(Messages("StartPage.heading.organisation"))
+        contentAsString(result) must include(messages("StartPage.heading.organisation"))
         contentAsString(result) must include(
           "Is this page not working properly? (opens in new tab)"
         )
@@ -129,7 +163,7 @@ class HomePageControllerSpec extends PlaySpec with FakePBIKApplication with I18n
         val result                                                = homePageController.onPageLoadCY(request)
 
         status(result) mustBe OK
-        contentAsString(result) must include(Messages("StartPage.heading.organisation"))
+        contentAsString(result) must include(messages("StartPage.heading.organisation"))
         contentAsString(result) must include(
           "Is this page not working properly? (opens in new tab)"
         )

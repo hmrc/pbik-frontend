@@ -69,8 +69,7 @@ object IabdType extends Enumeration {
   ).map(_.swap)
 
   implicit class IabdTypeOps(value: IabdType) {
-    def convertToUrlParam: String =
-      iabdTypeToUrlParamNameMap(value)
+    def convertToUrlParam: String = iabdTypeToUrlParamNameMap(value)
   }
 
 }

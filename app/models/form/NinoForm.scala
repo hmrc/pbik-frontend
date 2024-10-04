@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-package models
+package models.form
 
-case class BiKsWithExclusions(iabdType: String, status: Int, numberOfExclusions: Int)
+case class NinoForm(firstName: String, surname: String, nino: String)

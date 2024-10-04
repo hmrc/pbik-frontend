@@ -56,7 +56,7 @@ class StartPageController @Inject() (
     val resultFuture: Future[Result] = for {
       currentYearList <- bikListService.currentYearList
     } yield
-      if (currentYearList.bikList.isEmpty) {
+      if (currentYearList.getBenefitInKindWithCount.isEmpty) {
         Redirect(routes.HomePageController.onPageLoadCY1)
       } else {
         Ok(selectYearPageView(taxYearRange, formMappings.selectYearForm))
@@ -73,12 +73,14 @@ class StartPageController @Inject() (
         formWithErrors => Future.successful(BadRequest(selectYearPageView(taxYearRange, formWithErrors))),
         values => {
           val selectedValue = values.year
-          for {
-            _ <- taxDateUtils.mapYearStringToInt(selectedValue, controllersReferenceData.yearRange)
-          } yield selectedValue match {
-            case utils.FormMappingsConstants.CY   => Redirect(routes.HomePageController.onPageLoadCY)
-            case utils.FormMappingsConstants.CYP1 => Redirect(routes.HomePageController.onPageLoadCY1)
-            case _                                => throw new InvalidYearURIException()
+          taxDateUtils.mapYearStringToInt(selectedValue, controllersReferenceData.yearRange)
+          selectedValue match {
+            case utils.FormMappingsConstants.CY   =>
+              Future.successful(Redirect(routes.HomePageController.onPageLoadCY))
+            case utils.FormMappingsConstants.CYP1 =>
+              Future.successful(Redirect(routes.HomePageController.onPageLoadCY1))
+            case _                                =>
+              Future.failed(throw new InvalidYearURIException())
           }
         }
       )

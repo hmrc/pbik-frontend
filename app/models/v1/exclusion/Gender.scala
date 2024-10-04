@@ -29,8 +29,8 @@ object Gender extends Enumeration {
 
   implicit val formats: Format[Gender] = Json.formatEnum(this)
 
-  def fromString(value: Option[String]): Gender =
-    value.getOrElse("not known").strip().toLowerCase match {
+  def fromString(value: String): Gender =
+    value.strip().toLowerCase match {
       case "female" => Female
       case "male"   => Male
       case _        => Unknown

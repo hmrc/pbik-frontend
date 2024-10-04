@@ -16,12 +16,10 @@
 
 package connectors
 
-import controllers.FakePBIKApplication
+import base.FakePBIKApplication
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import org.mockito.stubbing.OngoingStubbing
-import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.play.PlaySpec
 import play.api.http.Status._
 import play.api.libs.json.{Json, Writes}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
@@ -32,7 +30,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication with BeforeAndAfterEach {
+class AgentPayeConnectorSpec extends FakePBIKApplication {
 
   private val mockHttpClient: HttpClientV2          = mock(classOf[HttpClientV2])
   private val mockRequestBuilderGet: RequestBuilder = mock(classOf[RequestBuilder])
@@ -41,7 +39,6 @@ class AgentPayeConnectorSpec extends PlaySpec with FakePBIKApplication with Befo
   private val agentPayeConnectorWithMockClient: AgentPayeConnector =
     new AgentPayeConnector(mockHttpClient, configuration)
 
-  private val baseUrl: String   = s"${configuration.baseUrl("agent-paye")}/agent"
   private val agentCode: String = "agentCode"
 
   implicit val hc: HeaderCarrier = HeaderCarrier()

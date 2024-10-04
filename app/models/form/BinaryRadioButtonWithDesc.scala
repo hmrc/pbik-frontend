@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package models
+package models.form
 
-case class EmpRef(taxOfficeNumber: String, taxOfficeReference: String) {
-  def encodedEmpRef: String           = s"$taxOfficeNumber%2F$taxOfficeReference"
-  private def unencodedEmpRef: String = s"$taxOfficeNumber/$taxOfficeReference"
+import play.api.libs.json.{Json, OFormat}
 
-  override def toString: String = unencodedEmpRef
+case class BinaryRadioButtonWithDesc(selectionValue: String, info: Option[String])
 
-  def getOrElse(default: String): String = (taxOfficeNumber, taxOfficeReference) match {
-    case ("", "") => default
-    case _        => toString
-  }
-}
-
-object EmpRef {
-  val empty: EmpRef = EmpRef("", "")
+object BinaryRadioButtonWithDesc {
+  implicit val binaryRadioButtonWithDescFormats: OFormat[BinaryRadioButtonWithDesc] =
+    Json.format[BinaryRadioButtonWithDesc]
 }

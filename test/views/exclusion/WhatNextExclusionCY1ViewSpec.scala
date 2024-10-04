@@ -17,7 +17,8 @@
 package views.exclusion
 
 import config.PbikAppConfig
-import models.AuthenticatedRequest
+import models.auth.AuthenticatedRequest
+import models.v1.IabdType
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
@@ -30,8 +31,10 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
 
   implicit val appConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
 
+  private val iabdType = IabdType.VanBenefit
+
   implicit def view()(implicit request: AuthenticatedRequest[_]): Html =
-    whatNextExclusionView(taxYearRange, "cy", "vans", tracePerson)
+    whatNextExclusionView(taxYearRange, "cy", iabdType, tracePerson)
 
   "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)
@@ -44,7 +47,7 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
     )
     behave like pageWithLink(
       messages("whatNext.exclude.more.p.cy.link", "Vans"),
-      "/payrollbik/cy/vans/excluded-employees"
+      s"/payrollbik/cy/${iabdType.id}/excluded-employees"
     )
   }
 
@@ -59,7 +62,7 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
     )
     behave like pageWithLink(
       messages("whatNext.exclude.more.p.cy.link", "Vans"),
-      "/payrollbik/cy/vans/excluded-employees"
+      s"/payrollbik/cy/${iabdType.id}/excluded-employees"
     )
   }
 

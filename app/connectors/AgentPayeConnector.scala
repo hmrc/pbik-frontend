@@ -16,11 +16,11 @@
 
 package connectors
 
-import models.EmpRef
 import models.agent.Client
 import play.api.Logging
 import play.api.http.Status._
 import play.api.libs.json.{JsError, JsSuccess}
+import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
@@ -40,9 +40,9 @@ class AgentPayeConnector @Inject() (http: HttpClientV2, servicesConfig: Services
       logger.warn("[AgentPayeConnector][getClient] agentCode is empty")
       Future.successful(None)
     } else {
-      val url = s"${servicesConfig.baseUrl("agent-paye")}/agent/${agentCode.get}/client/${empRef.encodedEmpRef}"
+      val fullURL = s"${servicesConfig.baseUrl("agent-paye")}/agent/${agentCode.get}/client/${empRef.encodedValue}"
       http
-        .get(url"$url")
+        .get(url"$fullURL")
         .execute[HttpResponse]
         .map { response =>
           response.status match {
@@ -55,7 +55,7 @@ class AgentPayeConnector @Inject() (http: HttpClientV2, servicesConfig: Services
               }
             case ACCEPTED | NOT_FOUND => None
             case httpStatusCode       =>
-              logger.warn(s"[AgentPayeConnector][getClient] GET $url returned $httpStatusCode")
+              logger.warn(s"[AgentPayeConnector][getClient] GET $fullURL returned $httpStatusCode")
               None
           }
         }

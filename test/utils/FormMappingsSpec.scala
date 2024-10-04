@@ -16,18 +16,14 @@
 
 package utils
 
-import controllers.FakePBIKApplication
-import models._
-import org.scalatest.matchers.must.Matchers
-import org.scalatestplus.play.PlaySpec
+import base.FakePBIKApplication
+import models.form.{ExclusionNino, MandatoryRadioButton, SelectYear}
 
 import java.time.Month._
 
-class FormMappingsSpec extends PlaySpec with FakePBIKApplication with Matchers {
+class FormMappingsSpec extends FakePBIKApplication {
 
   private val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
-  private val eilPerson: EiLPerson       =
-    EiLPerson("AB111111", "Adam", None, "Smith", None, Some("01/01/1980"), Some("male"), None)
 
   "FormMappings" when {
     "an input date" should {
@@ -162,39 +158,6 @@ class FormMappingsSpec extends PlaySpec with FakePBIKApplication with Matchers {
     "the regex for a year is 2 digits" should {
       "be [0-9][0-9]" in {
         assert(formMappings.generateYearString(2) == "[0-9][0-9]")
-      }
-    }
-
-    "individualsFormWithRadio is filled" should {
-      "result in correct result" in {
-        formMappings.individualsFormWithRadio.fill(("AB111111", EiLPersonList(List(eilPerson)))) mustBe
-          formMappings.individualsFormWithRadio.bind(
-            Map(
-              ("individualSelection", "AB111111"),
-              ("individuals[0].nino", "AB111111"),
-              ("individuals[0].firstName", "Adam"),
-              ("individuals[0].surname", "Smith"),
-              ("individuals[0].dateOfBirth", "01/01/1980"),
-              ("individuals[0].gender", "male"),
-              ("individuals[0].perOptLock", "0")
-            )
-          )
-      }
-    }
-
-    "individualsForm is filled" should {
-      "result in correct result" in {
-        formMappings.individualsForm.fill(EiLPersonList(List(eilPerson))) mustBe
-          formMappings.individualsForm.bind(
-            Map(
-              ("individuals[0].nino", "AB111111"),
-              ("individuals[0].firstName", "Adam"),
-              ("individuals[0].surname", "Smith"),
-              ("individuals[0].dateOfBirth", "01/01/1980"),
-              ("individuals[0].gender", "male"),
-              ("individuals[0].perOptLock", "0")
-            )
-          )
       }
     }
 

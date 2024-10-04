@@ -31,14 +31,16 @@
 @(
         taxYearRange:TaxYearRange,
         isCurrentTaxYear:String,
-        iabdString:String,
-        searchForm: Form[EiLPerson],
+        iabdType:IabdType,
+        searchForm: Form[NoNinoForm],
         alreadyExists: Boolean = false
 )(implicit request:Request[_], messages: Messages)
 
-@excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdString)">}
+@excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">}
 
-@govukLayoutWrapper(PageTitle(messages("ExclusionSearch.form.title"), searchForm.hasErrors)) {
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
+
+    @govukLayoutWrapper(PageTitle(messages("ExclusionSearch.form.title"), searchForm.hasErrors)) {
 
     @if(searchForm.hasErrors) {
         <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
@@ -49,7 +51,7 @@
 
             @if(searchForm("status").hasErrors) {
                 @if(alreadyExists) {
-                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", messages("BenefitInKind.label." + Bik.asNPSTypeValue(iabdString)), excludedEmployeesLink , "</a>"))
+                    @Html(messages("ExclusionSearch.Fail.Exists.Desc", benefitLabel, excludedEmployeesLink , "</a>"))
                 } else {
                     @Html(messages("ExclusionSearch.Fail.Desc"))
                 }
@@ -84,11 +86,11 @@
     }
 
     <h1 id="title" class="govuk-heading-xl">
-        <span class="govuk-caption-xl">@messages("BenefitInKind.label." + s"${Bik.asNPSTypeValue(iabdString)}")</span>
+        <span class="govuk-caption-xl">@benefitLabel</span>
         @messages("ExclusionSearch.form.header")
     </h1>
 
-    @formWithCSRF(action = routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdString, "no-nino"), Symbol("autocomplete") -> "off", Symbol("novalidate") -> "true") {
+    @formWithCSRF(action = routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdType, "no-nino"), Symbol("autocomplete") -> "off", Symbol("novalidate") -> "true") {
 
         <div class='form-group @if(searchForm("status").hasErrors) {form-group-error}' id="search-form">
             @if(searchForm("status").hasErrors){
@@ -129,8 +131,6 @@
                         </div>
                     </fieldset>
                 </div>
-                <input type="hidden" name="status" id="status" value="10"/>
-                <input type="hidden" name="perOptLock" id="perOptLock" />
             </fieldset>
         </div>
 

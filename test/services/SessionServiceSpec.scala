@@ -16,16 +16,14 @@
 
 package services
 
-import controllers.FakePBIKApplication
+import base.FakePBIKApplication
 import models._
 import models.cache.MissingSessionIdException
 import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions, SelectedExclusionToRemove}
 import models.v1.trace.{TracePersonListResponse, TracePersonResponse}
-import models.v1.{IabdType, PbikAction}
+import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType, PbikStatus}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.test.Helpers.await
 import repositories.SessionRepository
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
@@ -34,7 +32,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
-class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKApplication {
+class SessionServiceSpec extends FakePBIKApplication {
 
   private val timeout: FiniteDuration                  = 5.seconds
   implicit val hc: HeaderCarrier                       = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
@@ -47,7 +45,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
     "cache a list of registrations" in {
       val regList = RegistrationList(
         None,
-        List(RegistrationItem(IabdType.CarBenefit.id.toString, active = true, enabled = true)),
+        List(RegistrationItem(IabdType.CarBenefit, active = true, enabled = true)),
         None
       )
       val session = pbikSession.copy(registrations = Some(regList))
@@ -55,17 +53,17 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
       val result  = await(sessionService.storeRegistrationList(regList))(timeout)
 
-      result shouldBe session
+      result mustBe session
     }
 
     "cache a bik to remove" in {
-      val bikRemoved = RegistrationItem(IabdType.CarBenefit.id.toString, active = true, enabled = true)
+      val bikRemoved = RegistrationItem(IabdType.CarBenefit, active = true, enabled = true)
       val session    = pbikSession.copy(bikRemoved = Some(bikRemoved))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
       val result     = await(sessionService.storeBikRemoved(bikRemoved))(timeout)
 
-      result shouldBe session
+      result mustBe session
     }
 
     "cache a list of matches" in {
@@ -80,7 +78,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
       val result        = await(sessionService.storeListOfMatches(listOfMatches))(timeout)
 
-      result shouldBe session
+      result mustBe session
     }
 
     "cache an EiLPerson" in {
@@ -91,7 +89,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
       val result    = await(sessionService.storeEiLPerson(eiLPerson))(timeout)
 
-      result shouldBe session
+      result mustBe session
     }
 
     "cache the current exclusions" in {
@@ -108,7 +106,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
       val result            = await(sessionService.storeCurrentExclusions(currentExclusions))(timeout)
 
-      result shouldBe session
+      result mustBe session
     }
 
     "return MissingSessionIdException when caching the current exclusions with session ID absent in header carrier" in {
@@ -125,34 +123,36 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
       intercept[MissingSessionIdException] {
         await(sessionService.storeCurrentExclusions(currentExclusions))(timeout)
-      }.getMessage shouldBe "Unable to retrieve session ID"
+      }.getMessage mustBe "Unable to retrieve session ID"
     }
 
     "cache the current year registered biks" in {
-      val cyRegisteredBiks = List(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
-      val session          = pbikSession.copy(cyRegisteredBiks = Some(cyRegisteredBiks))
+      val cyRegisteredBiks =
+        List(BenefitInKindWithCount(IabdType.CarBenefit, PbikStatus.ValidPayrollingBenefitInKind, 3))
+      val session          = pbikSession.copy(cyRegisteredBiks = Some(BenefitListResponse(Some(cyRegisteredBiks), 99)))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
-      val result           = await(sessionService.storeCYRegisteredBiks(cyRegisteredBiks))(timeout)
+      val result           = await(sessionService.storeCYRegisteredBiks(BenefitListResponse(Some(cyRegisteredBiks), 99)))(timeout)
 
-      result shouldBe session
+      result mustBe session
     }
 
     "cache the next year registered biks" in {
-      val nyRegisteredBiks = List(Bik(IabdType.CarBenefit.id.toString, PbikAction.ReinstatePayrolledBenefitInKind.id))
-      val session          = pbikSession.copy(nyRegisteredBiks = Some(nyRegisteredBiks))
+      val nyRegisteredBiks =
+        List(BenefitInKindWithCount(IabdType.CarBenefit, PbikStatus.ValidPayrollingBenefitInKind, 5))
+      val session          = pbikSession.copy(nyRegisteredBiks = Some(BenefitListResponse(Some(nyRegisteredBiks), 99)))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
-      val result           = await(sessionService.storeNYRegisteredBiks(nyRegisteredBiks))(timeout)
+      val result           = await(sessionService.storeNYRegisteredBiks(BenefitListResponse(Some(nyRegisteredBiks), 99)))(timeout)
 
-      result shouldBe session
+      result mustBe session
     }
 
     "be able to fetch the pbik session" in {
       val pbikSession = PbikSession(
         sessionId,
         None,
-        Some(RegistrationItem(IabdType.CarBenefit.id.toString, active = true, enabled = true)),
+        Some(RegistrationItem(IabdType.CarBenefit, active = true, enabled = true)),
         None,
         None,
         None,
@@ -162,7 +162,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(Some(pbikSession)))
       val result      = await(sessionService.fetchPbikSession())(timeout)
 
-      result shouldBe Some(pbikSession)
+      result mustBe Some(pbikSession)
     }
 
     "not be able to fetch the pbik session and return None" when {
@@ -171,7 +171,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
         val result = await(sessionService.fetchPbikSession())(timeout)
 
-        result shouldBe None
+        result mustBe None
       }
 
       "session ID is absent in header carrier" in {
@@ -179,7 +179,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
         val result = await(sessionService.fetchPbikSession())(timeout)
 
-        result shouldBe None
+        result mustBe None
       }
     }
 
@@ -189,7 +189,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
         val result = await(sessionService.resetAll())(timeout)
 
-        result shouldBe true
+        result mustBe true
       }
     }
 
@@ -199,7 +199,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
         val result = await(sessionService.resetAll())(timeout)
 
-        result shouldBe false
+        result mustBe false
       }
 
       "session ID is absent in header carrier" in {
@@ -207,7 +207,7 @@ class SessionServiceSpec extends AnyWordSpecLike with Matchers with FakePBIKAppl
 
         val result = await(sessionService.resetAll())(timeout)
 
-        result shouldBe false
+        result mustBe false
       }
     }
   }

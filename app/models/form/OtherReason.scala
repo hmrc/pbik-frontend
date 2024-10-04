@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package utils
+package models.form
 
-import play.api.i18n.Messages
+import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+case class OtherReason(reason: String)
 
-object DateUtils {
-
-  def npsDateConversionFormat(dateAsString: String)(implicit messages: Messages): String = {
-    val sourceFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    val date: LocalDate                 = LocalDate.parse(dateAsString, sourceFormat)
-
-    s"${date.getDayOfMonth} ${messages("Service.month." + date.getMonth.getValue)} ${date.getYear}"
-  }
-
+object OtherReason {
+  implicit val otherReasonFormats: OFormat[OtherReason] = Json.format[OtherReason]
 }

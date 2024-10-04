@@ -20,20 +20,15 @@ import config.PbikAppConfig
 import connectors.PbikConnector
 import controllers.ExclusionListController
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import org.scalatest.concurrent.Futures
-import org.scalatest.time.{Millis, Seconds, Span}
-import play.api.Configuration
 import play.api.i18n.MessagesApi
 import play.api.mvc.MessagesControllerComponents
 import services.{BikListService, EiLListService, SessionService}
-import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.audit.model.DataEvent
 import utils._
 import views.html.ErrorPage
 import views.html.exclusion._
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class MockExclusionListController @Inject() (
   messagesApi: MessagesApi,
@@ -46,7 +41,6 @@ class MockExclusionListController @Inject() (
   bikListService: BikListService,
   sessionService: SessionService,
   tierConnector: PbikConnector,
-  runModeConfiguration: Configuration,
   taxDateUtils: TaxDateUtils,
   splunkLogger: SplunkLogger,
   controllersReferenceData: ControllersReferenceData,
@@ -73,7 +67,7 @@ class MockExclusionListController @Inject() (
       taxDateUtils,
       splunkLogger,
       controllersReferenceData,
-      runModeConfiguration,
+      pbikAppConfig,
       exclusionOverviewView,
       errorPageView,
       exclusionNinoOrNoNinoFormView,
@@ -83,16 +77,8 @@ class MockExclusionListController @Inject() (
       whatNextExclusionView,
       removalConfirmationView,
       whatNextRescindView
-    )
-    with Futures {
+    ) {
 
-  implicit val defaultPatience: PatienceConfig = {
-    val fiveSeconds       = 5
-    val fiveHundredMillis = 500
-    PatienceConfig(timeout = Span(fiveSeconds, Seconds), interval = Span(fiveHundredMillis, Millis))
-  }
-  override lazy val exclusionsAllowed: Boolean = true
+  override val exclusionsAllowed: Boolean = true
 
-  def logSplunkEvent(dataEvent: DataEvent): Future[AuditResult] =
-    Future.successful(AuditResult.Success)
 }
