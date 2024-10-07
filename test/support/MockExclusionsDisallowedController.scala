@@ -21,7 +21,7 @@ import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import play.api.i18n.MessagesApi
 import play.api.mvc.MessagesControllerComponents
-import services.{BikListService, EiLListService, SessionService}
+import services.{BikListService, ExclusionService, SessionService}
 import utils._
 import views.html.ErrorPage
 import views.html.exclusion._
@@ -36,7 +36,7 @@ class MockExclusionsDisallowedController @Inject() (
   cc: MessagesControllerComponents,
   authenticate: AuthAction,
   noSessionCheck: NoSessionCheckAction,
-  eiLListService: EiLListService,
+  exclusionService: ExclusionService,
   bikListService: BikListService,
   sessionService: SessionService,
   tierConnector: PbikConnector,
@@ -60,7 +60,7 @@ class MockExclusionsDisallowedController @Inject() (
       pbikAppConfig,
       authenticate,
       noSessionCheck,
-      eiLListService,
+      exclusionService,
       bikListService,
       sessionService,
       tierConnector,

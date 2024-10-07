@@ -39,12 +39,14 @@ class TaxDateUtils {
 
   def isCurrentTaxYear(yearToCheck: Int): Boolean = yearToCheck == getCurrentTaxYear(getDefaultDate)
 
-  def mapYearStringToInt(URIYearString: String, yearRange: TaxYearRange): Int =
-    URIYearString match {
-      case utils.FormMappingsConstants.CY   => yearRange.cyminus1
-      case utils.FormMappingsConstants.CYP1 => yearRange.cy
+  def mapYearStringToInt(yearUri: String): Int = {
+    val range = getTaxYearRange()
+    yearUri match {
+      case utils.FormMappingsConstants.CY   => range.cyminus1
+      case utils.FormMappingsConstants.CYP1 => range.cy
       case _                                => throw new InvalidYearURIException()
     }
+  }
 
   def getDisplayTodayDate(today: LocalDate = getDefaultDate)(implicit messages: Messages): String =
     s"${today.getDayOfMonth} ${messages("Service.month." + today.getMonth.getValue)} ${today.getYear}"

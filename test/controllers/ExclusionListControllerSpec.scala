@@ -35,7 +35,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{EiLListService, SessionService}
+import services.{ExclusionService, SessionService}
 import support._
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
@@ -51,7 +51,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
     .configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
-    .overrides(bind[EiLListService].to(classOf[StubEiLListService]))
+    .overrides(bind[ExclusionService].to(classOf[StubExclusionService]))
     .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
     .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
     .build()
@@ -252,7 +252,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val title  = messages("ExclusionNinoDecision.title")
         val result = mockExclusionListController.withOrWithoutNinoDecision(cyp1, iabdType)(mockRequest)
 
-        status(result) mustBe OK
+        status(result) mustBe BAD_REQUEST
         contentAsString(result) must include(title)
       }
     }
@@ -518,7 +518,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
           )
         val result = mockExclusionListController.showResults(cyp1, iabdType, "nino")(mockRequest)
 
-        status(result) mustBe OK
+        status(result) mustBe NOT_FOUND
         contentAsString(result) must include(messages("ServiceMessage.63085.h1"))
       }
 
@@ -684,7 +684,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
           )
         val result = mockExclusionListController.updateExclusions(cyp1, iabdType)(mockRequest)
 
-        status(result) mustBe INTERNAL_SERVER_ERROR
+        status(result) mustBe NOT_FOUND
       }
 
       "redirect back to the overview page when exclusions are disabled" in {
@@ -770,8 +770,8 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
             .excludeEiLPersonFromBik(any(), anyInt(), any())(any())
         ).thenReturn(Future.successful(Right(BAD_REQUEST)))
 
-        val resultForCyp1 = mockExclusionListController.commitExclusion(cyp1, iabdType, dateRange, 15, Some(eilPerson))
-        val resultForCy   = mockExclusionListController.commitExclusion(cy, iabdType, dateRange, 16, Some(eilPerson))
+        val resultForCyp1 = mockExclusionListController.commitExclusion(cyp1, iabdType, 15, Some(eilPerson))
+        val resultForCy   = mockExclusionListController.commitExclusion(cy, iabdType, 16, Some(eilPerson))
 
         status(resultForCyp1) mustBe INTERNAL_SERVER_ERROR
         status(resultForCy) mustBe INTERNAL_SERVER_ERROR

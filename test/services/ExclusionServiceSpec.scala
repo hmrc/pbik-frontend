@@ -35,7 +35,7 @@ import utils.Exceptions.GenericServerErrorException
 
 import scala.concurrent.Future
 
-class EilListServiceSpec extends FakePBIKApplication {
+class ExclusionServiceSpec extends FakePBIKApplication {
 
   private val mockConnector = mock(classOf[PbikConnector])
 
@@ -44,7 +44,7 @@ class EilListServiceSpec extends FakePBIKApplication {
     .overrides(bind[PbikConnector].toInstance(mockConnector))
     .build()
 
-  val mockEiLListService: EiLListService = app.injector.instanceOf[EiLListService]
+  val exclusionService: ExclusionService = app.injector.instanceOf[ExclusionService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -61,7 +61,7 @@ class EilListServiceSpec extends FakePBIKApplication {
         .thenReturn(Future.successful(Right(PbikExclusions(0, None))))
 
       val year                                                                        = 2015
-      val eilService: EiLListService                                                  = mockEiLListService
+      val eilService: ExclusionService                                                = exclusionService
       implicit val hc: HeaderCarrier                                                  = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
@@ -81,7 +81,7 @@ class EilListServiceSpec extends FakePBIKApplication {
       when(mockConnector.getAllExcludedEiLPersonForBik(any(), any(), anyInt())(any()))
         .thenReturn(Future.successful(Right(PbikExclusions(0, None))))
 
-      val eilService         = mockEiLListService
+      val eilService         = exclusionService
       val exclusionPerson1   = TracePersonResponse("QQ123456", "Humpty", None, "Dumpty", Some("123"), 22)
       val exclusionPerson2   = TracePersonResponse("QQ123456", "Humpty", None, "Dumpty", Some("789"), 22)
       val searchResultsEiL   = List(exclusionPerson1, exclusionPerson2)
@@ -97,7 +97,7 @@ class EilListServiceSpec extends FakePBIKApplication {
         .thenReturn(Future.successful(Left(NPSErrors(Seq(NPSError("test error", "test error 2"))))))
 
       val year                                                                        = 2015
-      val eilService: EiLListService                                                  = mockEiLListService
+      val eilService: ExclusionService                                                = exclusionService
       implicit val hc: HeaderCarrier                                                  = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
       implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
