@@ -72,9 +72,8 @@ class StartPageController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(selectYearPageView(taxYearRange, formWithErrors))),
         values => {
-          val selectedValue = values.year
-          taxDateUtils.mapYearStringToInt(selectedValue, controllersReferenceData.yearRange)
-          selectedValue match {
+          taxDateUtils.mapYearStringToInt(values.year)
+          values.year match {
             case utils.FormMappingsConstants.CY   =>
               Future.successful(Redirect(routes.HomePageController.onPageLoadCY))
             case utils.FormMappingsConstants.CYP1 =>

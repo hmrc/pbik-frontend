@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EiLListService @Inject() (tierConnector: PbikConnector)(implicit ec: ExecutionContext) extends Logging {
+class ExclusionService @Inject() (tierConnector: PbikConnector)(implicit ec: ExecutionContext) extends Logging {
 
   def exclusionListForYear(iabdType: IabdType, year: Int, empRef: EmpRef)(implicit
     hc: HeaderCarrier
@@ -45,7 +45,7 @@ class EiLListService @Inject() (tierConnector: PbikConnector)(implicit ec: Execu
         Future.successful(eilList)
       case Left(error)    =>
         logger.error(
-          s"[EiLListService][currentYearEiL] Error getting pbik exclusions for ${iabdType.toString} and $year: $error"
+          s"[ExclusionService][exclusionListForYear] Error getting pbik exclusions for ${iabdType.toString} and $year: $error"
         )
         Future.failed(
           new GenericServerErrorException(s"Error getting pbik exclusions for ${iabdType.toString} and $year")

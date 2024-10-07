@@ -19,15 +19,15 @@ package support
 import connectors.PbikConnector
 import models.v1.IabdType.IabdType
 import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions}
-import services.EiLListService
+import services.ExclusionService
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class StubEiLListService @Inject() (tierConnector: PbikConnector)(implicit ec: ExecutionContext)
-    extends EiLListService(tierConnector) {
+class StubExclusionService @Inject() (tierConnector: PbikConnector)(implicit ec: ExecutionContext)
+    extends ExclusionService(tierConnector) {
 
   override def exclusionListForYear(iabdType: IabdType, year: Int, empRef: EmpRef)(implicit
     hc: HeaderCarrier
