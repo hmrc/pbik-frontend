@@ -17,21 +17,15 @@
 package views.helper
 
 import base.FakePBIKApplication
-import models.agent.{AccountsOfficeReference, Client}
+import models.TaxYearRange
 import models.auth.AuthenticatedRequest
 import models.v1.exclusion.PbikExclusionPerson
 import models.v1.trace.TracePersonResponse
-import models.TaxYearRange
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
 import play.twirl.api.Html
-import uk.gov.hmrc.auth.core.retrieve.Name
-import uk.gov.hmrc.domain.EmpRef
 
 trait PBIKViewBehaviours extends FakePBIKApplication with JsoupMatchers {
 
@@ -121,11 +115,11 @@ trait PBIKViewBehaviours extends FakePBIKApplication with JsoupMatchers {
 trait PBIKBaseViewSpec extends FakePBIKApplication {
 
   val organisationRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
-    AuthenticatedRequest(empRef, Some("tester"), FakeRequest(), organisationClient)
+    createAuthenticatedRequest(mockRequest, client = organisationClient, userId = Some("tester"))
   val agentRequest: AuthenticatedRequest[AnyContentAsEmpty.type]        =
-    AuthenticatedRequest(empRef, Some("tester"), FakeRequest(), agentClient)
-  implicit val messages: Messages                                       = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
-  val cyMessages: Messages                                              = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("cy")))
+    createAuthenticatedRequest(mockRequest, client = agentClient, userId = Some("tester"))
+  implicit val messages: Messages                                       = injected[MessagesApi].preferred(Seq(lang))
+  val cyMessages: Messages                                              = injected[MessagesApi].preferred(Seq(cyLang))
 
   val (year2018, year2019, year2020): (Int, Int, Int) = (2018, 2019, 2020)
 

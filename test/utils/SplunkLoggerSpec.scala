@@ -32,10 +32,10 @@ class SplunkLoggerSpec extends FakePBIKApplication {
 
   class SetUp {
     implicit val hc: HeaderCarrier   = HeaderCarrier()
-    val controller: TestSplunkLogger = app.injector.instanceOf[TestSplunkLogger]
+    val controller: TestSplunkLogger = injected[TestSplunkLogger]
     val msg                          = "Hello"
 
-    val csrfTokenSigner: CSRFTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
+    val csrfTokenSigner: CSRFTokenSigner = injected[CSRFTokenSigner]
     val pbikDataEvent: DataEvent         = DataEvent(
       auditSource = SplunkLogger.pbik_audit_source,
       auditType = SplunkLogger.pbik_benefit_type,
@@ -139,12 +139,8 @@ class SplunkLoggerSpec extends FakePBIKApplication {
 
   "When logging events, the SplunkLogger" should {
     "return a properly formatted DataEvent for Pbik errors" in new SetUp {
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        empRef,
-        Some("TEST_USER"),
-        FakeRequest(),
-        None
-      )
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+        createAuthenticatedRequest(mockRequest, userId = Some("TEST_USER"))
 
       val d: DataEvent =
         controller.createErrorEvent(controller.FRONTEND, controller.EXCEPTION, "No PAYE Scheme found for user")
@@ -160,12 +156,8 @@ class SplunkLoggerSpec extends FakePBIKApplication {
     }
 
     "return a properly formatted DataEvent for Pbik errors when no user_id" in new SetUp {
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = AuthenticatedRequest(
-        empRef,
-        None,
-        FakeRequest(),
-        None
-      )
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
+        createAuthenticatedRequest(mockRequest, userId = None)
 
       val d: DataEvent =
         controller.createErrorEvent(controller.FRONTEND, controller.EXCEPTION, "No PAYE Scheme found for user")

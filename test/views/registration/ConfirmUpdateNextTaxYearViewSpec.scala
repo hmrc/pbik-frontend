@@ -27,15 +27,15 @@ import views.html.registration.ConfirmUpdateNextTaxYear
 
 class ConfirmUpdateNextTaxYearViewSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings                             = app.injector.instanceOf[FormMappings]
-  val confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear = app.injector.instanceOf[ConfirmUpdateNextTaxYear]
+  val formMappings: FormMappings                             = injected[FormMappings]
+  val confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear = injected[ConfirmUpdateNextTaxYear]
 
   def view(implicit request: AuthenticatedRequest[_]): Html = confirmUpdateNextTaxYearView(
     bikList,
     taxYearRange
   )
 
-  implicit val appConfig: PbikAppConfig    = app.injector.instanceOf[PbikAppConfig]
+  implicit val appConfig: PbikAppConfig    = injected[PbikAppConfig]
   val bikList: RegistrationList            = RegistrationList(active = List.empty[RegistrationItem])
   val removalBik: Option[RegistrationItem] = Some(
     RegistrationItem(IabdType.MedicalInsurance, active = true, enabled = true)

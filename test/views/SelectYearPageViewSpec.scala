@@ -24,8 +24,8 @@ import views.html.SelectYearPage
 
 class SelectYearPageViewSpec extends PBIKViewSpec {
 
-  private lazy val selectYearPageView: SelectYearPage = app.injector.instanceOf[SelectYearPage]
-  private val formMappings: FormMappings              = app.injector.instanceOf[FormMappings]
+  private lazy val selectYearPageView: SelectYearPage = injected[SelectYearPage]
+  private val formMappings: FormMappings              = injected[FormMappings]
 
   def view()(implicit request: AuthenticatedRequest[_]): Html =
     selectYearPageView(taxYearRange, formMappings.selectYearForm)

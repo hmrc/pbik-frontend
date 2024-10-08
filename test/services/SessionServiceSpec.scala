@@ -21,7 +21,7 @@ import models._
 import models.cache.MissingSessionIdException
 import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions, SelectedExclusionToRemove}
 import models.v1.trace.{TracePersonListResponse, TracePersonResponse}
-import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType, PbikStatus}
+import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
 import play.api.test.Helpers.await
@@ -128,7 +128,7 @@ class SessionServiceSpec extends FakePBIKApplication {
 
     "cache the current year registered biks" in {
       val cyRegisteredBiks =
-        List(BenefitInKindWithCount(IabdType.CarBenefit, PbikStatus.ValidPayrollingBenefitInKind, 3))
+        List(BenefitInKindWithCount(IabdType.CarBenefit, 3))
       val session          = pbikSession.copy(cyRegisteredBiks = Some(BenefitListResponse(Some(cyRegisteredBiks), 99)))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -139,7 +139,7 @@ class SessionServiceSpec extends FakePBIKApplication {
 
     "cache the next year registered biks" in {
       val nyRegisteredBiks =
-        List(BenefitInKindWithCount(IabdType.CarBenefit, PbikStatus.ValidPayrollingBenefitInKind, 5))
+        List(BenefitInKindWithCount(IabdType.CarBenefit, 5))
       val session          = pbikSession.copy(nyRegisteredBiks = Some(BenefitListResponse(Some(nyRegisteredBiks), 99)))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))

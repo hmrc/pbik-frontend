@@ -22,14 +22,13 @@ import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models._
 import models.auth.AuthenticatedRequest
 import models.v1.IabdType.IabdType
-import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType, PbikStatus}
+import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{BikListService, SessionService}
 import utils._
@@ -51,24 +50,17 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
     .overrides(bind[SessionService].toInstance(mockSessionService))
     .build()
 
-  implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
-  implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-    AuthenticatedRequest(
-      empRef,
-      None,
-      request,
-      None
-    )
+  implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(mockRequest)
 
   private val iabdType: IabdType                             = IabdType.MedicalInsurance
-  private val whatNextPageController: WhatNextPageController = app.injector.instanceOf[WhatNextPageController]
+  private val whatNextPageController: WhatNextPageController = injected[WhatNextPageController]
 
   private val cyBenefits   = IabdType.values.toList
     .slice(2, 7)
-    .map(iabd => BenefitInKindWithCount(iabd, PbikStatus.ValidPayrollingBenefitInKind, 1))
+    .map(iabd => BenefitInKindWithCount(iabd, 1))
   private val cyp1Benefits = IabdType.values.toList
     .slice(10, 15)
-    .map(iabd => BenefitInKindWithCount(iabd, PbikStatus.ValidPayrollingBenefitInKind, 4))
+    .map(iabd => BenefitInKindWithCount(iabd, 4))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -113,7 +105,7 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
           )
         }
 
-      Seq("cy1", "cy").foreach(test)
+      Seq(utils.FormMappingsConstants.CYP1, utils.FormMappingsConstants.CY).foreach(test)
 
       "state the status is ok and display correct page for Multiple benefits (Register a BIK)" in {
         when(mockSessionService.fetchPbikSession()(any()))
@@ -140,7 +132,8 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
               )
             )
           )
-        val result = whatNextPageController.showWhatNextRegisteredBik("cy1").apply(authenticatedRequest)
+        val result =
+          whatNextPageController.showWhatNextRegisteredBik(FormMappingsConstants.CYP1).apply(authenticatedRequest)
 
         status(result) mustBe OK
         contentAsString(result) must include("Registration complete")

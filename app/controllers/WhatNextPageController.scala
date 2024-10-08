@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.PbikConnector
 import controllers.actions.AuthAction
 import models._
 import models.v1.IabdType.IabdType
@@ -35,7 +34,6 @@ class WhatNextPageController @Inject() (
   override val messagesApi: MessagesApi,
   sessionService: SessionService,
   authenticate: AuthAction,
-  tierConnector: PbikConnector,
   taxDateUtils: TaxDateUtils,
   controllersReferenceData: ControllersReferenceData,
   cc: MessagesControllerComponents,
@@ -47,10 +45,8 @@ class WhatNextPageController @Inject() (
 
   def showWhatNextRegisteredBik(year: String): Action[AnyContent] =
     authenticate.async { implicit request =>
-      val yearInt      = year match {
-        case "cy1" => controllersReferenceData.yearRange.cy
-        case "cy"  => controllersReferenceData.yearRange.cyminus1
-      }
+      val yearInt = taxDateUtils.mapYearStringToInt(year)
+
       val resultFuture = sessionService.fetchPbikSession().map { session =>
         val addedBiksAsList: RegistrationList =
           RegistrationList(active = session.get.registrations.get.active.filter(item => item.active))

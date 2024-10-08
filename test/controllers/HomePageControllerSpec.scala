@@ -19,7 +19,7 @@ package controllers
 import base.FakePBIKApplication
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType, PbikStatus}
+import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import play.api.Application
@@ -49,8 +49,8 @@ class HomePageControllerSpec extends FakePBIKApplication {
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .build()
 
-  private val homePageController: HomePageController = app.injector.instanceOf[HomePageController]
-  private val messages: Messages                     = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
+  private val homePageController: HomePageController = injected[HomePageController]
+  private val messages: Messages                     = injected[MessagesApi].preferred(Seq(lang))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -62,7 +62,7 @@ class HomePageControllerSpec extends FakePBIKApplication {
       .thenReturn(
         Future.successful(
           BenefitListResponse(
-            Some(List(BenefitInKindWithCount(IabdType.CarBenefit, PbikStatus.ValidPayrollingBenefitInKind, 34))),
+            Some(List(BenefitInKindWithCount(IabdType.CarBenefit, 34))),
             5
           )
         )
@@ -71,7 +71,7 @@ class HomePageControllerSpec extends FakePBIKApplication {
       .thenReturn(
         Future.successful(
           BenefitListResponse(
-            Some(List(BenefitInKindWithCount(IabdType.MedicalInsurance, PbikStatus.ValidPayrollingBenefitInKind, 35))),
+            Some(List(BenefitInKindWithCount(IabdType.MedicalInsurance, 35))),
             5
           )
         )

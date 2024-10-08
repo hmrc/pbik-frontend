@@ -24,7 +24,7 @@ import services.BikListService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Exceptions.InvalidYearURIException
-import utils.{ControllersReferenceData, FormMappings, TaxDateUtils}
+import utils.{ControllersReferenceData, FormMappings}
 import views.html.{SelectYearPage, StartPage}
 
 import javax.inject.{Inject, Singleton}
@@ -38,7 +38,6 @@ class StartPageController @Inject() (
   bikListService: BikListService,
   formMappings: FormMappings,
   controllersReferenceData: ControllersReferenceData,
-  taxDateUtils: TaxDateUtils,
   startPageView: StartPage,
   selectYearPageView: SelectYearPage
 )(implicit val ec: ExecutionContext)
@@ -71,8 +70,7 @@ class StartPageController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(selectYearPageView(taxYearRange, formWithErrors))),
-        values => {
-          taxDateUtils.mapYearStringToInt(values.year)
+        values =>
           values.year match {
             case utils.FormMappingsConstants.CY   =>
               Future.successful(Redirect(routes.HomePageController.onPageLoadCY))
@@ -81,7 +79,6 @@ class StartPageController @Inject() (
             case _                                =>
               Future.failed(throw new InvalidYearURIException())
           }
-        }
       )
 
     controllersReferenceData.responseErrorHandler(resultFuture)

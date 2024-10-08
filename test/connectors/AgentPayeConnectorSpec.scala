@@ -35,7 +35,7 @@ class AgentPayeConnectorSpec extends FakePBIKApplication {
   private val mockHttpClient: HttpClientV2          = mock(classOf[HttpClientV2])
   private val mockRequestBuilderGet: RequestBuilder = mock(classOf[RequestBuilder])
 
-  private val configuration: ServicesConfig                        = app.injector.instanceOf[ServicesConfig]
+  private val configuration: ServicesConfig                        = injected[ServicesConfig]
   private val agentPayeConnectorWithMockClient: AgentPayeConnector =
     new AgentPayeConnector(mockHttpClient, configuration)
 

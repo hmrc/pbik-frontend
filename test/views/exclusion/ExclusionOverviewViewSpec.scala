@@ -28,8 +28,8 @@ import views.html.exclusion.ExclusionOverview
 
 class ExclusionOverviewViewSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings                         = app.injector.instanceOf[FormMappings]
-  val exclusionOverviewView: ExclusionOverview           = app.injector.instanceOf[ExclusionOverview]
+  val formMappings: FormMappings                         = injected[FormMappings]
+  val exclusionOverviewView: ExclusionOverview           = injected[ExclusionOverview]
   private val form: Form[MandatoryRadioButton]           = formMappings.binaryRadioButton
   private val formWithErrors: Form[MandatoryRadioButton] = form.withError("test", "error")
 

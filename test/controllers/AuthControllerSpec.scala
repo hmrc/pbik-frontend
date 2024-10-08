@@ -28,8 +28,8 @@ import scala.concurrent.Future
 class AuthControllerSpec extends FakePBIKApplication {
 
   implicit val hc: HeaderCarrier               = HeaderCarrier()
-  private val csrfTokenSigner: CSRFTokenSigner = app.injector.instanceOf[CSRFTokenSigner]
-  private val controller: AuthController       = app.injector.instanceOf[AuthController]
+  private val csrfTokenSigner: CSRFTokenSigner = injected[CSRFTokenSigner]
+  private val controller: AuthController       = injected[AuthController]
 
   private def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession(csrfToken)
 

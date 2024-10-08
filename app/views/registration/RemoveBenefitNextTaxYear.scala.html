@@ -24,12 +24,12 @@
 )
 
 @(
-        removalBik: Option[RegistrationItem],
+        removalBik: RegistrationItem,
         taxYearRange:TaxYearRange,
         form: Form[BinaryRadioButtonWithDesc]
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@benefitLabel = @{messages(s"BenefitInKind.label.${removalBik.get.iabdType.id}")}
+@benefitLabel = @{messages(s"BenefitInKind.label.${removalBik.iabdType.id}")}
 
 @title = @{ messages("RemoveBenefits.reason.Title") }
 
@@ -54,7 +54,7 @@
     @pageTitleHeading(messages("RemoveBenefits.reason.Heading", benefitLabel))
 
     <div class="data">
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.get.iabdType), Symbol("id") -> "form-remove") {
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(removalBik.iabdType), Symbol("id") -> "form-remove") {
             <div class='govuk-form-group @if(form.hasErrors) {govuk-form-group--error}'>
                 <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="error-list-1" }>
                     <legend class="govuk-fieldset__legend">

@@ -31,8 +31,8 @@ class TaxDateUtilsSpec extends FakePBIKApplication {
   private val cyp1: Int                       = taxDateUtils.getTaxYearRange().cy
   private val day1: Int                       = 1
   private val inputDates: Seq[LocalDate]      = Month.values().toList.map(month => LocalDate.of(cy, month, day1))
-  private val messages: Messages              = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
-  private val cyMessages: Messages            = app.injector.instanceOf[MessagesApi].preferred(Seq(cyLang))
+  private val messages: Messages              = injected[MessagesApi].preferred(Seq(lang))
+  private val cyMessages: Messages            = injected[MessagesApi].preferred(Seq(cyLang))
 
   "TaxDateUtils" when {
     ".getCurrentTaxYear" should {

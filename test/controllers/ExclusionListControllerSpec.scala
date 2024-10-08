@@ -35,10 +35,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.{ExclusionService, SessionService}
+import services.{BikListService, ExclusionService, SessionService}
 import support._
-import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.Exceptions.InvalidBikTypeException
 import utils._
 
 import java.time.LocalDate
@@ -47,21 +47,28 @@ import scala.concurrent.Future
 
 class ExclusionListControllerSpec extends FakePBIKApplication {
 
+  private val mockConnector      = mock(classOf[PbikConnector])
+  private val mockSessionService = mock(classOf[SessionService])
+  private val mockBikListService = mock(classOf[BikListService])
+
   override lazy val fakeApplication: Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[ExclusionService].to(classOf[StubExclusionService]))
-    .overrides(bind[PbikConnector].toInstance(mock(classOf[PbikConnector])))
-    .overrides(bind[SessionService].toInstance(mock(classOf[SessionService])))
+    .overrides(bind[PbikConnector].toInstance(mockConnector))
+    .overrides(bind[SessionService].toInstance(mockSessionService))
+    .overrides(bind[BikListService].toInstance(mockBikListService))
     .build()
 
-  private val messages: Messages                                                     = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
-  private val controllersReferenceData: ControllersReferenceData                     = app.injector.instanceOf[ControllersReferenceData]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  private val messages: Messages                                                     = injected[MessagesApi].preferred(Seq(lang))
+  private val controllersReferenceData: ControllersReferenceData                     = injected[ControllersReferenceData]
   private val mockExclusionListController: MockExclusionListController               =
-    app.injector.instanceOf[MockExclusionListController]
+    injected[MockExclusionListController]
   private val mockExclusionsDisallowedController: MockExclusionsDisallowedController =
-    app.injector.instanceOf[MockExclusionsDisallowedController]
+    injected[MockExclusionsDisallowedController]
   private val date: LocalDate                                                        = LocalDate.now()
   private val dateRange: TaxYearRange                                                =
     if (date.getMonthValue < 4 || (date.getMonthValue == 4 && date.getDayOfMonth < 6)) {
@@ -74,7 +81,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
   private val iabdType: IabdType                                                     = IabdType.CarBenefit
   private val cyBenefitTypes: BenefitTypes                                           = BenefitTypes(IabdType.values)
   private val cyBiks                                                                 =
-    cyBenefitTypes.pbikTypes.map(x => BenefitInKindWithCount(x, PbikStatus.ValidPayrollingBenefitInKind, 3))
+    cyBenefitTypes.pbikTypes.map(x => BenefitInKindWithCount(x, 3))
 
   private val pbikSession: PbikSession = PbikSession(
     sessionId = UUID.randomUUID().toString,
@@ -106,63 +113,80 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
     nyRegisteredBiks = None
   )
 
-  implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
-  implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
-    AuthenticatedRequest(
-      empRef,
-      None,
-      request,
-      None
+  implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createAuthenticatedRequest(
+    mockRequest
+  )
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+
+    reset(mockConnector)
+    reset(mockSessionService)
+    reset(mockBikListService)
+
+    when(mockConnector.getAllAvailableBiks(anyInt())(any()))
+      .thenReturn(Future.successful(Right(cyBenefitTypes)))
+
+    when(
+      mockConnector.getRegisteredBiks(
+        any(),
+        anyInt()
+      )(any())
+    ).thenReturn(
+      Future.successful(
+        BenefitListResponse(Some(cyBiks.toList), 0)
+      )
     )
 
-  when(mockExclusionListController.tierConnector.getAllAvailableBiks(anyInt())(any()))
-    .thenReturn(Future.successful(Right(cyBenefitTypes)))
-
-  when(
-    mockExclusionListController.tierConnector.getRegisteredBiks(
-      any(),
-      anyInt()
-    )(any())
-  ).thenReturn(
-    Future.successful(
-      BenefitListResponse(Some(cyBiks.toList), 0)
+    when(
+      mockConnector
+        .getRegisteredBiks(any(), argEq(year))(any())
+    ).thenReturn(
+      Future.successful(
+        BenefitListResponse(Some(cyBiks.toList), 0)
+      )
     )
-  )
 
-  when(
-    mockExclusionListController.tierConnector
-      .getRegisteredBiks(any(), argEq(year))(any())
-  ).thenReturn(
-    Future.successful(
-      BenefitListResponse(Some(cyBiks.toList), 0)
+    when(
+      mockConnector
+        .getRegisteredBiks(any(), anyInt())(any())
+    ).thenReturn(
+      Future.successful(
+        BenefitListResponse(Some(cyBiks.toList), 0)
+      )
     )
-  )
 
-  when(
-    mockExclusionListController.tierConnector
-      .getRegisteredBiks(any(), anyInt())(any())
-  ).thenReturn(
-    Future.successful(
-      BenefitListResponse(Some(cyBiks.toList), 0)
+    when(
+      mockConnector
+        .excludeEiLPersonFromBik(any(), anyInt(), any())(any())
+    ).thenReturn(Future.successful(Right(OK)))
+
+    when(mockSessionService.storeEiLPerson(any())(any())).thenReturn(
+      Future.successful(PbikSession(pbikSession.sessionId))
     )
-  )
 
-  when(
-    mockExclusionListController.tierConnector
-      .excludeEiLPersonFromBik(any(), anyInt(), any())(any())
-  ).thenReturn(Future.successful(Right(OK)))
+    when(mockSessionService.storeCYRegisteredBiks(any())(any())).thenReturn(
+      Future.successful(PbikSession(pbikSession.sessionId))
+    )
 
-  when(mockExclusionListController.sessionService.storeEiLPerson(any())(any())).thenReturn(
-    Future.successful(PbikSession(pbikSession.sessionId))
-  )
+    when(mockSessionService.storeNYRegisteredBiks(any())(any())).thenReturn(
+      Future.successful(PbikSession(pbikSession.sessionId))
+    )
 
-  when(mockExclusionListController.sessionService.storeCYRegisteredBiks(any())(any())).thenReturn(
-    Future.successful(PbikSession(pbikSession.sessionId))
-  )
+    when(mockBikListService.getRegisteredBenefitsForYear(anyInt())(any(), any()))
+      .thenReturn(
+        Future.successful(
+          BenefitListResponse(
+            Some(List(BenefitInKindWithCount(iabdType, 3))),
+            0
+          )
+        )
+      )
 
-  when(mockExclusionListController.sessionService.storeNYRegisteredBiks(any())(any())).thenReturn(
-    Future.successful(PbikSession(pbikSession.sessionId))
-  )
+    when(mockSessionService.storeCurrentExclusions(any())(any()))
+      .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
+
+  }
 
   "ExclusionListController" when {
     "testing exclusions the exclusion functionality" must {
@@ -171,11 +195,19 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       }
     }
 
-    "checking the Bik's IABD value is valid for CY" must {
+    "checking the Bik's IABD value is invalid for CY" must {
       "return the start year of the CY pair, when the IABD value is valid" in {
         val result = await(mockExclusionListController.validateRequest(cy, iabdType))
 
         result mustBe dateRange.cyminus1
+      }
+
+      "throw exception when valid year and not valid IABD" in {
+        val result = intercept[InvalidBikTypeException] {
+          await(mockExclusionListController.validateRequest(cy, IabdType.MedicalInsurance))
+        }
+
+        result.message mustBe "Invalid Bik Type"
       }
     }
 
@@ -186,6 +218,12 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
         status(result) mustBe OK
         contentAsString(result) must include(messages("ServiceMessage.10002"))
+      }
+
+      "show the exclusion overview page when exclusions are allowed" in {
+        val result = mockExclusionListController.performPageLoad(cy, iabdType)(mockRequest)
+
+        status(result) mustBe OK
       }
     }
 
@@ -199,14 +237,15 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
     }
 
     def submitExcludedEmployeesTest(selectionValue: String, page: String, url: String, year: String): Unit = {
-      val formData                                                      =
+      val formData                                             =
         controllersReferenceData.binaryRadioButton.fill(MandatoryRadioButton(selectionValue))
-      implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+      val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockRequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
-      val result                                                        = mockExclusionListController.submitExcludedEmployees(year, iabdType)(formRequest)
 
       s"loading the submitExcludedEmployees with valid form selecting $selectionValue" must {
-        s"proceed to $page" in {
+        s"proceed to $page when value=$selectionValue and year=$year" in {
+          val result = mockExclusionListController.submitExcludedEmployees(year, iabdType)(formRequest)
+
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(url)
         }
@@ -214,13 +253,23 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
     }
     val submitExcludedEmployeesInputArgs = Seq(
       (
-        "yes",
+        ControllersReferenceDataCodes.YES,
         "Exclude an employee form page",
-        s"/payrollbik/cyp1/${iabdType.id}/employee-national-insurance-number",
+        s"/payrollbik/$cyp1/${iabdType.id}/employee-national-insurance-number",
         cyp1
       ),
-      ("no", "Payrolling summary form page for CY", "/payrollbik/cy/registered-benefits-expenses", cy),
-      ("no", "Payrolling summary form page for CY1", "/payrollbik/cy1/registered-benefits-expenses", cyp1)
+      (
+        ControllersReferenceDataCodes.NO,
+        s"Payrolling summary form page for $cy",
+        s"/payrollbik/$cy/registered-benefits-expenses",
+        cy
+      ),
+      (
+        ControllersReferenceDataCodes.NO,
+        s"Payrolling summary form page for $cyp1",
+        s"/payrollbik/cy1/registered-benefits-expenses",
+        cyp1
+      )
     )
     submitExcludedEmployeesInputArgs.foreach(args => (submitExcludedEmployeesTest _).tupled(args))
 
@@ -247,7 +296,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
     "loading the withOrWithoutNinoDecision page with the form omitted, an authorised user" must {
       "see the page in order to confirm their decision" in {
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(Future.successful(Some(pbikSession)))
         val title  = messages("ExclusionNinoDecision.title")
         val result = mockExclusionListController.withOrWithoutNinoDecision(cyp1, iabdType)(mockRequest)
@@ -268,15 +317,15 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
     }
 
     def withOrWithoutNinoDecisionTest(selectionValue: String, page: String, url: String): Unit = {
-      val formData                                                      =
+      val formData                                             =
         controllersReferenceData.binaryRadioButton.fill(MandatoryRadioButton(selectionValue))
-      implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+      val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
         mockRequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
-      val result                                                        =
-        mockExclusionListController.withOrWithoutNinoDecision(cyp1, iabdType)(formRequest)
 
       s"loading the withOrWithoutNinoDecision with valid form selecting $selectionValue" must {
         s"proceed to $page" in {
+          val result = mockExclusionListController.withOrWithoutNinoDecision(cyp1, iabdType)(formRequest)
+
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(url)
         }
@@ -317,7 +366,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
     "loading the searchResults page" must {
       "display the expected search results page for an authorised user's NINO search" in {
-        when(mockExclusionListController.tierConnector.findPersonByNino(any(), anyInt(), any())(any()))
+        when(mockConnector.findPersonByNino(any(), anyInt(), any())(any()))
           .thenReturn(
             Future.successful(
               Right(
@@ -328,9 +377,9 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
               )
             )
           )
-        when(mockExclusionListController.sessionService.storeListOfMatches(any())(any()))
+        when(mockSessionService.storeListOfMatches(any())(any()))
           .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -355,11 +404,10 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(s"/payrollbik/$cyp1/${iabdType.id}/nino/exclude-employee-results")
-
       }
 
-      "display the expected search results page for an authorised user's non-NINO search - Male" in {
-        when(mockExclusionListController.tierConnector.findPersonByPersonalDetails(any(), anyInt(), any())(any()))
+      "display the expected nino search form when NINO form with errors" in {
+        when(mockConnector.findPersonByNino(any(), anyInt(), any())(any()))
           .thenReturn(
             Future.successful(
               Right(
@@ -370,9 +418,161 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
               )
             )
           )
-        when(mockExclusionListController.sessionService.storeListOfMatches(any())(any()))
+        when(mockSessionService.storeListOfMatches(any())(any()))
           .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
+          .thenReturn(
+            Future.successful(
+              Some(
+                pbikSession.copy(
+                  listOfMatches = None,
+                  eiLPerson = None,
+                  currentExclusions = None
+                )
+              )
+            )
+          )
+
+        val formData                                                      =
+          controllersReferenceData.exclusionSearchFormWithNino(request = mockRequest)
+        implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
+        val result                                                        =
+          mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NINO)(
+            formRequest
+          )
+
+        status(result) mustBe OK
+        contentAsString(result) must include(messages("Service.errorSummary.heading"))
+      }
+
+      "display the expected nino search form when non-NINO form with errors" in {
+        when(mockConnector.findPersonByPersonalDetails(any(), anyInt(), any())(any()))
+          .thenReturn(
+            Future.successful(
+              Right(
+                TracePersonListResponse(
+                  1,
+                  List(TracePersonResponse("AB111111", "Adam", None, "Smith", Some("123"), 22))
+                )
+              )
+            )
+          )
+        when(mockSessionService.storeListOfMatches(any())(any()))
+          .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
+        when(mockSessionService.fetchPbikSession()(any()))
+          .thenReturn(
+            Future.successful(
+              Some(
+                pbikSession.copy(
+                  listOfMatches = None,
+                  eiLPerson = None,
+                  currentExclusions = None
+                )
+              )
+            )
+          )
+
+        val formData                                                      =
+          controllersReferenceData.exclusionSearchFormWithoutNino(request = mockRequest)
+        implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
+        val result                                                        =
+          mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NONINO)(
+            formRequest
+          )
+
+        status(result) mustBe OK
+        contentAsString(result) must include(messages("Service.errorSummary.heading"))
+      }
+
+      "display the expected error page view when NINO search call returns NPSError" in {
+        when(mockConnector.findPersonByNino(any(), anyInt(), any())(any()))
+          .thenReturn(
+            Future.successful(
+              Left(NPSErrors(Seq(NPSError("test reson", "code.test.123"))))
+            )
+          )
+        when(mockSessionService.storeListOfMatches(any())(any()))
+          .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
+        when(mockSessionService.fetchPbikSession()(any()))
+          .thenReturn(
+            Future.successful(
+              Some(
+                pbikSession.copy(
+                  listOfMatches = None,
+                  eiLPerson = None,
+                  currentExclusions = None
+                )
+              )
+            )
+          )
+
+        val ninoSearchPerson                                              = NinoForm("Adam", "Smith", "AB111111")
+        val formData                                                      =
+          controllersReferenceData.exclusionSearchFormWithNino(request = mockRequest).fill(ninoSearchPerson)
+        implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
+        val result                                                        =
+          mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NINO)(
+            formRequest
+          )
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        contentAsString(result) must include(messages("ServiceMessage.code.test.123"))
+      }
+
+      "display the expected error page view when non-NINO search call returns NPSError" in {
+        when(mockConnector.findPersonByPersonalDetails(any(), anyInt(), any())(any()))
+          .thenReturn(
+            Future.successful(
+              Left(NPSErrors(Seq(NPSError("test reson", "code.test.123"))))
+            )
+          )
+        when(mockSessionService.storeListOfMatches(any())(any()))
+          .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
+        when(mockSessionService.fetchPbikSession()(any()))
+          .thenReturn(
+            Future.successful(
+              Some(
+                pbikSession.copy(
+                  listOfMatches = None,
+                  eiLPerson = None,
+                  currentExclusions = None
+                )
+              )
+            )
+          )
+
+        val noNinoForm                                                    = NoNinoForm("Adam", "Smith", DateOfBirth("01", "01", "1980"), Gender.Female)
+        val formData                                                      =
+          controllersReferenceData.exclusionSearchFormWithoutNino(request = mockRequest).fill(noNinoForm)
+        implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq: _*)
+        val result                                                        =
+          mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NONINO)(
+            formRequest
+          )
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        contentAsString(result) must include(messages("ServiceMessage.code.test.123"))
+      }
+
+      "display the expected search results page for an authorised user's non-NINO search - Male" in {
+        when(mockConnector.findPersonByPersonalDetails(any(), anyInt(), any())(any()))
+          .thenReturn(
+            Future.successful(
+              Right(
+                TracePersonListResponse(
+                  1,
+                  List(TracePersonResponse("AB111111", "Adam", None, "Smith", Some("123"), 22))
+                )
+              )
+            )
+          )
+        when(mockSessionService.storeListOfMatches(any())(any()))
+          .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -400,7 +600,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       }
 
       "display the expected search results page for an authorised user's non-NINO search - Female" in {
-        when(mockExclusionListController.tierConnector.findPersonByPersonalDetails(any(), anyInt(), any())(any()))
+        when(mockConnector.findPersonByPersonalDetails(any(), anyInt(), any())(any()))
           .thenReturn(
             Future.successful(
               Right(
@@ -411,9 +611,9 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
               )
             )
           )
-        when(mockExclusionListController.sessionService.storeListOfMatches(any())(any()))
+        when(mockSessionService.storeListOfMatches(any())(any()))
           .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -441,7 +641,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       }
 
       "display the expected search results page for an authorised user's non-NINO search - Unknown" in {
-        when(mockExclusionListController.tierConnector.findPersonByPersonalDetails(any(), anyInt(), any())(any()))
+        when(mockConnector.findPersonByPersonalDetails(any(), anyInt(), any())(any()))
           .thenReturn(
             Future.successful(
               Right(
@@ -452,9 +652,9 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
               )
             )
           )
-        when(mockExclusionListController.sessionService.storeListOfMatches(any())(any()))
+        when(mockSessionService.storeListOfMatches(any())(any()))
           .thenReturn(Future.successful(PbikSession(pbikSession.sessionId)))
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -497,7 +697,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
     "handling a valid search result" must {
       "show an error page if the list of matches contains only already excluded individuals" in {
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -523,7 +723,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       }
 
       "show an error page if the list of matches is empty" in {
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -550,7 +750,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
     "loading the searchResults page" must {
       "show the search results if they are present in the cache" in {
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(Future.successful(Some(pbikSession)))
         val result = mockExclusionListController.showResults(cyp1, iabdType, "nino")(mockRequest)
 
@@ -561,7 +761,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       }
 
       "show an error page if no results are present in the cache" in {
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(Some(pbikSession.copy(pbikSession.sessionId, None, None, None, None, None, None, None)))
           )
@@ -574,7 +774,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
     "remove is called" must {
       "show the confirmation page" in {
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(Future.successful(Some(pbikSession)))
         val nino   = pbikSession.currentExclusions.get.exclusions.head.nationalInsuranceNumber
         val result = mockExclusionListController.remove(cyp1, iabdType, nino)(mockRequest)
@@ -593,10 +793,11 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
     }
 
     "loading removal screens with valid data in the cache" must {
-      when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
-        .thenReturn(Future.successful(Some(pbikSession.copy(listOfMatches = None, currentExclusions = None))))
 
       "show the removal check your answers screen" in {
+        when(mockSessionService.fetchPbikSession()(any()))
+          .thenReturn(Future.successful(Some(pbikSession.copy(listOfMatches = None, currentExclusions = None))))
+
         val result = mockExclusionListController.showRemovalConfirmation(cyp1, iabdType)(mockRequest)
 
         status(result) mustBe OK
@@ -609,6 +810,9 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       }
 
       "show the removal what next screen" in {
+        when(mockSessionService.fetchPbikSession()(any()))
+          .thenReturn(Future.successful(Some(pbikSession.copy(listOfMatches = None, currentExclusions = None))))
+
         val result = mockExclusionListController.showRemovalWhatsNext(iabdType)(mockRequest)
 
         status(result) mustBe OK
@@ -620,8 +824,11 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
     "remove exclusions are committed" must {
       "show the what next page" in {
+        when(mockSessionService.fetchPbikSession()(any()))
+          .thenReturn(Future.successful(Some(pbikSession.copy(listOfMatches = None, currentExclusions = None))))
+
         when(
-          mockExclusionListController.tierConnector
+          mockConnector
             .removeEiLPersonExclusionFromBik(argEq(iabdType), any(), anyInt(), any())(any())
         ).thenReturn(Future.successful(Right(OK)))
 
@@ -638,18 +845,47 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         status(result) mustBe FORBIDDEN
         contentAsString(result) must include(title)
       }
+
+      "return BAD_REQUEST when receiving a IM_A_TEAPOT  from the connector at an exclusion" in {
+        when(mockSessionService.fetchPbikSession()(any()))
+          .thenReturn(Future.successful(Some(pbikSession.copy(listOfMatches = None, currentExclusions = None))))
+        when(
+          mockConnector
+            .removeEiLPersonExclusionFromBik(any(), any(), anyInt(), any())(any())
+        ).thenReturn(Future.successful(Right(IM_A_TEAPOT)))
+
+        val resultForCyp1 = mockExclusionListController.removeExclusionsCommit(iabdType)(mockRequest)
+        val resultForCy   = mockExclusionListController.removeExclusionsCommit(iabdType)(mockRequest)
+
+        status(resultForCyp1) mustBe BAD_REQUEST
+        status(resultForCy) mustBe BAD_REQUEST
+      }
+
+      "return INTERNAL_SERVER_ERROR when receiving a NPSError  from the connector at an exclusion" in {
+        when(mockSessionService.fetchPbikSession()(any()))
+          .thenReturn(Future.successful(Some(pbikSession.copy(listOfMatches = None, currentExclusions = None))))
+        when(
+          mockConnector
+            .removeEiLPersonExclusionFromBik(any(), any(), anyInt(), any())(any())
+        ).thenReturn(Future.successful(Left(NPSErrors(Seq(NPSError("test reson", "code.test.123"))))))
+
+        val result = mockExclusionListController.removeExclusionsCommit(iabdType)(mockRequest)
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        contentAsString(result) must include(messages("ServiceMessage.code.test.123"))
+      }
     }
 
     "updateExclusions is called" must {
       "redirect to the what next page" in {
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
                 pbikSession.copy(nyRegisteredBiks =
                   Some(
                     BenefitListResponse(
-                      Some(List(BenefitInKindWithCount(iabdType, PbikStatus.ValidPayrollingBenefitInKind, 3))),
+                      Some(List(BenefitInKindWithCount(iabdType, 3))),
                       0
                     )
                   )
@@ -664,7 +900,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       }
 
       "return a 500 when there is no session data present" in {
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(
             Future.successful(
               Some(
@@ -674,7 +910,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
                   currentExclusions = None,
                   nyRegisteredBiks = Some(
                     BenefitListResponse(
-                      Some(List(BenefitInKindWithCount(iabdType, PbikStatus.ValidPayrollingBenefitInKind, 3))),
+                      Some(List(BenefitInKindWithCount(iabdType, 3))),
                       0
                     )
                   )
@@ -703,14 +939,14 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
             "individualNino" -> pbikSession.listOfMatches.get.pbikExclusionList.head.nationalInsuranceNumber
           )
 
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any())).thenReturn(
+        when(mockSessionService.fetchPbikSession()(any())).thenReturn(
           Future.successful(
             Some(
               pbikSession.copy(
                 currentExclusions = None,
                 nyRegisteredBiks = Some(
                   BenefitListResponse(
-                    Some(List(BenefitInKindWithCount(iabdType, PbikStatus.ValidPayrollingBenefitInKind, 3))),
+                    Some(List(BenefitInKindWithCount(iabdType, 3))),
                     0
                   )
                 )
@@ -730,6 +966,36 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         redirectLocation(result) mustBe Some(s"/payrollbik/$cyp1/${iabdType.id}/exclusion-complete")
       }
 
+      "bad request when form with errors" in {
+        implicit val formRequest: FakeRequest[AnyContentAsEmpty.type] = mockRequest
+
+        when(mockSessionService.fetchPbikSession()(any())).thenReturn(
+          Future.successful(
+            Some(
+              pbikSession.copy(
+                currentExclusions = None,
+                nyRegisteredBiks = Some(
+                  BenefitListResponse(
+                    Some(List(BenefitInKindWithCount(iabdType, 3))),
+                    0
+                  )
+                )
+              )
+            )
+          )
+        )
+
+        val result =
+          mockExclusionListController.updateMultipleExclusions(
+            cyp1,
+            iabdType,
+            ControllersReferenceDataCodes.FORM_TYPE_NINO
+          )(formRequest)
+
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) must include(messages("error.exclusion.multi.selection"))
+      }
+
       "redirect back to the overview page when exclusions are disabled" in {
         val title  = messages("ServiceMessage.10002")
         val result =
@@ -745,7 +1011,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
     "the what next page is loaded" must {
       "display the what next confirmation screen" in {
-        when(mockExclusionListController.sessionService.fetchPbikSession()(any()))
+        when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(Future.successful(Some(pbikSession.copy(eiLPerson = None, currentExclusions = None))))
         val result = mockExclusionListController.showExclusionConfirmation(cyp1, iabdType)(mockRequest)
 
@@ -754,19 +1020,12 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
     }
 
     "commitExclusion is called" must {
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(
-          EmpRef("taxOfficeNumber", "taxOfficeReference"),
-          None,
-          request,
-          None
-        )
-      implicit val hc: HeaderCarrier                                      = HeaderCarrier()
 
-      val eilPerson = TracePersonResponse("AB111111", "Adam", None, "Smith", Some("123"), 24)
-      "return INTERNAL_SERVER_ERROR (500) when receiving a BAD_REQUEST (400) from the connector at an exclusion" in {
+      "return INTERNAL_SERVER_ERROR when receiving a BAD_REQUEST  from the connector at an exclusion" in {
+        val eilPerson = TracePersonResponse("AB111111", "Adam", None, "Smith", Some("123"), 24)
+
         when(
-          mockExclusionListController.tierConnector
+          mockConnector
             .excludeEiLPersonFromBik(any(), anyInt(), any())(any())
         ).thenReturn(Future.successful(Right(BAD_REQUEST)))
 
@@ -776,6 +1035,21 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         status(resultForCyp1) mustBe INTERNAL_SERVER_ERROR
         status(resultForCy) mustBe INTERNAL_SERVER_ERROR
       }
+
+      "return INTERNAL_SERVER_ERROR when receiving a NPSError  from the connector at an exclusion" in {
+        val eilPerson = TracePersonResponse("AB111111", "Adam", None, "Smith", Some("123"), 24)
+
+        when(
+          mockConnector
+            .excludeEiLPersonFromBik(any(), anyInt(), any())(any())
+        ).thenReturn(Future.successful(Left(NPSErrors(Seq(NPSError("test reson", "code.test.123"))))))
+
+        val result = mockExclusionListController.commitExclusion(cyp1, iabdType, 15, Some(eilPerson))
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        contentAsString(result) must include(messages("ServiceMessage.code.test.123"))
+      }
+
     }
   }
 }

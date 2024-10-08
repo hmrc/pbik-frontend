@@ -26,9 +26,9 @@ import views.html.registration.AddBenefitConfirmationNextTaxYear
 
 class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings                                               = app.injector.instanceOf[FormMappings]
+  val formMappings: FormMappings                                               = injected[FormMappings]
   val addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear =
-    app.injector.instanceOf[AddBenefitConfirmationNextTaxYear]
+    injected[AddBenefitConfirmationNextTaxYear]
 
   val regList: RegistrationList =
     RegistrationList(active = List(RegistrationItem(IabdType.MedicalInsurance, active = true, enabled = true)))

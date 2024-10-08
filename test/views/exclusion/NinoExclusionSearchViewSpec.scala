@@ -27,8 +27,8 @@ import views.html.exclusion.NinoExclusionSearchForm
 
 class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
-  val ninoExclusionSearchFormView: NinoExclusionSearchForm = app.injector.instanceOf[NinoExclusionSearchForm]
+  val formMappings: FormMappings                           = injected[FormMappings]
+  val ninoExclusionSearchFormView: NinoExclusionSearchForm = injected[NinoExclusionSearchForm]
 
   private val iabdType = IabdType.Mileage
 

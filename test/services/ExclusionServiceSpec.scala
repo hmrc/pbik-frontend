@@ -28,7 +28,6 @@ import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.AnyContentAsEmpty
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import utils.Exceptions.GenericServerErrorException
@@ -44,7 +43,7 @@ class ExclusionServiceSpec extends FakePBIKApplication {
     .overrides(bind[PbikConnector].toInstance(mockConnector))
     .build()
 
-  val exclusionService: ExclusionService = app.injector.instanceOf[ExclusionService]
+  val exclusionService: ExclusionService = injected[ExclusionService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -63,14 +62,8 @@ class ExclusionServiceSpec extends FakePBIKApplication {
       val year                                                                        = 2015
       val eilService: ExclusionService                                                = exclusionService
       implicit val hc: HeaderCarrier                                                  = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
-        AuthenticatedRequest(
-          empRef,
-          None,
-          request,
-          None
-        )
+        createAuthenticatedRequest(mockRequest)
 
       val result = await(eilService.exclusionListForYear(IabdType.Mileage, year, authenticatedRequest.empRef))
 
@@ -99,14 +92,8 @@ class ExclusionServiceSpec extends FakePBIKApplication {
       val year                                                                        = 2015
       val eilService: ExclusionService                                                = exclusionService
       implicit val hc: HeaderCarrier                                                  = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
-      implicit val request: FakeRequest[AnyContentAsEmpty.type]                       = mockRequest
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContentAsEmpty.type] =
-        AuthenticatedRequest(
-          empRef,
-          None,
-          request,
-          None
-        )
+        createAuthenticatedRequest(mockRequest)
 
       val result = intercept[GenericServerErrorException] {
         await(eilService.exclusionListForYear(IabdType.Mileage, year, authenticatedRequest.empRef))

@@ -22,7 +22,7 @@ import views.html.MaintenancePage
 
 class MaintenancePageViewSpec extends PBIKViewSpec {
 
-  val MaintenancePageView: MaintenancePage = app.injector.instanceOf[MaintenancePage]
+  val MaintenancePageView: MaintenancePage = injected[MaintenancePage]
   implicit def view: Html                  = MaintenancePageView()(organisationRequest, messages)
 
   "MaintenancePageView" must {

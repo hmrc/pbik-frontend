@@ -17,7 +17,6 @@
 package utils
 
 import models.auth.AuthenticatedRequest
-import models.v1.exclusion.PbikExclusionPerson
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -59,10 +58,8 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
 
   sealed trait SpTier
   case object FRONTEND extends SpTier
-  case object GATEWAY extends SpTier
 
   sealed trait SpAction
-  case object LOGIN extends SpAction
   case object VIEW extends SpAction
   case object ADD extends SpAction
   case object REMOVE extends SpAction
@@ -77,7 +74,6 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
   case object BOTH extends SpPeriod
 
   sealed trait SpError
-  case object SCHEDULED_OUTAGE extends SpError
   case object EXCEPTION extends SpError
 
   /** Method creates a PBIK Specific DataEvent which will be sent to splunk so product owners can get granularity on the
@@ -182,12 +178,6 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
       CY
     } else {
       CYP1
-    }
-
-  def extractListNinoFromExclusions(headlist: List[PbikExclusionPerson]): String =
-    headlist.headOption match {
-      case Some(x) => x.nationalInsuranceNumber
-      case None    => SplunkLogger.pbik_no_ref
     }
 
 }

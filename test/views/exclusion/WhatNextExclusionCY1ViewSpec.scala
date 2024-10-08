@@ -26,10 +26,10 @@ import views.html.exclusion.WhatNextExclusion
 
 class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings               = app.injector.instanceOf[FormMappings]
-  val whatNextExclusionView: WhatNextExclusion = app.injector.instanceOf[WhatNextExclusion]
+  val formMappings: FormMappings               = injected[FormMappings]
+  val whatNextExclusionView: WhatNextExclusion = injected[WhatNextExclusion]
 
-  implicit val appConfig: PbikAppConfig = app.injector.instanceOf[PbikAppConfig]
+  implicit val appConfig: PbikAppConfig = injected[PbikAppConfig]
 
   private val iabdType = IabdType.VanBenefit
 

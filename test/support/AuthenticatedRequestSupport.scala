@@ -45,12 +45,17 @@ trait AuthenticatedRequestSupport {
   val organisationClient: Option[Client] = createClient(None)
   val agentClient: Option[Client]        = createClient(defaultClient)
 
-  def createAuthenticatedRequest[A](request: Request[A]): AuthenticatedRequest[A] =
+  def createAuthenticatedRequest[A](
+    request: Request[A],
+    empRef: EmpRef = createEmpRef(),
+    userId: Option[String] = createUserId(),
+    client: Option[Client] = defaultClient
+  ): AuthenticatedRequest[A] =
     AuthenticatedRequest(
-      createEmpRef(),
-      createUserId(),
+      empRef,
+      userId,
       request,
-      defaultClient
+      client
     )
 
 }

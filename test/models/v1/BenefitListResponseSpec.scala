@@ -24,7 +24,6 @@ class BenefitListResponseSpec extends FakePBIKApplication {
 
   private val bik: BenefitInKindWithCount = BenefitInKindWithCount(
     IabdType.CarBenefit,
-    PbikStatus.ValidPayrollingBenefitInKind,
     payrolledBenefitInKindExclusionCount
   )
 

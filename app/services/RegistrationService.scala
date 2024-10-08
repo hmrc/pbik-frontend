@@ -52,10 +52,9 @@ class RegistrationService @Inject() (
     year: Int,
     generateViewBasedOnFormItems: (
       Form[RegistrationList],
-      Seq[RegistrationItem],
       Boolean,
-      Seq[Int],
-      Seq[Int]
+      Set[Int],
+      Set[Int]
     ) => HtmlFormat.Appendable
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     val decommissionedBikIds: Set[IabdType] = pbikAppConfig.biksDecommissioned
@@ -101,14 +100,11 @@ class RegistrationService @Inject() (
     isCurrentYear: String,
     generateViewBasedOnFormItems: (
       Form[RegistrationList],
-      Seq[RegistrationItem],
       Boolean,
-      Seq[Int],
-      Seq[Int]
+      Set[Int],
+      Set[Int]
     ) => HtmlFormat.Appendable
   )(implicit request: AuthenticatedRequest[AnyContent]): Result = {
-    val fetchFromCacheMapBiksValue = List.empty[RegistrationItem]
-
     val mergedData: RegistrationList      =
       bikListUtils.removeMatches(hybridList, registeredListOption.getBenefitInKindWithCount.map(_.iabdType).toSet)
     val sortedMegedData: RegistrationList = bikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
@@ -127,12 +123,9 @@ class RegistrationService @Inject() (
       Ok(
         generateViewBasedOnFormItems(
           formMappings.objSelectedForm.fill(sortedMegedData),
-          fetchFromCacheMapBiksValue,
           registeredListOption.getBenefitInKindWithCount.size == biksListOption.size,
-          nonLegislationBiks.map(_.id).toList, //TODO change view to Set instead of list it must be unique list
-          pbikAppConfig.biksDecommissioned
-            .map(_.id)
-            .toList //TODO change view to Set instead of list it must be unique list
+          nonLegislationBiks.map(_.id),
+          pbikAppConfig.biksDecommissioned.map(_.id)
         )
       )
     }

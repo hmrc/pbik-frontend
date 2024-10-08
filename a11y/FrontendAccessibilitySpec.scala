@@ -20,7 +20,7 @@ import models.auth.AuthenticatedRequest
 import models.form._
 import models.v1.IabdType.IabdType
 import models.v1.exclusion.PbikExclusionPerson
-import models.v1.{BenefitInKindWithCount, IabdType, PbikStatus}
+import models.v1.{BenefitInKindWithCount, IabdType}
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.api.mvc.RequestHeader
@@ -48,7 +48,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     Arbitrary {
       for {
         iabd <- Gen.oneOf(IabdType.values)
-      } yield BenefitInKindWithCount(iabd, PbikStatus.ValidPayrollingBenefitInKind, 2)
+      } yield BenefitInKindWithCount(iabd, 2)
     }
 
   implicit val arbListOfBiks: Arbitrary[List[BenefitInKindWithCount]] = Arbitrary {

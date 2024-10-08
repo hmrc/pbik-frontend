@@ -16,7 +16,6 @@
 
 package views.exclusion
 
-import models._
 import models.auth.AuthenticatedRequest
 import models.form.NoNinoForm
 import models.v1.IabdType
@@ -28,8 +27,8 @@ import views.html.exclusion.NoNinoExclusionSearchForm
 
 class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
 
-  private val formMappings: FormMappings    = app.injector.instanceOf[FormMappings]
-  private val noNinoExclusionSearchFormView = app.injector.instanceOf[NoNinoExclusionSearchForm]
+  private val formMappings: FormMappings    = injected[FormMappings]
+  private val noNinoExclusionSearchFormView = injected[NoNinoExclusionSearchForm]
 
   private val iabdType = IabdType.Mileage
 
@@ -60,8 +59,7 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
               ("dob.day", ""),
               ("dob.month", ""),
               ("dob.year", ""),
-              ("gender-female", ""),
-              ("gender-male", "")
+              ("gender", "")
             )
           )
       )(organisationRequest)

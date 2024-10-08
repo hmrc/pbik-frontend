@@ -51,8 +51,8 @@ class MinimalAuthActionSpec extends FakePBIKApplication {
 
         val minimalAuthAction = new MinimalAuthActionImpl(
           authConnector = mockAuthConnector,
-          parser = app.injector.instanceOf[BodyParsers.Default],
-          config = app.injector.instanceOf[PbikAppConfig]
+          parser = injected[BodyParsers.Default],
+          config = injected[PbikAppConfig]
         )
         val controller        = new Harness(minimalAuthAction)
         val result            = controller.onPageLoad()(FakeRequest("", ""))
@@ -67,10 +67,10 @@ class MinimalAuthActionSpec extends FakePBIKApplication {
           new BrokenAuthConnector(
             new MissingBearerToken,
             mock(classOf[HttpClientV2]),
-            app.injector.instanceOf[PbikAppConfig]
+            injected[PbikAppConfig]
           ),
-          app.injector.instanceOf[BodyParsers.Default],
-          app.injector.instanceOf[PbikAppConfig]
+          injected[BodyParsers.Default],
+          injected[PbikAppConfig]
         )
         val controller        = new Harness(minimalAuthAction)
         val result            = controller.onPageLoad()(FakeRequest("", ""))

@@ -26,7 +26,7 @@ import play.api.Application
 import play.api.i18n.Lang
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{AnyContentAsEmpty, Cookie}
+import play.api.mvc.{AnyContentAsEmpty, BodyParsers, Cookie}
 import play.api.test.FakeRequest
 import support.AuthenticatedRequestSupport
 import uk.gov.hmrc.domain.EmpRef
@@ -47,7 +47,7 @@ abstract class FakePBIKApplication
 
   val lang: Lang     = Lang("en")
   val cyLang: Lang   = Lang("cy")
-  val empRef: EmpRef = EmpRef("780", "MODES16")
+  val empRef: EmpRef = createEmpRef()
 
   val configMap: Map[String, Any] = Map(
     "metrics.jvm"                     -> false,
@@ -80,7 +80,8 @@ abstract class FakePBIKApplication
 
   def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T]
 
-  lazy val pbikAppConfig: PbikAppConfig = injected[PbikAppConfig]
+  lazy val pbikAppConfig: PbikAppConfig     = injected[PbikAppConfig]
+  lazy val bodyParsers: BodyParsers.Default = injected[BodyParsers.Default]
 
   override def beforeEach(): Unit = super.beforeEach()
 

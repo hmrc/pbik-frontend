@@ -31,9 +31,10 @@ object Gender extends Enumeration {
 
   def fromString(value: String): Gender =
     value.strip().toLowerCase match {
-      case "female" => Female
-      case "male"   => Male
-      case _        => Unknown
+      case "female"    => Female
+      case "male"      => Male
+      case "not known" => Unknown
+      case _           => throw new IllegalArgumentException(s"Invalid Gender passed $value")
     }
 
 }
