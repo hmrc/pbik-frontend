@@ -24,7 +24,7 @@ import views.html.exclusion.WhatNextRescind
 
 class WhatNextRescindViewSpec extends PBIKViewSpec {
 
-  private val whatNextRescindView: WhatNextRescind = app.injector.instanceOf[WhatNextRescind]
+  private val whatNextRescindView: WhatNextRescind = injected[WhatNextRescind]
   private val benefit: IabdType.Value              = IabdType.CarFuelBenefit
 
   private def view(implicit request: AuthenticatedRequest[_]): Html = whatNextRescindView(

@@ -17,7 +17,7 @@
 package views
 
 import models.auth.AuthenticatedRequest
-import models.v1.{BenefitInKindWithCount, IabdType, PbikStatus}
+import models.v1.{BenefitInKindWithCount, IabdType}
 import org.jsoup.Jsoup
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
@@ -25,12 +25,10 @@ import views.html.Summary
 
 class SummaryViewSpec extends PBIKViewSpec {
 
-  private val summaryView: Summary               = app.injector.instanceOf[Summary]
+  private val summaryView: Summary               = injected[Summary]
   private val carIabdType: String                = IabdType.CarBenefit.id.toString
-  private val carBik: BenefitInKindWithCount     =
-    BenefitInKindWithCount(IabdType.CarBenefit, PbikStatus.ValidPayrollingBenefitInKind, 2)
-  private val medicalBik: BenefitInKindWithCount =
-    BenefitInKindWithCount(IabdType.MedicalInsurance, PbikStatus.ValidPayrollingBenefitInKind, 2)
+  private val carBik: BenefitInKindWithCount     = BenefitInKindWithCount(IabdType.CarBenefit, 2)
+  private val medicalBik: BenefitInKindWithCount = BenefitInKindWithCount(IabdType.MedicalInsurance, 2)
   private val serviceBiksCountCY: Int            = 0
   private val serviceBiksCountCYP1: Int          = 200
 

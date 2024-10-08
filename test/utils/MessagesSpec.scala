@@ -18,7 +18,7 @@ package utils
 
 import base.FakePBIKApplication
 import play.api.Logging
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.Helpers.baseApplicationBuilder.injector
 
 import scala.util.matching.Regex
@@ -27,7 +27,7 @@ class MessagesSpec extends FakePBIKApplication with Logging {
 
   private lazy val displayLine = "\n" + ("@" * 42) + "\n"
 
-  implicit lazy val messages: Messages                  = messagesApi.preferred(Seq(Lang("en"), Lang("cy")))
+  implicit lazy val messages: Messages                  = messagesApi.preferred(Seq(lang, cyLang))
   private lazy val defaultMessages: Map[String, String] = getExpectedMessages("default")
   private lazy val welshMessages: Map[String, String]   = getExpectedMessages("cy")
 

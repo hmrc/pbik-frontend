@@ -24,7 +24,7 @@ import views.html.registration.ConfirmRemoveNextTaxYear
 
 class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
 
-  private val confirmUpdateNextTaxYearView: ConfirmRemoveNextTaxYear = app.injector.instanceOf[ConfirmRemoveNextTaxYear]
+  private val confirmUpdateNextTaxYearView: ConfirmRemoveNextTaxYear = injected[ConfirmRemoveNextTaxYear]
   private val benefit                                                = IabdType.CarFuelBenefit
   private def view(implicit request: AuthenticatedRequest[_]): Html  =
     confirmUpdateNextTaxYearView(benefit, taxYearRange)

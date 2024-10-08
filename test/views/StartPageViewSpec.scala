@@ -23,7 +23,7 @@ import views.html.StartPage
 
 class StartPageViewSpec extends PBIKViewSpec {
 
-  val startPageView: StartPage = app.injector.instanceOf[StartPage]
+  val startPageView: StartPage = injected[StartPage]
 
   def view()(implicit request: AuthenticatedRequest[_]): Html = startPageView()
 

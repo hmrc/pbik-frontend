@@ -173,7 +173,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
           .verifying(invalidMonthDateError, dob => !addZeroIfNeeded(dob._2).matches(dateMonthRegex))
           .verifying(invalidYearDateError, dob => dob._3.matches(dateYearRegex))
           .verifying(invalidDateError, dob => isValidDate(dob)),
-        "gender"    -> text.verifying("Error message goes here", gender => gender.nonEmpty)
+        "gender"    -> text.verifying("error.required", gender => Try(Gender.fromString(gender)).isSuccess)
       )((firstname, surname, dob, gender) =>
         NoNinoForm(
           firstname.trim,

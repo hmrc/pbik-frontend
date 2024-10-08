@@ -18,17 +18,12 @@ package controllers.actions
 
 import base.FakePBIKApplication
 import models.auth.AuthenticatedRequest
-import org.apache.pekko.util.Timeout
 import play.api.mvc._
 import play.api.test.FakeRequest
-import play.api.test.Helpers.await
-import uk.gov.hmrc.http.SessionKeys
 
-import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits._
-import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.language.postfixOps
+import scala.concurrent.{Await, Future}
 
 class NoSessionCheckActionSpec extends FakePBIKApplication {
 
@@ -37,29 +32,22 @@ class NoSessionCheckActionSpec extends FakePBIKApplication {
       refine(request)
   }
 
-  implicit val timeout: Timeout = 5 seconds
-
   "No Session Check Action" when {
     "there is a session" must {
       "leave the request unfiltered" in {
-        val requestWithSessionID = AuthenticatedRequest(
-          empRef,
-          None,
-          FakeRequest("", "")
-            .withSession(SessionKeys.sessionId -> s"session-${UUID.randomUUID}"),
-          None
-        )
-        val result               = await(new Harness().callTransform(requestWithSessionID))
+        val requestWithSessionID = createAuthenticatedRequest(mockRequest)
+
+        val result = Await.result(new Harness().callTransform(requestWithSessionID), 5.seconds)
         result mustBe Right(requestWithSessionID)
       }
     }
 
     "the session is not set" must {
       "redirect user to home page controller " in {
-        val request                                       =
-          AuthenticatedRequest(empRef, None, FakeRequest("", ""), None)
+        val request = createAuthenticatedRequest(FakeRequest("", ""))
+
         val result                                        = new Harness().callTransform(request)
-        val call: Either[Result, AuthenticatedRequest[_]] = await(result)
+        val call: Either[Result, AuthenticatedRequest[_]] = Await.result(result, 5.seconds)
         call match {
           case Left(callResult) =>
             val headers: Map[String, String] = callResult.header.headers

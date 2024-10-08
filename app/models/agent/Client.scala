@@ -39,11 +39,4 @@ object AccountsOfficeReference {
   implicit val format: OFormat[AccountsOfficeReference] = Json.format[AccountsOfficeReference]
 }
 
-case class AccountsOfficeReference(districtNumber: String, payType: String, checkCode: String, reference: String) {
-
-  lazy val formatted: String = {
-    val referenceLength = 8
-    val zeros           = "0" * (referenceLength - reference.length)
-    s"$districtNumber$payType$checkCode$zeros$reference"
-  }
-}
+case class AccountsOfficeReference(districtNumber: String, payType: String, checkCode: String, reference: String)

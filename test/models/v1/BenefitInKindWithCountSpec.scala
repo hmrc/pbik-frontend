@@ -27,7 +27,6 @@ class BenefitInKindWithCountSpec extends FakePBIKApplication {
       "serialize BenefitInKindWithCount without agent flag" in {
         val bik: BenefitInKindWithCount = BenefitInKindWithCount(
           IabdType.CarBenefit,
-          PbikStatus.ValidPayrollingBenefitInKind,
           2
         )
         val json                        = Json.toJson(bik).as[JsObject] ++ Json.obj("isAgentSubmission" -> false)
@@ -39,7 +38,6 @@ class BenefitInKindWithCountSpec extends FakePBIKApplication {
       "serialize BenefitInKindWithCount with agent flag" in {
         val bik: BenefitInKindWithCount = BenefitInKindWithCount(
           IabdType.CarBenefit,
-          PbikStatus.ValidPayrollingBenefitInKind,
           3
         )
         val json                        = Json.toJson(bik).as[JsObject]

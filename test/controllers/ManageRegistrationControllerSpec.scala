@@ -32,7 +32,6 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc._
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.SessionService
 import utils._
@@ -52,18 +51,18 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
     .overrides(bind[SessionService].toInstance(mockSessionService))
     .build()
 
-  private val messages: Messages                                   = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
-  private val formMappings: FormMappings                           = app.injector.instanceOf[FormMappings]
-  private val controllersReferenceData: ControllersReferenceData   = app.injector.instanceOf[ControllersReferenceData]
+  private val messages: Messages                                   = injected[MessagesApi].preferred(Seq(lang))
+  private val formMappings: FormMappings                           = injected[FormMappings]
+  private val controllersReferenceData: ControllersReferenceData   = injected[ControllersReferenceData]
   private val registrationController: ManageRegistrationController =
-    app.injector.instanceOf[ManageRegistrationController]
+    injected[ManageRegistrationController]
 
   private val (beginIndex, endIndex): (Int, Int) = (0, 10)
   private val iabdType: IabdType                 = IabdType.CarBenefit
 
   private val cyBenefitTypes: BenefitTypes        = BenefitTypes(IabdType.values)
   private val cyBiks: Set[BenefitInKindWithCount] =
-    cyBenefitTypes.pbikTypes.map(x => BenefitInKindWithCount(x, PbikStatus.ValidPayrollingBenefitInKind, 14))
+    cyBenefitTypes.pbikTypes.map(x => BenefitInKindWithCount(x, 14))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -325,7 +324,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         val result               = registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm)
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some("/payrollbik/cy1/registration-complete")
+        redirectLocation(result) mustBe Some(s"/payrollbik/${FormMappingsConstants.CYP1}/registration-complete")
       }
 
       "direct an unauthorised user to the login page" in {
@@ -440,15 +439,8 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         )
 
       val year                                                            = controllersReferenceData.yearRange.cy
-      val benefitInKindWithCount                                          = BenefitInKindWithCount(iabdType, PbikStatus.ValidPayrollingBenefitInKind, 76)
-      implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-        AuthenticatedRequest(
-          empRef,
-          None,
-          request,
-          None
-        )
+      val benefitInKindWithCount                                          = BenefitInKindWithCount(iabdType, 76)
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(mockRequest)
       val errorMsg                                                        = messages("RemoveBenefits.reason.no.selection")
 
       val result =

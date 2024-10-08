@@ -67,7 +67,6 @@ class PbikConnectorSpec extends FakePBIKApplication {
     .map(benefitType =>
       BenefitInKindWithCount(
         benefitType,
-        PbikStatus.ValidPayrollingBenefitInKind,
         bikEilCount
       )
     )

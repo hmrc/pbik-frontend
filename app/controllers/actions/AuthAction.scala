@@ -85,10 +85,7 @@ class AuthActionImpl @Inject() (
             logger.warn(s"[AuthAction][authAsEmployer] Authentication failed - $enrolmentKey key not found")
             Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
           }
-      } recover { case ex: InsufficientEnrolments =>
-      logger.warn("[AuthAction][authAsEmployer] Insufficient enrolments provided with request")
-      Results.Redirect(controllers.routes.AuthController.notAuthorised)
-    }
+      }
 
   private def authAsAgent[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result])(implicit
     hc: HeaderCarrier
@@ -168,7 +165,7 @@ class AuthActionImpl @Inject() (
           )
 
         case ex: InsufficientEnrolments =>
-          logger.warn("[AuthAction][authAsEmployer] Insufficient enrolments provided with request")
+          logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
           Results.Redirect(controllers.routes.AuthController.notAuthorised)
       }
   }

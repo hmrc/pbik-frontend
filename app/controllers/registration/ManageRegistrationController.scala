@@ -40,7 +40,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ManageRegistrationController @Inject() (
-  bikListUtils: BikListUtils,
   registrationService: RegistrationService,
   formMappings: FormMappings,
   override val messagesApi: MessagesApi,
@@ -70,8 +69,7 @@ class ManageRegistrationController @Inject() (
     (authenticate andThen noSessionCheck).async { implicit request =>
       val staticDataRequest = registrationService.generateViewForBikRegistrationSelection(
         controllersReferenceData.yearRange.cy,
-        generateViewBasedOnFormItems =
-          nextTaxYearView(_, additive = true, controllersReferenceData.yearRange, _, _, _, _)
+        generateViewBasedOnFormItems = nextTaxYearView(_, additive = true, controllersReferenceData.yearRange, _, _, _)
       )
       controllersReferenceData.responseErrorHandler(staticDataRequest)
     }
@@ -80,7 +78,7 @@ class ManageRegistrationController @Inject() (
     (authenticate andThen noSessionCheck).async { implicit request =>
       val staticDataRequest = registrationService.generateViewForBikRegistrationSelection(
         controllersReferenceData.yearRange.cyminus1,
-        generateViewBasedOnFormItems = currentTaxYearView(_, controllersReferenceData.yearRange, _, _, _, _)
+        generateViewBasedOnFormItems = currentTaxYearView(_, controllersReferenceData.yearRange, _, _, _)
       )
       controllersReferenceData.responseCheckCYEnabled(staticDataRequest)
     }
@@ -98,8 +96,8 @@ class ManageRegistrationController @Inject() (
                               formWithErrors,
                               controllersReferenceData.yearRange,
                               isExhausted = false,
-                              nonLegislationBiks = pbikAppConfig.biksNotSupportedCY.map(_.id).toList, //TODO List to Set
-                              decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id).toList //TODO List to Set
+                              nonLegislationBiks = pbikAppConfig.biksNotSupportedCY.map(_.id),
+                              decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id)
                             )
                           )
                         ),
@@ -140,8 +138,8 @@ class ManageRegistrationController @Inject() (
                               form = formWithErrors,
                               additive = true,
                               taxYearRange = controllersReferenceData.yearRange,
-                              nonLegislationBiks = pbikAppConfig.biksNotSupported.map(_.id).toList, //TODO List to Set
-                              decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id).toList, //TODO List to Set
+                              nonLegislationBiks = pbikAppConfig.biksNotSupported.map(_.id),
+                              decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id),
                               isExhausted = false
                             )
                           )
@@ -187,7 +185,7 @@ class ManageRegistrationController @Inject() (
     Future.successful(
       Ok(
         removeBenefitNextTaxYearView(
-          Some(bikToRemove),
+          bikToRemove,
           controllersReferenceData.yearRange,
           form
         )
@@ -308,8 +306,8 @@ class ManageRegistrationController @Inject() (
             )
             lazy val yearRange  = controllersReferenceData.yearRange
             lazy val yearString = year match {
-              case yearRange.cy       => "cy1"
-              case yearRange.cyminus1 => "cy"
+              case yearRange.cy       => utils.FormMappingsConstants.CYP1
+              case yearRange.cyminus1 => utils.FormMappingsConstants.CY
             }
 
             for {

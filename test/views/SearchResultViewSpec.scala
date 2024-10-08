@@ -29,8 +29,8 @@ import views.html.exclusion.SearchResults
 
 class SearchResultViewSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings       = app.injector.instanceOf[FormMappings]
-  val searchResultsView: SearchResults = app.injector.instanceOf[SearchResults]
+  val formMappings: FormMappings       = injected[FormMappings]
+  val searchResultsView: SearchResults = injected[SearchResults]
 
   private val iabdType = IabdType.MedicalInsurance
 

@@ -22,8 +22,7 @@ import play.api.http.HttpEntity.Strict
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.Injector
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.{AnyContent, AnyContentAsEmpty, Result, Results}
-import play.api.test.FakeRequest
+import play.api.mvc.{AnyContent, Result, Results}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.UpstreamErrorResponse
 import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeException, InvalidYearURIException}
@@ -38,18 +37,11 @@ class ControllersReferenceDataSpec extends FakePBIKApplication {
     "pbik.enabled.cy"  -> false
   )
 
-  private val mockControllersReferenceData: ControllersReferenceData = app.injector.instanceOf[ControllersReferenceData]
-  private val messages: Messages                                     = app.injector.instanceOf[MessagesApi].preferred(Seq(lang))
+  private val mockControllersReferenceData: ControllersReferenceData = injected[ControllersReferenceData]
+  private val messages: Messages                                     = injected[MessagesApi].preferred(Seq(lang))
 
   private trait Test {
-    implicit val request: FakeRequest[AnyContentAsEmpty.type]           = mockRequest
-    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] =
-      AuthenticatedRequest(
-        empRef,
-        None,
-        request,
-        None
-      )
+    implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(mockRequest)
     val p: Promise[Result]                                              = Promise[Result]()
   }
 

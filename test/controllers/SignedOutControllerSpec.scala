@@ -40,7 +40,7 @@ class SignedOutControllerSpec extends FakePBIKApplication {
     cc.fileMimeTypes,
     ec
   )
-  private val signedOutView: SignedOut                         = app.injector.instanceOf[SignedOut]
+  private val signedOutView: SignedOut                         = injected[SignedOut]
   private val signedOutController                              = new SignedOutController(signedOutView, mockMCC, ec)
   private val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/")
 

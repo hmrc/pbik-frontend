@@ -28,11 +28,11 @@ import views.html.exclusion.ExclusionNinoOrNoNinoForm
 
 class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
-  private val formMappings: FormMappings                               = app.injector.instanceOf[FormMappings]
+  private val formMappings: FormMappings                               = injected[FormMappings]
   private val form: Form[MandatoryRadioButton]                         = formMappings.binaryRadioButton
   private val formWithErrors: Form[MandatoryRadioButton]               = form.withError("test", "error")
   private val exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm =
-    app.injector.instanceOf[ExclusionNinoOrNoNinoForm]
+    injected[ExclusionNinoOrNoNinoForm]
 
   private val iabdType = IabdType.MedicalInsurance
 

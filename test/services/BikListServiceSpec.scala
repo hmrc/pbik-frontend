@@ -44,8 +44,8 @@ class BikListServiceSpec extends FakePBIKApplication {
     .overrides(bind[PbikConnector].toInstance(mockConnector))
     .build()
 
-  lazy val bikListService: BikListService                                  = app.injector.instanceOf[BikListService]
-  lazy val controllersReferenceData: ControllersReferenceData              = app.injector.instanceOf[ControllersReferenceData]
+  lazy val bikListService: BikListService                                  = injected[BikListService]
+  lazy val controllersReferenceData: ControllersReferenceData              = injected[ControllersReferenceData]
   implicit lazy val aRequest: AuthenticatedRequest[AnyContentAsEmpty.type] = createAuthenticatedRequest(mockRequest)
   implicit val hc: HeaderCarrier                                           = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
 
@@ -57,7 +57,6 @@ class BikListServiceSpec extends FakePBIKApplication {
     .map(benefitType =>
       BenefitInKindWithCount(
         benefitType,
-        PbikStatus.ValidPayrollingBenefitInKind,
         bikEilCount
       )
     )

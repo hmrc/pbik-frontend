@@ -19,19 +19,19 @@ package utils
 import base.FakePBIKApplication
 import models.RegistrationItem
 import models.v1.IabdType._
-import models.v1.{BenefitInKindWithCount, IabdType, PbikStatus}
+import models.v1.{BenefitInKindWithCount, IabdType}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 
 class BikListUtilsSpec extends FakePBIKApplication {
 
-  val bikListUtils: BikListUtils                            = app.injector.instanceOf[BikListUtils]
+  val bikListUtils: BikListUtils                            = injected[BikListUtils]
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val iabds: Set[IabdType]                                  = IabdType.values
     .filter(x => x.id != IabdType.CarFuelBenefit.id)
   val biks: List[BenefitInKindWithCount]                    = iabds
     .filter(x => x.id != IabdType.CarFuelBenefit.id)
-    .map(x => BenefitInKindWithCount(x, PbikStatus.ValidPayrollingBenefitInKind, 1))
+    .map(x => BenefitInKindWithCount(x, 1))
     .toList
   val bikIabds: Set[IabdType]                               = biks.map(x => x.iabdType).toSet
   private val alphaSorted                                   = List(
@@ -56,7 +56,7 @@ class BikListUtilsSpec extends FakePBIKApplication {
   )
   private val registeredIabs                                = Set(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, VanBenefit, Mileage)
   private val registered: Set[BenefitInKindWithCount]       =
-    registeredIabs.map(x => BenefitInKindWithCount(x, PbikStatus.ValidPayrollingBenefitInKind, 1))
+    registeredIabs.map(x => BenefitInKindWithCount(x, 1))
 
   "The Biks, when sorted Alphabetically according to labels" should {
     "result in the correct order" in {
@@ -82,7 +82,7 @@ class BikListUtilsSpec extends FakePBIKApplication {
   "When removing matches the head element, the remainder" should {
     "should be the tail" in {
       val fullIabds = Set(IabdType.Assets, IabdType.CarFuelBenefit, IabdType.CarBenefit, IabdType.VanBenefit)
-      val finalBiks = BenefitInKindWithCount(IabdType.Assets, PbikStatus.ValidPayrollingBenefitInKind, 3)
+      val finalBiks = BenefitInKindWithCount(IabdType.Assets, 3)
 
       val expectedRegistrationList = fullIabds.tail.map { x =>
         RegistrationItem(x, active = false, enabled = true)

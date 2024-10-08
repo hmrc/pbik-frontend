@@ -23,7 +23,7 @@ import java.time.Month._
 
 class FormMappingsSpec extends FakePBIKApplication {
 
-  private val formMappings: FormMappings = app.injector.instanceOf[FormMappings]
+  private val formMappings: FormMappings = injected[FormMappings]
 
   "FormMappings" when {
     "an input date" should {

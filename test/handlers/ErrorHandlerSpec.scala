@@ -16,47 +16,34 @@
 
 package handlers
 
-import org.scalatest.OptionValues
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import base.FakePBIKApplication
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.AnyContentAsEmpty
-import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import views.html.{ErrorTemplate, page_not_found_template}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-class ErrorHandlerSpec
-    extends AnyWordSpec
-    with DefaultAwaitTimeout
-    with Matchers
-    with GuiceOneAppPerSuite
-    with OptionValues {
+class ErrorHandlerSpec extends FakePBIKApplication {
 
-  private val errorHandler            = app.injector.instanceOf[ErrorHandler]
-  private val errorTemplateView       = app.injector.instanceOf[ErrorTemplate]
-  private val page_not_found_template = app.injector.instanceOf[page_not_found_template]
+  private val errorHandler            = injected[ErrorHandler]
+  private val errorTemplateView       = injected[ErrorTemplate]
+  private val page_not_found_template = injected[page_not_found_template]
 
-  implicit val messages: Messages = app.injector.instanceOf[MessagesApi].preferred(Seq.empty)
+  val messages: Messages = injected[MessagesApi].preferred(Seq(lang))
 
   "ErrorHandler" should {
 
     "handle notFoundTemplate" in {
-      implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+      val result = Await.result(errorHandler.notFoundTemplate(mockRequest), Duration.Inf)
 
-      val result = Await.result(errorHandler.notFoundTemplate(fakeRequest), Duration.Inf)
-
-      result mustBe page_not_found_template()
+      result mustBe page_not_found_template()(mockRequest, messages)
     }
 
     "handle standardErrorTemplate" in {
-      implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+      val result =
+        Await.result(errorHandler.standardErrorTemplate("title", "heading", "msg test")(mockRequest), Duration.Inf)
 
-      val result = Await.result(errorHandler.standardErrorTemplate("title", "heading", "msg test"), Duration.Inf)
-
-      result mustBe errorTemplateView("title", "heading", "msg test")
+      result mustBe errorTemplateView("title", "heading", "msg test")(messages, mockRequest)
     }
 
   }

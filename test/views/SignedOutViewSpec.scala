@@ -22,7 +22,7 @@ import views.html.SignedOut
 
 class SignedOutViewSpec extends PBIKViewSpec {
 
-  val signedOutView: SignedOut = app.injector.instanceOf[SignedOut]
+  val signedOutView: SignedOut = injected[SignedOut]
 
   "signedOutView - organisation" must {
     implicit val view: Html = signedOutView()(organisationRequest, messages)

@@ -27,11 +27,11 @@ import views.html.registration.NextTaxYear
 
 class NextYearViewSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings   = app.injector.instanceOf[FormMappings]
-  val nextTaxYearView: NextTaxYear = app.injector.instanceOf[NextTaxYear]
+  val formMappings: FormMappings   = injected[FormMappings]
+  val nextTaxYearView: NextTaxYear = injected[NextTaxYear]
 
   def viewWithForm(form: Form[RegistrationList])(implicit request: AuthenticatedRequest[_]): Html =
-    nextTaxYearView(form, additive = true, taxYearRange, List(), isExhausted = false, List(), List())
+    nextTaxYearView(form, additive = true, taxYearRange, isExhausted = false, Set.empty, Set.empty)
 
   "nextYearPage - organisation" must {
     implicit def html: Html = viewWithForm(formMappings.objSelectedForm)(organisationRequest)

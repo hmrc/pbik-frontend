@@ -20,7 +20,7 @@ import base.FakePBIKApplication
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models.auth.AuthenticatedRequest
 import models.form.SelectYear
-import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType, PbikStatus}
+import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
 import play.api.Application
@@ -54,26 +54,16 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
   private val controllersReferenceData: ControllersReferenceData =
     fakeApplication.injector.instanceOf[ControllersReferenceData]
   private val bikResponseWithBenefits                            = BenefitListResponse(
-    Some(List(BenefitInKindWithCount(IabdType.CarBenefit, PbikStatus.ValidPayrollingBenefitInKind, 0))),
+    Some(List(BenefitInKindWithCount(IabdType.CarBenefit, 0))),
     1
   )
   private val bikResponseEmpty                                   = BenefitListResponse(None, 2)
   implicit val hc: HeaderCarrier                                 = HeaderCarrier()
 
   val organisationRequest: AuthenticatedRequest[AnyContentAsEmpty.type]      =
-    AuthenticatedRequest(
-      empRef,
-      None,
-      mockRequest,
-      organisationClient
-    )
+    createAuthenticatedRequest(mockRequest, client = organisationClient)
   val organisationRequestWelsh: AuthenticatedRequest[AnyContentAsEmpty.type] =
-    AuthenticatedRequest(
-      empRef,
-      None,
-      mockWelshRequest,
-      organisationClient
-    )
+    createAuthenticatedRequest(mockWelshRequest, client = organisationClient)
 
   val organisationRequestWithCYForm: AuthenticatedRequest[AnyContentAsFormUrlEncoded]      = organisationRequest.copy(
     request = mockRequest

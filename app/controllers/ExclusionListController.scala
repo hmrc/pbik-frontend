@@ -46,14 +46,14 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ExclusionListController @Inject() (
   formMappings: FormMappings,
-  val authenticate: AuthAction,
+  authenticate: AuthAction,
   cc: MessagesControllerComponents,
   override val messagesApi: MessagesApi,
-  val noSessionCheck: NoSessionCheckAction,
-  val exclusionService: ExclusionService,
-  val bikListService: BikListService,
-  val sessionService: SessionService,
-  val tierConnector: PbikConnector,
+  noSessionCheck: NoSessionCheckAction,
+  exclusionService: ExclusionService,
+  bikListService: BikListService,
+  sessionService: SessionService,
+  tierConnector: PbikConnector,
   taxDateUtils: TaxDateUtils,
   splunkLogger: SplunkLogger,
   controllersReferenceData: ControllersReferenceData,
@@ -510,7 +510,7 @@ class ExclusionListController @Inject() (
     iabdType: IabdType,
     employerOptimisticLock: Int,
     excludedIndividual: Option[TracePersonResponse]
-  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
+  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[Result] = {
     val yearInt = taxDateUtils.mapYearStringToInt(year)
 
     val requestExclusion: UpdateExclusionPersonForABenefitRequest = UpdateExclusionPersonForABenefitRequest(
@@ -550,7 +550,7 @@ class ExclusionListController @Inject() (
 
   private def auditExclusion(exclusion: Boolean, year: Int, employee: String, iabdType: IabdType)(implicit
     hc: HeaderCarrier,
-    request: AuthenticatedRequest[AnyContent]
+    request: AuthenticatedRequest[_]
   ): Future[AuditResult] =
     splunkLogger.logSplunkEvent(
       splunkLogger.createDataEvent(
@@ -689,7 +689,6 @@ class ExclusionListController @Inject() (
         val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
           val individual            = session.get.eiLPerson.get
           val year                  = taxYearRange.cy
-          val removalsList          = List(individual.personToExclude)
           val individualWithBenefit =
             PbikExclusionPersonWithBenefitRequest(individual.employerOptimisticLock, individual.personToExclude)
           tierConnector
@@ -699,7 +698,7 @@ class ExclusionListController @Inject() (
                 auditExclusion(
                   exclusion = false,
                   year,
-                  splunkLogger.extractListNinoFromExclusions(removalsList),
+                  individual.personToExclude.nationalInsuranceNumber,
                   iabdType
                 )
                 Redirect(routes.ExclusionListController.showRemovalWhatsNext(iabdType))

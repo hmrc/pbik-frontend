@@ -26,7 +26,7 @@ import scala.concurrent.Future
 class RedirectControllerSpec extends FakePBIKApplication {
 
   private val messagesControllerComponents: MessagesControllerComponents =
-    app.injector.instanceOf[MessagesControllerComponents]
+    injected[MessagesControllerComponents]
   private val redirectController: RedirectController                     = new RedirectController(messagesControllerComponents)
   private val fakeRequest: FakeRequest[AnyContentAsEmpty.type]           = FakeRequest("GET", "/")
 
