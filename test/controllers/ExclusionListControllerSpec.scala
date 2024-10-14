@@ -97,14 +97,14 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       )
     ),
     eiLPerson = Some(
-      SelectedExclusionToRemove(1, PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22))
+      SelectedExclusionToRemove(1, PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22))
     ),
     currentExclusions = Some(
       PbikExclusions(
         17,
         Some(
           List(
-            PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
+            PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22)
           )
         )
       )
@@ -704,7 +704,10 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
                 pbikSession.copy(
                   eiLPerson = None,
                   currentExclusions = Some(
-                    PbikExclusions(0, Some(List(PbikExclusionPerson("AB111111", "Adam", None, "Smith", "123", 22))))
+                    PbikExclusions(
+                      0,
+                      Some(List(PbikExclusionPerson("AB111111", "Adam", None, "Smith", Some("123"), 22)))
+                    )
                   ),
                   listOfMatches = Some(
                     TracePersonListResponse(
@@ -731,7 +734,10 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
                   listOfMatches = None,
                   eiLPerson = None,
                   currentExclusions = Some(
-                    PbikExclusions(0, Some(List(PbikExclusionPerson("AB111111", "Adam", None, "Smith", "123", 22))))
+                    PbikExclusions(
+                      0,
+                      Some(List(PbikExclusionPerson("AB111111", "Adam", None, "Smith", Some("123"), 22)))
+                    )
                   )
                 )
               )

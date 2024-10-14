@@ -29,7 +29,7 @@ case class PbikExclusions(currentEmployerOptimisticLock: Int, getPBIKExclusionLi
       pbikExclusionPerson.firstForename,
       pbikExclusionPerson.secondForename,
       pbikExclusionPerson.surname,
-      Some(pbikExclusionPerson.worksPayrollNumber),
+      pbikExclusionPerson.worksPayrollNumber,
       pbikExclusionPerson.optimisticLock
     )
   }

@@ -23,7 +23,7 @@ case class PbikExclusionPerson(
   firstForename: String,
   secondForename: Option[String],
   surname: String,
-  worksPayrollNumber: String,
+  worksPayrollNumber: Option[String],
   optimisticLock: Int
 ) {
 
