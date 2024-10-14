@@ -37,10 +37,10 @@ class StubExclusionService @Inject() (tierConnector: PbikConnector)(implicit ec:
         0,
         Some(
           List(
-            PbikExclusionPerson("AB123456A", "John", Some("A"), "Doe", "12345", 11),
-            PbikExclusionPerson("AB123456B", "John", Some("A"), "Smith", "12345", 22),
-            PbikExclusionPerson("AB123456C", "Victor", Some("A"), "Doe", "12345", 33),
-            PbikExclusionPerson("AB123456D", "Victor", Some("A"), "Doe", "12345", 44)
+            PbikExclusionPerson("AB123456A", "John", Some("A"), "Doe", Some("12345"), 11),
+            PbikExclusionPerson("AB123456B", "John", Some("A"), "Smith", Some("12345"), 22),
+            PbikExclusionPerson("AB123456C", "Victor", Some("A"), "Doe", Some("12345"), 33),
+            PbikExclusionPerson("AB123456D", "Victor", Some("A"), "Doe", Some("12345"), 44)
           )
         )
       )

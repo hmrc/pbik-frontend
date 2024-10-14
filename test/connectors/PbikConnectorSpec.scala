@@ -75,8 +75,8 @@ class PbikConnectorSpec extends FakePBIKApplication {
     10,
     Some(
       List(
-        PbikExclusionPerson("AB123456C", "John", Some("Smith"), "Smith", "123/AB123456C", 1),
-        PbikExclusionPerson("QQ123456", "Humpty", None, "Dumpty", "123", 2)
+        PbikExclusionPerson("AB123456C", "John", Some("Smith"), "Smith", Some("123/AB123456C"), 1),
+        PbikExclusionPerson("QQ123456", "Humpty", None, "Dumpty", Some("123"), 2)
       )
     )
   )

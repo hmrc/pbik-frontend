@@ -125,7 +125,8 @@ trait PBIKBaseViewSpec extends FakePBIKApplication {
 
   def taxYearRange: TaxYearRange = TaxYearRange(year2018, year2019, year2020)
 
-  val exclusionPerson: PbikExclusionPerson = PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
+  val exclusionPerson: PbikExclusionPerson =
+    PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22)
   val tracePerson: TracePersonResponse     = TracePersonResponse("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22)
 
 }

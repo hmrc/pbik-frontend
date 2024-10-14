@@ -83,7 +83,7 @@ class SessionServiceSpec extends FakePBIKApplication {
 
     "cache an EiLPerson" in {
       val eiLPerson =
-        SelectedExclusionToRemove(1, PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22))
+        SelectedExclusionToRemove(1, PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22))
       val session   = pbikSession.copy(eiLPerson = Some(eiLPerson))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
       when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
@@ -97,7 +97,7 @@ class SessionServiceSpec extends FakePBIKApplication {
         0,
         Some(
           List(
-            PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
+            PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22)
           )
         )
       )
@@ -116,7 +116,7 @@ class SessionServiceSpec extends FakePBIKApplication {
         0,
         Some(
           List(
-            PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", "12345", 22)
+            PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22)
           )
         )
       )
