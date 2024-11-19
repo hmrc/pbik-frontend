@@ -11,7 +11,7 @@ Once authenticated the employer has access to the pbik-frontend functionality wh
 sm2 --start PBIK_ALL
 ```
 
-- To format and check the code style, compile code, run tests with coverage, run A11y tests, generate a coverage report, and check for dependency updates:
+- To format and check the code style, compile code, run tests with coverage, generate a coverage report, and check for dependency updates:
 
 ```bash
 ./run_all_tests.sh
@@ -60,17 +60,6 @@ decommissioned.biks - Which benefits no longer exist <br />
                                               
           -> Exclude (CY)       -> Overview -> Choose Nino/ No-nino -> Search -> Confirm -> Individual excluded
                                               -> Confirm removal -> Individual removed
-
-## Accessibility Tests
-
-### Prerequisites
-Have node installed on your machine
-
-### Execute tests
-To run the tests locally, simply run:
-```bash
-sbt clean A11y/test
-```
 
 ### License
 
