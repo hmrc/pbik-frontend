@@ -7,7 +7,7 @@ lazy val microservice = Project("pbik-frontend", file("."))
   .settings(
     PlayKeys.playDefaultPort := 9233,
     libraryDependencies ++= AppDependencies(),
-    CodeCoverageSettings.settings,
+    CodeCoverageSettings(),
     scalacOptions ++= Seq(
       "-feature",
       "-Wconf:src=routes/.*:s",
