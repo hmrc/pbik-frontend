@@ -121,7 +121,7 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
     val entityRemoveReasonDesc =
       if (removeReasonDesc.isDefined) Seq(key_remove_reason_desc -> removeReasonDesc.get) else Nil
 
-    val entities               = Seq(
+    val entities = Seq(
       key_event_name   -> pbik_event_name,
       key_gateway_user -> name.getOrElse(pbik_no_ref),
       key_empref       -> empRef.map(_.toString).getOrElse(pbik_no_ref),

@@ -46,11 +46,10 @@ class MessagesSpec extends FakePBIKApplication with Logging {
   }
 
   "All message files" should {
-    "have the same set of keys" in {
+    "have the same set of keys" in
       withClue(mismatchingKeys(defaultMessages.keySet, welshMessages.keySet)) {
         assert(welshMessages.keySet equals defaultMessages.keySet)
       }
-    }
     "not have the same messages" in {
       val same = defaultMessages.keys.collect {
         case messageKey

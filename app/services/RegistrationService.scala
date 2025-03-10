@@ -63,13 +63,12 @@ class RegistrationService @Inject() (
     } else {
       pbikAppConfig.biksNotSupported
     }
-    val isCurrentYear: String = {
+    val isCurrentYear: String               =
       if (taxDateUtils.isCurrentTaxYear(year)) {
         FormMappingsConstants.CY
       } else {
         FormMappingsConstants.CYP1
       }
-    }
 
     for {
       biksListOption       <- bikListService.getAllBenefitsForYear(year)

@@ -1,9 +1,9 @@
-ThisBuild / scalaVersion := "2.13.14"
+ThisBuild / scalaVersion := "2.13.16"
 ThisBuild / majorVersion := 9
 
 lazy val microservice = Project("pbik-frontend", file("."))
   .enablePlugins(SbtDistributablesPlugin, play.sbt.PlayScala, SbtWeb)
-  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+  .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     PlayKeys.playDefaultPort := 9233,
     libraryDependencies ++= AppDependencies(),

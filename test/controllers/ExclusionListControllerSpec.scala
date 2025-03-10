@@ -190,9 +190,8 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
   "ExclusionListController" when {
     "testing exclusions the exclusion functionality" must {
-      "be enabled" in {
+      "be enabled" in
         assert(mockExclusionListController.exclusionsAllowed)
-      }
     }
 
     "checking the Bik's IABD value is invalid for CY" must {
@@ -251,7 +250,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         }
       }
     }
-    val submitExcludedEmployeesInputArgs = Seq(
+    val submitExcludedEmployeesInputArgs                                                                   = Seq(
       (
         ControllersReferenceDataCodes.YES,
         "Exclude an employee form page",
@@ -331,7 +330,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         }
       }
     }
-    val withOrWithoutNinoDecisionArgs = Seq(
+    val withOrWithoutNinoDecisionArgs                                                          = Seq(
       ("nino", "nino form page", s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee"),
       ("no-nino", "no-nino form page", s"/payrollbik/cyp1/${iabdType.id}/no-nino/search-for-employee")
     )

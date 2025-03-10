@@ -37,6 +37,7 @@ class DefaultSessionRepository @Inject() (config: PbikAppConfig, mongo: MongoCom
       collectionName = "user-answers",
       mongoComponent = mongo,
       domainFormat = PbikSession.pbikSessionFormats,
+      replaceIndexes = true,
       indexes = Seq(
         IndexModel(
           ascending("lastUpdated"),

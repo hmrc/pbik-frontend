@@ -66,10 +66,10 @@ abstract class FakePBIKApplication
 
   val sessionId = s"session-${UUID.randomUUID}"
 
-  def mockRequest: FakeRequest[AnyContentAsEmpty.type]        =
+  def mockRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
 
-  def mockWelshRequest: FakeRequest[AnyContentAsEmpty.type]   =
+  def mockWelshRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("GET", "?lang=cy")
       .withCookies(Cookie("PLAY_LANG", "cy"))
       .withSession(SessionKeys.sessionId -> sessionId)

@@ -225,7 +225,7 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
           case _  =>
             logger.error(
               s"[PbikConnector][updateOrganisationsRegisteredBiks] Failed to update benefit list, status: ${response.status}, request body: ${payloadAsJson
-                .toString()}, response body: ${response.body}"
+                  .toString()}, response body: ${response.body}"
             )
             Future.failed(
               new GenericServerErrorException(
