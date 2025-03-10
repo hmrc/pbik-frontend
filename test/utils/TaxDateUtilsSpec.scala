@@ -53,48 +53,45 @@ class TaxDateUtilsSpec extends FakePBIKApplication {
     }
 
     ".isCurrentTaxYear" should {
-      "return true, if the year is the current year" in {
+      "return true, if the year is the current year" in
         assert(taxDateUtils.isCurrentTaxYear(TaxYear.current.startYear))
-      }
 
-      "return false, if the year is not the current year" in {
+      "return false, if the year is not the current year" in
         assert(!taxDateUtils.isCurrentTaxYear(cyp1))
-      }
     }
 
     ".mapYearStringToInt" should {
-      "return the CY year for the given year" in {
+      "return the CY year for the given year" in
         assert(taxDateUtils.mapYearStringToInt(FormMappingsConstants.CY) == cy)
-      }
 
-      "return the CY1 year for the given year" in {
+      "return the CY1 year for the given year" in
         assert(taxDateUtils.mapYearStringToInt(FormMappingsConstants.CYP1) == cyp1)
-      }
 
-      "mapping an unknown string throw an InvalidYearURIException" in {
+      "mapping an unknown string throw an InvalidYearURIException" in
         intercept[InvalidYearURIException] {
           taxDateUtils.mapYearStringToInt("ceeewhyploosWon")
         }
-      }
     }
 
     ".getDisplayTodayDate" should {
       inputDates.foreach(date =>
-        s"return the correct date for ${date.getMonth} ${date.getYear} - English" in {
+        s"return the correct date for ${date.getMonth} ${date.getYear} - English" in
           assert(
             taxDateUtils
-              .getDisplayTodayDate(date)(messages) == s"$day1 ${messages(s"Service.month.${date.getMonthValue}")} ${date.getYear}"
+              .getDisplayTodayDate(date)(
+                messages
+              ) == s"$day1 ${messages(s"Service.month.${date.getMonthValue}")} ${date.getYear}"
           )
-        }
       )
 
       inputDates.foreach(date =>
-        s"return the correct date for ${date.getMonth} ${date.getYear} - Welsh" in {
+        s"return the correct date for ${date.getMonth} ${date.getYear} - Welsh" in
           assert(
             taxDateUtils
-              .getDisplayTodayDate(date)(cyMessages) == s"$day1 ${cyMessages(s"Service.month.${date.getMonthValue}")} ${date.getYear}"
+              .getDisplayTodayDate(date)(
+                cyMessages
+              ) == s"$day1 ${cyMessages(s"Service.month.${date.getMonthValue}")} ${date.getYear}"
           )
-        }
       )
     }
   }

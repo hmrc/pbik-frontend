@@ -583,7 +583,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       }
     }
 
-    "loading submitConfirmRemoveNextTaxYear, an authorised user" should {
+    "loading submitConfirmRemoveNextTaxYear, an authorised user" should
       Seq(
         BinaryRadioButtonWithDesc("other", Some("Here's our other info")),
         BinaryRadioButtonWithDesc("software", None)
@@ -618,6 +618,5 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/benefit-removed")
         }
       }
-    }
   }
 }

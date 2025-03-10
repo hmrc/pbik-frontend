@@ -58,7 +58,7 @@ class BikListService @Inject() (
   def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BenefitListResponse] =
     getRegisteredBenefitsForYear(controllersReferenceData.yearRange.cy)
 
-  //TODO need to refactor this method to propagate up Either or other error handling mechanism to the controller
+  // TODO need to refactor this method to propagate up Either or other error handling mechanism to the controller
   def getAllBenefitsForYear(year: Int)(implicit hc: HeaderCarrier): Future[Set[IabdType]] =
     tierConnector.getAllAvailableBiks(year).map {
       case Left(errors)        =>

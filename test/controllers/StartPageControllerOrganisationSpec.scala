@@ -148,11 +148,10 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
         redirectLocation(result) mustBe Some(routes.HomePageController.onPageLoadCY1.url)
       }
 
-      "return exception for a POST - when invalid tax year" in {
+      "return exception for a POST - when invalid tax year" in
         intercept[InvalidYearURIException] {
           await(startPageController.submitSelectYearPage().apply(organisationRequestWithInvalidForm))
         }
-      }
     }
   }
 

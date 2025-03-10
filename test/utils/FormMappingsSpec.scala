@@ -61,15 +61,13 @@ class FormMappingsSpec extends FakePBIKApplication {
     }
 
     "a day of 29" should {
-      "be valid in February during a leap year (such as 2016)" in {
+      "be valid in February during a leap year (such as 2016)" in
         assert(formMappings.isValidDate(("29", "02", "2016")))
-      }
     }
 
     "a day of 29" should {
-      "not be valid in February when its not a leap year (such as 2014)" in {
+      "not be valid in February when its not a leap year (such as 2014)" in
         assert(!formMappings.isValidDate(("29", "02", "2014")))
-      }
     }
 
     "a day of 31" should {
@@ -82,7 +80,7 @@ class FormMappingsSpec extends FakePBIKApplication {
     }
 
     "a day greater than 31" should {
-      "not be valid in any month" in {
+      "not be valid in any month" in
         (JANUARY.getValue to DECEMBER.getValue)
           .map { i =>
             formMappings.addZeroIfNeeded(i.toString)
@@ -90,7 +88,6 @@ class FormMappingsSpec extends FakePBIKApplication {
           .foreach { a =>
             assert(!formMappings.isValidDate(("32", a, "2014")))
           }
-      }
     }
 
     "a day equal to 31" should {
@@ -106,25 +103,23 @@ class FormMappingsSpec extends FakePBIKApplication {
     }
 
     "a day value less than 1" should {
-      "not be valid in a month" in {
+      "not be valid in a month" in
         (-1 to 0).foreach { i =>
           val day = formMappings.addZeroIfNeeded(i.toString)
           assert(!formMappings.isValidDate((day, "01", "2014")))
         }
-      }
     }
 
     "a month value less than 1" should {
-      "not be valid in a year" in {
+      "not be valid in a year" in
         (-1 to 0).foreach { i =>
           val month = formMappings.addZeroIfNeeded(i.toString)
           assert(!formMappings.isValidDate(("01", month, "2014")))
         }
-      }
     }
 
     "a month value greater than 12" should {
-      "not be valid in a year" in {
+      "not be valid in a year" in
         (DECEMBER.getValue + 1 to DECEMBER.getValue + 20)
           .map { i =>
             formMappings.addZeroIfNeeded(i.toString)
@@ -132,7 +127,6 @@ class FormMappingsSpec extends FakePBIKApplication {
           .foreach { a =>
             assert(!formMappings.isValidDate(("01", a, "2014")))
           }
-      }
     }
 
     "a month value less than 12" should {
@@ -156,9 +150,8 @@ class FormMappingsSpec extends FakePBIKApplication {
     }
 
     "the regex for a year is 2 digits" should {
-      "be [0-9][0-9]" in {
+      "be [0-9][0-9]" in
         assert(formMappings.generateYearString(2) == "[0-9][0-9]")
-      }
     }
 
     "individualSelectionForm is filled" should {
