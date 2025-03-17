@@ -239,7 +239,7 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
   private def findPerson(empRef: EmpRef, year: Int, body: JsValue)(implicit
     hc: HeaderCarrier
   ): Future[Either[NPSErrors, TracePersonListResponse]] = {
-    logger.info(s"[PbikConnector][findPerson] Finding person ${body.toString()} for empRef: $empRef and year: $year")
+    logger.info(s"[PbikConnector][findPerson] Finding person for empRef: $empRef and year: $year")
     client
       .post(url"${config.postTraceByPersonalDetailsURL(year, empRef)}")
       .withBody(body)
