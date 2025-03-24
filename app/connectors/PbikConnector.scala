@@ -261,7 +261,7 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
             }
           case UNPROCESSABLE_ENTITY =>
             logger.error(
-              s"[PbikConnector][findPerson] a pbik error code was returned. Error: ${response.body}"
+              s"[PbikConnector][findPerson] Pbik error code was returned. status: ${response.status} error: ${response.body}"
             )
             response.json.validate[NPSErrors] match {
               case JsSuccess(value, _) => Future.successful(Left(value))
@@ -269,14 +269,14 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
                 logger.error(s"[PbikConnector][findPerson] Failed to parse NPSErrors: $errors")
                 Future.failed(
                   new GenericServerErrorException(
-                    "Failed to find person by personal OR nino details, status: " + response.status
+                    "Failed to find person by personal details OR nino details, status: " + response.status
                   )
                 )
             }
           case _                    =>
             Future.failed(
               new GenericServerErrorException(
-                "Failed to find person by personal OR nino details, status: " + response.status
+                "Failed to find person by personal details OR nino details, status: " + response.status
               )
             )
         }
