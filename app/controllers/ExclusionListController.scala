@@ -297,10 +297,12 @@ class ExclusionListController @Inject() (
             result     <- tierConnector.findPersonByNino(request.empRef, year, requestBody).flatMap {
                             case Left(value)  =>
                               Future.successful(
-                                InternalServerError(
+                                UnprocessableEntity(
                                   errorPageView(
                                     s"ServiceMessage.${value.failures.head.code}",
-                                    controllersReferenceData.yearRange
+                                    controllersReferenceData.yearRange,
+                                    isCurrentTaxYear,
+                                    value.failures.head.codeAsInt
                                   )
                                 )
                               )
@@ -346,10 +348,12 @@ class ExclusionListController @Inject() (
             result     <- tierConnector.findPersonByPersonalDetails(request.empRef, year, requestBody).flatMap {
                             case Left(value)  =>
                               Future.successful(
-                                InternalServerError(
+                                UnprocessableEntity(
                                   errorPageView(
                                     s"ServiceMessage.${value.failures.head.code}",
-                                    controllersReferenceData.yearRange
+                                    controllersReferenceData.yearRange,
+                                    isCurrentTaxYear,
+                                    value.failures.head.codeAsInt
                                   )
                                 )
                               )

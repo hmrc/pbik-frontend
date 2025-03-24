@@ -16,9 +16,24 @@
 
 package models.v1
 
+import play.api.Logger
 import play.api.libs.json.{Json, OFormat}
 
-case class NPSError(reason: String, code: String)
+import scala.util.{Failure, Success, Try}
+
+case class NPSError(reason: String, code: String) {
+
+  private val logger      = Logger(getClass)
+  private val defaultCode = 0
+
+  def codeAsInt: Int = Try(code.toInt) match {
+    case Success(value) => value
+    case Failure(_)     =>
+      logger.error(s"[NPSError][codeAsInt] Error converting code to Int, default to $defaultCode")
+      defaultCode
+  }
+
+}
 
 object NPSError {
   implicit val formats: OFormat[NPSError] = Json.format[NPSError]

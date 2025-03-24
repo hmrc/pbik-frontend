@@ -517,7 +517,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
             formRequest
           )
 
-        status(result) mustBe INTERNAL_SERVER_ERROR
+        status(result) mustBe UNPROCESSABLE_ENTITY
         contentAsString(result) must include(messages("ServiceMessage.code.test.123"))
       }
 
@@ -553,7 +553,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
             formRequest
           )
 
-        status(result) mustBe INTERNAL_SERVER_ERROR
+        status(result) mustBe UNPROCESSABLE_ENTITY
         contentAsString(result) must include(messages("ServiceMessage.code.test.123"))
       }
 

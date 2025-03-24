@@ -504,7 +504,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
           )
         }
 
-        result.message mustBe s"Failed to find person by personal OR nino details, status: $UNPROCESSABLE_ENTITY"
+        result.message mustBe s"Failed to find person by personal details OR nino details, status: $UNPROCESSABLE_ENTITY"
       }
 
       "throw an exception when an error is received if http response status BAD_REQUEST" in {
@@ -519,7 +519,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
           )
         }
 
-        result.message mustBe s"Failed to find person by personal OR nino details, status: $BAD_REQUEST"
+        result.message mustBe s"Failed to find person by personal details OR nino details, status: $BAD_REQUEST"
       }
 
       "return a NPSErrors if http response status UNPROCESSABLE_ENTITY" in {
@@ -574,7 +574,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
           )
         }
 
-        result.message mustBe s"Failed to find person by personal OR nino details, status: $UNPROCESSABLE_ENTITY"
+        result.message mustBe s"Failed to find person by personal details OR nino details, status: $UNPROCESSABLE_ENTITY"
       }
 
       "throw an exception when an error is received if http response status BAD_REQUEST" in {
@@ -589,7 +589,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
           )
         }
 
-        result.message mustBe s"Failed to find person by personal OR nino details, status: $BAD_REQUEST"
+        result.message mustBe s"Failed to find person by personal details OR nino details, status: $BAD_REQUEST"
       }
 
       "return a NPSErrors if http response status UNPROCESSABLE_ENTITY" in {
