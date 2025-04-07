@@ -69,7 +69,6 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
 
   val authUrl: String = configuration.get[Service]("microservice.services.auth").toString
 
-  // NPS HIP urls
   lazy val baseUrl: String = s"${configuration.get[Service]("microservice.services.pbik").toString}/epaye"
 
   def getRegisteredBiksURL(empRef: EmpRef, year: Int) =
