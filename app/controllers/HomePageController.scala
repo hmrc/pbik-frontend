@@ -89,6 +89,7 @@ class HomePageController @Inject() (
       _               <- auditHomePageView()
     } yield Ok(
       summaryPage(
+        selectedYear = "cy1",
         pbikAppConfig.cyEnabled,
         taxYearRange,
         List.empty,
@@ -110,6 +111,7 @@ class HomePageController @Inject() (
       _               <- auditHomePageView()
     } yield Ok(
       summaryPage(
+        selectedYear = "cy",
         pbikAppConfig.cyEnabled,
         taxYearRange,
         currentYearList.getBenefitInKindWithCount,
