@@ -37,11 +37,11 @@ class AuthController @Inject() (
     with I18nSupport {
 
   def notAuthorised: Action[AnyContent] = authenticate.async { implicit request =>
-   if(request.hasBody) {
      notAuthorisedResult
-   } else {
-     affinityIndividualResult
-   }
+  }
+
+  def affinityIndividual: Action[AnyContent] = authenticate.async { implicit request =>
+    affinityIndividualResult
   }
 
   private def notAuthorisedResult(implicit request: Request[AnyContent]): Future[Result] =

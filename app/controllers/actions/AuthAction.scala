@@ -173,7 +173,7 @@ class AuthActionImpl @Inject() (
           logger.warn(
             s"[AuthAction][invokeBlock] Authentication failed - AffinityGroup not supported: Individual"
           )
-          Results.Redirect(controllers.routes.AuthController.notAuthorised)
+          Results.Redirect(controllers.routes.AuthController.affinityIndividual)
 
       }
   }

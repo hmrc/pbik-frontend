@@ -420,6 +420,11 @@ ErrorPage.invalidBikType = <p class="govuk-body">Rydym yn credu eich bod yn ceis
 ErrorPage.title = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth
 ErrorPage.try.later = Rhowch gynnig arall arni yn nes ymlaen.
 
+ErrorPage.title.individual = Mae problem
+ErrorPage.signin.individual = <p class="govuk-body">Gwnaethoch fewngofnodi gyda Dynodydd Defnyddiwr (ID) unigolyn ar gyfer Porth y Llywodraeth.</p><p class="govuk-body">I ddefnyddio’r gwasanaeth hwn, bydd angen i chi:</p>
+ErrorPage.p1.individual = allgofnodi
+ErrorPage.p2.individual = mewngofnodi gan ddefnyddio Dynodydd Defnyddiwr (ID) a chyfrinair ar gyfer Porth y Llywodraeth rydych chi’n ei ddefnyddio i reoli TWE i gyflogwyr yn eich cyfrif busnes
+
 #*************************************************************
 # Error- validation Messages
 #*************************************************************
@@ -616,3 +621,7 @@ timeout.signOut = Allgofnodi
 
 signedOut.title = Er eich diogelwch, gwnaethom eich allgofnodi
 signedOut.signIn = Mewngofnodi
+
+signedOut.individual.title = Rydych wedi allgofnodi
+signedOut.individual.information = I ddefnyddio’r gwasanaeth hwn, bydd angen i chi mewngofnodi gan ddefnyddio Dynodydd Defnyddiwr (ID) a chyfrinair ar gyfer Porth y Llywodraeth rydych chi’n ei ddefnyddio i reoli TWE i gyflogwyr yn eich cyfrif busnes
+
