@@ -98,7 +98,8 @@ class HomePageController @Inject() (
         currentYearList.getBenefitInKindWithCount.nonEmpty
       )
     )
-    controllersReferenceData.responseErrorHandler(pageLoadFuture)
+    controllersReferenceData.
+      responseErrorHandler(pageLoadFuture)
   }
 
   def onPageLoadCY: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>

@@ -35,7 +35,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(implicit ec: ExecutionContext)
+class  PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(implicit ec: ExecutionContext)
     extends Logging {
 
   def getRegisteredBiks(
