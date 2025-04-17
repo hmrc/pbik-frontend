@@ -147,7 +147,7 @@ class AuthActionImpl @Inject() (
             case AffinityGroup.Agent        => authAsAgent(request, block)
             case AffinityGroup.Organisation => authAsEmployer(request, block) // default how it was before
             // Individual
-            case _                          =>
+            case AffinityGroup.Individual   =>
               logger.warn(
                 s"[AuthAction][invokeBlock] Authentication failed - AffinityGroup not supported: ${affinityGroup.toString}"
               )
