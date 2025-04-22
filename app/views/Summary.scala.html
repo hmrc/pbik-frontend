@@ -31,6 +31,7 @@
 )
 
 @(
+        selectedYear: String,
         cyAllowed: Boolean,
         taxYearRange:TaxYearRange,
         registeredBenefitsCurrentYear: List[BenefitInKindWithCount],
@@ -40,8 +41,8 @@
         showChangeYearLink: Boolean
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
-@title = @{if(registeredBenefitsCurrentYear.isEmpty){ messages("Overview.benefitsRegistered.heading") } else { messages("Overview.benefitsManage.heading") }}
-@year = @{if(registeredBenefitsCurrentYear.isEmpty){ ""+taxYearRange.cy } else { ""+taxYearRange.cyminus1 }}
+@title = @{if(selectedYear == "cy" && registeredBenefitsCurrentYear.nonEmpty) {messages("Overview.benefitsManage.heading")} else {messages("Overview.benefitsRegistered.heading")}}
+@year = @{if(selectedYear == "cy"){ ""+taxYearRange.cy } else { ""+taxYearRange.cyminus1 }}
 
 @govukLayoutWrapper(PageTitle(title),
 showBackLink = true,
@@ -113,7 +114,7 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
                             </div>
                         }
                     </dl>
-                }  else {
+                }  else if(registeredBenefitsCurrentYear.isEmpty){
                     <p id="no-benefits" class="govuk-body">
                         @messages("Overview.empty.benefits.p")
                     </p>
