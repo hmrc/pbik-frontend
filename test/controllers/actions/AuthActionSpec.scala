@@ -314,13 +314,12 @@ class AuthActionSpec extends FakePBIKApplication {
     }
 
     "no affinity group" when {
-      "the user is Individual" must {
+      "the user" must {
         "return exception as it is not supported" in new Test(enrolment) {
           val controller: Harness    = retrievals(affinityGroup = None)
           val result: Future[Result] = controller.onPageLoad()(fakeRequestForAgent)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe controllers.routes.AuthController.affinityIndividual.url
+          await(result.failed).getMessage mustBe "AffinityGroup not found"
         }
       }
     }

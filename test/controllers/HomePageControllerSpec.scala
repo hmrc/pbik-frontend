@@ -109,6 +109,13 @@ class HomePageControllerSpec extends FakePBIKApplication {
         redirectLocation(result).get must include("/feedback/PBIK")
       }
 
+      "logout and redirect to sign out page" in {
+        val result = homePageController.signOutNoSurvey(FakeRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get must include("we-signed-you-out")
+      }
+
       "display the navigation page" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
