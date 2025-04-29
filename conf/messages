@@ -422,7 +422,7 @@ ErrorPage.title = Sorry, there is a problem with the service
 ErrorPage.try.later = Try again later.
 
 ErrorPage.title.individual = There is a problem
-ErrorPage.signin.individual = <p class="govuk-body">You signed in with a Government Gateway user ID for an individual.</p><p class="govuk-body">To use this service you need to:</p>
+ErrorPage.signin.individual =You signed in with a Government Gateway user ID for an individual. To use this service you need to:
 ErrorPage.p1.individual = sign out
 ErrorPage.p2.individual = sign in with the Government Gateway user ID that you use to access the PAYE for employers online service
 

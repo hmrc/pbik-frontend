@@ -66,6 +66,13 @@ class HomePageController @Inject() (
     Redirect(pbikAppConfig.signOut)
   }
 
+  def signOutNoSurvey: Action[AnyContent] = Action {
+    Redirect(
+      pbikAppConfig.authSignOut,
+      Map("continue" -> Seq(routes.SignedOutController.signedOut().url))
+    )
+  }
+
   def setLanguage(): Action[AnyContent] = Action { implicit request =>
     val lang    = request.getQueryString("lang").getOrElse("en")
     logger.info(s"[HomePageController][setLanguage] Request received: set language to $lang")

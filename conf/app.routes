@@ -18,7 +18,8 @@ GET         /not-authorised                                      controllers.Aut
 
 GET         /individual                                          controllers.AuthController.affinityIndividual
 
-GET         /signout                                             controllers.HomePageController.signout
+GET         /we-signed-you-out                                   controllers.HomePageController.signout
+GET         /signed-you-out                                      controllers.HomePageController.signOutNoSurvey
 
 GET         /setLanguage                                         controllers.HomePageController.setLanguage()
 
