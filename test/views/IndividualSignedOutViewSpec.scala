@@ -20,38 +20,30 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
 import views.helper.PBIKViewSpec
-import views.html.SignedOut
+import views.html.IndividualSignedOut
 
-class SignedOutViewSpec extends PBIKViewSpec {
+class IndividualSignedOutViewSpec extends PBIKViewSpec {
 
   val request: Request[AnyContentAsEmpty.type] = FakeRequest()
 
-  val viewViaApply: HtmlFormat.Appendable  = injected[SignedOut].apply()(
+  val viewViaApply: HtmlFormat.Appendable  = injected[IndividualSignedOut].apply()(
     request = request,
     messages = messages
   )
-  val viewViaRender: HtmlFormat.Appendable = injected[SignedOut].render(
+  val viewViaRender: HtmlFormat.Appendable = injected[IndividualSignedOut].render(
     request = request,
     messages = messages
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[SignedOut].ref.f()(request, messages)
+  val viewViaF: HtmlFormat.Appendable = injected[IndividualSignedOut].ref.f()(request, messages)
 
-  val signedOutView: SignedOut = injected[SignedOut]
+  val individualSignedOutView: IndividualSignedOut = injected[IndividualSignedOut]
 
-  "signedOutView - organisation" must {
-    implicit val view: Html = signedOutView()(organisationRequest, messages)
-
-    behave like pageWithTitle(messages("signedOut.title"))
-    behave like pageWithHeader(messages("signedOut.title"))
-    behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/start-payrolling-benefits-expenses")
-  }
-
-  "signedOutView - agent" must {
-    implicit val view: Html = signedOutView()(organisationRequest, messages)
+  "individualSignedOutView" must {
+    implicit val view: Html = individualSignedOutView()(organisationRequest, messages)
 
     behave like pageWithTitle(messages("signedOut.title"))
-    behave like pageWithHeader(messages("signedOut.title"))
+    behave like pageWithHeader(messages("signedOut.individual.title"))
     behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/start-payrolling-benefits-expenses")
   }
 
