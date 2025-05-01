@@ -421,7 +421,8 @@ ErrorPage.title = Mae’n ddrwg gennym, mae problem gyda’r gwasanaeth
 ErrorPage.try.later = Rhowch gynnig arall arni yn nes ymlaen.
 
 ErrorPage.title.individual = Mae problem
-ErrorPage.signin.individual = <p class="govuk-body">Gwnaethoch fewngofnodi gyda Dynodydd Defnyddiwr (ID) unigolyn ar gyfer Porth y Llywodraeth.</p><p class="govuk-body">I ddefnyddio’r gwasanaeth hwn, bydd angen i chi:</p>
+ErrorPage.signin.individual.l1 = Gwnaethoch fewngofnodi gyda Dynodydd Defnyddiwr (ID) unigolyn ar gyfer Porth y Llywodraeth.
+ErrorPage.signin.individual.l2 = I ddefnyddio’r gwasanaeth hwn, bydd angen i chi:
 ErrorPage.p1.individual = allgofnodi
 ErrorPage.p2.individual = mewngofnodi gan ddefnyddio Dynodydd Defnyddiwr (ID) a chyfrinair ar gyfer Porth y Llywodraeth rydych chi’n ei ddefnyddio i reoli TWE i gyflogwyr yn eich cyfrif busnes
 

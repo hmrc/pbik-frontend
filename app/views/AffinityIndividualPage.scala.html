@@ -26,15 +26,18 @@
 @govukLayoutWrapper(PageTitle(messages("ErrorPage.title.individual")), showBackLink = false, signOut = false) {
 
 <h1 class="govuk-heading-xl" id="title">@messages("ErrorPage.title.individual")</h1>
-    <p class="govuk-body" id="individual">
-        @Html(messages("ErrorPage.signin.individual"))
+    <p class="govuk-body">
+        @Html(messages("ErrorPage.signin.individual.l1"))
     </p>
+<p class="govuk-body">
+    @Html(messages("ErrorPage.signin.individual.l2"))
+</p>
     <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-7">
         <li>@messages("ErrorPage.p1.individual")</li>
         <li>@messages("ErrorPage.p2.individual")</li>
     </ul>
 
     <div>
-        <a class="govuk-button" role="button" href="@routes.SignedOutController.individualSignedOut">@messages("timeout.signOut")</a>
+        <a class="govuk-button" role="button" href="@routes.SignedOutController.individualSignedOut()">@messages("timeout.signOut")</a>
     </div>
 }
