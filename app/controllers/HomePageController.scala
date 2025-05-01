@@ -22,6 +22,7 @@ import models._
 import models.auth.AuthenticatedRequest
 import play.api.Logging
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
+import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import services.{BikListService, SessionService}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -69,7 +70,7 @@ class HomePageController @Inject() (
   def signOutNoSurvey: Action[AnyContent] = Action {
     Redirect(
       pbikAppConfig.signOutUrl,
-      Map("continue" -> Seq(routes.SignedOutController.signedOut().url))
+      Map("continue" -> Seq(pbikAppConfig.authSignIn))
     )
   }
 

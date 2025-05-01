@@ -85,7 +85,11 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
     }
 
     <h2 class="govuk-heading-l">
-        @messages("Overview.empty.benefits.h2", year)
+        @if(selectedYear == "cy") {
+            @messages("Overview.empty.benefits.h2", ""+taxYearRange.cyminus1)
+          } else {
+            @messages("Overview.empty.benefits.h2", ""+taxYearRange.cy)
+        }
     </h2>
 
                 @if(!registeredBenefitsNextYear.isEmpty) {

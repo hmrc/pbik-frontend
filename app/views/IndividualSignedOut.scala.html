@@ -20,7 +20,7 @@
 
 @()(implicit request:Request[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages("signedOut.title")), timeoutActive = false, signOut = false) {
+@govukLayoutWrapper(PageTitle(messages("signedOut.individual.title")), timeoutActive = false, signOut = false) {
 
     <h1 class="govuk-heading-xl">@messages("signedOut.individual.title")</h1>
         <p class="govuk-body" id="individual-signout">
@@ -28,7 +28,7 @@
         </p>
 
     <div>
-        <a class="govuk-button" role="button" href="@routes.StartPageController.onPageLoad">@messages("signedOut.signIn")</a>
+        <a class="govuk-button" role="button" href="@routes.HomePageController.signOutNoSurvey">@messages("signedOut.signIn")</a>
     </div>
 
 }

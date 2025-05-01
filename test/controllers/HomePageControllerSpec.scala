@@ -113,7 +113,7 @@ class HomePageControllerSpec extends FakePBIKApplication {
         val result = homePageController.signOutNoSurvey(FakeRequest())
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must include("we-signed-you-out")
+        redirectLocation(result).get must include("bas-gateway%2Fsign-in")
       }
 
       "display the navigation page" in {
