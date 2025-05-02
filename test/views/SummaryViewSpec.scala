@@ -67,6 +67,14 @@ class SummaryViewSpec extends PBIKViewSpec {
         val doc = Jsoup.parse(view("cy", List.empty, List.empty).toString())
         doc.body().text() must include(messages("Overview.empty.benefits.p"))
       }
+
+      "show correct heading h2 for the page for CY" in {
+        val doc = Jsoup.parse(view("cy", List.empty, List.empty).toString())
+        doc.select("#benefits-heading-2").text() mustBe messages(
+          "Overview.empty.benefits.h2",
+          taxYearRange.cyminus1.toString
+        )
+      }
     }
 
   private def testCYP1View(userType: String)(implicit request: AuthenticatedRequest[_]): Unit =
@@ -97,6 +105,11 @@ class SummaryViewSpec extends PBIKViewSpec {
       "not show change year link if disabled" in {
         val doc = Jsoup.parse(view("cy1", List.empty, List.empty, showChangeYearLink = false).toString())
         doc.select("#tax-year-select").first() mustBe None.orNull
+      }
+
+      "show correct heading h2 for the page for CY+1" in {
+        val doc = Jsoup.parse(view("cy1", List.empty, List.empty).toString())
+        doc.select("#benefits-heading-2").text() mustBe messages("Overview.empty.benefits.h2", taxYearRange.cy.toString)
       }
     }
 
