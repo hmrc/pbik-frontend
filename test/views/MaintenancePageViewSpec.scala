@@ -16,30 +16,14 @@
 
 package views
 
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.FakeRequest
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
 import views.helper.PBIKViewSpec
 import views.html.MaintenancePage
 
 class MaintenancePageViewSpec extends PBIKViewSpec {
 
-  val request: Request[AnyContentAsEmpty.type] = FakeRequest()
-
   val MaintenancePageView: MaintenancePage = injected[MaintenancePage]
-
-  val viewViaApply: HtmlFormat.Appendable  = injected[MaintenancePage].apply()(
-    request = request,
-    messages = messages
-  )
-  val viewViaRender: HtmlFormat.Appendable = injected[MaintenancePage].render(
-    request = request,
-    messages = messages
-  )
-
-  val viewViaF: HtmlFormat.Appendable = injected[MaintenancePage].ref.f()(request, messages)
-
-  implicit def view: Html = MaintenancePageView()(organisationRequest, messages)
+  implicit def view: Html                  = MaintenancePageView()(organisationRequest, messages)
 
   "MaintenancePageView" must {
     behave like pageWithHeader(messages("ErrorPage.title"))
