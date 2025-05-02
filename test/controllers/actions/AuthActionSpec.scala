@@ -293,28 +293,17 @@ class AuthActionSpec extends FakePBIKApplication {
 
     ".authAsIndividual" when {
       "the user is Individual" must {
-        "redirect the user to individual error page" in new Test(enrolment) {
-          val authAction = new AuthActionImpl(
-            new BrokenAuthConnector(
-              UnsupportedAffinityGroup("Test exception"),
-              mock(classOf[HttpClientV2]),
-              pbikAppConfig
-            ),
-            bodyParsers,
-            pbikAppConfig,
-            mockAgentPayeConnector
-          )
-          val controller = retrievals(affinityGroup = Some(AffinityGroup.Individual))
-          val result     = controller.onPageLoad()(fakeRequestForAgent)
+        "return exception as it is not supported" in new Test(enrolment) {
+          val controller: Harness    = retrievals(affinityGroup = Some(AffinityGroup.Individual))
+          val result: Future[Result] = controller.onPageLoad()(fakeRequestForAgent)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe controllers.routes.AuthController.affinityIndividual.url
+          await(result.failed).getMessage mustBe "AffinityGroup not supported: Individual"
         }
       }
     }
 
     "no affinity group" when {
-      "the user" must {
+      "the user is Individual" must {
         "return exception as it is not supported" in new Test(enrolment) {
           val controller: Harness    = retrievals(affinityGroup = None)
           val result: Future[Result] = controller.onPageLoad()(fakeRequestForAgent)

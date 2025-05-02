@@ -53,21 +53,4 @@ class AuthControllerSpec extends FakePBIKApplication {
       contentAsString(result) must include("You’ll then be able to use payrolling benefits and expenses.")
     }
   }
-
-  "When an user logs in with an individual account, and their action is not authorised the controller" should {
-    "return a 500 status with an IllegalArgumentException message" in {
-      val result: Future[Result] = controller.affinityIndividual()(fakeRequest)
-
-      status(result) mustBe UNAUTHORIZED
-      contentAsString(result) must include("There is a problem")
-      contentAsString(result) must include(
-        "You signed in with a Government Gateway user ID for an individual."
-      )
-      contentAsString(result) must include("To use this service you need to:")
-      contentAsString(result) must include("sign out")
-      contentAsString(result) must include(
-        "sign in with the Government Gateway user ID that you use to access the PAYE for employers online service"
-      )
-    }
-  }
 }

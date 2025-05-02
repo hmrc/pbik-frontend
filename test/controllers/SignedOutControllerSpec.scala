@@ -21,7 +21,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.{IndividualSignedOut, SignedOut}
+import views.html.SignedOut
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 
@@ -41,8 +41,7 @@ class SignedOutControllerSpec extends FakePBIKApplication {
     ec
   )
   private val signedOutView: SignedOut                         = injected[SignedOut]
-  private val individualSignedOutView: IndividualSignedOut     = injected[IndividualSignedOut]
-  private val signedOutController                              = new SignedOutController(signedOutView, individualSignedOutView, mockMCC, ec)
+  private val signedOutController                              = new SignedOutController(signedOutView, mockMCC, ec)
   private val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/")
 
   "SignedOutController" when {
@@ -55,12 +54,6 @@ class SignedOutControllerSpec extends FakePBIKApplication {
     "signedOut" must {
       "return OK" in {
         status(signedOutController.signedOut().apply(fakeRequest)) mustBe OK
-      }
-    }
-
-    "individualSignedOut" must {
-      "return OK" in {
-        status(signedOutController.individualSignedOut.apply(fakeRequest)) mustBe OK
       }
     }
   }

@@ -146,11 +146,11 @@ class AuthActionImpl @Inject() (
             case AffinityGroup.Agent        => authAsAgent(request, block)
             case AffinityGroup.Organisation => authAsEmployer(request, block) // default how it was before
             // Individual
-            case AffinityGroup.Individual   =>
+            case _                          =>
               logger.warn(
                 s"[AuthAction][invokeBlock] Authentication failed - AffinityGroup not supported: ${affinityGroup.toString}"
               )
-              Future.successful(Results.Redirect(controllers.routes.AuthController.affinityIndividual))
+              throw new IllegalArgumentException(s"AffinityGroup not supported: ${affinityGroup.toString}")
           }
         case _                               =>
           logger.warn("[AuthAction][invokeBlock] Authentication failed - AffinityGroup not found")
@@ -167,7 +167,6 @@ class AuthActionImpl @Inject() (
         case ex: InsufficientEnrolments =>
           logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
           Results.Redirect(controllers.routes.AuthController.notAuthorised)
-
       }
   }
 }
