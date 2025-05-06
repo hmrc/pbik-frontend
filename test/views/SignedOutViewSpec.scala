@@ -16,11 +16,26 @@
 
 package views
 
-import play.twirl.api.Html
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.FakeRequest
+import play.twirl.api.{Html, HtmlFormat}
 import views.helper.PBIKViewSpec
 import views.html.SignedOut
 
 class SignedOutViewSpec extends PBIKViewSpec {
+
+  val request: Request[AnyContentAsEmpty.type] = FakeRequest()
+
+  val viewViaApply: HtmlFormat.Appendable  = injected[SignedOut].apply()(
+    request = request,
+    messages = messages
+  )
+  val viewViaRender: HtmlFormat.Appendable = injected[SignedOut].render(
+    request = request,
+    messages = messages
+  )
+
+  val viewViaF: HtmlFormat.Appendable = injected[SignedOut].ref.f()(request, messages)
 
   val signedOutView: SignedOut = injected[SignedOut]
 

@@ -16,7 +16,10 @@ GET         /start-payrolling-benefits-expenses                  controllers.Sta
 
 GET         /not-authorised                                      controllers.AuthController.notAuthorised
 
-GET         /signout                                             controllers.HomePageController.signout
+GET         /individual                                          controllers.AuthController.affinityIndividual
+
+GET         /we-signed-you-out                                   controllers.HomePageController.signout
+GET         /signed-you-out                                      controllers.HomePageController.signOutNoSurvey
 
 GET         /setLanguage                                         controllers.HomePageController.setLanguage()
 
@@ -72,3 +75,4 @@ POST        /cy1/:iabdType/why-remove-benefit-expense            controllers.reg
 
 GET         /keep-alive                                          controllers.SignedOutController.keepAlive()
 GET         /we-signed-you-out                                   controllers.SignedOutController.signedOut()
+GET         /individual-signout                                  controllers.SignedOutController.individualSignedOut()

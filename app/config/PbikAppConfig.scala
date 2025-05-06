@@ -29,30 +29,30 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
   private lazy val basGatewayHost: String = configuration.get[String]("microservice.auth.bas-gateway.host")
   lazy val maximumExclusions: Int         = configuration.get[Int]("pbik.exclusions.maximum")
 
-  lazy val cyEnabled: Boolean                  = configuration.get[Boolean]("pbik.enabled.cy")
-  lazy val exclusionsAllowed: Boolean          = configuration.get[Boolean]("pbik.enabled.eil")
-  lazy val biksNotSupported: Set[IabdType]     =
+  lazy val cyEnabled: Boolean                = configuration.get[Boolean]("pbik.enabled.cy")
+  lazy val exclusionsAllowed: Boolean        = configuration.get[Boolean]("pbik.enabled.eil")
+  lazy val biksNotSupported: Set[IabdType]   =
     configuration.get[Seq[Int]]("pbik.unsupported.biks.cy1").map(IabdType(_)).toSet
-  lazy val biksNotSupportedCY: Set[IabdType]   =
+  lazy val biksNotSupportedCY: Set[IabdType] =
     configuration.get[Seq[Int]]("pbik.unsupported.biks.cy").map(IabdType(_)).toSet
-  lazy val biksDecommissioned: Set[IabdType]   =
+  lazy val biksDecommissioned: Set[IabdType] =
     configuration.get[Seq[Int]]("pbik.decommissioned.biks").map(IabdType(_)).toSet
-  lazy val feedbackUrl: String                 = configuration.get[String]("feedback.url")
-  lazy val signOut: String                     = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
-  private lazy val timedOutRedirectUrl: String = configuration.get[String]("timedOutUrl")
-  lazy val timedOutUrl: String                 =
-    s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$timedOutRedirectUrl"
 
   val ssoUrl: Option[String] = configuration.getOptional[String]("portal.ssoUrl")
 
   lazy val timeout: Int          = configuration.get[Int]("timeout.timeout")
   lazy val timeoutCountdown: Int = configuration.get[Int]("timeout.countdown")
 
-  lazy val loginCallbackUrl: String    = configuration.get[String]("microservice.auth.login-callback.url")
-  private lazy val loginPath: String   = configuration.get[String]("microservice.auth.login_path")
-  private lazy val signOutPath: String = configuration.get[String]("microservice.auth.signout_path")
-  lazy val authSignIn: String          = s"$basGatewayHost/bas-gateway/$loginPath"
-  lazy val authSignOut: String         = s"$basGatewayHost/bas-gateway/$signOutPath"
+  lazy val loginCallbackUrl: String            = configuration.get[String]("microservice.auth.login-callback.url")
+  private lazy val loginPath: String           = configuration.get[String]("microservice.auth.login_path")
+  private lazy val signOutPath: String         = configuration.get[String]("microservice.auth.signout_path")
+  lazy val authSignIn: String                  = s"$basGatewayHost/bas-gateway/$loginPath"
+  lazy val signOutUrl: String                  = s"$basGatewayHost/bas-gateway/$signOutPath"
+  lazy val feedbackUrl: String                 = configuration.get[String]("feedback.url")
+  lazy val signOut: String                     = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
+  private lazy val timedOutRedirectUrl: String = configuration.get[String]("timedOutUrl")
+  lazy val timedOutUrl: String                 =
+    s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$timedOutRedirectUrl"
 
   lazy val mongoTTL: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
 
