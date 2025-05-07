@@ -47,7 +47,7 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
   private lazy val loginPath: String           = configuration.get[String]("microservice.auth.login_path")
   private lazy val signOutPath: String         = configuration.get[String]("microservice.auth.signout_path")
   lazy val authSignIn: String                  = s"$basGatewayHost/bas-gateway/$loginPath"
-  lazy val signOutUrl: String                  = s"$basGatewayHost/bas-gateway/$signOutPath"
+  lazy val authSignOut: String                  = s"$basGatewayHost/bas-gateway/$signOutPath"
   lazy val feedbackUrl: String                 = configuration.get[String]("feedback.url")
   lazy val signOut: String                     = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
   private lazy val timedOutRedirectUrl: String = configuration.get[String]("timedOutUrl")

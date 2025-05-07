@@ -63,12 +63,12 @@ class HomePageController @Inject() (
   }
 
   def signout: Action[AnyContent] = unauthorisedAction {
-    Redirect(pbikAppConfig.signOutUrl, Map("continue" -> Seq(pbikAppConfig.feedbackUrl)))
+    Redirect(pbikAppConfig.authSignOut, Map("continue" -> Seq(pbikAppConfig.signOut)))
   }
 
   def signOutNoSurvey: Action[AnyContent] = Action {
     Redirect(
-      pbikAppConfig.signOutUrl,
+      pbikAppConfig.authSignOut,
       Map("continue" -> Seq(pbikAppConfig.authSignIn))
     )
   }
