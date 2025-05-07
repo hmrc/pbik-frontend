@@ -30,6 +30,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc._
 import services.{BikListService, ExclusionService, SessionService}
+import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
@@ -125,6 +126,38 @@ class ExclusionListController @Inject() (
       )
   }
 
+  /*
+  isExcludedInNextYear will return
+      Some[List[Boolean] if the benefit is registered for nest year
+          true if the person excluded this year is also excluded in the next year
+          false if the exclusion has been canceled
+      None if the benefit is not registered for next year
+   */
+  private def isExcludedInNextYear(
+    iabdType: IabdType,
+    empRef: EmpRef,
+    currentYearExclusions: List[PbikExclusionPerson]
+  )(implicit
+    request: AuthenticatedRequest[_]
+  ): Future[Option[List[Boolean]]] = {
+    val nextYear = taxDateUtils.mapYearStringToInt(utils.FormMappingsConstants.CYP1)
+    bikListService
+      .getRegisteredBenefitsForYear(nextYear)
+      .flatMap(registeredBenefits =>
+        if (registeredBenefits.getBenefitInKindWithCount.exists(_.iabdType == iabdType)) {
+          exclusionService
+            .exclusionListForYear(iabdType, nextYear, empRef)
+            .map { pbikExclusions =>
+              val nextYearExclusions = pbikExclusions.exclusions
+              val isExcludedNextYear = currentYearExclusions.map(person => nextYearExclusions.contains(person))
+              Some(isExcludedNextYear)
+            }
+        } else {
+          Future(None)
+        }
+      )
+  }
+
   private def showExcludedPage(isCurrentTaxYear: String, iabdType: IabdType, form: Form[MandatoryRadioButton])(implicit
     request: AuthenticatedRequest[_]
   ): Future[Result] = {
@@ -133,15 +166,19 @@ class ExclusionListController @Inject() (
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     if (exclusionsAllowed) {
       for {
-        year           <- validateRequest(isCurrentTaxYear, iabdType)
-        currentYearEIL <- exclusionService.exclusionListForYear(iabdType, year, request.empRef)
-        _              <- sessionService.storeCurrentExclusions(currentYearEIL)
+        year               <- validateRequest(isCurrentTaxYear, iabdType)
+        currentYearEIL     <- exclusionService.exclusionListForYear(iabdType, year, request.empRef)
+        isExcludedNextYear <- if (isCurrentTaxYear == utils.FormMappingsConstants.CY)
+                                isExcludedInNextYear(iabdType, request.empRef, currentYearEIL.exclusions)
+                              else Future(None)
+        _                  <- sessionService.storeCurrentExclusions(currentYearEIL)
       } yield Ok(
         exclusionOverviewView(
           controllersReferenceData.yearRange,
           isCurrentTaxYear,
           iabdType,
           currentYearEIL.exclusions.sortWith(_.surname < _.surname),
+          isExcludedNextYear,
           form
         )
       )

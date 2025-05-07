@@ -31,6 +31,7 @@
         isCurrentTaxYear: String,
         iabdType: IabdType,
         current: List[PbikExclusionPerson],
+        isExcludedNextYear: Option[List[Boolean]],
         form: Form[MandatoryRadioButton]
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
@@ -56,7 +57,6 @@
         @pageTitleHeading(benefitLabel)
 
         @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdType)) {
-
             @if(current.isEmpty) {
                 <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", benefitLabel, yearvalue.toString())</p>
             } else {
@@ -89,9 +89,23 @@
                             <td class="govuk-table__cell" id="nino-@person.nationalInsuranceNumber">@person.nationalInsuranceNumber</td>
                             <td class="govuk-table__cell" id="wpn-@person.nationalInsuranceNumber">@person.worksPayrollNumber</td>
                             <td class="govuk-table__cell">
-                                <a class="govuk-link" id='@person.nationalInsuranceNumber-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdType, person.nationalInsuranceNumber)">
-                                    @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nationalInsuranceNumber</span>
-                                </a>
+                                @if(isCurrentTaxYear=="cy"){
+                                    @if(isExcludedNextYear.isEmpty){
+                                        @messages("ExclusionOverview.excludedEmployee.benefitNotRegisteredForNextYear", taxYearRange.cy.toString())
+                                    } else {
+                                        @if(isExcludedNextYear.getOrElse(List.empty)(index)){
+                                            <a class="govuk-link" id='@person.nationalInsuranceNumber-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdType, person.nationalInsuranceNumber)">
+                                                @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nationalInsuranceNumber</span>
+                                            </a>
+                                        } else {
+                                            @messages("ExclusionOverview.excludedEmployee.canceledExclusion", taxYearRange.cy.toString())
+                                        }
+                                    }
+                                } else {
+                                    <a class="govuk-link" id='@person.nationalInsuranceNumber-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdType, person.nationalInsuranceNumber)">
+                                        @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nationalInsuranceNumber</span>
+                                    </a>
+                                }
                             </td>
                         </tr>
                     }
