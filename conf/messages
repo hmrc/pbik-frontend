@@ -421,6 +421,12 @@ ErrorPage.invalidBikType = <p class="govuk-body">We think you’re trying to reg
 ErrorPage.title = Sorry, there is a problem with the service
 ErrorPage.try.later = Try again later.
 
+ErrorPage.title.individual = There is a problem
+ErrorPage.signin.individual.l1 = You signed in with a Government Gateway user ID for an individual.
+ErrorPage.signin.individual.l2 = To use this service you need to:
+ErrorPage.p1.individual = sign out
+ErrorPage.p2.individual = sign in with the Government Gateway user ID that you use to access the PAYE for employers online service
+
 #*************************************************************
 # Error- validation messages
 #*************************************************************
@@ -617,3 +623,5 @@ timeout.signOut = Sign out
 
 signedOut.title = For your security, we signed you out
 signedOut.signIn = Sign in
+signedOut.individual.title = You have signed out
+signedOut.individual.information = To use this service you need to sign in with the Government Gateway user ID and password that you use to access the PAYE for employers online service.

@@ -19,6 +19,7 @@ package controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.SignedOut
+import views.html.IndividualSignedOut
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -26,12 +27,17 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class SignedOutController @Inject() (
   signedOutView: SignedOut,
+  individualSignedOutView: IndividualSignedOut,
   val mcc: MessagesControllerComponents,
   implicit val ec: ExecutionContext
 ) extends FrontendController(mcc) {
 
   def signedOut: Action[AnyContent] = Action { implicit request =>
     Ok(signedOutView())
+  }
+
+  def individualSignedOut: Action[AnyContent] = Action { implicit request =>
+    Ok(individualSignedOutView())
   }
 
   def keepAlive(): Action[AnyContent] = Action {
