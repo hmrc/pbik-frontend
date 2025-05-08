@@ -20,6 +20,7 @@ GET         /individual                                          controllers.Aut
 
 GET         /we-signed-you-out                                   controllers.HomePageController.signout
 GET         /signed-you-out                                      controllers.HomePageController.signOutNoSurvey
+GET         /individual-signout                                  controllers.HomePageController.signOutIndividual()
 
 GET         /setLanguage                                         controllers.HomePageController.setLanguage()
 
@@ -75,4 +76,4 @@ POST        /cy1/:iabdType/why-remove-benefit-expense            controllers.reg
 
 GET         /keep-alive                                          controllers.SignedOutController.keepAlive()
 GET         /we-signed-you-out                                   controllers.SignedOutController.signedOut()
-GET         /individual-signout                                  controllers.SignedOutController.individualSignedOut()
+GET         /individual-signed-out                               controllers.SignedOutController.individualSignedOut()

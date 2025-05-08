@@ -44,7 +44,7 @@ class IndividualSignedOutViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("signedOut.individual.title"))
     behave like pageWithHeader(messages("signedOut.individual.title"))
-    behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/signed-you-out")
+    behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/start-payrolling-benefits-expenses ")
   }
 
 }

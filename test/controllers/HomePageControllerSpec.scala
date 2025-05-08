@@ -92,6 +92,24 @@ class HomePageControllerSpec extends FakePBIKApplication {
       }
     }
 
+    ".signOutIndividual" should {
+      "logout and redirect to sign out page" in {
+        val result = homePageController.signOutIndividual(FakeRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get must include("individual-signed-out")
+      }
+    }
+
+    ".signOutNoSurvey" should {
+      "logout and redirect to sign out page" in {
+        val result = homePageController.signOutNoSurvey(FakeRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get must include("signed-you-out")
+      }
+    }
+
     ".onPageLoadCY1" should {
       "return 401 (UNAUTHORIZED) if the session is not authenticated" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
@@ -107,13 +125,6 @@ class HomePageControllerSpec extends FakePBIKApplication {
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get must endWith("feedback%2FPBIK")
-      }
-
-      "logout and redirect to sign out page" in {
-        val result = homePageController.signOutNoSurvey(FakeRequest())
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get must include("bas-gateway%2Fsign-in")
       }
 
       "display the navigation page" in {

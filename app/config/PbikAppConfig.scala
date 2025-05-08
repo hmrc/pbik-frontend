@@ -26,9 +26,8 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class PbikAppConfig @Inject() (configuration: Configuration) {
 
-  private lazy val basGatewayHost: String = configuration.get[String]("microservice.auth.bas-gateway.host")
-  lazy val maximumExclusions: Int         = configuration.get[Int]("pbik.exclusions.maximum")
-
+  private lazy val basGatewayHost: String    = configuration.get[String]("microservice.auth.bas-gateway.host")
+  lazy val maximumExclusions: Int            = configuration.get[Int]("pbik.exclusions.maximum")
   lazy val cyEnabled: Boolean                = configuration.get[Boolean]("pbik.enabled.cy")
   lazy val exclusionsAllowed: Boolean        = configuration.get[Boolean]("pbik.enabled.eil")
   lazy val biksNotSupported: Set[IabdType]   =
@@ -43,13 +42,13 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
   lazy val timeout: Int          = configuration.get[Int]("timeout.timeout")
   lazy val timeoutCountdown: Int = configuration.get[Int]("timeout.countdown")
 
+  lazy val host: String                        = configuration.getOptional[String]("host").getOrElse("")
   lazy val loginCallbackUrl: String            = configuration.get[String]("microservice.auth.login-callback.url")
   private lazy val loginPath: String           = configuration.get[String]("microservice.auth.login_path")
   private lazy val signOutPath: String         = configuration.get[String]("microservice.auth.signout_path")
   lazy val authSignIn: String                  = s"$basGatewayHost/bas-gateway/$loginPath"
-  lazy val authSignOut: String                  = s"$basGatewayHost/bas-gateway/$signOutPath"
+  lazy val authSignOut: String                 = s"$basGatewayHost/bas-gateway/$signOutPath"
   lazy val feedbackUrl: String                 = configuration.get[String]("feedback.url")
-  lazy val signOut: String                     = s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$feedbackUrl"
   private lazy val timedOutRedirectUrl: String = configuration.get[String]("timedOutUrl")
   lazy val timedOutUrl: String                 =
     s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$timedOutRedirectUrl"
