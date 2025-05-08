@@ -128,7 +128,7 @@ class ExclusionListController @Inject() (
 
   /*
   isExcludedInNextYear will return
-      Some[List[Boolean] if the benefit is registered for nest year
+      Some[List[Boolean]] if the benefit is registered for nest year
           true if the person excluded this year is also excluded in the next year
           false if the exclusion has been canceled
       None if the benefit is not registered for next year
