@@ -1,5 +1,8 @@
-digital-service: Payrolling benefits in kind
+digital-service: PBIK / Payrolling Benefits in Kind
+description: This microservice retrieves and writes data from/to a `HoD` system called `NPS` via HIP, for updating benefits/expenses and excluding/rescinding individual employees.
 repoVisibility: public_0C3F0CE3E6E6448FAD341E7BFA50FCD333E06A20CFF05FCACE61154DDBBADF71
+type: Service
+service-type: Frontend
 test-repositories:
-  - pbik-performance-tests
   - pbik-acceptance-tests
+  - pbik-performance-tests
