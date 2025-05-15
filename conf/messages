@@ -438,7 +438,7 @@ error.empty.nino = Enter a National Insurance number.
 error.empty.firstname = Enter a first name.
 error.empty.lastname = Enter a last name.
 
-error.incorrect.nino = Enter a National Insurance number in the same format as the example shown.
+error.incorrect.nino = Enter the employee's National Insurance number in the correct format.
 error.incorrect.firstname = Enter a first name that doesn’t contain any numbers or special characters.
 error.incorrect.lastname = Enter a last name that doesn’t contain any numbers or special characters.
 
