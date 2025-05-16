@@ -37,7 +37,7 @@
         routes.HomePageController.onPageLoadCY1
     }
 }
-@govukLayoutWrapper(PageTitle(messages("whatNext.add.heading")), showBackLink = true, showYTABackLink = request.showYTABackLink, showECLBackLink = request.showECLBackLink) {
+@govukLayoutWrapper(PageTitle(messages("whatNext.add.heading")), signOut = false, showBackLink = true, showYTABackLink = request.showYTABackLink, showECLBackLink = request.showECLBackLink, globalPageLayoutStyle = "govuk-grid-column-full") {
 
     <div id="confirmation" class="govuk-panel govuk-panel--confirmation govuk-!-padding-top-9 govuk-!-padding-bottom-9">
         <h1 id="title" class="govuk-panel__title">
