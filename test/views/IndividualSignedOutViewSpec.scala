@@ -20,29 +20,31 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
 import views.helper.PBIKViewSpec
-import views.html.MaintenancePage
+import views.html.IndividualSignedOut
 
-class MaintenancePageViewSpec extends PBIKViewSpec {
+class IndividualSignedOutViewSpec extends PBIKViewSpec {
 
   val request: Request[AnyContentAsEmpty.type] = FakeRequest()
 
-  val MaintenancePageView: MaintenancePage = injected[MaintenancePage]
-
-  val viewViaApply: HtmlFormat.Appendable  = injected[MaintenancePage].apply()(
+  val viewViaApply: HtmlFormat.Appendable  = injected[IndividualSignedOut].apply()(
     request = request,
     messages = messages
   )
-  val viewViaRender: HtmlFormat.Appendable = injected[MaintenancePage].render(
+  val viewViaRender: HtmlFormat.Appendable = injected[IndividualSignedOut].render(
     request = request,
     messages = messages
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[MaintenancePage].ref.f()(request, messages)
+  val viewViaF: HtmlFormat.Appendable = injected[IndividualSignedOut].ref.f()(request, messages)
 
-  implicit def view: Html = MaintenancePageView()(organisationRequest, messages)
+  val individualSignedOutView: IndividualSignedOut = injected[IndividualSignedOut]
 
-  "MaintenancePageView" must {
-    behave like pageWithHeader(messages("ErrorPage.title"))
-    behave like pageWithIdAndText(messages("ErrorPage.try.later"), "tryLater")
+  "individualSignedOutView" must {
+    implicit val view: Html = individualSignedOutView()(organisationRequest, messages)
+
+    behave like pageWithTitle(messages("signedOut.individual.title"))
+    behave like pageWithHeader(messages("signedOut.individual.title"))
+    behave like pageWithLink(messages("signedOut.signIn"), href = "/payrollbik/start-payrolling-benefits-expenses ")
   }
+
 }

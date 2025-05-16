@@ -22,7 +22,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.Enrol
+import views.html.{AffinityIndividualPage, Enrol}
 
 import scala.concurrent.Future
 
@@ -31,7 +31,8 @@ class AuthController @Inject() (
   authenticate: MinimalAuthAction,
   override val messagesApi: MessagesApi,
   cc: MessagesControllerComponents,
-  enrolView: Enrol
+  enrolView: Enrol,
+  affinityIndividualPageView: AffinityIndividualPage
 ) extends FrontendController(cc)
     with I18nSupport {
 
@@ -39,6 +40,13 @@ class AuthController @Inject() (
     notAuthorisedResult
   }
 
+  def affinityIndividual: Action[AnyContent] = authenticate.async { implicit request =>
+    affinityIndividualResult
+  }
+
   private def notAuthorisedResult(implicit request: Request[AnyContent]): Future[Result] =
     Future.successful(Unauthorized(enrolView()))
+
+  private def affinityIndividualResult(implicit request: Request[AnyContent]): Future[Result] =
+    Future.successful(Unauthorized(affinityIndividualPageView()))
 }

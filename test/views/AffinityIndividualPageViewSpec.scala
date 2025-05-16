@@ -20,29 +20,30 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
 import views.helper.PBIKViewSpec
-import views.html.MaintenancePage
+import views.html.AffinityIndividualPage
 
-class MaintenancePageViewSpec extends PBIKViewSpec {
+class AffinityIndividualPageViewSpec extends PBIKViewSpec {
 
   val request: Request[AnyContentAsEmpty.type] = FakeRequest()
 
-  val MaintenancePageView: MaintenancePage = injected[MaintenancePage]
-
-  val viewViaApply: HtmlFormat.Appendable  = injected[MaintenancePage].apply()(
+  val viewViaApply: HtmlFormat.Appendable  = injected[AffinityIndividualPage].apply()(
     request = request,
     messages = messages
   )
-  val viewViaRender: HtmlFormat.Appendable = injected[MaintenancePage].render(
+  val viewViaRender: HtmlFormat.Appendable = injected[AffinityIndividualPage].render(
     request = request,
     messages = messages
   )
 
-  val viewViaF: HtmlFormat.Appendable = injected[MaintenancePage].ref.f()(request, messages)
+  val viewViaF: HtmlFormat.Appendable = injected[AffinityIndividualPage].ref.f()(request, messages)
 
-  implicit def view: Html = MaintenancePageView()(organisationRequest, messages)
+  val affinityIndividualPageView: AffinityIndividualPage = injected[AffinityIndividualPage]
 
-  "MaintenancePageView" must {
-    behave like pageWithHeader(messages("ErrorPage.title"))
-    behave like pageWithIdAndText(messages("ErrorPage.try.later"), "tryLater")
+  "affinityIndividualPageViewSpec" must {
+    implicit val view: Html = affinityIndividualPageView()(organisationRequest, messages)
+
+    behave like pageWithTitle(messages("ErrorPage.title.individual"))
+    behave like pageWithHeader(messages("ErrorPage.title.individual"))
+    behave like pageWithLink(messages("timeout.signOut"), href = "/payrollbik/individual-signout")
   }
 }
