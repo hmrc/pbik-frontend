@@ -200,7 +200,8 @@ ExclusionOverview.excludecount.exceeded = You can’t exclude any more employees
 ExclusionOverview.notExcludedEmployee.p1 = {0} is taxed through payroll for all employees from 6 April {1}.
 
 ExclusionOverview.excludedEmployee.table.title = Excluded employees
-
+ExclusionOverview.excludedEmployee.canceledExclusion = Payrolled from {0}
+ExclusionOverview.excludedEmployee.benefitNotRegisteredForNextYear = The benefit is not registered form {0}
 ExclusionOverview.p1.organisation = You can only exclude employees who get this benefit or expense.
 ExclusionOverview.p2.organisation = For excluded employees, you need to report the value of this benefit or expense by submitting a P11D to HMRC. You should do this at the end of the tax year.
 
