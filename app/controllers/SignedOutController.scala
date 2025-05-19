@@ -22,8 +22,7 @@ import views.html.SignedOut
 import views.html.IndividualSignedOut
 import repositories.DefaultSessionRepository
 import services.SessionService
-import uk.gov.hmrc.mongo.MongoComponent
-import config.PbikAppConfig
+import play.api.Logging
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,11 +32,11 @@ class SignedOutController @Inject() (
   signedOutView: SignedOut,
   individualSignedOutView: IndividualSignedOut,
   val mcc: MessagesControllerComponents,
-  mongoComponent: MongoComponent,
-  pbikAppConfig: PbikAppConfig,
+  sessionRepository: DefaultSessionRepository,
   sessionService: SessionService,
   implicit val ec: ExecutionContext
-) extends FrontendController(mcc) {
+) extends FrontendController(mcc)
+    with Logging {
 
   def signedOut: Action[AnyContent] = Action { implicit request =>
     Ok(signedOutView())
@@ -48,12 +47,17 @@ class SignedOutController @Inject() (
   }
 
   def keepAlive: Action[AnyContent] = Action.async { implicit request =>
-    val sessionRepository = new DefaultSessionRepository(pbikAppConfig, mongoComponent)
     sessionService.fetchPbikSession().flatMap {
       case Some(session) =>
-        sessionRepository.upsert(session).map { _ =>
-          Ok("Session kept alive").withSession(request.session)
-        }
+        sessionRepository
+          .upsert(session)
+          .map { _ =>
+            Ok("Session kept alive").withSession(request.session)
+          }
+          .recover { case ex =>
+            logger.error("Session upsert failed", ex)
+            InternalServerError("Could not extend session due to a server error")
+          }
       case None          =>
         Future.successful(Unauthorized("Invalid or expired session"))
     }
