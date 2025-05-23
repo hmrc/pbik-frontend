@@ -95,7 +95,7 @@ class SignedOutControllerSpec extends FakePBIKApplication {
         contentAsString(result) must include("Could not extend session due to a server error")
       }
 
-      "return 401 Unauthorized when session is invalid or expired" in {
+      "return 422 Unprocessable Entity when session is invalid or expired" in {
         when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(Future.successful(None))
         val result = signedOutController.keepAlive()(fakeRequest)
