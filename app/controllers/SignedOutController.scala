@@ -59,7 +59,7 @@ class SignedOutController @Inject() (
             InternalServerError("Could not extend session due to a server error")
           }
       case None          =>
-        Future.successful(Unauthorized("Invalid or expired session"))
+        Future.successful(UnprocessableEntity("Invalid or expired session"))
     }
   }
 }

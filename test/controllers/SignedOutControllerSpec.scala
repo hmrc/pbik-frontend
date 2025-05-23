@@ -49,8 +49,6 @@ class SignedOutControllerSpec extends FakePBIKApplication {
     cc.fileMimeTypes,
     ec
   )
-  protected def mongoComponent: MongoComponent                 = injected[MongoComponent]
-  implicit val appConfig: PbikAppConfig                        = injected[PbikAppConfig]
   private val mockSessionService: SessionService               = mock(classOf[SessionService])
   private val mockSessionRepository: DefaultSessionRepository  = mock(classOf[DefaultSessionRepository])
   private val signedOutView: SignedOut                         = injected[SignedOut]
@@ -101,7 +99,7 @@ class SignedOutControllerSpec extends FakePBIKApplication {
         when(mockSessionService.fetchPbikSession()(any()))
           .thenReturn(Future.successful(None))
         val result = signedOutController.keepAlive()(fakeRequest)
-        status(result) mustEqual UNAUTHORIZED
+        status(result) mustEqual UNPROCESSABLE_ENTITY
         contentAsString(result) mustEqual "Invalid or expired session"
       }
     }
