@@ -61,11 +61,15 @@
                 <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", benefitLabel, yearvalue.toString())</p>
             } else {
                 @if(isCurrentTaxYear=="cy"){
+                    @if(isExcludedNextYear.isEmpty){
+                        <p class="govuk-body">@messages("ExclusionOverview.p3.cy")</p>
+                    }
                     <div class="govuk-inset-text">
                         @messages("ExclusionOverview.p1.cy")
                     </div>
-
-                    <p class="govuk-body">@messages("ExclusionOverview.p2.cy")</p>
+                    @if(isExcludedNextYear.isDefined){
+                        <p class="govuk-body">@messages("ExclusionOverview.p2.cy")</p>
+                    }
                 } else {
                     <p class="govuk-body">@messages("ExclusionOverview.p1." + request.userType)</p>
                 }
@@ -90,9 +94,7 @@
                             <td class="govuk-table__cell" id="wpn-@person.nationalInsuranceNumber">@person.worksPayrollNumber</td>
                             <td class="govuk-table__cell">
                                 @if(isCurrentTaxYear=="cy"){
-                                    @if(isExcludedNextYear.isEmpty){
-                                        @messages("ExclusionOverview.excludedEmployee.benefitNotRegisteredForNextYear", taxYearRange.cy.toString())
-                                    } else {
+                                    @if(isExcludedNextYear.isDefined){
                                         @if(isExcludedNextYear.getOrElse(List.empty)(index)){
                                             <a class="govuk-link" id='@person.nationalInsuranceNumber-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdType, person.nationalInsuranceNumber)">
                                                 @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nationalInsuranceNumber</span>
