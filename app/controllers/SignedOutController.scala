@@ -20,7 +20,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.SignedOut
 import views.html.IndividualSignedOut
-import repositories.DefaultSessionRepository
+import repositories.SessionRepository
 import services.SessionService
 import play.api.Logging
 
@@ -32,7 +32,7 @@ class SignedOutController @Inject() (
   signedOutView: SignedOut,
   individualSignedOutView: IndividualSignedOut,
   val mcc: MessagesControllerComponents,
-  sessionRepository: DefaultSessionRepository,
+  sessionRepository: SessionRepository,
   sessionService: SessionService,
   implicit val ec: ExecutionContext
 ) extends FrontendController(mcc)

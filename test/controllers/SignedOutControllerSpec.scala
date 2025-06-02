@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.DefaultSessionRepository
+import repositories.SessionRepository
 import services.SessionService
 import uk.gov.hmrc.mongo.MongoComponent
 import views.html.{IndividualSignedOut, SignedOut}
@@ -50,7 +50,7 @@ class SignedOutControllerSpec extends FakePBIKApplication {
     ec
   )
   private val mockSessionService: SessionService               = mock(classOf[SessionService])
-  private val mockSessionRepository: DefaultSessionRepository  = mock(classOf[DefaultSessionRepository])
+  private val mockSessionRepository: SessionRepository         = mock(classOf[SessionRepository])
   private val signedOutView: SignedOut                         = injected[SignedOut]
   private val individualSignedOutView: IndividualSignedOut     = injected[IndividualSignedOut]
   private val signedOutController                              = new SignedOutController(
