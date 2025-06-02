@@ -200,9 +200,11 @@ ExclusionOverview.excludecount.exceeded = Ni allwch wahardd rhagor o weithwyr.
 ExclusionOverview.notExcludedEmployee.p1 = Mae {0} yn cael ei drethu drwy’r gyflogres ar gyfer pob cyflogai o 6 Ebrill {1} ymlaen.
 
 ExclusionOverview.excludedEmployee.table.title = Cyflogeion sydd wedi’u heithrio
+ExclusionOverview.excludedEmployee.canceledExclusion = Wedi’i dalu drwy’r gyflogres o fis Ebrill {0} ymlaen
 
 ExclusionOverview.p1.organisation = Dylech ond eithrio cyflogeion sy’n cael y buddiant neu’r draul hon.
 ExclusionOverview.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy gyflwyno P11D i CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+ExclusionOverview.p3.cy = Nid yw’r buddiant neu’r traul hwn wedi’i gofrestru i’w dalu drwy’r gyflogres yn y flwyddyn dreth nesaf.
 
 ExclusionOverview.p1.agent = Dylech ond eithrio cyflogeion sy’n cael y buddiant neu’r draul hon.
 ExclusionOverview.p2.agent = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i’ch cleient roi gwybod am werth y buddiant hwn neu’r draul hon gyflwyno P11D i CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
