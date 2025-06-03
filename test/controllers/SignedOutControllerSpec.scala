@@ -17,7 +17,6 @@
 package controllers
 
 import base.FakePBIKApplication
-import config.PbikAppConfig
 import models.v1.IabdType
 import models.v1.IabdType.IabdType
 import models.{PbikSession, RegistrationItem, RegistrationList}
@@ -29,7 +28,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.SessionService
-import uk.gov.hmrc.mongo.MongoComponent
 import views.html.{IndividualSignedOut, SignedOut}
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
