@@ -20,17 +20,23 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.SignedOut
 import views.html.IndividualSignedOut
+import repositories.SessionRepository
+import services.SessionService
+import play.api.Logging
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SignedOutController @Inject() (
   signedOutView: SignedOut,
   individualSignedOutView: IndividualSignedOut,
   val mcc: MessagesControllerComponents,
+  sessionRepository: SessionRepository,
+  sessionService: SessionService,
   implicit val ec: ExecutionContext
-) extends FrontendController(mcc) {
+) extends FrontendController(mcc)
+    with Logging {
 
   def signedOut: Action[AnyContent] = Action { implicit request =>
     Ok(signedOutView())
@@ -40,7 +46,20 @@ class SignedOutController @Inject() (
     Ok(individualSignedOutView())
   }
 
-  def keepAlive(): Action[AnyContent] = Action {
-    NoContent
+  def keepAlive: Action[AnyContent] = Action.async { implicit request =>
+    sessionService.fetchPbikSession().flatMap {
+      case Some(session) =>
+        sessionRepository
+          .upsert(session)
+          .map { _ =>
+            Ok("Session kept alive").withSession(request.session)
+          }
+          .recover { case ex =>
+            logger.error("Session upsert failed", ex)
+            InternalServerError("Could not extend session due to a server error")
+          }
+      case None          =>
+        Future.successful(UnprocessableEntity("Invalid or expired session"))
+    }
   }
 }

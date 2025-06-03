@@ -17,13 +17,22 @@
 package controllers
 
 import base.FakePBIKApplication
+import config.PbikAppConfig
+import models.v1.IabdType
+import models.v1.IabdType.IabdType
+import models.{PbikSession, RegistrationItem, RegistrationList}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{mock, when}
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import repositories.SessionRepository
+import services.SessionService
+import uk.gov.hmrc.mongo.MongoComponent
 import views.html.{IndividualSignedOut, SignedOut}
 
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
 class SignedOutControllerSpec extends FakePBIKApplication {
 
@@ -40,15 +49,58 @@ class SignedOutControllerSpec extends FakePBIKApplication {
     cc.fileMimeTypes,
     ec
   )
+  private val mockSessionService: SessionService               = mock(classOf[SessionService])
+  private val mockSessionRepository: SessionRepository         = mock(classOf[SessionRepository])
   private val signedOutView: SignedOut                         = injected[SignedOut]
   private val individualSignedOutView: IndividualSignedOut     = injected[IndividualSignedOut]
-  private val signedOutController                              = new SignedOutController(signedOutView, individualSignedOutView, mockMCC, ec)
+  private val signedOutController                              = new SignedOutController(
+    signedOutView,
+    individualSignedOutView,
+    mockMCC,
+    mockSessionRepository,
+    mockSessionService,
+    ec
+  )
   private val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/")
+  private val iabdType: IabdType                               = IabdType.MedicalInsurance
+  private val pbikSession                                      = PbikSession(
+    sessionId,
+    Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
+    None,
+    None,
+    None,
+    None,
+    None,
+    None
+  )
 
   "SignedOutController" when {
     "keepAlive" must {
-      "return NoContent" in {
-        status(signedOutController.keepAlive().apply(fakeRequest)) mustBe NO_CONTENT
+      "return 200 OK and keep session alive when session exists" in {
+        when(mockSessionService.fetchPbikSession()(any())).thenReturn(Future.successful(Some(pbikSession)))
+        when(mockSessionRepository.upsert(any[PbikSession])).thenReturn(Future.successful(pbikSession))
+
+        val result = signedOutController.keepAlive()(fakeRequest)
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual "Session kept alive"
+      }
+
+      "return InternalServerError when upsert fails" in {
+        when(mockSessionService.fetchPbikSession()(any())).thenReturn(Future.successful(Some(pbikSession)))
+        when(mockSessionRepository.upsert(any[PbikSession]))
+          .thenReturn(Future.failed(new RuntimeException("Mongo error")))
+
+        val result = signedOutController.keepAlive.apply(FakeRequest())
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+        contentAsString(result) must include("Could not extend session due to a server error")
+      }
+
+      "return 422 Unprocessable Entity when session is invalid or expired" in {
+        when(mockSessionService.fetchPbikSession()(any()))
+          .thenReturn(Future.successful(None))
+        val result = signedOutController.keepAlive()(fakeRequest)
+        status(result) mustEqual UNPROCESSABLE_ENTITY
+        contentAsString(result) mustEqual "Invalid or expired session"
       }
     }
 
