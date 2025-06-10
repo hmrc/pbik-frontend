@@ -101,7 +101,7 @@
                  <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.confirmAndContinue")">
             }
         } else {
-                <p class="govuk-body">@messages("ExclusionImportant.Reminder", expenseOrBenefit, taxDateUtils.getDisplayTodayDate())</p>
+                <p class="govuk-body">@messages("ExclusionImportant.Reminder", expenseOrBenefit, taxDateUtils.getDisplayStartOfCYP1())</p>
 
                 @govukWarningText(WarningText(
                     iconFallbackText = Some(messages("site.warning")),
