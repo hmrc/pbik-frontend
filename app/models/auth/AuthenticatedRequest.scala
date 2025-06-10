@@ -31,7 +31,7 @@ case class AuthenticatedRequest[A](empRef: EmpRef, userId: Option[String], reque
 
   /** It is <code>true</code> if the user is an <code>Organisation</code>, otherwise <code>false</code>
     */
-  val isOrganisation: Boolean = !isAgent
+  private val isOrganisation: Boolean = !isAgent
 
   val userType: String = if (isAgent) "agent" else "organisation"
 
