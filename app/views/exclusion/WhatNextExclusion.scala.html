@@ -57,7 +57,11 @@
     @printLink(messages("Service.print.link"))
 
     <p id="confirmation-p" class="govuk-body">
-        @messages("whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayTodayDate())
+        @if(year=="cy"){
+            @messages("whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayTodayDate())
+        } else {
+            @messages("whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayStartOfCYP1())
+        }
     </p>
 
     <h2 class="govuk-heading-m">
@@ -112,7 +116,11 @@
                 @messages("Service.field.date.of.exclusion")
             </dt>
             <dd class="govuk-summary-list__value">
-                <p class="govuk-body">@taxDateUtils.getDisplayTodayDate()</p>
+                @if(year=="cy"){
+                    <p class="govuk-body">@taxDateUtils.getDisplayTodayDate()</p>
+                } else {
+                <p class="govuk-body">@taxDateUtils.getDisplayStartOfCYP1()</p>
+                }
             </dd>
         </div>
     </dl>
