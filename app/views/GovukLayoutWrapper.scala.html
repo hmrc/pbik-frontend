@@ -43,7 +43,8 @@
         showBackLink: Boolean = true,
         showYTABackLink: Boolean = false,
         showECLBackLink: Boolean = false,
-        globalPageLayoutStyle: String = "govuk-grid-column-two-thirds"
+        globalPageLayoutStyle: String = "govuk-grid-column-two-thirds",
+        additionalCSS: Option[Html] = None,
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages)
 
 
@@ -62,6 +63,7 @@
         )
     }
 
+    @additionalCSS.getOrElse({})
 }
 
 @beforeContentBlock = {

@@ -37,7 +37,12 @@
         routes.HomePageController.onPageLoadCY1
     }
 }
-@govukLayoutWrapper(PageTitle(messages("whatNext.add.heading")), showBackLink = true, showYTABackLink = request.showYTABackLink, showECLBackLink = request.showECLBackLink) {
+
+@additionalPrintCSS = @{
+    Html(s"""<link rel="stylesheet" href='${routes.Assets.versioned("stylesheets/print.css")}'/>""")
+}
+
+@govukLayoutWrapper(PageTitle(messages("whatNext.add.heading")), showBackLink = true, showYTABackLink = request.showYTABackLink, showECLBackLink = request.showECLBackLink, additionalCSS = Some(additionalPrintCSS)) {
 
     <div id="confirmation" class="govuk-panel govuk-panel--confirmation govuk-!-padding-top-9 govuk-!-padding-bottom-9">
         <h1 id="title" class="govuk-panel__title">

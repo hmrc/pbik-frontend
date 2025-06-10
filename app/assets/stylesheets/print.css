@@ -1,0 +1,9 @@
+   @media print {
+     .hmrc-sign-out-nav {
+       visibility: hidden;
+     }
+
+     .govuk-grid-column-two-thirds {
+        width: 100%
+     }
+ }
