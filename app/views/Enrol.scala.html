@@ -25,21 +25,21 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@govukLayoutWrapper(PageTitle("Service.notEnrolled.title"), showBackLink = false) {
+@govukLayoutWrapper(PageTitle(messages("Service.notEnrolled.title")), showBackLink = false) {
     <h1 id="title" class="govuk-heading-xl">@messages("Service.notEnrolled.title")</h1>
 
-    <p class="govuk-body-l">@messages("Service.notEnrolled.text1")</p>
+    <p id="text1" class="govuk-body-l">@messages("Service.notEnrolled.text1")</p>
 
-    <p class="govuk-body">@messages("Service.notEnrolled.text2")</p>
+    <p id="text2" class="govuk-body">@messages("Service.notEnrolled.text2")</p>
 
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("Service.enrollmentLoop.list1")</li>
-        <li>@messages("Service.enrollmentLoop.list2")</li>
+    <ul id="list" class="govuk-list govuk-list--bullet">
+        <li id="list1">@messages("Service.enrollmentLoop.list1")</li>
+        <li id="list2">@messages("Service.enrollmentLoop.list2")</li>
     </ul>
 
-    <p class="govuk-body">@messages("Service.notEnrolled.text3")</p>
+    <p id="text3" class="govuk-body">@messages("Service.notEnrolled.text3")</p>
 
-    <p class="govuk-body">@messages("Service.notEnrolled.text4")</p>
+    <p id="text4" class="govuk-body">@messages("Service.notEnrolled.text4")</p>
 
-    <a class="govuk-button" href='https://www.gov.uk/paye-online/enrol' role="button">@messages("Service.notEnrolled.button")</a>
+    <a id="redirect-enrol" class="govuk-button" href="https://www.gov.uk/paye-online/enrol" role="button">@messages("Service.notEnrolled.button")</a>
 }

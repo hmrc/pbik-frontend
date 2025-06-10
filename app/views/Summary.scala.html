@@ -55,17 +55,17 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
     @if(showChangeYearLink) {
         @if(year == ""+taxYearRange.cyminus1) {
             <p class="govuk-body" id="tax-year-select">
-                @messages("Overview.change.year.cy0.link.before")
-                <a class="govuk-link" id="select-year-link" href="@routes.StartPageController.selectYearPage">
-                    @messages("Overview.change.year.cy0.text.link")
-                </a> @messages("Overview.change.year.cy0.link.after", ""+taxYearRange.cy)
-            </p>
-        } else {
-            <p class="govuk-body" id="tax-year-select">
                 @messages("Overview.change.year.cy1.link.before")
                 <a class="govuk-link" id="select-year-link" href="@routes.StartPageController.selectYearPage">
                     @messages("Overview.change.year.cy1.text.link")
                 </a> @messages("Overview.change.year.cy1.link.after")
+            </p>
+        } else {
+            <p class="govuk-body" id="tax-year-select">
+                @messages("Overview.change.year.cy0.link.before")
+                <a class="govuk-link" id="select-year-link" href="@routes.StartPageController.selectYearPage">
+                    @messages("Overview.change.year.cy0.text.link")
+                </a> @messages("Overview.change.year.cy0.link.after", ""+taxYearRange.cy)
             </p>
         }
     }
