@@ -52,6 +52,6 @@ class TaxDateUtils {
     s"${today.getDayOfMonth} ${messages("Service.month." + today.getMonth.getValue)} ${today.getYear}"
 
   def getDisplayStartOfCYP1()(implicit messages: Messages): String =
-    s"06 ${messages("Service.month.04") ${getTaxYearRange().cy}} "
+    s"06 ${messages("Service.month.04")} ${getTaxYearRange().cy}"
 
 }
