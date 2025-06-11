@@ -49,6 +49,11 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
       messages("whatNext.exclude.more.p.link", "Private medical treatment or insurance"),
       s"/payrollbik/cyp1/${iabdType.id}/excluded-employees"
     )
+    behave like pageWithIdAndText(
+      "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2026.",
+      "confirmation-p"
+    )
+
   }
 
   "whatNextAddRemove - agent" must {
@@ -64,6 +69,11 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
       messages("whatNext.exclude.more.p.link", "Private medical treatment or insurance"),
       s"/payrollbik/cyp1/${iabdType.id}/excluded-employees"
     )
+    behave like pageWithIdAndText(
+      "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2026.",
+      "confirmation-p"
+    )
+
   }
 
 }
