@@ -49,6 +49,10 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
       messages("whatNext.exclude.more.p.cy.link", "Vans"),
       s"/payrollbik/cy/${iabdType.id}/excluded-employees"
     )
+    behave like pageWithIdAndText(
+      "John A Doe will not have Vans taxed through payroll from 11 June 2025.",
+      "confirmation-p"
+    )
   }
 
   "whatNextAddRemove - agent" must {
@@ -64,6 +68,11 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
       messages("whatNext.exclude.more.p.cy.link", "Vans"),
       s"/payrollbik/cy/${iabdType.id}/excluded-employees"
     )
+    behave like pageWithIdAndText(
+      "John A Doe will not have Vans taxed through payroll from 11 June 2025.",
+      "confirmation-p"
+    )
+
   }
 
 }
