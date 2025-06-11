@@ -101,8 +101,11 @@
                  <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.confirmAndContinue")">
             }
         } else {
+            if(year=="cy"){
+                <p class="govuk-body">@messages("ExclusionImportant.Reminder", expenseOrBenefit, taxDateUtils.getDisplayTodayDate())</p>
+            } else {
                 <p class="govuk-body">@messages("ExclusionImportant.Reminder", expenseOrBenefit, taxDateUtils.getDisplayStartOfCYP1())</p>
-
+            }
                 @govukWarningText(WarningText(
                     iconFallbackText = Some(messages("site.warning")),
                     content = Text(messages("ExclusionSearch.warning"))
