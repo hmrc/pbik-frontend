@@ -4,6 +4,11 @@
      }
 
      .govuk-grid-column-two-thirds {
-        width: 100%
+        width: 100%;
      }
+
+      .govuk-header__container:after {
+         padding-top: 30px;
+         display: inline-block;
+      }
  }
