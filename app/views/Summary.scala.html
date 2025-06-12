@@ -70,7 +70,7 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
         }
     }
 
-    @if(year == ""+taxYearRange.cyminus1) {
+    @if(year == ""+taxYearRange.cy) {
         <p class="govuk-body">
             @messages("Overview.benefitsManage.p2")
         </p>
@@ -78,7 +78,7 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
         <div class="govuk-inset-text">
             @messages("Overview.benefitsManage.inset")
         </div>
-    } else {
+    } else if(registeredBenefitsNextYear.isEmpty){
         <p class="govuk-body">
             @messages("Overview.next.lead.empty")
         </p>

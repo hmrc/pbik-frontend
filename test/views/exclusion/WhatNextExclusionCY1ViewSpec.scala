@@ -20,7 +20,7 @@ import config.PbikAppConfig
 import models.auth.AuthenticatedRequest
 import models.v1.IabdType
 import play.twirl.api.Html
-import utils.FormMappings
+import utils.{FormMappings, TaxDateUtils}
 import views.helper.PBIKViewSpec
 import views.html.exclusion.WhatNextExclusion
 
@@ -32,6 +32,7 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
   implicit val appConfig: PbikAppConfig = injected[PbikAppConfig]
 
   private val iabdType = IabdType.VanBenefit
+  private val taxDateUtils = new TaxDateUtils
 
   implicit def view()(implicit request: AuthenticatedRequest[_]): Html =
     whatNextExclusionView(taxYearRange, "cy", iabdType, tracePerson)
@@ -50,7 +51,7 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
       s"/payrollbik/cy/${iabdType.id}/excluded-employees"
     )
     behave like pageWithIdAndText(
-      "John A Doe will not have Vans taxed through payroll from 11 June 2025.",
+      "John A Doe will not have Vans taxed through payroll from "+ taxDateUtils.getDisplayTodayDate(),
       "confirmation-p"
     )
   }
@@ -69,7 +70,7 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
       s"/payrollbik/cy/${iabdType.id}/excluded-employees"
     )
     behave like pageWithIdAndText(
-      "John A Doe will not have Vans taxed through payroll from 11 June 2025.",
+      "John A Doe will not have Vans taxed through payroll from "+ taxDateUtils.getDisplayTodayDate(),
       "confirmation-p"
     )
 
