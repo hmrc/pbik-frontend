@@ -30,8 +30,8 @@
         taxYearRange: TaxYearRange,
         isCurrentTaxYear: String,
         iabdType: IabdType,
-        current: List[PbikExclusionPerson],
-        isExcludedNextYear: Option[List[Boolean]],
+        currentWithNextYearDate: List[(PbikExclusionPerson, Boolean)],
+        isRegisteredNextYear: Boolean,
         form: Form[MandatoryRadioButton]
 )(implicit request:AuthenticatedRequest[_], messages: Messages)
 
@@ -57,17 +57,17 @@
         @pageTitleHeading(benefitLabel)
 
         @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdType)) {
-            @if(current.isEmpty) {
+            @if(currentWithNextYearDate.isEmpty) {
                 <p class="govuk-body">@messages("ExclusionOverview.notExcludedEmployee.p1", benefitLabel, yearvalue.toString())</p>
             } else {
                 @if(isCurrentTaxYear=="cy"){
-                    @if(isExcludedNextYear.isEmpty){
+                    @if(!isRegisteredNextYear){
                         <p class="govuk-body">@messages("ExclusionOverview.p3.cy")</p>
                     }
                     <div class="govuk-inset-text">
                         @messages("ExclusionOverview.p1.cy")
                     </div>
-                    @if(isExcludedNextYear.isDefined){
+                    @if(isRegisteredNextYear){
                         <p class="govuk-body">@messages("ExclusionOverview.p2.cy")</p>
                     }
                 } else {
@@ -87,15 +87,15 @@
                             </th>
                         </tr>
                     </thead>
-                    @for( (person, index) <- current.zipWithIndex ) {
+                    @for( ((person, isExcludedInCYP1), index) <- currentWithNextYearDate.zipWithIndex ) {
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" id="name-@person.nationalInsuranceNumber">@person.firstForename @person.surname</td>
                             <td class="govuk-table__cell" id="nino-@person.nationalInsuranceNumber">@person.nationalInsuranceNumber</td>
                             <td class="govuk-table__cell" id="wpn-@person.nationalInsuranceNumber">@person.worksPayrollNumber</td>
                             <td class="govuk-table__cell">
                                 @if(isCurrentTaxYear=="cy"){
-                                    @if(isExcludedNextYear.isDefined){
-                                        @if(isExcludedNextYear.getOrElse(List.empty)(index)){
+                                    @if(isRegisteredNextYear){
+                                        @if(isExcludedInCYP1){
                                             <a class="govuk-link" id='@person.nationalInsuranceNumber-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdType, person.nationalInsuranceNumber)">
                                                 @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nationalInsuranceNumber</span>
                                             </a>
@@ -121,7 +121,7 @@
 
             <p class="govuk-body">@messages("ExclusionOverview.p2." + request.userType)</p>
 
-            @if(current.size < config.maximumExclusions ) {
+            @if(currentWithNextYearDate.size < config.maximumExclusions ) {
                 <div class="govuk-form-group @if(form.hasErrors){govuk-form-group--error}">
                     @if(form.hasErrors) {
                         <span id="error-list-no-selection" class="govuk-error-message">
@@ -157,7 +157,7 @@
                     ))
                 </div>
 
-                <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.continue")">
+                <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.continue")" />
 
             } else {
                 <p class="govuk-body">@messages("ExclusionOverview.excludecount.exceeded")</p>

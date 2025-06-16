@@ -36,7 +36,7 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   private val iabdType = IabdType.Mileage
 
   def viewWithForm(form: Form[MandatoryRadioButton])(implicit request: AuthenticatedRequest[_]): Html =
-    exclusionOverviewView(taxYearRange, "cyp1", iabdType, List(), None, form)
+    exclusionOverviewView(taxYearRange, "cyp1", iabdType, List(), false, form)
 
   "exclusionOverview - organisation" must {
     implicit val html: Html = viewWithForm(form)(organisationRequest)
