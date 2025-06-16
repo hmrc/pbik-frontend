@@ -137,28 +137,28 @@ class ExclusionListController @Inject() (
     iabdType: IabdType,
     empRef: EmpRef,
     currentYearExclusions: List[PbikExclusionPerson],
-    isRegisteredInTheNextYear : Boolean
+    isRegisteredInTheNextYear: Boolean
   )(implicit
     request: AuthenticatedRequest[_]
   ): Future[List[(PbikExclusionPerson, Boolean)]] = {
     val nextYear = taxDateUtils.mapYearStringToInt(utils.FormMappingsConstants.CYP1)
-        if (isRegisteredInTheNextYear) {
-          exclusionService
-            .exclusionListForYear(iabdType, nextYear, empRef)
-            .map { pbikExclusions =>
-              val nextYearExclusions = pbikExclusions.exclusions
-              currentYearExclusions.map(person => (person, nextYearExclusions.contains(person)))
-            }
-        } else {
-          Future(currentYearExclusions.map(person => (person, false)))
+    if (isRegisteredInTheNextYear) {
+      exclusionService
+        .exclusionListForYear(iabdType, nextYear, empRef)
+        .map { pbikExclusions =>
+          val nextYearExclusions = pbikExclusions.exclusions
+          currentYearExclusions.map(person => (person, nextYearExclusions.contains(person)))
         }
+    } else {
+      Future(currentYearExclusions.map(person => (person, false)))
+    }
   }
 
   private def isBenefitRegisteredForCYP1(
-                                    iabdType: IabdType,
-                                  )(implicit
-                                    request: AuthenticatedRequest[_]
-                                  ): Future[Boolean] = {
+    iabdType: IabdType
+  )(implicit
+    request: AuthenticatedRequest[_]
+  ): Future[Boolean] = {
     val nextYear = taxDateUtils.mapYearStringToInt(utils.FormMappingsConstants.CYP1)
     bikListService
       .getRegisteredBenefitsForYear(nextYear)
@@ -175,16 +175,17 @@ class ExclusionListController @Inject() (
       HeaderCarrierConverter.fromRequestAndSession(request, request.session)
     if (exclusionsAllowed) {
       for {
-        year                  <- validateRequest(isCurrentTaxYear, iabdType)
-        currentYearEIL        <- exclusionService.exclusionListForYear(iabdType, year, request.empRef)
-        isRegisteredNextYear  <- if (isCurrentTaxYear == utils.FormMappingsConstants.CY)
+        year                 <- validateRequest(isCurrentTaxYear, iabdType)
+        currentYearEIL       <- exclusionService.exclusionListForYear(iabdType, year, request.empRef)
+        isRegisteredNextYear <- if (isCurrentTaxYear == utils.FormMappingsConstants.CY)
                                   isBenefitRegisteredForCYP1(iabdType)
                                 else Future(false)
-        isExcludedNextYear    <- if (isCurrentTaxYear == utils.FormMappingsConstants.CY)
-                                    isExcludedInNextYear(iabdType, request.empRef, currentYearEIL.exclusions, isRegisteredNextYear)
-                                else
-                                  Future(currentYearEIL.exclusions.map(person => (person, false)))
-        _                     <- sessionService.storeCurrentExclusions(currentYearEIL)
+        isExcludedNextYear   <-
+          if (isCurrentTaxYear == utils.FormMappingsConstants.CY)
+            isExcludedInNextYear(iabdType, request.empRef, currentYearEIL.exclusions, isRegisteredNextYear)
+          else
+            Future(currentYearEIL.exclusions.map(person => (person, false)))
+        _                    <- sessionService.storeCurrentExclusions(currentYearEIL)
       } yield Ok(
         exclusionOverviewView(
           controllersReferenceData.yearRange,
