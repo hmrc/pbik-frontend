@@ -43,9 +43,9 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
 
   private val nameValidationRegex        = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
   private val validNinoFormat            = "[[A-Z]&&[^DFIQUV]][[A-Z]&&[^DFIQUVO]] ?\\d{2} ?\\d{2} ?\\d{2} ?[A-D]?"
-  private val dateDayRegex               = "([0-9])"
-  private val dateMonthRegex             = "([0-9])"
-  private val dateYearRegex              = "([0-9]){4}"
+  private val dateDayRegex               = "^([1-9]|0[1-9]|[12][0-9]|3[01])$"
+  private val dateMonthRegex             = "^([1-9]|0[1-9]|1[0-2])$"
+  private val dateYearRegex              = "^[0-9]{4}$"
   private val emptyDateError             = "error.empty.dob"
   private val invalidDateError           = "error.invaliddate"
   private val invalidDayDateError        = "error.invaliddate.day"
@@ -63,11 +63,8 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     }
 
   def addZeroIfNeeded(date: String): String =
-    if (date.length == 1) {
-      "0" + date
-    } else {
-      date
-    }
+    if (date.matches("""\d{1}""")) s"0$date"
+    else date
 
   def isValidDate(dob: (String, String, String)): Boolean =
     try {
@@ -167,11 +164,11 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
           "year"  -> text
         )((day, month, year) => (day, month, year))((dob: (String, String, String)) => Some((dob._1, dob._2, dob._3)))
           .verifying(emptyDateError, dob => !(dob._1.isEmpty && dob._2.isEmpty && dob._3.isEmpty))
+          .verifying(invalidDayDateError, dob => dob._1.matches(dateDayRegex))
+          .verifying(invalidMonthDateError, dob => dob._2.matches(dateMonthRegex))
+          .verifying(invalidYearDateError, dob => dob._3.matches(dateYearRegex))
           .verifying(invalidYearFutureDateError, dob => isDateYearInFuture(dob))
           .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
-          .verifying(invalidDayDateError, dob => !addZeroIfNeeded(dob._1).matches(dateDayRegex))
-          .verifying(invalidMonthDateError, dob => !addZeroIfNeeded(dob._2).matches(dateMonthRegex))
-          .verifying(invalidYearDateError, dob => dob._3.matches(dateYearRegex))
           .verifying(invalidDateError, dob => isValidDate(dob)),
         "gender"    -> text.verifying("error.required", gender => Try(Gender.fromString(gender)).isSuccess)
       )((firstname, surname, dob, gender) =>
@@ -227,3 +224,4 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     Form(mapping("year" -> nonEmptyText)(SelectYear.apply)(SelectYear.unapply))
 
 }
+
