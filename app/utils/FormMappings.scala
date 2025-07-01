@@ -164,11 +164,11 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
           "year"  -> text
         )((day, month, year) => (day, month, year))((dob: (String, String, String)) => Some((dob._1, dob._2, dob._3)))
           .verifying(emptyDateError, dob => !(dob._1.isEmpty && dob._2.isEmpty && dob._3.isEmpty))
-          .verifying(invalidYearFutureDateError, dob => isDateYearInFuture(dob))
-          .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
           .verifying(invalidDayDateError, dob => dob._1.matches(dateDayRegex))
           .verifying(invalidMonthDateError, dob => dob._2.matches(dateMonthRegex))
           .verifying(invalidYearDateError, dob => dob._3.matches(dateYearRegex))
+          .verifying(invalidYearFutureDateError, dob => isDateYearInFuture(dob))
+          .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
           .verifying(invalidDateError, dob => isValidDate(dob)),
         "gender"    -> text.verifying("error.required", gender => Try(Gender.fromString(gender)).isSuccess)
       )((firstname, surname, dob, gender) =>
