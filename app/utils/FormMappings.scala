@@ -27,6 +27,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Request
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import javax.inject.{Inject, Singleton}
 import scala.util.Try
@@ -77,11 +78,15 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
       case _: Exception => false
     }
 
-  private def isDateYearInFuture(dob: (String, String, String)): Boolean = {
-    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-    val dobYear     = Try(dob._3.toInt).getOrElse(0)
-
-    dobYear < currentYear
+  private def isDateInFuture(dob: (String, String, String)): Boolean = {
+    val dobDate     = Try {
+      val day   = dob._1.toInt
+      val month = dob._2.toInt
+      val year  = dob._3.toInt
+      LocalDate.of(year, month, day)
+    }.getOrElse(LocalDate.MIN)
+    val currentDate = LocalDate.now()
+    dobDate.isBefore(currentDate)
   }
 
   private def isDateYearInPastValid(dob: (String, String, String)): Boolean = {
@@ -167,7 +172,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
           .verifying(invalidDayDateError, dob => dob._1.matches(dateDayRegex))
           .verifying(invalidMonthDateError, dob => dob._2.matches(dateMonthRegex))
           .verifying(invalidYearDateError, dob => dob._3.matches(dateYearRegex))
-          .verifying(invalidYearFutureDateError, dob => isDateYearInFuture(dob))
+          .verifying(invalidYearFutureDateError, dob => isDateInFuture(dob))
           .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
           .verifying(invalidDateError, dob => isValidDate(dob)),
         "gender"    -> text.verifying("error.required", gender => Try(Gender.fromString(gender)).isSuccess)
@@ -224,4 +229,3 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
     Form(mapping("year" -> nonEmptyText)(SelectYear.apply)(SelectYear.unapply))
 
 }
-
