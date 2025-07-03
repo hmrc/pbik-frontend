@@ -27,7 +27,6 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Request
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import javax.inject.{Inject, Singleton}
 import scala.util.Try
