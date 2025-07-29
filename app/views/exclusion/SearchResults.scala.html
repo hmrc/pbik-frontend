@@ -71,7 +71,8 @@
                      <fieldset class="govuk-fieldset" @if(listOfMatchesForm("individualNino").hasErrors){aria-describedby="selection-error"}>
                          @if(listOfMatchesForm("individualNino").hasErrors) {
                              <span id="selection-error" class="govuk-error-message">
-                                @messages("error.exclusion.multi.selection")
+                                 <span class="govuk-visually-hidden">@messages("Service.error"):</span>
+                                 @messages("error.exclusion.multi.selection")
                              </span>
                          }
                          <div class="govuk-radios">

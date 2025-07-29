@@ -62,6 +62,7 @@
                     </legend>
                     @if(form.hasErrors) {
                         <span id="error-list-1" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@messages("Service.error"):</span>
                             @messages("RemoveBenefits.reason.no.selection")
                         </span>
                     }
