@@ -48,6 +48,7 @@
                     </legend>
                     @if(form.hasErrors) {
                     <span id="selection-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@messages("Service.error"):</span>
                         @messages("SelectYear.error.empty", ""+taxYearRange.cy)
                     </span>
                     }

@@ -61,7 +61,9 @@
                     </legend>
                     @if(form.hasErrors) {
                         <span id="error-list-no-selection" class="govuk-error-message">
-                        @messages("ExclusionDecision.noselection.error")</span>
+                            <span class="govuk-visually-hidden">@messages("Service.error"):</span>
+                            @messages("ExclusionDecision.noselection.error")
+                        </span>
                     }
                     <div class="govuk-radios--inline">
                         <div class="govuk-radios__item">

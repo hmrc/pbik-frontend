@@ -40,6 +40,9 @@
     @if(elements.args.contains(Symbol("_inputHint")) ){
         <span class="govuk-hint" id="@fieldName-hint">@elements.args.get(Symbol("_inputHint"))</span>
     }
-    @elements.field.errors.map { error => <span class="govuk-error-message" id="@fieldName-error">@messages(error.messages)</span>}
+    @elements.field.errors.map { error => <span class="govuk-error-message" id="@fieldName-error">
+        <span class="govuk-visually-hidden">@messages("Service.error"):</span>
+        @messages(error.messages)
+    </span>}
     <input class="govuk-input @if(elements.args.contains(Symbol("_inputClass"))){@elements.args.get(Symbol("_inputClass"))} @if(hasErrors){govuk-input--error}" type="text" value="@value" name="@fieldName" id="@fieldName" @if(ariaDescribedByFields){aria-describedby="@ariaDescribedByFields.get"}/>
 </div>
