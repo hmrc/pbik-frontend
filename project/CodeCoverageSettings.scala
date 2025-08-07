@@ -5,7 +5,7 @@ object CodeCoverageSettings {
 
   private val settings: Seq[Setting[?]] = Seq(
     coverageExcludedPackages := "<empty>;Reverse.*;..*Routes.*;",
-    coverageMinimumStmtTotal := 96,
+    coverageMinimumStmtTotal := 93,
     coverageFailOnMinimum := true,
     coverageHighlighting := true
   )

@@ -104,7 +104,6 @@ class HomePageController @Inject() (
     } yield Ok(
       summaryPage(
         selectedYear = "cy1",
-        pbikAppConfig.cyEnabled,
         taxYearRange,
         List.empty,
         nextYearList.getBenefitInKindWithCount,
@@ -126,7 +125,6 @@ class HomePageController @Inject() (
     } yield Ok(
       summaryPage(
         selectedYear = "cy",
-        pbikAppConfig.cyEnabled,
         taxYearRange,
         currentYearList.getBenefitInKindWithCount,
         List.empty,

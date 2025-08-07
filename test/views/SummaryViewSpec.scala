@@ -40,7 +40,6 @@ class SummaryViewSpec extends PBIKViewSpec {
   )(implicit request: AuthenticatedRequest[_]): Html =
     summaryView(
       selectedYear,
-      cyAllowed = true,
       taxYearRange,
       benefitsCY,
       benefitsCYP1,

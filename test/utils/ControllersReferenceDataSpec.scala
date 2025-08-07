@@ -34,7 +34,6 @@ class ControllersReferenceDataSpec extends FakePBIKApplication {
   override val configMap: Map[String, Any] = Map(
     "auditing.enabled" -> false,
     "sessionId"        -> "a-session-id",
-    "pbik.enabled.cy"  -> false
   )
 
   private val mockControllersReferenceData: ControllersReferenceData = injected[ControllersReferenceData]
@@ -55,20 +54,6 @@ class ControllersReferenceDataSpec extends FakePBIKApplication {
         result.header.status mustBe FORBIDDEN
         result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.10003.1"))
         result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.10003.2"))
-      }
-    }
-
-    "CY mode is enabled" should {
-      "display the result passed to it" in new Test {
-        val injector: Injector                                     = GuiceApplicationBuilder().configure("pbik.enabled.cy" -> true).injector()
-        val mockControllersReferenceData: ControllersReferenceData = injector.instanceOf[ControllersReferenceData]
-
-        val result: Result = await(mockControllersReferenceData.responseCheckCYEnabled(Future {
-          Results.Ok("Passed Test")
-        }(scala.concurrent.ExecutionContext.Implicits.global))(authenticatedRequest))
-
-        result.header.status mustBe OK
-        result.body.asInstanceOf[Strict].data.utf8String must include("Passed Test")
       }
     }
 

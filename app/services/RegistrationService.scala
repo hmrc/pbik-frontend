@@ -58,11 +58,7 @@ class RegistrationService @Inject() (
     ) => HtmlFormat.Appendable
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     val decommissionedBikIds: Set[IabdType] = pbikAppConfig.biksDecommissioned
-    val nonLegislationBiks: Set[IabdType]   = if (taxDateUtils.isCurrentTaxYear(year)) {
-      pbikAppConfig.biksNotSupportedCY
-    } else {
-      pbikAppConfig.biksNotSupported
-    }
+    val nonLegislationBiks: Set[IabdType]   = pbikAppConfig.biksNotSupported
     val isCurrentYear: String               =
       if (taxDateUtils.isCurrentTaxYear(year)) {
         FormMappingsConstants.CY
@@ -74,12 +70,11 @@ class RegistrationService @Inject() (
       biksListOption       <- bikListService.getAllBenefitsForYear(year)
       registeredListOption <- tierConnector.getRegisteredBiks(request.empRef, year)
       nonLegislationList    = nonLegislationBiks
-      decommissionedBikList = decommissionedBikIds
 
       // During transition, we have to ensure we handle the existing decommissioned IABDs (e.g 47 ) being sent by the server
       // and after the NPS R38 config release, when it wont be. Therefore, aas this is a list, we remove the
       // decommissioned values ( if they exist ) and then add them back in
-      hybridList = biksListOption.diff(decommissionedBikIds) ++ nonLegislationList ++ decommissionedBikList
+      hybridList = biksListOption.diff(decommissionedBikIds) ++ nonLegislationList
 
     } yield result(
       hybridList,
