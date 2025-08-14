@@ -53,7 +53,6 @@ abstract class FakePBIKApplication
     "metrics.jvm"                     -> false,
     "metrics.enabled"                 -> false,
     "auditing.enabled"                -> false,
-    "pbik.enabled.cy"                 -> true,
     "play.i18n.langs.0"               -> "en",
     "play.i18n.langs.1"               -> "cy",
     "features.welsh-language-support" -> true

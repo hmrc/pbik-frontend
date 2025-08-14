@@ -33,7 +33,7 @@ class ControllersReferenceDataSpec extends FakePBIKApplication {
 
   override val configMap: Map[String, Any] = Map(
     "auditing.enabled" -> false,
-    "sessionId"        -> "a-session-id",
+    "sessionId"        -> "a-session-id"
   )
 
   private val mockControllersReferenceData: ControllersReferenceData = injected[ControllersReferenceData]

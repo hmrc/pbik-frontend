@@ -70,11 +70,12 @@ class RegistrationService @Inject() (
       biksListOption       <- bikListService.getAllBenefitsForYear(year)
       registeredListOption <- tierConnector.getRegisteredBiks(request.empRef, year)
       nonLegislationList    = nonLegislationBiks
+      decommissionedBikList = decommissionedBikIds
 
       // During transition, we have to ensure we handle the existing decommissioned IABDs (e.g 47 ) being sent by the server
       // and after the NPS R38 config release, when it wont be. Therefore, aas this is a list, we remove the
       // decommissioned values ( if they exist ) and then add them back in
-      hybridList = biksListOption.diff(decommissionedBikIds) ++ nonLegislationList
+      hybridList = biksListOption.diff(decommissionedBikIds) ++ nonLegislationList ++ decommissionedBikList
 
     } yield result(
       hybridList,
