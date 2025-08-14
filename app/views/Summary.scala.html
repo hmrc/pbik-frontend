@@ -124,7 +124,7 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
                     </p>
                 }
 
-            @if(registeredBenefitsNextYear.size < serviceBiksCountCYP1) {
+            @if(registeredBenefitsNextYear.size < (serviceBiksCountCYP1 - pbikAppConfig.biksDecommissioned.size)) {
                 <a class="govuk-button" role="button" id="add-next-tax-year" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
                     @messages("Overview.table.add.link")
                 </a>

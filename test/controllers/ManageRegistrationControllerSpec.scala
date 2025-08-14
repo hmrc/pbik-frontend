@@ -100,6 +100,14 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
   "ManageRegistrationController" when {
 
+    "loading the currentTaxYearOnPageLoad, an authorised user" should {
+      "not be directed to cy page with list of biks (NO MORE CY ENABLED)" in {
+        val result = registrationController.currentTaxYearOnPageLoad()(mockRequest)
+
+        status(result) mustBe FORBIDDEN
+      }
+    }
+
     "loading the nextTaxYearAddOnPageLoad, an authorised user" should {
       "be directed to cy + 1 page with list of biks" in {
         val title  = messages("AddBenefits.Heading")
@@ -108,6 +116,33 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         status(result) mustBe OK
         contentAsString(result) must include(title)
         contentAsString(result) must include(messages(s"BenefitInKind.label.${IabdType.EmployerProvidedServices.id}"))
+      }
+    }
+
+    "loading checkYourAnswersAddCurrentTaxYear, an authorised user" should {
+      "be taken to the forbidden even check your answers page when the form is correctly filled (NO MORE CY ENABLED)" in {
+        val mockRegistrationList = RegistrationList(
+          None,
+          List(RegistrationItem(iabdType, active = true, enabled = true)),
+          Some(BinaryRadioButtonWithDesc("software", None))
+        )
+        val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+
+        val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
+
+        status(result) mustBe FORBIDDEN
+      }
+
+      "be taken to the Forbidden page always (NO MORE CY ENABLED)" in {
+        val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
+        val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm      = mockRequest
+          .withFormUrlEncodedBody(form.data.toSeq: _*)
+
+        val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
+
+        status(result) mustBe FORBIDDEN
       }
     }
 
@@ -218,6 +253,38 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
         status(result) mustBe OK
         contentAsString(result) must include(title)
+      }
+    }
+
+    "loading the updateCurrentYearRegisteredBenefitTypes, an authorised user" should {
+      "persist their changes and be redirected to the what next page" in {
+        val mockRegistrationList = RegistrationList(
+          None,
+          List(RegistrationItem(iabdType, active = true, enabled = true)),
+          Some(BinaryRadioButtonWithDesc("software", None))
+        )
+        when(registrationController.sessionService.fetchPbikSession()(any()))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  sessionId,
+                  Some(mockRegistrationList),
+                  Some(RegistrationItem(iabdType, active = true, enabled = true)),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+        val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
+        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+        val result               = registrationController.updateCurrentYearRegisteredBenefitTypes()(mockRequestForm)
+
+        status(result) mustBe FORBIDDEN
       }
     }
 

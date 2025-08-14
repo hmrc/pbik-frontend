@@ -78,8 +78,7 @@ class ManageRegistrationController @Inject() (
     (authenticate andThen noSessionCheck).async { implicit request =>
       val staticDataRequest = registrationService.generateViewForBikRegistrationSelection(
         controllersReferenceData.yearRange.cyminus1,
-        generateViewBasedOnFormItems = (form, bool, decommissionedBiks, _) =>
-          currentTaxYearView(form, controllersReferenceData.yearRange, bool, decommissionedBiks)
+        generateViewBasedOnFormItems = currentTaxYearView(_, controllersReferenceData.yearRange, _, _, _)
       )
       controllersReferenceData.responseCheckCYEnabled(staticDataRequest)
     }
@@ -97,6 +96,7 @@ class ManageRegistrationController @Inject() (
                               formWithErrors,
                               controllersReferenceData.yearRange,
                               isExhausted = false,
+                              nonLegislationBiks = pbikAppConfig.biksNotSupported.map(_.id),
                               decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id)
                             )
                           )
