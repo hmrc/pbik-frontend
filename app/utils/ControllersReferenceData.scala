@@ -67,11 +67,7 @@ class ControllersReferenceData @Inject() (
 
   def responseCheckCYEnabled(
     staticDataRequest: Future[Result]
-  )(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
-    if (pbikAppConfig.cyEnabled) {
-      responseErrorHandler(staticDataRequest)
-    } else {
-      logger.info("[ControllersReferenceData][responseCheckCYEnabled] Cy is disabled")
+  )(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
       val errorCode = 10003
       Future(
         Forbidden(

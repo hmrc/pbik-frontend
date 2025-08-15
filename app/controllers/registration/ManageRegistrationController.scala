@@ -96,7 +96,7 @@ class ManageRegistrationController @Inject() (
                               formWithErrors,
                               controllersReferenceData.yearRange,
                               isExhausted = false,
-                              nonLegislationBiks = pbikAppConfig.biksNotSupportedCY.map(_.id),
+                              nonLegislationBiks = pbikAppConfig.biksNotSupported.map(_.id),
                               decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id)
                             )
                           )

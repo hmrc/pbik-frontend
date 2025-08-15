@@ -43,9 +43,7 @@ sm2 --start PBIK_ALL
 ### Configuration
 
 survey.url - Feedback page location when the user signs out of the service <br />
-enabled.cy - Enable CY registrations (Caution when enabling, needs to be discussed with DSM/ stakeholders) <br />
 enabled.eil - Exclusion functionality enabled <br />
-unsupported.biks.cy - Which benefits can't be registered in CY (Caution, may need NPS config change prior to changing here) <br />
 unsupported.biks.cy1 - Which benefits can't be registered in CY+1 (Caution, may need NPS config change prior to changing here) <br />
 decommissioned.biks - Which benefits no longer exist <br />
 

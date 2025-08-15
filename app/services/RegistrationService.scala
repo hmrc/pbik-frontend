@@ -58,11 +58,7 @@ class RegistrationService @Inject() (
     ) => HtmlFormat.Appendable
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
     val decommissionedBikIds: Set[IabdType] = pbikAppConfig.biksDecommissioned
-    val nonLegislationBiks: Set[IabdType]   = if (taxDateUtils.isCurrentTaxYear(year)) {
-      pbikAppConfig.biksNotSupportedCY
-    } else {
-      pbikAppConfig.biksNotSupported
-    }
+    val nonLegislationBiks: Set[IabdType]   = pbikAppConfig.biksNotSupported
     val isCurrentYear: String               =
       if (taxDateUtils.isCurrentTaxYear(year)) {
         FormMappingsConstants.CY

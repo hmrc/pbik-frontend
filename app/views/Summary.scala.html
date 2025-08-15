@@ -32,7 +32,6 @@
 
 @(
         selectedYear: String,
-        cyAllowed: Boolean,
         taxYearRange:TaxYearRange,
         registeredBenefitsCurrentYear: List[BenefitInKindWithCount],
         registeredBenefitsNextYear: List[BenefitInKindWithCount],
@@ -129,35 +128,28 @@ globalPageLayoutStyle = "govuk-grid-column-three-quarters") {
                 <a class="govuk-button" role="button" id="add-next-tax-year" href="@controllers.registration.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
                     @messages("Overview.table.add.link")
                 </a>
-            } else if(cyAllowed || !registeredBenefitsCurrentYear.isEmpty) {
-                            @if(!registeredBenefitsCurrentYear.isEmpty) {
-                                <dl class="govuk-summary-list">
-                                    @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
-                                        <div class="govuk-summary-list__row">
-                                            <dt class="govuk-summary-list__key" id="cy-@n.iabdType.id">
-                                                @messages("BenefitInKind.label." + n.iabdType.id)
-                                            </dt>
-                                            <dd class="govuk-summary-list__actions">
-                                                <a id="cy-exclude-@n.iabdType.id" href='@controllers.routes.ExclusionListController.performPageLoad("cy", n.iabdType)' class="govuk-link">
-                                                    @if(n.payrolledBenefitInKindExclusionCount == 0) {@messages("Overview.table.exclude.none.link")} else {@messages("Overview.table.exclude.link")}
-                                                <span class="govuk-visually-hidden"> @messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType.id)</span>
-                                                </a>
-                                            </dd>
-                                        </div>
-                                    }
-                                </dl>
-                            } else {
-                                <p id="no-benefits-cy" class="govuk-body">
-                                    @messages("Overview.empty.benefits.p")
-                                </p>
-                            }
-
-                    @if(cyAllowed) {
-                        @if(registeredBenefitsCurrentYear.size < (serviceBiksCountCY - pbikAppConfig.biksDecommissioned.size)) {
-                            <a class="govuk-button" role="button" id="add-next-current" href="@controllers.registration.routes.ManageRegistrationController.currentTaxYearOnPageLoad">
-                                @messages("Overview.table.add.link")
-                            </a>
+            } else if(!registeredBenefitsCurrentYear.isEmpty) {
+                @if(!registeredBenefitsCurrentYear.isEmpty) {
+                    <dl class="govuk-summary-list">
+                        @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key" id="cy-@n.iabdType.id">
+                                    @messages("BenefitInKind.label." + n.iabdType.id)
+                                </dt>
+                                <dd class="govuk-summary-list__actions">
+                                    <a id="cy-exclude-@n.iabdType.id" href='@controllers.routes.ExclusionListController.performPageLoad("cy", n.iabdType)' class="govuk-link">
+                                        @if(n.payrolledBenefitInKindExclusionCount == 0) {@messages("Overview.table.exclude.none.link")} else {@messages("Overview.table.exclude.link")}
+                                    <span class="govuk-visually-hidden"> @messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType.id)</span>
+                                    </a>
+                                </dd>
+                            </div>
                         }
-                    }
+                    </dl>
+                } else {
+                    <p id="no-benefits-cy" class="govuk-body">
+                        @messages("Overview.empty.benefits.p")
+                    </p>
+                }
+
     }
 }
