@@ -96,7 +96,7 @@
                             }
                         }
                         @repeatWithIndex(form("actives"), min = 0) { (activeField, index) =>
-                            @if(activeField("uid").value.isDefined && activeField("uid").value.get != "47" && !nonLegislationBiks.contains(activeField("uid").value.get.toInt) && !decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
+                            @if(activeField("uid").value.isDefined && activeField("uid").value.get == "47" && !nonLegislationBiks.contains(activeField("uid").value.get.toInt) && !decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
                                 <div class="govuk-checkboxes__item">
                                     <input type="hidden" id='actives_@{index}_uid' name='actives[@index].uid' value='@activeField("uid").value.get'/>
                                     <input class="govuk-checkboxes__input" type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true" @if(activeField("uid").value.get == "47") {aria-describedby="actives[@index].hint"}/>
