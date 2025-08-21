@@ -14,14 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
 @import utils.TaxDateUtils
 
 @import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
         printLink: components.PrintLink,
         taxDateUtils: TaxDateUtils
 )
@@ -31,7 +29,7 @@
     year:String,
     iabdType:IabdType,
     person:TracePersonResponse
-)(implicit request:AuthenticatedRequest[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 

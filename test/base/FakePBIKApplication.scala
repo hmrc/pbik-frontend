@@ -58,7 +58,7 @@ abstract class FakePBIKApplication
     "features.welsh-language-support" -> true
   )
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .build()

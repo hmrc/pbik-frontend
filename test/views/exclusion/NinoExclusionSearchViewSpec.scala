@@ -23,6 +23,7 @@ import play.api.data.Form
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
+import org.jsoup.Jsoup
 import views.html.exclusion.NinoExclusionSearchForm
 
 class NinoExclusionSearchViewSpec extends PBIKViewSpec {
@@ -32,7 +33,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   private val iabdType = IabdType.Mileage
 
-  def viewWithForm(form: Form[NinoForm])(implicit request: AuthenticatedRequest[_]): Html =
+  def viewWithForm(form: Form[NinoForm])(implicit request: AuthenticatedRequest[?]): Html =
     ninoExclusionSearchFormView(taxYearRange, "cyp1", iabdType, form, alreadyExists = true)
 
   "NinoExclusionSearchView - organisation" must {
@@ -124,6 +125,17 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       doc must haveErrorNotification(messages("error.incorrect.firstname"))
       doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
       doc must haveErrorNotification(messages("error.incorrect.lastname"))
+    }
+
+    "show status error when status has errors" in {
+      val formWithStatusError = formMappings.exclusionSearchFormWithNino(organisationRequest)
+        .withError("status", "error-status")
+
+      implicit def view: Html = viewWithForm(formWithStatusError)(organisationRequest)
+      val doc = Jsoup.parse(view.toString)
+
+      doc must haveErrorSummary("error-status")
+      doc.select("#error-list-1").text must include("error-status")
     }
   }
 

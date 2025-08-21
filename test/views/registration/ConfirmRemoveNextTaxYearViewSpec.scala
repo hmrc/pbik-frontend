@@ -26,7 +26,7 @@ class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
 
   private val confirmUpdateNextTaxYearView: ConfirmRemoveNextTaxYear = injected[ConfirmRemoveNextTaxYear]
   private val benefit                                                = IabdType.CarFuelBenefit
-  private def view(implicit request: AuthenticatedRequest[_]): Html  =
+  private def view(implicit request: AuthenticatedRequest[?]): Html  =
     confirmUpdateNextTaxYearView(benefit, taxYearRange)
 
   "confirmRemoveNextTaxYear - organisation" must {

@@ -14,15 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
-
 @import views.html.localhelpers.TextInput
 @import views.html.localhelpers.DateFieldsNumberInputs
 @import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
         dateFieldsNumberInputs: DateFieldsNumberInputs,
         textInput: TextInput,
         formWithCSRF: FormWithCSRF
@@ -34,7 +31,7 @@
         iabdType:IabdType,
         searchForm: Form[NoNinoForm],
         alreadyExists: Boolean = false
-)(implicit request:Request[_], messages: Messages)
+)(implicit request:Request[?], messages: Messages)
 
 @excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">}
 

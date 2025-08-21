@@ -34,7 +34,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
 
   private val iabdType = IabdType.MedicalInsurance
 
-  def viewWithForm(form: Form[ExclusionNino])(implicit request: AuthenticatedRequest[_]): Html =
+  def viewWithForm(form: Form[ExclusionNino])(implicit request: AuthenticatedRequest[?]): Html =
     searchResultsView(taxYearRange, "cyp1", iabdType, List(tracePerson), form, "")
 
   "organisation" must {

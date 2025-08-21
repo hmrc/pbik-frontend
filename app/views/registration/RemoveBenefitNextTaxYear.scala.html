@@ -27,7 +27,7 @@
         removalBik: RegistrationItem,
         taxYearRange:TaxYearRange,
         form: Form[BinaryRadioButtonWithDesc]
-)(implicit request:AuthenticatedRequest[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @benefitLabel = @{messages(s"BenefitInKind.label.${removalBik.iabdType.id}")}
 

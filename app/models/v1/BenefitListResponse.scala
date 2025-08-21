@@ -38,7 +38,7 @@ object BenefitListResponse {
     (
       (__ \ "pbikRegistrationDetailsList").readNullable[List[BenefitInKindWithCount]] and
         (__ \ "currentEmployerOptimisticLock").read[Int]
-    )(BenefitListResponse.apply _)
+    )(BenefitListResponse.apply)
   }
 
 }

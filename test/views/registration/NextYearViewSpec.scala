@@ -30,8 +30,8 @@ class NextYearViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings   = injected[FormMappings]
   val nextTaxYearView: NextTaxYear = injected[NextTaxYear]
 
-  def viewWithForm(form: Form[RegistrationList])(implicit request: AuthenticatedRequest[_]): Html =
-    nextTaxYearView(form, additive = true, taxYearRange, isExhausted = false, Set.empty, Set.empty)
+  def viewWithForm(form: Form[RegistrationList], additive: Boolean = true, isExhausted: Boolean = false)(implicit request: AuthenticatedRequest[?]): Html =
+    nextTaxYearView(form, additive = additive, taxYearRange, isExhausted = isExhausted, Set.empty, Set.empty)
 
   "nextYearPage - organisation" must {
     implicit def html: Html = viewWithForm(formMappings.objSelectedForm)(organisationRequest)
@@ -42,10 +42,34 @@ class NextYearViewSpec extends PBIKViewSpec {
 
     "check the add benefit page for the errors" in {
       val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))(organisationRequest)
-      val doc  = Jsoup.parse(view.toString())
+      val doc  = Jsoup.parse(view.toString)
 
       doc must haveErrorSummary(messages("AddBenefits.noselection.error"))
       doc must haveErrorNotification(messages("AddBenefits.noselection.error"))
+    }
+
+    "display different title when additive is false" must {
+      implicit def html: Html = viewWithForm(formMappings.objSelectedForm, additive = false)(organisationRequest)
+
+      behave like pageWithTitle(messages("RemoveBenefits.Heading", year2019.toString))
+    }
+
+    "display exhausted panel when isExhausted is true" in {
+      val view = viewWithForm(formMappings.objSelectedForm, isExhausted = true)(organisationRequest)
+      val doc = Jsoup.parse(view.toString)
+
+      doc.select(".govuk-panel--confirmation").text must include(messages("ManagingRegistration.add.exhausted"))
+    }
+
+    "display hint for UID 47 when present and not excluded" in {
+      val data = Map(
+        "actives[0].uid" -> "47",
+        "actives[0].active" -> "true"
+      )
+      val view = viewWithForm(formMappings.objSelectedForm.bind(data))(organisationRequest)
+      val doc = Jsoup.parse(view.toString)
+
+      doc.select("#actives\\[0\\]\\.hint").text must include(messages("BenefitInKind.hint.47"))
     }
 
   }
@@ -59,7 +83,7 @@ class NextYearViewSpec extends PBIKViewSpec {
 
     "check the add benefit page for the errors" in {
       val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))(agentRequest)
-      val doc  = Jsoup.parse(view.toString())
+      val doc  = Jsoup.parse(view.toString)
 
       doc must haveErrorSummary(messages("AddBenefits.noselection.error"))
       doc must haveErrorNotification(messages("AddBenefits.noselection.error"))

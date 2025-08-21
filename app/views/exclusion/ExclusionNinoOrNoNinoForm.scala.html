@@ -14,12 +14,10 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
 @import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
         formWithCSRF: FormWithCSRF
 )
 
@@ -29,7 +27,7 @@
         iabdType: IabdType,
         previousSelection: String = "",
         form: Form[MandatoryRadioButton]
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: Request[?], messages: Messages)
 
 @expenseOrBenefit = @{messages(s"BenefitInKind.label.${iabdType.id}")}
 @govukLayoutWrapper(PageTitle(messages("ExclusionNinoDecision.title", form.hasErrors), form.hasErrors)) {

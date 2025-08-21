@@ -70,7 +70,7 @@ class AuthActionSpec extends FakePBIKApplication {
       when(mockAuthConnector.authorise[RetrievalType](any(), any())(any(), any()))
         .thenReturn(
           Future.successful(
-            affinityGroup composeRetrievals enrolments composeRetrievals id composeRetrievals agentCode
+            affinityGroup `composeRetrievals` enrolments `composeRetrievals` id `composeRetrievals` agentCode
           )
         )
 

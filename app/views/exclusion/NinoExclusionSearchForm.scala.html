@@ -14,14 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
-
 @import views.html.localhelpers.TextInput
 @import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
         formWithCSRF: FormWithCSRF,
         textInput: TextInput
 )
@@ -32,7 +29,7 @@
         iabdType:IabdType,
         searchForm: Form[NinoForm],
         alreadyExists: Boolean = false
-)(implicit request:Request[_], messages: Messages)
+)(implicit request:Request[?], messages: Messages)
 
 @excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">}
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }

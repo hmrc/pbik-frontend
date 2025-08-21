@@ -27,7 +27,7 @@ class WhatNextRescindViewSpec extends PBIKViewSpec {
   private val whatNextRescindView: WhatNextRescind = injected[WhatNextRescind]
   private val benefit: IabdType.Value              = IabdType.CarFuelBenefit
 
-  private def view(implicit request: AuthenticatedRequest[_]): Html = whatNextRescindView(
+  private def view(implicit request: AuthenticatedRequest[?]): Html = whatNextRescindView(
     taxYearRange,
     "cyp1",
     benefit,

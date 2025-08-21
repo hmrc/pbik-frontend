@@ -41,7 +41,7 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
   private val mockConnector: PbikConnector       = mock(classOf[PbikConnector])
   private val mockSessionService: SessionService = mock(classOf[SessionService])
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))

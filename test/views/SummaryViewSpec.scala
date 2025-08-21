@@ -37,7 +37,7 @@ class SummaryViewSpec extends PBIKViewSpec {
     benefitsCY: List[BenefitInKindWithCount],
     benefitsCYP1: List[BenefitInKindWithCount],
     showChangeYearLink: Boolean = true
-  )(implicit request: AuthenticatedRequest[_]): Html =
+  )(implicit request: AuthenticatedRequest[?]): Html =
     summaryView(
       selectedYear,
       taxYearRange,
@@ -48,7 +48,7 @@ class SummaryViewSpec extends PBIKViewSpec {
       showChangeYearLink
     )
 
-  private def testCYView(userType: String)(implicit request: AuthenticatedRequest[_]): Unit =
+  private def testCYView(userType: String)(implicit request: AuthenticatedRequest[?]): Unit =
     s"overview for CY - $userType" must {
       implicit val html: Html = view("cy", List(carBik, medicalBik), List.empty)
 
@@ -57,7 +57,7 @@ class SummaryViewSpec extends PBIKViewSpec {
       behave like pageWithBackLink()
 
       "not display empty benefits message when CY benefits are present" in {
-        val doc          = Jsoup.parse(view("cy", List(carBik, medicalBik), List.empty).toString())
+        val doc = Jsoup.parse(view("cy", List(carBik, medicalBik), List.empty).toString())
         val emptyMessage = messages("Overview.empty.benefits.p")
         doc.body().text() must not include emptyMessage
       }
@@ -74,9 +74,17 @@ class SummaryViewSpec extends PBIKViewSpec {
           taxYearRange.cyminus1.toString
         )
       }
+
+      "not show no benefits message when CY list is empty and CYP1 list is full" in {
+        val lotsOfBiks = List.fill(200)(carBik)
+        val doc = Jsoup.parse(view("cy", List.empty, lotsOfBiks).toString)
+        val emptyMessage = messages("Overview.empty.benefits.p")
+        doc.body().text() must not include emptyMessage
+      }
+
     }
 
-  private def testCYP1View(userType: String)(implicit request: AuthenticatedRequest[_]): Unit =
+  private def testCYP1View(userType: String)(implicit request: AuthenticatedRequest[?]): Unit =
     s"overview for CYP1 - $userType" must {
       implicit val html: Html = view("cy1", List.empty, List(carBik, medicalBik))
 
@@ -97,7 +105,7 @@ class SummaryViewSpec extends PBIKViewSpec {
       }
 
       "show empty message if CYP1 benefits are empty" in {
-        val doc = Jsoup.parse(view("c1", List.empty, List.empty).toString())
+        val doc = Jsoup.parse(view("cy1", List.empty, List.empty).toString)
         doc.body().text() must include(messages("Overview.empty.benefits.p"))
       }
 

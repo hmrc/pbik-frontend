@@ -21,7 +21,6 @@ import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.DataEvent
-import utils.SplunkLogger._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,6 +54,8 @@ object SplunkLogger {
 class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: AuditConnector)(implicit
   ec: ExecutionContext
 ) {
+
+  import utils.SplunkLogger._
 
   sealed trait SpTier
   case object FRONTEND extends SpTier
@@ -132,7 +133,7 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
       key_message      -> msg
     ) ++ entityIABD ++ entityNINO ++ entityRemoveReason ++ entityRemoveReasonDesc
 
-    DataEvent(auditSource = pbik_audit_source, auditType = derivedAuditType, detail = Map(entities: _*))
+    DataEvent(auditSource = pbik_audit_source, auditType = derivedAuditType, detail = Map(entities*))
   }
 
   /** Method creates a PBIK Specific Error which will be sent to splunk so product owners can get granularity on the
@@ -146,7 +147,7 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
     *   A DataEvent with the PBIK specific error payload which may be sent using the logSplunkEvent method.
     */
   def createErrorEvent(tier: SpTier, error: SpError, msg: String)(implicit
-    request: AuthenticatedRequest[_]
+    request: AuthenticatedRequest[?]
   ): DataEvent =
     DataEvent(
       auditSource = pbik_audit_source,

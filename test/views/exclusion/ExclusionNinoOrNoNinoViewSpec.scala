@@ -36,7 +36,7 @@ class ExclusionNinoOrNoNinoViewSpec extends PBIKViewSpec {
 
   private val iabdType = IabdType.MedicalInsurance
 
-  def viewWithForm(form: Form[MandatoryRadioButton])(implicit request: AuthenticatedRequest[_]): Html =
+  def viewWithForm(form: Form[MandatoryRadioButton])(implicit request: AuthenticatedRequest[?]): Html =
     exclusionNinoOrNoNinoFormView(taxYearRange, "cyp1", iabdType, "", form)
 
   "exclusionNinoOrNoNinoPage - organisation" must {

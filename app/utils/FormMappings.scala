@@ -101,13 +101,13 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
   val binaryRadioButton: Form[MandatoryRadioButton] = Form(
     mapping(
       "confirmation" -> nonEmptyText(1) //  must contain minimum characters for supported biks 1-99
-    )(MandatoryRadioButton.apply)(MandatoryRadioButton.unapply)
+    )(MandatoryRadioButton.apply)(o => Some(o.selectionValue))
   )
 
   val navigationRadioButton: Form[MandatoryRadioButton] = Form(
     mapping(
       "navigation" -> nonEmptyText(2) //  must contain minimum characters for cy or cyp1
-    )(MandatoryRadioButton.apply)(MandatoryRadioButton.unapply)
+    )(MandatoryRadioButton.apply)(o => Some(o.selectionValue))
   )
 
   val objSelectedForm: Form[RegistrationList] = Form(
@@ -118,16 +118,16 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
           "uid"     -> text.transform[IabdType](bik => IabdType(bik.trim.toInt), iabdType => iabdType.id.toString),
           "active"  -> boolean,
           "enabled" -> boolean
-        )(RegistrationItem.apply)(RegistrationItem.unapply)
+        )(RegistrationItem.apply)(o => Some(Tuple.fromProductTyped(o)))
       )
         .verifying("Error message goes here", selectionList => selectionList.exists(listItem => listItem.active)),
       "reason"     -> optional(
         mapping(
           "selectionValue" -> text,
           "info"           -> optional(text)
-        )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply)
+        )(BinaryRadioButtonWithDesc.apply)(o => Some(Tuple.fromProductTyped(o)))
       )
-    )(RegistrationList.apply)(RegistrationList.unapply)
+    )(RegistrationList.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   def exclusionSearchFormWithNino[A](implicit request: Request[A]): Form[NinoForm] = Form(
@@ -201,7 +201,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
   val individualSelectionForm: Form[ExclusionNino] = Form(
     mapping(
       "individualNino" -> nonEmptyText
-    )(ExclusionNino.apply)(ExclusionNino.unapply)
+    )(ExclusionNino.apply)(o => Some(o.nino))
   )
 
   val removalReasonForm: Form[BinaryRadioButtonWithDesc] = {
@@ -210,7 +210,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
       mapping(
         "selectionValue" -> text.verifying(noReasonError, selectionValue => selectionValue.trim.nonEmpty),
         "info"           -> optional(text)
-      )(BinaryRadioButtonWithDesc.apply)(BinaryRadioButtonWithDesc.unapply)
+      )(BinaryRadioButtonWithDesc.apply)(o => Some(Tuple.fromProductTyped(o)))
     )
 
   }
@@ -221,10 +221,10 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
         "otherReason" -> text
           .verifying("RemoveBenefits.other.error.required", _.trim.nonEmpty)
           .verifying("RemoveBenefits.other.error.length", _.length <= maxLength)
-      )(OtherReason.apply)(OtherReason.unapply)
+      )(OtherReason.apply)(o => Some(o.reason))
     )
 
   val selectYearForm: Form[SelectYear] =
-    Form(mapping("year" -> nonEmptyText)(SelectYear.apply)(SelectYear.unapply))
+    Form(mapping("year" -> nonEmptyText)(SelectYear.apply)(o => Some(o.year)))
 
 }

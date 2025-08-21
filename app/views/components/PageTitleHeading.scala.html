@@ -16,7 +16,7 @@
 
 @this()
 
-@(title: String)(implicit request: AuthenticatedRequest[_], messages: Messages)
+@(title: String)(implicit request: AuthenticatedRequest[?], messages: Messages)
 
 <div id="heading">
     @if(request.clientName.isDefined){

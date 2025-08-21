@@ -14,16 +14,13 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
-
 @import views.templatemodels.PageTitle
 
 @this(
-        govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
+        govukLayoutWrapper: GovukLayoutWrapper
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[?], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("Service.notEnrolled.title")), showBackLink = false) {
     <h1 id="title" class="govuk-heading-xl">@messages("Service.notEnrolled.title")</h1>

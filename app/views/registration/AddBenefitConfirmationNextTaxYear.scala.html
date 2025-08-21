@@ -25,7 +25,7 @@
         isCurrentYear: Boolean,
         taxYearRange:TaxYearRange,
         bikList: RegistrationList
-)(implicit request:AuthenticatedRequest[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}

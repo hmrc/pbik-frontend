@@ -38,7 +38,7 @@ class BikListService @Inject() (
 
   def getRegisteredBenefitsForYear(
     year: Int
-  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BenefitListResponse] =
+  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[?]): Future[BenefitListResponse] =
     tierConnector.getRegisteredBiks(request.empRef, year).flatMap { response =>
       val cy = controllersReferenceData.yearRange.cyminus1
       val ny = controllersReferenceData.yearRange.cy
@@ -52,10 +52,10 @@ class BikListService @Inject() (
       }
     }
 
-  def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BenefitListResponse] =
+  def currentYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[?]): Future[BenefitListResponse] =
     getRegisteredBenefitsForYear(controllersReferenceData.yearRange.cyminus1)
 
-  def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[BenefitListResponse] =
+  def nextYearList(implicit hc: HeaderCarrier, request: AuthenticatedRequest[?]): Future[BenefitListResponse] =
     getRegisteredBenefitsForYear(controllersReferenceData.yearRange.cy)
 
   // TODO need to refactor this method to propagate up Either or other error handling mechanism to the controller

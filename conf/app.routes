@@ -5,12 +5,12 @@ GET         /public/*file                                        controllers.Ass
 GET         /assets/*file                                        controllers.Assets.versioned(path="/public", file: Asset)
 
 ## Point old urls to new dashboard url
-GET         /                                                    controllers.RedirectController.redirectIfFromRoot
-GET         /start                                               controllers.RedirectController.redirectIfFromStart
+GET         /                                                    controllers.RedirectController.redirectIfFromRoot()
+GET         /start                                               controllers.RedirectController.redirectIfFromStart()
 GET         /select-year                                         controllers.StartPageController.selectYearPage
 POST        /select-year                                         controllers.StartPageController.submitSelectYearPage
-GET         /overview                                            controllers.RedirectController.redirectIfFromOldOverview
-GET         /payrolled-benefits-expenses                         controllers.RedirectController.redirectIfFromOldOverview
+GET         /overview                                            controllers.RedirectController.redirectIfFromOldOverview()
+GET         /payrolled-benefits-expenses                         controllers.RedirectController.redirectIfFromOldOverview()
 
 GET         /start-payrolling-benefits-expenses                  controllers.StartPageController.onPageLoad
 
@@ -32,13 +32,13 @@ GET         /cy1/choose-benefit-expense                          controllers.reg
 POST        /cy1/choose-benefit-expense                          controllers.registration.ManageRegistrationController.checkYourAnswersAddNextTaxYear
 
 GET         /cy1/check-the-benefits                             controllers.registration.ManageRegistrationController.showCheckYourAnswersAddNextTaxYear
-POST        /cy1/check-the-benefits                             controllers.registration.ManageRegistrationController.addNextYearRegisteredBenefitTypes
+POST        /cy1/check-the-benefits                             controllers.registration.ManageRegistrationController.addNextYearRegisteredBenefitTypes()
 
 GET         /cy/choose-benefit-expense                           controllers.registration.ManageRegistrationController.currentTaxYearOnPageLoad
 POST        /cy/choose-benefit-expense                           controllers.registration.ManageRegistrationController.checkYourAnswersAddCurrentTaxYear
 
 GET         /cy/check-the-benefits                              controllers.registration.ManageRegistrationController.showCheckYourAnswersAddCurrentTaxYear
-POST        /cy/check-the-benefits                              controllers.registration.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes
+POST        /cy/check-the-benefits                              controllers.registration.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes()
 
 GET         /:year/registration-complete                         controllers.WhatNextPageController.showWhatNextRegisteredBik(year: String)
 

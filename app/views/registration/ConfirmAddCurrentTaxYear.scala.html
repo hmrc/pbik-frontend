@@ -14,20 +14,17 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
-
 @import views.templatemodels.PageTitle
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
         formWithCSRF: FormWithCSRF
 )
 
 @(
         bikForm:Form[RegistrationList],
         taxYearRange:TaxYearRange
-)(implicit request:Request[_], messages: Messages)
+)(implicit request:Request[?], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("AddBenefits.Confirm.Multiple.Title"))) {
 
@@ -37,7 +34,7 @@
     </h1>
 
     <div class="data">
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes) {
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.updateCurrentYearRegisteredBenefitTypes()) {
 
             <dl class="govuk-summary-list">
                 @for(item <- bikForm.value.get.active.indices) {

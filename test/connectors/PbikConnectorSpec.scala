@@ -46,7 +46,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
   private val connector: PbikConnector                                   = new PbikConnector(mockHttpClient, pbikAppConfig)
   private val fakeResponse: HttpResponse                                 = HttpResponse(OK, "")
   private val employerOptimisticLockResponse                             = 0
-  private def benefitListUpdateRequest(request: AuthenticatedRequest[_]) = BenefitListUpdateRequest(
+  private def benefitListUpdateRequest(request: AuthenticatedRequest[?]) = BenefitListUpdateRequest(
     List(
       BenefitInKindRequest(IabdType.CarBenefit, PbikAction.ReinstatePayrolledBenefitInKind, request.isAgent),
       BenefitInKindRequest(IabdType.VanFuelBenefit, PbikAction.RemovePayrolledBenefitInKind, request.isAgent)
@@ -59,9 +59,9 @@ class PbikConnectorSpec extends FakePBIKApplication {
   private val iabdType                                                   = IabdType.PaymentsOnEmployeeBehalf
   private val benefitTypes                                               = BenefitTypes(Set(IabdType.CarBenefit, IabdType.VanFuelBenefit))
   implicit val hc: HeaderCarrier                                         = HeaderCarrier()
-  implicit val authenticatedRequestOrg: AuthenticatedRequest[_]          =
+  implicit val authenticatedRequestOrg: AuthenticatedRequest[?]          =
     AuthenticatedRequest[Any](empRef, Some("username"), request, None)
-  private val authenticatedRequestAgent: AuthenticatedRequest[_]         =
+  private val authenticatedRequestAgent: AuthenticatedRequest[?]         =
     AuthenticatedRequest[Any](empRef, Some("username"), request, agentClient)
   private val listBikWithCount                                           = benefitTypes.pbikTypes
     .map(benefitType =>
@@ -119,19 +119,19 @@ class PbikConnectorSpec extends FakePBIKApplication {
     builder: RequestBuilder,
     expectedResponse: Future[HttpResponse]
   ): OngoingStubbing[Future[HttpResponse]] =
-    when(builder.execute(any[HttpReads[HttpResponse]], any())).thenReturn(expectedResponse)
+    when(builder.execute(using any[HttpReads[HttpResponse]], any())).thenReturn(expectedResponse)
 
   def mockGetEndpoint(expectedResponse: Future[HttpResponse]): OngoingStubbing[Future[HttpResponse]] =
     mockExecute(mockRequestBuilderGet, expectedResponse)
 
   def mockPostEndpoint(expectedResponse: Future[HttpResponse]): OngoingStubbing[RequestBuilder] = {
     mockExecute(mockRequestBuilderPost, expectedResponse)
-    when(mockRequestBuilderPost.withBody(any())(any(), any(), any())).thenReturn(mockRequestBuilderPost)
+    when(mockRequestBuilderPost.withBody(any())(using any(), any(), any())).thenReturn(mockRequestBuilderPost)
   }
 
   def mockDeleteEndpoint(expectedResponse: Future[HttpResponse]): OngoingStubbing[RequestBuilder] = {
     mockExecute(mockRequestBuilderDelete, expectedResponse)
-    when(mockRequestBuilderDelete.withBody(any())(any(), any(), any())).thenReturn(mockRequestBuilderDelete)
+    when(mockRequestBuilderDelete.withBody(any())(using any(), any(), any())).thenReturn(mockRequestBuilderDelete)
   }
 
   override def beforeEach(): Unit = {

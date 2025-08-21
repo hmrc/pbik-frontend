@@ -17,7 +17,7 @@
 package models.v1.exclusion
 
 import base.FakePBIKApplication
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 
 class PbikExclusionPersonSpec extends FakePBIKApplication {
 
@@ -62,6 +62,28 @@ class PbikExclusionPersonSpec extends FakePBIKApplication {
       val parsed = json.as[PbikExclusionPerson]
 
       parsed mustBe original
+    }
+
+    "fail to deserialize when nationalInsuranceNumber is missing" in {
+      val invalidJson =
+        """
+          |{
+          |  "firstForename": "John",
+          |  "surname": "Doe",
+          |  "optimisticLock": 1
+          |}
+          |""".stripMargin
+
+      val result = Json.fromJson[PbikExclusionPerson](Json.parse(invalidJson))
+
+      result.isError mustBe true
+    }
+
+    "fail to deserialize when JSON is empty" in {
+      val emptyJson = Json.parse("{}")
+
+      val result = Json.fromJson[PbikExclusionPerson](emptyJson)
+      result.isError mustBe true
     }
   }
 

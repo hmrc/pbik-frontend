@@ -177,7 +177,7 @@ class ManageRegistrationController @Inject() (
     }
 
   private def showCheckYourAnswersRemoveNextTaxYear(iabdType: IabdType, form: Form[BinaryRadioButtonWithDesc])(implicit
-    request: AuthenticatedRequest[_]
+    request: AuthenticatedRequest[?]
   ): Future[Result] = {
     val bikToRemove = RegistrationItem(iabdType, active = true, enabled = true)
     sessionService.storeBikRemoved(RegistrationItem(iabdType, active = false, enabled = true))
@@ -408,7 +408,7 @@ class ManageRegistrationController @Inject() (
     year: Int,
     iabdTypes: List[IabdType],
     removeReason: Option[(String, Option[String])] = None
-  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Unit = {
+  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[?]): Unit = {
     val derivedMsg =
       if (additive) { "Benefit added to " + splunkLogger.taxYearToSpPeriod(year) }
       else {

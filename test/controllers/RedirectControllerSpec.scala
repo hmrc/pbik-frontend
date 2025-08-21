@@ -45,6 +45,6 @@ class RedirectControllerSpec extends FakePBIKApplication {
       ("redirectIfFromRoot", redirectController.redirectIfFromRoot()(fakeRequest))
     )
 
-    inputArgs.foreach(args => (test _).tupled(args))
+    inputArgs.foreach(args => test.tupled(args))
   }
 }
