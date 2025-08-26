@@ -14,22 +14,18 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
-
 @import views.templatemodels.PageTitle
 @import views.html.helper.CSPNonce
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
-        formWithCSRF: FormWithCSRF,
         pageTitleHeading: components.PageTitleHeading
 )
 
 @(
         iabdType: IabdType,
         taxYearRange:TaxYearRange
-)(implicit request:AuthenticatedRequest[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 

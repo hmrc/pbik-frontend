@@ -14,14 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
-
 @import views.templatemodels.PageTitle
 @import views.html.helper.CSPNonce
 
 @this(
-    govukLayoutWrapper: GovukLayoutWrapper,
-    config: PbikAppConfig,
+    govukLayoutWrapper: GovukLayoutWrapper
 )
 
 @(
@@ -32,7 +29,7 @@
         pageHeading: String ="An error has occurred",
         backLink: String= "overview",
         iabdType: Option[IabdType] = None
-)(implicit request:Request[_], messages: Messages)
+)(implicit request:Request[?], messages: Messages)
 
 @summaryLink = @{ if(isCurrentTaxYear == utils.FormMappingsConstants.CY) {routes.HomePageController.onPageLoadCY} else {routes.HomePageController.onPageLoadCY1} }
 

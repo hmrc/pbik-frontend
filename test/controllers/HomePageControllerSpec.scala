@@ -41,7 +41,7 @@ class HomePageControllerSpec extends FakePBIKApplication {
   private val mockConnector: PbikConnector       = mock(classOf[PbikConnector])
   private val mockBikListService: BikListService = mock(classOf[BikListService])
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
     .overrides(bind[PbikConnector].toInstance(mockConnector))
     .overrides(bind[BikListService].to(mockBikListService))
     .overrides(bind[SplunkLogger].to(classOf[TestSplunkLogger]))

@@ -25,7 +25,7 @@ class BindablesSpec extends FakePBIKApplication {
 
   "Bindables" when {
     ".pathBinder" should {
-      forAll(IabdType.values) { iabdType =>
+      forAll(IabdType.values.toSeq) { iabdType =>
         s"bind and unbind IabdType '${iabdType.toString}'" in {
           val result = pathBinder.bind("key", iabdType.id.toString)
           result mustBe Right(iabdType)
@@ -38,7 +38,7 @@ class BindablesSpec extends FakePBIKApplication {
         result mustBe Left(s"Invalid IabdType $invalidId")
       }
 
-      forAll(IabdType.values) { iabdType =>
+      forAll(IabdType.values.toSeq) { iabdType =>
         s"unbind an IabdType '${iabdType.toString}' to its id '${iabdType.id}'" in {
           val result = pathBinder.unbind("key", iabdType)
           result mustBe iabdType.id.toString

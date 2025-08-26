@@ -111,7 +111,7 @@ class ExclusionListController @Inject() (
     }
 
   def validateRequest(isCurrentYear: String, iabdType: IabdType)(implicit
-    request: AuthenticatedRequest[_]
+    request: AuthenticatedRequest[?]
   ): Future[Int] = {
     val year = taxDateUtils.mapYearStringToInt(isCurrentYear)
 
@@ -139,7 +139,7 @@ class ExclusionListController @Inject() (
     currentYearExclusions: List[PbikExclusionPerson],
     isRegisteredInTheNextYear: Boolean
   )(implicit
-    request: AuthenticatedRequest[_]
+    request: AuthenticatedRequest[?]
   ): Future[List[(PbikExclusionPerson, Boolean)]] = {
     val nextYear = taxDateUtils.mapYearStringToInt(utils.FormMappingsConstants.CYP1)
     if (isRegisteredInTheNextYear) {
@@ -157,7 +157,7 @@ class ExclusionListController @Inject() (
   private def isBenefitRegisteredForCYP1(
     iabdType: IabdType
   )(implicit
-    request: AuthenticatedRequest[_]
+    request: AuthenticatedRequest[?]
   ): Future[Boolean] = {
     val nextYear = taxDateUtils.mapYearStringToInt(utils.FormMappingsConstants.CYP1)
     bikListService
@@ -168,7 +168,7 @@ class ExclusionListController @Inject() (
   }
 
   private def showExcludedPage(isCurrentTaxYear: String, iabdType: IabdType, form: Form[MandatoryRadioButton])(implicit
-    request: AuthenticatedRequest[_]
+    request: AuthenticatedRequest[?]
   ): Future[Result] = {
 
     implicit val hc: HeaderCarrier =
@@ -217,7 +217,7 @@ class ExclusionListController @Inject() (
     }
 
   private def showWithOrWithoutNino(isCurrentTaxYear: String, iabdType: IabdType, form: Form[MandatoryRadioButton])(
-    implicit request: AuthenticatedRequest[_]
+    implicit request: AuthenticatedRequest[?]
   ): Future[Result] =
     if (exclusionsAllowed) {
       validateRequest(isCurrentTaxYear, iabdType).map { _ =>
@@ -321,7 +321,7 @@ class ExclusionListController @Inject() (
     isCurrentTaxYear: String,
     iabdType: IabdType,
     formType: String
-  )(implicit request: AuthenticatedRequest[_]): Future[Result] =
+  )(implicit request: AuthenticatedRequest[?]): Future[Result] =
     formMappings.exclusionSearchFormWithNino
       .bindFromRequest()
       .fold(
@@ -371,7 +371,7 @@ class ExclusionListController @Inject() (
     isCurrentTaxYear: String,
     iabdType: IabdType,
     formType: String
-  )(implicit request: AuthenticatedRequest[_]): Future[Result] =
+  )(implicit request: AuthenticatedRequest[?]): Future[Result] =
     formMappings.exclusionSearchFormWithoutNino
       .bindFromRequest()
       .fold(
@@ -465,7 +465,7 @@ class ExclusionListController @Inject() (
     formType: String,
     iabdType: IabdType,
     currentExclusions: List[TracePersonResponse]
-  )(implicit request: AuthenticatedRequest[_]): Result = {
+  )(implicit request: AuthenticatedRequest[?]): Result = {
     val uniqueListOfMatches: List[TracePersonResponse] =
       exclusionService.searchResultsRemoveAlreadyExcluded(currentExclusions, listOfMatches)
     uniqueListOfMatches.size match {
@@ -565,7 +565,7 @@ class ExclusionListController @Inject() (
     iabdType: IabdType,
     employerOptimisticLock: Int,
     excludedIndividual: Option[TracePersonResponse]
-  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[_]): Future[Result] = {
+  )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[?]): Future[Result] = {
     val yearInt = taxDateUtils.mapYearStringToInt(year)
 
     val requestExclusion: UpdateExclusionPersonForABenefitRequest = UpdateExclusionPersonForABenefitRequest(
@@ -605,7 +605,7 @@ class ExclusionListController @Inject() (
 
   private def auditExclusion(exclusion: Boolean, year: Int, employee: String, iabdType: IabdType)(implicit
     hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]
+    request: AuthenticatedRequest[?]
   ): Future[AuditResult] =
     splunkLogger.logSplunkEvent(
       splunkLogger.createDataEvent(
@@ -626,7 +626,7 @@ class ExclusionListController @Inject() (
       implicit val hc: HeaderCarrier =
         HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       if (exclusionsAllowed) {
-        val resultFuture = sessionService.fetchPbikSession().flatMap { session: Option[PbikSession] =>
+        val resultFuture = sessionService.fetchPbikSession().flatMap { (session: Option[PbikSession]) =>
           getExcludedPerson(session).fold {
             logger.error(
               "[ExclusionListController][updateExclusions] can not get excludedPerson, session data not filled"

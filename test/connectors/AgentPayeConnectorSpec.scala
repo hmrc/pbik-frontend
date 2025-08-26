@@ -50,7 +50,7 @@ class AgentPayeConnectorSpec extends FakePBIKApplication {
     builder: RequestBuilder,
     expectedResponse: Future[HttpResponse]
   ): OngoingStubbing[Future[HttpResponse]] =
-    when(builder.execute(any[HttpReads[HttpResponse]], any())).thenReturn(expectedResponse)
+    when(builder.execute(using any[HttpReads[HttpResponse]], any())).thenReturn(expectedResponse)
 
   def mockGetEndpoint(expectedResponse: Future[HttpResponse]): OngoingStubbing[Future[HttpResponse]] =
     mockExecute(mockRequestBuilderGet, expectedResponse)

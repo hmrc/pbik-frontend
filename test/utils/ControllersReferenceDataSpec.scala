@@ -20,8 +20,6 @@ import base.FakePBIKApplication
 import models.auth.AuthenticatedRequest
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.Injector
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContent, Result, Results}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.UpstreamErrorResponse

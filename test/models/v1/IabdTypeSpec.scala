@@ -18,6 +18,7 @@ package models.v1
 
 import base.FakePBIKApplication
 import models.v1.IabdType.IabdType
+import play.api.libs.json.Json
 
 class IabdTypeSpec extends FakePBIKApplication {
 
@@ -49,6 +50,27 @@ class IabdTypeSpec extends FakePBIKApplication {
 
       "have all mappings for existing iabd types" in {
         iabdInUrlParamValues.map(_._2) mustBe IabdType.values
+      }
+
+      "serialize and deserialize correctly" in {
+        val original = IabdType.CarBenefit
+        val json = Json.toJson(original)
+        val parsed = Json.parse(json.toString).as[IabdType.IabdType]
+
+        parsed mustBe original
+      }
+
+      "fail to deserialize when JSON is empty" in {
+        val emptyJson = Json.parse("{}")
+
+        val result = Json.fromJson[IabdType.IabdType](emptyJson)
+        result.isError mustBe true
+      }
+
+      "convert enum to correct URL param" in {
+        IabdType.CarBenefit.convertToUrlParam mustBe "Car-Benefit"
+        IabdType.Telephone.convertToUrlParam mustBe "Telephone"
+        IabdType.TravelAndSubsistence.convertToUrlParam mustBe "Travel-and-Subsistence"
       }
 
       iabdInUrlParamValues.foreach { tuple =>

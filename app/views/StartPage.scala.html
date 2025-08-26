@@ -18,7 +18,7 @@
 
 @this(govukLayoutWrapper: GovukLayoutWrapper, pageTitleHeading: components.PageTitleHeading)
 
-@()(implicit request: AuthenticatedRequest[_], messages: Messages)
+@()(implicit request: AuthenticatedRequest[?], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("StartPage.heading." + request.userType)), showBackLink = true) {
 

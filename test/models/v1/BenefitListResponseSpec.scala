@@ -17,6 +17,7 @@
 package models.v1
 
 import base.FakePBIKApplication
+import play.api.libs.json.Json
 
 class BenefitListResponseSpec extends FakePBIKApplication {
 
@@ -60,6 +61,26 @@ class BenefitListResponseSpec extends FakePBIKApplication {
         val deserialized                  = BenefitListResponse.reads.reads(json).get
 
         deserialized mustBe response
+      }
+
+      "fail to deserialize when currentEmployerOptimisticLock is missing" in {
+        val invalidJson =
+          """
+            |{
+            |  "pbikRegistrationDetailsList": []
+            |}
+            |""".stripMargin
+
+        val result = Json.fromJson[BenefitListResponse](Json.parse(invalidJson))
+
+        result.isError mustBe true
+      }
+
+      "fail to deserialize when JSON is empty" in {
+        val emptyJson = Json.parse("{}")
+
+        val result = Json.fromJson[BenefitListResponse](emptyJson)
+        result.isError mustBe true
       }
     }
   }

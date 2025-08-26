@@ -47,7 +47,7 @@ class NoSessionCheckActionSpec extends FakePBIKApplication {
         val request = createAuthenticatedRequest(FakeRequest("", ""))
 
         val result                                        = new Harness().callTransform(request)
-        val call: Either[Result, AuthenticatedRequest[_]] = Await.result(result, 5.seconds)
+        val call: Either[Result, AuthenticatedRequest[?]] = Await.result(result, 5.seconds)
         call match {
           case Left(callResult) =>
             val headers: Map[String, String] = callResult.header.headers

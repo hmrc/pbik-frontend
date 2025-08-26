@@ -14,14 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
-
 @import views.html.RepeatWithIndex
 @import views.templatemodels.{PageTitle, CheckboxId}
 
 @this(
     govukLayoutWrapper: GovukLayoutWrapper,
-    config:PbikAppConfig,
     repeatWithIndex: RepeatWithIndex,
     formWithCSRF: FormWithCSRF,
     pageTitleHeading: components.PageTitleHeading
@@ -34,7 +31,7 @@
     isExhausted: Boolean,
     nonLegislationBiks: Set[Int],
     decommissionedBiks: Set[Int]
-)(implicit request: AuthenticatedRequest[_], messages: Messages)
+)(implicit request: AuthenticatedRequest[?], messages: Messages)
 
 @title = @{if(additive) {messages("AddBenefits.Heading", "" + taxYearRange.cy, "" + taxYearRange.cyplus1)} else {messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)}}
 
@@ -92,11 +89,6 @@
                                         <input type="hidden" id='actives_@{index}_uid' name='actives[@index].uid' value='@activeField("uid").value.get'/>
                                         <input class="govuk-checkboxes__input" type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true" @if(activeField("uid").value.get == "47"){aria-describedby="actives[@index].hint"}/>
                                         <label class="govuk-label govuk-checkboxes__label" for="checkbox-@activeField("uid").value.get">@messages("BenefitInKind.label." + activeField("uid").value.get)</label>
-                                        @if(activeField("uid").value.get == "47") {
-                                            <div id="actives[@index].hint" class="govuk-hint govuk-checkboxes__hint">
-                                                @messages("BenefitInKind.hint." + activeField("uid").value.get)
-                                            </div>
-                                        }
                                     </div>
                                 }
                             }

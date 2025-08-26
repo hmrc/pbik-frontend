@@ -19,6 +19,7 @@ package views.exclusion
 import models.auth.AuthenticatedRequest
 import models.form.MandatoryRadioButton
 import models.v1.IabdType
+import models.v1.exclusion.PbikExclusionPerson
 import org.jsoup.Jsoup
 import play.api.data.Form
 import play.twirl.api.Html
@@ -35,7 +36,7 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
 
   private val iabdType = IabdType.Mileage
 
-  def viewWithForm(form: Form[MandatoryRadioButton])(implicit request: AuthenticatedRequest[_]): Html =
+  def viewWithForm(form: Form[MandatoryRadioButton])(implicit request: AuthenticatedRequest[?]): Html =
     exclusionOverviewView(taxYearRange, "cyp1", iabdType, List(), false, form)
 
   "exclusionOverview - organisation" must {
@@ -72,5 +73,30 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
       doc must haveErrorNotification(messages("ExclusionOverview.error.required"))
     }
 
+    "check the not registered next year message" in {
+      val dummyPerson             = PbikExclusionPerson(
+        nationalInsuranceNumber = "AB123456C",
+        firstForename = "John",
+        secondForename = None,
+        surname = "Doe",
+        worksPayrollNumber = Some("WPN123"),
+        optimisticLock = 1
+      )
+      val currentWithNextYearDate = List((dummyPerson, false))
+
+      val viewWithDummyData = exclusionOverviewView(
+        taxYearRange,
+        "cy",
+        iabdType,
+        currentWithNextYearDate,
+        false, // isRegisteredNextYear
+        form
+      )(organisationRequest)
+
+      val doc = Jsoup.parse(viewWithDummyData.toString)
+
+      val expectedMessage = messages("ExclusionOverview.p3.cy")
+      doc.select(".govuk-body").text must include(expectedMessage)
+    }
   }
 }

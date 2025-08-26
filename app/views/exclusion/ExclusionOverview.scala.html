@@ -33,7 +33,7 @@
         currentWithNextYearDate: List[(PbikExclusionPerson, Boolean)],
         isRegisteredNextYear: Boolean,
         form: Form[MandatoryRadioButton]
-)(implicit request:AuthenticatedRequest[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 

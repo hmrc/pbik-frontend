@@ -38,7 +38,7 @@ class BikListServiceSpec extends FakePBIKApplication {
 
   private val mockConnector = mock(classOf[PbikConnector])
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .overrides(bind[PbikConnector].toInstance(mockConnector))

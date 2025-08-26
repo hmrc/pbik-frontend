@@ -49,7 +49,7 @@ class RegistrationServiceSpec extends FakePBIKApplication {
       .map(n => BenefitInKindWithCount(n, 3))
       .filter(_.iabdType != IabdType.OtherItems)
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
     .overrides(bind[BikListService].toInstance(mockBikListService))

@@ -14,18 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
 @import utils.TaxDateUtils
-
-@import views.html.RepeatWithIndex
 @import views.templatemodels.PageTitle
-
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
         govukWarningText: GovukWarningText,
-        config:PbikAppConfig,
-        repeatWithIndex: RepeatWithIndex,
         formWithCSRF: FormWithCSRF,
         taxDateUtils: TaxDateUtils
 )
@@ -37,7 +31,7 @@
         listOfMatches: List[TracePersonResponse],
         listOfMatchesForm: Form[ExclusionNino],
         formType: String
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: Request[?], messages: Messages)
 
 @expenseOrBenefit = @{messages(s"BenefitInKind.label.${iabdType.id}")}
 @title = @{if(listOfMatches.length > 1){ messages("ExclusionSearch.title.multiple") } else { messages("ExclusionSearch.title.single") }}

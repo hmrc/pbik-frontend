@@ -45,6 +45,26 @@ class BenefitInKindWithCountSpec extends FakePBIKApplication {
 
         deserialized mustBe bik
       }
+
+      "fail to deserialize when iabdType is missing" in {
+        val invalidJson =
+          """
+            |{
+            |  "payrolledBenefitInKindExclusionCount": 5
+            |}
+            |""".stripMargin
+
+        val result = Json.fromJson[BenefitInKindWithCount](Json.parse(invalidJson))
+
+        result.isError mustBe true
+      }
+
+      "fail to deserialize when JSON is empty" in {
+        val emptyJson = Json.parse("{}")
+
+        val result = Json.fromJson[BenefitInKindWithCount](emptyJson)
+        result.isError mustBe true
+      }
     }
 
   }

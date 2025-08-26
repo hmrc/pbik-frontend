@@ -30,7 +30,7 @@ class CheckboxIdSpec extends PBIKViewSpec {
   val formMappings: FormMappings   = injected[FormMappings]
   val nextTaxYearView: NextTaxYear = injected[NextTaxYear]
 
-  def viewWithForm(form: Form[RegistrationList])(implicit request: AuthenticatedRequest[_]): Html =
+  def viewWithForm(form: Form[RegistrationList])(implicit request: AuthenticatedRequest[?]): Html =
     nextTaxYearView(form, additive = true, taxYearRange, isExhausted = false, Set.empty, Set.empty)
 
   "first" should {

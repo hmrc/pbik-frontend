@@ -19,13 +19,13 @@ package views
 import models.auth.AuthenticatedRequest
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
-import views.html.{Enrol, StartPage}
+import views.html.Enrol
 
 class EnrolPageViewSpec extends PBIKViewSpec {
 
   val enrolPageView: Enrol = injected[Enrol]
 
-  def view()(implicit request: AuthenticatedRequest[_]): Html = enrolPageView()
+  def view()(implicit request: AuthenticatedRequest[?]): Html = enrolPageView()
 
   "enrolPage - organisation" must {
     implicit val html: Html = view()(organisationRequest)

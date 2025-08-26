@@ -18,13 +18,14 @@ package connectors
 
 import config.PbikAppConfig
 import models.auth.AuthenticatedRequest
+import models.v1.*
 import models.v1.IabdType.IabdType
-import models.v1._
 import models.v1.exclusion.{PbikExclusionPersonWithBenefitRequest, PbikExclusions, UpdateExclusionPersonForABenefitRequest}
 import models.v1.trace.{TracePeopleByNinoRequest, TracePeopleByPersonalDetailsRequest, TracePersonListResponse}
 import play.api.Logging
 import play.api.http.Status.{BAD_REQUEST, OK, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
+import play.api.libs.ws.JsonBodyWritables.*
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -205,7 +206,7 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
 
   def updateOrganisationsRegisteredBiks(year: Int, payload: BenefitListUpdateRequest)(implicit
     hc: HeaderCarrier,
-    request: AuthenticatedRequest[_]
+    request: AuthenticatedRequest[?]
   ): Future[Int] = {
     val suffix        = if (request.isAgent) "agent" else "org"
     val payloadAsJson = Json.toJson(payload)

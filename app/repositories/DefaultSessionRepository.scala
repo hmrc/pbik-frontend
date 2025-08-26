@@ -43,7 +43,7 @@ class DefaultSessionRepository @Inject() (config: PbikAppConfig, mongo: MongoCom
           ascending("lastUpdated"),
           IndexOptions()
             .name("userAnswersExpiry")
-            .expireAfter(config.mongoTTL, TimeUnit.SECONDS)
+            .expireAfter(config.mongoTTL.toLong, TimeUnit.SECONDS)
         )
       )
     )

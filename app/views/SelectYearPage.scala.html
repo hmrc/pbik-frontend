@@ -22,7 +22,7 @@
     formWithCSRF: FormWithCSRF
 )
 
-@(taxYearRange: TaxYearRange, form: Form[SelectYear])(implicit request: AuthenticatedRequest[_], messages: Messages)
+@(taxYearRange: TaxYearRange, form: Form[SelectYear])(implicit request: AuthenticatedRequest[?], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("SelectYear.title"), form.hasErrors), showBackLink = true) {
 

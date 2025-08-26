@@ -25,7 +25,7 @@ class StartPageViewSpec extends PBIKViewSpec {
 
   val startPageView: StartPage = injected[StartPage]
 
-  def view()(implicit request: AuthenticatedRequest[_]): Html = startPageView()
+  def view()(implicit request: AuthenticatedRequest[?]): Html = startPageView()
 
   "startPage - organisation" must {
     implicit val html: Html = view()(organisationRequest)

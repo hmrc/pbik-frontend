@@ -19,6 +19,7 @@ package views.exclusion
 import models.auth.AuthenticatedRequest
 import models.form.NoNinoForm
 import models.v1.IabdType
+import org.jsoup.Jsoup
 import play.api.data.Form
 import play.twirl.api.Html
 import utils.FormMappings
@@ -32,7 +33,7 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   private val iabdType = IabdType.Mileage
 
-  private def viewWithForm(form: Form[NoNinoForm])(implicit request: AuthenticatedRequest[_]): Html =
+  private def viewWithForm(form: Form[NoNinoForm])(implicit request: AuthenticatedRequest[?]): Html =
     noNinoExclusionSearchFormView(taxYearRange, "cyp1", iabdType, form, alreadyExists = true)
 
   "NoNinoExclusionSearchView - organisation" must {
@@ -162,6 +163,19 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
       doc must haveErrorNotification(messages("error.invaliddate.future.year"))
       doc must haveErrorSummary(messages("error.required").replace(".", ""))
       doc must haveErrorNotification(messages("error.required"))
+    }
+
+    "show status error when status has errors" in {
+      val formWithError = formMappings.exclusionSearchFormWithoutNino(organisationRequest)
+        .withError("status", "error-status")
+        .withError("firstname", "error-firstname")
+
+      implicit def view: Html = viewWithForm(formWithError)(organisationRequest)
+
+      val doc = Jsoup.parse(view.toString)
+
+      doc must haveErrorSummary("error-firstname")
+      doc.select(".govuk-error-summary__list li").text must include("error-firstname")
     }
   }
 

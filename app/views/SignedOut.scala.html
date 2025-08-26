@@ -18,7 +18,7 @@
 
 @this(govukLayoutWrapper: GovukLayoutWrapper)
 
-@()(implicit request:Request[_], messages: Messages)
+@()(implicit request:Request[?], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("signedOut.title")), timeoutActive = false, signOut = false) {
 

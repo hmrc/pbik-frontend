@@ -15,7 +15,6 @@
  *@
 
 @import utils.BikListUtils
-@import utils.TaxDateUtils
 @import java.util.Calendar
 
 @import config.PbikAppConfig
@@ -24,7 +23,6 @@
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        taxDateUtils: TaxDateUtils,
         pbikAppConfig: PbikAppConfig,
         bikListUtils: BikListUtils,
         pageTitleHeading: components.PageTitleHeading
@@ -38,7 +36,7 @@
         serviceBiksCountCY: Int,
         serviceBiksCountCYP1: Int,
         showChangeYearLink: Boolean
-)(implicit request:AuthenticatedRequest[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @title = @{if(selectedYear == "cy" && registeredBenefitsCurrentYear.nonEmpty) {messages("Overview.benefitsManage.heading")} else {messages("Overview.benefitsRegistered.heading")}}
 @year = @{if(selectedYear == "cy"){ ""+taxYearRange.cy } else { ""+taxYearRange.cyminus1 }}

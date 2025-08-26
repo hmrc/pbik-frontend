@@ -1,4 +1,4 @@
-ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / scalaVersion := "3.6.4"
 ThisBuild / majorVersion := 9
 
 lazy val microservice = Project("pbik-frontend", file("."))
@@ -11,7 +11,8 @@ lazy val microservice = Project("pbik-frontend", file("."))
     scalacOptions ++= Seq(
       "-feature",
       "-Wconf:src=routes/.*:s",
-      "-Wconf:cat=unused-imports&src=views/.*:s"
+      "-Wconf:msg=Flag.*repeatedly:s",
+      "-Wconf:msg=unused import&src=html/.*:s"
     ),
     routesGenerator := InjectedRoutesGenerator,
     Assets / unmanagedResourceDirectories += baseDirectory.value / "app" / "assets",

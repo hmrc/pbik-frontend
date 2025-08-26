@@ -17,11 +17,10 @@
 @import views.templatemodels.PageTitle
 
 @this(
-    govukLayoutWrapper: GovukLayoutWrapper,
-    govukButton: GovukButton
+    govukLayoutWrapper: GovukLayoutWrapper
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[?], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("ErrorPage.title.individual")), showBackLink = false, signOut = false) {
 

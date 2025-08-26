@@ -23,7 +23,7 @@ import models.v1.exclusion.PbikExclusionPerson
 import models.v1.trace.TracePersonResponse
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import play.api.i18n.{Lang, Messages, MessagesApi}
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.AnyContentAsEmpty
 import play.twirl.api.Html
 

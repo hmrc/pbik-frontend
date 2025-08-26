@@ -14,14 +14,11 @@
  * limitations under the License.
  *@
 
-@import config.PbikAppConfig
-
 @import views.templatemodels.PageTitle
 @import views.html.helper.CSPNonce
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        config:PbikAppConfig,
         formWithCSRF: FormWithCSRF,
         pageTitleHeading: components.PageTitleHeading
 )
@@ -29,7 +26,7 @@
 @(
         bikList: RegistrationList,
         taxYearRange:TaxYearRange
-)(implicit request:AuthenticatedRequest[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("AddBenefits.Confirm.Multiple.Title"))) {
 
@@ -38,7 +35,7 @@
     <p class="govuk-body">@messages("AddBenefits.Confirm.Multiple.p." + request.userType, s"${taxYearRange.cy}")</p>
 
     <div class="data">
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes) {
+        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.addNextYearRegisteredBenefitTypes()) {
 
             <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">

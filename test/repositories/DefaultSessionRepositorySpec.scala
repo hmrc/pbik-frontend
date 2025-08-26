@@ -23,6 +23,7 @@ import models.v1.IabdType
 import org.mongodb.scala.model.Filters
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.mongo.MongoComponent
+import org.mongodb.scala.SingleObservableFuture
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

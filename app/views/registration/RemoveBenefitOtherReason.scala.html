@@ -29,7 +29,7 @@
 @(
     form: Form[OtherReason],
     iabdType: IabdType
-)(implicit request:AuthenticatedRequest[_], messages: Messages)
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
@@ -49,7 +49,7 @@
                 classes = "govuk-label--xl",
                 content = Text(messages("RemoveBenefits.other.heading", benefitLabel)),
                 attributes = Map("id" -> "title")),
-            errorMessage = form("otherReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("otherReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args*))))
         ))
 
         @govukButton(Button(

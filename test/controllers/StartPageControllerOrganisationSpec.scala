@@ -40,19 +40,18 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
 
   private val bikListService: BikListService = mock(classOf[BikListService])
 
-  override lazy val fakeApplication: Application = GuiceApplicationBuilder()
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
     .overrides(bind[NoSessionCheckAction].to(classOf[TestNoSessionCheckAction]))
     .overrides(bind[BikListService].to(bikListService))
     .build()
 
-  private val messages: Messages                                 = fakeApplication.injector.instanceOf[MessagesApi].preferred(Seq(lang))
-  private val cyMessages: Messages                               = fakeApplication.injector.instanceOf[MessagesApi].preferred(Seq(cyLang))
-  private val startPageController: StartPageController           = fakeApplication.injector.instanceOf[StartPageController]
-  private val formMappings: FormMappings                         = fakeApplication.injector.instanceOf[FormMappings]
-  private val controllersReferenceData: ControllersReferenceData =
-    fakeApplication.injector.instanceOf[ControllersReferenceData]
+  private val messages: Messages                                 = fakeApplication().injector.instanceOf[MessagesApi].preferred(Seq(lang))
+  private val cyMessages: Messages                               = fakeApplication().injector.instanceOf[MessagesApi].preferred(Seq(cyLang))
+  private val startPageController: StartPageController           = fakeApplication().injector.instanceOf[StartPageController]
+  private val formMappings: FormMappings                         = fakeApplication().injector.instanceOf[FormMappings]
+  private val controllersReferenceData: ControllersReferenceData = fakeApplication().injector.instanceOf[ControllersReferenceData]
   private val bikResponseWithBenefits                            = BenefitListResponse(
     Some(List(BenefitInKindWithCount(IabdType.CarBenefit, 0))),
     1
@@ -68,24 +67,24 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
   val organisationRequestWithCYForm: AuthenticatedRequest[AnyContentAsFormUrlEncoded]      = organisationRequest.copy(
     request = mockRequest
       .withFormUrlEncodedBody(
-        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CY)).data.toSeq: _*
+        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CY)).data.toSeq*
       )
   )
   val organisationRequestWithCY1Form: AuthenticatedRequest[AnyContentAsFormUrlEncoded]     = organisationRequest.copy(
     request = mockRequest
       .withFormUrlEncodedBody(
-        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CYP1)).data.toSeq: _*
+        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CYP1)).data.toSeq*
       )
   )
   val organisationRequestWithInvalidForm: AuthenticatedRequest[AnyContentAsFormUrlEncoded] = organisationRequest.copy(
     request = mockRequest
-      .withFormUrlEncodedBody(formMappings.selectYearForm.fill(SelectYear("invalid-year")).data.toSeq: _*)
+      .withFormUrlEncodedBody(formMappings.selectYearForm.fill(SelectYear("invalid-year")).data.toSeq*)
   )
 
   "StartPageController - organisation" when {
     ".onPageLoad" must {
       "return OK and the correct view for a GET - English" in {
-        val result = startPageController.onPageLoad().apply(organisationRequest)
+        val result = startPageController.onPageLoad.apply(organisationRequest)
 
         status(result) mustEqual OK
         contentAsString(result) must include(messages("StartPage.heading." + organisationRequest.userType))
@@ -93,7 +92,7 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
       }
 
       "return OK and the correct view for a GET - Welsh" in {
-        val result = startPageController.onPageLoad().apply(organisationRequestWelsh)
+        val result = startPageController.onPageLoad.apply(organisationRequestWelsh)
 
         status(result) mustEqual OK
         contentAsString(result) must include(cyMessages("StartPage.heading." + organisationRequestWelsh.userType))
@@ -104,7 +103,7 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
     ".selectYearPage" must {
       "return OK and the correct view for a GET - when CY data exists" in {
         when(bikListService.currentYearList(any(), any())).thenReturn(Future.successful(bikResponseWithBenefits))
-        val result = startPageController.selectYearPage().apply(organisationRequest)
+        val result = startPageController.selectYearPage.apply(organisationRequest)
 
         status(result) mustEqual OK
         contentAsString(result) must include(messages("SelectYear.heading"))
@@ -116,7 +115,7 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
 
       "return REDIRECT and the correct view for a GET - when no CY data" in {
         when(bikListService.currentYearList(any(), any())).thenReturn(Future.successful(bikResponseEmpty))
-        val result = startPageController.selectYearPage().apply(organisationRequest)
+        val result = startPageController.selectYearPage.apply(organisationRequest)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result) mustBe Some(routes.HomePageController.onPageLoadCY1.url)
@@ -125,7 +124,7 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
 
     ".submitSelectYearPage" must {
       "return OK and the correct view with error for a POST - when invalid form submit" in {
-        val result = startPageController.submitSelectYearPage().apply(organisationRequest)
+        val result = startPageController.submitSelectYearPage.apply(organisationRequest)
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) must include(messages("Service.errorSummary.heading"))
@@ -135,14 +134,14 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
       }
 
       "return REDIRECT and the correct view for a POST - when CY" in {
-        val result = startPageController.submitSelectYearPage().apply(organisationRequestWithCYForm)
+        val result = startPageController.submitSelectYearPage.apply(organisationRequestWithCYForm)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result) mustBe Some(routes.HomePageController.onPageLoadCY.url)
       }
 
       "return REDIRECT and the correct view for a POST - when CYP1" in {
-        val result = startPageController.submitSelectYearPage().apply(organisationRequestWithCY1Form)
+        val result = startPageController.submitSelectYearPage.apply(organisationRequestWithCY1Form)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result) mustBe Some(routes.HomePageController.onPageLoadCY1.url)
@@ -150,7 +149,7 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
 
       "return exception for a POST - when invalid tax year" in
         intercept[InvalidYearURIException] {
-          await(startPageController.submitSelectYearPage().apply(organisationRequestWithInvalidForm))
+          await(startPageController.submitSelectYearPage.apply(organisationRequestWithInvalidForm))
         }
     }
   }

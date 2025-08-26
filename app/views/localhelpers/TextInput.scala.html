@@ -23,7 +23,7 @@
 
 @elements = @{ new FieldElements(field.id, field, null, args.toMap, messages) }
 
-@value = @{ field.value match { case Some(x) => x case None => "" case x => x }}
+@value = @{ field.value.getOrElse("") }
 @hasErrors = @{ elements.errors.nonEmpty }
 @fieldName = @{ elements.field.name }
 @ariaDescribedByFields = @{

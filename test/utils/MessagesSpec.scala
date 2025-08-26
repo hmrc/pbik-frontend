@@ -19,12 +19,13 @@ package utils
 import base.FakePBIKApplication
 import play.api.Logging
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.test.Helpers.baseApplicationBuilder.injector
+import play.api.inject.Injector
 
 import scala.util.matching.Regex
 
 class MessagesSpec extends FakePBIKApplication with Logging {
 
+  private lazy val injector: Injector = app.injector
   private lazy val displayLine = "\n" + ("@" * 42) + "\n"
 
   implicit lazy val messages: Messages                  = messagesApi.preferred(Seq(lang, cyLang))
@@ -147,7 +148,7 @@ class MessagesSpec extends FakePBIKApplication with Logging {
   private def getExpectedMessages(languageCode: String) =
     messagesApi.messages.getOrElse(languageCode, throw new Exception(s"Missing messages for $languageCode"))
 
-  def messagesApi: MessagesApi = injector().instanceOf[MessagesApi]
+  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
   private def mismatchingKeys(defaultKeySet: Set[String], welshKeySet: Set[String]) = {
     val test1 =

@@ -32,7 +32,7 @@ object BenefitInKindWithCount {
     (
       (__ \ "iabdType").read[IabdType] and
         (__ \ "payrolledBenefitInKindExclusionCount").read[Int]
-    )(BenefitInKindWithCount.apply _)
+    )(BenefitInKindWithCount.apply)
   }
 
 }

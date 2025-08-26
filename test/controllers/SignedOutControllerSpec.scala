@@ -42,7 +42,7 @@ class SignedOutControllerSpec extends FakePBIKApplication {
     messagesActionBuilder,
     DefaultActionBuilder(stubBodyParser[AnyContent]()),
     cc.parsers,
-    fakeApplication.injector.instanceOf[MessagesApi],
+    fakeApplication().injector.instanceOf[MessagesApi],
     cc.langs,
     cc.fileMimeTypes,
     ec
@@ -104,7 +104,7 @@ class SignedOutControllerSpec extends FakePBIKApplication {
 
     "signedOut" must {
       "return OK" in {
-        status(signedOutController.signedOut().apply(fakeRequest)) mustBe OK
+        status(signedOutController.signedOut.apply(fakeRequest)) mustBe OK
       }
     }
 

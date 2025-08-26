@@ -30,7 +30,7 @@ class ConfirmUpdateNextTaxYearViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings                             = injected[FormMappings]
   val confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear = injected[ConfirmUpdateNextTaxYear]
 
-  def view(implicit request: AuthenticatedRequest[_]): Html = confirmUpdateNextTaxYearView(
+  def view(implicit request: AuthenticatedRequest[?]): Html = confirmUpdateNextTaxYearView(
     bikList,
     taxYearRange
   )

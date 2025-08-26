@@ -27,7 +27,7 @@ class SelectYearPageViewSpec extends PBIKViewSpec {
   private lazy val selectYearPageView: SelectYearPage = injected[SelectYearPage]
   private val formMappings: FormMappings              = injected[FormMappings]
 
-  def view()(implicit request: AuthenticatedRequest[_]): Html =
+  def view()(implicit request: AuthenticatedRequest[?]): Html =
     selectYearPageView(taxYearRange, formMappings.selectYearForm)
 
   "startPage - organisation" must {
