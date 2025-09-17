@@ -19,7 +19,6 @@ package models.v1
 import base.FakePBIKApplication
 import play.api.libs.json.Json
 
-
 class PbikActionSpec extends FakePBIKApplication {
 
   "PbikAction" should {

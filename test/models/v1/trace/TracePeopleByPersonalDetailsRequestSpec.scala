@@ -56,7 +56,7 @@ class TracePeopleByPersonalDetailsRequestSpec extends FakePBIKApplication {
 
         val result = Json.fromJson[TracePeopleByPersonalDetailsRequest](json)
         result.asEither match {
-          case Right(r) =>
+          case Right(r)     =>
             r.iabdType mustBe IabdType.CarBenefit
             r.firstForename mustBe Some("John")
             r.surname mustBe "Doe"

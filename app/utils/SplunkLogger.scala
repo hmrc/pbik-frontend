@@ -133,7 +133,7 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
       key_message      -> msg
     ) ++ entityIABD ++ entityNINO ++ entityRemoveReason ++ entityRemoveReasonDesc
 
-    DataEvent(auditSource = pbik_audit_source, auditType = derivedAuditType, detail = Map(entities*))
+    DataEvent(auditSource = pbik_audit_source, auditType = derivedAuditType, detail = Map(entities *))
   }
 
   /** Method creates a PBIK Specific Error which will be sent to splunk so product owners can get granularity on the

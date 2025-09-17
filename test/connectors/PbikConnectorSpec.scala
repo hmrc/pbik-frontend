@@ -18,20 +18,22 @@ package connectors
 
 import base.FakePBIKApplication
 import models.auth.AuthenticatedRequest
-import models.v1._
-import models.v1.exclusion._
+import models.v1.*
+import models.v1.exclusion.*
 import models.v1.trace.{TracePeopleByNinoRequest, TracePeopleByPersonalDetailsRequest, TracePersonListResponse, TracePersonResponse}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import org.mockito.stubbing.OngoingStubbing
-import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY}
-import play.api.libs.json._
+import play.api.http.Status.{BAD_REQUEST, CONFLICT, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY}
+import play.api.i18n.{Lang, MessagesApi}
+import play.api.libs.json.*
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import utils.Exceptions.GenericServerErrorException
+import play.api.http.HttpEntity.Strict
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -42,6 +44,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
   private val mockRequestBuilderGet: RequestBuilder    = mock(classOf[RequestBuilder])
   private val mockRequestBuilderPost: RequestBuilder   = mock(classOf[RequestBuilder])
   private val mockRequestBuilderDelete: RequestBuilder = mock(classOf[RequestBuilder])
+  private val mockMessagesApi: MessagesApi             = mock(classOf[MessagesApi])
 
   private val connector: PbikConnector                                   = new PbikConnector(mockHttpClient, pbikAppConfig)
   private val fakeResponse: HttpResponse                                 = HttpResponse(OK, "")
@@ -228,6 +231,22 @@ class PbikConnectorSpec extends FakePBIKApplication {
         intercept[GenericServerErrorException] {
           await(connector.getAllAvailableBiks(year))
         }
+      }
+
+      "return conflict status when CONFLICT (409) is returned" in {
+        val conflictResponse = buildFakeResponseWithBody("optimistic lock conflict", CONFLICT)
+        mockPostEndpoint(Future.successful(conflictResponse))
+
+        val result = await(
+          connector
+            .updateOrganisationsRegisteredBiks(year, benefitListUpdateRequest(authenticatedRequestAgent))(
+              hc,
+              authenticatedRequestAgent
+            )
+        )
+
+        result.header.status mustBe CONFLICT
+        result.body.asInstanceOf[Strict].data.utf8String mustBe "OPTIMISTIC_LOCK_CONFLICT"
       }
 
       "return an exception when INTERNAL_SERVER_ERROR" in {
@@ -429,25 +448,29 @@ class PbikConnectorSpec extends FakePBIKApplication {
       "return OK when successfully changing an organisations registered benefits" in {
         mockPostEndpoint(Future.successful(fakeResponse))
 
-        await(
+        val result = await(
           connector
             .updateOrganisationsRegisteredBiks(year, benefitListUpdateRequest(authenticatedRequestOrg))(
               hc,
               authenticatedRequestOrg
             )
-        ) mustBe OK
+        )
+
+        result.header.status mustBe OK
       }
 
       "return OK when successfully changing a agent registered benefits" in {
         mockPostEndpoint(Future.successful(fakeResponse))
 
-        await(
+        val result = await(
           connector
             .updateOrganisationsRegisteredBiks(year, benefitListUpdateRequest(authenticatedRequestAgent))(
               hc,
               authenticatedRequestAgent
             )
-        ) mustBe OK
+        )
+
+        result.header.status mustBe OK
       }
 
       "throw an exception when an error is received if http response status BAD_REQUEST" in {

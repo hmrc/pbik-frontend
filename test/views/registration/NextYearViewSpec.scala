@@ -30,7 +30,9 @@ class NextYearViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings   = injected[FormMappings]
   val nextTaxYearView: NextTaxYear = injected[NextTaxYear]
 
-  def viewWithForm(form: Form[RegistrationList], additive: Boolean = true, isExhausted: Boolean = false)(implicit request: AuthenticatedRequest[?]): Html =
+  def viewWithForm(form: Form[RegistrationList], additive: Boolean = true, isExhausted: Boolean = false)(implicit
+    request: AuthenticatedRequest[?]
+  ): Html =
     nextTaxYearView(form, additive = additive, taxYearRange, isExhausted = isExhausted, Set.empty, Set.empty)
 
   "nextYearPage - organisation" must {
@@ -56,18 +58,18 @@ class NextYearViewSpec extends PBIKViewSpec {
 
     "display exhausted panel when isExhausted is true" in {
       val view = viewWithForm(formMappings.objSelectedForm, isExhausted = true)(organisationRequest)
-      val doc = Jsoup.parse(view.toString)
+      val doc  = Jsoup.parse(view.toString)
 
       doc.select(".govuk-panel--confirmation").text must include(messages("ManagingRegistration.add.exhausted"))
     }
 
     "display hint for UID 47 when present and not excluded" in {
       val data = Map(
-        "actives[0].uid" -> "47",
+        "actives[0].uid"    -> "47",
         "actives[0].active" -> "true"
       )
       val view = viewWithForm(formMappings.objSelectedForm.bind(data))(organisationRequest)
-      val doc = Jsoup.parse(view.toString)
+      val doc  = Jsoup.parse(view.toString)
 
       doc.select("#actives\\[0\\]\\.hint").text must include(messages("BenefitInKind.hint.47"))
     }

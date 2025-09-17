@@ -52,8 +52,8 @@ class RemoveBenefitConfirmationNextTaxYearViewSpec extends PBIKViewSpec {
       val doc = Jsoup.parse(view(agentRequest).toString)
 
       doc.select(".govuk-summary-list__row").size() must be > 0
-      doc.text() must include(messages("Service.field.client.name"))
-      doc.text() must include(agentRequest.clientName.get)
+      doc.text()                                    must include(messages("Service.field.client.name"))
+      doc.text()                                    must include(agentRequest.clientName.get)
     }
 
     "NOT display agent-specific info when request.isAgent is false" in {
@@ -66,8 +66,8 @@ class RemoveBenefitConfirmationNextTaxYearViewSpec extends PBIKViewSpec {
       val doc = Jsoup.parse(view(organisationRequest).toString)
 
       doc.select(".govuk-panel.govuk-panel--confirmation").size() must be > 0
-      doc.text() must include(messages("whatNext.remove.heading"))
-      doc.text() must include(messages("BenefitInKind.label." + IabdType.MedicalInsurance.id))
+      doc.text()                                                  must include(messages("whatNext.remove.heading"))
+      doc.text()                                                  must include(messages("BenefitInKind.label." + IabdType.MedicalInsurance.id))
     }
 
   }

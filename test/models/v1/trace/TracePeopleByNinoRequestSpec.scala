@@ -53,7 +53,7 @@ class TracePeopleByNinoRequestSpec extends FakePBIKApplication {
 
         val result = Json.fromJson[TracePeopleByNinoRequest](json)
         result.asEither match {
-          case Right(r) =>
+          case Right(r)     =>
             r.iabdType mustBe IabdType.CarBenefit
             r.firstForename mustBe "John"
             r.surname mustBe "Doe"

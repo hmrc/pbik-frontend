@@ -51,7 +51,8 @@ class StartPageControllerAgentSpec extends FakePBIKApplication {
   private val cyMessages: Messages                               = fakeApplication().injector.instanceOf[MessagesApi].preferred(Seq(cyLang))
   private val startPageController: StartPageController           = fakeApplication().injector.instanceOf[StartPageController]
   private val formMappings: FormMappings                         = fakeApplication().injector.instanceOf[FormMappings]
-  private val controllersReferenceData: ControllersReferenceData = fakeApplication().injector.instanceOf[ControllersReferenceData]
+  private val controllersReferenceData: ControllersReferenceData =
+    fakeApplication().injector.instanceOf[ControllersReferenceData]
   private val bikResponseWithBenefits                            = BenefitListResponse(
     Some(List(BenefitInKindWithCount(IabdType.CarBenefit, 1))),
     13
@@ -67,18 +68,18 @@ class StartPageControllerAgentSpec extends FakePBIKApplication {
   val agentRequestWithCYForm: AuthenticatedRequest[AnyContentAsFormUrlEncoded]      = agentRequest.copy(
     request = mockRequest
       .withFormUrlEncodedBody(
-        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CY)).data.toSeq*
+        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CY)).data.toSeq *
       )
   )
   val agentRequestWithCY1Form: AuthenticatedRequest[AnyContentAsFormUrlEncoded]     = agentRequest.copy(
     request = mockRequest
       .withFormUrlEncodedBody(
-        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CYP1)).data.toSeq*
+        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CYP1)).data.toSeq *
       )
   )
   val agentRequestWithInvalidForm: AuthenticatedRequest[AnyContentAsFormUrlEncoded] = agentRequest.copy(
     request = mockRequest
-      .withFormUrlEncodedBody(formMappings.selectYearForm.fill(SelectYear("invalid-year")).data.toSeq*)
+      .withFormUrlEncodedBody(formMappings.selectYearForm.fill(SelectYear("invalid-year")).data.toSeq *)
   )
 
   "StartPageController - agent" when {

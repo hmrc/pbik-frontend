@@ -24,12 +24,12 @@ class NPSErrorsSpec extends FakePBIKApplication {
   "NPSErrors" should {
 
     "serialize and deserialize correctly" in {
-      val error1   = NPSError("Reason 1", "123")
-      val error2   = NPSError("Reason 2", "456")
-      val errors   = NPSErrors(Seq(error1, error2))
+      val error1 = NPSError("Reason 1", "123")
+      val error2 = NPSError("Reason 2", "456")
+      val errors = NPSErrors(Seq(error1, error2))
 
-      val json     = Json.toJson(errors)
-      val parsed   = Json.parse(json.toString).as[NPSErrors]
+      val json   = Json.toJson(errors)
+      val parsed = Json.parse(json.toString).as[NPSErrors]
 
       parsed mustBe errors
     }

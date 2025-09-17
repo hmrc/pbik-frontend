@@ -68,18 +68,18 @@ class ControllersReferenceData @Inject() (
   def responseCheckCYEnabled(
     staticDataRequest: Future[Result]
   )(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-      val errorCode = 10003
-      Future(
-        Forbidden(
-          errorPageView(
-            ControllersReferenceDataCodes.CY_RESTRICTED,
-            yearRange,
-            "",
-            errorCode
-          )
+    val errorCode = 10003
+    Future(
+      Forbidden(
+        errorPageView(
+          ControllersReferenceDataCodes.CY_RESTRICTED,
+          yearRange,
+          "",
+          errorCode
         )
       )
-    }
+    )
+  }
 
   def responseErrorHandler(
     staticDataRequest: Future[Result]

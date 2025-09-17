@@ -54,8 +54,8 @@ class IabdTypeSpec extends FakePBIKApplication {
 
       "serialize and deserialize correctly" in {
         val original = IabdType.CarBenefit
-        val json = Json.toJson(original)
-        val parsed = Json.parse(json.toString).as[IabdType.IabdType]
+        val json     = Json.toJson(original)
+        val parsed   = Json.parse(json.toString).as[IabdType.IabdType]
 
         parsed mustBe original
       }

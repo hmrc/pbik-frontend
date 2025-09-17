@@ -25,8 +25,8 @@ class BenefitTypesSpec extends FakePBIKApplication {
     "serialize to JSON and deserialize back correctly" in {
       val original = BenefitTypes(Set(IabdType.CarBenefit, IabdType.MedicalInsurance))
 
-      val json = Json.toJson(original)
-      val parsed = Json.parse(json.toString)
+      val json         = Json.toJson(original)
+      val parsed       = Json.parse(json.toString)
       val deserialized = parsed.as[BenefitTypes]
 
       deserialized mustBe original

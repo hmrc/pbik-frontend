@@ -23,7 +23,7 @@ import models.v1.IabdType.IabdType
 import models.v1.exclusion.{PbikExclusionPersonWithBenefitRequest, PbikExclusions, UpdateExclusionPersonForABenefitRequest}
 import models.v1.trace.{TracePeopleByNinoRequest, TracePeopleByPersonalDetailsRequest, TracePersonListResponse}
 import play.api.Logging
-import play.api.http.Status.{BAD_REQUEST, OK, UNPROCESSABLE_ENTITY}
+import play.api.http.Status.{BAD_REQUEST, CONFLICT, OK, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.libs.ws.JsonBodyWritables.*
 import uk.gov.hmrc.domain.EmpRef
@@ -31,12 +31,21 @@ import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.Exceptions.GenericServerErrorException
+import utils.{ControllersReferenceData, ControllersReferenceDataCodes, FormMappingsConstants, TaxDateUtils}
+import views.html.ErrorPage
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.Results.*
+import utils.ControllersReferenceDataCodes.*
+import play.api.mvc.Result
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(implicit ec: ExecutionContext)
+class PbikConnector @Inject() (
+  client: HttpClientV2,
+  config: PbikAppConfig
+)(implicit ec: ExecutionContext)
     extends Logging {
 
   def getRegisteredBiks(
@@ -207,7 +216,7 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
   def updateOrganisationsRegisteredBiks(year: Int, payload: BenefitListUpdateRequest)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[?]
-  ): Future[Int] = {
+  ): Future[Result] = {
     val suffix        = if (request.isAgent) "agent" else "org"
     val payloadAsJson = Json.toJson(payload)
 
@@ -222,11 +231,17 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
       .flatMap { response =>
         response.status match {
           case OK =>
-            Future.successful(response.status)
-          case _  =>
+            Future.successful(Ok("SUCCESS"))
+
+          case CONFLICT =>
+            logger.warn(
+              s"[PbikConnector][updateOrganisationsRegisteredBiks] Optimistic lock conflict from NPS, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
+            )
+            Future.successful(Conflict("OPTIMISTIC_LOCK_CONFLICT"))
+
+          case _ =>
             logger.error(
-              s"[PbikConnector][updateOrganisationsRegisteredBiks] Failed to update benefit list, status: ${response.status}, request body: ${payloadAsJson
-                  .toString()}, response body: ${response.body}"
+              s"[PbikConnector][updateOrganisationsRegisteredBiks] Failed to update benefit list, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
             )
             Future.failed(
               new GenericServerErrorException(

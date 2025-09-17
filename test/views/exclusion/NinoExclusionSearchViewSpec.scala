@@ -128,13 +128,14 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
     }
 
     "show status error when status has errors" in {
-      val formWithStatusError = formMappings.exclusionSearchFormWithNino(organisationRequest)
+      val formWithStatusError = formMappings
+        .exclusionSearchFormWithNino(organisationRequest)
         .withError("status", "error-status")
 
       implicit def view: Html = viewWithForm(formWithStatusError)(organisationRequest)
-      val doc = Jsoup.parse(view.toString)
+      val doc                 = Jsoup.parse(view.toString)
 
-      doc must haveErrorSummary("error-status")
+      doc                              must haveErrorSummary("error-status")
       doc.select("#error-list-1").text must include("error-status")
     }
   }

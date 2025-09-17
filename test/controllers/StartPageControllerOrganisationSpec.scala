@@ -51,7 +51,8 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
   private val cyMessages: Messages                               = fakeApplication().injector.instanceOf[MessagesApi].preferred(Seq(cyLang))
   private val startPageController: StartPageController           = fakeApplication().injector.instanceOf[StartPageController]
   private val formMappings: FormMappings                         = fakeApplication().injector.instanceOf[FormMappings]
-  private val controllersReferenceData: ControllersReferenceData = fakeApplication().injector.instanceOf[ControllersReferenceData]
+  private val controllersReferenceData: ControllersReferenceData =
+    fakeApplication().injector.instanceOf[ControllersReferenceData]
   private val bikResponseWithBenefits                            = BenefitListResponse(
     Some(List(BenefitInKindWithCount(IabdType.CarBenefit, 0))),
     1
@@ -67,18 +68,18 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
   val organisationRequestWithCYForm: AuthenticatedRequest[AnyContentAsFormUrlEncoded]      = organisationRequest.copy(
     request = mockRequest
       .withFormUrlEncodedBody(
-        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CY)).data.toSeq*
+        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CY)).data.toSeq *
       )
   )
   val organisationRequestWithCY1Form: AuthenticatedRequest[AnyContentAsFormUrlEncoded]     = organisationRequest.copy(
     request = mockRequest
       .withFormUrlEncodedBody(
-        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CYP1)).data.toSeq*
+        formMappings.selectYearForm.fill(SelectYear(FormMappingsConstants.CYP1)).data.toSeq *
       )
   )
   val organisationRequestWithInvalidForm: AuthenticatedRequest[AnyContentAsFormUrlEncoded] = organisationRequest.copy(
     request = mockRequest
-      .withFormUrlEncodedBody(formMappings.selectYearForm.fill(SelectYear("invalid-year")).data.toSeq*)
+      .withFormUrlEncodedBody(formMappings.selectYearForm.fill(SelectYear("invalid-year")).data.toSeq *)
   )
 
   "StartPageController - organisation" when {

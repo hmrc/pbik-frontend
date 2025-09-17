@@ -19,7 +19,6 @@ package models.v1.trace
 import base.FakePBIKApplication
 import play.api.libs.json.{JsValue, Json}
 
-
 class TracePersonListResponseSpec extends FakePBIKApplication {
 
   private val person1 = TracePersonResponse(
@@ -84,7 +83,7 @@ class TracePersonListResponseSpec extends FakePBIKApplication {
 
         val result = Json.fromJson[TracePersonListResponse](json)
         result.asEither match {
-          case Right(r) =>
+          case Right(r)     =>
             r.updatedEmployerOptimisticLock mustBe 10
             r.pbikExclusionList.size mustBe 2
             r.pbikExclusionList.head.nationalInsuranceNumber mustBe "AB123456C"

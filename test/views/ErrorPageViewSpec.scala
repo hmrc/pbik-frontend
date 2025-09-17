@@ -49,23 +49,29 @@ class ErrorPageViewSpec extends PBIKViewSpec {
     }
 
     "display the correct h1 for CY with code < 0" in {
-      val doc = Jsoup.parse(view(code = -1, isCurrentTaxYear = utils.FormMappingsConstants.CY)(organisationRequest).toString)
-      doc.select("h1#title").text must include(messages("An error has occurred", taxYearRange.cyminus1.toString, taxYearRange.cy.toString))
+      val doc =
+        Jsoup.parse(view(code = -1, isCurrentTaxYear = utils.FormMappingsConstants.CY)(organisationRequest).toString)
+      doc.select("h1#title").text must include(
+        messages("An error has occurred", taxYearRange.cyminus1.toString, taxYearRange.cy.toString)
+      )
     }
 
     "display the correct h1 for CYP1 with code < 0" in {
-      val doc = Jsoup.parse(view(code = -1, isCurrentTaxYear = utils.FormMappingsConstants.CYP1)(organisationRequest).toString)
-      doc.select("h1#title").text must include(messages("An error has occurred", taxYearRange.cy.toString, taxYearRange.cyplus1.toString))
+      val doc =
+        Jsoup.parse(view(code = -1, isCurrentTaxYear = utils.FormMappingsConstants.CYP1)(organisationRequest).toString)
+      doc.select("h1#title").text must include(
+        messages("An error has occurred", taxYearRange.cy.toString, taxYearRange.cyplus1.toString)
+      )
     }
 
     "display the correct body text for code with extra script" in {
       val doc = Jsoup.parse(view(63091)(organisationRequest).toString)
       doc.select("p.govuk-body-l").html must include(messages("ServiceMessage.63091"))
-      doc.select("script").size() must be > 0
+      doc.select("script").size()       must be > 0
     }
 
     "display back link for iabdType if provided" in {
-      val doc = Jsoup.parse(view(iabdType = Some(IabdType.MedicalInsurance))(organisationRequest).toString)
+      val doc  = Jsoup.parse(view(iabdType = Some(IabdType.MedicalInsurance))(organisationRequest).toString)
       val link = doc.select("a#link-exclusion-back")
       link.text must include(messages("Service.back.excluded"))
     }
@@ -76,11 +82,10 @@ class ErrorPageViewSpec extends PBIKViewSpec {
     }
 
     "always display summary back link" in {
-      val doc = Jsoup.parse(view()(organisationRequest).toString)
+      val doc  = Jsoup.parse(view()(organisationRequest).toString)
       val link = doc.select("a#link-back-summary")
       link.text must include(messages("Service.back.overview"))
     }
-
 
   }
 
