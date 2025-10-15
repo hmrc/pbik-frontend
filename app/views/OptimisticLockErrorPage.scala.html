@@ -1,0 +1,42 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import play.api.i18n.Messages
+@import play.api.mvc.RequestHeader
+@import views.templatemodels.PageTitle
+
+@this(govukLayoutWrapper: GovukLayoutWrapper)
+
+@(isCurrentTaxYear: Boolean)(implicit messages: Messages, request: RequestHeader)
+
+@summaryLink = @{
+    if(isCurrentTaxYear){
+        routes.HomePageController.onPageLoadCY
+    } else {
+        routes.HomePageController.onPageLoadCY1
+    }
+}
+
+@govukLayoutWrapper(PageTitle(messages("Service.title"))) {
+    <h1 id="title" class="govuk-heading-xl">@messages("ErrorPage.optimisticLock.header")</h1>
+    <p class="govuk-body">@messages("ErrorPage.optimisticLock.paragraph1")</p>
+    <p class="govuk-body">
+        @messages("ErrorPage.optimisticLock.paragraph2.beforeLink")
+        <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("ErrorPage.optimisticLock.returnLink") </a>
+        @messages("ErrorPage.optimisticLock.paragraph2.afterLink")
+    </p>
+
+}

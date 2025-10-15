@@ -24,16 +24,15 @@ import models.v1.trace.{TracePeopleByNinoRequest, TracePeopleByPersonalDetailsRe
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, reset, when}
 import org.mockito.stubbing.OngoingStubbing
-import play.api.http.Status.{BAD_REQUEST, CONFLICT, INTERNAL_SERVER_ERROR, OK, UNPROCESSABLE_ENTITY}
-import play.api.i18n.{Lang, MessagesApi}
+import play.api.http.Status.*
+import play.api.i18n.MessagesApi
 import play.api.libs.json.*
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
-import utils.Exceptions.GenericServerErrorException
-import play.api.http.HttpEntity.Strict
+import utils.Exceptions.{GenericServerErrorException, OptimisticLockConflictException}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -237,16 +236,17 @@ class PbikConnectorSpec extends FakePBIKApplication {
         val conflictResponse = buildFakeResponseWithBody("optimistic lock conflict", CONFLICT)
         mockPostEndpoint(Future.successful(conflictResponse))
 
-        val result = await(
-          connector
-            .updateOrganisationsRegisteredBiks(year, benefitListUpdateRequest(authenticatedRequestAgent))(
-              hc,
-              authenticatedRequestAgent
-            )
-        )
+        val result = intercept[OptimisticLockConflictException] {
+          await(
+            connector
+              .updateOrganisationsRegisteredBiks(year, benefitListUpdateRequest(authenticatedRequestAgent))(
+                hc,
+                authenticatedRequestAgent
+              )
+          )
+        }
 
-        result.header.status mustBe CONFLICT
-        result.body.asInstanceOf[Strict].data.utf8String mustBe "OPTIMISTIC_LOCK_CONFLICT"
+        result.message mustBe s"Optimistic lock conflict from NPS, status: $CONFLICT"
       }
 
       "return an exception when INTERNAL_SERVER_ERROR" in {

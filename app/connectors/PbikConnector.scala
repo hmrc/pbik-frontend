@@ -30,7 +30,7 @@ import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import utils.Exceptions.GenericServerErrorException
+import utils.Exceptions.{GenericServerErrorException, OptimisticLockConflictException}
 import utils.{ControllersReferenceData, ControllersReferenceDataCodes, FormMappingsConstants, TaxDateUtils}
 import views.html.ErrorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -237,9 +237,10 @@ class PbikConnector @Inject() (
             logger.warn(
               s"[PbikConnector][updateOrganisationsRegisteredBiks] Optimistic lock conflict from NPS, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
             )
-            Future.successful(Conflict("OPTIMISTIC_LOCK_CONFLICT"))
-
-          case _ =>
+            Future.failed(
+              new OptimisticLockConflictException(s"Optimistic lock conflict from NPS, status: 409", year)
+            )
+          case _        =>
             logger.error(
               s"[PbikConnector][updateOrganisationsRegisteredBiks] Failed to update benefit list, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
             )

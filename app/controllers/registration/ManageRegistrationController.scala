@@ -33,7 +33,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.*
-import utils.Exceptions.GenericServerErrorException
 import views.html.registration.*
 
 import javax.inject.{Inject, Singleton}
@@ -226,6 +225,12 @@ class ManageRegistrationController @Inject() (
         val bikToRemove = BenefitInKindRequest(bikId, PbikAction.RemovePayrolledBenefitInKind, request.isAgent)
         updateBiksFutureAction(controllersReferenceData.yearRange.cy, List(bikToRemove), additive = false)
       }
+      registeredFuture.map { result =>
+        println(s"TT - $result")
+        result
+      }
+
+      println(s"TT - [removeNextYearRegisteredBenefitTypes] registeredFuture: $registeredFuture")
       controllersReferenceData.responseErrorHandler(registeredFuture)
     }
 
@@ -297,7 +302,7 @@ class ManageRegistrationController @Inject() (
   ): Future[Result] = {
     logger.info(s"[updateBiksFutureAction] Starting - year: $year, additive: $additive, changes count: ${changes.size}")
 
-    bikListService
+    val actionFuture = bikListService
       .getRegisteredBenefitsForYear(year)
       .flatMap { registeredResponse =>
         logger.info(
@@ -410,10 +415,7 @@ class ManageRegistrationController @Inject() (
           }
         }
       }
-      .recover { case ex: Exception =>
-        logger.error(s"[updateBiksFutureAction] Exception caught: ${ex.getClass.getSimpleName}: ${ex.getMessage}", ex)
-        InternalServerError(s"An error occurred: ${ex.getMessage}")
-      }
+    controllersReferenceData.responseErrorHandler(actionFuture)
   }
 
   def removeBenefitReasonValidation(
