@@ -33,7 +33,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.Exceptions.{GenericServerErrorException, OptimisticLockConflictException}
 import play.api.mvc.Result
 import play.api.mvc.Results.*
-import utils.ControllersReferenceDataCodes.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
