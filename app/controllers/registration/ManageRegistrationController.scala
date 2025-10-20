@@ -318,7 +318,6 @@ class ManageRegistrationController @Inject() (
               _  = auditBikUpdate(additive = true, year, changes.map(_.iabdType))
             } yield Redirect(controllers.routes.WhatNextPageController.showWhatNextRegisteredBik(yearString))
           } else {
-            logger.info("[ManageRegistrationController][updateBiksFutureAction] Processing removal (additive=false)")
             formMappings.removalReasonForm
               .bindFromRequest()
               .fold(
