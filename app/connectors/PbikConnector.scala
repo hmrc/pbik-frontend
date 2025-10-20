@@ -31,12 +31,8 @@ import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import utils.Exceptions.{GenericServerErrorException, OptimisticLockConflictException}
-import utils.{ControllersReferenceData, ControllersReferenceDataCodes, FormMappingsConstants, TaxDateUtils}
-import views.html.ErrorPage
-import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Results.*
 import utils.ControllersReferenceDataCodes.*
-import play.api.mvc.Result
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
