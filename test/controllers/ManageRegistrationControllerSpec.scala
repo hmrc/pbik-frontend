@@ -23,8 +23,8 @@ import controllers.registration.ManageRegistrationController
 import models.*
 import models.auth.AuthenticatedRequest
 import models.form.{BinaryRadioButtonWithDesc, OtherReason}
-import models.v1.IabdType.IabdType
 import models.v1.*
+import models.v1.IabdType.IabdType
 import org.mockito.ArgumentMatchers.{any, anyInt}
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.Application
@@ -36,7 +36,7 @@ import play.api.mvc.Results.Ok
 import play.api.test.Helpers.*
 import services.SessionService
 import utils.*
-import utils.Exceptions.GenericServerErrorException
+import utils.Exceptions.{GenericServerErrorException, OptimisticLockConflictException}
 
 import scala.concurrent.Future
 
@@ -455,7 +455,14 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
     "return connector result for CONFLICT error statuses when adding next year benefits" in {
       when(mockConnector.updateOrganisationsRegisteredBiks(anyInt(), any)(any(), any[AuthenticatedRequest[?]]))
-        .thenReturn(Future.successful(Results.Conflict("OPTIMISTIC_LOCK_CONFLICT")))
+        .thenReturn(
+          Future.failed(
+            new OptimisticLockConflictException(
+              s"Optimistic lock conflict from NPS, status: 409",
+              controllersReferenceData.yearRange.cy
+            )
+          )
+        )
 
       val mockRegistrationList = RegistrationList(
         None,
@@ -490,7 +497,9 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
     "return connector result for other error statuses when adding next year benefits" in {
       when(mockConnector.updateOrganisationsRegisteredBiks(anyInt(), any)(any(), any[AuthenticatedRequest[?]]))
-        .thenReturn(Future.successful(Results.BadRequest("Some validation error")))
+        .thenReturn(
+          Future.failed(new GenericServerErrorException(s"Failed to update benefit list, status: $BAD_REQUEST"))
+        )
 
       val mockRegistrationList = RegistrationList(
         None,
@@ -520,12 +529,19 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
       val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
 
-      result.header.status mustBe BAD_REQUEST
+      result.header.status mustBe INTERNAL_SERVER_ERROR
     }
 
     "handle optimistic lock conflict when removing next year benefits" in {
       when(mockConnector.updateOrganisationsRegisteredBiks(anyInt(), any)(any(), any[AuthenticatedRequest[?]]))
-        .thenReturn(Future.successful(Results.Conflict("OPTIMISTIC_LOCK_CONFLICT")))
+        .thenReturn(
+          Future.failed(
+            new OptimisticLockConflictException(
+              s"Optimistic lock conflict from NPS, status: 409",
+              controllersReferenceData.yearRange.cy
+            )
+          )
+        )
 
       val year                                                            = controllersReferenceData.yearRange.cy
       val benefitInKindWithCount                                          = BenefitInKindWithCount(iabdType, 76)
@@ -541,7 +557,9 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
     "return connector result for other error statuses in benefit removal" in {
       when(mockConnector.updateOrganisationsRegisteredBiks(anyInt(), any)(any(), any[AuthenticatedRequest[?]]))
-        .thenReturn(Future.successful(Results.BadRequest("Some validation error")))
+        .thenReturn(
+          Future.failed(new GenericServerErrorException(s"Failed to update benefit list, status: $BAD_REQUEST"))
+        )
 
       val year                                                            = controllersReferenceData.yearRange.cy
       val benefitInKindWithCount                                          = BenefitInKindWithCount(iabdType, 76)
@@ -552,7 +570,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         registrationController.removeBenefitReasonValidation(reason, year, 12, benefitInKindWithCount, iabdType)
       )
 
-      result.header.status mustBe BAD_REQUEST
+      result.header.status mustBe INTERNAL_SERVER_ERROR
     }
 
     "handle exceptions in updateBiksFutureAction and return internal server error" in {

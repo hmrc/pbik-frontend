@@ -299,13 +299,7 @@ class ManageRegistrationController @Inject() (
     val actionFuture = bikListService
       .getRegisteredBenefitsForYear(year)
       .flatMap { registeredResponse =>
-        logger.info(
-          s"[updateBiksFutureAction] Got registered benefits for year $year, lock: ${registeredResponse.currentEmployerOptimisticLock}"
-        )
-
         sessionService.fetchPbikSession().flatMap { session =>
-          logger.info(s"[updateBiksFutureAction] Got session, session exists: ${session.isDefined}")
-
           if (additive) {
             // Process registration
             val payload = BenefitListUpdateRequest(
@@ -319,47 +313,10 @@ class ManageRegistrationController @Inject() (
               case yearRange.cyminus1 => utils.FormMappingsConstants.CY
             }
 
-            logger.info(
-              s"[ManageRegistrationController][updateBiksFutureAction] Created payload, yearString: $yearString, calling connector..."
-            )
-
             for {
-              connectorResult <- tierConnector.updateOrganisationsRegisteredBiks(year, payload)
-              _                =
-                logger.info(
-                  s"[ManageRegistrationController][updateBiksFutureAction] Got connector result, status: ${connectorResult.header.status}"
-                )
-              finalResult     <- connectorResult.header.status match {
-                                   case OK       =>
-                                     logger.info(
-                                       s"[ManageRegistrationController][updateBiksFutureAction] Success case - performing audit and redirecting to $yearString"
-                                     )
-                                     auditBikUpdate(additive = true, year, changes.map(_.iabdType))
-                                     val redirectResult = Redirect(
-                                       controllers.routes.WhatNextPageController.showWhatNextRegisteredBik(yearString)
-                                     )
-                                     logger.info(
-                                       s"[ManageRegistrationController][updateBiksFutureAction] Created redirect result: ${redirectResult.header.status}"
-                                     )
-                                     Future.successful(redirectResult)
-                                   case CONFLICT =>
-                                     logger.warn(
-                                       "[ManageRegistrationController][updateBiksFutureAction] Optimistic lock conflict detected"
-                                     )
-                                     logger.warn(s"Connector Result: $connectorResult")
-                                     Future.successful(connectorResult)
-                                   case _        =>
-                                     logger.warn(
-                                       s"[ManageRegistrationController][updateBiksFutureAction] Non-OK status: ${connectorResult.header.status}"
-                                     )
-                                     Future.successful(connectorResult)
-                                 }
-            } yield {
-              logger.info(
-                s"[ManageRegistrationController][updateBiksFutureAction] Yielding final result with status: ${finalResult.header.status}"
-              )
-              finalResult
-            }
+              _ <- tierConnector.updateOrganisationsRegisteredBiks(year, payload)
+              _  = auditBikUpdate(additive = true, year, changes.map(_.iabdType))
+            } yield Redirect(controllers.routes.WhatNextPageController.showWhatNextRegisteredBik(yearString))
           } else {
             logger.info("[ManageRegistrationController][updateBiksFutureAction] Processing removal (additive=false)")
             formMappings.removalReasonForm
@@ -375,8 +332,6 @@ class ManageRegistrationController @Inject() (
                 values =>
                   values.selectionValue match {
                     case ControllersReferenceDataCodes.OTHER =>
-                      logger
-                        .info("[ManageRegistrationController][updateBiksFutureAction] Redirecting to other reason page")
                       Future.successful(
                         Redirect(
                           routes.ManageRegistrationController.showRemoveBenefitOtherReason(
@@ -385,17 +340,12 @@ class ManageRegistrationController @Inject() (
                         )
                       )
                     case _                                   =>
-                      logger
-                        .info("[ManageRegistrationController][updateBiksFutureAction] Processing removal with reason")
                       val activeReg =
                         session.flatMap(_.getActiveRegistrationItems).getOrElse(List.empty[RegistrationItem])
 
                       val listWithReason =
                         RegistrationList(None, activeReg, reason = Some(values))
                       sessionService.storeRegistrationList(listWithReason).flatMap { _ =>
-                        logger.info(
-                          "[ManageRegistrationController][updateBiksFutureAction] Stored registration list, redirecting to confirm"
-                        )
                         Future.successful(
                           Redirect(
                             routes.ManageRegistrationController.showConfirmRemoveNextTaxYear(
@@ -438,26 +388,11 @@ class ManageRegistrationController @Inject() (
           case Some(info) => Some((reasonValue.selectionValue.toUpperCase, Some(info)))
           case _          => Some((reasonValue.selectionValue.toUpperCase, None))
         }
-        for {
-          connectorResult <- tierConnector.updateOrganisationsRegisteredBiks(year, payload)
-          finalResult     <- connectorResult.header.status match {
-                               case OK       =>
-                                 auditBikUpdate(
-                                   additive = false,
-                                   year,
-                                   List(benefitWithCount.iabdType),
-                                   reasonUserInfo
-                                 )
-                                 Future.successful(
-                                   Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik(iabdType))
-                                 )
-                               case CONFLICT =>
-                                 logger.warn("Optimistic lock conflict in benefit removal")
-                                 Future.successful(connectorResult)
-                               case _        =>
-                                 Future.successful(connectorResult)
-                             }
-        } yield finalResult
+        val eventualResult = for {
+          _ <- tierConnector.updateOrganisationsRegisteredBiks(year, payload)
+          _  = auditBikUpdate(additive = false, year, List(benefitWithCount.iabdType), reasonUserInfo)
+        } yield Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik(iabdType))
+        controllersReferenceData.responseErrorHandler(eventualResult)
       case _ =>
         logger.warn(
           s"[ManageRegistrationController][removeBenefitReasonValidation] Couldn't find reason from request form"
