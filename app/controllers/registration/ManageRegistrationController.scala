@@ -226,11 +226,9 @@ class ManageRegistrationController @Inject() (
         updateBiksFutureAction(controllersReferenceData.yearRange.cy, List(bikToRemove), additive = false)
       }
       registeredFuture.map { result =>
-        println(s"TT - $result")
         result
       }
 
-      println(s"TT - [removeNextYearRegisteredBenefitTypes] registeredFuture: $registeredFuture")
       controllersReferenceData.responseErrorHandler(registeredFuture)
     }
 
