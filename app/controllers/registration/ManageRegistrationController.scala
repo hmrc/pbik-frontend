@@ -225,7 +225,6 @@ class ManageRegistrationController @Inject() (
         val bikToRemove = BenefitInKindRequest(bikId, PbikAction.RemovePayrolledBenefitInKind, request.isAgent)
         updateBiksFutureAction(controllersReferenceData.yearRange.cy, List(bikToRemove), additive = false)
       }
-      // The following map was redundant and has been removed.
       controllersReferenceData.responseErrorHandler(registeredFuture)
     }
 
