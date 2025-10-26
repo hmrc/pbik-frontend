@@ -246,7 +246,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
           )
         }
 
-        result.message mustBe s"Optimistic lock conflict from NPS, status: $CONFLICT"
+        result.message mustBe s"[updateOrganisationsRegisteredBiks] Optimistic lock conflict from NPS, status: $CONFLICT"
       }
 
       "return an exception when INTERNAL_SERVER_ERROR" in {
@@ -386,6 +386,21 @@ class PbikConnectorSpec extends FakePBIKApplication {
         ) mustBe Left(npsErrors)
       }
 
+      "throw an exception when an error is received if http response status CONFLICT" in {
+        val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody("invalid json", CONFLICT)
+
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
+
+        val result = intercept[OptimisticLockConflictException] {
+          await(
+            connector
+              .excludeEiLPersonFromBik(empRef, year, updateExclusionPersonForABenefitRequest)
+          )
+        }
+
+        result.message mustBe s"[excludeEiLPersonFromBik] Optimistic lock conflict from NPS, status: $CONFLICT"
+      }
+
     }
 
     ".removeEiLPersonExclusionFromBik" must {
@@ -440,6 +455,21 @@ class PbikConnectorSpec extends FakePBIKApplication {
           connector
             .removeEiLPersonExclusionFromBik(iabdType, empRef, year, pbikExclusionPersonWithBenefitRequest)
         ) mustBe Left(npsErrors)
+      }
+
+      "throw an exception when an error is received if http response status CONFLICT" in {
+        val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody("invalid json", CONFLICT)
+
+        mockDeleteEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
+
+        val result = intercept[OptimisticLockConflictException] {
+          await(
+            connector
+              .removeEiLPersonExclusionFromBik(iabdType, empRef, year, pbikExclusionPersonWithBenefitRequest)
+          )
+        }
+
+        result.message mustBe s"[removeEiLPersonExclusionFromBik] Optimistic lock conflict from NPS, status: $CONFLICT"
       }
 
     }
@@ -556,6 +586,21 @@ class PbikConnectorSpec extends FakePBIKApplication {
             .findPersonByPersonalDetails(empRef, year, traceByPersonalDetailsRequest)
         ) mustBe Left(npsErrors)
       }
+
+      "throw an exception when an error is received if http response status CONFLICT" in {
+        val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody("invalid json", CONFLICT)
+
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
+
+        val result = intercept[OptimisticLockConflictException] {
+          await(
+            connector
+              .findPersonByPersonalDetails(empRef, year, traceByPersonalDetailsRequest)
+          )
+        }
+
+        result.message mustBe s"[findPerson] Optimistic lock conflict from NPS, status: $CONFLICT"
+      }
     }
 
     ".findPersonByNino" must {
@@ -625,6 +670,21 @@ class PbikConnectorSpec extends FakePBIKApplication {
           connector
             .findPersonByNino(empRef, year, traceByNinoRequest)
         ) mustBe Left(npsErrors)
+      }
+
+      "throw an exception when an error is received if http response status CONFLICT" in {
+        val fakeResponseWithPbikErrorCode = buildFakeResponseWithBody("CONFLICT", CONFLICT)
+
+        mockPostEndpoint(Future.successful(fakeResponseWithPbikErrorCode))
+
+        val result = intercept[OptimisticLockConflictException] {
+          await(
+            connector
+              .findPersonByNino(empRef, year, traceByNinoRequest)
+          )
+        }
+
+        result.message mustBe s"[findPerson] Optimistic lock conflict from NPS, status: $CONFLICT"
       }
     }
 
