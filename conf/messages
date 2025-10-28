@@ -432,7 +432,7 @@ ErrorPage.optimisticLock.header = There is a problem
 ErrorPage.optimisticLock.paragraph1 = Your changes have not been saved
 ErrorPage.optimisticLock.paragraph2.beforeLink = You can
 ErrorPage.optimisticLock.paragraph2.afterLink = to try again.
-ErrorPage.optimisticLock.returnLink = return to this year’s benefits and expenses
+ErrorPage.optimisticLock.returnLink = return to start page
 
 #*************************************************************
 # Error- validation messages
