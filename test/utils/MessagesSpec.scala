@@ -26,7 +26,7 @@ import scala.util.matching.Regex
 class MessagesSpec extends FakePBIKApplication with Logging {
 
   private lazy val injector: Injector = app.injector
-  private lazy val displayLine = "\n" + ("@" * 42) + "\n"
+  private lazy val displayLine        = "\n" + ("@" * 42) + "\n"
 
   implicit lazy val messages: Messages                  = messagesApi.preferred(Seq(lang, cyLang))
   private lazy val defaultMessages: Map[String, String] = getExpectedMessages("default")

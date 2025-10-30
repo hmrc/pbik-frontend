@@ -239,7 +239,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       val formData                                             =
         controllersReferenceData.binaryRadioButton.fill(MandatoryRadioButton(selectionValue))
       val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-        mockRequest.withFormUrlEncodedBody(formData.data.toSeq*)
+        mockRequest.withFormUrlEncodedBody(formData.data.toSeq *)
 
       s"loading the submitExcludedEmployees with valid form selecting $selectionValue" must {
         s"proceed to $page when value=$selectionValue and year=$year" in {
@@ -270,7 +270,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         cyp1
       )
     )
-    submitExcludedEmployeesInputArgs.foreach(args => (submitExcludedEmployeesTest).tupled(args))
+    submitExcludedEmployeesInputArgs.foreach(args => submitExcludedEmployeesTest.tupled(args))
 
     "loading the withOrWithoutNinoOnPageLoad" must {
       "show the page in order to make a decision" in {
@@ -319,7 +319,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       val formData                                             =
         controllersReferenceData.binaryRadioButton.fill(MandatoryRadioButton(selectionValue))
       val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-        mockRequest.withFormUrlEncodedBody(formData.data.toSeq*)
+        mockRequest.withFormUrlEncodedBody(formData.data.toSeq *)
 
       s"loading the withOrWithoutNinoDecision with valid form selecting $selectionValue" must {
         s"proceed to $page" in {
@@ -334,7 +334,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       ("nino", "nino form page", s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee"),
       ("no-nino", "no-nino form page", s"/payrollbik/cyp1/${iabdType.id}/no-nino/search-for-employee")
     )
-    withOrWithoutNinoDecisionArgs.foreach(args => (withOrWithoutNinoDecisionTest).tupled(args))
+    withOrWithoutNinoDecisionArgs.foreach(args => withOrWithoutNinoDecisionTest.tupled(args))
 
     "loading showExclusionSearchForm, an authorised user" must {
       def searchPersonTest(formType: String, titleKey: String, hintKey: String): Unit =
@@ -351,7 +351,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         ("nino", "ExclusionSearch.form.title", "Service.field.ninohint"),
         ("no-nino", "ExclusionSearch.form.title", s"/payrollbik/cyp1/${iabdType.id}/no-nino/search-for-employee")
       )
-      searchPersonTestArgs.foreach(args => (searchPersonTest).tupled(args))
+      searchPersonTestArgs.foreach(args => searchPersonTest.tupled(args))
 
       "see an error page if neither nino or no-nino are chosen" in {
         val formType = "nothing"
@@ -395,7 +395,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val formData                                                      =
           controllersReferenceData.exclusionSearchFormWithNino(request = mockRequest).fill(ninoSearchPerson)
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-          mockRequest.withFormUrlEncodedBody(formData.data.toSeq*)
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq *)
         val result                                                        =
           mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NINO)(
             formRequest
@@ -435,7 +435,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val formData                                                      =
           controllersReferenceData.exclusionSearchFormWithNino(request = mockRequest)
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-          mockRequest.withFormUrlEncodedBody(formData.data.toSeq*)
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq *)
         val result                                                        =
           mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NINO)(
             formRequest
@@ -475,7 +475,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val formData                                                      =
           controllersReferenceData.exclusionSearchFormWithoutNino(request = mockRequest)
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-          mockRequest.withFormUrlEncodedBody(formData.data.toSeq*)
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq *)
         val result                                                        =
           mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NONINO)(
             formRequest
@@ -511,7 +511,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val formData                                                      =
           controllersReferenceData.exclusionSearchFormWithNino(request = mockRequest).fill(ninoSearchPerson)
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-          mockRequest.withFormUrlEncodedBody(formData.data.toSeq*)
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq *)
         val result                                                        =
           mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NINO)(
             formRequest
@@ -547,7 +547,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val formData                                                      =
           controllersReferenceData.exclusionSearchFormWithoutNino(request = mockRequest).fill(noNinoForm)
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-          mockRequest.withFormUrlEncodedBody(formData.data.toSeq*)
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq *)
         val result                                                        =
           mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NONINO)(
             formRequest
@@ -588,7 +588,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val formData                                                      =
           controllersReferenceData.exclusionSearchFormWithoutNino(request = mockRequest).fill(noNinoSearchPerson)
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-          mockRequest.withFormUrlEncodedBody(formData.data.toSeq*)
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq *)
         val result                                                        =
           mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NONINO)(
             formRequest
@@ -629,7 +629,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val formData                                                      =
           controllersReferenceData.exclusionSearchFormWithoutNino(request = mockRequest).fill(noNinoSearchPerson)
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-          mockRequest.withFormUrlEncodedBody(formData.data.toSeq*)
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq *)
         val result                                                        =
           mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NONINO)(
             formRequest
@@ -670,7 +670,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val formData                                                      =
           controllersReferenceData.exclusionSearchFormWithoutNino(request = mockRequest).fill(noNinoSearchPerson)
         implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-          mockRequest.withFormUrlEncodedBody(formData.data.toSeq*)
+          mockRequest.withFormUrlEncodedBody(formData.data.toSeq *)
         val result                                                        =
           mockExclusionListController.searchResults(cyp1, iabdType, ControllersReferenceDataCodes.FORM_TYPE_NONINO)(
             formRequest

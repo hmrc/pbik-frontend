@@ -23,20 +23,25 @@ import models.v1.IabdType.IabdType
 import models.v1.exclusion.{PbikExclusionPersonWithBenefitRequest, PbikExclusions, UpdateExclusionPersonForABenefitRequest}
 import models.v1.trace.{TracePeopleByNinoRequest, TracePeopleByPersonalDetailsRequest, TracePersonListResponse}
 import play.api.Logging
-import play.api.http.Status.{BAD_REQUEST, OK, UNPROCESSABLE_ENTITY}
+import play.api.http.Status.{BAD_REQUEST, CONFLICT, OK, UNPROCESSABLE_ENTITY}
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
 import play.api.libs.ws.JsonBodyWritables.*
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import utils.Exceptions.GenericServerErrorException
+import utils.Exceptions.{GenericServerErrorException, OptimisticLockConflictException}
+import play.api.mvc.Result
+import play.api.mvc.Results.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(implicit ec: ExecutionContext)
+class PbikConnector @Inject() (
+  client: HttpClientV2,
+  config: PbikAppConfig
+)(implicit ec: ExecutionContext)
     extends Logging {
 
   def getRegisteredBiks(
@@ -139,15 +144,27 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
 
   def excludeEiLPersonFromBik(empRef: EmpRef, year: Int, body: UpdateExclusionPersonForABenefitRequest)(implicit
     hc: HeaderCarrier
-  ): Future[Either[NPSErrors, Int]] =
+  ): Future[Either[NPSErrors, Int]] = {
+    val payloadAsJson = Json.toJson(body)
+
     client
       .post(url"${config.getExcludedPersonsURL(empRef, year)}")
-      .withBody(Json.toJson(body))
+      .withBody(payloadAsJson)
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {
           case OK                   =>
             Future.successful(Right(response.status))
+          case CONFLICT             =>
+            logger.warn(
+              s"[PbikConnector][excludeEiLPersonFromBik] Optimistic lock conflict from NPS, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
+            )
+            Future.failed(
+              new OptimisticLockConflictException(
+                s"[excludeEiLPersonFromBik] Optimistic lock conflict from NPS, status: 409",
+                year
+              )
+            )
           case UNPROCESSABLE_ENTITY =>
             response.json.validate[NPSErrors] match {
               case JsSuccess(value, _) => Future.successful(Left(value))
@@ -166,6 +183,7 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
             )
         }
       }
+  }
 
   def removeEiLPersonExclusionFromBik(
     iabdType: IabdType,
@@ -181,6 +199,16 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
         response.status match {
           case OK                   =>
             Future.successful(Right(response.status))
+          case CONFLICT             =>
+            logger.warn(
+              s"[PbikConnector][removeEiLPersonExclusionFromBik] Optimistic lock conflict from NPS, status: ${response.status}, response body: ${response.body}"
+            )
+            Future.failed(
+              new OptimisticLockConflictException(
+                s"[removeEiLPersonExclusionFromBik] Optimistic lock conflict from NPS, status: 409",
+                year
+              )
+            )
           case UNPROCESSABLE_ENTITY =>
             response.json.validate[NPSErrors] match {
               case JsSuccess(value, _) => Future.successful(Left(value))
@@ -222,11 +250,21 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
       .flatMap { response =>
         response.status match {
           case OK =>
-            Future.successful(response.status)
-          case _  =>
+            Future.successful(OK)
+
+          case CONFLICT =>
+            logger.warn(
+              s"[PbikConnector][updateOrganisationsRegisteredBiks] Optimistic lock conflict from NPS, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
+            )
+            Future.failed(
+              new OptimisticLockConflictException(
+                s"[updateOrganisationsRegisteredBiks] Optimistic lock conflict from NPS, status: 409",
+                year
+              )
+            )
+          case _        =>
             logger.error(
-              s"[PbikConnector][updateOrganisationsRegisteredBiks] Failed to update benefit list, status: ${response.status}, request body: ${payloadAsJson
-                  .toString()}, response body: ${response.body}"
+              s"[PbikConnector][updateOrganisationsRegisteredBiks] Failed to update benefit list, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
             )
             Future.failed(
               new GenericServerErrorException(
@@ -260,6 +298,13 @@ class PbikConnector @Inject() (client: HttpClientV2, config: PbikAppConfig)(impl
                   )
                 )
             }
+          case CONFLICT             =>
+            logger.warn(
+              s"[PbikConnector][findPerson] Optimistic lock conflict from NPS, status: ${response.status}, request body: ${body.toString()}, response body: ${response.body}"
+            )
+            Future.failed(
+              new OptimisticLockConflictException(s"[findPerson] Optimistic lock conflict from NPS, status: 409", year)
+            )
           case UNPROCESSABLE_ENTITY =>
             logger.error(
               s"[PbikConnector][findPerson] Pbik error code was returned. status: ${response.status} error: ${response.body}"

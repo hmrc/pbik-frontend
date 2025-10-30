@@ -25,8 +25,8 @@ class EmployerOptimisticLockRequestSpec extends FakePBIKApplication {
     "serialize to JSON and deserialize back correctly" in {
       val original = EmployerOptimisticLockRequest(42)
 
-      val json = Json.toJson(original)
-      val parsed = Json.parse(json.toString)
+      val json         = Json.toJson(original)
+      val parsed       = Json.parse(json.toString)
       val deserialized = parsed.as[EmployerOptimisticLockRequest]
 
       deserialized mustBe original

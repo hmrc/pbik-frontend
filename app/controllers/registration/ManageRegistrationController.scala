@@ -19,21 +19,21 @@ package controllers.registration
 import config.PbikAppConfig
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models._
+import models.*
 import models.auth.AuthenticatedRequest
 import models.form.BinaryRadioButtonWithDesc
 import models.v1.IabdType.IabdType
-import models.v1._
+import models.v1.*
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import services.{BikListService, RegistrationService, SessionService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils._
-import views.html.registration._
+import utils.*
+import views.html.registration.*
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -293,17 +293,18 @@ class ManageRegistrationController @Inject() (
 
   def updateBiksFutureAction(year: Int, changes: List[BenefitInKindRequest], additive: Boolean)(implicit
     request: AuthenticatedRequest[AnyContent]
-  ): Future[Result] =
-    bikListService
+  ): Future[Result] = {
+    val actionFuture = bikListService
       .getRegisteredBenefitsForYear(year)
       .flatMap { registeredResponse =>
         sessionService.fetchPbikSession().flatMap { session =>
           if (additive) {
             // Process registration
-            val payload         = BenefitListUpdateRequest(
+            val payload = BenefitListUpdateRequest(
               changes,
               EmployerOptimisticLockRequest(registeredResponse.currentEmployerOptimisticLock)
             )
+
             lazy val yearRange  = controllersReferenceData.yearRange
             lazy val yearString = year match {
               case yearRange.cy       => utils.FormMappingsConstants.CYP1
@@ -315,7 +316,6 @@ class ManageRegistrationController @Inject() (
               _  = auditBikUpdate(additive = true, year, changes.map(_.iabdType))
             } yield Redirect(controllers.routes.WhatNextPageController.showWhatNextRegisteredBik(yearString))
           } else {
-            // Remove benefit - if there are no errors proceed
             formMappings.removalReasonForm
               .bindFromRequest()
               .fold(
@@ -356,6 +356,8 @@ class ManageRegistrationController @Inject() (
           }
         }
       }
+    controllersReferenceData.responseErrorHandler(actionFuture)
+  }
 
   def removeBenefitReasonValidation(
     reasonOption: Option[BinaryRadioButtonWithDesc],
@@ -383,15 +385,11 @@ class ManageRegistrationController @Inject() (
           case Some(info) => Some((reasonValue.selectionValue.toUpperCase, Some(info)))
           case _          => Some((reasonValue.selectionValue.toUpperCase, None))
         }
-        for {
+        val eventualResult = for {
           _ <- tierConnector.updateOrganisationsRegisteredBiks(year, payload)
-          _  = auditBikUpdate(
-                 additive = false,
-                 year,
-                 List(benefitWithCount.iabdType),
-                 reasonUserInfo
-               )
+          _  = auditBikUpdate(additive = false, year, List(benefitWithCount.iabdType), reasonUserInfo)
         } yield Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik(iabdType))
+        controllersReferenceData.responseErrorHandler(eventualResult)
       case _ =>
         logger.warn(
           s"[ManageRegistrationController][removeBenefitReasonValidation] Couldn't find reason from request form"

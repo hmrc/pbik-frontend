@@ -20,21 +20,23 @@ import base.FakePBIKApplication
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import controllers.registration.ManageRegistrationController
-import models._
+import models.*
 import models.auth.AuthenticatedRequest
 import models.form.{BinaryRadioButtonWithDesc, OtherReason}
+import models.v1.*
 import models.v1.IabdType.IabdType
-import models.v1._
 import org.mockito.ArgumentMatchers.{any, anyInt}
 import org.mockito.Mockito.{mock, reset, when}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject._
+import play.api.inject.*
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc._
-import play.api.test.Helpers._
+import play.api.mvc.*
+import play.api.mvc.Results.Ok
+import play.api.test.Helpers.*
 import services.SessionService
-import utils._
+import utils.*
+import utils.Exceptions.{GenericServerErrorException, OptimisticLockConflictException}
 
 import scala.concurrent.Future
 
@@ -127,7 +129,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           Some(BinaryRadioButtonWithDesc("software", None))
         )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq*)
+        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq *)
 
         val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
 
@@ -138,7 +140,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
         val mockRequestForm      = mockRequest
-          .withFormUrlEncodedBody(form.data.toSeq*)
+          .withFormUrlEncodedBody(form.data.toSeq *)
 
         val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
 
@@ -181,7 +183,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           Some(BinaryRadioButtonWithDesc("software", None))
         )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq*)
+        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq *)
 
         val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
 
@@ -193,7 +195,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
         val mockRequestForm      = mockRequest
-          .withFormUrlEncodedBody(form.data.toSeq*)
+          .withFormUrlEncodedBody(form.data.toSeq *)
 
         val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
 
@@ -280,7 +282,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
             )
           )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq*)
+        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.updateCurrentYearRegisteredBenefitTypes()(mockRequestForm)
 
         status(result) mustBe FORBIDDEN
@@ -312,7 +314,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
             )
           )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq*)
+        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm)
 
         status(result) mustBe SEE_OTHER
@@ -368,7 +370,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
               )
             val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc(selectionValue, None))
             val mockRequestForm      = mockRequest
-              .withFormUrlEncodedBody(form.data.toSeq*)
+              .withFormUrlEncodedBody(form.data.toSeq *)
             val result               = registrationController.removeNextYearRegisteredBenefitTypes(iabdType).apply(mockRequestForm)
 
             status(result) mustBe SEE_OTHER
@@ -403,7 +405,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           )
         val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("other", None))
         val mockRequestForm      = mockRequest
-          .withFormUrlEncodedBody(form.data.toSeq*)
+          .withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.removeNextYearRegisteredBenefitTypes(iabdType).apply(mockRequestForm)
 
         status(result) mustBe SEE_OTHER
@@ -449,6 +451,145 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
       status(resultSelection) mustBe OK
       contentAsString(resultSelection) must include(errorMsg)
+    }
+
+    "return connector result for CONFLICT error statuses when adding next year benefits" in {
+      when(mockConnector.updateOrganisationsRegisteredBiks(anyInt(), any)(any(), any[AuthenticatedRequest[?]]))
+        .thenReturn(
+          Future.failed(
+            new OptimisticLockConflictException(
+              s"Optimistic lock conflict from NPS, status: 409",
+              controllersReferenceData.yearRange.cy
+            )
+          )
+        )
+
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(RegistrationItem(iabdType, active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("software", None))
+      )
+      when(mockSessionService.fetchPbikSession()(any()))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                sessionId,
+                Some(mockRegistrationList),
+                Some(RegistrationItem(iabdType, active = true, enabled = true)),
+                None,
+                None,
+                None,
+                None,
+                None
+              )
+            )
+          )
+        )
+
+      val form            = formMappings.objSelectedForm.fill(mockRegistrationList)
+      val mockRequestForm = mockRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+
+      val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
+
+      result.header.status mustBe CONFLICT
+    }
+
+    "return connector result for other error statuses when adding next year benefits" in {
+      when(mockConnector.updateOrganisationsRegisteredBiks(anyInt(), any)(any(), any[AuthenticatedRequest[?]]))
+        .thenReturn(
+          Future.failed(new GenericServerErrorException(s"Failed to update benefit list, status: $BAD_REQUEST"))
+        )
+
+      val mockRegistrationList = RegistrationList(
+        None,
+        List(RegistrationItem(iabdType, active = true, enabled = true)),
+        Some(BinaryRadioButtonWithDesc("software", None))
+      )
+      when(mockSessionService.fetchPbikSession()(any()))
+        .thenReturn(
+          Future.successful(
+            Some(
+              PbikSession(
+                sessionId,
+                Some(mockRegistrationList),
+                Some(RegistrationItem(iabdType, active = true, enabled = true)),
+                None,
+                None,
+                None,
+                None,
+                None
+              )
+            )
+          )
+        )
+
+      val form            = formMappings.objSelectedForm.fill(mockRegistrationList)
+      val mockRequestForm = mockRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+
+      val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
+
+      result.header.status mustBe INTERNAL_SERVER_ERROR
+    }
+
+    "handle optimistic lock conflict when removing next year benefits" in {
+      when(mockConnector.updateOrganisationsRegisteredBiks(anyInt(), any)(any(), any[AuthenticatedRequest[?]]))
+        .thenReturn(
+          Future.failed(
+            new OptimisticLockConflictException(
+              s"Optimistic lock conflict from NPS, status: 409",
+              controllersReferenceData.yearRange.cy
+            )
+          )
+        )
+
+      val year                                                            = controllersReferenceData.yearRange.cy
+      val benefitInKindWithCount                                          = BenefitInKindWithCount(iabdType, 76)
+      val reason                                                          = Some(BinaryRadioButtonWithDesc("software", None))
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(mockRequest)
+
+      val result = await(
+        registrationController.removeBenefitReasonValidation(reason, year, 12, benefitInKindWithCount, iabdType)
+      )
+
+      result.header.status mustBe CONFLICT
+    }
+
+    "return connector result for other error statuses in benefit removal" in {
+      when(mockConnector.updateOrganisationsRegisteredBiks(anyInt(), any)(any(), any[AuthenticatedRequest[?]]))
+        .thenReturn(
+          Future.failed(new GenericServerErrorException(s"Failed to update benefit list, status: $BAD_REQUEST"))
+        )
+
+      val year                                                            = controllersReferenceData.yearRange.cy
+      val benefitInKindWithCount                                          = BenefitInKindWithCount(iabdType, 76)
+      val reason                                                          = Some(BinaryRadioButtonWithDesc("software", None))
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(mockRequest)
+
+      val result = await(
+        registrationController.removeBenefitReasonValidation(reason, year, 12, benefitInKindWithCount, iabdType)
+      )
+
+      result.header.status mustBe INTERNAL_SERVER_ERROR
+    }
+
+    "handle exceptions in updateBiksFutureAction and return internal server error" in {
+      // Mock sessionService to throw an exception instead
+      when(mockSessionService.fetchPbikSession()(any()))
+        .thenReturn(Future.failed(new RuntimeException("Service unavailable")))
+
+      val changes                                                         = List(BenefitInKindRequest(iabdType, PbikAction.ReinstatePayrolledBenefitInKind, false))
+      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(mockRequest)
+
+      val result = await(
+        registrationController.updateBiksFutureAction(
+          year = controllersReferenceData.yearRange.cy,
+          changes = changes,
+          additive = true
+        )
+      )
+
+      result.header.status mustBe INTERNAL_SERVER_ERROR
     }
 
     "loading the why-remove-benefit-expense, an unauthorised user" should {
@@ -515,7 +656,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           )
         val form                 = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
         val mockRequestForm      = mockRequest
-          .withFormUrlEncodedBody(form.data.toSeq*)
+          .withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
 
         status(result) mustBe SEE_OTHER
@@ -526,7 +667,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         val errorMsg        = messages("RemoveBenefits.other.error.required")
         val form            = formMappings.removalOtherReasonForm.fill(OtherReason(""))
         val mockRequestForm = mockRequest
-          .withFormUrlEncodedBody(form.data.toSeq*)
+          .withFormUrlEncodedBody(form.data.toSeq *)
         val result          = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
 
         status(result) mustBe BAD_REQUEST
@@ -539,7 +680,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           "this is a test other reason to remove the benefits, if user wants to remove the benefits from payroll"
         val form            = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
         val mockRequestForm = mockRequest
-          .withFormUrlEncodedBody(form.data.toSeq*)
+          .withFormUrlEncodedBody(form.data.toSeq *)
         val result          = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
 
         status(result) mustBe BAD_REQUEST

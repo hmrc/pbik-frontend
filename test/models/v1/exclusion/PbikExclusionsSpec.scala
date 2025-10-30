@@ -54,8 +54,7 @@ class PbikExclusionsSpec extends AnyWordSpec with Matchers {
     }
 
     "fail to deserialize when 'currentEmployerOptimisticLock' is missing" in {
-      val json = Json.parse(
-        """{
+      val json   = Json.parse("""{
           | "getPBIKExclusionList": []
           |}""".stripMargin)
       val result = Json.fromJson[PbikExclusions](json)
@@ -63,8 +62,7 @@ class PbikExclusionsSpec extends AnyWordSpec with Matchers {
     }
 
     "fail to deserialize when 'currentEmployerOptimisticLock' is null" in {
-      val json = Json.parse(
-        """{
+      val json   = Json.parse("""{
           | "currentEmployerOptimisticLock": null,
           | "getPBIKExclusionList": []
           |}""".stripMargin)

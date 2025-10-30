@@ -25,16 +25,17 @@ import utils.FormMappings
 import views.helper.PBIKViewSpec
 import views.html.registration.CurrentTaxYear
 
-
 class CurrentTaxYearSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings = injected[FormMappings]
+  val formMappings: FormMappings     = injected[FormMappings]
   val currentTaxYear: CurrentTaxYear = injected[CurrentTaxYear]
 
-  def viewWithForm(form: Form[RegistrationList], isExhausted: Boolean = false,
-                   nonLegislationBiks: Set[Int] = Set.empty,
-                   decommissionedBiks: Set[Int] = Set.empty)
-                  (implicit request: AuthenticatedRequest[?]): Html =
+  def viewWithForm(
+    form: Form[RegistrationList],
+    isExhausted: Boolean = false,
+    nonLegislationBiks: Set[Int] = Set.empty,
+    decommissionedBiks: Set[Int] = Set.empty
+  )(implicit request: AuthenticatedRequest[?]): Html =
     currentTaxYear(form, taxYearRange, isExhausted, nonLegislationBiks, decommissionedBiks)
 
   "currentTaxYear - organisation" must {
@@ -45,7 +46,7 @@ class CurrentTaxYearSpec extends PBIKViewSpec {
 
     "display error summary when no selection is made" in {
       val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))(organisationRequest)
-      val doc = Jsoup.parse(view.toString)
+      val doc  = Jsoup.parse(view.toString)
 
       doc must haveErrorSummary(messages("AddBenefits.noselection.error"))
       doc must haveErrorNotification(messages("AddBenefits.noselection.error"))
@@ -53,18 +54,18 @@ class CurrentTaxYearSpec extends PBIKViewSpec {
 
     "display exhausted panel when isExhausted is true" in {
       val view = viewWithForm(formMappings.objSelectedForm, isExhausted = true)(organisationRequest)
-      val doc = Jsoup.parse(view.toString)
+      val doc  = Jsoup.parse(view.toString)
 
       doc.select(".govuk-panel--confirmation").text must include(messages("ManagingRegistration.add.exhausted"))
     }
 
     "display hint for UID 47 when present and not excluded" in {
       val data = Map(
-        "actives[0].uid" -> "47",
+        "actives[0].uid"    -> "47",
         "actives[0].active" -> "true"
       )
       val view = viewWithForm(formMappings.objSelectedForm.bind(data))(organisationRequest)
-      val doc = Jsoup.parse(view.toString)
+      val doc  = Jsoup.parse(view.toString)
 
       doc.select("#actives\\[0\\]\\.hint").text must include(messages("BenefitInKind.hint.47"))
     }
@@ -78,7 +79,7 @@ class CurrentTaxYearSpec extends PBIKViewSpec {
 
     "display error summary when no selection is made" in {
       val view = viewWithForm(formMappings.objSelectedForm.bind(Map[String, String]()))(agentRequest)
-      val doc = Jsoup.parse(view.toString)
+      val doc  = Jsoup.parse(view.toString)
 
       doc must haveErrorSummary(messages("AddBenefits.noselection.error"))
       doc must haveErrorNotification(messages("AddBenefits.noselection.error"))

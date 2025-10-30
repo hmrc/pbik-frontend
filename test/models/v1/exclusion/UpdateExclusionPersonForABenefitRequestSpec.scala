@@ -63,7 +63,7 @@ class UpdateExclusionPersonForABenefitRequestSpec extends FakePBIKApplication {
 
         val result = Json.fromJson[UpdateExclusionPersonForABenefitRequest](json)
         result.asEither match {
-          case Right(req) =>
+          case Right(req)   =>
             req.currentEmployerOptimisticLock mustBe 42
             req.postPBIKExclusionDetails.nationalInsuranceNumber mustBe "AB123456C"
             req.postPBIKExclusionDetails.firstForename mustBe "John"

@@ -428,6 +428,12 @@ ErrorPage.signin.individual.l2 = To use this service you need to:
 ErrorPage.p1.individual = sign out
 ErrorPage.p2.individual = sign in with the Government Gateway user ID that you use to access the PAYE for employers online service
 
+ErrorPage.optimisticLock.header = There is a problem
+ErrorPage.optimisticLock.paragraph1 = Your changes have not been saved
+ErrorPage.optimisticLock.paragraph2.beforeLink = You can
+ErrorPage.optimisticLock.paragraph2.afterLink = to try again.
+ErrorPage.optimisticLock.returnLink = return to start page
+
 #*************************************************************
 # Error- validation messages
 #*************************************************************

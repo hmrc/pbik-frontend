@@ -58,8 +58,8 @@ class PbikExclusionPersonSpec extends FakePBIKApplication {
 
     "serialise and deserialise to/from JSON" in {
       val original = PbikExclusionPerson("AA123456A", "John", Some("Middle"), "Smith", Some("123"), 1)
-      val json = Json.toJson(original)
-      val parsed = json.as[PbikExclusionPerson]
+      val json     = Json.toJson(original)
+      val parsed   = json.as[PbikExclusionPerson]
 
       parsed mustBe original
     }

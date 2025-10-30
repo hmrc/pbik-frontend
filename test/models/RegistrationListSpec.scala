@@ -21,7 +21,6 @@ import models.form.BinaryRadioButtonWithDesc
 import models.v1.IabdType
 import play.api.libs.json.{JsValue, Json}
 
-
 class RegistrationListSpec extends FakePBIKApplication {
 
   private val item1: RegistrationItem = RegistrationItem(IabdType.CarBenefit, active = true, enabled = false)

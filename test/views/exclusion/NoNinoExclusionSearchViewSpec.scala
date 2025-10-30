@@ -166,7 +166,8 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
     }
 
     "show status error when status has errors" in {
-      val formWithError = formMappings.exclusionSearchFormWithoutNino(organisationRequest)
+      val formWithError = formMappings
+        .exclusionSearchFormWithoutNino(organisationRequest)
         .withError("status", "error-status")
         .withError("firstname", "error-firstname")
 
@@ -174,7 +175,7 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
 
       val doc = Jsoup.parse(view.toString)
 
-      doc must haveErrorSummary("error-firstname")
+      doc                                              must haveErrorSummary("error-firstname")
       doc.select(".govuk-error-summary__list li").text must include("error-firstname")
     }
   }

@@ -17,15 +17,15 @@
 package utils
 
 import config.PbikAppConfig
-import models._
+import models.*
 import models.auth.AuthenticatedRequest
 import play.api.Logging
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.Results._
+import play.api.mvc.Results.*
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeException, InvalidYearURIException}
-import views.html.{ErrorPage, MaintenancePage}
+import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeException, InvalidYearURIException, OptimisticLockConflictException}
+import views.html.{ErrorPage, MaintenancePage, OptimisticLockErrorPage}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,6 +55,7 @@ class ControllersReferenceData @Inject() (
   taxDateUtils: TaxDateUtils,
   override val messagesApi: MessagesApi,
   errorPageView: ErrorPage,
+  optimisticLockErrorPage: OptimisticLockErrorPage,
   maintenancePageView: MaintenancePage
 )(implicit
   ec: ExecutionContext,
@@ -68,18 +69,18 @@ class ControllersReferenceData @Inject() (
   def responseCheckCYEnabled(
     staticDataRequest: Future[Result]
   )(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-      val errorCode = 10003
-      Future(
-        Forbidden(
-          errorPageView(
-            ControllersReferenceDataCodes.CY_RESTRICTED,
-            yearRange,
-            "",
-            errorCode
-          )
+    val errorCode = 10003
+    Future(
+      Forbidden(
+        errorPageView(
+          ControllersReferenceDataCodes.CY_RESTRICTED,
+          yearRange,
+          "",
+          errorCode
         )
       )
-    }
+    )
+  }
 
   def responseErrorHandler(
     staticDataRequest: Future[Result]
@@ -114,7 +115,7 @@ class ControllersReferenceData @Inject() (
         )
         InternalServerError(maintenancePageView())
 
-      case e4: GenericServerErrorException =>
+      case e4: GenericServerErrorException     =>
         try {
           logger.warn(
             s"[ControllersReferenceData][responseErrorHandler] A GenericServerErrorException was handled: " +
@@ -143,11 +144,18 @@ class ControllersReferenceData @Inject() (
             )
             InternalServerError(maintenancePageView())
         }
-      case e5                              =>
+      case e5: OptimisticLockConflictException =>
         logger.warn(
-          s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e5.getMessage}. " +
+          s"[ControllersReferenceData][responseErrorHandler] An OptimisticLockConflictException was handled : $e5"
+        )
+        Conflict(
+          optimisticLockErrorPage(taxDateUtils.isCurrentTaxYear(e5.year))
+        )
+      case e6                                  =>
+        logger.warn(
+          s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e6.getMessage}. " +
             s"Showing default error page",
-          e5
+          e6
         )
         InternalServerError(maintenancePageView())
     }

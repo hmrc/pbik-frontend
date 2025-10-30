@@ -23,8 +23,8 @@ class SelectYearSpec extends FakePBIKApplication {
 
   "SelectYear" should {
     "serialize to JSON and back" in {
-      val original = SelectYear("2025")
-      val json = Json.toJson(original)
+      val original     = SelectYear("2025")
+      val json         = Json.toJson(original)
       val deserialized = json.as[SelectYear]
 
       deserialized mustBe original

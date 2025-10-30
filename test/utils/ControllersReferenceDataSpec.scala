@@ -21,9 +21,9 @@ import models.auth.AuthenticatedRequest
 import play.api.http.HttpEntity.Strict
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Result, Results}
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeException, InvalidYearURIException}
+import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeException, InvalidYearURIException, OptimisticLockConflictException}
 
 import scala.concurrent.{Future, Promise}
 
@@ -149,6 +149,15 @@ class ControllersReferenceDataSpec extends FakePBIKApplication {
         result.header.status mustBe INTERNAL_SERVER_ERROR
         result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.title"))
         result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.try.later"))
+      }
+
+      "show the optimistic lock error page when the Future completes with a OptimisticLockConflictException" in new Test {
+        p.failure(new OptimisticLockConflictException("Optimistic lock conflict", 2005))
+        val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
+
+        result.header.status mustBe CONFLICT
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.optimisticLock.header"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.optimisticLock.paragraph1"))
       }
 
       "show the default error page when exception is unknown" in new Test {

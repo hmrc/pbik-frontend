@@ -28,7 +28,8 @@ class PbikSessionSpec extends FakePBIKApplication {
   private val item1: RegistrationItem = RegistrationItem(IabdType.CarBenefit, active = true, enabled = false)
   private val item2: RegistrationItem = RegistrationItem(IabdType.MedicalInsurance, active = false, enabled = true)
 
-  private val reason: BinaryRadioButtonWithDesc = BinaryRadioButtonWithDesc(selectionValue = "no", info = Some("Test reason"))
+  private val reason: BinaryRadioButtonWithDesc =
+    BinaryRadioButtonWithDesc(selectionValue = "no", info = Some("Test reason"))
 
   private val registrations: RegistrationList =
     RegistrationList(selectAll = Some("all"), active = List(item1, item2), reason = Some(reason))
@@ -104,7 +105,7 @@ class PbikSessionSpec extends FakePBIKApplication {
             session.sessionId mustBe "12345"
             session.registrations.map(_.active.size) mustBe Some(2)
             session.registrations.flatMap(_.reason.map(_.selectionValue)) mustBe Some("no")
-          case Left(errors) =>
+          case Left(errors)   =>
             fail(s"JSON parse error: $errors")
         }
       }

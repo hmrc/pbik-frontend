@@ -23,8 +23,8 @@ class OtherReasonSpec extends FakePBIKApplication {
 
   "OtherReason" should {
     "serialize to JSON and back" in {
-      val original = OtherReason("Some reason")
-      val json = Json.toJson(original)
+      val original     = OtherReason("Some reason")
+      val json         = Json.toJson(original)
       val deserialized = json.as[OtherReason]
 
       deserialized mustBe original

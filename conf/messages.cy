@@ -428,6 +428,12 @@ ErrorPage.signin.individual.l2 = I ddefnyddio’r gwasanaeth hwn, bydd angen i c
 ErrorPage.p1.individual = allgofnodi
 ErrorPage.p2.individual = mewngofnodi gan ddefnyddio Dynodydd Defnyddiwr (ID) a chyfrinair ar gyfer Porth y Llywodraeth rydych chi’n ei ddefnyddio i reoli TWE i gyflogwyr yn eich cyfrif busnes
 
+ErrorPage.optimisticLock.header = Mae problem
+ErrorPage.optimisticLock.paragraph1 = Nid yw’ch newidiadau wedi’u cadw
+ErrorPage.optimisticLock.paragraph2.beforeLink = Gallwch
+ErrorPage.optimisticLock.paragraph2.afterLink = i roi cynnig arall arni.
+ErrorPage.optimisticLock.returnLink = dychwelyd i’r dudalen gychwyn
+
 #*************************************************************
 # Error- validation Messages
 #*************************************************************

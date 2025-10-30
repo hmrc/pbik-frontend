@@ -50,7 +50,7 @@ class BenefitInKindRequestSpec extends FakePBIKApplication {
 
         val result = Json.fromJson[BenefitInKindRequest](json)
         result.asEither match {
-          case Right(r) =>
+          case Right(r)     =>
             r.iabdType.toString mustBe "Car Benefit"
             r.payrolledBenefitInKindAction.toString mustBe "No Action"
             r.isAgentSubmission mustBe false

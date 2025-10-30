@@ -34,8 +34,8 @@ class BenefitListUpdateRequestSpec extends FakePBIKApplication {
         employerOptimisticLockRequest = EmployerOptimisticLockRequest(currentEmployerOptimisticLock = 1)
       )
 
-      val json = Json.toJson(original)
-      val parsed = Json.parse(json.toString)
+      val json         = Json.toJson(original)
+      val parsed       = Json.parse(json.toString)
       val deserialized = parsed.as[BenefitListUpdateRequest]
 
       deserialized mustBe original
@@ -53,7 +53,7 @@ class BenefitListUpdateRequestSpec extends FakePBIKApplication {
 
       result.isError mustBe true
     }
-    
+
     "fail to deserialize when JSON is empty" in {
       val emptyJson = Json.parse("{}")
 
