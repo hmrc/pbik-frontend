@@ -486,7 +486,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
             )
         )
 
-        result.header.status mustBe OK
+        result mustBe OK
       }
 
       "return OK when successfully changing a agent registered benefits" in {
@@ -500,7 +500,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
             )
         )
 
-        result.header.status mustBe OK
+        result mustBe OK
       }
 
       "throw an exception when an error is received if http response status BAD_REQUEST" in {

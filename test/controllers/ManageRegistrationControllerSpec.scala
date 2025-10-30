@@ -81,7 +81,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           anyInt(),
           any
         )(any(), any[AuthenticatedRequest[?]])
-    ).thenReturn(Future.successful(Ok("SUCCESS")))
+    ).thenReturn(Future.successful(OK))
 
     when(
       mockConnector

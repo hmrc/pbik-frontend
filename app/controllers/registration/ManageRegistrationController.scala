@@ -294,8 +294,6 @@ class ManageRegistrationController @Inject() (
   def updateBiksFutureAction(year: Int, changes: List[BenefitInKindRequest], additive: Boolean)(implicit
     request: AuthenticatedRequest[AnyContent]
   ): Future[Result] = {
-    logger.info(s"[updateBiksFutureAction] Starting - year: $year, additive: $additive, changes count: ${changes.size}")
-
     val actionFuture = bikListService
       .getRegisteredBenefitsForYear(year)
       .flatMap { registeredResponse =>

@@ -235,7 +235,7 @@ class PbikConnector @Inject() (
   def updateOrganisationsRegisteredBiks(year: Int, payload: BenefitListUpdateRequest)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedRequest[?]
-  ): Future[Result] = {
+  ): Future[Int] = {
     val suffix        = if (request.isAgent) "agent" else "org"
     val payloadAsJson = Json.toJson(payload)
 
@@ -250,7 +250,7 @@ class PbikConnector @Inject() (
       .flatMap { response =>
         response.status match {
           case OK =>
-            Future.successful(Ok("SUCCESS"))
+            Future.successful(OK)
 
           case CONFLICT =>
             logger.warn(
