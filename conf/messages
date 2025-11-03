@@ -429,7 +429,7 @@ ErrorPage.p1.individual = sign out
 ErrorPage.p2.individual = sign in with the Government Gateway user ID that you use to access the PAYE for employers online service
 
 ErrorPage.optimisticLock.header = There is a problem
-ErrorPage.optimisticLock.paragraph1 = Your changes have not been saved
+ErrorPage.optimisticLock.paragraph = Your changes have not been saved
 ErrorPage.optimisticLock.tryAgainLink = Try again
 
 #*************************************************************
