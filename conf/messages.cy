@@ -430,9 +430,7 @@ ErrorPage.p2.individual = mewngofnodi gan ddefnyddio Dynodydd Defnyddiwr (ID) a 
 
 ErrorPage.optimisticLock.header = Mae problem
 ErrorPage.optimisticLock.paragraph1 = Nid yw’ch newidiadau wedi’u cadw
-ErrorPage.optimisticLock.paragraph2.beforeLink = Gallwch
-ErrorPage.optimisticLock.paragraph2.afterLink = i roi cynnig arall arni.
-ErrorPage.optimisticLock.returnLink = dychwelyd i’r dudalen gychwyn
+ErrorPage.optimisticLock.tryAgainLink = Rhowch gynnig arall arni
 
 #*************************************************************
 # Error- validation Messages
