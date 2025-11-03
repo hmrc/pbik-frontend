@@ -157,7 +157,7 @@ class ControllersReferenceDataSpec extends FakePBIKApplication {
 
         result.header.status mustBe CONFLICT
         result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.optimisticLock.header"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.optimisticLock.paragraph1"))
+        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ErrorPage.optimisticLock.paragraph"))
       }
 
       "show the default error page when exception is unknown" in new Test {
