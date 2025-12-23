@@ -210,5 +210,30 @@ class SessionServiceSpec extends FakePBIKApplication {
         result mustBe false
       }
     }
+
+    "cache client info" in {
+      val client  = agentClient.get
+      val session = pbikSession.copy(clientInfo = Map(empRef.value -> client))
+
+      when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
+      when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
+
+      val result = await(sessionService.storeClientInfo(empRef, client))(timeout)
+
+      result mustBe session
+      result.clientInfo must contain(empRef.value -> client)
+    }
+
+    "fetch client info from session" in {
+      val client  = agentClient.get
+      val session = pbikSession.copy(clientInfo = Map(empRef.value -> client))
+
+      when(mockSessionRepository.get(any())).thenReturn(Future.successful(Some(session)))
+
+      val fetchedSession = await(sessionService.fetchPbikSession())(timeout)
+
+      fetchedSession mustBe Some(session)
+      fetchedSession.get.clientInfo must contain(empRef.value -> client)
+    }
   }
 }

@@ -18,10 +18,11 @@ package connectors
 
 import models.agent.Client
 import play.api.Logging
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.{JsError, JsSuccess}
+import services.SessionService
 import uk.gov.hmrc.domain.EmpRef
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -30,38 +31,68 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AgentPayeConnector @Inject() (http: HttpClientV2, servicesConfig: ServicesConfig) extends Logging {
+class AgentPayeConnector @Inject() (
+  http: HttpClientV2,
+  servicesConfig: ServicesConfig,
+  sessionService: SessionService
+) extends Logging {
 
   def getClient(agentCode: Option[String], empRef: EmpRef)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[Option[Client]] =
-    if (agentCode.isEmpty) {
-      logger.warn("[AgentPayeConnector][getClient] agentCode is empty")
-      Future.successful(None)
-    } else {
-      val fullURL = s"${servicesConfig.baseUrl("agent-paye")}/agent/${agentCode.get}/client/${empRef.encodedValue}"
-      http
-        .get(url"$fullURL")
-        .execute[HttpResponse]
-        .map { response =>
-          response.status match {
-            case OK                   =>
-              response.json.validate[Client] match {
-                case JsSuccess(data, _) => Some(data)
-                case JsError(fail)      =>
-                  logger.warn(s"[AgentPayeConnector][getClient] Unable to parse response : $fail")
-                  None
-              }
-            case ACCEPTED | NOT_FOUND => None
-            case httpStatusCode       =>
-              logger.warn(s"[AgentPayeConnector][getClient] GET $fullURL returned $httpStatusCode")
-              None
-          }
-        }
-        .recover { case ex: Exception =>
-          logger.warn(s"[AgentPayeConnector][getClient] ${ex.getMessage}")
-          None
+    agentCode match {
+      case None =>
+        logger.warn("[AgentPayeConnector][getClient] agentCode is empty")
+        Future.successful(None)
+
+      case Some(code) =>
+        sessionService.fetchPbikSession().flatMap {
+          case Some(session) if session.clientInfo.contains(empRef.value) =>
+            logger.debug(s"[AgentPayeConnector][getClient] ClientInfo cache hit for ${empRef.value}")
+            Future.successful(session.clientInfo.get(empRef.value))
+
+          case _ =>
+            fetchFromAgentPaye(code, empRef).flatMap {
+              case Some(client) =>
+                logger.debug(s"[AgentPayeConnector][getClient] ClientInfo cache miss – storing in session")
+                sessionService.storeClientInfo(empRef, client).map(_ => Some(client))
+
+              case None => Future.successful(None)
+            }
         }
     }
+
+  private def fetchFromAgentPaye(agentCode: String, empRef: EmpRef)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Option[Client]] = {
+
+    val fullURL = s"${servicesConfig.baseUrl("agent-paye")}/agent/$agentCode/client/${empRef.encodedValue}"
+
+    http
+      .get(url"$fullURL")
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK =>
+            response.json.validate[Client] match {
+              case JsSuccess(data, _) => Some(data)
+              case JsError(errors)    =>
+                logger.warn(s"[AgentPayeConnector][fetchFromAgentPaye] Unable to parse response: $errors")
+                None
+            }
+
+          case ACCEPTED | NOT_FOUND => None
+
+          case other =>
+            logger.warn(s"[AgentPayeConnector][fetchFromAgentPaye] GET $fullURL returned $other")
+            None
+        }
+      }
+      .recover { case ex: Exception =>
+        logger.warn(s"[AgentPayeConnector][fetchFromAgentPaye] ${ex.getMessage}")
+        None
+      }
+  }
 }

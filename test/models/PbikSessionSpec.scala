@@ -110,6 +110,22 @@ class PbikSessionSpec extends FakePBIKApplication {
         }
       }
 
+      "serialize and deserialize a PbikSession with clientInfo" in {
+        val client  = agentClient.get
+        val session = PbikSession(
+          sessionId = "12345",
+          clientInfo = Map(empRef.value -> client),
+          lastUpdated = fixedInstant
+        )
+
+        val json         = Json.toJson(session)
+        val deserialized = Json.fromJson[PbikSession](json).get
+
+        deserialized.sessionId mustBe "12345"
+        deserialized.clientInfo must contain(empRef.value -> client)
+        deserialized.lastUpdated mustBe fixedInstant
+      }
+
       "fail to deserialize when sessionId is empty" in {
         val invalidJson =
           """

@@ -16,13 +16,15 @@
 
 package services
 
-import models._
+import models.*
+import models.agent.Client
 import models.cache.MissingSessionIdException
 import models.v1.BenefitListResponse
 import models.v1.exclusion.{PbikExclusions, SelectedExclusionToRemove}
 import models.v1.trace.TracePersonListResponse
 import play.api.Logging
 import repositories.SessionRepository
+import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -34,8 +36,8 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
 ) extends Logging {
 
   private object CacheKeys extends Enumeration {
-    val RegistrationList, BikRemoved, ListOfMatches, EiLPerson, CurrentExclusions, CYRegisteredBiks, NYRegisteredBiks =
-      Value
+    val RegistrationList, BikRemoved, ListOfMatches, EiLPerson, CurrentExclusions, CYRegisteredBiks, NYRegisteredBiks,
+      ClientInfo = Value
   }
 
   private def cleanSession(sessionId: String): PbikSession =
@@ -86,6 +88,9 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
   def storeNYRegisteredBiks(value: BenefitListResponse)(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.NYRegisteredBiks, value)
 
+  def storeClientInfo(empRef: EmpRef, client: Client)(implicit hc: HeaderCarrier): Future[PbikSession] =
+    storeSession(CacheKeys.ClientInfo, empRef.value -> client)
+
   def resetAll()(implicit hc: HeaderCarrier): Future[Boolean] =
     getSessionFromHeaderCarrier(hc) match {
       case Left(_)   =>
@@ -110,6 +115,9 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
           session.copy(cyRegisteredBiks = Some(value.asInstanceOf[BenefitListResponse]))
         case CacheKeys.NYRegisteredBiks  =>
           session.copy(nyRegisteredBiks = Some(value.asInstanceOf[BenefitListResponse]))
+        case CacheKeys.ClientInfo        =>
+          val (empRef, client) = value.asInstanceOf[(String, Client)]
+          session.copy(clientInfo = session.clientInfo + (empRef -> client))
         case _                           =>
           logger.warn(s"[SessionService][storeSession] No matching keys found - returning current session")
           session
