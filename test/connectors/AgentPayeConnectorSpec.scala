@@ -18,6 +18,7 @@ package connectors
 
 import base.FakePBIKApplication
 import models.PbikSession
+import models.agent.Client
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.*
 import play.api.http.Status.*
@@ -27,6 +28,7 @@ import play.api.libs.json.{Json, Writes}
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import play.api.{Application, inject}
 import services.SessionService
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.http.*
 import uk.gov.hmrc.http.client.{HttpClientV2, RequestBuilder}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -53,7 +55,8 @@ class AgentPayeConnectorSpec extends FakePBIKApplication {
   private val agentCode: String = "agentCode"
   private val agent             = agentClient.get
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit val hc: HeaderCarrier             = HeaderCarrier()
+  implicit val crypto: Encrypter & Decrypter = cryptoProvider.getCrypto
 
   def buildFakeResponseWithBody[A](body: A, status: Int = OK)(implicit w: Writes[A]): HttpResponse =
     HttpResponse(status, Json.toJson(body), Map.empty[String, Seq[String]])
@@ -82,24 +85,22 @@ class AgentPayeConnectorSpec extends FakePBIKApplication {
         await(agentPayeConnectorWithMockClient.getClient(None, empRef)) mustBe None
       }
 
-      "return none if session has cached client" in {
-        when(mockSessionService.fetchPbikSession()).thenReturn(
-          Future.successful(Some(PbikSession("sessionId", clientInfo = Map(empRef.value -> agent))))
-        )
+      "not called if session has cached client" in {
+        when(mockSessionService.fetchClientInfo(empRef)).thenReturn(Future.successful(Some(agent)))
 
         await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe Some(agent)
         verify(mockHttpClient, times(0)).get(any())(any())
       }
 
       "return none if an exception is received from HttpClient" in {
-        when(mockSessionService.fetchPbikSession()).thenReturn(Future.successful(None))
+        when(mockSessionService.fetchClientInfo(empRef)).thenReturn(Future.successful(None))
         mockGetEndpoint(Future.failed(new Exception("test error")))
 
         await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe None
       }
 
       "return none if an invalid json body with OK is received" in {
-        when(mockSessionService.fetchPbikSession()).thenReturn(Future.successful(None))
+        when(mockSessionService.fetchClientInfo(empRef)).thenReturn(Future.successful(None))
         val fakeResponseWithInvalidJson = buildFakeResponseWithBody("invalid json")
         mockGetEndpoint(Future.successful(fakeResponseWithInvalidJson))
 
@@ -107,18 +108,18 @@ class AgentPayeConnectorSpec extends FakePBIKApplication {
       }
 
       "return client if a valid body with OK is received" in {
-        when(mockSessionService.fetchPbikSession()).thenReturn(Future.successful(None))
+        when(mockSessionService.fetchClientInfo(empRef)).thenReturn(Future.successful(None))
         val fakeResponseWithValidJson = buildFakeResponseWithBody(agent)
         mockGetEndpoint(Future.successful(fakeResponseWithValidJson))
 
         when(mockSessionService.storeClientInfo(empRef, agent))
-          .thenReturn(Future.successful(PbikSession("sessionId", clientInfo = Map(empRef.value -> agent))))
+          .thenReturn(Future.successful(PbikSession("sessionId", clientInfo = Map(empRef.value -> agent.encrypt()))))
 
         await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef)) mustBe Some(agent)
       }
 
       "return none if ACCEPTED status is received" in {
-        when(mockSessionService.fetchPbikSession()).thenReturn(Future.successful(None))
+        when(mockSessionService.fetchClientInfo(empRef)).thenReturn(Future.successful(None))
 
         val fakeResponse = buildFakeResponseWithBody("", ACCEPTED)
         mockGetEndpoint(Future.successful(fakeResponse))
@@ -127,7 +128,7 @@ class AgentPayeConnectorSpec extends FakePBIKApplication {
       }
 
       "return none and log a warning if an unexpected status is received" in {
-        when(mockSessionService.fetchPbikSession()).thenReturn(Future.successful(None))
+        when(mockSessionService.fetchClientInfo(empRef)).thenReturn(Future.successful(None))
 
         val fakeResponse = buildFakeResponseWithBody("", INTERNAL_SERVER_ERROR)
         mockGetEndpoint(Future.successful(fakeResponse))
@@ -136,12 +137,7 @@ class AgentPayeConnectorSpec extends FakePBIKApplication {
       }
 
       "return client from session if already cached" in {
-        val cachedSession = PbikSession(
-          sessionId = "sessionId",
-          clientInfo = Map(empRef.value -> agent)
-        )
-
-        when(mockSessionService.fetchPbikSession()).thenReturn(Future.successful(Some(cachedSession)))
+        when(mockSessionService.fetchClientInfo(empRef)).thenReturn(Future.successful(Some(agent)))
         val result = await(agentPayeConnectorWithMockClient.getClient(Some(agentCode), empRef))
 
         result mustBe Some(agent)

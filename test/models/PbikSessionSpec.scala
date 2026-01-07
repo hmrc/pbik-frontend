@@ -17,9 +17,11 @@
 package models
 
 import base.FakePBIKApplication
+import crypto.CryptoProvider
 import models.form.BinaryRadioButtonWithDesc
 import models.v1.IabdType
 import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 
 import java.time.Instant
 
@@ -30,6 +32,7 @@ class PbikSessionSpec extends FakePBIKApplication {
 
   private val reason: BinaryRadioButtonWithDesc =
     BinaryRadioButtonWithDesc(selectionValue = "no", info = Some("Test reason"))
+  implicit val crypto: Encrypter & Decrypter    = cryptoProvider.getCrypto
 
   private val registrations: RegistrationList =
     RegistrationList(selectAll = Some("all"), active = List(item1, item2), reason = Some(reason))
@@ -111,10 +114,11 @@ class PbikSessionSpec extends FakePBIKApplication {
       }
 
       "serialize and deserialize a PbikSession with clientInfo" in {
-        val client  = agentClient.get
-        val session = PbikSession(
+        val client          = agentClient.get
+        val encryptedClient = client.encrypt()
+        val session         = PbikSession(
           sessionId = "12345",
-          clientInfo = Map(empRef.value -> client),
+          clientInfo = Map(empRef.value -> encryptedClient),
           lastUpdated = fixedInstant
         )
 
@@ -122,7 +126,7 @@ class PbikSessionSpec extends FakePBIKApplication {
         val deserialized = Json.fromJson[PbikSession](json).get
 
         deserialized.sessionId mustBe "12345"
-        deserialized.clientInfo must contain(empRef.value -> client)
+        deserialized.clientInfo must contain(empRef.value -> encryptedClient)
         deserialized.lastUpdated mustBe fixedInstant
       }
 

@@ -16,7 +16,7 @@
 
 package models
 
-import models.agent.Client
+import models.agent.EncryptedClient
 import models.v1.BenefitListResponse
 import models.v1.exclusion.{PbikExclusions, SelectedExclusionToRemove}
 import models.v1.trace.TracePersonListResponse
@@ -34,7 +34,7 @@ case class PbikSession(
   currentExclusions: Option[PbikExclusions] = None,
   cyRegisteredBiks: Option[BenefitListResponse] = None,
   nyRegisteredBiks: Option[BenefitListResponse] = None,
-  clientInfo: Map[String, Client] = Map.empty,
+  clientInfo: Map[String, EncryptedClient] = Map.empty,
   lastUpdated: Instant = Instant.now()
 ) {
 

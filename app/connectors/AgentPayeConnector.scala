@@ -47,18 +47,22 @@ class AgentPayeConnector @Inject() (
         Future.successful(None)
 
       case Some(code) =>
-        sessionService.fetchPbikSession().flatMap {
-          case Some(session) if session.clientInfo.contains(empRef.value) =>
-            logger.debug(s"[AgentPayeConnector][getClient] ClientInfo cache hit for ${empRef.value}")
-            Future.successful(session.clientInfo.get(empRef.value))
-
-          case _ =>
+        sessionService.fetchClientInfo(empRef).flatMap {
+          case Some(client) =>
+            logger.info(
+              s"[AgentPayeConnector][getClient] fetchClientInfo from session: ${sessionService.fetchPbikSession()}"
+            )
+            logger.info(s"[AgentPayeConnector][getClient] fetchClientInfo from session: $client")
+            Future.successful(Some(client))
+          case None         =>
+            logger.info(s"[AgentPayeConnector][getClient] no client in session, fetching from AgentPaye: $code")
             fetchFromAgentPaye(code, empRef).flatMap {
               case Some(client) =>
-                logger.debug(s"[AgentPayeConnector][getClient] ClientInfo cache miss – storing in session")
-                sessionService.storeClientInfo(empRef, client).map(_ => Some(client))
-
-              case None => Future.successful(None)
+                logger.info(s"[AgentPayeConnector][getClient] fetchClientInfo: $client")
+                sessionService.storeClientInfo(empRef, client)
+                Future.successful(Some(client))
+              case None         =>
+                Future.successful(None)
             }
         }
     }
