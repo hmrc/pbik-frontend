@@ -49,16 +49,10 @@ class AgentPayeConnector @Inject() (
       case Some(code) =>
         sessionService.fetchClientInfo(empRef).flatMap {
           case Some(client) =>
-            logger.info(
-              s"[AgentPayeConnector][getClient] fetchClientInfo from session: ${sessionService.fetchPbikSession()}"
-            )
-            logger.info(s"[AgentPayeConnector][getClient] fetchClientInfo from session: $client")
             Future.successful(Some(client))
           case None         =>
-            logger.info(s"[AgentPayeConnector][getClient] no client in session, fetching from AgentPaye: $code")
             fetchFromAgentPaye(code, empRef).flatMap {
               case Some(client) =>
-                logger.info(s"[AgentPayeConnector][getClient] fetchClientInfo: $client")
                 sessionService.storeClientInfo(empRef, client)
                 Future.successful(Some(client))
               case None         =>
