@@ -16,7 +16,6 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcLanguageSelect
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{Cy, En, LanguageSelect}
 @import views.templatemodels.PageTitle
 @import config.PbikAppConfig
@@ -31,7 +30,6 @@
         hmrcStandardFooter: HmrcStandardFooter,
         hmrcScripts: HmrcScripts,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        hmrcLanguageSelect: HmrcLanguageSelect,
         hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
 
@@ -66,11 +64,6 @@
 }
 
 @beforeContentBlock = {
-    @hmrcLanguageSelect(LanguageSelect(
-        if (messages.lang.code == "cy") Cy else En,
-        (En, s"${controllers.routes.HomePageController.setLanguage()}?lang=en"),
-        (Cy, s"${controllers.routes.HomePageController.setLanguage()}?lang=cy")
-    ))
     @if(showBackLink && !showYTABackLink && !showECLBackLink) {
         @govukBackLink(BackLink(
             content = Text(messages("Service.back")),
@@ -116,6 +109,7 @@
     serviceUrl = None,
     serviceName = Some(messages("service.name")),
     signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
+    isWelshTranslationAvailable = true,
     displayHmrcBanner = false),
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = Some(hmrcScripts()),

@@ -9,14 +9,14 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "tax-year"                   % "6.0.0",
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-30" % bootstrapPlayVersion,
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-30"         % hmrcMongoPlayVersion,
-    "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30" % "12.20.0",
+    "uk.gov.hmrc"       %% "play-frontend-hmrc-play-30" % "12.26.0",
     "uk.gov.hmrc"       %% "domain-play-30"             % "13.0.0"
   )
 
   private val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"       %% "bootstrap-test-play-30"  % bootstrapPlayVersion,
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-test-play-30" % hmrcMongoPlayVersion,
-    "org.jsoup"          % "jsoup"                   % "1.21.2"
+    "org.jsoup"          % "jsoup"                   % "1.22.1"
   ).map(_ % Test)
 
   def apply(): Seq[ModuleID] = compile ++ test
