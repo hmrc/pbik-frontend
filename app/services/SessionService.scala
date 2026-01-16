@@ -16,13 +16,17 @@
 
 package services
 
-import models._
+import crypto.CryptoProvider
+import models.*
+import models.agent.Client
 import models.cache.MissingSessionIdException
 import models.v1.BenefitListResponse
 import models.v1.exclusion.{PbikExclusions, SelectedExclusionToRemove}
 import models.v1.trace.TracePersonListResponse
 import play.api.Logging
 import repositories.SessionRepository
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
+import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -30,12 +34,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SessionService @Inject() (val sessionRepository: SessionRepository)(implicit
-  ec: ExecutionContext
+  ec: ExecutionContext,
+  cryptoProvider: CryptoProvider
 ) extends Logging {
 
+  private implicit val crypto: Encrypter & Decrypter = cryptoProvider.getCrypto
+
   private object CacheKeys extends Enumeration {
-    val RegistrationList, BikRemoved, ListOfMatches, EiLPerson, CurrentExclusions, CYRegisteredBiks, NYRegisteredBiks =
-      Value
+    val RegistrationList, BikRemoved, ListOfMatches, EiLPerson, CurrentExclusions, CYRegisteredBiks, NYRegisteredBiks,
+      ClientInfo = Value
   }
 
   private def cleanSession(sessionId: String): PbikSession =
@@ -65,6 +72,12 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
       case Right(sessionId) => sessionRepository.get(sessionId)
     }
 
+  def fetchClientInfo(empRef: EmpRef)(implicit hc: HeaderCarrier): Future[Option[Client]] =
+    for {
+      session   <- fetchPbikSession()
+      clientInfo = session.flatMap(_.clientInfo.get(empRef.value).map(_.decrypt))
+    } yield clientInfo
+
   def storeRegistrationList(value: RegistrationList)(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.RegistrationList, value)
 
@@ -85,6 +98,9 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
 
   def storeNYRegisteredBiks(value: BenefitListResponse)(implicit hc: HeaderCarrier): Future[PbikSession] =
     storeSession(CacheKeys.NYRegisteredBiks, value)
+
+  def storeClientInfo(empRef: EmpRef, client: Client)(implicit hc: HeaderCarrier): Future[PbikSession] =
+    storeSession(CacheKeys.ClientInfo, empRef.value -> client)
 
   def resetAll()(implicit hc: HeaderCarrier): Future[Boolean] =
     getSessionFromHeaderCarrier(hc) match {
@@ -110,6 +126,10 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
           session.copy(cyRegisteredBiks = Some(value.asInstanceOf[BenefitListResponse]))
         case CacheKeys.NYRegisteredBiks  =>
           session.copy(nyRegisteredBiks = Some(value.asInstanceOf[BenefitListResponse]))
+        case CacheKeys.ClientInfo        =>
+          val (empRef, client) = value.asInstanceOf[(String, Client)]
+          val encryptedClient  = client.encrypt
+          session.copy(clientInfo = session.clientInfo + (empRef -> encryptedClient))
         case _                           =>
           logger.warn(s"[SessionService][storeSession] No matching keys found - returning current session")
           session
