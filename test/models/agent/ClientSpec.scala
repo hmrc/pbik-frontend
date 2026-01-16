@@ -17,12 +17,16 @@
 package models.agent
 
 import base.FakePBIKApplication
+import crypto.NoCrypto
 import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.domain.EmpRef
 
 import java.time.LocalDateTime
 
 class ClientSpec extends FakePBIKApplication {
+
+  protected implicit val crypto: Encrypter & Decrypter = NoCrypto
 
   "Client JSON serialization" should {
 
@@ -138,5 +142,59 @@ class ClientSpec extends FakePBIKApplication {
       result.isError mustBe true
     }
 
+  }
+
+  "Client encryption / decryption" should {
+
+    "encrypt all sensitive Client fields" in {
+      val client = Client(
+        empRef = EmpRef("123", "AB456"),
+        accountsOfficeReference = AccountsOfficeReference("12", "A", "C", "123456"),
+        name = Some("Test Client"),
+        lpAuthorisation = true,
+        agentClientRef = Some("AG123")
+      )
+
+      val encrypted: EncryptedClient = Client.encrypt(client)
+
+      // Encrypted empRef is now a single string
+      encrypted.empRef must not be empty
+      encrypted.name mustBe Some("Test Client")
+      encrypted.agentClientRef mustBe Some("AG123")
+      encrypted.accountsOfficeReference.reference mustBe "123456"
+    }
+
+    "decrypt all sensitive Client fields" in {
+      val client = Client(
+        empRef = EmpRef("123", "AB456"),
+        accountsOfficeReference = AccountsOfficeReference("12", "A", "C", "123456"),
+        name = Some("Test Client"),
+        lpAuthorisation = true,
+        agentClientRef = Some("AG123")
+      )
+
+      val encrypted: EncryptedClient = Client.encrypt(client)
+      val decrypted: Client          = encrypted.decrypt
+
+      decrypted.empRef.value mustBe "123/AB456"
+      decrypted.accountsOfficeReference.reference mustBe "123456"
+      decrypted.name mustBe Some("Test Client")
+      decrypted.agentClientRef mustBe Some("AG123")
+    }
+
+    "round-trip encrypt and decrypt should return the original Client" in {
+      val client = Client(
+        empRef = EmpRef("999", "ZX987"),
+        accountsOfficeReference = AccountsOfficeReference("99", "B", "Z", "654321"),
+        name = Some("Round Trip Client"),
+        lpAuthorisation = false,
+        agentClientRef = Some("RT001")
+      )
+
+      val encrypted: EncryptedClient = Client.encrypt(client)
+      val result: Client             = encrypted.decrypt
+
+      result mustBe client
+    }
   }
 }

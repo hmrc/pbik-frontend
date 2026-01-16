@@ -17,16 +17,23 @@
 package services
 
 import base.FakePBIKApplication
-import models._
+import controllers.actions.MinimalAuthAction
+import crypto.CryptoProvider
+import models.*
 import models.cache.MissingSessionIdException
 import models.v1.exclusion.{PbikExclusionPerson, PbikExclusions, SelectedExclusionToRemove}
 import models.v1.trace.{TracePersonListResponse, TracePersonResponse}
 import models.v1.{BenefitInKindWithCount, BenefitListResponse, IabdType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.await
 import repositories.SessionRepository
+import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
+import utils.TestMinimalAuthAction
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -34,8 +41,19 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 
 class SessionServiceSpec extends FakePBIKApplication {
 
+  val configMapWithCryptoEnabled: Map[String, Any] = configMap ++ Map(
+    "mongodb.encryption.enabled" -> true
+  )
+
+  override def fakeApplication(): Application = GuiceApplicationBuilder()
+    .configure(configMapWithCryptoEnabled)
+    .overrides(bind[MinimalAuthAction].to(classOf[TestMinimalAuthAction]))
+    .build()
+
   private val timeout: FiniteDuration                  = 5.seconds
   implicit val hc: HeaderCarrier                       = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+  implicit val impCryptoProvider: CryptoProvider       = cryptoProvider
+  implicit val crypto: Encrypter & Decrypter           = impCryptoProvider.getCrypto
   private val mockSessionRepository: SessionRepository = mock(classOf[SessionRepository])
   private val sessionService: SessionService           = new SessionService(mockSessionRepository)
   private val pbikSession: PbikSession                 = PbikSession(sessionId)
@@ -209,6 +227,50 @@ class SessionServiceSpec extends FakePBIKApplication {
 
         result mustBe false
       }
+    }
+
+    "cache client info" in {
+      val client          = agentClient.get
+      val encryptedClient = client.encrypt()
+      val session         = pbikSession.copy(clientInfo = Map(empRef.value -> encryptedClient))
+
+      when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))
+      when(mockSessionRepository.upsert(any())).thenReturn(Future.successful(session))
+
+      val result = await(sessionService.storeClientInfo(empRef, client))(timeout)
+
+      result mustBe session
+      result.clientInfo must contain(empRef.value -> encryptedClient)
+    }
+
+    "fetch client info from session" in {
+      val client          = agentClient.get
+      val encryptedClient = client.encrypt()
+      val session         = pbikSession.copy(clientInfo = Map(empRef.value -> encryptedClient))
+
+      when(mockSessionRepository.get(any())).thenReturn(Future.successful(Some(session)))
+
+      val fetchedSession = await(sessionService.fetchPbikSession())(timeout)
+
+      fetchedSession mustBe Some(session)
+      fetchedSession.get.clientInfo must contain(empRef.value -> encryptedClient)
+    }
+
+    "get client info from session with fetchClientInfo - decrypted" in {
+      val client  = agentClient.get
+      val session = pbikSession.copy(clientInfo = Map(client.empRef.value -> client.encrypt()))
+
+      when(mockSessionRepository.get(any())).thenReturn(Future.successful(Some(session)))
+
+      val clientInfo = await(sessionService.fetchClientInfo(empRef))(timeout)
+      clientInfo mustBe Some(client)
+    }
+
+    "get None if no client info with fetchClientInfo" in {
+      when(mockSessionRepository.get(any())).thenReturn(Future.successful(Some(pbikSession)))
+
+      val clientInfo = await(sessionService.fetchClientInfo(empRef))(timeout)
+      clientInfo mustBe None
     }
   }
 }

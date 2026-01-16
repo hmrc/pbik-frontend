@@ -18,6 +18,7 @@ package base
 
 import config.PbikAppConfig
 import controllers.actions.MinimalAuthAction
+import crypto.CryptoProvider
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, OptionValues}
@@ -81,6 +82,7 @@ abstract class FakePBIKApplication
 
   lazy val pbikAppConfig: PbikAppConfig     = injected[PbikAppConfig]
   lazy val bodyParsers: BodyParsers.Default = injected[BodyParsers.Default]
+  lazy val cryptoProvider: CryptoProvider   = injected[CryptoProvider]
 
   override def beforeEach(): Unit = super.beforeEach()
 
