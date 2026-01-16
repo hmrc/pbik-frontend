@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,9 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
     s"$basGatewayHost/bas-gateway/sign-out-without-state/?continue=$timedOutRedirectUrl"
 
   lazy val mongoTTL: Int = configuration.get[Int]("mongodb.timeToLiveInSeconds")
+
+  lazy val forceNavigation: Boolean =
+    configuration.getOptional[Boolean]("play-frontend-hmrc.forceServiceNavigation").getOrElse(false)
 
   private lazy val agentFrontendHost: String = configuration.getOptional[String]("agent-frontend.host").getOrElse("")
   private lazy val agentFrontendPath: String = configuration.get[String]("agent-frontend.clientListPath")

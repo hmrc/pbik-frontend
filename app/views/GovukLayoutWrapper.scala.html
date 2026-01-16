@@ -1,5 +1,5 @@
 @*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,11 +66,13 @@
 }
 
 @beforeContentBlock = {
-    @hmrcLanguageSelect(LanguageSelect(
-        if (messages.lang.code == "cy") Cy else En,
-        (En, s"${controllers.routes.HomePageController.setLanguage()}?lang=en"),
-        (Cy, s"${controllers.routes.HomePageController.setLanguage()}?lang=cy")
-    ))
+    @if(!config.forceNavigation) {
+        @hmrcLanguageSelect(LanguageSelect(
+            if (messages.lang.code == "cy") Cy else En,
+            (En, s"${controllers.routes.HomePageController.setLanguage()}?lang=en"),
+            (Cy, s"${controllers.routes.HomePageController.setLanguage()}?lang=cy")
+        ))
+    }
     @if(showBackLink && !showYTABackLink && !showECLBackLink) {
         @govukBackLink(BackLink(
             content = Text(messages("Service.back")),
@@ -116,6 +118,7 @@
     serviceUrl = None,
     serviceName = Some(messages("service.name")),
     signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
+    isWelshTranslationAvailable = if (config.forceNavigation) true else false,
     displayHmrcBanner = false),
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = Some(hmrcScripts()),
