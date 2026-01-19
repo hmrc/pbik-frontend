@@ -21,6 +21,7 @@
 @import views.templatemodels.PageTitle
 @import config.PbikAppConfig
 @import views.html.helper.CSPNonce
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(
         config:PbikAppConfig,
@@ -119,6 +120,14 @@
     serviceName = Some(messages("service.name")),
     signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
     isWelshTranslationAvailable = if (config.forceNavigation) true else false,
+    serviceNavigation = if (config.forceNavigation) {
+    Some(
+        ServiceNavigation(
+            serviceName = Some(messages("service.name")),
+            serviceUrl = Some(controllers.routes.RedirectController.redirectIfFromStart().url)
+        ).withLanguageToggle()
+    )
+    } else None,
     displayHmrcBanner = false),
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = Some(hmrcScripts()),
