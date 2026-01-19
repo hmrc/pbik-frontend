@@ -124,7 +124,7 @@
     Some(
         ServiceNavigation(
             serviceName = Some(messages("service.name")),
-            serviceUrl = Some(controllers.routes.StartPageController.onPageLoad.url)
+            serviceUrl = Some(controllers.routes.RedirectController.redirectIfFromStart().url)
         ).withLanguageToggle()
     )
     } else None,
