@@ -120,12 +120,14 @@
     serviceName = Some(messages("service.name")),
     signOutUrl = if(signOut){ Some(controllers.routes.HomePageController.signout.url) } else { None },
     isWelshTranslationAvailable = if (config.forceNavigation) true else false,
-    serviceNavigation = if (config.forceNavigation) Some(
+    serviceNavigation = if (config.forceNavigation) {
+    Some(
         ServiceNavigation(
             serviceName = Some(messages("service.name")),
             serviceUrl = Some(controllers.routes.StartPageController.onPageLoad.url)
         ).withLanguageToggle()
-    ) else None,
+    )
+    } else None,
     displayHmrcBanner = false),
     beforeContentBlock = Some(beforeContentBlock),
     bodyEndBlock = Some(hmrcScripts()),
