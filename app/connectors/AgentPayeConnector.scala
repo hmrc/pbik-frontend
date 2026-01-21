@@ -53,8 +53,9 @@ class AgentPayeConnector @Inject() (
           case None         =>
             fetchFromAgentPaye(code, empRef).flatMap {
               case Some(client) =>
-                sessionService.storeClientInfo(empRef, client)
-                Future.successful(Some(client))
+                sessionService
+                  .storeClientInfo(empRef, client)
+                  .map(_ => Some(client))
               case None         =>
                 Future.successful(None)
             }
