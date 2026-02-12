@@ -16,16 +16,17 @@
 
 package controllers
 
+import config.PbikAppConfig
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.*
 import services.BikListService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Exceptions.InvalidYearURIException
 import utils.{ControllersReferenceData, FormMappings}
-import views.html.{SelectYearPage, StartPage}
+import views.html.{SelectYearPage, StartPage, StartPageMpbikToggle}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,15 +40,27 @@ class StartPageController @Inject() (
   formMappings: FormMappings,
   controllersReferenceData: ControllersReferenceData,
   startPageView: StartPage,
-  selectYearPageView: SelectYearPage
+  startPageMpbikToggleView: StartPageMpbikToggle,
+  selectYearPageView: SelectYearPage,
+  pbikAppConfig: PbikAppConfig
 )(implicit val ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport
     with Logging
     with WithUnsafeDefaultFormBinding {
 
-  def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck) { implicit request =>
-    Ok(startPageView())
+  private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+
+  def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
+    if (mpbikToggle) {
+      val resultFuture: Future[Result] = for {
+        currentYearList <- bikListService.currentYearList
+      } yield Ok(startPageMpbikToggleView(currentYearList.getBenefitInKindWithCount.nonEmpty))
+
+      controllersReferenceData.responseErrorHandler(resultFuture)
+    } else {
+      Future.successful(Ok(startPageView()))
+    }
   }
 
   def selectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>

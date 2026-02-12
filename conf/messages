@@ -99,6 +99,26 @@ StartPage.p10.link.text.agent = use a P11D form (opens in a new window or tab)
 StartPage.link.agent = Start now
 
 #*************************************************************
+# Start Page MPBIK
+#*************************************************************
+
+StartPageMPBIK.heading.organisation = Payrolling benefits and expenses
+StartPageMPBIK.p1.organisation = From XX November 2026 you will be able to use this service to register to payroll loans or accommodation.
+StartPageMPBIK.p2.organisation = If you have registered benefits or expenses, you can use this service to:
+StartPageMPBIK.p3.organisation = view registered benefits and expenses for the current year
+StartPageMPBIK.p4.organisation = view employees who have been excluded from a benefit
+StartPageMPBIK.p5.organisation = exclude employees from a benefit for the current year
+StartPageMPBIK.link.organisation = Start now
+
+StartPageMPBIK.heading.agent = Payrolling benefits and expenses
+StartPageMPBIK.p1.agent = From XX November 2026 you will be able to use this service to register for your client to payroll loans or accommodation.
+StartPageMPBIK.p2.agent = If your client has registered benefits or expenses, you can use this service to:
+StartPageMPBIK.p3.agent = view registered benefits and expenses for the current year
+StartPageMPBIK.p4.agent = view employees who have been excluded from a benefit
+StartPageMPBIK.p5.agent = exclude employees from a benefit for the current year
+StartPageMPBIK.link.agent = Start now
+
+#*************************************************************
 # Select Year
 #*************************************************************
 

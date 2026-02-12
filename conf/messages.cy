@@ -99,6 +99,26 @@ StartPage.p10.link.text.agent = defnyddio ffurflen P11D (yn agor ffenestr neu da
 StartPage.link.agent = Dechrau nawr
 
 #*************************************************************
+# Start Page MPBIK
+#*************************************************************
+
+StartPageMPBIK.heading.organisation = Talu buddiannau a threuliau drwy’r gyflogres
+StartPageMPBIK.p1.organisation = O XX Tachwedd 2026 ymlaen, byddwch yn gallu defnyddio’r gwasanaeth hwn i gofrestru i drethu benthyciadau a llety drwy’r gyflogres.
+StartPageMPBIK.p2.organisation = Os ydych wedi cofrestru buddiannau neu dreuliau, gallwch ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
+StartPageMPBIK.p3.organisation = gweld buddiannau a threuliau sydd wedi eu cofrestru ar gyfer y flwyddyn hon
+StartPageMPBIK.p4.organisation = gweld cyflogeion sydd wedi eu heithrio rhag cael buddiant penodol
+StartPageMPBIK.p5.organisation = eithrio cyflogeion rhag cael buddiant penodol ar gyfer y flwyddyn hon
+StartPageMPBIK.link.organisation = Dechrau nawr
+
+StartPageMPBIK.heading.agent = Trethu buddiannau a threuliau drwy’r gyflogres
+StartPageMPBIK.p1.agent = O XX Tachwedd 2026 ymlaen, byddwch yn gallu defnyddio’r gwasanaeth hwn i gofrestru eich cleient ar gyfer trethu benthyciadau neu lety drwy’r gyflogres.
+StartPageMPBIK.p2.agent = Os yw’ch cleient wedi cofrestru buddiannau neu dreuliau, gallwch ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
+StartPageMPBIK.p3.agent = gweld pa fuddiannau a threuliau sydd wedi eu cofrestru ar gyfer y flwyddyn hon
+StartPageMPBIK.p4.agent = gweld pa fuddiannau a threuliau sydd wedi eu heithrio rhag cael buddiant penodol
+StartPageMPBIK.p5.agent = eithrio cyflogeion rhag cael buddiant penodol ar gyfer y flwyddyn hon
+StartPageMPBIK.link.agent = Dechrau nawr
+
+#*************************************************************
 # Select Year
 #*************************************************************
 
