@@ -1,0 +1,49 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.templatemodels.PageTitle
+
+@this(govukLayoutWrapper: GovukLayoutWrapper, pageTitleHeading: components.PageTitleHeading)
+
+@(
+        existingBenefits: Boolean
+)(implicit request: AuthenticatedRequest[?], messages: Messages)
+
+@govukLayoutWrapper(PageTitle(messages("StartPageMPBIK.heading." + request.userType)), showBackLink = true) {
+
+        @pageTitleHeading(messages("StartPageMPBIK.heading." + request.userType))
+
+        <div class="govuk-inset-text">
+            @messages("StartPageMPBIK.p1." + request.userType)
+        </div>
+
+        <p class="govuk-body">@messages("StartPageMPBIK.p2." + request.userType)</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("StartPageMPBIK.p3." + request.userType)</li>
+            <li>@messages("StartPageMPBIK.p4." + request.userType)</li>
+            <li>@messages("StartPageMPBIK.p5." + request.userType)</li>
+        </ul>
+
+        @if(existingBenefits) {
+            <a href="@routes.StartPageController.selectYearPage" role="button" class="govuk-button govuk-button--start" data-module="govuk-button" id="start-link">
+                @messages("StartPageMPBIK.link." + request.userType)
+                <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+                </svg>
+            </a>
+        }
+
+}
