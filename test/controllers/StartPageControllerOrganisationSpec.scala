@@ -40,6 +40,8 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
 
   private val bikListService: BikListService = mock(classOf[BikListService])
 
+  private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
@@ -84,20 +86,71 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
 
   "StartPageController - organisation" when {
     ".onPageLoad" must {
-      "return OK and the correct view for a GET - English" in {
-        val result = startPageController.onPageLoad.apply(organisationRequest)
 
-        status(result) mustEqual OK
-        contentAsString(result) must include(messages("StartPage.heading." + organisationRequest.userType))
-        contentAsString(result) must include(messages("StartPage.p5." + organisationRequest.userType))
-      }
+      if (april2026MpbikToggle) {
+        "return OK and the correct view for a GET with Start Now Button if existent biks - English" in {
+          when(bikListService.currentYearList(any(), any())).thenReturn(Future.successful(bikResponseWithBenefits))
+          val result = startPageController.onPageLoad.apply(organisationRequest)
 
-      "return OK and the correct view for a GET - Welsh" in {
-        val result = startPageController.onPageLoad.apply(organisationRequestWelsh)
+          status(result) mustEqual OK
+          contentAsString(result) must include(messages("StartPageMPBIK.heading." + organisationRequest.userType))
+          contentAsString(result) must include(messages("StartPageMPBIK.p5." + organisationRequest.userType))
+          contentAsString(result) must include(messages("StartPageMPBIK.link." + organisationRequest.userType))
+        }
 
-        status(result) mustEqual OK
-        contentAsString(result) must include(cyMessages("StartPage.heading." + organisationRequestWelsh.userType))
-        contentAsString(result) must include(cyMessages("StartPage.p5." + organisationRequestWelsh.userType))
+        "return OK and the correct view for a GET with Start Now Button if existent biks - Welsh" in {
+          when(bikListService.currentYearList(any(), any())).thenReturn(Future.successful(bikResponseWithBenefits))
+          val result = startPageController.onPageLoad.apply(organisationRequestWelsh)
+
+          status(result) mustEqual OK
+          contentAsString(result) must include(
+            cyMessages("StartPageMPBIK.heading." + organisationRequestWelsh.userType)
+          )
+          contentAsString(result) must include(cyMessages("StartPageMPBIK.p5." + organisationRequestWelsh.userType))
+          contentAsString(result) must include(cyMessages("StartPageMPBIK.link." + organisationRequestWelsh.userType))
+        }
+
+        "return OK and the correct view for a GET without Start Now Button if no existent biks - English" in {
+          when(bikListService.currentYearList(any(), any()))
+            .thenReturn(Future.successful(bikResponseWithBenefits.copy(pbikRegistrationDetailsList = None)))
+          val result = startPageController.onPageLoad.apply(organisationRequest)
+
+          status(result) mustEqual OK
+          contentAsString(result) must include(messages("StartPageMPBIK.heading." + organisationRequest.userType))
+          contentAsString(result) must include(messages("StartPageMPBIK.p5." + organisationRequest.userType))
+          contentAsString(result) mustNot include(messages("StartPageMPBIK.link." + organisationRequest.userType))
+        }
+
+        "return OK and the correct view for a GET without Start Now Button if no existent biks - Welsh" in {
+          when(bikListService.currentYearList(any(), any()))
+            .thenReturn(Future.successful(bikResponseWithBenefits.copy(pbikRegistrationDetailsList = None)))
+          val result = startPageController.onPageLoad.apply(organisationRequestWelsh)
+
+          status(result) mustEqual OK
+          contentAsString(result) must include(
+            cyMessages("StartPageMPBIK.heading." + organisationRequestWelsh.userType)
+          )
+          contentAsString(result) must include(cyMessages("StartPageMPBIK.p5." + organisationRequestWelsh.userType))
+          contentAsString(result) mustNot include(
+            cyMessages("StartPageMPBIK.link." + organisationRequestWelsh.userType)
+          )
+        }
+      } else {
+        "return OK and the correct view for a GET - English" in {
+          val result = startPageController.onPageLoad.apply(organisationRequest)
+
+          status(result) mustEqual OK
+          contentAsString(result) must include(messages("StartPage.heading." + organisationRequest.userType))
+          contentAsString(result) must include(messages("StartPage.p5." + organisationRequest.userType))
+        }
+
+        "return OK and the correct view for a GET - Welsh" in {
+          val result = startPageController.onPageLoad.apply(organisationRequestWelsh)
+
+          status(result) mustEqual OK
+          contentAsString(result) must include(cyMessages("StartPage.heading." + organisationRequestWelsh.userType))
+          contentAsString(result) must include(cyMessages("StartPage.p5." + organisationRequestWelsh.userType))
+        }
       }
     }
 

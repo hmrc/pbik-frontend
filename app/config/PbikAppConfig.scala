@@ -29,6 +29,7 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
   private lazy val basGatewayHost: String    = configuration.get[String]("microservice.auth.bas-gateway.host")
   lazy val maximumExclusions: Int            = configuration.get[Int]("pbik.exclusions.maximum")
   lazy val exclusionsAllowed: Boolean        = configuration.get[Boolean]("pbik.enabled.eil")
+  lazy val mpbikToggle: Boolean              = configuration.get[Boolean]("toggle.mpbik")
   lazy val biksNotSupported: Set[IabdType]   =
     configuration.get[Seq[Int]]("pbik.unsupported.biks.cy1").map(IabdType(_)).toSet
   lazy val biksDecommissioned: Set[IabdType] =
