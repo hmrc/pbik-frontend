@@ -23,6 +23,8 @@ import views.html.StartPage
 
 class StartPageViewSpec extends PBIKViewSpec {
 
+  // TODO remove as part of clean up MPBIK
+
   val startPageView: StartPage = injected[StartPage]
 
   def view()(implicit request: AuthenticatedRequest[?]): Html = startPageView()

@@ -122,6 +122,22 @@ StartPageMPBIK.p5.agent = eithrio cyflogeion rhag cael buddiant penodol ar gyfer
 StartPageMPBIK.link.agent = Dechrau nawr
 
 #*************************************************************
+# Payrolling Summary Page MPBIK
+#*************************************************************
+
+PayrollingSummaryMPBIK.heading = Crynodeb o drethu buddiannau drwy’r gyflogres
+PayrollingSummaryMPBIK.tab.taxYear.cy0 = Blwyddyn dreth Ebrill {0} i {1}
+PayrollingSummaryMPBIK.tab.heading = Buddiannau sydd wedi eu cofrestru
+PayrollingSummaryMPBIK.table.header = Buddiant
+PayrollingSummaryMPBIK.table.exclude.link.text = Eithrio cyflogeion
+
+PayrollingSummaryMPBIK.p1.organisation = Gallwch ddefnyddio’r gwasanaeth hwn i reoli buddiannau sy’n cael eu trethu drwy’r gyflogres.
+PayrollingSummaryMPBIK.p2.organisation = Dyma’r buddiannau yr ydych wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
+
+PayrollingSummaryMPBIK.p1.agent = Gallwch ddefnyddio’r gwasanaeth hwn i reoli’r buddiannau sy’n cael eu trethu drwy gyflogres {0}.
+PayrollingSummaryMPBIK.p2.agent = Dyma’r buddiannau rydych wedi’u cofrestru i’w trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen.
+
+#*************************************************************
 # Select Year
 #*************************************************************
 

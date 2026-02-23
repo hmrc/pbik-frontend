@@ -122,6 +122,22 @@ StartPageMPBIK.p5.agent = exclude employees from a benefit for the current year
 StartPageMPBIK.link.agent = Start now
 
 #*************************************************************
+# Payrolling Summary Page MPBIK
+#*************************************************************
+
+PayrollingSummaryMPBIK.heading = Payrolling summary
+PayrollingSummaryMPBIK.tab.taxYear.cy0 = Tax year April {0} to {1}
+PayrollingSummaryMPBIK.tab.heading = Registered benefits
+PayrollingSummaryMPBIK.table.header = Benefit
+PayrollingSummaryMPBIK.table.exclude.link.text = Exclude employees
+
+PayrollingSummaryMPBIK.p1.organisation = You can use this service to manage benefits being taxed through payroll.
+PayrollingSummaryMPBIK.p2.organisation = These are the benefits that you have registered to tax through payroll from 6 April {0}.
+
+PayrollingSummaryMPBIK.p1.agent = You can use this service to manage benefits being taxed through {0}''s payroll.
+PayrollingSummaryMPBIK.p2.agent = These are the benefits that you have registered to tax through your client''s payroll from 6 April {0}.
+
+#*************************************************************
 # Select Year
 #*************************************************************
 

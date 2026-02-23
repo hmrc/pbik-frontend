@@ -21,16 +21,21 @@ import models.v1.{BenefitInKindWithCount, IabdType}
 import org.jsoup.Jsoup
 import play.twirl.api.Html
 import views.helper.PBIKViewSpec
-import views.html.Summary
+import views.html.{PayrollingSummaryPageMpbik, Summary}
+
+import scala.collection.immutable.List
 
 class SummaryViewSpec extends PBIKViewSpec {
 
-  private val summaryView: Summary               = injected[Summary]
-  private val carIabdType: String                = IabdType.CarBenefit.id.toString
-  private val carBik: BenefitInKindWithCount     = BenefitInKindWithCount(IabdType.CarBenefit, 2)
-  private val medicalBik: BenefitInKindWithCount = BenefitInKindWithCount(IabdType.MedicalInsurance, 2)
-  private val serviceBiksCountCY: Int            = 0
-  private val serviceBiksCountCYP1: Int          = 200
+  private val summaryView: Summary                                       = injected[Summary]
+  private lazy val payrollingSummaryPageView: PayrollingSummaryPageMpbik = injected[PayrollingSummaryPageMpbik]
+  private val carIabdType: String                                        = IabdType.CarBenefit.id.toString
+  private val carBik: BenefitInKindWithCount                             = BenefitInKindWithCount(IabdType.CarBenefit, 2)
+  private val medicalBik: BenefitInKindWithCount                         = BenefitInKindWithCount(IabdType.MedicalInsurance, 2)
+  private val serviceBiksCountCY: Int                                    = 0
+  private val serviceBiksCountCYP1: Int                                  = 200
+
+  private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
 
   private def view(
     selectedYear: String,
@@ -38,15 +43,19 @@ class SummaryViewSpec extends PBIKViewSpec {
     benefitsCYP1: List[BenefitInKindWithCount],
     showChangeYearLink: Boolean = true
   )(implicit request: AuthenticatedRequest[?]): Html =
-    summaryView(
-      selectedYear,
-      taxYearRange,
-      benefitsCY,
-      benefitsCYP1,
-      serviceBiksCountCY,
-      serviceBiksCountCYP1,
-      showChangeYearLink
-    )
+    if (april2026MpbikToggle) {
+      payrollingSummaryPageView(taxYearRange.cy, benefitsCY)
+    } else {
+      summaryView(
+        selectedYear,
+        taxYearRange,
+        benefitsCY,
+        benefitsCYP1,
+        serviceBiksCountCY,
+        serviceBiksCountCYP1,
+        showChangeYearLink
+      )
+    }
 
   private def testCYView(userType: String)(implicit request: AuthenticatedRequest[?]): Unit =
     s"overview for CY - $userType" must {
@@ -80,6 +89,33 @@ class SummaryViewSpec extends PBIKViewSpec {
         val doc          = Jsoup.parse(view("cy", List.empty, lotsOfBiks).toString)
         val emptyMessage = messages("Overview.empty.benefits.p")
         doc.body().text() must not include emptyMessage
+      }
+
+    }
+
+  private def testCYViewMPBIK(userType: String)(implicit request: AuthenticatedRequest[?]): Unit =
+    s"overview for CY - $userType" must {
+      implicit val html: Html = view("cy", List(carBik, medicalBik), List.empty)
+
+      behave like pageWithTitle(messages(s"PayrollingSummaryMPBIK.heading"))
+      behave like pageWithHeader(messages(s"PayrollingSummaryMPBIK.heading"))
+      behave like pageWithIdAndText(messages(s"PayrollingSummaryMPBIK.p1.$userType"), "service-use")
+      behave like pageWithBackLink()
+
+      "show correct title for the tab for CY" in {
+        val doc = Jsoup.parse(view("cy", List.empty, List.empty).toString())
+        doc.select("#benefits-tab").text() mustBe messages(
+          "PayrollingSummaryMPBIK.tab.heading"
+        )
+      }
+
+      "show correct tab tag for CY" in {
+        val doc = Jsoup.parse(view("cy", List.empty, List.empty).toString())
+        doc.select("#tab-tag-cy").text() mustBe messages(
+          "PayrollingSummaryMPBIK.tab.taxYear.cy0",
+          taxYearRange.cy.toString,
+          taxYearRange.cyplus1.toString
+        )
       }
 
     }
@@ -121,9 +157,14 @@ class SummaryViewSpec extends PBIKViewSpec {
     }
 
   // Run tests for both user types
-  testCYView("organisation")(organisationRequest)
-  testCYP1View("organisation")(organisationRequest)
+  if (april2026MpbikToggle) {
+    testCYViewMPBIK("organisation")(organisationRequest)
+    testCYViewMPBIK("agent")(agentRequest)
+  } else {
+    testCYView("organisation")(organisationRequest)
+    testCYP1View("organisation")(organisationRequest)
 
-  testCYView("agent")(agentRequest)
-  testCYP1View("agent")(agentRequest)
+    testCYView("agent")(agentRequest)
+    testCYP1View("agent")(agentRequest)
+  }
 }
