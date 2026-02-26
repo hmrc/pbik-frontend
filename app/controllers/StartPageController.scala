@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Exceptions.InvalidYearURIException
 import utils.{ControllersReferenceData, FormMappings}
-import views.html.{PayrollingSummaryPageMpbik, SelectYearPage, StartPage, StartPageMpbik}
+import views.html.{SelectYearPage, StartPage, StartPageMpbik}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,10 +39,9 @@ class StartPageController @Inject() (
   bikListService: BikListService,
   formMappings: FormMappings,
   controllersReferenceData: ControllersReferenceData,
-  startPageView: StartPage,
+  startPageView: StartPage, // todo remove after mpbik cleanup
   startPageMpbikToggleView: StartPageMpbik,
-  selectYearPageView: SelectYearPage,
-  payrollingSummaryView: PayrollingSummaryPageMpbik,
+  selectYearPageView: SelectYearPage, // todo remove after mpbik cleanup
   pbikAppConfig: PbikAppConfig
 )(implicit val ec: ExecutionContext)
     extends FrontendController(cc)
@@ -62,15 +61,6 @@ class StartPageController @Inject() (
     } else {
       Future.successful(Ok(startPageView()))
     }
-  }
-
-  def payrollingSummary: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    val startTaxYear                 = controllersReferenceData.yearRange.cy
-    val resultFuture: Future[Result] = for {
-      currentYearList <- bikListService.currentYearList
-    } yield Ok(payrollingSummaryView(startTaxYear, currentYearList.getBenefitInKindWithCount))
-
-    controllersReferenceData.responseErrorHandler(resultFuture)
   }
 
   def selectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>

@@ -35,17 +35,24 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
   private val taxDateUtils = new TaxDateUtils
 
   implicit def view()(implicit request: AuthenticatedRequest[?]): Html =
-    whatNextExclusionView(taxYearRange, "cy", iabdType, tracePerson)
+    whatNextExclusionView(taxYearRange, "cy", iabdType, tracePerson, mpbik = mpbikToggle)
 
   "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)
 
     behave like pageWithTitle(messages("whatNext.exclude.heading"))
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
-    behave like pageWithLink(
-      messages("whatNext.exclude.you.do.p.cy.link." + organisationRequest.userType),
-      "/payrollbik/cy/registered-benefits-expenses"
-    )
+    if (mpbikToggle) {
+      behave like pageWithLink(
+        messages("whatNext.exclude.you.do.p.cy.link." + organisationRequest.userType),
+        "/payrollbik/registered-benefits-expenses"
+      )
+    } else {
+      behave like pageWithLink(
+        messages("whatNext.exclude.you.do.p.cy.link." + organisationRequest.userType),
+        "/payrollbik/cy/registered-benefits-expenses"
+      )
+    }
     behave like pageWithLink(
       messages("whatNext.exclude.more.p.cy.link", "Vans"),
       s"/payrollbik/cy/${iabdType.id}/excluded-employees"
@@ -61,10 +68,17 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("whatNext.exclude.heading"))
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
-    behave like pageWithLink(
-      messages("whatNext.exclude.you.do.p.cy.link." + agentRequest.userType),
-      "/payrollbik/cy/registered-benefits-expenses"
-    )
+    if (mpbikToggle) {
+      behave like pageWithLink(
+        messages("whatNext.exclude.you.do.p.cy.link." + agentRequest.userType),
+        "/payrollbik/registered-benefits-expenses"
+      )
+    } else {
+      behave like pageWithLink(
+        messages("whatNext.exclude.you.do.p.cy.link." + agentRequest.userType),
+        "/payrollbik/cy/registered-benefits-expenses"
+      )
+    }
     behave like pageWithLink(
       messages("whatNext.exclude.more.p.cy.link", "Vans"),
       s"/payrollbik/cy/${iabdType.id}/excluded-employees"

@@ -28,16 +28,21 @@
     taxYearRange:TaxYearRange,
     year:String,
     iabdType:IabdType,
-    person:TracePersonResponse
+    person:TracePersonResponse,
+    mpbik: Boolean
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
 @summaryLink = @{
-    if(year=="cy"){
-        routes.HomePageController.onPageLoadCY
+    if(mpbik){
+        routes.HomePageController.onPageLoad
     } else {
-        routes.HomePageController.onPageLoadCY1
+        if(year=="cy"){
+            routes.HomePageController.onPageLoadCY
+        } else {
+            routes.HomePageController.onPageLoadCY1
+        }
     }
 }
 

@@ -149,6 +149,7 @@ class StartPageControllerAgentSpec extends FakePBIKApplication {
     }
 
     ".selectYearPage" must {
+      // TODO remove as part of clean up MPBIK
       "return OK and the correct view for a GET - when CY data exists" in {
         when(bikListService.currentYearList(any(), any())).thenReturn(Future.successful(bikResponseWithBenefits))
         val result = startPageController.selectYearPage.apply(agentRequest)
@@ -171,6 +172,7 @@ class StartPageControllerAgentSpec extends FakePBIKApplication {
     }
 
     ".submitSelectYearPage" must {
+      // TODO remove as part of clean up MPBIK
       "return OK and the correct view with error for a POST - when invalid form submit" in {
         val result = startPageController.submitSelectYearPage.apply(agentRequest)
 

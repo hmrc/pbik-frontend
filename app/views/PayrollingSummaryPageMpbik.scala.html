@@ -54,10 +54,11 @@
                     <tbody class="govuk-table__body">
                     @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
                         <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">@messages("BenefitInKind.label." + n.iabdType.id)</td>
+                            <td class="govuk-table__cell" id="cy-@n.iabdType.id">@messages("BenefitInKind.label." + n.iabdType.id)</td>
                             <td class="govuk-table__cell govuk-table__cell--numeric">
-                                <a class="govuk-link" id="cy-exclude-@n.iabdType.id" href='@controllers.routes.ExclusionListController.performPageLoad("cy", n.iabdType)'>
-                                    @messages("PayrollingSummaryMPBIK.table.exclude.link.text")
+                                <a id="cy-exclude-@n.iabdType.id" href='@controllers.routes.ExclusionListController.performPageLoad("cy", n.iabdType)' class="govuk-link">
+                                    @if(n.payrolledBenefitInKindExclusionCount == 0) {@messages("PayrollingSummaryMPBIK.table.exclude.link.text")} else {@messages("PayrollingSummaryMPBIK.table.manage.link.text")}
+                                    <span class="govuk-visually-hidden">@messages("Overview.current.from") @messages("BenefitInKind.label." + n.iabdType.id)</span>
                                 </a>
                             </td>
                         </tr>

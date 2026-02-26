@@ -84,6 +84,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
   private val cyBenefitTypes: BenefitTypes                                           = BenefitTypes(IabdType.values)
   private val cyBiks                                                                 =
     cyBenefitTypes.pbikTypes.map(x => BenefitInKindWithCount(x, 3))
+  private val mpbik: Boolean                                                         = pbikAppConfig.mpbikToggle
 
   private val pbikSession: PbikSession = PbikSession(
     sessionId = UUID.randomUUID().toString,
@@ -262,13 +263,15 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       (
         ControllersReferenceDataCodes.NO,
         s"Payrolling summary form page for $cy",
-        s"/payrollbik/$cy/registered-benefits-expenses",
+        if (mpbik) { s"/payrollbik/registered-benefits-expenses" }
+        else { s"/payrollbik/cy/registered-benefits-expenses" },
         cy
       ),
       (
         ControllersReferenceDataCodes.NO,
         s"Payrolling summary form page for $cyp1",
-        s"/payrollbik/cy1/registered-benefits-expenses",
+        if (mpbik) { s"/payrollbik/registered-benefits-expenses" }
+        else { s"/payrollbik/cy1/registered-benefits-expenses" },
         cyp1
       )
     )

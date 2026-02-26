@@ -28,8 +28,11 @@
         taxYearRange: TaxYearRange,
         isExhausted: Boolean,
         nonLegislationBiks:Set[Int],
-        decommissionedBiks:Set[Int]
+        decommissionedBiks:Set[Int],
+        mpbik: Boolean
 )(implicit request:Request[?], messages: Messages)
+
+@redirectBackLink = @{if(mpbik) {routes.HomePageController.onPageLoad} else {routes.HomePageController.onPageLoadCY}}
 
 @govukLayoutWrapper(PageTitle(messages("AddBenefits.Heading", ""+taxYearRange.cyminus1, ""+taxYearRange.cy), form.hasErrors)) {
 
@@ -106,7 +109,7 @@
         <input type="submit" role="button" class="govuk-button" id="button-continue" value="@messages("Service.continue")">
     }
 
-    <a class="govuk-link" id="link-back" href='@routes.HomePageController.onPageLoadCY'>
+    <a class="govuk-link" id="link-back" href='@redirectBackLink'>
         @messages("Service.back.cancel")
     </a>
 

@@ -251,7 +251,7 @@ class FormMappings @Inject() (pbikAppConfig: PbikAppConfig, val messagesApi: Mes
       )(OtherReason.apply)(o => Some(o.reason))
     )
 
-  val selectYearForm: Form[SelectYear] =
+  val selectYearForm: Form[SelectYear] = // todo remove as part of MPBIK cleanup
     Form(mapping("year" -> nonEmptyText)(SelectYear.apply)(o => Some(o.year)))
 
 }

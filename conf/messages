@@ -130,6 +130,7 @@ PayrollingSummaryMPBIK.tab.taxYear.cy0 = Tax year April {0} to {1}
 PayrollingSummaryMPBIK.tab.heading = Registered benefits
 PayrollingSummaryMPBIK.table.header = Benefit
 PayrollingSummaryMPBIK.table.exclude.link.text = Exclude employees
+PayrollingSummaryMPBIK.table.manage.link.text = Manage employees
 
 PayrollingSummaryMPBIK.p1.organisation = You can use this service to manage benefits being taxed through payroll.
 PayrollingSummaryMPBIK.p2.organisation = These are the benefits that you have registered to tax through payroll from 6 April {0}.

@@ -48,6 +48,8 @@ class RegistrationService @Inject() (
 )(implicit val executionContext: ExecutionContext)
     extends I18nSupport {
 
+  private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+
   def generateViewForBikRegistrationSelection(
     year: Int,
     generateViewBasedOnFormItems: (
@@ -111,7 +113,8 @@ class RegistrationService @Inject() (
           controllersReferenceData.yearRange,
           isCurrentYear,
           code = -1,
-          pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING
+          pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING,
+          mpbik = mpbikToggle
         )
       )
     } else {

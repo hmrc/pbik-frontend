@@ -130,6 +130,7 @@ PayrollingSummaryMPBIK.tab.taxYear.cy0 = Blwyddyn dreth Ebrill {0} i {1}
 PayrollingSummaryMPBIK.tab.heading = Buddiannau sydd wedi eu cofrestru
 PayrollingSummaryMPBIK.table.header = Buddiant
 PayrollingSummaryMPBIK.table.exclude.link.text = Eithrio cyflogeion
+PayrollingSummaryMPBIK.table.manage.link.text = Rheoli cyflogeion
 
 PayrollingSummaryMPBIK.p1.organisation = Gallwch ddefnyddio’r gwasanaeth hwn i reoli buddiannau sy’n cael eu trethu drwy’r gyflogres.
 PayrollingSummaryMPBIK.p2.organisation = Dyma’r buddiannau yr ydych wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.

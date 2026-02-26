@@ -64,6 +64,8 @@ class ControllersReferenceData @Inject() (
     with I18nSupport
     with Logging {
 
+  private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+
   def yearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
   def responseCheckCYEnabled(
@@ -76,7 +78,8 @@ class ControllersReferenceData @Inject() (
           ControllersReferenceDataCodes.CY_RESTRICTED,
           yearRange,
           "",
-          errorCode
+          errorCode,
+          mpbik = mpbikToggle
         )
       )
     )
@@ -91,20 +94,22 @@ class ControllersReferenceData @Inject() (
         NotFound(
           errorPageView(
             ControllersReferenceDataCodes.VALIDATION_ERROR_REFERENCE,
-            yearRange
+            yearRange,
+            mpbik = mpbikToggle
           )
         )
       case e1: InvalidYearURIException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
         BadRequest(
-          errorPageView(ControllersReferenceDataCodes.INVALID_YEAR_REFERENCE, yearRange)
+          errorPageView(ControllersReferenceDataCodes.INVALID_YEAR_REFERENCE, yearRange, mpbik = mpbikToggle)
         )
       case e2: InvalidBikTypeException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeException was handled : $e2")
         BadRequest(
           errorPageView(
             ControllersReferenceDataCodes.INVALID_BIK_TYPE_REFERENCE,
-            yearRange
+            yearRange,
+            mpbik = mpbikToggle
           )
         )
 
@@ -131,7 +136,8 @@ class ControllersReferenceData @Inject() (
                 Messages("ServiceMessage." + msgValue),
                 yearRange,
                 "",
-                msgValue.toInt
+                msgValue.toInt,
+                mpbik = mpbikToggle
               )
             )
           }

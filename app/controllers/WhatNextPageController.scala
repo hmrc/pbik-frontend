@@ -16,14 +16,15 @@
 
 package controllers
 
+import config.PbikAppConfig
 import controllers.actions.AuthAction
-import models._
+import models.*
 import models.v1.IabdType.IabdType
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils._
+import utils.*
 import views.html.registration.{AddBenefitConfirmationNextTaxYear, RemoveBenefitConfirmationNextTaxYear}
 
 import javax.inject.{Inject, Singleton}
@@ -38,10 +39,13 @@ class WhatNextPageController @Inject() (
   controllersReferenceData: ControllersReferenceData,
   cc: MessagesControllerComponents,
   addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear,
-  removeBenefitConfirmationNextTaxYearView: RemoveBenefitConfirmationNextTaxYear
+  removeBenefitConfirmationNextTaxYearView: RemoveBenefitConfirmationNextTaxYear,
+  pbikAppConfig: PbikAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport {
+
+  private val mpbik: Boolean = pbikAppConfig.mpbikToggle
 
   def showWhatNextRegisteredBik(year: String): Action[AnyContent] =
     authenticate.async { implicit request =>
@@ -54,7 +58,8 @@ class WhatNextPageController @Inject() (
           addBenefitConfirmationNextTaxYearView(
             taxDateUtils.isCurrentTaxYear(yearInt),
             controllersReferenceData.yearRange,
-            addedBiksAsList
+            addedBiksAsList,
+            mpbik
           )
         )
       }
@@ -71,7 +76,8 @@ class WhatNextPageController @Inject() (
             taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
             controllersReferenceData.yearRange,
             removedBikAsList,
-            iabdType
+            iabdType,
+            mpbik
           )
         )
       }
