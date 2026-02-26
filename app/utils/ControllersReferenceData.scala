@@ -60,7 +60,7 @@ class ControllersReferenceData @Inject() (
 )(implicit
   ec: ExecutionContext,
   val pbikAppConfig: PbikAppConfig
-) extends FormMappings(messagesApi)
+) extends FormMappings(pbikAppConfig, messagesApi)
     with I18nSupport
     with Logging {
 

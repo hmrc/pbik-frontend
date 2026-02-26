@@ -51,6 +51,8 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
   private val mockSessionService = mock(classOf[SessionService])
   private val mockBikListService = mock(classOf[BikListService])
 
+  private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(configMap)
     .overrides(bind[AuthAction].to(classOf[TestAuthActionOrganisation]))
@@ -442,7 +444,11 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
           )
 
         status(result) mustBe OK
-        contentAsString(result) must include(messages("Service.errorSummary.heading"))
+        if (april2026MpbikToggle) {
+          contentAsString(result) must include(messages("Service.errorSummary.headingMPBIK"))
+        } else {
+          contentAsString(result) must include(messages("Service.errorSummary.heading"))
+        }
       }
 
       "display the expected nino search form when non-NINO form with errors" in {

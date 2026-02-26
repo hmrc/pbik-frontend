@@ -42,6 +42,7 @@ Service.paye.label = Employer PAYE reference:
 Service.nino.lastletter = (Last letter not shown)
 
 Service.continue = Continue
+Service.continueMPBIK = Continue
 Service.confirm = Confirm
 Service.confirmAndContinue = Confirm and continue
 Service.tryagain = Try again
@@ -65,6 +66,8 @@ Service.excludeanotheremployee = Exclude another employee
 
 Service.errorSummary.heading = There’s a problem
 Service.error = Error
+
+Service.errorSummary.headingMPBIK = There is a problem
 
 #*************************************************************
 # Start Page
@@ -251,6 +254,8 @@ ExclusionSearch.Fail.Exists.Desc = This employee has already been excluded for {
 ExclusionSearch.Fail.Exists.P = Search again for a different employee
 
 ExclusionSearch.warning = You will not be able to payroll this benefit or expense for this employee again in this tax year.
+
+ExclusionSearchMPBIK.form.current.tax.year = Tax year April {0} to {1}
 
 ExclusionImportant.Reminder = By confirming, you will exclude this employee from having {0} taxed through payroll from {1}.
 ExclusionRemovalConfirmation.title = Declare the employee to add to this benefit or expense
@@ -466,6 +471,11 @@ error.empty.lastname = Enter a last name.
 error.incorrect.nino = Enter the employee''s National Insurance number in the correct format.
 error.incorrect.firstname = Enter a first name that doesn’t contain any numbers or special characters.
 error.incorrect.lastname = Enter a last name that doesn’t contain any numbers or special characters.
+
+error.incorrect.firstnameMPBIK = First name must only contain letters a to z.
+error.incorrect.lastnameMPBIK = Enter a last name that doesn’t contain any numbers or special characters.
+error.firstname.lengthMPBIK = First name must be 35 characters or less.
+error.lastname.lengthMPBIK = Last name must be 35 characters or less.
 
 error.empty.dob = Enter a date of birth.
 error.invaliddate.day = Enter a valid day.

@@ -16,8 +16,10 @@
 
 @import views.html.localhelpers.TextInput
 @import views.templatemodels.PageTitle
+@import config.PbikAppConfig
 
 @this(
+        config:PbikAppConfig,
         govukLayoutWrapper: GovukLayoutWrapper,
         formWithCSRF: FormWithCSRF,
         textInput: TextInput
@@ -29,7 +31,7 @@
         iabdType:IabdType,
         searchForm: Form[NinoForm],
         alreadyExists: Boolean = false
-)(implicit request:Request[?], messages: Messages)
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">}
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
@@ -40,7 +42,7 @@
         <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
             <h2 class="govuk-error-summary__title" id="error-summary-heading-1">
-                @messages("Service.errorSummary.heading")
+                @(if(config.mpbikToggle) messages("Service.errorSummary.headingMPBIK") else messages("Service.errorSummary.heading"))
             </h2>
             @if(searchForm("status").hasErrors) {
                 @if(alreadyExists) {
@@ -71,8 +73,21 @@
     @formWithCSRF(action =routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdType, "nino"), Symbol("autocomplete") -> "off") {
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <span class="govuk-caption-l">@benefitLabel</span>
-                    <h1 id="title" class="govuk-fieldset__heading">@messages("ExclusionSearch.form.header")</h1>
+                    @if(config.mpbikToggle) {
+                        @if(request.isAgent){
+                            <span id="client-name" class="govuk-caption-l">@request.clientName.get</span>
+                        }
+                        @if(isCurrentTaxYear=="cy"){
+                            <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.current.tax.year", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)</span>
+                        } else{
+                            <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.current.tax.year", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</span>
+                        }
+                        <h1 class="govuk-heading-xl">@benefitLabel</h1>
+                        <h1 id="title" class="govuk-heading-l">@messages("ExclusionSearch.form.header")</h1>
+                    }else{
+                        <span class="govuk-caption-l">@benefitLabel</span>
+                        <h1 id="title" class="govuk-fieldset__heading">@messages("ExclusionSearch.form.header")</h1>
+                    }
                 </legend>
 
                 <div class='form-group @if(searchForm("status").hasErrors) {govuk-form-group--error}' id="search-form">
@@ -82,13 +97,16 @@
                     </span>
                     }
                 </div>
-                @textInput(searchForm("firstname"), Symbol("_label") -> messages("Service.field.firstname"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
+                @textInput(searchForm("firstname"), Symbol("_label") -> messages("Service.field.firstname"), Symbol("_inputClass") -> (if(config.mpbikToggle) "govuk-!-width-one-half" else "govuk-!-width-two-thirds"))
 
-                @textInput(searchForm("surname"), Symbol("_label") -> messages("Service.field.surname"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
-
-                @textInput(searchForm("nino"), Symbol("_label") -> messages("Service.field.nino"), Symbol("_inputHint") ->  messages("Service.field.ninohint"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
+                @textInput(searchForm("surname"), Symbol("_label") -> messages("Service.field.surname"), Symbol("_inputClass") -> (if(config.mpbikToggle) "govuk-!-width-one-half" else "govuk-!-width-two-thirds"))
+                @if(config.mpbikToggle) {
+                @textInput(searchForm("nino"), Symbol("_label") -> messages("Service.field.nino"), Symbol("_inputHintDiv") ->  messages("Service.field.ninohint"), Symbol("_inputClass") -> "govuk-!-width-one-half")
+                }else{
+                    @textInput(searchForm("nino"), Symbol("_label") -> messages("Service.field.nino"), Symbol("_inputHint") ->  messages("Service.field.ninohint"), Symbol("_inputClass") -> "govuk-!-width-two-thirds")
+                }
             </fieldset>
 
-            <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.continue")"/>
+            <input type="submit" class="govuk-button" role="button" id="button-continue" value='@(if(config.mpbikToggle) messages("Service.continueMPBIK") else messages("Service.continue"))'/>
     }
 }

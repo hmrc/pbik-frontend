@@ -33,6 +33,8 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
   private val iabdType = IabdType.Mileage
 
+  private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+
   def viewWithForm(form: Form[NinoForm])(implicit request: AuthenticatedRequest[?]): Html =
     ninoExclusionSearchFormView(taxYearRange, "cyp1", iabdType, form, alreadyExists = true)
 
@@ -75,10 +77,17 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
       doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
       doc must haveErrorNotification(messages("error.incorrect.nino"))
-      doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.firstname"))
-      doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.lastname"))
+      if (april2026MpbikToggle) {
+        doc must haveErrorSummary(messages("error.incorrect.firstnameMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.firstnameMPBIK"))
+        doc must haveErrorSummary(messages("error.incorrect.lastnameMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.lastnameMPBIK"))
+      } else {
+        doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.firstname"))
+        doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.lastname"))
+      }
     }
   }
 
@@ -121,10 +130,17 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
       doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
       doc must haveErrorNotification(messages("error.incorrect.nino"))
-      doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.firstname"))
-      doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.lastname"))
+      if (april2026MpbikToggle) {
+        doc must haveErrorSummary(messages("error.incorrect.firstnameMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.firstnameMPBIK"))
+        doc must haveErrorSummary(messages("error.incorrect.lastnameMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.lastnameMPBIK"))
+      } else {
+        doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.firstname"))
+        doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.lastname"))
+      }
     }
 
     "show status error when status has errors" in {

@@ -42,6 +42,7 @@ Service.paye.label = Cyfeirnod TWE y cyflogwr:
 Service.nino.lastletter = (Nid yw’r llythyren olaf yn cael ei dangos)
 
 Service.continue = Yn eich blaen
+Service.continueMPBIK = Parhau
 Service.confirm = Cadarnhau
 Service.confirmAndContinue = Cadarnhau ac yn eich blaen
 Service.tryagain = Rhowch gynnig arall arni
@@ -65,6 +66,8 @@ Service.excludeanotheremployee = Eithrio cyflogai arall
 
 Service.errorSummary.heading = Mae problem wedi codi
 Service.error = Gwall
+
+Service.errorSummary.headingMPBIK = Mae problem
 
 #*************************************************************
 # Start Page
@@ -251,6 +254,8 @@ ExclusionSearch.Fail.Exists.Desc = Mae’r cyflogai hwn eisoes wedi’i eithrio 
 ExclusionSearch.Fail.Exists.P = Chwilio eto am gyflogai gwahanol
 
 ExclusionSearch.warning = Ni fyddwch yn gallu rhoi’r buddiant neu’r draul sydd dan sylw drwy’r gyflogres ar gyfer y cyflogai hwn eto yn y flwyddyn dreth hon.
+
+ExclusionSearchMPBIK.form.current.tax.year = Blwyddyn dreth Ebrill {0} i {1}
 
 ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu o ran {0} drwy’r gyflogres o {1} ymlaen.
 ExclusionRemovalConfirmation.title = Datgan y cyflogai sydd i’w ychwanegu at y buddiant neu’r draul sydd dan sylw
@@ -466,6 +471,11 @@ error.empty.lastname = Nodwch enw olaf.
 error.incorrect.nino = Nodwch rif Yswiriant Gwladol y cyflogai yn y fformat cywir.
 error.incorrect.firstname = Nodwch enw cyntaf nad yw’n cynnwys rhifau neu gymeriadau arbennig.
 error.incorrect.lastname = Nodwch enw olaf nad yw’n cynnwys rhifau neu gymeriadau arbennig.
+
+error.incorrect.firstnameMPBIK = Mae’n rhaid i’r enw cyntaf gynnwys y llythrennau a i z yn unig.
+error.incorrect.lastnameMPBIK = Mae’n rhaid i’r enw olaf gynnwys y llythrennau a i z yn unig.
+error.firstname.lengthMPBIK = Mae’n rhaid i’r enw cyntaf fod yn 35 o gymeriadau neu lai.
+error.lastname.lengthMPBIK = Mae’n rhaid i’r enw olaf fod yn 35 o gymeriadau neu lai.
 
 error.empty.dob = Nodwch ddyddiad geni.
 error.invaliddate.day = Nodwch ddiwrnod dilys.
