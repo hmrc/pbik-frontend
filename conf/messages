@@ -473,7 +473,7 @@ error.incorrect.firstname = Enter a first name that doesn’t contain any number
 error.incorrect.lastname = Enter a last name that doesn’t contain any numbers or special characters.
 
 error.incorrect.firstnameMPBIK = First name must only contain letters a to z.
-error.incorrect.lastnameMPBIK = Enter a last name that doesn’t contain any numbers or special characters.
+error.incorrect.lastnameMPBIK = Last name must only contain letters a to z.
 error.firstname.lengthMPBIK = First name must be 35 characters or less.
 error.lastname.lengthMPBIK = Last name must be 35 characters or less.
 

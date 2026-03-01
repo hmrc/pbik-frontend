@@ -77,16 +77,45 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
       doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
       doc must haveErrorNotification(messages("error.incorrect.nino"))
+
+      val msgIncorrectFirstname =
+        if (april2026MpbikToggle)
+          "error.incorrect.firstnameMPBIK"
+        else
+          "error.incorrect.firstname"
+
+      val msgIncorrectLastname =
+        if (april2026MpbikToggle)
+          "error.incorrect.lastnameMPBIK"
+        else
+          "error.incorrect.lastname"
+
+      doc must haveErrorSummary(messages(msgIncorrectFirstname).replace(".", ""))
+      doc must haveErrorNotification(messages(msgIncorrectFirstname))
+      doc must haveErrorSummary(messages(msgIncorrectLastname).replace(".", ""))
+      doc must haveErrorNotification(messages(msgIncorrectLastname))
+    }
+
+    "check for name length validation" in {
+      val longName = "a" * 36
+
+      implicit def view: Html = viewWithForm(
+        formMappings
+          .exclusionSearchFormWithNino(organisationRequest)
+          .bind(
+            Map(
+              "nino"      -> "AA123456A",
+              "firstname" -> longName,
+              "surname"   -> longName
+            )
+          )
+      )(organisationRequest)
+
       if (april2026MpbikToggle) {
-        doc must haveErrorSummary(messages("error.incorrect.firstnameMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.incorrect.firstnameMPBIK"))
-        doc must haveErrorSummary(messages("error.incorrect.lastnameMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.incorrect.lastnameMPBIK"))
-      } else {
-        doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
-        doc must haveErrorNotification(messages("error.incorrect.firstname"))
-        doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
-        doc must haveErrorNotification(messages("error.incorrect.lastname"))
+        doc must haveErrorSummary(messages("error.firstname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.firstname.lengthMPBIK"))
+        doc must haveErrorSummary(messages("error.lastname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.lastname.lengthMPBIK"))
       }
     }
   }
@@ -130,16 +159,45 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
       doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
       doc must haveErrorNotification(messages("error.incorrect.nino"))
+
+      val msgIncorrectFirstname =
+        if (april2026MpbikToggle)
+          "error.incorrect.firstnameMPBIK"
+        else
+          "error.incorrect.firstname"
+
+      val msgIncorrectLastname =
+        if (april2026MpbikToggle)
+          "error.incorrect.lastnameMPBIK"
+        else
+          "error.incorrect.lastname"
+
+      doc must haveErrorSummary(messages(msgIncorrectFirstname).replace(".", ""))
+      doc must haveErrorNotification(messages(msgIncorrectFirstname))
+      doc must haveErrorSummary(messages(msgIncorrectLastname).replace(".", ""))
+      doc must haveErrorNotification(messages(msgIncorrectLastname))
+    }
+
+    "check for name length validation" in {
+      val longName = "a" * 36
+
+      implicit def view: Html = viewWithForm(
+        formMappings
+          .exclusionSearchFormWithNino(agentRequest)
+          .bind(
+            Map(
+              "nino"      -> "AA123456A",
+              "firstname" -> longName,
+              "surname"   -> longName
+            )
+          )
+      )(agentRequest)
+
       if (april2026MpbikToggle) {
-        doc must haveErrorSummary(messages("error.incorrect.firstnameMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.incorrect.firstnameMPBIK"))
-        doc must haveErrorSummary(messages("error.incorrect.lastnameMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.incorrect.lastnameMPBIK"))
-      } else {
-        doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
-        doc must haveErrorNotification(messages("error.incorrect.firstname"))
-        doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
-        doc must haveErrorNotification(messages("error.incorrect.lastname"))
+        doc must haveErrorSummary(messages("error.firstname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.firstname.lengthMPBIK"))
+        doc must haveErrorSummary(messages("error.lastname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.lastname.lengthMPBIK"))
       }
     }
 
