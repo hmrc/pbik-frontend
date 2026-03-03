@@ -31,7 +31,8 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings                           = injected[FormMappings]
   val ninoExclusionSearchFormView: NinoExclusionSearchForm = injected[NinoExclusionSearchForm]
 
-  private val iabdType = IabdType.Mileage
+  private val iabdType        = IabdType.Mileage
+  private val iabdTypeMileage = "Mileage allowance and passenger payments"
 
   private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
 
@@ -43,7 +44,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       viewWithForm(formMappings.exclusionSearchFormWithNino(organisationRequest))(organisationRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
-    behave like pageWithHeader(messages("ExclusionSearch.form.header"))
+    if (april2026MpbikToggle)
+      behave like pageWithHeader(messages("ExclusionSearch.form.headerMPBIK", "" + iabdTypeMileage))
+    else
+      behave like pageWithHeader(messages("ExclusionSearch.form.header"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee", "Continue")
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
@@ -125,7 +129,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       viewWithForm(formMappings.exclusionSearchFormWithNino(agentRequest))(agentRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
-    behave like pageWithHeader(messages("ExclusionSearch.form.header"))
+    if (april2026MpbikToggle)
+      behave like pageWithHeader(messages("ExclusionSearch.form.headerMPBIK", "" + iabdTypeMileage))
+    else
+      behave like pageWithHeader(messages("ExclusionSearch.form.header"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee", "Continue")
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))

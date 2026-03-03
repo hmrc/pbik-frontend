@@ -2,7 +2,7 @@
 # Service Messages
 #*************************************************************
 
-Service.title = Talu buddiannau a threuliau drwy’r gyflogres - GOV.UK
+Service.title = Talu buddiannau a threuliau drwy’r gyflogres
 service.name = Talu buddiannau a threuliau drwy’r gyflogres
 
 site.warning = Rhybudd
@@ -248,6 +248,8 @@ ExclusionSearch.form.title = Chwiliwch am y cyflogai i’w eithrio
 ExclusionSearch.form.header = Chwiliwch am y cyflogai rydych am ei eithrio
 ExclusionSearch.caption = Cyflogai i’w eithrio
 ExclusionSearch.payroll.date = 6 Ebrill {0}
+
+ExclusionSearch.form.headerMPBIK = Chwiliwch am y cyflogai rydych am ei eithrio o {0}
 
 ExclusionSearch.Fail.Desc = Nid oedd modd dod o hyd i’r cyflogai hwn
 ExclusionSearch.Fail.Exists.Desc = Mae’r cyflogai hwn eisoes wedi’i eithrio ar gyfer {0}. Gallwch ei weld yn eich {1}rhestr o gyflogeion sydd wedi’u heithrio{2}.
