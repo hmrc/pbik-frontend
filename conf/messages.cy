@@ -303,6 +303,41 @@ ExclusionRemoval.Service.finish.rescinded = Bwrw golwg dros eich cyflogeion sydd
 ExclusionRemoval.Service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
 #*************************************************************
+# Exclusion search MPBIK
+#*************************************************************
+
+ExclusionSearchMPBIK.title.multiple = Pa gyflogai rydych am ei eithrio?
+ExclusionSearchMPBIK.form.tax.year = Blwyddyn dreth Ebrill {0} i {1}
+
+#*************************************************************
+# Exclusion overview MPBIK
+#*************************************************************
+
+ExclusionSearchMPBIK.title.single = Datgan y cyflogai i’w eithrio rhag y buddiant hwn
+ExclusionSearchMPBIK.title.multiple = Pa gyflogai ydych am ei eithrio?
+ExclusionSearchMPBIK.title.span.taxYear.cy0 = Blwyddyn dreth Ebrill {0} i {1}
+ExclusionImportantMPBIK.Reminder = Drwy gadarnhau hyn, byddwch yn eithrio’r cyflogai hwn rhag cael y buddiant canlynol wedi’i drethu drwy’r gyflogres o {1} ymlaen: {0}.
+ExclusionSearchMPBIK.inset.text = O 6 Ebrill 2027 ymlaen, bydd angen i gyflogwyr drethu holl fuddiannau cyflogeion drwy’r gyflogres (ac eithrio benthyciadau a llety). Ni fydd buddiannau unrhyw gyflogeion yn cael eu heithrio rhag cael eu trethu drwy’r gyflogres, hyd yn oed os yw’r cyflogeion hynny wedi’u heithrio rhag buddiannau ar gyfer blwyddyn dreth 2026 i 2027.
+
+ExclusionSearchMPBIK.field.employee.name = Enw’r cyflogai
+ExclusionSearchMPBIK.field.employee.ni = Rhif Yswiriant Gwladol (heb ddangos y llythyren olaf)
+ExclusionSearchMPBIK.field.employee.payrollId = ID y gyflogres neu rif gwaith
+
+ExclusionSearchMPBIK.warning = Ni fydd modd i chi drethu’r buddiant hwn drwy’r gyflogres ar gyfer y cyflogai hwn eto ac ar gyfer y flwyddyn dreth hon.
+
+ExclusionSearchMPBIK.confirmation.organisation.p = Rwy’n cadarnhau’r canlynol:
+ExclusionSearchMPBIK.confirmation.organisation.bullet1 = Byddaf yn rhoi gwybod am werth y buddiant ar gyfer y cyflogai hwn ar P11D
+ExclusionSearchMPBIK.confirmation.organisation.bullet2 = Byddaf yn anfon y P11D ar ddiwedd y flwyddyn dreth
+ExclusionSearchMPBIK.confirmation.agent.p = Rwy’n cadarnhau y byddaf yn dweud y canlynol wrth fy nghleient:
+ExclusionSearchMPBIK.confirmation.agent.bullet1 = bod yn rhaid iddo adrodd am werth y buddiant ar gyfer y cyflogai hwn ar P11D
+ExclusionSearchMPBIK.confirmation.agent.bullet2 = bod yn rhaid iddo anfon y P11D ar ddiwedd y flwyddyn dreth
+
+ExclusionSearchMPBIK.understanding.organisation.p = Rwy’n deall y canlynol:
+ExclusionSearchMPBIK.understanding.organisation.bullet1 = Ni allaf ychwanegu’r cyflogai hwn yn ôl at y buddiant hwn ar gyfer y flwyddyn dreth hon
+ExclusionSearchMPBIK.understanding.agent.p = Rwy’n deall:
+ExclusionSearchMPBIK.understanding.agent.bullet1 = Ni allaf ychwanegu’r cyflogai hwn yn ôl at y buddiant hwn ar gyfer y flwyddyn dreth hon
+
+#*************************************************************
 # Benefits Messages
 #*************************************************************
 

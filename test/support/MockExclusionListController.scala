@@ -23,9 +23,9 @@ import controllers.actions.{AuthAction, NoSessionCheckAction}
 import play.api.i18n.MessagesApi
 import play.api.mvc.MessagesControllerComponents
 import services.{BikListService, ExclusionService, SessionService}
-import utils._
+import utils.*
 import views.html.ErrorPage
-import views.html.exclusion._
+import views.html.exclusion.*
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -50,6 +50,8 @@ class MockExclusionListController @Inject() (
   ninoExclusionSearchFormView: NinoExclusionSearchForm,
   noNinoExclusionSearchFormView: NoNinoExclusionSearchForm,
   searchResultsView: SearchResults,
+  searchResultsViewMPBIK: SearchResultsMPBIK,
+  declareEmployeeViewMPBIK: DeclareEmployeeMPBIK,
   whatNextExclusionView: WhatNextExclusion,
   whatNextExclusionMpbikView: WhatNextExclusionMpbik,
   removalConfirmationView: RemovalConfirmation,
@@ -75,6 +77,8 @@ class MockExclusionListController @Inject() (
       ninoExclusionSearchFormView,
       noNinoExclusionSearchFormView,
       searchResultsView,
+      searchResultsViewMPBIK,
+      declareEmployeeViewMPBIK,
       whatNextExclusionView,
       whatNextExclusionMpbikView,
       removalConfirmationView,

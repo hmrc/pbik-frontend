@@ -1,0 +1,87 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import utils.TaxDateUtils
+@import views.templatemodels.PageTitle
+
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        govukWarningText: GovukWarningText,
+        formWithCSRF: FormWithCSRF,
+        taxDateUtils: TaxDateUtils
+)
+
+@(
+        taxYearRange: TaxYearRange,
+        year: String,
+        iabdType: IabdType,
+        listOfMatches: List[TracePersonResponse],
+        listOfMatchesForm: Form[ExclusionNino],
+        formType: String
+)(implicit request: Request[?], messages: Messages)
+
+@govukLayoutWrapper(PageTitle(messages("ExclusionSearchMPBIK.title.multiple"), listOfMatchesForm.hasErrors)) {
+
+    @if(listOfMatchesForm("individualNino").hasErrors) {
+        <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
+
+            <h2 class="govuk-error-summary__title" id="error-summary-heading-1">
+                @messages("Service.errorSummary.heading")
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    @if(listOfMatchesForm.error("individualNino").get.message.equals("error.required")){
+                    <li><a href="#employee-radio-0">@messages("error.exclusion.multi.selection")</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+
+    <h1 id="title" class="govuk-heading-xl">
+        <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.tax.year", s"${taxYearRange.cy}", s"${taxYearRange.cyplus1}")</span>
+        @messages("ExclusionSearchMPBIK.title.multiple")
+    </h1>
+
+    @formWithCSRF(action = routes.ExclusionListController.updateMultipleExclusions(year, iabdType, formType)) {
+        <div class="govuk-form-group @if(listOfMatchesForm("individualNino").hasErrors){govuk-form-group--error}">
+            <fieldset class="govuk-fieldset" @if(listOfMatchesForm("individualNino").hasErrors){aria-describedby="selection-error"}>
+                @if(listOfMatchesForm("individualNino").hasErrors) {
+                    <span id="selection-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">@messages("Service.error"):</span>
+                        @messages("error.exclusion.multi.selection")
+                    </span>
+                }
+                <div class="govuk-radios">
+                @for(index <- 0 until listOfMatches.length) {
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="employee-radio-@index" type="radio" aria-describedby="employee-hint-@index" name="individualNino" value='@listOfMatches(index).nationalInsuranceNumber'>
+                        <label class="govuk-label govuk-radios__label govuk-label--s" for="employee-radio-@index">
+                            @listOfMatches(index).fullName
+                        </label>
+                        <span id="employee-hint-@index" class="govuk-hint govuk-radios__hint">
+                            @messages("Service.field.nino"): @listOfMatches(index).nationalInsuranceNumber <br>
+                            @messages("Service.field.worksnumber"): @listOfMatches(index).getWorksPayrollNumber
+                        </span>
+                    </div>
+                }
+                </div>
+            </fieldset>
+        </div>
+
+        <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.continueMPBIK")">
+    }
+}

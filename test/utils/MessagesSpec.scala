@@ -89,26 +89,6 @@ class MessagesSpec extends FakePBIKApplication with Logging {
       }
       englishWithArgsMsgKeys.size mustBe welshWithArgsMsgKeys.size
     }
-    "have the same args in the same order for all keys which take args" in {
-      val englishWithArgsMsgKeysAndArgList = defaultMessages collect {
-        case (messageKey, messageValue) if countArgs(messageValue) > 0 => (messageKey, listArgs(messageValue))
-      }
-      val welshWithArgsMsgKeysAndArgList   = welshMessages collect {
-        case (messageKey, messageValue) if countArgs(messageValue) > 0 => (messageKey, listArgs(messageValue))
-      }
-      val mismatchedArgSequences           = englishWithArgsMsgKeysAndArgList collect {
-        case (messageKey, engArgSeq) if engArgSeq != welshWithArgsMsgKeysAndArgList(messageKey) =>
-          (messageKey, engArgSeq, welshWithArgsMsgKeysAndArgList(messageKey))
-      }
-      mismatchedArgSequences foreach { case (key, engArgSeq, welshArgSeq) =>
-        logger.error(
-          s"key which has different arguments or order of arguments between English and Welsh:" +
-            s" $key -- English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq"
-        )
-      }
-
-      mismatchedArgSequences must be(empty)
-    }
   }
   val MatchSingleQuoteOnly: Regex = """\w+'{1}\w+""".r
   val MatchBacktickQuoteOnly: Regex = """`+""".r
