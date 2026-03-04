@@ -105,7 +105,7 @@ StartPage.link.agent = Dechrau nawr
 # Start Page MPBIK
 #*************************************************************
 
-StartPageMPBIK.heading.organisation = Talu buddiannau a threuliau drwy’r gyflogres
+StartPageMPBIK.heading.organisation = Trethu buddiannau a threuliau drwy’r gyflogres
 StartPageMPBIK.p1.organisation = O XX Tachwedd 2026 ymlaen, byddwch yn gallu defnyddio’r gwasanaeth hwn i gofrestru i drethu benthyciadau a llety drwy’r gyflogres.
 StartPageMPBIK.p2.organisation = Os ydych wedi cofrestru buddiannau neu dreuliau, gallwch ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
 StartPageMPBIK.p3.organisation = gweld buddiannau a threuliau sydd wedi eu cofrestru ar gyfer y flwyddyn hon
