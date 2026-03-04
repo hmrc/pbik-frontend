@@ -51,7 +51,7 @@ class PayrollingSummaryPageViewSpec extends PBIKViewSpec {
         doc.body().text() must not include emptyMessage
       }
 
-      "show links to exclude employees when " in {
+      "show links to exclude employees when exclusion count is 0" in {
         val doc                     = Jsoup.parse(view(List(medicalBik)).toString)
         val excludeLinkText: String = messages("PayrollingSummaryMPBIK.table.exclude.link.text")
         doc.body().text() must include(excludeLinkText)

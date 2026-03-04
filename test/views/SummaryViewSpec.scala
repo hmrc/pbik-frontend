@@ -35,15 +35,13 @@ class SummaryViewSpec extends PBIKViewSpec {
   private val serviceBiksCountCY: Int                                    = 0
   private val serviceBiksCountCYP1: Int                                  = 200
 
-  private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
-
   private def view(
     selectedYear: String,
     benefitsCY: List[BenefitInKindWithCount],
     benefitsCYP1: List[BenefitInKindWithCount],
     showChangeYearLink: Boolean = true
   )(implicit request: AuthenticatedRequest[?]): Html =
-    if (april2026MpbikToggle) {
+    if (pbikAppConfig.mpbikToggle) {
       payrollingSummaryPageView(taxYearRange.cy, benefitsCY)
     } else {
       summaryView(
@@ -157,7 +155,7 @@ class SummaryViewSpec extends PBIKViewSpec {
     }
 
   // Run tests for both user types
-  if (april2026MpbikToggle) {
+  if (pbikAppConfig.mpbikToggle) {
     testCYViewMPBIK("organisation")(organisationRequest)
     testCYViewMPBIK("agent")(agentRequest)
   } else {
