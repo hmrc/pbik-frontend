@@ -39,6 +39,8 @@
     <label class="govuk-label" for="@elements.field.name">@elements.label</label>
     @if(elements.args.contains(Symbol("_inputHint")) ){
         <span class="govuk-hint" id="@fieldName-hint">@elements.args.get(Symbol("_inputHint"))</span>
+    } else @if(elements.args.contains(Symbol("_inputHintDiv")) ){
+        <div class="govuk-hint" id="@fieldName-hint">@elements.args.get(Symbol("_inputHintDiv"))</div>
     }
     @elements.field.errors.map { error => <span class="govuk-error-message" id="@fieldName-error">
         <span class="govuk-visually-hidden">@messages("Service.error"):</span>

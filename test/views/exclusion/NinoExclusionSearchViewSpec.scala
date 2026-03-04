@@ -31,7 +31,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   val formMappings: FormMappings                           = injected[FormMappings]
   val ninoExclusionSearchFormView: NinoExclusionSearchForm = injected[NinoExclusionSearchForm]
 
-  private val iabdType = IabdType.Mileage
+  private val iabdType        = IabdType.Mileage
+  private val iabdTypeMileage = "Mileage allowance and passenger payments"
+
+  private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
 
   def viewWithForm(form: Form[NinoForm])(implicit request: AuthenticatedRequest[?]): Html =
     ninoExclusionSearchFormView(taxYearRange, "cyp1", iabdType, form, alreadyExists = true)
@@ -41,7 +44,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       viewWithForm(formMappings.exclusionSearchFormWithNino(organisationRequest))(organisationRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
-    behave like pageWithHeader(messages("ExclusionSearch.form.header"))
+    if (april2026MpbikToggle)
+      behave like pageWithHeader(messages("ExclusionSearch.form.headerMPBIK", "" + iabdTypeMileage))
+    else
+      behave like pageWithHeader(messages("ExclusionSearch.form.header"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee", "Continue")
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
@@ -75,10 +81,46 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
       doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
       doc must haveErrorNotification(messages("error.incorrect.nino"))
-      doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.firstname"))
-      doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.lastname"))
+
+      val msgIncorrectFirstname =
+        if (april2026MpbikToggle)
+          "error.incorrect.firstnameMPBIK"
+        else
+          "error.incorrect.firstname"
+
+      val msgIncorrectLastname =
+        if (april2026MpbikToggle)
+          "error.incorrect.lastnameMPBIK"
+        else
+          "error.incorrect.lastname"
+
+      doc must haveErrorSummary(messages(msgIncorrectFirstname).replace(".", ""))
+      doc must haveErrorNotification(messages(msgIncorrectFirstname))
+      doc must haveErrorSummary(messages(msgIncorrectLastname).replace(".", ""))
+      doc must haveErrorNotification(messages(msgIncorrectLastname))
+    }
+
+    "check for name length validation" in {
+      val longName = "a" * 36
+
+      implicit def view: Html = viewWithForm(
+        formMappings
+          .exclusionSearchFormWithNino(organisationRequest)
+          .bind(
+            Map(
+              "nino"      -> "AA123456A",
+              "firstname" -> longName,
+              "surname"   -> longName
+            )
+          )
+      )(organisationRequest)
+
+      if (april2026MpbikToggle) {
+        doc must haveErrorSummary(messages("error.firstname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.firstname.lengthMPBIK"))
+        doc must haveErrorSummary(messages("error.lastname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.lastname.lengthMPBIK"))
+      }
     }
   }
 
@@ -87,7 +129,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       viewWithForm(formMappings.exclusionSearchFormWithNino(agentRequest))(agentRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
-    behave like pageWithHeader(messages("ExclusionSearch.form.header"))
+    if (april2026MpbikToggle)
+      behave like pageWithHeader(messages("ExclusionSearch.form.headerMPBIK", "" + iabdTypeMileage))
+    else
+      behave like pageWithHeader(messages("ExclusionSearch.form.header"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee", "Continue")
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
@@ -121,10 +166,46 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
       doc must haveErrorSummary(messages("error.incorrect.nino").replace(".", ""))
       doc must haveErrorNotification(messages("error.incorrect.nino"))
-      doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.firstname"))
-      doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.lastname"))
+
+      val msgIncorrectFirstname =
+        if (april2026MpbikToggle)
+          "error.incorrect.firstnameMPBIK"
+        else
+          "error.incorrect.firstname"
+
+      val msgIncorrectLastname =
+        if (april2026MpbikToggle)
+          "error.incorrect.lastnameMPBIK"
+        else
+          "error.incorrect.lastname"
+
+      doc must haveErrorSummary(messages(msgIncorrectFirstname).replace(".", ""))
+      doc must haveErrorNotification(messages(msgIncorrectFirstname))
+      doc must haveErrorSummary(messages(msgIncorrectLastname).replace(".", ""))
+      doc must haveErrorNotification(messages(msgIncorrectLastname))
+    }
+
+    "check for name length validation" in {
+      val longName = "a" * 36
+
+      implicit def view: Html = viewWithForm(
+        formMappings
+          .exclusionSearchFormWithNino(agentRequest)
+          .bind(
+            Map(
+              "nino"      -> "AA123456A",
+              "firstname" -> longName,
+              "surname"   -> longName
+            )
+          )
+      )(agentRequest)
+
+      if (april2026MpbikToggle) {
+        doc must haveErrorSummary(messages("error.firstname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.firstname.lengthMPBIK"))
+        doc must haveErrorSummary(messages("error.lastname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.lastname.lengthMPBIK"))
+      }
     }
 
     "show status error when status has errors" in {

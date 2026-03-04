@@ -30,6 +30,7 @@ import java.time.LocalDate
 import java.util.Calendar
 import javax.inject.{Inject, Singleton}
 import scala.util.Try
+import config.PbikAppConfig
 
 object FormMappingsConstants {
 
@@ -39,7 +40,7 @@ object FormMappingsConstants {
 }
 
 @Singleton
-class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport {
+class FormMappings @Inject() (pbikAppConfig: PbikAppConfig, val messagesApi: MessagesApi) extends I18nSupport {
 
   private val nameValidationRegex        = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
   private val validNinoFormat            = "[[A-Z]&&[^DFIQUV]][[A-Z]&&[^DFIQUVO]] ?\\d{2} ?\\d{2} ?\\d{2} ?[A-D]?"
@@ -98,6 +99,18 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
   private def cleanupNino(nino: String): String =
     nino.replaceAll(" ", "").trim.toUpperCase
 
+  private val msgIncorrectFirstname =
+    if (pbikAppConfig.mpbikToggle)
+      "error.incorrect.firstnameMPBIK"
+    else
+      "error.incorrect.firstname"
+
+  private val msgIncorrectLastname =
+    if (pbikAppConfig.mpbikToggle)
+      "error.incorrect.lastnameMPBIK"
+    else
+      "error.incorrect.lastname"
+
   val binaryRadioButton: Form[MandatoryRadioButton] = Form(
     mapping(
       "confirmation" -> nonEmptyText(1) //  must contain minimum characters for supported biks 1-99
@@ -132,12 +145,26 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
 
   def exclusionSearchFormWithNino[A](implicit request: Request[A]): Form[NinoForm] = Form(
     mapping(
-      "firstname" -> text
-        .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.nonEmpty)
-        .verifying(Messages("error.incorrect.firstname"), firstname => firstname.matches(nameValidationRegex)),
-      "surname"   -> text
-        .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.nonEmpty)
-        .verifying(Messages("error.incorrect.lastname"), lastname => lastname.matches(nameValidationRegex)),
+      "firstname" -> {
+        val baseFirstNameValidation =
+          text
+            .verifying(Messages("error.empty.firstname"), _.trim.nonEmpty)
+            .verifying(Messages(msgIncorrectFirstname), firstname => firstname.matches(nameValidationRegex))
+        if (pbikAppConfig.mpbikToggle)
+          baseFirstNameValidation.verifying(Messages("error.firstname.lengthMPBIK"), _.trim.length <= 35)
+        else
+          baseFirstNameValidation
+      },
+      "surname"   -> {
+        val baseLastNameValidation =
+          text
+            .verifying(Messages("error.empty.lastname"), _.trim.nonEmpty)
+            .verifying(Messages(msgIncorrectLastname), lastname => lastname.matches(nameValidationRegex))
+        if (pbikAppConfig.mpbikToggle)
+          baseLastNameValidation.verifying(Messages("error.lastname.lengthMPBIK"), _.trim.length <= 35)
+        else
+          baseLastNameValidation
+      },
       "nino"      -> text
         .verifying(Messages("error.empty.nino"), nino => cleanupNino(nino).nonEmpty)
         .verifying(
