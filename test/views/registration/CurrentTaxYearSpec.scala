@@ -36,7 +36,7 @@ class CurrentTaxYearSpec extends PBIKViewSpec {
     nonLegislationBiks: Set[Int] = Set.empty,
     decommissionedBiks: Set[Int] = Set.empty
   )(implicit request: AuthenticatedRequest[?]): Html =
-    currentTaxYear(form, taxYearRange, isExhausted, nonLegislationBiks, decommissionedBiks)
+    currentTaxYear(form, taxYearRange, isExhausted, nonLegislationBiks, decommissionedBiks, mpbik = mpbikToggle)
 
   "currentTaxYear - organisation" must {
     implicit def html: Html = viewWithForm(formMappings.objSelectedForm)(organisationRequest)

@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Exceptions.InvalidYearURIException
 import utils.{ControllersReferenceData, FormMappings}
-import views.html.{SelectYearPage, StartPage, StartPageMpbikToggle}
+import views.html.{SelectYearPage, StartPage, StartPageMpbik}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,9 +39,9 @@ class StartPageController @Inject() (
   bikListService: BikListService,
   formMappings: FormMappings,
   controllersReferenceData: ControllersReferenceData,
-  startPageView: StartPage,
-  startPageMpbikToggleView: StartPageMpbikToggle,
-  selectYearPageView: SelectYearPage,
+  startPageView: StartPage, // todo remove after mpbik cleanup
+  startPageMpbikToggleView: StartPageMpbik,
+  selectYearPageView: SelectYearPage, // todo remove after mpbik cleanup
   pbikAppConfig: PbikAppConfig
 )(implicit val ec: ExecutionContext)
     extends FrontendController(cc)
@@ -64,6 +64,7 @@ class StartPageController @Inject() (
   }
 
   def selectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
+    // TODO remove as part of clean up MPBIK
     val taxYearRange                 = controllersReferenceData.yearRange
     val resultFuture: Future[Result] = for {
       currentYearList <- bikListService.currentYearList
@@ -78,6 +79,7 @@ class StartPageController @Inject() (
   }
 
   def submitSelectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
+    // TODO remove as part of clean up MPBIK
     val taxYearRange                 = controllersReferenceData.yearRange
     val resultFuture: Future[Result] = formMappings.selectYearForm
       .bindFromRequest()

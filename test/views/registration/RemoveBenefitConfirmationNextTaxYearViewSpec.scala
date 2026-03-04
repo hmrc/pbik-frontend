@@ -43,7 +43,8 @@ class RemoveBenefitConfirmationNextTaxYearViewSpec extends PBIKViewSpec {
       isCurrentYear = true,
       taxYearRange,
       bikList,
-      IabdType.MedicalInsurance
+      IabdType.MedicalInsurance,
+      mpbik = mpbikToggle
     )
 
   "RemoveBenefitConfirmationNextTaxYear view" must {

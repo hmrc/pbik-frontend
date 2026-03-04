@@ -65,6 +65,8 @@ class ManageRegistrationController @Inject() (
     with Logging
     with WithUnsafeDefaultFormBinding {
 
+  private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+
   def nextTaxYearAddOnPageLoad: Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       val staticDataRequest = registrationService.generateViewForBikRegistrationSelection(
@@ -78,7 +80,8 @@ class ManageRegistrationController @Inject() (
     (authenticate andThen noSessionCheck).async { implicit request =>
       val staticDataRequest = registrationService.generateViewForBikRegistrationSelection(
         controllersReferenceData.yearRange.cyminus1,
-        generateViewBasedOnFormItems = currentTaxYearView(_, controllersReferenceData.yearRange, _, _, _)
+        generateViewBasedOnFormItems =
+          currentTaxYearView(_, controllersReferenceData.yearRange, _, _, _, mpbik = mpbikToggle)
       )
       controllersReferenceData.responseCheckCYEnabled(staticDataRequest)
     }
@@ -97,7 +100,8 @@ class ManageRegistrationController @Inject() (
                               controllersReferenceData.yearRange,
                               isExhausted = false,
                               nonLegislationBiks = pbikAppConfig.biksNotSupported.map(_.id),
-                              decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id)
+                              decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id),
+                              mpbik = mpbikToggle
                             )
                           )
                         ),

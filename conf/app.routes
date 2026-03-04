@@ -24,6 +24,7 @@ GET         /individual-signout                                  controllers.Hom
 
 GET         /setLanguage                                         controllers.HomePageController.setLanguage()
 
+GET         /registered-benefits-expenses                       controllers.HomePageController.onPageLoad
 GET         /cy/registered-benefits-expenses                    controllers.HomePageController.onPageLoadCY
 GET         /cy1/registered-benefits-expenses                   controllers.HomePageController.onPageLoadCY1
 

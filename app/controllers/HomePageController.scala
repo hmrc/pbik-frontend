@@ -18,17 +18,17 @@ package controllers
 
 import config.PbikAppConfig
 import controllers.actions.{AuthAction, NoSessionCheckAction, UnauthorisedAction}
-import models._
+import models.*
 import models.auth.AuthenticatedRequest
 import play.api.Logging
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import services.{BikListService, SessionService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils._
-import views.html.{ErrorPage, Summary}
+import utils.*
+import views.html.{ErrorPage, PayrollingSummaryPageMpbik, Summary}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,17 +47,21 @@ class HomePageController @Inject() (
   taxDateUtils: TaxDateUtils,
   pbikAppConfig: PbikAppConfig,
   errorPageView: ErrorPage,
-  summaryPage: Summary
+  summaryPage: Summary,
+  payrollingSummaryView: PayrollingSummaryPageMpbik
 )(implicit val ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport
     with Logging {
 
+  private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+
   def notAuthorised: Action[AnyContent] = authenticate { implicit request =>
     Unauthorized(
       errorPageView(
         ControllersReferenceDataCodes.AUTHORISATION_ERROR,
-        taxDateUtils.getTaxYearRange()
+        taxDateUtils.getTaxYearRange(),
+        mpbik = mpbikToggle
       )
     )
   }
@@ -91,6 +95,21 @@ class HomePageController @Inject() (
         .head
     )
       .withLang(newLang)(messagesApi)
+  }
+
+  def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
+    if (mpbikToggle) {
+      val startTaxYear                   = controllersReferenceData.yearRange.cy
+      val pageLoadFuture: Future[Result] = for {
+        _               <- sessionService.resetAll()
+        currentYearList <- bikListService.currentYearList
+        _               <- auditHomePageView()
+      } yield Ok(payrollingSummaryView(startTaxYear, currentYearList.getBenefitInKindWithCount))
+
+      controllersReferenceData.responseErrorHandler(pageLoadFuture)
+    } else {
+      Future.successful(Redirect(routes.RedirectController.redirectIfFromStart()))
+    }
   }
 
   def onPageLoadCY1: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>

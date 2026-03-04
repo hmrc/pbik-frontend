@@ -22,10 +22,11 @@
 )
 
 @(
-        taxYearRange:TaxYearRange,
-        year:String,
-        iabdType:IabdType,
-        person:PbikExclusionPerson
+        taxYearRange: TaxYearRange,
+        year: String,
+        iabdType: IabdType,
+        person: PbikExclusionPerson,
+        mpbik: Boolean
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
@@ -33,10 +34,14 @@
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(year=="cy") cyminus1 else cy}
 @summaryLink = @{
-    if(year=="cy"){
-        routes.HomePageController.onPageLoadCY
+    if(mpbik){
+        routes.HomePageController.onPageLoad
     } else {
-        routes.HomePageController.onPageLoadCY1
+        if(year=="cy"){
+            routes.HomePageController.onPageLoadCY
+        } else {
+            routes.HomePageController.onPageLoadCY1
+        }
     }
 }
 @govukLayoutWrapper(PageTitle(messages("whatNext.rescind.heading")),

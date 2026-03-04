@@ -24,17 +24,22 @@
 @(
         isCurrentYear: Boolean,
         taxYearRange:TaxYearRange,
-        bikList: RegistrationList
+        bikList: RegistrationList,
+        mpbik: Boolean
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(isCurrentYear) cyminus1 else cy}
 @summaryLink = @{
-    if(isCurrentYear){
-        routes.HomePageController.onPageLoadCY
+    if(mpbik){
+        routes.HomePageController.onPageLoad
     } else {
-        routes.HomePageController.onPageLoadCY1
+        if(isCurrentYear){
+            routes.HomePageController.onPageLoadCY
+        } else {
+            routes.HomePageController.onPageLoadCY1
+        }
     }
 }
 
