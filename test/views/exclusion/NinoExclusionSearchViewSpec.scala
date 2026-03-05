@@ -45,7 +45,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     if (april2026MpbikToggle)
-      behave like pageWithHeader(messages("ExclusionSearch.form.headerMPBIK", "" + iabdTypeMileage))
+      behave like pageWithHeader(messages("ExclusionSearchMPBIK.form.header", "" + iabdTypeMileage))
     else
       behave like pageWithHeader(messages("ExclusionSearch.form.header"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee", "Continue")
@@ -130,7 +130,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
     if (april2026MpbikToggle)
-      behave like pageWithHeader(messages("ExclusionSearch.form.headerMPBIK", "" + iabdTypeMileage))
+      behave like pageWithHeader(messages("ExclusionSearchMPBIK.form.header", "" + iabdTypeMileage))
     else
       behave like pageWithHeader(messages("ExclusionSearch.form.header"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee", "Continue")

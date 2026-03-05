@@ -266,8 +266,8 @@ ExclusionSearch.form.header = Chwiliwch am y cyflogai rydych am ei eithrio
 ExclusionSearch.caption = Cyflogai i’w eithrio
 ExclusionSearch.payroll.date = 6 Ebrill {0}
 
-ExclusionSearch.form.titleMPBIK = Chwilio am y cyflogai i’w eithrio
-ExclusionSearch.form.headerMPBIK = Chwilio am y cyflogai i’w eithrio o {0}
+ExclusionSearchMPBIK.form.title = Chwilio am y cyflogai i’w eithrio
+ExclusionSearchMPBIK.form.header = Chwilio am y cyflogai i’w eithrio o {0}
 
 ExclusionSearch.Fail.Desc = Nid oedd modd dod o hyd i’r cyflogai hwn
 ExclusionSearch.Fail.Exists.Desc = Mae’r cyflogai hwn eisoes wedi’i eithrio ar gyfer {0}. Gallwch ei weld yn eich {1}rhestr o gyflogeion sydd wedi’u heithrio{2}.
