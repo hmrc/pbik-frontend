@@ -36,7 +36,7 @@
 @excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">}
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
-@govukLayoutWrapper(PageTitle(messages("ExclusionSearch.form.title"), searchForm.hasErrors)) {
+@govukLayoutWrapper(PageTitle(messages(if(config.mpbikToggle) "ExclusionSearchMPBIK.form.title" else "ExclusionSearch.form.title"), searchForm.hasErrors)) {
 
     @if(searchForm.hasErrors){
         <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
@@ -82,7 +82,7 @@
                         } else{
                             <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.current.tax.year", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</span>
                         }
-                        <h1 id="title" class="govuk-heading-l">@messages("ExclusionSearch.form.headerMPBIK", ""+benefitLabel)</h1>
+                        <h1 id="title" class="govuk-heading-l">@messages("ExclusionSearchMPBIK.form.header", ""+benefitLabel)</h1>
                     }else{
                         <span class="govuk-caption-l">@benefitLabel</span>
                         <h1 id="title" class="govuk-fieldset__heading">@messages("ExclusionSearch.form.header")</h1>
