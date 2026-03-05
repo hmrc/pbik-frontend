@@ -169,8 +169,8 @@ class FormMappings @Inject() (pbikAppConfig: PbikAppConfig, val messagesApi: Mes
         .verifying(Messages("error.empty.nino"), nino => cleanupNino(nino).nonEmpty)
         .verifying(
           Messages("error.incorrect.nino"),
-          nino => cleanupNino(nino).matches(validNinoFormat)
-        )
+          nino => cleanupNino(nino).isEmpty || cleanupNino(nino).matches(validNinoFormat)
+       )
     )((firstname, surname, nino) =>
       NinoForm(
         firstname.trim,
