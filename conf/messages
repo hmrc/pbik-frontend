@@ -266,7 +266,8 @@ ExclusionSearch.form.header = Search for the employee you want to exclude
 ExclusionSearch.caption = Employee to be excluded
 ExclusionSearch.payroll.date = 6 April {0}
 
-ExclusionSearch.form.headerMPBIK = Search for the employee you want to exclude from {0}
+ExclusionSearch.form.titleMPBIK = Search for the employee to exclude
+ExclusionSearch.form.headerMPBIK = Search for the employee to exclude from {0}
 
 ExclusionSearch.Fail.Desc = This employee can’t be found.
 ExclusionSearch.Fail.Exists.Desc = This employee has already been excluded for {0}. You can see them in your {1}excluded employee list{2}.
