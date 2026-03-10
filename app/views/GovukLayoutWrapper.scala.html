@@ -85,7 +85,7 @@
     } else if (showBackLink && showECLBackLink) {
         @govukBackLink(BackLink(
             href = config.agentClientListUrl,
-            content = Text(messages("Service.back.ecl")),
+            content = Text(messages(if(config.mpbikToggle) "Service.back.eclMPBIK" else "Service.back.ecl")),
             attributes = Map("id" -> "back-link")
         ))
     } else if (showBackLink && showYTABackLink) {
