@@ -97,7 +97,10 @@ class SummaryViewSpec extends PBIKViewSpec {
 
       behave like pageWithTitle(messages(s"PayrollingSummaryMPBIK.heading"))
       behave like pageWithHeader(messages(s"PayrollingSummaryMPBIK.heading"))
-      behave like pageWithIdAndText(messages(s"PayrollingSummaryMPBIK.p1.$userType"), "service-use")
+      behave like pageWithIdAndText(
+        messages(s"PayrollingSummaryMPBIK.p1.$userType", request.clientName.getOrElse("")),
+        "service-use"
+      )
       behave like pageWithBackLink()
 
       "show correct title for the tab for CY" in {
