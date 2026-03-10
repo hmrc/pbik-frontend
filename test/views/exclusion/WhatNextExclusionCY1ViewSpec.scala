@@ -44,7 +44,7 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     if (mpbikToggle) {
       behave like pageWithLink(
-        messages("whatNext.exclude.you.do.p.cy.link." + organisationRequest.userType),
+        messages("whatNextMPBIK.exclude.you.do.p.cy.link." + organisationRequest.userType),
         "/payrollbik/registered-benefits-expenses"
       )
     } else {
@@ -70,7 +70,7 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     if (mpbikToggle) {
       behave like pageWithLink(
-        messages("whatNext.exclude.you.do.p.cy.link." + agentRequest.userType),
+        messages("whatNextMPBIK.exclude.you.do.p.cy.link." + agentRequest.userType),
         "/payrollbik/registered-benefits-expenses"
       )
     } else {
@@ -83,11 +83,17 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
       messages("whatNext.exclude.more.p.cy.link", "Vans"),
       s"/payrollbik/cy/${iabdType.id}/excluded-employees"
     )
-    behave like pageWithIdAndText(
-      "John A Doe will not have Vans taxed through payroll from " + taxDateUtils.getDisplayTodayDate(),
-      "confirmation-p"
-    )
-
+    if (mpbikToggle) {
+      behave like pageWithIdAndText(
+        "John A Doe will not have Vans taxed through clientName's payroll from " + taxDateUtils.getDisplayTodayDate(),
+        "confirmation-p"
+      )
+    } else {
+      behave like pageWithIdAndText(
+        "John A Doe will not have Vans taxed through payroll from " + taxDateUtils.getDisplayTodayDate(),
+        "confirmation-p"
+      )
+    }
   }
 
 }
