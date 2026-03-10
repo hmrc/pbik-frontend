@@ -41,6 +41,8 @@ Service.back.ecl = Yn ôl i’r rhestr o gleientiaid TWE
 Service.paye.label = Cyfeirnod TWE y cyflogwr:
 Service.nino.lastletter = (Nid yw’r llythyren olaf yn cael ei dangos)
 
+Service.nino.lastletterMPBIK = (heb ddangos y llythyren olaf)
+
 Service.continue = Yn eich blaen
 Service.continueMPBIK = Parhau
 Service.confirm = Cadarnhau
@@ -48,6 +50,8 @@ Service.confirmAndContinue = Cadarnhau ac yn eich blaen
 Service.tryagain = Rhowch gynnig arall arni
 
 Service.print.link = Argraffwch y dudalen hon
+
+Service.print.linkMPBIK = Argraffu’r dudalen hon
 
 Service.notEnrolled.title = Ymrestru i ddefnyddio’r gwasanaeth hwn
 Service.notEnrolled.text1 = Rydych wedi’ch mewngofnodi i Wasanaethau Ar-lein CThEF, ond mae’n rhaid i’ch cyflogwr gofrestru ar gyfer Talu Wrth Ennill (TWE) y Cyflogwr cyn i chi allu mynd yn eich blaen.
@@ -432,6 +436,9 @@ Service.field.nino.2lines = Rhif Yswiriant Gwladol
 Service.field.ninohint = Er enghraifft, QQ123456A
 Service.field.dob = Dyddiad geni
 Service.field.worksnumber = ID y gyflogres neu Rif gwaith
+
+Service.field.worksnumberMPBIK = ID y gyflogres neu rif gwaith
+
 Service.field.dobhint = Er enghraifft, 31 3 1980
 Service.field.dob.day = Diwrnod
 Service.field.dob.month = Mis
@@ -442,6 +449,9 @@ Service.field.gender.female = Benyw
 Service.field.employee.name = Enw’r cyflogai
 Service.field.client.name = Enw’r cleient
 Service.field.employer.paye = Cyfeirnod TWE y cyflogwr
+
+Service.field.employer.payeMPBIK = Cyfeirnod TWE y Cyflogwr
+
 Service.field.selected.benefits = Buddiannau a threuliau sydd wedi cael eu dewis
 Service.field.removed.benefit = Wedi dileu’r buddiant neu’r draul
 Service.field.stop.benefit = Buddiant neu draul
@@ -546,21 +556,40 @@ whatNext.exclude.table.heading = Manylion yr eithriad
 whatNext.exclude.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud
 whatNext.exclude.h2.agent = Beth ddylech chi ddweud wrth eich cleient
 
+whatNextMPBIK.exclude.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud
+whatNextMPBIK.exclude.h2.agent = Yr hyn y mae’n rhaid i’ch cleient gael gwybod gennych
+
 whatNext.exclude.p1.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
 whatNext.exclude.p1.link.organisation = cyflwyno P11D i CThEF
 whatNext.exclude.p1.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+
+whatNextMPBIK.exclude.p1.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
+whatNextMPBIK.exclude.p1.link.organisation = anfon P11D at CThEF
+whatNextMPBIK.exclude.p1.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 
 whatNext.exclude.p1.before.agent = Dylai’ch cleient roi gwybod am werth y buddiant hwn drwy
 whatNext.exclude.p1.link.agent = cyflwyno P11D i CThEF
 whatNext.exclude.p1.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
 
+whatNextMPBIK.exclude.p1.before.agent = Dylai’ch cleient adrodd am werth y buddiant hwn drwy
+whatNextMPBIK.exclude.p1.link.agent = anfon P11D at CThEF
+whatNextMPBIK.exclude.p1.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
+
 whatNext.exclude.p1.cy.before.organisation = Mae’n rhaid i chi roi gwybod am werth y buddiant hwn drwy
 whatNext.exclude.p1.cy.link.organisation = gyflwyno P11D i CThEF
 whatNext.exclude.p1.cy.after.organisation = ar gyfer {0}. Mae’n rhaid i chi wneud y canlynol:
 
+whatNextMPBIK.exclude.p1.cy.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
+whatNextMPBIK.exclude.p1.cy.link.organisation = anfon P11D at CThEF
+whatNextMPBIK.exclude.p1.cy.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+
 whatNext.exclude.p1.cy.before.agent = Mae’n rhaid i’ch cleient roi gwybod am werth y buddiant hwn drwy
 whatNext.exclude.p1.cy.link.agent = gyflwyno P11D i CThEF
 whatNext.exclude.p1.cy.after.agent = ar gyfer {0}. Mae’n rhaid iddo wneud y canlynol:
+
+whatNextMPBIK.exclude.p1.cy.before.agent = Dylai’ch cleient adrodd am werth y buddiant hwn drwy
+whatNextMPBIK.exclude.p1.cy.link.agent = anfon P11D at CThEF
+whatNextMPBIK.exclude.p1.cy.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
 
 whatNext.exclude.li1.cy = cyfrifo cyfwerth llawn y buddiant ar gyfer y cyflogai mewn arian parod
 whatNext.exclude.li2.cy = didynnu unrhyw daliadau y mae wedi’u gwneud yn y flwyddyn dreth bresennol
@@ -574,6 +603,12 @@ whatNext.exclude.you.do.p.cy.before.organisation = Gallwch
 whatNext.exclude.you.do.p.cy.link.organisation = ddychwelyd i fuddiannau a threuliau’r flwyddyn hon
 whatNext.exclude.you.do.p.cy.after.organisation = i eithrio cyflogeion rhag buddiannau a threuliau’r flwyddyn hon.
 
+whatNextMPBIK.exclude.you.do.p.cy.before.organisation = Gallwch
+whatNextMPBIK.exclude.you.do.p.cy.link.organisation = fynd yn ôl at eich crynodeb o’r hyn rydych yn eu trethu drwy’r gyflogres
+whatNextMPBIK.exclude.you.do.p.cy.after.organisation = er mwyn gwneud y canlynol:
+whatNextMPBIK.exclude.li.view.benefits = gweld buddiannau
+whatNextMPBIK.exclude.li.other.benefits = eithrio cyflogeion rhag buddiannau eraill
+
 whatNext.exclude.you.do.p.cy.before.agent = Gallwch
 whatNext.exclude.you.do.p.cy.link.agent = ddychwelyd i fuddiannau a threuliau’r flwyddyn hon
 whatNext.exclude.you.do.p.cy.after.agent = i eithrio cyflogeion rhag buddiannau a threuliau’r flwyddyn hon ar gyfer y cleient hwn.
@@ -581,6 +616,10 @@ whatNext.exclude.you.do.p.cy.after.agent = i eithrio cyflogeion rhag buddiannau 
 whatNext.exclude.you.do.p.before.organisation = Gallwch
 whatNext.exclude.you.do.p.link.organisation = fynd yn ôl i’ch buddiannau a threuliau cofrestredig
 whatNext.exclude.you.do.p.after.organisation = er mwyn:
+
+whatNextMPBIK.exclude.you.do.p.before.organisation = Gallwch
+whatNextMPBIK.exclude.you.do.p.link.organisation = fynd yn ôl at eich crynodeb o’r hyn rydych yn eu trethu drwy’r gyflogres
+whatNextMPBIK.exclude.you.do.p.after.organisation = er mwyn gwneud y canlynol:
 
 whatNext.exclude.you.do.p.before.agent = Gallwch
 whatNext.exclude.you.do.p.link.agent = fynd yn ôl i fuddiannau a threuliau cofrestredig eich cleient
@@ -592,13 +631,24 @@ whatNext.exclude.you.do.li3 = tynnu buddiannau neu dreuliau nad ydych am eu tret
 
 whatNext.exclude.more.h3 = Os ydych chi am eithrio cyflogai arall rhag y buddiant neu’r draul sydd dan sylw
 
+whatNextMPBIK.exclude.more.h3 = Os ydych am eithrio cyflogai arall rhag y buddiant neu’r draul dan sylw
+
 whatNext.exclude.more.p.cy.before = Gallwch
 whatNext.exclude.more.p.cy.link = ddychwelyd i’r adran {0}
 whatNext.exclude.more.p.cy.after = i eithrio cyflogai arall rhag y buddiant neu’r draul sydd dan sylw.
 
+whatNextMPBIK.exclude.more.p.cy.before = Gallwch
+whatNextMPBIK.exclude.more.p.cy.link = fynd yn ôl i’r buddiant canlynol – {0}
+whatNextMPBIK.exclude.more.p.cy.after = i eithrio cyflogai arall rhag y buddiant hwn.
+
 whatNext.exclude.more.p.before = Gallwch
 whatNext.exclude.more.p.link = yn ôl i {0}
 whatNext.exclude.more.p.after = er mwyn:
+
+whatNextMPBIK.exclude.more.p.before = Gallwch
+whatNextMPBIK.exclude.more.p.link = fynd yn ôl i’r buddiant canlynol – {0}
+whatNextMPBIK.exclude.more.p.after = i eithrio cyflogai arall rhag y buddiant hwn.
+
 whatNext.exclude.more.li1 = eithrio cyflogai arall o’r buddiant neu’r draul hon
 whatNext.exclude.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r draul hon
 
@@ -606,6 +656,8 @@ whatNext.subHeading = Camau nesaf
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
 whatNext.exclude.lede = Ni fydd {0} yn cael ei drethu drwy’r gyflogres o ran {1} o {2} ymlaen.
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
+
+whatNextMPBIK.exclude.lede = Ni fydd {0} yn cael y buddiant canlynol wedi’i drethu drwy’r gyflogres o {2} ymlaen: {1}.
 
 whatNext.remove.p1 = Rydych wedi tynnu {0} rhag cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 whatNext.remove.table.heading = Manylion y buddiant neu draul
