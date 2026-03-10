@@ -32,7 +32,11 @@
 
         @pageTitleHeading(messages("PayrollingSummaryMPBIK.heading"))
 
-        <p class="govuk-body" id="service-use">@messages("PayrollingSummaryMPBIK.p1." + request.userType)</p>
+        @if(request.clientName.isDefined){
+            <p class="govuk-body" id="service-use">@messages("PayrollingSummaryMPBIK.p1." + request.userType, request.clientName.get)</p>
+        } else {
+            <p class="govuk-body" id="service-use">@messages("PayrollingSummaryMPBIK.p1." + request.userType)</p>
+        }
         <div class="govuk-tabs" data-module="govuk-tabs">
             <ul class="govuk-tabs__list">
                 <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
