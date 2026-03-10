@@ -43,7 +43,7 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     if (mpbikToggle) {
       behave like pageWithLink(
-        messages("whatNext.exclude.you.do.p.link." + organisationRequest.userType),
+        messages("whatNextMPBIK.exclude.you.do.p.link." + organisationRequest.userType),
         "/payrollbik/registered-benefits-expenses"
       )
     } else {
@@ -70,7 +70,7 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     if (mpbikToggle) {
       behave like pageWithLink(
-        messages("whatNext.exclude.you.do.p.link." + agentRequest.userType),
+        messages("whatNextMPBIK.exclude.you.do.p.link." + agentRequest.userType),
         "/payrollbik/registered-benefits-expenses"
       )
     } else {
@@ -83,10 +83,18 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
       messages("whatNext.exclude.more.p.link", "Private medical treatment or insurance"),
       s"/payrollbik/cyp1/${iabdType.id}/excluded-employees"
     )
-    behave like pageWithIdAndText(
-      "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2026.",
-      "confirmation-p"
-    )
+
+    if (mpbikToggle) {
+      behave like pageWithIdAndText(
+        "John A Doe will not have Private medical treatment or insurance taxed through clientName's payroll from 06 April 2026.",
+        "confirmation-p"
+      )
+    } else {
+      behave like pageWithIdAndText(
+        "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2026.",
+        "confirmation-p"
+      )
+    }
 
   }
 

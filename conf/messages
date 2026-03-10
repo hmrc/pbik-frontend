@@ -590,6 +590,10 @@ whatNext.exclude.p1.cy.before.agent = Your client must report the value of this 
 whatNext.exclude.p1.cy.link.agent = submitting a P11D to HMRC
 whatNext.exclude.p1.cy.after.agent = for {0}. They must:
 
+whatNextMPBIK.exclude.p1.cy.before.agent = Your client should report the value of this benefit by
+whatNextMPBIK.exclude.p1.cy.link.agent = sending HMRC a P11d
+whatNextMPBIK.exclude.p1.cy.after.agent = for {0}. They should do this at the end of the tax year.
+
 whatNext.exclude.li1.cy = calculate the full cash equivalent value of the benefit for the employee
 whatNext.exclude.li2.cy = deduct any payments that they have made in the current tax year
 whatNext.exclude.li3.cy = report the remaining value on the P11D
@@ -613,7 +617,7 @@ whatNext.exclude.you.do.p.cy.link.agent = return to this year’s benefits and e
 whatNext.exclude.you.do.p.cy.after.agent = to exclude employees from this year’s benefits and expenses for this client.
 
 whatNextMPBIK.exclude.you.do.p.cy.before.agent = You can
-whatNextMPBIK.exclude.you.do.p.cy.link.agent = return to your client's payrolling summary
+whatNextMPBIK.exclude.you.do.p.cy.link.agent = return to your client''s payrolling summary
 whatNextMPBIK.exclude.you.do.p.cy.after.agent = to:
 
 
@@ -630,7 +634,7 @@ whatNext.exclude.you.do.p.link.agent = return to your client''s registered benef
 whatNext.exclude.you.do.p.after.agent = to:
 
 whatNextMPBIK.exclude.you.do.p.before.agent = You can
-whatNextMPBIK.exclude.you.do.p.link.agent = return to your client's payrolling summary
+whatNextMPBIK.exclude.you.do.p.link.agent = return to your client''s payrolling summary
 whatNextMPBIK.exclude.you.do.p.after.agent = to:
 
 whatNext.exclude.you.do.li1 = exclude employees from the benefits and expenses you have registered

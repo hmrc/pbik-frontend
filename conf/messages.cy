@@ -616,6 +616,10 @@ whatNext.exclude.you.do.p.cy.before.agent = Gallwch
 whatNext.exclude.you.do.p.cy.link.agent = ddychwelyd i fuddiannau a threuliau’r flwyddyn hon
 whatNext.exclude.you.do.p.cy.after.agent = i eithrio cyflogeion rhag buddiannau a threuliau’r flwyddyn hon ar gyfer y cleient hwn.
 
+whatNextMPBIK.exclude.you.do.p.cy.before.agent = Gallwch
+whatNextMPBIK.exclude.you.do.p.cy.link.agent = ddychwelyd i grynodeb o drethu buddiannau drwy gyflogres eich cleient
+whatNextMPBIK.exclude.you.do.p.cy.after.agent = i wneud y canlynol:
+
 whatNext.exclude.you.do.p.before.organisation = Gallwch
 whatNext.exclude.you.do.p.link.organisation = fynd yn ôl i’ch buddiannau a threuliau cofrestredig
 whatNext.exclude.you.do.p.after.organisation = er mwyn:
@@ -627,6 +631,10 @@ whatNextMPBIK.exclude.you.do.p.after.organisation = er mwyn gwneud y canlynol:
 whatNext.exclude.you.do.p.before.agent = Gallwch
 whatNext.exclude.you.do.p.link.agent = fynd yn ôl i fuddiannau a threuliau cofrestredig eich cleient
 whatNext.exclude.you.do.p.after.agent = er mwyn:
+
+whatNextMPBIK.exclude.you.do.p.before.agent = Gallwch
+whatNextMPBIK.exclude.you.do.p.link.agent = ddychwelyd i grynodeb o drethu buddiannau drwy gyflogres eich cleient
+whatNextMPBIK.exclude.you.do.p.after.agent = i wneud y canlynol:
 
 whatNext.exclude.you.do.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau rydych wedi’u cofrestru
 whatNext.exclude.you.do.li2 = cofrestru rhagor o fuddiannau a threuliau
@@ -660,7 +668,7 @@ whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
 whatNext.exclude.lede = Ni fydd {0} yn cael ei drethu drwy’r gyflogres o ran {1} o {2} ymlaen.
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
-whatNextMPBIK.exclude.lede = Ni fydd {0} yn cael y buddiant canlynol wedi’i drethu drwy’r gyflogres o {2} ymlaen: {1}.
+whatNextMPBIK.exclude.lede = Ni fydd {0} yn cael y buddiant ({1}) wedi’i drethu drwy gyflogres o {2}.
 whatNextMPBIK.exclude.lede.agent = Ni fydd {0} yn cael y buddiant ({1}) wedi’i drethu drwy gyflogres {3} o {2}.
 whatNextMPBIK.exclude.lede.cy.agent = Ni fydd {0} yn cael y buddiant ({1}) wedi’i drethu drwy gyflogres {3} o {2} ymlaen.
 
