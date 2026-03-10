@@ -38,6 +38,9 @@ Service.back.cancel = Back to your summary
 Service.back.excluded = Back to your excluded employees
 Service.back.yta = Back to your tax account
 Service.back.ecl = Return to PAYE client list
+
+Service.back.eclMPBIK = Back to PAYE client list
+
 Service.paye.label = Employer PAYE reference:
 Service.nino.lastletter = (Last letter not shown)
 
@@ -663,6 +666,8 @@ whatNext.exclude.lede = {0} will not have {1} taxed through payroll from {2}.
 whatNext.service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses
 
 whatNextMPBIK.exclude.lede = {0} will not have {1} taxed through payroll from {2}.
+whatNextMPBIK.exclude.lede.agent = {0} will not have {1} taxed through {3}''s payroll from {2}.
+whatNextMPBIK.exclude.lede.cy.agent = {0} will not have {1} taxed through {3}''s payroll from {2}.
 
 whatNext.remove.p1 = You have removed {0} from being taxed through payroll from 6 April {1}.
 whatNext.remove.table.heading = Benefit or expense details

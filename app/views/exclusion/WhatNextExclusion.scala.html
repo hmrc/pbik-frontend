@@ -63,9 +63,17 @@
 
     <p id="confirmation-p" class="govuk-body">
         @if(year=="cy"){
-            @messages(if(config.mpbikToggle) "whatNextMPBIK.exclude.lede" else "whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayTodayDate())
+            @if(request.isAgent) {
+                @messages(if(config.mpbikToggle) "whatNextMPBIK.exclude.lede.cy.agent" else "whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayTodayDate(), request.clientName.get)
+            } else{
+                @messages(if(config.mpbikToggle) "whatNextMPBIK.exclude.lede" else "whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayTodayDate())
+            }
         } else {
-            @messages(if(config.mpbikToggle) "whatNextMPBIK.exclude.lede" else "whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayStartOfCYP1())
+            @if(request.isAgent) {
+                @messages(if(config.mpbikToggle) "whatNextMPBIK.exclude.lede.agent" else "whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayStartOfCYP1(), request.clientName.get)
+            }else{
+                @messages(if(config.mpbikToggle) "whatNextMPBIK.exclude.lede" else "whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayStartOfCYP1())
+            }
         }
     </p>
 

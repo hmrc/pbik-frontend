@@ -38,6 +38,9 @@ Service.back.cancel = Yn ôl i’ch crynodeb
 Service.back.excluded = Yn ôl i’ch cyflogeion sydd wedi’u heithrio
 Service.back.yta = Yn ôl i’ch cyfrif treth
 Service.back.ecl = Yn ôl i’r rhestr o gleientiaid TWE
+
+Service.back.eclMPBIK = Yn ôl i’r rhestr o gleientiaid TWE
+
 Service.paye.label = Cyfeirnod TWE y cyflogwr:
 Service.nino.lastletter = (Nid yw’r llythyren olaf yn cael ei dangos)
 
@@ -658,6 +661,8 @@ whatNext.exclude.lede = Ni fydd {0} yn cael ei drethu drwy’r gyflogres o ran {
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
 whatNextMPBIK.exclude.lede = Ni fydd {0} yn cael y buddiant canlynol wedi’i drethu drwy’r gyflogres o {2} ymlaen: {1}.
+whatNextMPBIK.exclude.lede.agent = Ni fydd {0} yn cael y buddiant ({1}) wedi’i drethu drwy gyflogres {3} o {2}.
+whatNextMPBIK.exclude.lede.cy.agent = Ni fydd {0} yn cael y buddiant ({1}) wedi’i drethu drwy gyflogres {3} o {2} ymlaen.
 
 whatNext.remove.p1 = Rydych wedi tynnu {0} rhag cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 whatNext.remove.table.heading = Manylion y buddiant neu draul
