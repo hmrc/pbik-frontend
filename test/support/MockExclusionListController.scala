@@ -51,6 +51,7 @@ class MockExclusionListController @Inject() (
   noNinoExclusionSearchFormView: NoNinoExclusionSearchForm,
   searchResultsView: SearchResults,
   whatNextExclusionView: WhatNextExclusion,
+  whatNextExclusionMpbikView: WhatNextExclusionMpbik,
   removalConfirmationView: RemovalConfirmation,
   whatNextRescindView: WhatNextRescind
 )(implicit ec: ExecutionContext)
@@ -75,6 +76,7 @@ class MockExclusionListController @Inject() (
       noNinoExclusionSearchFormView,
       searchResultsView,
       whatNextExclusionView,
+      whatNextExclusionMpbikView,
       removalConfirmationView,
       whatNextRescindView
     ) {

@@ -1,0 +1,219 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import utils.TaxDateUtils
+
+@import views.templatemodels.PageTitle
+@import config.PbikAppConfig
+
+@this(
+        config:PbikAppConfig,
+        govukLayoutWrapper: GovukLayoutWrapper,
+        printLink: components.PrintLink,
+        taxDateUtils: TaxDateUtils
+)
+
+@(
+    taxYearRange:TaxYearRange,
+    year:String,
+    iabdType:IabdType,
+    person:TracePersonResponse,
+    mpbik: Boolean
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
+
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
+
+@summaryLink = @{
+    if(mpbik){
+        routes.HomePageController.onPageLoad
+    } else {
+        if(year=="cy"){
+            routes.HomePageController.onPageLoadCY
+        } else {
+            routes.HomePageController.onPageLoadCY1
+        }
+    }
+}
+
+@govukLayoutWrapper(PageTitle(messages("whatNext.exclude.heading")),
+    showBackLink = true,
+    showYTABackLink = request.showYTABackLink,
+    showECLBackLink = request.showECLBackLink) {
+
+    <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
+        <h1 id="title" class="govuk-panel__title">
+            @messages("whatNext.exclude.heading")
+        </h1>
+    </div>
+
+    @printLink(messages("Service.print.linkMPBIK"))
+
+    <p id="confirmation-p" class="govuk-body">
+        @if(year=="cy"){
+            @if(request.isAgent) {
+                @messages("whatNextMPBIK.exclude.lede.cy.agent", person.fullName, benefitLabel, taxDateUtils.getDisplayTodayDate(), request.clientName.get)
+            } else{
+                @messages("whatNextMPBIK.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayTodayDate())
+            }
+        } else {
+            @if(request.isAgent) {
+                @messages("whatNextMPBIK.exclude.lede.agent", person.fullName, benefitLabel, taxDateUtils.getDisplayStartOfCYP1(), request.clientName.get)
+            }else{
+                @messages("whatNextMPBIK.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayStartOfCYP1())
+            }
+        }
+    </p>
+
+    <h2 class="govuk-heading-m">
+        @messages("whatNext.exclude.table.heading")
+    </h2>
+
+    <dl class="govuk-summary-list" id="list-of-excluded-info">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.employee.name")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@person.fullName</p>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.nino") @messages("Service.nino.lastletterMPBIK")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@person.nationalInsuranceNumber</p>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.worksnumberMPBIK")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@person.getWorksPayrollNumber</p>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.employer.payeMPBIK")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@request.empRef</p>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.date.of.exclusion")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                @if(year=="cy"){
+                    <p class="govuk-body">@taxDateUtils.getDisplayTodayDate()</p>
+                } else {
+                <p class="govuk-body">@taxDateUtils.getDisplayStartOfCYP1()</p>
+                }
+            </dd>
+        </div>
+        @if(request.isAgent) {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.client.name")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@request.clientName.get</p>
+            </dd>
+        </div>
+        }
+    </dl>
+
+    <h2 class="govuk-heading-m">
+        @messages("whatNextMPBIK.exclude.h2." + request.userType)
+    </h2>
+
+    @if(year=="cy"){
+        <p id="next-steps-info" class="govuk-body">
+            @if(request.isAgent) {
+                @messages("whatNextMPBIK.exclude.p1.cy.before.agent")
+                @messages("whatNextMPBIK.exclude.p1.cy.link.agent")
+                @messages("whatNextMPBIK.exclude.p1.cy.after.agent", person.fullName)
+            } else {
+                @messages("whatNextMPBIK.exclude.p1.cy.before.organisation")
+                @messages("whatNextMPBIK.exclude.p1.cy.link.organisation")
+                @messages("whatNextMPBIK.exclude.p1.cy.after.organisation", person.fullName)
+            }
+        </p>
+    } else {
+        <p id="next-steps-info" class="govuk-body">
+            @if(request.isAgent) {
+                @messages("whatNextMPBIK.exclude.p1.before.agent")
+                @messages("whatNextMPBIK.exclude.p1.link.agent")
+                @messages("whatNextMPBIK.exclude.p1.after.agent", person.fullName)
+            } else {
+                @messages("whatNextMPBIK.exclude.p1.before.organisation")
+                @messages("whatNextMPBIK.exclude.p1.link.organisation")
+                @messages("whatNextMPBIK.exclude.p1.after.organisation", person.fullName)
+            }
+        </p>
+    }
+
+    <h2 class="govuk-heading-m">
+        @messages("whatNext.exclude.you.do.h2")
+    </h2>
+
+    @if(year=="cy"){
+        <p id="you-can-do-next-info" class="govuk-body">
+            @messages("whatNextMPBIK.exclude.you.do.p.cy.before." + request.userType)
+            <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("whatNextMPBIK.exclude.you.do.p.cy.link." + request.userType) </a>
+            @messages("whatNextMPBIK.exclude.you.do.p.cy.after." + request.userType)
+
+        </p>
+        <ul class="govuk-list govuk-list--bullet" id="next-steps-info-list">
+            <li>@messages("whatNextMPBIK.exclude.li.view.benefits")</li>
+            <li>@messages("whatNextMPBIK.exclude.li.other.benefits")</li>
+        </ul>
+    } else {
+        <p id="you-can-do-next-info" class="govuk-body">
+            @messages("whatNextMPBIK.exclude.you.do.p.before." + request.userType)
+            <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("whatNextMPBIK.exclude.you.do.p.link." + request.userType) </a>
+            @messages("whatNextMPBIK.exclude.you.do.p.after." + request.userType)
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("whatNextMPBIK.exclude.li.view.benefits")</li>
+            <li>@messages("whatNextMPBIK.exclude.li.other.benefits")</li>
+        </ul>
+    }
+    <h3 class="govuk-heading-s">
+        @messages("whatNextMPBIK.exclude.more.h3")
+    </h3>
+
+    @if(year=="cy"){
+        <p id="back-to-benefits" class="govuk-body">
+            @messages("whatNextMPBIK.exclude.more.p.cy.before")
+            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdType)" id="link-back-excluded">
+                @messages("whatNextMPBIK.exclude.more.p.cy.link", benefitLabel)
+            </a>
+            @messages("whatNextMPBIK.exclude.more.p.cy.after")
+        </p>
+    } else {
+        <p id="back-to-benefits" class="govuk-body">
+            @messages("whatNextMPBIK.exclude.more.p.before")
+            <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdType)" id="link-back-excluded">
+                @messages("whatNextMPBIK.exclude.more.p.link", benefitLabel)
+            </a>
+            @messages("whatNextMPBIK.exclude.more.p.after")
+        </p>
+    }
+
+}

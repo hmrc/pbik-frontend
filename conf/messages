@@ -38,8 +38,13 @@ Service.back.cancel = Back to your summary
 Service.back.excluded = Back to your excluded employees
 Service.back.yta = Back to your tax account
 Service.back.ecl = Return to PAYE client list
+
+Service.back.eclMPBIK = Back to PAYE client list
+
 Service.paye.label = Employer PAYE reference:
 Service.nino.lastletter = (Last letter not shown)
+
+Service.nino.lastletterMPBIK = (last letter not shown)
 
 Service.continue = Continue
 Service.continueMPBIK = Continue
@@ -48,6 +53,8 @@ Service.confirmAndContinue = Confirm and continue
 Service.tryagain = Try again
 
 Service.print.link = Print this page
+
+Service.print.linkMPBIK = Print this page
 
 Service.notEnrolled.title = Enrol to use this service
 Service.notEnrolled.text1 = You’re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue.
@@ -432,6 +439,9 @@ Service.field.nino.2lines = National Insurance number
 Service.field.ninohint = For example, QQ123456A
 Service.field.dob = Date of birth
 Service.field.worksnumber = Payroll ID or Works number
+
+Service.field.worksnumberMPBIK = Payroll ID or Works number
+
 Service.field.dobhint = For example, 31 3 1980
 Service.field.dob.day = Day
 Service.field.dob.month = Month
@@ -442,6 +452,9 @@ Service.field.gender.female = Female
 Service.field.employee.name = Employee name
 Service.field.client.name = Client name
 Service.field.employer.paye = Employer PAYE reference
+
+Service.field.employer.payeMPBIK = Employer PAYE reference
+
 Service.field.selected.benefits = Selected benefits and expenses
 Service.field.removed.benefit = Removed benefit or expense
 Service.field.stop.benefit = Benefit or expense
@@ -546,21 +559,40 @@ whatNext.exclude.table.heading = Exclusion details
 whatNext.exclude.h2.organisation = What you must do
 whatNext.exclude.h2.agent = What you must tell your client
 
+whatNextMPBIK.exclude.h2.organisation = What you must do
+whatNextMPBIK.exclude.h2.agent = What you must tell your client
+
 whatNext.exclude.p1.before.organisation = You should report the value of this benefit by
 whatNext.exclude.p1.link.organisation = submitting a P11D to HMRC
 whatNext.exclude.p1.after.organisation = for {0}. You should do this at the end of the tax year.
+
+whatNextMPBIK.exclude.p1.before.organisation = You should report the value of this benefit by
+whatNextMPBIK.exclude.p1.link.organisation = sending HMRC a P11d
+whatNextMPBIK.exclude.p1.after.organisation = for {0}. You should do this at the end of the tax year.
 
 whatNext.exclude.p1.before.agent = Your client should report the value of this benefit by
 whatNext.exclude.p1.link.agent = submitting a P11D to HMRC
 whatNext.exclude.p1.after.agent = for {0}. They should do this at the end of the tax year.
 
+whatNextMPBIK.exclude.p1.before.agent = Your client should report the value of this benefit by
+whatNextMPBIK.exclude.p1.link.agent = sending HMRC a P11d
+whatNextMPBIK.exclude.p1.after.agent = for {0}. They should do this at the end of the tax year.
+
 whatNext.exclude.p1.cy.before.organisation = You must report the value of this benefit by
 whatNext.exclude.p1.cy.link.organisation = submitting a P11D to HMRC
 whatNext.exclude.p1.cy.after.organisation = for {0}. You must:
 
+whatNextMPBIK.exclude.p1.cy.before.organisation = You should report the value of this benefit by
+whatNextMPBIK.exclude.p1.cy.link.organisation = sending HMRC a P11d
+whatNextMPBIK.exclude.p1.cy.after.organisation = for {0}. You should do this at the end of the tax year.
+
 whatNext.exclude.p1.cy.before.agent = Your client must report the value of this benefit by
 whatNext.exclude.p1.cy.link.agent = submitting a P11D to HMRC
 whatNext.exclude.p1.cy.after.agent = for {0}. They must:
+
+whatNextMPBIK.exclude.p1.cy.before.agent = Your client should report the value of this benefit by
+whatNextMPBIK.exclude.p1.cy.link.agent = sending HMRC a P11d
+whatNextMPBIK.exclude.p1.cy.after.agent = for {0}. They should do this at the end of the tax year.
 
 whatNext.exclude.li1.cy = calculate the full cash equivalent value of the benefit for the employee
 whatNext.exclude.li2.cy = deduct any payments that they have made in the current tax year
@@ -574,17 +606,36 @@ whatNext.exclude.you.do.p.cy.before.organisation = You can
 whatNext.exclude.you.do.p.cy.link.organisation = return to this year’s benefits and expenses
 whatNext.exclude.you.do.p.cy.after.organisation = to exclude employees from this year’s benefits and expenses.
 
+whatNextMPBIK.exclude.you.do.p.cy.before.organisation = You can
+whatNextMPBIK.exclude.you.do.p.cy.link.organisation = return to your payrolling summary
+whatNextMPBIK.exclude.you.do.p.cy.after.organisation = to:
+whatNextMPBIK.exclude.li.view.benefits = view benefits
+whatNextMPBIK.exclude.li.other.benefits = exclude employees from other benefits
+
 whatNext.exclude.you.do.p.cy.before.agent = You can
 whatNext.exclude.you.do.p.cy.link.agent = return to this year’s benefits and expenses
 whatNext.exclude.you.do.p.cy.after.agent = to exclude employees from this year’s benefits and expenses for this client.
+
+whatNextMPBIK.exclude.you.do.p.cy.before.agent = You can
+whatNextMPBIK.exclude.you.do.p.cy.link.agent = return to your client''s payrolling summary
+whatNextMPBIK.exclude.you.do.p.cy.after.agent = to:
+
 
 whatNext.exclude.you.do.p.before.organisation = You can
 whatNext.exclude.you.do.p.link.organisation = return to your registered benefits and expenses
 whatNext.exclude.you.do.p.after.organisation = to:
 
+whatNextMPBIK.exclude.you.do.p.before.organisation = You can
+whatNextMPBIK.exclude.you.do.p.link.organisation = return to your payrolling summary
+whatNextMPBIK.exclude.you.do.p.after.organisation = to:
+
 whatNext.exclude.you.do.p.before.agent = You can
 whatNext.exclude.you.do.p.link.agent = return to your client''s registered benefits and expenses
 whatNext.exclude.you.do.p.after.agent = to:
+
+whatNextMPBIK.exclude.you.do.p.before.agent = You can
+whatNextMPBIK.exclude.you.do.p.link.agent = return to your client''s payrolling summary
+whatNextMPBIK.exclude.you.do.p.after.agent = to:
 
 whatNext.exclude.you.do.li1 = exclude employees from the benefits and expenses you have registered
 whatNext.exclude.you.do.li2 = register more benefits or expenses
@@ -592,13 +643,24 @@ whatNext.exclude.you.do.li3 = remove benefits or expenses you no longer want to 
 
 whatNext.exclude.more.h3 = If you want to exclude another employee from this benefit or expense
 
+whatNextMPBIK.exclude.more.h3 = If you want to exclude another employee from this benefit or expense
+
 whatNext.exclude.more.p.cy.before = You can
 whatNext.exclude.more.p.cy.link = return to {0}
 whatNext.exclude.more.p.cy.after = to exclude another employee from this benefit or expense.
 
+whatNextMPBIK.exclude.more.p.cy.before = You can
+whatNextMPBIK.exclude.more.p.cy.link = return to {0}
+whatNextMPBIK.exclude.more.p.cy.after = to exclude another employee from this benefit.
+
 whatNext.exclude.more.p.before = You can
 whatNext.exclude.more.p.link = return to {0}
 whatNext.exclude.more.p.after = to:
+
+whatNextMPBIK.exclude.more.p.before = You can
+whatNextMPBIK.exclude.more.p.link = return to {0}
+whatNextMPBIK.exclude.more.p.after = to exclude another employee from this benefit.
+
 whatNext.exclude.more.li1 = exclude another employee from this benefit or expense
 whatNext.exclude.more.li2 = add an employee back to this benefit or expense
 
@@ -606,6 +668,10 @@ whatNext.subHeading = Next steps
 whatNext.rescind.heading = Registration complete
 whatNext.exclude.lede = {0} will not have {1} taxed through payroll from {2}.
 whatNext.service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses
+
+whatNextMPBIK.exclude.lede = {0} will not have {1} taxed through payroll from {2}.
+whatNextMPBIK.exclude.lede.agent = {0} will not have {1} taxed through {3}''s payroll from {2}.
+whatNextMPBIK.exclude.lede.cy.agent = {0} will not have {1} taxed through {3}''s payroll from {2}.
 
 whatNext.remove.p1 = You have removed {0} from being taxed through payroll from 6 April {1}.
 whatNext.remove.table.heading = Benefit or expense details
