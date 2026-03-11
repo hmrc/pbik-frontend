@@ -699,14 +699,13 @@ class ExclusionListController @Inject() (
         _       <- validateRequest(year, iabdType)
         session <- sessionService.fetchPbikSession()
       } yield {
-        val exclusion = session.flatMap(_.listOfMatches).flatMap(_.pbikExclusionList.headOption)
         val view      =
           if (mpbikToggle) {
             whatNextExclusionMpbikView(
               taxDateUtils.getTaxYearRange(),
               year,
               iabdType,
-              exclusion.get,
+              session.get.listOfMatches.get.pbikExclusionList.head,
               mpbik = mpbikToggle
             )
           } else {
@@ -714,7 +713,7 @@ class ExclusionListController @Inject() (
               taxDateUtils.getTaxYearRange(),
               year,
               iabdType,
-              exclusion.get,
+              session.get.listOfMatches.get.pbikExclusionList.head,
               mpbik = mpbikToggle
             )
           }
