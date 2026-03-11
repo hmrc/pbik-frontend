@@ -83,18 +83,10 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
       messages("whatNext.exclude.more.p.link", "Private medical treatment or insurance"),
       s"/payrollbik/cyp1/${iabdType.id}/excluded-employees"
     )
-
-    if (mpbikToggle) {
-      behave like pageWithIdAndText(
-        "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2026.",
-        "confirmation-p"
-      )
-    } else {
-      behave like pageWithIdAndText(
-        "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2026.",
-        "confirmation-p"
-      )
-    }
+    behave like pageWithIdAndText(
+      "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2026.",
+      "confirmation-p"
+    )
 
   }
 

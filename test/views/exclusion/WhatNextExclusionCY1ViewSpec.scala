@@ -83,17 +83,11 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
       messages("whatNext.exclude.more.p.cy.link", "Vans"),
       s"/payrollbik/cy/${iabdType.id}/excluded-employees"
     )
-    if (mpbikToggle) {
-      behave like pageWithIdAndText(
-        "John A Doe will not have Vans taxed through payroll from " + taxDateUtils.getDisplayTodayDate(),
-        "confirmation-p"
-      )
-    } else {
-      behave like pageWithIdAndText(
-        "John A Doe will not have Vans taxed through payroll from " + taxDateUtils.getDisplayTodayDate(),
-        "confirmation-p"
-      )
-    }
+    behave like pageWithIdAndText(
+      "John A Doe will not have Vans taxed through payroll from " + taxDateUtils.getDisplayTodayDate(),
+      "confirmation-p"
+    )
+
   }
 
 }
