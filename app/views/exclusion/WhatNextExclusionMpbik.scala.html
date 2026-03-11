@@ -17,8 +17,10 @@
 @import utils.TaxDateUtils
 
 @import views.templatemodels.PageTitle
+@import config.PbikAppConfig
 
 @this(
+        config:PbikAppConfig,
         govukLayoutWrapper: GovukLayoutWrapper,
         printLink: components.PrintLink,
         taxDateUtils: TaxDateUtils
@@ -57,13 +59,21 @@
         </h1>
     </div>
 
-    @printLink(messages("Service.print.link"))
+    @printLink(messages("Service.print.linkMPBIK"))
 
     <p id="confirmation-p" class="govuk-body">
         @if(year=="cy"){
-            @messages("whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayTodayDate())
+            @if(request.isAgent) {
+                @messages("whatNextMPBIK.exclude.lede.cy.agent", person.fullName, benefitLabel, taxDateUtils.getDisplayTodayDate(), request.clientName.get)
+            } else{
+                @messages("whatNextMPBIK.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayTodayDate())
+            }
         } else {
-            @messages("whatNext.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayStartOfCYP1())
+            @if(request.isAgent) {
+                @messages("whatNextMPBIK.exclude.lede.agent", person.fullName, benefitLabel, taxDateUtils.getDisplayStartOfCYP1(), request.clientName.get)
+            }else{
+                @messages("whatNextMPBIK.exclude.lede", person.fullName, benefitLabel, taxDateUtils.getDisplayStartOfCYP1())
+            }
         }
     </p>
 
@@ -82,7 +92,7 @@
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                @messages("Service.field.nino") @messages("Service.nino.lastletter")
+                @messages("Service.field.nino") @messages("Service.nino.lastletterMPBIK")
             </dt>
             <dd class="govuk-summary-list__value">
                 <p class="govuk-body">@person.nationalInsuranceNumber</p>
@@ -90,25 +100,15 @@
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                @messages("Service.field.worksnumber")
+                @messages("Service.field.worksnumberMPBIK")
             </dt>
             <dd class="govuk-summary-list__value">
                 <p class="govuk-body">@person.getWorksPayrollNumber</p>
             </dd>
         </div>
-        @if(request.isAgent) {
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    @messages("Service.field.client.name")
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    <p class="govuk-body">@request.clientName.get</p>
-                </dd>
-            </div>
-        }
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                @messages("Service.field.employer.paye")
+                @messages("Service.field.employer.payeMPBIK")
             </dt>
             <dd class="govuk-summary-list__value">
                 <p class="govuk-body">@request.empRef</p>
@@ -126,48 +126,44 @@
                 }
             </dd>
         </div>
+        @if(request.isAgent) {
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                @messages("Service.field.client.name")
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p class="govuk-body">@request.clientName.get</p>
+            </dd>
+        </div>
+        }
     </dl>
 
     <h2 class="govuk-heading-m">
-        @messages("whatNext.exclude.h2." + request.userType)
+        @messages("whatNextMPBIK.exclude.h2." + request.userType)
     </h2>
 
     @if(year=="cy"){
         <p id="next-steps-info" class="govuk-body">
             @if(request.isAgent) {
-                @messages("whatNext.exclude.p1.cy.before.agent")
-                <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">
-                    @messages("whatNext.exclude.p1.cy.link.agent")
-                </a> @messages("whatNext.exclude.p1.cy.after.agent", person.fullName)
+                @messages("whatNextMPBIK.exclude.p1.cy.before.agent")
+                @messages("whatNextMPBIK.exclude.p1.cy.link.agent")
+                @messages("whatNextMPBIK.exclude.p1.cy.after.agent", person.fullName)
             } else {
-                @messages("whatNext.exclude.p1.cy.before.organisation")
-                <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">
-                    @messages("whatNext.exclude.p1.cy.link.organisation")
-                </a> @messages("whatNext.exclude.p1.cy.after.organisation", person.fullName)
+                @messages("whatNextMPBIK.exclude.p1.cy.before.organisation")
+                @messages("whatNextMPBIK.exclude.p1.cy.link.organisation")
+                @messages("whatNextMPBIK.exclude.p1.cy.after.organisation", person.fullName)
             }
-        </p>
-
-        <ul class="govuk-list govuk-list--bullet" id="next-steps-info-list">
-            <li>@messages("whatNext.exclude.li1.cy")</li>
-            <li>@messages("whatNext.exclude.li2.cy")</li>
-            <li>@messages("whatNext.exclude.li3.cy")</li>
-        </ul>
-
-        <p id="next-steps-info2" class="govuk-body">
-            @messages("whatNext.exclude.p2.cy")
         </p>
     } else {
         <p id="next-steps-info" class="govuk-body">
             @if(request.isAgent) {
-                @messages("whatNext.exclude.p1.before.agent")
-                <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">
-                    @messages("whatNext.exclude.p1.link.agent")
-                </a> @messages("whatNext.exclude.p1.after.agent", person.fullName)
+                @messages("whatNextMPBIK.exclude.p1.before.agent")
+                @messages("whatNextMPBIK.exclude.p1.link.agent")
+                @messages("whatNextMPBIK.exclude.p1.after.agent", person.fullName)
             } else {
-                @messages("whatNext.exclude.p1.before.organisation")
-                <a class="govuk-link" target = "_blank" rel="noopener noreferrer" href = "https://www.gov.uk/government/publications/paye-end-of-year-expenses-and-benefits-p11d" data-journey-click="link - click:{0}:P11D">
-                    @messages("whatNext.exclude.p1.link.organisation")
-                </a> @messages("whatNext.exclude.p1.after.organisation", person.fullName)
+                @messages("whatNextMPBIK.exclude.p1.before.organisation")
+                @messages("whatNextMPBIK.exclude.p1.link.organisation")
+                @messages("whatNextMPBIK.exclude.p1.after.organisation", person.fullName)
             }
         </p>
     }
@@ -178,47 +174,46 @@
 
     @if(year=="cy"){
         <p id="you-can-do-next-info" class="govuk-body">
-            @messages("whatNext.exclude.you.do.p.cy.before." + request.userType)
-            <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("whatNext.exclude.you.do.p.cy.link." + request.userType) </a>
-            @messages("whatNext.exclude.you.do.p.cy.after." + request.userType)
+            @messages("whatNextMPBIK.exclude.you.do.p.cy.before." + request.userType)
+            <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("whatNextMPBIK.exclude.you.do.p.cy.link." + request.userType) </a>
+            @messages("whatNextMPBIK.exclude.you.do.p.cy.after." + request.userType)
+
         </p>
+        <ul class="govuk-list govuk-list--bullet" id="next-steps-info-list">
+            <li>@messages("whatNextMPBIK.exclude.li.view.benefits")</li>
+            <li>@messages("whatNextMPBIK.exclude.li.other.benefits")</li>
+        </ul>
     } else {
         <p id="you-can-do-next-info" class="govuk-body">
-            @messages("whatNext.exclude.you.do.p.before." + request.userType)
-            <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("whatNext.exclude.you.do.p.link." + request.userType) </a>
-            @messages("whatNext.exclude.you.do.p.after." + request.userType)
+            @messages("whatNextMPBIK.exclude.you.do.p.before." + request.userType)
+            <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("whatNextMPBIK.exclude.you.do.p.link." + request.userType) </a>
+            @messages("whatNextMPBIK.exclude.you.do.p.after." + request.userType)
         </p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("whatNext.exclude.you.do.li1")</li>
-            <li>@messages("whatNext.exclude.you.do.li2")</li>
-            <li>@messages("whatNext.exclude.you.do.li3")</li>
+            <li>@messages("whatNextMPBIK.exclude.li.view.benefits")</li>
+            <li>@messages("whatNextMPBIK.exclude.li.other.benefits")</li>
         </ul>
     }
-
-    <h3 class="govuk-heading-m">
-        @messages("whatNext.exclude.more.h3")
+    <h3 class="govuk-heading-s">
+        @messages("whatNextMPBIK.exclude.more.h3")
     </h3>
 
     @if(year=="cy"){
         <p id="back-to-benefits" class="govuk-body">
-            @messages("whatNext.exclude.more.p.cy.before")
+            @messages("whatNextMPBIK.exclude.more.p.cy.before")
             <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdType)" id="link-back-excluded">
-                @messages("whatNext.exclude.more.p.cy.link", benefitLabel)
+                @messages("whatNextMPBIK.exclude.more.p.cy.link", benefitLabel)
             </a>
-            @messages("whatNext.exclude.more.p.cy.after")
+            @messages("whatNextMPBIK.exclude.more.p.cy.after")
         </p>
     } else {
         <p id="back-to-benefits" class="govuk-body">
-            @messages("whatNext.exclude.more.p.before")
+            @messages("whatNextMPBIK.exclude.more.p.before")
             <a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(year, iabdType)" id="link-back-excluded">
-                @messages("whatNext.exclude.more.p.link", benefitLabel)
+                @messages("whatNextMPBIK.exclude.more.p.link", benefitLabel)
             </a>
-            @messages("whatNext.exclude.more.p.after")
+            @messages("whatNextMPBIK.exclude.more.p.after")
         </p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("whatNext.exclude.more.li1")</li>
-            <li>@messages("whatNext.exclude.more.li2")</li>
-        </ul>
     }
 
 }

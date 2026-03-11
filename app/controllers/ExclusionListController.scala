@@ -66,6 +66,7 @@ class ExclusionListController @Inject() (
   noNinoExclusionSearchFormView: NoNinoExclusionSearchForm,
   searchResultsView: SearchResults,
   whatNextExclusionView: WhatNextExclusion,
+  whatNextExclusionMpbikView: WhatNextExclusionMpbik,
   removalConfirmationView: RemovalConfirmation,
   whatNextRescindView: WhatNextRescind
 )(implicit ec: ExecutionContext)
@@ -697,15 +698,28 @@ class ExclusionListController @Inject() (
       val resultFuture = for {
         _       <- validateRequest(year, iabdType)
         session <- sessionService.fetchPbikSession()
-      } yield Ok(
-        whatNextExclusionView(
-          taxDateUtils.getTaxYearRange(),
-          year,
-          iabdType,
-          session.get.listOfMatches.get.pbikExclusionList.head,
-          mpbik = mpbikToggle
-        )
-      )
+      } yield {
+        val exclusion = session.flatMap(_.listOfMatches).flatMap(_.pbikExclusionList.headOption)
+        val view      =
+          if (mpbikToggle) {
+            whatNextExclusionMpbikView(
+              taxDateUtils.getTaxYearRange(),
+              year,
+              iabdType,
+              exclusion.get,
+              mpbik = mpbikToggle
+            )
+          } else {
+            whatNextExclusionView(
+              taxDateUtils.getTaxYearRange(),
+              year,
+              iabdType,
+              exclusion.get,
+              mpbik = mpbikToggle
+            )
+          }
+        Ok(view)
+      }
       controllersReferenceData.responseErrorHandler(resultFuture)
     }
 

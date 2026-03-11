@@ -50,6 +50,7 @@ class MockExclusionsDisallowedController @Inject() (
   noNinoExclusionSearchFormView: NoNinoExclusionSearchForm,
   searchResultsView: SearchResults,
   whatNextExclusionView: WhatNextExclusion,
+  whatNextExclusionMpbikView: WhatNextExclusionMpbik,
   removalConfirmationView: RemovalConfirmation,
   whatNextRescindView: WhatNextRescind
 )(implicit ec: ExecutionContext)
@@ -74,6 +75,7 @@ class MockExclusionsDisallowedController @Inject() (
       noNinoExclusionSearchFormView,
       searchResultsView,
       whatNextExclusionView,
+      whatNextExclusionMpbikView,
       removalConfirmationView,
       whatNextRescindView
     ) {
