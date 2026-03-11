@@ -19,16 +19,16 @@ package controllers
 import config.PbikAppConfig
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models._
+import models.*
 import models.auth.AuthenticatedRequest
 import models.form.MandatoryRadioButton
 import models.v1.IabdType.IabdType
-import models.v1.exclusion._
+import models.v1.exclusion.*
 import models.v1.trace.{TracePeopleByNinoRequest, TracePeopleByPersonalDetailsRequest, TracePersonResponse}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.*
 import services.{BikListService, ExclusionService, SessionService}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
@@ -37,10 +37,11 @@ import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Exceptions.InvalidBikTypeException
-import utils._
+import utils.*
 import views.html.ErrorPage
-import views.html.exclusion._
+import views.html.exclusion.*
 
+import java.lang.ProcessBuilder
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,6 +66,8 @@ class ExclusionListController @Inject() (
   ninoExclusionSearchFormView: NinoExclusionSearchForm,
   noNinoExclusionSearchFormView: NoNinoExclusionSearchForm,
   searchResultsView: SearchResults,
+  searchResultsMPBIKView: SearchResultsMPBIK,
+  declareEmployeeMPBIKView: DeclareEmployeeMPBIK,
   whatNextExclusionView: WhatNextExclusion,
   whatNextExclusionMpbikView: WhatNextExclusionMpbik,
   removalConfirmationView: RemovalConfirmation,
@@ -434,7 +437,8 @@ class ExclusionListController @Inject() (
     (authenticate andThen noSessionCheck).async { implicit request =>
       if (exclusionsAllowed) {
         val futureResult = formType match {
-          case ControllersReferenceDataCodes.FORM_TYPE_NINO   => searchResultsByNino(isCurrentTaxYear, iabdType, formType)
+          case ControllersReferenceDataCodes.FORM_TYPE_NINO   =>
+            searchResultsByNino(isCurrentTaxYear, iabdType, formType)
           case ControllersReferenceDataCodes.FORM_TYPE_NONINO =>
             searchResultsByPersonalDetails(isCurrentTaxYear, iabdType, formType)
         }
@@ -479,10 +483,11 @@ class ExclusionListController @Inject() (
     iabdType: IabdType,
     currentExclusions: List[TracePersonResponse]
   )(implicit request: AuthenticatedRequest[?]): Result = {
+    val uniqueMatch: Int                               = 1
     val uniqueListOfMatches: List[TracePersonResponse] =
       exclusionService.searchResultsRemoveAlreadyExcluded(currentExclusions, listOfMatches)
     uniqueListOfMatches.size match {
-      case 0 =>
+      case 0       =>
         logger.warn("[ExclusionListController][searchResultsHandleValidResult] List of un-excluded matches is empty")
         val message = Messages("ExclusionSearch.Fail.Exists.P")
         if (listOfMatches.nonEmpty) {
@@ -512,17 +517,37 @@ class ExclusionListController @Inject() (
             )
           )
         }
-      case _ =>
-        Ok(
-          searchResultsView(
-            controllersReferenceData.yearRange,
-            isCurrentTaxYear,
-            iabdType,
-            uniqueListOfMatches,
-            formMappings.individualSelectionForm,
-            formType
+      case matches =>
+        if (mpbikToggle) {
+          if (matches == uniqueMatch) {
+            Redirect(
+              routes.ExclusionListController
+                .declareEmployeeToExclude(isCurrentTaxYear, iabdType)
+            )
+          } else {
+            Ok(
+              searchResultsMPBIKView(
+                controllersReferenceData.yearRange,
+                isCurrentTaxYear,
+                iabdType,
+                uniqueListOfMatches,
+                formMappings.individualSelectionForm,
+                formType
+              )
+            )
+          }
+        } else {
+          Ok(
+            searchResultsView(
+              controllersReferenceData.yearRange,
+              isCurrentTaxYear,
+              iabdType,
+              uniqueListOfMatches,
+              formMappings.individualSelectionForm,
+              formType
+            )
           )
-        )
+        }
     }
   }
 
@@ -534,29 +559,53 @@ class ExclusionListController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(
-                  BadRequest(
-                    searchResultsView(
-                      controllersReferenceData.yearRange,
-                      year,
-                      iabdType,
-                      session.get.listOfMatches.get.pbikExclusionList,
-                      formWithErrors,
-                      formType
+                if (mpbikToggle) {
+                  Future.successful(
+                    BadRequest(
+                      searchResultsMPBIKView(
+                        controllersReferenceData.yearRange,
+                        year,
+                        iabdType,
+                        session.get.listOfMatches.get.pbikExclusionList,
+                        formWithErrors,
+                        formType
+                      )
                     )
                   )
-                ),
+                } else {
+                  Future.successful(
+                    BadRequest(
+                      searchResultsView(
+                        controllersReferenceData.yearRange,
+                        year,
+                        iabdType,
+                        session.get.listOfMatches.get.pbikExclusionList,
+                        formWithErrors,
+                        formType
+                      )
+                    )
+                  )
+                },
               values => {
                 val individualsDetails: Option[TracePersonResponse] =
                   session.get.listOfMatches.get.pbikExclusionList
                     .find(person => person.nationalInsuranceNumber == values.nino)
-                validateRequest(year, iabdType).flatMap { _ =>
-                  commitExclusion(
-                    year,
-                    iabdType,
-                    session.get.listOfMatches.get.updatedEmployerOptimisticLock,
-                    individualsDetails
+                if (mpbikToggle && individualsDetails.isDefined) {
+                  Future.successful(
+                    Redirect(
+                      routes.ExclusionListController
+                        .declareEmployeeToExclude(year, iabdType)
+                    )
                   )
+                } else {
+                  validateRequest(year, iabdType).flatMap { _ =>
+                    commitExclusion(
+                      year,
+                      iabdType,
+                      session.get.listOfMatches.get.updatedEmployerOptimisticLock,
+                      individualsDetails
+                    )
+                  }
                 }
               }
             )
@@ -574,6 +623,22 @@ class ExclusionListController @Inject() (
           )
         )
       }
+    }
+
+  def declareEmployeeToExclude(year: String, iabdType: IabdType): Action[AnyContent] =
+    (authenticate andThen noSessionCheck).async { implicit request =>
+      val resultFuture = for {
+        _       <- validateRequest(year, iabdType)
+        session <- sessionService.fetchPbikSession()
+      } yield Ok(
+        declareEmployeeMPBIKView(
+          controllersReferenceData.yearRange,
+          year,
+          iabdType,
+          session.get.listOfMatches.get.pbikExclusionList.head
+        )
+      )
+      controllersReferenceData.responseErrorHandler(resultFuture)
     }
 
   def commitExclusion(
