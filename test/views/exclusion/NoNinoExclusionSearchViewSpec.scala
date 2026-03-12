@@ -31,6 +31,8 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
   private val formMappings: FormMappings    = injected[FormMappings]
   private val noNinoExclusionSearchFormView = injected[NoNinoExclusionSearchForm]
 
+  private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+
   private val iabdType = IabdType.Mileage
 
   private def viewWithForm(form: Form[NoNinoForm])(implicit request: AuthenticatedRequest[?]): Html =
@@ -90,14 +92,48 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
           )
       )(organisationRequest)
 
-      doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.firstname"))
-      doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.lastname"))
-      doc must haveErrorSummary(messages("error.invaliddate.future.year").replace(".", ""))
-      doc must haveErrorNotification(messages("error.invaliddate.future.year"))
-      doc must haveErrorSummary(messages("error.required").replace(".", ""))
-      doc must haveErrorNotification(messages("error.required"))
+      if (april2026MpbikToggle) {
+        doc must haveErrorSummary(messages("error.incorrect.firstnameMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.firstnameMPBIK"))
+        doc must haveErrorSummary(messages("error.incorrect.lastnameMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.lastnameMPBIK"))
+        doc must haveErrorSummary(messages("error.invaliddate.future.yearMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.invaliddate.future.yearMPBIK"))
+        doc must haveErrorSummary(messages("error.required").replace(".", ""))
+        doc must haveErrorNotification(messages("error.required"))
+      } else {
+        doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.firstname"))
+        doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.lastname"))
+        doc must haveErrorSummary(messages("error.invaliddate.future.year").replace(".", ""))
+        doc must haveErrorNotification(messages("error.invaliddate.future.year"))
+        doc must haveErrorSummary(messages("error.required").replace(".", ""))
+        doc must haveErrorNotification(messages("error.required"))
+      }
+    }
+
+    "check for name length validation" in {
+      val longName = "a" * 36
+
+      implicit def view: Html = viewWithForm(
+        formMappings
+          .exclusionSearchFormWithoutNino(organisationRequest)
+          .bind(
+            Map(
+              "nino"      -> "AA123456A",
+              "firstname" -> longName,
+              "surname"   -> longName
+            )
+          )
+      )(organisationRequest)
+
+      if (april2026MpbikToggle) {
+        doc must haveErrorSummary(messages("error.firstname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.firstname.lengthMPBIK"))
+        doc must haveErrorSummary(messages("error.lastname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.lastname.lengthMPBIK"))
+      }
     }
   }
 
@@ -155,14 +191,48 @@ class NoNinoExclusionSearchViewSpec extends PBIKViewSpec {
           )
       )(agentRequest)
 
-      doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.firstname"))
-      doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
-      doc must haveErrorNotification(messages("error.incorrect.lastname"))
-      doc must haveErrorSummary(messages("error.invaliddate.future.year").replace(".", ""))
-      doc must haveErrorNotification(messages("error.invaliddate.future.year"))
-      doc must haveErrorSummary(messages("error.required").replace(".", ""))
-      doc must haveErrorNotification(messages("error.required"))
+      if (april2026MpbikToggle) {
+        doc must haveErrorSummary(messages("error.incorrect.firstnameMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.firstnameMPBIK"))
+        doc must haveErrorSummary(messages("error.incorrect.lastnameMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.lastnameMPBIK"))
+        doc must haveErrorSummary(messages("error.invaliddate.future.yearMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.invaliddate.future.yearMPBIK"))
+        doc must haveErrorSummary(messages("error.required").replace(".", ""))
+        doc must haveErrorNotification(messages("error.required"))
+      } else {
+        doc must haveErrorSummary(messages("error.incorrect.firstname").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.firstname"))
+        doc must haveErrorSummary(messages("error.incorrect.lastname").replace(".", ""))
+        doc must haveErrorNotification(messages("error.incorrect.lastname"))
+        doc must haveErrorSummary(messages("error.invaliddate.future.year").replace(".", ""))
+        doc must haveErrorNotification(messages("error.invaliddate.future.year"))
+        doc must haveErrorSummary(messages("error.required").replace(".", ""))
+        doc must haveErrorNotification(messages("error.required"))
+      }
+    }
+
+    "check for name length validation" in {
+      val longName = "a" * 36
+
+      implicit def view: Html = viewWithForm(
+        formMappings
+          .exclusionSearchFormWithoutNino(agentRequest)
+          .bind(
+            Map(
+              "nino"      -> "AA123456A",
+              "firstname" -> longName,
+              "surname"   -> longName
+            )
+          )
+      )(agentRequest)
+
+      if (april2026MpbikToggle) {
+        doc must haveErrorSummary(messages("error.firstname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.firstname.lengthMPBIK"))
+        doc must haveErrorSummary(messages("error.lastname.lengthMPBIK").replace(".", ""))
+        doc must haveErrorNotification(messages("error.lastname.lengthMPBIK"))
+      }
     }
 
     "show status error when status has errors" in {

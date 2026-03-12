@@ -491,7 +491,11 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
           )
 
         status(result) mustBe OK
-        contentAsString(result) must include(messages("Service.errorSummary.heading"))
+        if (april2026MpbikToggle) {
+          contentAsString(result) must include(messages("Service.errorSummary.headingMPBIK"))
+        } else {
+          contentAsString(result) must include(messages("Service.errorSummary.heading"))
+        }
       }
 
       "display the expected error page view when NINO search call returns NPSError" in {
