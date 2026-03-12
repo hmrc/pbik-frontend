@@ -180,16 +180,27 @@ class FormMappings @Inject() (pbikAppConfig: PbikAppConfig, val messagesApi: Mes
     )((ninoForm: NinoForm) => Some((ninoForm.firstName, ninoForm.surname, ninoForm.nino)))
   )
 
-  def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[NoNinoForm] =
-    Form(
-      mapping(
-        "firstname" -> text
-          .verifying(Messages("error.empty.firstname"), firstname => firstname.trim.nonEmpty)
-          .verifying(Messages("error.incorrect.firstname"), firstname => firstname.matches(nameValidationRegex)),
-        "surname"   -> text
-          .verifying(Messages("error.empty.lastname"), lastname => lastname.trim.nonEmpty)
-          .verifying(Messages("error.incorrect.lastname"), lastname => lastname.matches(nameValidationRegex)),
-        "dob"       -> mapping(
+  def exclusionSearchFormWithoutNino[A](implicit request: Request[A]): Form[NoNinoForm] = {
+    val dobValidation =
+      if (pbikAppConfig.mpbikToggle) {
+        mapping(
+          "day"   -> text,
+          "month" -> text,
+          "year"  -> text
+        )((day, month, year) => (day, month, year))((dob: (String, String, String)) => Some((dob._1, dob._2, dob._3)))
+          .verifying(emptyDateError, dob => !(dob._1.trim.isEmpty && dob._2.trim.isEmpty && dob._3.trim.isEmpty))
+          .verifying(
+            "error.invalid.charMPBIK",
+            dob => dob._1.forall(_.isDigit) && dob._2.forall(_.isDigit) && dob._3.forall(_.isDigit)
+          )
+          .verifying("error.invaliddate.dayMPBIK", dob => dob._1.matches(dateDayRegex))
+          .verifying("error.invaliddate.monthMPBIK", dob => dob._2.matches(dateMonthRegex))
+          .verifying("error.invaliddate.yearMPBIK", dob => dob._3.matches(dateYearRegex))
+          .verifying("error.invaliddate.future.yearMPBIK", dob => isDateInFuture(dob))
+          .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
+          .verifying("error.invaliddate.date", dob => isValidDate(dob))
+      } else {
+        mapping(
           "day"   -> text,
           "month" -> text,
           "year"  -> text
@@ -200,7 +211,32 @@ class FormMappings @Inject() (pbikAppConfig: PbikAppConfig, val messagesApi: Mes
           .verifying(invalidYearDateError, dob => dob._3.matches(dateYearRegex))
           .verifying(invalidYearFutureDateError, dob => isDateInFuture(dob))
           .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
-          .verifying(invalidDateError, dob => isValidDate(dob)),
+          .verifying(invalidDateError, dob => isValidDate(dob))
+
+      }
+    Form(
+      mapping(
+        "firstname" -> {
+          val baseFirstNameValidation =
+            text
+              .verifying(Messages("error.empty.firstname"), _.trim.nonEmpty)
+              .verifying(Messages(msgIncorrectFirstname), firstname => firstname.matches(nameValidationRegex))
+          if (pbikAppConfig.mpbikToggle)
+            baseFirstNameValidation.verifying(Messages("error.firstname.lengthMPBIK"), _.trim.length <= 35)
+          else
+            baseFirstNameValidation
+        },
+        "surname"   -> {
+          val baseLastNameValidation =
+            text
+              .verifying(Messages("error.empty.lastname"), _.trim.nonEmpty)
+              .verifying(Messages(msgIncorrectLastname), lastname => lastname.matches(nameValidationRegex))
+          if (pbikAppConfig.mpbikToggle)
+            baseLastNameValidation.verifying(Messages("error.lastname.lengthMPBIK"), _.trim.length <= 35)
+          else
+            baseLastNameValidation
+        },
+        "dob"       -> dobValidation,
         "gender"    -> text.verifying("error.required", gender => Try(Gender.fromString(gender)).isSuccess)
       )((firstname, surname, dob, gender) =>
         NoNinoForm(
@@ -224,6 +260,7 @@ class FormMappings @Inject() (pbikAppConfig: PbikAppConfig, val messagesApi: Mes
         )
       )
     )
+  }
 
   val individualSelectionForm: Form[ExclusionNino] = Form(
     mapping(
