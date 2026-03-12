@@ -1,0 +1,131 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.templatemodels.PageTitle
+
+@this(
+        govukLayoutWrapper: GovukLayoutWrapper,
+        govukRadios: GovukRadios,
+        formWithCSRF: FormWithCSRF
+)
+
+@(
+        taxYearRange: TaxYearRange,
+        isCurrentTaxYear: String,
+        iabdType: IabdType,
+        currentWithNextYearDate: List[(PbikExclusionPerson, Boolean)],
+        maximumExclusions: Int,
+        form: Form[MandatoryRadioButton]
+)(implicit request:AuthenticatedRequest[?], messages: Messages)
+
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
+
+@govukLayoutWrapper(PageTitle(benefitLabel, form.hasErrors)) {
+
+    @if(form.hasErrors){
+        <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1" data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-heading">@messages("Service.errorSummary.heading")</h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    <li>
+                        <a href="#confirmation-yes">@messages("ExclusionOverview.error.required")</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    }
+
+    <div id="heading">
+        @if(request.clientName.isDefined){
+            <span id="client-name" class="govuk-caption-l">@request.clientName</span>
+        }
+        <span id="empref" class="govuk-caption-l">@messages("ExcludedEmployeesMPBIK.form.current.tax.year", taxYearRange.cy.toString(), taxYearRange.cyplus1.toString())</span>
+        <h1 id="title" class="govuk-heading-xl">
+            @benefitLabel
+        </h1>
+    </div>
+
+    @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdType)) {
+        @if(currentWithNextYearDate.isEmpty) {
+            <h1 class="govuk-heading-m">@messages("ExcludedEmployeesMPBIK.h1")</h1>
+            <p class="govuk-body">@messages("ExclusionOverviewMPBIK.notExcludedEmployee.p1." + request.userType, benefitLabel, taxYearRange.cy.toString())</p>
+        } else {
+            <div class="govuk-inset-text">
+                @messages("ExclusionOverviewMPBIK.benefitsManage.inset")
+            </div>
+            <table class="govuk-table" style="width: 100%; table-layout: fixed;">
+                <caption class="govuk-table__caption govuk-table__caption--l">
+                    @messages("ExclusionOverview.excludedEmployee.table.title")
+                </caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">@messages("Service.field.name")</th>
+                        <th scope="col" class="govuk-table__header">@messages("Service.field.nino")</th>
+                        <th scope="col" class="govuk-table__header">@messages("Service.field.worksnumber")</th>
+                    </tr>
+                </thead>
+                @for( ((person, isExcludedInCYP1), index) <- currentWithNextYearDate.zipWithIndex ) {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell" id="name-@person.nationalInsuranceNumber">@person.firstForename @person.surname</td>
+                        <td class="govuk-table__cell" id="nino-@person.nationalInsuranceNumber">@person.nationalInsuranceNumber</td>
+                        <td class="govuk-table__cell" id="wpn-@person.nationalInsuranceNumber">@person.worksPayrollNumber</td>
+                    </tr>
+                }
+            </table>
+        }
+        <p class="govuk-body">@messages("ExclusionOverviewMPBIK.p1")</p>
+
+        <p class="govuk-body">@messages("ExclusionOverviewMPBIK.p2." + request.userType)</p>
+
+        <div class="govuk-form-group @if(form.hasErrors){govuk-form-group--error}">
+            @if(form.hasErrors) {
+                <span id="error-list-no-selection" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">@messages("Service.error"):</span>
+                    @messages("ExclusionOverview.error.required")
+                </span>
+            }
+
+            @govukRadios(Radios(
+                fieldset = Some(Fieldset(
+                    legend = Some(Legend(
+                        content = Text(messages("ExclusionOverview.h2")),
+                        classes = "govuk-fieldset__legend--m",
+                        isPageHeading = false
+                    ))
+                )),
+                hint = Some(Hint(
+                    content = Text(messages("ExclusionOverview.h2.hint", maximumExclusions))
+                )),
+                name = "confirmation",
+                items = Seq(
+                    RadioItem(
+                        content = Text(messages("Service.yes")),
+                        value = Some("yes"),
+                        id = Some("confirmation-yes")
+                    ),
+                    RadioItem(
+                        content = Text(messages("Service.no")),
+                        value = Some("no"),
+                        id = Some("confirmation-no")
+                    )
+                ),
+                classes = "govuk-radios--inline"
+            ))
+        </div>
+
+        <input type="submit" class="govuk-button" role="button" id="button-continue" value="@messages("Service.continue")" />
+    }
+}

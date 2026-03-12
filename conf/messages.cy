@@ -303,6 +303,19 @@ ExclusionRemoval.Service.finish.rescinded = Bwrw golwg dros eich cyflogeion sydd
 ExclusionRemoval.Service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
 #*************************************************************
+# Excluded employees MPBIK
+#*************************************************************
+
+ExcludedEmployeesMPBIK.form.current.tax.year = Blwyddyn dreth Ebrill {0} i {1}
+ExcludedEmployeesMPBIK.h1 = Nid ydych wedi eithrio unrhyw gyflogai
+ExclusionOverviewMPBIK.notExcludedEmployee.p1.organisation = O 6 Ebrill {1} ymlaen mae’r buddiant canlynol yn cael ei drethu drwy’r gyflogres ar gyfer pob cyflogai sy’n ei gael: {0}
+ExclusionOverviewMPBIK.notExcludedEmployee.p1.agent = Caiff y buddiant {0} ei drethu drwy gyflogres eich cleient ar gyfer pob cyflogai sy’n cael y buddiant hwn o 6 Ebrill {1} ymlaen.
+ExclusionOverviewMPBIK.p1 = Gallwch eithrio cyflogeion sy’n cael y buddiant hwn neu’r draul hon.
+ExclusionOverviewMPBIK.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy anfon P11D at CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+ExclusionOverviewMPBIK.p2.agent = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i’ch cleient adrodd am werth y buddiant hwn neu’r draul hon drwy anfon P11D at CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
+ExclusionOverviewMPBIK.benefitsManage.inset = Ni allwch ailddechrau trethu drwy’r gyflogres yn y flwyddyn dreth bresennol ar gyfer cyflogeion sydd wedi’u heithrio.
+
+#*************************************************************
 # Benefits Messages
 #*************************************************************
 
