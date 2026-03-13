@@ -668,9 +668,9 @@ whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
 whatNext.exclude.lede = Ni fydd {0} yn cael ei drethu drwy’r gyflogres o ran {1} o {2} ymlaen.
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
-whatNextMPBIK.exclude.lede = Ni fydd {0} yn cael y buddiant ({1}) wedi’i drethu drwy gyflogres o {2}.
-whatNextMPBIK.exclude.lede.agent = Ni fydd {0} yn cael y buddiant ({1}) wedi’i drethu drwy gyflogres {3} o {2}.
-whatNextMPBIK.exclude.lede.cy.agent = Ni fydd {0} yn cael y buddiant ({1}) wedi’i drethu drwy gyflogres {3} o {2} ymlaen.
+whatNextMPBIK.exclude.lede = Ni fydd {0} yn cael y buddiant {1} wedi’i drethu drwy gyflogres o {2}.
+whatNextMPBIK.exclude.lede.agent = Ni fydd {0} yn cael y buddiant {1} wedi’i drethu drwy gyflogres {3} o {2}.
+whatNextMPBIK.exclude.lede.cy.agent = Ni fydd {0} yn cael y buddiant {1} wedi’i drethu drwy gyflogres {3} o {2} ymlaen.
 
 whatNext.remove.p1 = Rydych wedi tynnu {0} rhag cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 whatNext.remove.table.heading = Manylion y buddiant neu draul
