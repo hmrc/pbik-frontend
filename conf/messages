@@ -518,10 +518,6 @@ error.invaliddate.future.year = Year of date of birth can’t be in the future.
 error.invaliddate.past.year = Year of date of birth must be in the last 130 years.
 
 error.invaliddate.date = Date of birth must be a real date.
-error.invaliddate.dayMPBIK = Date of birth must be a real date.
-error.invaliddate.monthMPBIK = Date of birth must be a real date.
-error.invalid.charMPBIK = Date of birth must be a real date.
-error.invaliddate.yearMPBIK = Date of birth must be a real date.
 error.invaliddate.future.yearMPBIK = Date of birth must be in the past
 
 error.exclusion.multi.selection = You need to choose which employee you want to exclude before you can continue
