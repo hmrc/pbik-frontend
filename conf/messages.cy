@@ -494,7 +494,7 @@ ErrorPage.optimisticLock.tryAgainLink = Rhowch gynnig arall arni
 # Error- validation Messages
 #*************************************************************
 
-error.required = Dewiswch y rhyw.
+error.required = Dewiswch rywedd.
 error.invaliddate = Nodwch ddyddiad dilys.
 
 error.empty.nino = Nodwch rif Yswiriant Gwladol.
@@ -516,6 +516,9 @@ error.invaliddate.month = Nodwch fis dilys.
 error.invaliddate.year = Nodwch flwyddyn ddilys.
 error.invaliddate.future.year = Ni all blwyddyn y dyddiad geni fod yn y dyfodol.
 error.invaliddate.past.year = Mae’n rhaid i flwyddyn y dyddiad geni fod yn ystod y 130 mlynedd diwethaf.
+
+error.invaliddate.date = Mae’n rhaid i’r dyddiad geni fod yn ddyddiad go iawn.
+error.invaliddate.future.yearMPBIK = Mae’n rhaid i’r dyddiad geni fod yn y gorffennol
 
 error.exclusion.multi.selection = Mae’n rhaid i chi ddewis pa gyflogai yr ydych am ei eithrio cyn i chi allu mynd yn eich blaen
 
