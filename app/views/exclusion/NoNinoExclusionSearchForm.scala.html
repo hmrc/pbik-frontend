@@ -84,7 +84,9 @@
     }
         @if(config.mpbikToggle) {
             @if(request.isAgent){
-                <span id="client-name" class="govuk-caption-l">@request.clientName.get</span>
+                @for(clientName <- request.clientName) {
+                    <span id="client-name" class="govuk-caption-l">@clientName</span>
+                }
             }
             @if(isCurrentTaxYear=="cy"){
                 <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.current.tax.year", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)</span>

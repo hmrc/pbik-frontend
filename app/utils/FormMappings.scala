@@ -189,10 +189,7 @@ class FormMappings @Inject() (pbikAppConfig: PbikAppConfig, val messagesApi: Mes
           "year"  -> text
         )((day, month, year) => (day, month, year))((dob: (String, String, String)) => Some((dob._1, dob._2, dob._3)))
           .verifying(emptyDateError, dob => !(dob._1.trim.isEmpty && dob._2.trim.isEmpty && dob._3.trim.isEmpty))
-          .verifying(
-            "error.invalid.charMPBIK",
-            dob => dob._1.forall(_.isDigit) && dob._2.forall(_.isDigit) && dob._3.forall(_.isDigit)
-          )
+          .verifying("error.invalid.charMPBIK", dob => dob._1.forall(_.isDigit) && dob._2.forall(_.isDigit) && dob._3.forall(_.isDigit))
           .verifying("error.invaliddate.dayMPBIK", dob => dob._1.matches(dateDayRegex))
           .verifying("error.invaliddate.monthMPBIK", dob => dob._2.matches(dateMonthRegex))
           .verifying("error.invaliddate.yearMPBIK", dob => dob._3.matches(dateYearRegex))
@@ -212,7 +209,6 @@ class FormMappings @Inject() (pbikAppConfig: PbikAppConfig, val messagesApi: Mes
           .verifying(invalidYearFutureDateError, dob => isDateInFuture(dob))
           .verifying(invalidYearPastDateError, dob => isDateYearInPastValid(dob))
           .verifying(invalidDateError, dob => isValidDate(dob))
-
       }
     Form(
       mapping(
