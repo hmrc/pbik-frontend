@@ -60,6 +60,7 @@ class ExclusionListController @Inject() (
   controllersReferenceData: ControllersReferenceData,
   pbikAppConfig: PbikAppConfig,
   exclusionOverviewView: ExclusionOverview,
+  exclusionOverviewMPBIKView: ExclusionOverviewMPBIK,
   errorPageView: ErrorPage,
   exclusionNinoOrNoNinoFormView: ExclusionNinoOrNoNinoForm,
   ninoExclusionSearchFormView: NinoExclusionSearchForm,
@@ -193,14 +194,25 @@ class ExclusionListController @Inject() (
             Future(currentYearEIL.exclusions.map(person => (person, false)))
         _                    <- sessionService.storeCurrentExclusions(currentYearEIL)
       } yield Ok(
-        exclusionOverviewView(
-          controllersReferenceData.yearRange,
-          isCurrentTaxYear,
-          iabdType,
-          isExcludedNextYear.sortWith(_._1.surname < _._1.surname),
-          isRegisteredNextYear,
-          form
-        )
+        if (mpbikToggle) {
+          exclusionOverviewMPBIKView(
+            controllersReferenceData.yearRange,
+            isCurrentTaxYear,
+            iabdType,
+            isExcludedNextYear.sortBy(_._1.surname),
+            pbikAppConfig.maximumExclusions,
+            form
+          )
+        } else {
+          exclusionOverviewView(
+            controllersReferenceData.yearRange,
+            isCurrentTaxYear,
+            iabdType,
+            isExcludedNextYear.sortWith(_._1.surname < _._1.surname),
+            isRegisteredNextYear,
+            form
+          )
+        }
       )
 
     } else {
@@ -699,7 +711,7 @@ class ExclusionListController @Inject() (
         _       <- validateRequest(year, iabdType)
         session <- sessionService.fetchPbikSession()
       } yield {
-        val view      =
+        val view =
           if (mpbikToggle) {
             whatNextExclusionMpbikView(
               taxDateUtils.getTaxYearRange(),
