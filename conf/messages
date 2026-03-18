@@ -327,6 +327,7 @@ ExclusionSearchMPBIK.form.tax.year = Tax year April {0} to {1}
 # Exclusion overview MPBIK
 #*************************************************************
 
+error.exclusionMPBIK.multi.selection = Choose the employee to exclude
 ExclusionSearchMPBIK.title.single = Declare the employee to exclude from this benefit
 ExclusionSearchMPBIK.title.span.taxYear.cy0 = Tax year April {0} to {1}
 ExclusionImportantMPBIK.Reminder = By confirming, you will exclude this employee from having {0} taxed through payroll from {1}.

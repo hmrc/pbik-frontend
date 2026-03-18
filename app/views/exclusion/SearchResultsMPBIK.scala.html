@@ -39,12 +39,12 @@
         <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
             <h2 class="govuk-error-summary__title" id="error-summary-heading-1">
-                @messages("Service.errorSummary.heading")
+                @messages("Service.errorSummary.headingMPBIK")
             </h2>
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     @if(listOfMatchesForm.error("individualNino").get.message.equals("error.required")){
-                    <li><a href="#employee-radio-0">@messages("error.exclusion.multi.selection")</a></li>
+                    <li><a href="#employee-radio-0">@messages("error.exclusionMPBIK.multi.selection")</a></li>
                     }
                 </ul>
             </div>
@@ -62,7 +62,7 @@
                 @if(listOfMatchesForm("individualNino").hasErrors) {
                     <span id="selection-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">@messages("Service.error"):</span>
-                        @messages("error.exclusion.multi.selection")
+                        @messages("error.exclusionMPBIK.multi.selection")
                     </span>
                 }
                 <div class="govuk-radios">

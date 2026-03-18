@@ -327,6 +327,7 @@ ExclusionSearchMPBIK.form.tax.year = Blwyddyn dreth Ebrill {0} i {1}
 # Exclusion overview MPBIK
 #*************************************************************
 
+error.exclusionMPBIK.multi.selection = Dewiswch pa gyflogai i’w eithrio
 ExclusionSearchMPBIK.title.single = Datgan y cyflogai i’w eithrio rhag y buddiant hwn
 ExclusionSearchMPBIK.title.span.taxYear.cy0 = Blwyddyn dreth Ebrill {0} i {1}
 ExclusionImportantMPBIK.Reminder = Drwy gadarnhau hyn, byddwch yn eithrio’r cyflogai hwn rhag cael y buddiant canlynol wedi’i drethu drwy’r gyflogres o {1} ymlaen: {0}.
