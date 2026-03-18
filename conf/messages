@@ -50,6 +50,7 @@ Service.continue = Continue
 Service.continueMPBIK = Continue
 Service.confirm = Confirm
 Service.confirmAndContinue = Confirm and continue
+Service.confirmAndContinueMPBIK = Confirm and continue
 Service.tryagain = Try again
 
 Service.print.link = Print this page
