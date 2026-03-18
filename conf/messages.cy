@@ -330,14 +330,14 @@ ExclusionSearchMPBIK.form.tax.year = Blwyddyn dreth Ebrill {0} i {1}
 error.exclusionMPBIK.multi.selection = Dewiswch pa gyflogai i’w eithrio
 ExclusionSearchMPBIK.title.single = Datgan y cyflogai i’w eithrio rhag y buddiant hwn
 ExclusionSearchMPBIK.title.span.taxYear.cy0 = Blwyddyn dreth Ebrill {0} i {1}
-ExclusionImportantMPBIK.Reminder = Drwy gadarnhau hyn, byddwch yn eithrio’r cyflogai hwn rhag cael y buddiant canlynol wedi’i drethu drwy’r gyflogres o {1} ymlaen: {0}.
+ExclusionImportantMPBIK.Reminder = Drwy gadarnhau hyn, byddwch yn eithrio’r cyflogai hwn rhag cael y buddiant, {0}, wedi’i drethu drwy’r gyflogres o {1} ymlaen.
 ExclusionSearchMPBIK.inset.text = O 6 Ebrill 2027 ymlaen, bydd angen i gyflogwyr drethu holl fuddiannau cyflogeion drwy’r gyflogres (ac eithrio benthyciadau a llety). Ni fydd buddiannau unrhyw gyflogeion yn cael eu heithrio rhag cael eu trethu drwy’r gyflogres, hyd yn oed os yw’r cyflogeion hynny wedi’u heithrio rhag buddiannau ar gyfer blwyddyn dreth 2026 i 2027.
 
 ExclusionSearchMPBIK.field.employee.name = Enw’r cyflogai
 ExclusionSearchMPBIK.field.employee.ni = Rhif Yswiriant Gwladol (heb ddangos y llythyren olaf)
 ExclusionSearchMPBIK.field.employee.payrollId = ID y gyflogres neu rif gwaith
 
-ExclusionSearchMPBIK.warning = Ni fydd modd i chi drethu’r buddiant hwn drwy’r gyflogres ar gyfer y cyflogai hwn eto ac ar gyfer y flwyddyn dreth hon.
+ExclusionSearchMPBIK.warning = Ni fydd modd i chi dalu’r buddiant hwn drwy’r gyflogres ar gyfer y cyflogai hwn eto ac ar gyfer y flwyddyn dreth hon.
 
 ExclusionSearchMPBIK.confirmation.organisation.p = Rwy’n cadarnhau’r canlynol:
 ExclusionSearchMPBIK.confirmation.organisation.bullet1 = Byddaf yn rhoi gwybod am werth y buddiant ar gyfer y cyflogai hwn ar P11D
