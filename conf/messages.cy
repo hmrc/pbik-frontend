@@ -50,6 +50,7 @@ Service.continue = Yn eich blaen
 Service.continueMPBIK = Parhau
 Service.confirm = Cadarnhau
 Service.confirmAndContinue = Cadarnhau ac yn eich blaen
+Service.confirmAndContinueMPBIK = Cadarnhau a pharhau
 Service.tryagain = Rhowch gynnig arall arni
 
 Service.print.link = Argraffwch y dudalen hon
