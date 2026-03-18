@@ -1154,7 +1154,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
           )(formRequest)
 
         status(result) mustBe BAD_REQUEST
-        contentAsString(result) must include(messages("error.exclusion.multi.selection"))
+        contentAsString(result) must include(messages("error.exclusionMPBIK.multi.selection"))
       }
 
       "redirect back to the overview page when exclusions are disabled" in {
