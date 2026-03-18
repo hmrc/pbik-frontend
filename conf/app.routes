@@ -63,6 +63,7 @@ POST        /:year/:iabdType/:formType/search-for-employee       controllers.Exc
 GET         /:year/:iabdType/:formType/exclude-employee-results  controllers.ExclusionListController.showResults(year: String, iabdType: models.v1.IabdType.IabdType, formType: String)
 POST        /:year/:iabdType/:formType/exclude-employee-results  controllers.ExclusionListController.updateMultipleExclusions(year: String, iabdType: models.v1.IabdType.IabdType, formType: String)
 GET         /:year/:iabdType/exclude-employee-results-single     controllers.ExclusionListController.updateExclusions(year: String, iabdType: models.v1.IabdType.IabdType)
+GET         /:year/:iabdType/declare-employee-exclusion          controllers.ExclusionListController.declareEmployeeToExclude(year: String, iabdType: models.v1.IabdType.IabdType)
 
 GET         /:year/:iabdType/exclusion-complete                  controllers.ExclusionListController.showExclusionConfirmation(year: String, iabdType: models.v1.IabdType.IabdType)
 

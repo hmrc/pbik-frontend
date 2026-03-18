@@ -72,20 +72,20 @@ class MessagesSpec extends FakePBIKApplication with Logging {
       assertCorrectUseOfQuotesForDefaultMessages()
       assertCorrectUseOfQuotesForWelshMessages()
     }
-    "have a resolvable message for keys which take args" in {
+    "have a resolvable message for keys which take same amount of args" in {
       val englishWithArgsMsgKeys = defaultMessages collect {
-        case (messagesKey, messagesValue) if countArgs(messagesValue) > 0 => messagesKey
+        case (messagesKey, messagesValue) if countArgs(messagesValue) > 0 => (messagesKey, countArgs(messagesValue))
       }
       val welshWithArgsMsgKeys   = welshMessages collect {
-        case (messagesKey, messagesValue) if countArgs(messagesValue) > 0 => messagesKey
+        case (messagesKey, messagesValue) if countArgs(messagesValue) > 0 => (messagesKey, countArgs(messagesValue))
       }
       val missingFromEnglish     = englishWithArgsMsgKeys.toList diff welshWithArgsMsgKeys.toList
       val missingFromWelsh       = welshWithArgsMsgKeys.toList diff englishWithArgsMsgKeys.toList
       missingFromEnglish foreach { messagesKey =>
-        logger.error(s"Key which has arguments in English but not in Welsh: $messagesKey")
+        logger.error(s"Key which has arguments in English but not in Welsh or not the same amount: $messagesKey")
       }
       missingFromWelsh foreach { messagesKey =>
-        logger.error(s"Key which has arguments in Welsh but not in English: $messagesKey")
+        logger.error(s"Key which has arguments in Welsh but not in English or not the same amount: $messagesKey")
       }
       englishWithArgsMsgKeys.size mustBe welshWithArgsMsgKeys.size
     }

@@ -19,27 +19,27 @@ package controllers
 import base.FakePBIKApplication
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import models._
+import models.*
 import models.auth.AuthenticatedRequest
 import models.form.{DateOfBirth, MandatoryRadioButton, NinoForm, NoNinoForm}
 import models.v1.IabdType.IabdType
-import models.v1._
+import models.v1.*
 import models.v1.exclusion.{Gender, PbikExclusionPerson, PbikExclusions, SelectedExclusionToRemove}
 import models.v1.trace.{TracePersonListResponse, TracePersonResponse}
 import org.mockito.ArgumentMatchers.{any, anyInt, eq => argEq}
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import services.{BikListService, ExclusionService, SessionService}
-import support._
+import support.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.Exceptions.InvalidBikTypeException
-import utils._
+import utils.*
 
 import java.time.LocalDate
 import java.util.UUID
@@ -84,7 +84,6 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
   private val cyBenefitTypes: BenefitTypes                                           = BenefitTypes(IabdType.values)
   private val cyBiks                                                                 =
     cyBenefitTypes.pbikTypes.map(x => BenefitInKindWithCount(x, 3))
-  private val mpbik: Boolean                                                         = pbikAppConfig.mpbikToggle
 
   private val pbikSession: PbikSession = PbikSession(
     sessionId = UUID.randomUUID().toString,
@@ -263,14 +262,14 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
       (
         ControllersReferenceDataCodes.NO,
         s"Payrolling summary form page for $cy",
-        if (mpbik) { s"/payrollbik/registered-benefits-expenses" }
+        if (april2026MpbikToggle) { s"/payrollbik/registered-benefits-expenses" }
         else { s"/payrollbik/cy/registered-benefits-expenses" },
         cy
       ),
       (
         ControllersReferenceDataCodes.NO,
         s"Payrolling summary form page for $cyp1",
-        if (mpbik) { s"/payrollbik/registered-benefits-expenses" }
+        if (april2026MpbikToggle) { s"/payrollbik/registered-benefits-expenses" }
         else { s"/payrollbik/cy1/registered-benefits-expenses" },
         cyp1
       )
@@ -764,18 +763,126 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         status(result) mustBe NOT_FOUND
         contentAsString(result) must include(messages("ServiceMessage.65127.h1"))
       }
+
+      if (april2026MpbikToggle) {
+        "redirect to declare the employee to exclude page if just one employee is found" in {
+          val listOfMatches = List(TracePersonResponse("AB111111", "Adam", None, "Smith", Some("123"), 22))
+
+          when(mockSessionService.fetchPbikSession()(any()))
+            .thenReturn(
+              Future.successful(
+                Some(
+                  pbikSession.copy(
+                    listOfMatches = Option(TracePersonListResponse(8, listOfMatches)),
+                    eiLPerson = None,
+                    currentExclusions = None
+                  )
+                )
+              )
+            )
+          val result =
+            Future.successful(
+              mockExclusionListController
+                .searchResultsHandleValidResult(listOfMatches, cy, "nino", iabdType, List.empty)
+            )
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(s"/payrollbik/$cy/${iabdType.id}/declare-employee-exclusion")
+        }
+
+        "present MPBIK search results page for multiple employees" in {
+          val listOfMatches = List(
+            TracePersonResponse("AB123456C", "John", None, "Doe", None, 22),
+            TracePersonResponse("AA111111", "John", None, "Smith", None, 33)
+          )
+
+          when(mockSessionService.fetchPbikSession()(any()))
+            .thenReturn(
+              Future.successful(
+                Some(
+                  pbikSession.copy(
+                    listOfMatches = Some(
+                      TracePersonListResponse(
+                        8,
+                        listOfMatches
+                      )
+                    ),
+                    eiLPerson = None,
+                    currentExclusions = Some(
+                      PbikExclusions(
+                        0,
+                        Some(List(PbikExclusionPerson("AB111111", "Adam", None, "Smith", Some("123"), 22)))
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          val result =
+            Future.successful(
+              mockExclusionListController
+                .searchResultsHandleValidResult(listOfMatches, cy, "nino", iabdType, List.empty)
+            )
+
+          status(result) mustBe OK
+          contentAsString(result) must include(messages("ExclusionSearchMPBIK.title.multiple"))
+        }
+      }
     }
 
     "loading the searchResults page" must {
-      "show the search results if they are present in the cache" in {
-        when(mockSessionService.fetchPbikSession()(any()))
-          .thenReturn(Future.successful(Some(pbikSession)))
-        val result = mockExclusionListController.showResults(cyp1, iabdType, "nino")(mockRequest)
 
-        status(result) mustBe OK
-        contentAsString(result) must include("AA111111")
-        contentAsString(result) must include("John")
-        contentAsString(result) must include("Smith")
+      if (april2026MpbikToggle) {
+        "show the declare employee to exclude if just one search result is present in the cache" in {
+          val title = messages("ExclusionSearchMPBIK.title.single")
+
+          when(mockSessionService.fetchPbikSession()(any()))
+            .thenReturn(Future.successful(Some(pbikSession)))
+          val result = mockExclusionListController.declareEmployeeToExclude(cy, iabdType)(mockRequest)
+
+          status(result) mustBe OK
+          contentAsString(result) must include(title)
+        }
+
+        "avoid to declare employee to exclude if exclusions are not allowed" in {
+          when(mockSessionService.fetchPbikSession()(any()))
+            .thenReturn(Future.successful(Some(pbikSession)))
+          val result = mockExclusionsDisallowedController.declareEmployeeToExclude(cy, iabdType)(mockRequest)
+
+          status(result) mustBe FORBIDDEN
+        }
+
+        "show internal server error if list of matches is empty" in {
+          when(mockSessionService.fetchPbikSession()(any()))
+            .thenReturn(
+              Future.successful(
+                Some(
+                  pbikSession.copy(listOfMatches =
+                    Some(
+                      TracePersonListResponse(
+                        8,
+                        List.empty
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          val result = mockExclusionListController.declareEmployeeToExclude(cy, iabdType)(mockRequest)
+
+          status(result) mustBe INTERNAL_SERVER_ERROR
+        }
+      } else {
+        "show the search results if they are present in the cache" in {
+          when(mockSessionService.fetchPbikSession()(any()))
+            .thenReturn(Future.successful(Some(pbikSession)))
+          val result = mockExclusionListController.showResults(cyp1, iabdType, "nino")(mockRequest)
+
+          status(result) mustBe OK
+          contentAsString(result) must include("AA111111")
+          contentAsString(result) must include("John")
+          contentAsString(result) must include("Smith")
+        }
       }
 
       "show an error page if no results are present in the cache" in {
@@ -951,37 +1058,73 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
     }
 
     "updateMultipleExclusions is called" must {
-      "redirect to the what next page" in {
-        implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
-          mockRequest.withFormUrlEncodedBody(
-            "individualNino" -> pbikSession.listOfMatches.get.pbikExclusionList.head.nationalInsuranceNumber
-          )
 
-        when(mockSessionService.fetchPbikSession()(any())).thenReturn(
-          Future.successful(
-            Some(
-              pbikSession.copy(
-                currentExclusions = None,
-                nyRegisteredBiks = Some(
-                  BenefitListResponse(
-                    Some(List(BenefitInKindWithCount(iabdType, 3))),
-                    0
+      if (april2026MpbikToggle) {
+        "redirect to the declare employee to exclude page" in {
+          implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+            mockRequest.withFormUrlEncodedBody(
+              "individualNino" -> pbikSession.listOfMatches.get.pbikExclusionList.head.nationalInsuranceNumber
+            )
+
+          when(mockSessionService.fetchPbikSession()(any())).thenReturn(
+            Future.successful(
+              Some(
+                pbikSession.copy(
+                  currentExclusions = None,
+                  nyRegisteredBiks = Some(
+                    BenefitListResponse(
+                      Some(List(BenefitInKindWithCount(iabdType, 3))),
+                      0
+                    )
                   )
                 )
               )
             )
           )
-        )
 
-        val result =
-          mockExclusionListController.updateMultipleExclusions(
-            cyp1,
-            iabdType,
-            ControllersReferenceDataCodes.FORM_TYPE_NINO
-          )(formRequest)
+          val result =
+            mockExclusionListController.updateMultipleExclusions(
+              cyp1,
+              iabdType,
+              ControllersReferenceDataCodes.FORM_TYPE_NINO
+            )(formRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(s"/payrollbik/$cyp1/${iabdType.id}/exclusion-complete")
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(s"/payrollbik/$cyp1/${iabdType.id}/declare-employee-exclusion")
+        }
+      } else {
+        "redirect to the what next page" in {
+          implicit val formRequest: FakeRequest[AnyContentAsFormUrlEncoded] =
+            mockRequest.withFormUrlEncodedBody(
+              "individualNino" -> pbikSession.listOfMatches.get.pbikExclusionList.head.nationalInsuranceNumber
+            )
+
+          when(mockSessionService.fetchPbikSession()(any())).thenReturn(
+            Future.successful(
+              Some(
+                pbikSession.copy(
+                  currentExclusions = None,
+                  nyRegisteredBiks = Some(
+                    BenefitListResponse(
+                      Some(List(BenefitInKindWithCount(iabdType, 3))),
+                      0
+                    )
+                  )
+                )
+              )
+            )
+          )
+
+          val result =
+            mockExclusionListController.updateMultipleExclusions(
+              cyp1,
+              iabdType,
+              ControllersReferenceDataCodes.FORM_TYPE_NINO
+            )(formRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(s"/payrollbik/$cyp1/${iabdType.id}/exclusion-complete")
+        }
       }
 
       "bad request when form with errors" in {
