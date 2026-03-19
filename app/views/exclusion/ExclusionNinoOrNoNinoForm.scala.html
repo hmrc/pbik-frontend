@@ -27,7 +27,7 @@
         iabdType: IabdType,
         previousSelection: String = "",
         form: Form[MandatoryRadioButton]
-)(implicit request: Request[?], messages: Messages)
+)(implicit request: AuthenticatedRequest[?], messages: Messages)
 
 @expenseOrBenefit = @{messages(s"BenefitInKind.label.${iabdType.id}")}
 @govukLayoutWrapper(PageTitle(messages("ExclusionNinoDecision.title", form.hasErrors), form.hasErrors)) {
@@ -52,6 +52,9 @@
             <div class="govuk-form-group @if(form.hasErrors){govuk-form-group--error}">
                 <fieldset class="govuk-fieldset" @if(form.hasErrors){aria-describedby="error-list-no-selection"}>
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        @if(request.isAgent){
+                            <span id="client-name" class="govuk-caption-l">@request.getClientName</span>
+                        }
                         <span class="govuk-caption-l">@expenseOrBenefit</span>
                         <h1 id="title" class="govuk-fieldset__heading">
                             @messages("ExclusionNinoDecision.title")
