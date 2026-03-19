@@ -25,6 +25,8 @@ case class AuthenticatedRequest[A](empRef: EmpRef, userId: Option[String], reque
 
   val clientName: Option[String] = client.flatMap(_.name)
 
+  val getClientName: String = clientName.getOrElse("")
+
   /** It is <code>true</code> if the user is an <code>Agent</code>, otherwise <code>false</code>
     */
   val isAgent: Boolean = client.isDefined

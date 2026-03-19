@@ -35,6 +35,9 @@
 @govukLayoutWrapper(PageTitle(messages("ExclusionSearchMPBIK.title.single"))) {
 
     <h1 id="title" class="govuk-heading-xl">
+        @if(request.isAgent){
+            <span id="client-name" class="govuk-caption-l">@request.getClientName</span>
+        }
         <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.title.span.taxYear.cy0", s"${taxYearRange.cy}", s"${taxYearRange.cyplus1}")</span>
         @messages("ExclusionSearchMPBIK.title.single")
     </h1>

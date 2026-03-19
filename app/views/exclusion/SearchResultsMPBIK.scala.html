@@ -31,7 +31,7 @@
         listOfMatches: List[TracePersonResponse],
         listOfMatchesForm: Form[ExclusionNino],
         formType: String
-)(implicit request: Request[?], messages: Messages)
+)(implicit request: AuthenticatedRequest[?], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("ExclusionSearchMPBIK.title.multiple"), listOfMatchesForm.hasErrors)) {
 
@@ -52,6 +52,9 @@
     }
 
     <h1 id="title" class="govuk-heading-xl">
+        @if(request.isAgent){
+            <span id="client-name" class="govuk-caption-l">@request.getClientName</span>
+        }
         <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.tax.year", s"${taxYearRange.cy}", s"${taxYearRange.cyplus1}")</span>
         @messages("ExclusionSearchMPBIK.title.multiple")
     </h1>
