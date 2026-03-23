@@ -36,7 +36,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utils.Exceptions.InvalidBikTypeException
+import utils.Exceptions.{InvalidBikTypeException, InvalidURIException}
 import utils.*
 import views.html.ErrorPage
 import views.html.exclusion.*
@@ -836,19 +836,24 @@ class ExclusionListController @Inject() (
     (authenticate andThen noSessionCheck).async { implicit request =>
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       if (exclusionsAllowed) {
-        val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
-          val employerOptimisticLock: Int                 = session.get.currentExclusions.get.currentEmployerOptimisticLock
-          val currentExclusions: Seq[PbikExclusionPerson] =
-            session.map(_.currentExclusions.map(_.exclusions).getOrElse(List.empty)).getOrElse(List.empty)
-          val selectedPerson: Option[PbikExclusionPerson] = currentExclusions
-            .find(person => person.nationalInsuranceNumber == nino)
+        val resultFuture =
+          if (mpbikToggle) {
+            Future.failed(new InvalidURIException())
+          } else {
+            sessionService.fetchPbikSession().flatMap { session =>
+              val employerOptimisticLock: Int                 = session.get.currentExclusions.get.currentEmployerOptimisticLock
+              val currentExclusions: Seq[PbikExclusionPerson] =
+                session.map(_.currentExclusions.map(_.exclusions).getOrElse(List.empty)).getOrElse(List.empty)
+              val selectedPerson: Option[PbikExclusionPerson] = currentExclusions
+                .find(person => person.nationalInsuranceNumber == nino)
 
-          sessionService
-            .storeEiLPerson(SelectedExclusionToRemove(employerOptimisticLock, selectedPerson.get))
-            .map { _ =>
-              Redirect(routes.ExclusionListController.showRemovalConfirmation(year, iabdType))
+              sessionService
+                .storeEiLPerson(SelectedExclusionToRemove(employerOptimisticLock, selectedPerson.get))
+                .map { _ =>
+                  Redirect(routes.ExclusionListController.showRemovalConfirmation(year, iabdType))
+                }
             }
-        }
+          }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
         logger.info("[ExclusionListController][remove] Exclusions not allowed, showing error page")
@@ -866,15 +871,20 @@ class ExclusionListController @Inject() (
 
   def showRemovalConfirmation(year: String, iabdType: IabdType): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
-      val futureResult = sessionService.fetchPbikSession().map { session =>
-        Ok(
-          removalConfirmationView(
-            controllersReferenceData.yearRange,
-            iabdType,
-            session.get.eiLPerson.get.personToExclude
-          )
-        )
-      }
+      val futureResult =
+        if (mpbikToggle) {
+          Future.failed(new InvalidURIException())
+        } else {
+          sessionService.fetchPbikSession().map { session =>
+            Ok(
+              removalConfirmationView(
+                controllersReferenceData.yearRange,
+                iabdType,
+                session.get.eiLPerson.get.personToExclude
+              )
+            )
+          }
+        }
       controllersReferenceData.responseErrorHandler(futureResult)
     }
 
@@ -883,45 +893,50 @@ class ExclusionListController @Inject() (
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       val taxYearRange               = taxDateUtils.getTaxYearRange()
       if (exclusionsAllowed) {
-        val resultFuture = sessionService.fetchPbikSession().flatMap { session =>
-          val individual            = session.get.eiLPerson.get
-          val year                  = taxYearRange.cy
-          val individualWithBenefit =
-            PbikExclusionPersonWithBenefitRequest(individual.employerOptimisticLock, individual.personToExclude)
-          tierConnector
-            .removeEiLPersonExclusionFromBik(iabdType, request.empRef, year, individualWithBenefit)
-            .map {
-              case Right(value) if value == OK =>
-                auditExclusion(
-                  exclusion = false,
-                  year,
-                  individual.personToExclude.nationalInsuranceNumber,
-                  iabdType
-                )
-                Redirect(routes.ExclusionListController.showRemovalWhatsNext(iabdType))
-              case Left(value)                 =>
-                val error = value.failures.head
-                InternalServerError(
-                  errorPageView(
-                    s"ServiceMessage.${error.code}",
-                    controllersReferenceData.yearRange,
-                    mpbik = mpbikToggle
-                  )
-                )
-              case Right(unexpectedStatus)     =>
-                logger.warn(
-                  s"[ExclusionListController][removeExclusionsCommit] Exclusion list update operation was unable to be executed successfully:" +
-                    s" received $unexpectedStatus response"
-                )
-                BadRequest(
-                  errorPageView(
-                    "Could not perform update operation",
-                    controllersReferenceData.yearRange,
-                    mpbik = mpbikToggle
-                  )
-                )
+        val resultFuture =
+          if (mpbikToggle) {
+            Future.failed(new InvalidURIException())
+          } else {
+            sessionService.fetchPbikSession().flatMap { session =>
+              val individual            = session.get.eiLPerson.get
+              val year                  = taxYearRange.cy
+              val individualWithBenefit =
+                PbikExclusionPersonWithBenefitRequest(individual.employerOptimisticLock, individual.personToExclude)
+              tierConnector
+                .removeEiLPersonExclusionFromBik(iabdType, request.empRef, year, individualWithBenefit)
+                .map {
+                  case Right(value) if value == OK =>
+                    auditExclusion(
+                      exclusion = false,
+                      year,
+                      individual.personToExclude.nationalInsuranceNumber,
+                      iabdType
+                    )
+                    Redirect(routes.ExclusionListController.showRemovalWhatsNext(iabdType))
+                  case Left(value)                 =>
+                    val error = value.failures.head
+                    InternalServerError(
+                      errorPageView(
+                        s"ServiceMessage.${error.code}",
+                        controllersReferenceData.yearRange,
+                        mpbik = mpbikToggle
+                      )
+                    )
+                  case Right(unexpectedStatus)     =>
+                    logger.warn(
+                      s"[ExclusionListController][removeExclusionsCommit] Exclusion list update operation was unable to be executed successfully:" +
+                        s" received $unexpectedStatus response"
+                    )
+                    BadRequest(
+                      errorPageView(
+                        "Could not perform update operation",
+                        controllersReferenceData.yearRange,
+                        mpbik = mpbikToggle
+                      )
+                    )
+                }
             }
-        }
+          }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
         logger.info("[ExclusionListController][removeExclusionsCommit] Exclusions not allowed, showing error page")
@@ -935,18 +950,23 @@ class ExclusionListController @Inject() (
 
   def showRemovalWhatsNext(iabdType: IabdType): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
-      val futureResult = sessionService.fetchPbikSession().map { session =>
-        val individual = session.get.eiLPerson.get
-        Ok(
-          whatNextRescindView(
-            taxDateUtils.getTaxYearRange(),
-            FormMappingsConstants.CYP1,
-            iabdType,
-            individual.personToExclude,
-            mpbik = mpbikToggle
-          )
-        )
-      }
+      val futureResult =
+        if (mpbikToggle) {
+          Future.failed(new InvalidURIException())
+        } else {
+          sessionService.fetchPbikSession().map { session =>
+            val individual = session.get.eiLPerson.get
+            Ok(
+              whatNextRescindView(
+                taxDateUtils.getTaxYearRange(),
+                FormMappingsConstants.CYP1,
+                iabdType,
+                individual.personToExclude,
+                mpbik = mpbikToggle
+              )
+            )
+          }
+        }
       controllersReferenceData.responseErrorHandler(futureResult)
   }
 

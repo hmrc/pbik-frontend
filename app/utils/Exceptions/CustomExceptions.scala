@@ -23,3 +23,5 @@ class InvalidBikTypeException(val message: String) extends Exception(message)
 class GenericServerErrorException(val message: String) extends Exception(message)
 
 class OptimisticLockConflictException(val message: String, val year: Int) extends Exception(message)
+
+class InvalidURIException extends Exception

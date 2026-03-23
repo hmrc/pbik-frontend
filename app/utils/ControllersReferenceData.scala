@@ -24,8 +24,9 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results.*
 import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeException, InvalidYearURIException, OptimisticLockConflictException}
+import utils.Exceptions.{GenericServerErrorException, InvalidBikTypeException, InvalidURIException, InvalidYearURIException, OptimisticLockConflictException}
 import views.html.{ErrorPage, MaintenancePage, OptimisticLockErrorPage}
+import views.html.page_not_found_template
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,7 +57,8 @@ class ControllersReferenceData @Inject() (
   override val messagesApi: MessagesApi,
   errorPageView: ErrorPage,
   optimisticLockErrorPage: OptimisticLockErrorPage,
-  maintenancePageView: MaintenancePage
+  maintenancePageView: MaintenancePage,
+  pageNotFound: page_not_found_template
 )(implicit
   ec: ExecutionContext,
   val pbikAppConfig: PbikAppConfig
@@ -157,11 +159,16 @@ class ControllersReferenceData @Inject() (
         Conflict(
           optimisticLockErrorPage(taxDateUtils.isCurrentTaxYear(e5.year))
         )
-      case e6                                  =>
+      case e6: InvalidURIException             =>
+        logger.error(s"[ControllersReferenceData][responseErrorHandler] Page not found for URI: ${request.uri}")
+        NotFound(
+          pageNotFound()
+        )
+      case e7                                  =>
         logger.warn(
-          s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e6.getMessage}. " +
+          s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e7.getMessage}. " +
             s"Showing default error page",
-          e6
+          e7
         )
         InternalServerError(maintenancePageView())
     }
