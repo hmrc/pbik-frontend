@@ -17,6 +17,7 @@
 @import views.html.localhelpers.TextInput
 @import views.templatemodels.PageTitle
 @import config.PbikAppConfig
+@import utils.FormMappingsConstants
 
 @this(
         config:PbikAppConfig,
@@ -77,7 +78,7 @@
                         @if(request.isAgent){
                             <span id="client-name" class="govuk-caption-l">@request.clientName.get</span>
                         }
-                        @if(isCurrentTaxYear=="cy"){
+                        @if(isCurrentTaxYear == FormMappingsConstants.CY){
                             <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.current.tax.year", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)</span>
                         } else{
                             <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.current.tax.year", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</span>

@@ -15,6 +15,7 @@
  *@
 
 @import views.templatemodels.PageTitle
+@import utils.FormMappingsConstants
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -52,7 +53,13 @@
         @if(request.clientName.isDefined){
             <span id="client-name" class="govuk-caption-l">@request.clientName</span>
         }
-        <span id="empref" class="govuk-caption-l">@messages("ExcludedEmployeesMPBIK.form.current.tax.year", taxYearRange.cy.toString(), taxYearRange.cyplus1.toString())</span>
+        <span id="empref" class="govuk-caption-l">
+            @if(isCurrentTaxYear == FormMappingsConstants.CY){
+                @messages("ExcludedEmployeesMPBIK.form.current.tax.year", taxYearRange.cyminus1.toString(), taxYearRange.cy.toString())
+            } else{
+                @messages("ExcludedEmployeesMPBIK.form.current.tax.year", taxYearRange.cy.toString(), taxYearRange.cyplus1.toString())
+            }
+        </span>
         <h1 id="title" class="govuk-heading-xl">
             @benefitLabel
         </h1>
