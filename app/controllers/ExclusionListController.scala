@@ -601,12 +601,19 @@ class ExclusionListController @Inject() (
                   session.get.listOfMatches.get.pbikExclusionList
                     .find(person => person.nationalInsuranceNumber == values.nino)
                 if (mpbikToggle && individualsDetails.isDefined) {
-                  Future.successful(
-                    Redirect(
-                      routes.ExclusionListController
-                        .declareEmployeeToExclude(year, iabdType)
+                  sessionService
+                    .storeListOfMatches(
+                      session.get.listOfMatches.get.copy(
+                        pbikExclusionList =
+                          List(individualsDetails.get) // this creates a list of just the selected employee
+                      )
                     )
-                  )
+                    .map(_ =>
+                      Redirect(
+                        routes.ExclusionListController
+                          .declareEmployeeToExclude(year, iabdType)
+                      )
+                    )
                 } else {
                   validateRequest(year, iabdType).flatMap { _ =>
                     commitExclusion(

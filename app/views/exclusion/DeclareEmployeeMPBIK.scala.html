@@ -38,7 +38,7 @@
         @if(request.isAgent){
             <span id="client-name" class="govuk-caption-l">@request.getClientName</span>
         }
-        <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.title.span.taxYear.cy0", s"${taxYearRange.cy}", s"${taxYearRange.cyplus1}")</span>
+        <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.title.span.taxYear.cy0", s"${taxYearRange.cyminus1}", s"${taxYearRange.cy}")</span>
         @messages("ExclusionSearchMPBIK.title.single")
     </h1>
 
