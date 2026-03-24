@@ -16,6 +16,7 @@
 
 @import utils.TaxDateUtils
 @import views.templatemodels.PageTitle
+@import utils.FormMappingsConstants
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -55,7 +56,13 @@
         @if(request.isAgent){
             <span id="client-name" class="govuk-caption-l">@request.getClientName</span>
         }
-        <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.tax.year", s"${taxYearRange.cy}", s"${taxYearRange.cyplus1}")</span>
+        <span class="govuk-caption-l">
+            @if(year == FormMappingsConstants.CY){
+                @messages("ExclusionSearchMPBIK.form.tax.year", s"${taxYearRange.cyminus1}", s"${taxYearRange.cy}")
+            } else{
+                @messages("ExclusionSearchMPBIK.form.tax.year", s"${taxYearRange.cy}", s"${taxYearRange.cyplus1}")
+            }
+        </span>
         @messages("ExclusionSearchMPBIK.title.multiple")
     </h1>
 

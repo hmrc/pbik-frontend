@@ -114,8 +114,8 @@ class SummaryViewSpec extends PBIKViewSpec {
         val doc = Jsoup.parse(view("cy", List.empty, List.empty).toString())
         doc.select("#tab-tag-cy").text() mustBe messages(
           "PayrollingSummaryMPBIK.tab.taxYear.cy0",
-          taxYearRange.cy.toString,
-          taxYearRange.cyplus1.toString
+          taxYearRange.cyminus1.toString,
+          taxYearRange.cy.toString
         )
       }
 
