@@ -1081,16 +1081,25 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
               )
             )
           )
+          when(mockSessionService.storeListOfMatches(any())(any())).thenReturn(
+            Future.successful(
+              pbikSession.copy(
+                listOfMatches = Some(
+                  TracePersonListResponse(1, List(pbikSession.listOfMatches.get.pbikExclusionList.head))
+                )
+              )
+            )
+          )
 
           val result =
             mockExclusionListController.updateMultipleExclusions(
-              cyp1,
+              cy,
               iabdType,
               ControllersReferenceDataCodes.FORM_TYPE_NINO
             )(formRequest)
 
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(s"/payrollbik/$cyp1/${iabdType.id}/declare-employee-exclusion")
+          redirectLocation(result) mustBe Some(s"/payrollbik/$cy/${iabdType.id}/declare-employee-exclusion")
         }
       } else {
         "redirect to the what next page" in {
