@@ -315,7 +315,7 @@ ExclusionOverviewMPBIK.notExcludedEmployee.p1.agent = Caiff y buddiant {0} ei dr
 ExclusionOverviewMPBIK.p1 = Gallwch eithrio cyflogeion sy’n cael y buddiant hwn neu’r draul hon.
 ExclusionOverviewMPBIK.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy anfon P11D at CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 ExclusionOverviewMPBIK.p2.agent = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i’ch cleient adrodd am werth y buddiant hwn neu’r draul hon drwy anfon P11D at CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
-ExclusionOverviewMPBIK.benefitsManage.inset = Ni allwch ailddechrau trethu drwy’r gyflogres yn y flwyddyn dreth bresennol ar gyfer cyflogeion sydd wedi’u heithrio.
+ExclusionOverviewMPBIK.benefitsManage.inset = O 6 Ebrill 2027 ymlaen, bydd angen i gyflogwyr drethu holl fuddiannau cyflogeion drwy’r gyflogres (ac eithrio benthyciadau a llety). Ni fydd buddiannau unrhyw gyflogeion yn cael eu heithrio rhag cael eu trethu drwy’r gyflogres, hyd yn oed os yw’r cyflogeion hynny wedi’u heithrio rhag buddiannau ar gyfer blwyddyn dreth 2026 i 2027.
 
 #*************************************************************
 # Exclusion search MPBIK
