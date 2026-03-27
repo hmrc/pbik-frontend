@@ -67,6 +67,9 @@
 
     @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdType)) {
         @if(currentWithNextYearDate.isEmpty) {
+            <div class="govuk-inset-text">
+                @messages("ExclusionOverviewMPBIK.benefitsManage.inset")
+            </div>
             <h2 class="govuk-heading-m">@messages("ExcludedEmployeesMPBIK.h1")</h2>
             <p class="govuk-body">@messages("ExclusionOverviewMPBIK.notExcludedEmployee.p1." + request.userType, benefitLabel, taxYearRange.cy.toString())</p>
         } else {
