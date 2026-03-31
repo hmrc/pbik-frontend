@@ -315,7 +315,7 @@ ExclusionOverviewMPBIK.notExcludedEmployee.p1.agent = {0} is taxed through your 
 ExclusionOverviewMPBIK.p1 = You can exclude employees who get this expense or benefit.
 ExclusionOverviewMPBIK.p2.organisation = For excluded employees, you need to report the value of this benefit or expense by sending HMRC a P11D. You should do this at the end of the tax year.
 ExclusionOverviewMPBIK.p2.agent = For excluded employees, your client must report the value of this benefit or expense by sending HMRC a P11D. They should do this at the end of the tax year.
-ExclusionOverviewMPBIK.benefitsManage.inset = From 6 April 2027, employers will have to tax all employee benefits through payroll (except loans and accommodation). Any employees excluded from benefits for the 2026 to 2027 tax year will no longer be excluded from having their benefits taxed through payroll.
+ExclusionOverviewMPBIK.benefitsManage.inset = You cannot restart payrolling for excluded employees in the current tax year.
 
 #*************************************************************
 # Exclusion search MPBIK
