@@ -659,7 +659,7 @@ whatNext.exclude.you.do.p.cy.link.organisation = ddychwelyd i fuddiannau a threu
 whatNext.exclude.you.do.p.cy.after.organisation = i eithrio cyflogeion rhag buddiannau a threuliau’r flwyddyn hon.
 
 whatNextMPBIK.exclude.you.do.p.cy.before.organisation = Gallwch
-whatNextMPBIK.exclude.you.do.p.cy.link.organisation = fynd yn ôl at eich crynodeb o’r hyn rydych yn eu trethu drwy’r gyflogres
+whatNextMPBIK.exclude.you.do.p.cy.link.organisation = fynd yn ôl i’ch crynodeb o dalu buddiannau drwy’r gyflogres
 whatNextMPBIK.exclude.you.do.p.cy.after.organisation = er mwyn gwneud y canlynol:
 whatNextMPBIK.exclude.li.view.benefits = gweld buddiannau
 whatNextMPBIK.exclude.li.other.benefits = eithrio cyflogeion rhag buddiannau eraill
@@ -669,15 +669,15 @@ whatNext.exclude.you.do.p.cy.link.agent = ddychwelyd i fuddiannau a threuliau’
 whatNext.exclude.you.do.p.cy.after.agent = i eithrio cyflogeion rhag buddiannau a threuliau’r flwyddyn hon ar gyfer y cleient hwn.
 
 whatNextMPBIK.exclude.you.do.p.cy.before.agent = Gallwch
-whatNextMPBIK.exclude.you.do.p.cy.link.agent = ddychwelyd i grynodeb o drethu buddiannau drwy gyflogres eich cleient
-whatNextMPBIK.exclude.you.do.p.cy.after.agent = i wneud y canlynol:
+whatNextMPBIK.exclude.you.do.p.cy.link.agent = fynd yn ôl i grynodeb o dalu buddiannau drwy’r gyflogres eich cleient
+whatNextMPBIK.exclude.you.do.p.cy.after.agent = er mwyn gwneud y canlynol:
 
 whatNext.exclude.you.do.p.before.organisation = Gallwch
 whatNext.exclude.you.do.p.link.organisation = fynd yn ôl i’ch buddiannau a threuliau cofrestredig
 whatNext.exclude.you.do.p.after.organisation = er mwyn:
 
 whatNextMPBIK.exclude.you.do.p.before.organisation = Gallwch
-whatNextMPBIK.exclude.you.do.p.link.organisation = fynd yn ôl at eich crynodeb o’r hyn rydych yn eu trethu drwy’r gyflogres
+whatNextMPBIK.exclude.you.do.p.link.organisation = fynd yn ôl i’ch crynodeb o dalu buddiannau drwy’r gyflogres
 whatNextMPBIK.exclude.you.do.p.after.organisation = er mwyn gwneud y canlynol:
 
 whatNext.exclude.you.do.p.before.agent = Gallwch
@@ -685,8 +685,8 @@ whatNext.exclude.you.do.p.link.agent = fynd yn ôl i fuddiannau a threuliau cofr
 whatNext.exclude.you.do.p.after.agent = er mwyn:
 
 whatNextMPBIK.exclude.you.do.p.before.agent = Gallwch
-whatNextMPBIK.exclude.you.do.p.link.agent = ddychwelyd i grynodeb o drethu buddiannau drwy gyflogres eich cleient
-whatNextMPBIK.exclude.you.do.p.after.agent = i wneud y canlynol:
+whatNextMPBIK.exclude.you.do.p.link.agent = fynd yn ôl i grynodeb o dalu buddiannau drwy’r gyflogres eich cleient
+whatNextMPBIK.exclude.you.do.p.after.agent = er mwyn gwneud y canlynol:
 
 whatNext.exclude.you.do.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau rydych wedi’u cofrestru
 whatNext.exclude.you.do.li2 = cofrestru rhagor o fuddiannau a threuliau
