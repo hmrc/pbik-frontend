@@ -332,7 +332,6 @@ error.exclusionMPBIK.multi.selection = Choose the employee to exclude
 ExclusionSearchMPBIK.title.single = Declare the employee to exclude from this benefit
 ExclusionSearchMPBIK.title.span.taxYear.cy0 = Tax year April {0} to {1}
 ExclusionImportantMPBIK.Reminder = By confirming, you will exclude this employee from having {0} taxed through payroll from {1}.
-ExclusionSearchMPBIK.inset.text = From 6 April 2027, employers will have to tax all employee benefits through payroll (except loans and accommodation). Any employees excluded from benefits for the 2026 to 2027 tax year will no longer be excluded from having their benefits taxed through payroll.
 
 ExclusionSearchMPBIK.field.employee.name = Employee name
 ExclusionSearchMPBIK.field.employee.ni = National Insurance number (last letter not shown)
