@@ -332,7 +332,6 @@ error.exclusionMPBIK.multi.selection = Dewiswch pa gyflogai i’w eithrio
 ExclusionSearchMPBIK.title.single = Datgan y cyflogai i’w eithrio rhag y buddiant hwn
 ExclusionSearchMPBIK.title.span.taxYear.cy0 = Blwyddyn dreth Ebrill {0} i {1}
 ExclusionImportantMPBIK.Reminder = Drwy gadarnhau hyn, byddwch yn eithrio’r cyflogai hwn rhag cael y buddiant, {0}, wedi’i drethu drwy’r gyflogres o {1} ymlaen.
-ExclusionSearchMPBIK.inset.text = O 6 Ebrill 2027 ymlaen, bydd angen i gyflogwyr drethu holl fuddiannau cyflogeion drwy’r gyflogres (ac eithrio benthyciadau a llety). Ni fydd buddiannau unrhyw gyflogeion yn cael eu heithrio rhag cael eu trethu drwy’r gyflogres, hyd yn oed os yw’r cyflogeion hynny wedi’u heithrio rhag buddiannau ar gyfer blwyddyn dreth 2026 i 2027.
 
 ExclusionSearchMPBIK.field.employee.name = Enw’r cyflogai
 ExclusionSearchMPBIK.field.employee.ni = Rhif Yswiriant Gwladol (heb ddangos y llythyren olaf)
