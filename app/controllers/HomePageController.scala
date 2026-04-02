@@ -116,27 +116,27 @@ class HomePageController @Inject() (
   def onPageLoadCY1: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val taxYearRange: TaxYearRange     = controllersReferenceData.yearRange
     val pageLoadFuture: Future[Result] =
-    if(mpbikToggle) {
-      Future.failed(new InvalidURIException())
-    } else {
-      for {
-        _ <- sessionService.resetAll()
-        biksListCYP1 <- bikListService.getAllBenefitsForYear(controllersReferenceData.yearRange.cy)
-        nextYearList <- bikListService.nextYearList
-        currentYearList <- bikListService.currentYearList
-        _ <- auditHomePageView()
-      } yield Ok(
-        summaryPage(
-          selectedYear = "cy1",
-          taxYearRange,
-          List.empty,
-          nextYearList.getBenefitInKindWithCount,
-          0,
-          biksListCYP1.size,
-          currentYearList.getBenefitInKindWithCount.nonEmpty
+      if (mpbikToggle) {
+        Future.failed(new InvalidURIException())
+      } else {
+        for {
+          _               <- sessionService.resetAll()
+          biksListCYP1    <- bikListService.getAllBenefitsForYear(controllersReferenceData.yearRange.cy)
+          nextYearList    <- bikListService.nextYearList
+          currentYearList <- bikListService.currentYearList
+          _               <- auditHomePageView()
+        } yield Ok(
+          summaryPage(
+            selectedYear = "cy1",
+            taxYearRange,
+            List.empty,
+            nextYearList.getBenefitInKindWithCount,
+            0,
+            biksListCYP1.size,
+            currentYearList.getBenefitInKindWithCount.nonEmpty
+          )
         )
-      )
-    }
+      }
     controllersReferenceData.responseErrorHandler(pageLoadFuture)
   }
 
@@ -147,10 +147,10 @@ class HomePageController @Inject() (
         Future.failed(new InvalidURIException())
       } else {
         for {
-          _ <- sessionService.resetAll()
-          biksListCY <- bikListService.getAllBenefitsForYear(controllersReferenceData.yearRange.cyminus1)
+          _               <- sessionService.resetAll()
+          biksListCY      <- bikListService.getAllBenefitsForYear(controllersReferenceData.yearRange.cyminus1)
           currentYearList <- bikListService.currentYearList
-          _ <- auditHomePageView()
+          _               <- auditHomePageView()
         } yield Ok(
           summaryPage(
             selectedYear = "cy",

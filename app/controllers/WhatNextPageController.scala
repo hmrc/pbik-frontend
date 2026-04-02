@@ -69,8 +69,8 @@ class WhatNextPageController @Inject() (
 
   def showWhatNextRemovedBik(iabdType: IabdType): Action[AnyContent] =
     authenticate.async { implicit request =>
-      val resultFuture = 
-        if(mpbik) {
+      val resultFuture =
+        if (mpbik) {
           Future.failed(new InvalidURIException())
         } else {
           sessionService.fetchPbikSession().map { session =>
@@ -85,7 +85,7 @@ class WhatNextPageController @Inject() (
                 mpbik
               )
             )
-          } 
+          }
         }
       controllersReferenceData.responseErrorHandler(resultFuture)
     }
