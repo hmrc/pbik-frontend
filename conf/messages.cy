@@ -114,7 +114,7 @@ StartPage.link.agent = Dechrau nawr
 #*************************************************************
 
 StartPageMPBIK.heading.organisation = Talu buddiannau a threuliau drwy’r gyflogres
-StartPageMPBIK.p1.organisation = O XX Tachwedd 2026 ymlaen, byddwch yn gallu defnyddio’r gwasanaeth hwn i gofrestru i drethu benthyciadau a llety drwy’r gyflogres.
+StartPageMPBIK.p1.organisation = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru buddiannau a threuliau ar gyfer blwyddyn dreth 2026 i 2027 oherwydd daeth y cyfnod cofrestru i ben ar 5 Ebrill. Byddwch yn gallu defnyddio’r gwasanaeth hwn i gofrestru buddiannau a threuliau penodol o fis Tachwedd 2026 ymlaen.
 StartPageMPBIK.p2.organisation = Os ydych wedi cofrestru buddiannau neu dreuliau, gallwch ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
 StartPageMPBIK.p3.organisation = gweld buddiannau a threuliau sydd wedi eu cofrestru ar gyfer y flwyddyn hon
 StartPageMPBIK.p4.organisation = gweld cyflogeion sydd wedi eu heithrio rhag cael buddiant penodol
@@ -122,7 +122,7 @@ StartPageMPBIK.p5.organisation = eithrio cyflogeion rhag cael buddiant penodol a
 StartPageMPBIK.link.organisation = Dechrau nawr
 
 StartPageMPBIK.heading.agent = Talu buddiannau a threuliau drwy’r gyflogres
-StartPageMPBIK.p1.agent = O XX Tachwedd 2026 ymlaen, byddwch yn gallu defnyddio’r gwasanaeth hwn i gofrestru eich cleient ar gyfer trethu benthyciadau neu lety drwy’r gyflogres.
+StartPageMPBIK.p1.agent = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru buddiannau a threuliau ar gyfer blwyddyn dreth 2026 i 2027 oherwydd daeth y cyfnod cofrestru i ben ar 5 Ebrill. Byddwch yn gallu defnyddio’r gwasanaeth hwn i gofrestru buddiannau a threuliau penodol ar gyfer eich cleient o fis Tachwedd 2026 ymlaen.
 StartPageMPBIK.p2.agent = Os yw’ch cleient wedi cofrestru buddiannau neu dreuliau, gallwch ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
 StartPageMPBIK.p3.agent = gweld pa fuddiannau a threuliau sydd wedi eu cofrestru ar gyfer y flwyddyn hon
 StartPageMPBIK.p4.agent = gweld pa fuddiannau a threuliau sydd wedi eu heithrio rhag cael buddiant penodol
