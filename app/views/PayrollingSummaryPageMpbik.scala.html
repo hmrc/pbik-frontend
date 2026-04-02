@@ -47,7 +47,7 @@
             </ul>
             <div class="govuk-tabs__panel" id="tax-year-cy">
                 <h2 class="govuk-heading-l" id="benefits-tab">@messages("PayrollingSummaryMPBIK.tab.heading")</h2>
-                <p class="govuk-body">@messages("PayrollingSummaryMPBIK.p2." + request.userType, s"${startTaxYear}")</p>
+                <p class="govuk-body">@messages("PayrollingSummaryMPBIK.p2." + request.userType, s"${startTaxYear - 1}")</p>
                 <table class="govuk-table">
                     <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
