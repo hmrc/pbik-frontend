@@ -904,8 +904,12 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val nino   = pbikSession.currentExclusions.get.exclusions.head.nationalInsuranceNumber
         val result = mockExclusionListController.remove(cyp1, iabdType, nino)(mockRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(s"/payrollbik/$cyp1/${iabdType.id}/check-employee-details")
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustBe NOT_FOUND
+        } else {
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(s"/payrollbik/$cyp1/${iabdType.id}/check-employee-details")
+        }
       }
 
       "show an error page when exclusion mode is disabled" in {
@@ -925,13 +929,17 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
         val result = mockExclusionListController.showRemovalConfirmation(cyp1, iabdType)(mockRequest)
 
-        status(result) mustBe OK
-        contentAsString(result) must include(
-          s"By confirming, ${pbikSession.eiLPerson.get.personToExclude.firstForename} ${pbikSession.eiLPerson.get.personToExclude.surname} will have Car and car fuel taxed through payroll from 6 April"
-        )
-        contentAsString(result) must include(
-          s"${pbikSession.eiLPerson.get.personToExclude.firstForename} ${pbikSession.eiLPerson.get.personToExclude.surname}"
-        )
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustBe NOT_FOUND
+        } else {
+          status(result) mustBe OK
+          contentAsString(result) must include(
+            s"By confirming, ${pbikSession.eiLPerson.get.personToExclude.firstForename} ${pbikSession.eiLPerson.get.personToExclude.surname} will have Car and car fuel taxed through payroll from 6 April"
+          )
+          contentAsString(result) must include(
+            s"${pbikSession.eiLPerson.get.personToExclude.firstForename} ${pbikSession.eiLPerson.get.personToExclude.surname}"
+          )
+        }
       }
 
       "show the removal what next screen" in {
@@ -940,10 +948,14 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
         val result = mockExclusionListController.showRemovalWhatsNext(iabdType)(mockRequest)
 
-        status(result) mustBe OK
-        contentAsString(result) must include(
-          s"${pbikSession.eiLPerson.get.personToExclude.firstForename} ${pbikSession.eiLPerson.get.personToExclude.surname} will have Car and car fuel taxed through payroll from 6 April"
-        )
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustBe NOT_FOUND
+        } else {
+          status(result) mustBe OK
+          contentAsString(result) must include(
+            s"${pbikSession.eiLPerson.get.personToExclude.firstForename} ${pbikSession.eiLPerson.get.personToExclude.surname} will have Car and car fuel taxed through payroll from 6 April"
+          )
+        }
       }
     }
 
@@ -959,8 +971,12 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
         val result = mockExclusionListController.removeExclusionsCommit(iabdType)(mockRequest)
 
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(s"/payrollbik/${iabdType.id}/employee-registration-complete")
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustBe NOT_FOUND
+        } else {
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(s"/payrollbik/${iabdType.id}/employee-registration-complete")
+        }
       }
 
       "show an error page when exclusions are disabled" in {
@@ -982,8 +998,12 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
         val resultForCyp1 = mockExclusionListController.removeExclusionsCommit(iabdType)(mockRequest)
         val resultForCy   = mockExclusionListController.removeExclusionsCommit(iabdType)(mockRequest)
 
-        status(resultForCyp1) mustBe BAD_REQUEST
-        status(resultForCy) mustBe BAD_REQUEST
+        if (pbikAppConfig.mpbikToggle) {
+          status(resultForCy) mustBe NOT_FOUND
+        } else {
+          status(resultForCyp1) mustBe BAD_REQUEST
+          status(resultForCy) mustBe BAD_REQUEST
+        }
       }
 
       "return INTERNAL_SERVER_ERROR when receiving a NPSError  from the connector at an exclusion" in {
@@ -996,8 +1016,12 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
         val result = mockExclusionListController.removeExclusionsCommit(iabdType)(mockRequest)
 
-        status(result) mustBe INTERNAL_SERVER_ERROR
-        contentAsString(result) must include(messages("ServiceMessage.code.test.123"))
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustBe NOT_FOUND
+        } else {
+          status(result) mustBe INTERNAL_SERVER_ERROR
+          contentAsString(result) must include(messages("ServiceMessage.code.test.123"))
+        }
       }
     }
 

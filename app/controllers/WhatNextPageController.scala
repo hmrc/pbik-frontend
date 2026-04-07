@@ -25,10 +25,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.*
+import utils.Exceptions.InvalidURIException
 import views.html.registration.{AddBenefitConfirmationNextTaxYear, RemoveBenefitConfirmationNextTaxYear}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatNextPageController @Inject() (
@@ -68,19 +69,24 @@ class WhatNextPageController @Inject() (
 
   def showWhatNextRemovedBik(iabdType: IabdType): Action[AnyContent] =
     authenticate.async { implicit request =>
-      val resultFuture = sessionService.fetchPbikSession().map { session =>
-        val removedBikAsList: RegistrationList =
-          RegistrationList(active = List(session.get.bikRemoved.get))
-        Ok(
-          removeBenefitConfirmationNextTaxYearView(
-            taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
-            controllersReferenceData.yearRange,
-            removedBikAsList,
-            iabdType,
-            mpbik
-          )
-        )
-      }
+      val resultFuture =
+        if (mpbik) {
+          Future.failed(new InvalidURIException())
+        } else {
+          sessionService.fetchPbikSession().map { session =>
+            val removedBikAsList: RegistrationList =
+              RegistrationList(active = List(session.get.bikRemoved.get))
+            Ok(
+              removeBenefitConfirmationNextTaxYearView(
+                taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
+                controllersReferenceData.yearRange,
+                removedBikAsList,
+                iabdType,
+                mpbik
+              )
+            )
+          }
+        }
       controllersReferenceData.responseErrorHandler(resultFuture)
     }
 }
