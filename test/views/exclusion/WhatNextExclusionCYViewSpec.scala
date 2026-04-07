@@ -57,7 +57,7 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
       s"/payrollbik/cyp1/${iabdType.id}/excluded-employees"
     )
     behave like pageWithIdAndText(
-      "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2026.",
+      "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2027.",
       "confirmation-p"
     )
 
@@ -84,7 +84,7 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
       s"/payrollbik/cyp1/${iabdType.id}/excluded-employees"
     )
     behave like pageWithIdAndText(
-      "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2026.",
+      "John A Doe will not have Private medical treatment or insurance taxed through payroll from 06 April 2027.",
       "confirmation-p"
     )
 
