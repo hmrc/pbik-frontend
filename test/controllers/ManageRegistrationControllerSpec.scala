@@ -106,7 +106,11 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       "not be directed to cy page with list of biks (NO MORE CY ENABLED)" in {
         val result = registrationController.currentTaxYearOnPageLoad()(mockRequest)
 
-        status(result) mustBe FORBIDDEN
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustBe NOT_FOUND
+        } else {
+          status(result) mustBe FORBIDDEN
+        }
       }
     }
 
@@ -137,7 +141,11 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
         val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
 
-        status(result) mustBe FORBIDDEN
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustBe NOT_FOUND
+        } else {
+          status(result) mustBe FORBIDDEN
+        }
       }
 
       "be taken to the Forbidden page always (NO MORE CY ENABLED)" in {
@@ -148,7 +156,11 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
         val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
 
-        status(result) mustBe FORBIDDEN
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustBe NOT_FOUND
+        } else {
+          status(result) mustBe FORBIDDEN
+        }
       }
     }
 
@@ -309,7 +321,11 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.updateCurrentYearRegisteredBenefitTypes()(mockRequestForm)
 
-        status(result) mustBe FORBIDDEN
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustBe NOT_FOUND
+        } else {
+          status(result) mustBe FORBIDDEN
+        }
       }
     }
 

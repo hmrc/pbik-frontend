@@ -45,13 +45,15 @@ class ControllersReferenceDataSpec extends FakePBIKApplication {
   "ControllersReferenceData" when {
     "CY mode is disabled" should {
       "display the result passed to it" in new Test {
-        val result: Result = await(mockControllersReferenceData.responseCheckCYEnabled(Future {
-          Results.Ok("Passed Test")
-        }(scala.concurrent.ExecutionContext.Implicits.global))(authenticatedRequest))
+        val result: Result = await(mockControllersReferenceData.responseCheckCYEnabled()(authenticatedRequest))
 
-        result.header.status mustBe FORBIDDEN
-        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.10003.1"))
-        result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.10003.2"))
+        if (pbikAppConfig.mpbikToggle) {
+          result.header.status mustBe NOT_FOUND
+        } else {
+          result.header.status mustBe FORBIDDEN
+          result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.10003.1"))
+          result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.10003.2"))
+        }
       }
     }
 
