@@ -24,7 +24,7 @@ import play.api.mvc.*
 import services.BikListService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.Exceptions.InvalidYearURIException
+import utils.Exceptions.{InvalidURIException, InvalidYearURIException}
 import utils.{ControllersReferenceData, FormMappings}
 import views.html.{SelectYearPage, StartPage, StartPageMpbik}
 
@@ -64,37 +64,47 @@ class StartPageController @Inject() (
   }
 
   def selectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    // TODO remove as part of clean up MPBIK
-    val taxYearRange                 = controllersReferenceData.yearRange
-    val resultFuture: Future[Result] = for {
-      currentYearList <- bikListService.currentYearList
-    } yield
-      if (currentYearList.getBenefitInKindWithCount.isEmpty) {
-        Redirect(routes.HomePageController.onPageLoadCY1)
+    // TODO remove function as part of clean up MPBIK
+    val resultFuture: Future[Result] =
+      if (mpbikToggle) {
+        Future.failed(new InvalidURIException())
       } else {
-        Ok(selectYearPageView(taxYearRange, formMappings.selectYearForm))
+        val taxYearRange = controllersReferenceData.yearRange
+        for {
+          currentYearList <- bikListService.currentYearList
+        } yield
+          if (currentYearList.getBenefitInKindWithCount.isEmpty) {
+            Redirect(routes.HomePageController.onPageLoadCY1)
+          } else {
+            Ok(selectYearPageView(taxYearRange, formMappings.selectYearForm))
+          }
       }
 
     controllersReferenceData.responseErrorHandler(resultFuture)
   }
 
   def submitSelectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    // TODO remove as part of clean up MPBIK
-    val taxYearRange                 = controllersReferenceData.yearRange
-    val resultFuture: Future[Result] = formMappings.selectYearForm
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(selectYearPageView(taxYearRange, formWithErrors))),
-        values =>
-          values.year match {
-            case utils.FormMappingsConstants.CY   =>
-              Future.successful(Redirect(routes.HomePageController.onPageLoadCY))
-            case utils.FormMappingsConstants.CYP1 =>
-              Future.successful(Redirect(routes.HomePageController.onPageLoadCY1))
-            case _                                =>
-              Future.failed(throw new InvalidYearURIException())
-          }
-      )
+    // TODO remove function as part of clean up MPBIK
+    val resultFuture: Future[Result] =
+      if (mpbikToggle) {
+        Future.failed(new InvalidURIException())
+      } else {
+        val taxYearRange = controllersReferenceData.yearRange
+        formMappings.selectYearForm
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(selectYearPageView(taxYearRange, formWithErrors))),
+            values =>
+              values.year match {
+                case utils.FormMappingsConstants.CY   =>
+                  Future.successful(Redirect(routes.HomePageController.onPageLoadCY))
+                case utils.FormMappingsConstants.CYP1 =>
+                  Future.successful(Redirect(routes.HomePageController.onPageLoadCY1))
+                case _                                =>
+                  Future.failed(throw new InvalidYearURIException())
+              }
+          )
+      }
 
     controllersReferenceData.responseErrorHandler(resultFuture)
   }

@@ -70,22 +70,28 @@ class ControllersReferenceData @Inject() (
 
   def yearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
 
-  def responseCheckCYEnabled(
-    staticDataRequest: Future[Result]
-  )(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    val errorCode = 10003
-    Future(
-      Forbidden(
-        errorPageView(
-          ControllersReferenceDataCodes.CY_RESTRICTED,
-          yearRange,
-          "",
-          errorCode,
-          mpbik = mpbikToggle
+  def responseCheckCYEnabled()(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
+    if (mpbikToggle) {
+      logger.error(s"[ControllersReferenceData][responseCheckCYEnabled] Page not found for URI: ${request.uri}")
+      Future(
+        NotFound(
+          pageNotFound()
         )
       )
-    )
-  }
+    } else {
+      val errorCode = 10003
+      Future(
+        Forbidden(
+          errorPageView(
+            ControllersReferenceDataCodes.CY_RESTRICTED,
+            yearRange,
+            "",
+            errorCode,
+            mpbik = mpbikToggle
+          )
+        )
+      )
+    }
 
   def responseErrorHandler(
     staticDataRequest: Future[Result]

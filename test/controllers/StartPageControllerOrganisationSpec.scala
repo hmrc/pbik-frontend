@@ -159,20 +159,28 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
         when(bikListService.currentYearList(any(), any())).thenReturn(Future.successful(bikResponseWithBenefits))
         val result = startPageController.selectYearPage.apply(organisationRequest)
 
-        status(result) mustEqual OK
-        contentAsString(result) must include(messages("SelectYear.heading"))
-        contentAsString(result) must include(
-          messages("SelectYear.option1", controllersReferenceData.yearRange.cy.toString)
-        )
-        contentAsString(result) must include(messages("SelectYear.option2"))
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustEqual NOT_FOUND
+        } else {
+          status(result) mustEqual OK
+          contentAsString(result) must include(messages("SelectYear.heading"))
+          contentAsString(result) must include(
+            messages("SelectYear.option1", controllersReferenceData.yearRange.cy.toString)
+          )
+          contentAsString(result) must include(messages("SelectYear.option2"))
+        }
       }
 
       "return REDIRECT and the correct view for a GET - when no CY data" in {
         when(bikListService.currentYearList(any(), any())).thenReturn(Future.successful(bikResponseEmpty))
         val result = startPageController.selectYearPage.apply(organisationRequest)
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.HomePageController.onPageLoadCY1.url)
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustEqual NOT_FOUND
+        } else {
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.HomePageController.onPageLoadCY1.url)
+        }
       }
     }
 
@@ -180,31 +188,50 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
       "return OK and the correct view with error for a POST - when invalid form submit" in {
         val result = startPageController.submitSelectYearPage.apply(organisationRequest)
 
-        status(result) mustEqual BAD_REQUEST
-        contentAsString(result) must include(messages("Service.errorSummary.heading"))
-        contentAsString(result) must include(
-          messages("SelectYear.error.empty", controllersReferenceData.yearRange.cy.toString)
-        )
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustEqual NOT_FOUND
+        } else {
+          status(result) mustEqual BAD_REQUEST
+          contentAsString(result) must include(messages("Service.errorSummary.heading"))
+          contentAsString(result) must include(
+            messages("SelectYear.error.empty", controllersReferenceData.yearRange.cy.toString)
+          )
+        }
       }
 
       "return REDIRECT and the correct view for a POST - when CY" in {
         val result = startPageController.submitSelectYearPage.apply(organisationRequestWithCYForm)
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.HomePageController.onPageLoadCY.url)
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustEqual NOT_FOUND
+        } else {
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.HomePageController.onPageLoadCY.url)
+        }
       }
 
       "return REDIRECT and the correct view for a POST - when CYP1" in {
         val result = startPageController.submitSelectYearPage.apply(organisationRequestWithCY1Form)
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustBe Some(routes.HomePageController.onPageLoadCY1.url)
+        if (pbikAppConfig.mpbikToggle) {
+          status(result) mustEqual NOT_FOUND
+        } else {
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result) mustBe Some(routes.HomePageController.onPageLoadCY1.url)
+        }
       }
 
-      "return exception for a POST - when invalid tax year" in
-        intercept[InvalidYearURIException] {
-          await(startPageController.submitSelectYearPage.apply(organisationRequestWithInvalidForm))
+      "return exception for a POST - when invalid tax year" in {
+        if (pbikAppConfig.mpbikToggle) {
+          val result = startPageController.submitSelectYearPage.apply(organisationRequestWithInvalidForm)
+
+          status(result) mustEqual NOT_FOUND
+        } else {
+          intercept[InvalidYearURIException] {
+            await(startPageController.submitSelectYearPage.apply(organisationRequestWithInvalidForm))
+          }
         }
+      }
     }
   }
 
