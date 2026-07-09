@@ -615,7 +615,7 @@ whatNextMPBIK.exclude.h2.organisation = What you must do
 whatNextMPBIK.exclude.h2.agent = What you must tell your client
 
 whatNext.exclude.p1.before.organisation = You should report the value of this benefit by
-whatNext.exclude.p1.link.organisation = submitting a P11D to HMRC
+whatNext.exclude.p1.link.organisation = submitting a P11D to HMRC (opens in a new window or tab)
 whatNext.exclude.p1.after.organisation = for {0}. You should do this at the end of the tax year.
 
 whatNextMPBIK.exclude.p1.before.organisation = You should report the value of this benefit by
@@ -623,7 +623,7 @@ whatNextMPBIK.exclude.p1.link.organisation = sending HMRC a P11d
 whatNextMPBIK.exclude.p1.after.organisation = for {0}. You should do this at the end of the tax year.
 
 whatNext.exclude.p1.before.agent = Your client should report the value of this benefit by
-whatNext.exclude.p1.link.agent = submitting a P11D to HMRC
+whatNext.exclude.p1.link.agent = submitting a P11D to HMRC (opens in a new window or tab)
 whatNext.exclude.p1.after.agent = for {0}. They should do this at the end of the tax year.
 
 whatNextMPBIK.exclude.p1.before.agent = Your client should report the value of this benefit by
@@ -631,7 +631,7 @@ whatNextMPBIK.exclude.p1.link.agent = sending HMRC a P11d
 whatNextMPBIK.exclude.p1.after.agent = for {0}. They should do this at the end of the tax year.
 
 whatNext.exclude.p1.cy.before.organisation = You must report the value of this benefit by
-whatNext.exclude.p1.cy.link.organisation = submitting a P11D to HMRC
+whatNext.exclude.p1.cy.link.organisation = submitting a P11D to HMRC (opens in a new window or tab)
 whatNext.exclude.p1.cy.after.organisation = for {0}. You must:
 
 whatNextMPBIK.exclude.p1.cy.before.organisation = You should report the value of this benefit by
@@ -639,7 +639,7 @@ whatNextMPBIK.exclude.p1.cy.link.organisation = sending HMRC a P11d
 whatNextMPBIK.exclude.p1.cy.after.organisation = for {0}. You should do this at the end of the tax year.
 
 whatNext.exclude.p1.cy.before.agent = Your client must report the value of this benefit by
-whatNext.exclude.p1.cy.link.agent = submitting a P11D to HMRC
+whatNext.exclude.p1.cy.link.agent = submitting a P11D to HMRC (opens in a new window or tab)
 whatNext.exclude.p1.cy.after.agent = for {0}. They must:
 
 whatNextMPBIK.exclude.p1.cy.before.agent = Your client should report the value of this benefit by

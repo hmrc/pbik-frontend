@@ -615,7 +615,7 @@ whatNextMPBIK.exclude.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud
 whatNextMPBIK.exclude.h2.agent = Yr hyn y mae’n rhaid i’ch cleient gael gwybod gennych
 
 whatNext.exclude.p1.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
-whatNext.exclude.p1.link.organisation = cyflwyno P11D i CThEF
+whatNext.exclude.p1.link.organisation = cyflwyno P11D i CThEF (yn agor ffenestr neu dab newydd)
 whatNext.exclude.p1.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 
 whatNextMPBIK.exclude.p1.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
@@ -623,7 +623,7 @@ whatNextMPBIK.exclude.p1.link.organisation = anfon P11D at CThEF
 whatNextMPBIK.exclude.p1.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 
 whatNext.exclude.p1.before.agent = Dylai’ch cleient roi gwybod am werth y buddiant hwn drwy
-whatNext.exclude.p1.link.agent = cyflwyno P11D i CThEF
+whatNext.exclude.p1.link.agent = cyflwyno P11D i CThEF (yn agor ffenestr neu dab newydd)
 whatNext.exclude.p1.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
 
 whatNextMPBIK.exclude.p1.before.agent = Dylai’ch cleient adrodd am werth y buddiant hwn drwy
@@ -631,7 +631,7 @@ whatNextMPBIK.exclude.p1.link.agent = anfon P11D at CThEF
 whatNextMPBIK.exclude.p1.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
 
 whatNext.exclude.p1.cy.before.organisation = Mae’n rhaid i chi roi gwybod am werth y buddiant hwn drwy
-whatNext.exclude.p1.cy.link.organisation = gyflwyno P11D i CThEF
+whatNext.exclude.p1.cy.link.organisation = gyflwyno P11D i CThEF (yn agor ffenestr neu dab newydd)
 whatNext.exclude.p1.cy.after.organisation = ar gyfer {0}. Mae’n rhaid i chi wneud y canlynol:
 
 whatNextMPBIK.exclude.p1.cy.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
@@ -639,7 +639,7 @@ whatNextMPBIK.exclude.p1.cy.link.organisation = anfon P11D at CThEF
 whatNextMPBIK.exclude.p1.cy.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 
 whatNext.exclude.p1.cy.before.agent = Mae’n rhaid i’ch cleient roi gwybod am werth y buddiant hwn drwy
-whatNext.exclude.p1.cy.link.agent = gyflwyno P11D i CThEF
+whatNext.exclude.p1.cy.link.agent = gyflwyno P11D i CThEF (yn agor ffenestr neu dab newydd)
 whatNext.exclude.p1.cy.after.agent = ar gyfer {0}. Mae’n rhaid iddo wneud y canlynol:
 
 whatNextMPBIK.exclude.p1.cy.before.agent = Dylai’ch cleient adrodd am werth y buddiant hwn drwy
