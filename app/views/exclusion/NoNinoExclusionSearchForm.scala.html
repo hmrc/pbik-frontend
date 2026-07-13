@@ -121,13 +121,15 @@
                 @dateFieldsNumberInputs(searchForm, "dob","dob.day", "dob.month", "dob.year", new Html(messages("Service.field.dob")), Symbol("_hintText")->messages("Service.field.dobhint"))
 
                 <div class="govuk-form-group @if(searchForm("gender").hasErrors){govuk-form-group--error}" id="gender">
-                    <fieldset class="govuk-fieldset">
+                    <fieldset class="govuk-fieldset" @if(searchForm("gender").hasErrors){aria-describedby="gender-error"}>
                         <legend class="govuk-fieldset__legend">
                             @messages("Service.field.gender")
                         </legend>
                         @if(searchForm("gender").hasErrors){
-                            <span class="govuk-visually-hidden">@messages("Service.error"):</span>
-                            <span class="govuk-error-message">@messages("error.required")</span>
+                            <span id="gender-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">@messages("Service.error"):</span>
+                                @messages("error.required")
+                            </span>
                         }
                         <div class="govuk-radios govuk-radios--inline">
                             <div class="govuk-radios__item">

@@ -26,8 +26,9 @@
 @value = @{ field.value.getOrElse("") }
 @hasErrors = @{ elements.errors.nonEmpty }
 @fieldName = @{ elements.field.name }
+@hasHint = @{ elements.args.contains(Symbol("_inputHint")) || elements.args.contains(Symbol("_inputHintDiv")) }
 @ariaDescribedByFields = @{
-    (elements.args.contains(Symbol("_inputHint")), hasErrors) match {
+    (hasHint, hasErrors) match {
         case (true, true) => Some(s"$fieldName-hint $fieldName-error")
         case (true, false) => Some(s"$fieldName-hint")
         case (false, true) => Some(s"$fieldName-error")

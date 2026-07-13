@@ -28,9 +28,17 @@
 
 @argsMap = @{args.toMap}
 @dateErrors = @{formItem(dateFieldName).errors}
+@dateAriaDescribedByFields = @{
+    (argsMap.contains(Symbol("_hintText")), dateErrors.nonEmpty) match {
+        case (true, true) => Some("dob-hint dob-error")
+        case (true, false) => Some("dob-hint")
+        case (false, true) => Some("dob-error")
+        case _ => None
+    }
+}
 
 <div class="govuk-form-group @if(dateErrors.nonEmpty){govuk-form-group--error}">
-    <fieldset class="govuk-fieldset" role="group" aria-describedby="dob-hint@if(dateErrors.nonEmpty){ dob-error}">
+    <fieldset class="govuk-fieldset" role="group" @if(dateAriaDescribedByFields){aria-describedby="@dateAriaDescribedByFields.get"}>
         <legend class="govuk-fieldset__legend">
             @label
         </legend>
@@ -51,7 +59,7 @@
                     <label class="govuk-label govuk-date-input__label" for="@dayFieldName">
                         @messages("Service.field.dob.day")
                     </label>
-                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="@dayFieldName" name="@dayFieldName" type="text" pattern="[0-9]*" inputmode="numeric" value="@{formItem(dayFieldName).value}">
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="@dayFieldName" name="@dayFieldName" type="text" pattern="[0-9]*" inputmode="numeric" value="@{formItem(dayFieldName).value}" @if(dateAriaDescribedByFields){aria-describedby="@dateAriaDescribedByFields.get"}>
                 </div>
             </div>
             <div class="govuk-date-input__item">
@@ -59,7 +67,7 @@
                     <label class="govuk-label govuk-date-input__label" for="@monthFieldName">
                         @messages("Service.field.dob.month")
                     </label>
-                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="@monthFieldName" name="@monthFieldName" type="text" pattern="[0-9]*" inputmode="numeric" value="@{formItem(monthFieldName).value}">
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="@monthFieldName" name="@monthFieldName" type="text" pattern="[0-9]*" inputmode="numeric" value="@{formItem(monthFieldName).value}" @if(dateAriaDescribedByFields){aria-describedby="@dateAriaDescribedByFields.get"}>
                 </div>
             </div>
             <div class="govuk-date-input__item">
@@ -67,7 +75,7 @@
                     <label class="govuk-label govuk-date-input__label" for="@yearFieldName">
                         @messages("Service.field.dob.year")
                     </label>
-                    <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="@yearFieldName" name="@yearFieldName" type="text" pattern="[0-9]*" inputmode="numeric"  value="@{formItem(yearFieldName).value}">
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="@yearFieldName" name="@yearFieldName" type="text" pattern="[0-9]*" inputmode="numeric"  value="@{formItem(yearFieldName).value}" @if(dateAriaDescribedByFields){aria-describedby="@dateAriaDescribedByFields.get"}>
                 </div>
             </div>
         </div>
