@@ -28,3 +28,5 @@ logs
 .target
 public/assets/css/
 /bin
+/.metals
+/.vscode
