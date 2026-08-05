@@ -137,7 +137,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           Some(BinaryRadioButtonWithDesc("software", None))
         )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq *)
+        val mockRequestForm      = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
 
         val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
 
@@ -151,7 +151,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       "be taken to the Forbidden page always (NO MORE CY ENABLED)" in {
         val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm      = mockRequest
+        val mockRequestForm      = mockPostRequest
           .withFormUrlEncodedBody(form.data.toSeq *)
 
         val result = registrationController.checkYourAnswersAddCurrentTaxYear()(mockRequestForm)
@@ -203,7 +203,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           Some(BinaryRadioButtonWithDesc("software", None))
         )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq *)
+        val mockRequestForm      = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
 
         val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
 
@@ -218,7 +218,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       "be shown the form with errors if not filled in correctly" in {
         val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm      = mockRequest
+        val mockRequestForm      = mockPostRequest
           .withFormUrlEncodedBody(form.data.toSeq *)
 
         val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
@@ -318,7 +318,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
             )
           )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq *)
+        val mockRequestForm      = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.updateCurrentYearRegisteredBenefitTypes()(mockRequestForm)
 
         if (pbikAppConfig.mpbikToggle) {
@@ -354,7 +354,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
             )
           )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
-        val mockRequestForm      = mockRequest.withFormUrlEncodedBody(form.data.toSeq *)
+        val mockRequestForm      = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm)
 
         if (pbikAppConfig.mpbikToggle) {
@@ -452,7 +452,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
             )
           )
         val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("other", None))
-        val mockRequestForm      = mockRequest
+        val mockRequestForm      = mockPostRequest
           .withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.removeNextYearRegisteredBenefitTypes(iabdType).apply(mockRequestForm)
 
@@ -544,7 +544,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         )
 
       val form            = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+      val mockRequestForm = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
 
       val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
 
@@ -585,7 +585,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         )
 
       val form            = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+      val mockRequestForm = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
 
       val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
 
@@ -727,7 +727,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
             )
           )
         val form                 = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
-        val mockRequestForm      = mockRequest
+        val mockRequestForm      = mockPostRequest
           .withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
 
@@ -742,7 +742,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       "return to the same page with an error when other reason is not provided" in {
         val errorMsg        = messages("RemoveBenefits.other.error.required")
         val form            = formMappings.removalOtherReasonForm.fill(OtherReason(""))
-        val mockRequestForm = mockRequest
+        val mockRequestForm = mockPostRequest
           .withFormUrlEncodedBody(form.data.toSeq *)
         val result          = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
 
@@ -755,7 +755,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         val reason          =
           "this is a test other reason to remove the benefits, if user wants to remove the benefits from payroll"
         val form            = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
-        val mockRequestForm = mockRequest
+        val mockRequestForm = mockPostRequest
           .withFormUrlEncodedBody(form.data.toSeq *)
         val result          = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
 
