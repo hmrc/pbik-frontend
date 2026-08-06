@@ -69,6 +69,9 @@ abstract class FakePBIKApplication
   def mockRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
 
+  def mockPostRequest: FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest("POST", "/").withSession(SessionKeys.sessionId -> sessionId)
+
   def mockWelshRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("GET", "?lang=cy")
       .withCookies(Cookie("PLAY_LANG", "cy"))

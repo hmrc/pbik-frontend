@@ -33,7 +33,7 @@ import services.{BikListService, ExclusionService, SessionService}
 import uk.gov.hmrc.domain.EmpRef
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Exceptions.{InvalidBikTypeException, InvalidURIException}
@@ -76,7 +76,7 @@ class ExclusionListController @Inject() (
     extends FrontendController(cc)
     with I18nSupport
     with Logging
-    with WithUnsafeDefaultFormBinding {
+    with WithUrlEncodedOnlyFormBinding {
 
   val exclusionsAllowed: Boolean   = pbikAppConfig.exclusionsAllowed
   private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle

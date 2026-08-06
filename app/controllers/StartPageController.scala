@@ -22,7 +22,7 @@ import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.*
 import services.BikListService
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Exceptions.{InvalidURIException, InvalidYearURIException}
 import utils.{ControllersReferenceData, FormMappings}
@@ -47,7 +47,7 @@ class StartPageController @Inject() (
     extends FrontendController(cc)
     with I18nSupport
     with Logging
-    with WithUnsafeDefaultFormBinding {
+    with WithUrlEncodedOnlyFormBinding {
 
   private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
 
