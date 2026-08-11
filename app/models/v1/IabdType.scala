@@ -43,6 +43,8 @@ object IabdType extends Enumeration {
   val VanBenefit: v1.IabdType.Value                                          = Value(35, "Van Benefit")
   val VanFuelBenefit: v1.IabdType.Value                                      = Value(36, "Van Fuel Benefit")
   val VouchersAndCreditCards: v1.IabdType.Value                              = Value(54, "Vouchers and Credit Cards")
+  val Accommodation: v1.IabdType.Value                                       = Value(38, "Accommodation")
+  val BeneficialLoan: v1.IabdType.Value                                      = Value(37, "Beneficial Loan")
 
   implicit val formats: Format[IabdType] = Json.formatEnum(this)
 
@@ -65,7 +67,9 @@ object IabdType extends Enumeration {
     "Travel-and-Subsistence"                                        -> IabdType.TravelAndSubsistence,
     "Van-Benefit"                                                   -> IabdType.VanBenefit,
     "Van-Fuel-Benefit"                                              -> IabdType.VanFuelBenefit,
-    "Vouchers-and-Credit-Cards"                                     -> IabdType.VouchersAndCreditCards
+    "Vouchers-and-Credit-Cards"                                     -> IabdType.VouchersAndCreditCards,
+    "Accommodation"                                                 -> IabdType.Accommodation,
+    "Beneficial-Loan"                                               -> IabdType.BeneficialLoan
   ).map(_.swap)
 
   implicit class IabdTypeOps(value: IabdType) {

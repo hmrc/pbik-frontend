@@ -37,6 +37,8 @@ class BikListUtilsSpec extends FakePBIKApplication {
   private val alphaSorted                                   = List(
     Assets,
     AssetTransfer,
+    BeneficialLoan,
+    Accommodation,
     CarBenefit,
     Entertaining,
     Expenses,
