@@ -40,7 +40,7 @@ class StartPageControllerAgentSpec extends FakePBIKApplication {
 
   private val bikListService: BikListService = mock(classOf[BikListService])
 
-  private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+  private val nov2026MbikToggle: Boolean = pbikAppConfig.mpbikTogglePhase2
 
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(configMap)
@@ -87,7 +87,27 @@ class StartPageControllerAgentSpec extends FakePBIKApplication {
   "StartPageController - agent" when {
     ".onPageLoad" must {
 
-      if (april2026MpbikToggle) {
+      if (nov2026MbikToggle) {
+        "return OK and the correct view for a GET with Start Now Button - English" in {
+          val result = startPageController.onPageLoad.apply(agentRequest)
+
+          status(result) mustEqual OK
+          contentAsString(result) must include(messages("StartPageMPBIK2.heading." + agentRequest.userType))
+          contentAsString(result) must include(messages("StartPageMPBIK2.p5." + agentRequest.userType))
+          contentAsString(result) must include(messages("StartPageMPBIK2.inset.link.text." + agentRequest.userType))
+        }
+
+        "return OK and the correct view for a GET with Start Now Button - Welsh" in {
+          val result = startPageController.onPageLoad.apply(agentRequestWelsh)
+
+          status(result) mustEqual OK
+          contentAsString(result) must include(cyMessages("StartPageMPBIK2.heading." + agentRequestWelsh.userType))
+          contentAsString(result) must include(cyMessages("StartPageMPBIK2.p5." + agentRequestWelsh.userType))
+          contentAsString(result) must include(
+            cyMessages("StartPageMPBIK2.inset.link.text." + agentRequestWelsh.userType)
+          )
+        }
+      } else {
         "return OK and the correct view for a GET with Start Now Button if existent biks - English" in {
           when(bikListService.currentYearList(any(), any())).thenReturn(Future.successful(bikResponseWithBenefits))
           val result = startPageController.onPageLoad.apply(agentRequest)
@@ -128,22 +148,6 @@ class StartPageControllerAgentSpec extends FakePBIKApplication {
           contentAsString(result) must include(cyMessages("StartPageMPBIK.heading." + agentRequestWelsh.userType))
           contentAsString(result) must include(cyMessages("StartPageMPBIK.p5." + agentRequestWelsh.userType))
           contentAsString(result) mustNot include(cyMessages("StartPageMPBIK.link." + agentRequestWelsh.userType))
-        }
-      } else {
-        "return OK and the correct view for a GET - English" in {
-          val result = startPageController.onPageLoad.apply(agentRequest)
-
-          status(result) mustEqual OK
-          contentAsString(result) must include(messages("StartPage.heading." + agentRequest.userType))
-          contentAsString(result) must include(messages("StartPage.p5." + agentRequest.userType))
-        }
-
-        "return OK and the correct view for a GET - Welsh" in {
-          val result = startPageController.onPageLoad.apply(agentRequestWelsh)
-
-          status(result) mustEqual OK
-          contentAsString(result) must include(cyMessages("StartPage.heading." + agentRequestWelsh.userType))
-          contentAsString(result) must include(cyMessages("StartPage.p5." + agentRequestWelsh.userType))
         }
       }
     }

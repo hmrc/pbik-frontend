@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Exceptions.{InvalidURIException, InvalidYearURIException}
 import utils.{ControllersReferenceData, FormMappings}
-import views.html.{SelectYearPage, StartPage, StartPageMpbik}
+import views.html.{SelectYearPage, StartPageMpbik, StartPageMpbik2}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,8 +39,8 @@ class StartPageController @Inject() (
   bikListService: BikListService,
   formMappings: FormMappings,
   controllersReferenceData: ControllersReferenceData,
-  startPageView: StartPage, // todo remove after mpbik cleanup
   startPageMpbikToggleView: StartPageMpbik,
+  startPageMpbikPhase2View: StartPageMpbik2,
   selectYearPageView: SelectYearPage, // todo remove after mpbik cleanup
   pbikAppConfig: PbikAppConfig
 )(implicit val ec: ExecutionContext)
@@ -49,18 +49,19 @@ class StartPageController @Inject() (
     with Logging
     with WithUrlEncodedOnlyFormBinding {
 
-  private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+  private val mpbikToggle: Boolean       = pbikAppConfig.mpbikToggle
+  private val mpbikTogglePhase2: Boolean = pbikAppConfig.mpbikTogglePhase2
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    if (mpbikToggle) {
-      val resultFuture: Future[Result] = for {
-        currentYearList <- bikListService.currentYearList
-      } yield Ok(startPageMpbikToggleView(currentYearList.getBenefitInKindWithCount.nonEmpty))
-
-      controllersReferenceData.responseErrorHandler(resultFuture)
-    } else {
-      Future.successful(Ok(startPageView()))
-    }
+    val resultFuture: Future[Result] =
+      if (mpbikTogglePhase2) {
+        Future.successful(Ok(startPageMpbikPhase2View()))
+      } else {
+        for {
+          currentYearList <- bikListService.currentYearList
+        } yield Ok(startPageMpbikToggleView(currentYearList.getBenefitInKindWithCount.nonEmpty))
+      }
+    controllersReferenceData.responseErrorHandler(resultFuture)
   }
 
   def selectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>

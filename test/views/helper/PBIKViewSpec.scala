@@ -129,7 +129,8 @@ trait PBIKBaseViewSpec extends FakePBIKApplication {
     PbikExclusionPerson("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22)
   val tracePerson: TracePersonResponse     = TracePersonResponse("AB123456C", "John", Some("A"), "Doe", Some("12345"), 22)
 
-  val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+  val mpbikToggle: Boolean       = pbikAppConfig.mpbikToggle
+  val mpbikPhase2Toggle: Boolean = pbikAppConfig.mpbikTogglePhase2
 }
 
 trait PBIKViewSpec extends PBIKBaseViewSpec with PBIKViewBehaviours
