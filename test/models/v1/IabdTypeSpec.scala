@@ -41,7 +41,9 @@ class IabdTypeSpec extends FakePBIKApplication {
     "Travel-and-Subsistence"                                        -> IabdType.TravelAndSubsistence,
     "Van-Benefit"                                                   -> IabdType.VanBenefit,
     "Van-Fuel-Benefit"                                              -> IabdType.VanFuelBenefit,
-    "Vouchers-and-Credit-Cards"                                     -> IabdType.VouchersAndCreditCards
+    "Vouchers-and-Credit-Cards"                                     -> IabdType.VouchersAndCreditCards,
+    "Accommodation"                                                 -> IabdType.Accommodation,
+    "Beneficial-Loan"                                               -> IabdType.BeneficialLoan
   )
 
   "IabdType" when {
