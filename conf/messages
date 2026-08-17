@@ -51,7 +51,7 @@ Service.continueMPBIK = Continue
 Service.confirm = Confirm
 Service.confirmAndContinue = Confirm and continue
 Service.confirmAndContinueMPBIK = Confirm and continue
-Service.tryagain = Try again
+Service.tryagain = try again
 
 Service.print.link = Print this page
 
@@ -414,8 +414,12 @@ ServiceMessage.10003.2 = Please go back to your <a class="govuk-link" href = "/p
 ServiceMessage.64990.h1 = An error has occurred
 ServiceMessage.64990 = You can’t cancel payrolling for a benefit in the current tax year.
 
-ServiceMessage.63082.h1 = Employee can’t be found
-ServiceMessage.63082 = Please check you have the correct details and search again.
+ServiceMessage.63082.h1 = The details you entered did not match our records
+ServiceMessage.63082 = We could not match the employee details you entered with records held by HMRC.
+ServiceMessage.63082.p.2 = You can:
+ServiceMessage.63082.try.p = check the employee’s details and
+ServiceMessage.63082.back.overview = return to your registered benefits and expenses
+
 
 ServiceMessage.63088.h1 = Benefit no longer exists
 ServiceMessage.63088.1 = This benefit no longer exists as a stand alone benefit that needs to be reported.

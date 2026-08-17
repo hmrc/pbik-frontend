@@ -55,34 +55,42 @@
         }
     </h1>
 
-    <p class="govuk-body-l">
+    <p class="@if(code == 63082) {govuk-body} else {govuk-body-l}">
      @isCurrentTaxYear match {
             case _ if(code == 63091 || code == 65127 || code == 63085) => {
                 @Html(messages("ServiceMessage." + (code)))
                 <script @{CSPNonce.attr}>document.querySelectorAll("#back-link-63091, #link-try-again").forEach(elem => elem.addEventListener("click", () => window.history.go(-1)));</script>
-        }
+            }
             case _ if(code == 63088 || code == 64989 || code == 10003)  => {
                 @Html(messages("ServiceMessage." + (code) + ".1"))
-        }
+            }
             case utils.FormMappingsConstants.CY => {@Html(messages(errorMessage, taxYearRange.cyminus1.toString, taxYearRange.cy.toString))}
             case utils.FormMappingsConstants.CYP1 => {@Html(messages(errorMessage, taxYearRange.cy.toString, taxYearRange.cyplus1.toString))}
             case _ => {@Html(messages(errorMessage))}
         }
     </p>
-
+    @if(code == 63082) {
+        <p class="govuk-body">
+            @Html(messages("ServiceMessage." + (code) + ".p.2"))
+        </p>
+    }
     @if(code == 63088 || code == 64989 || code == 10003) {
         <p class="govuk-body">
             @Html(messages("ServiceMessage." + (code) + ".2"))
             <script @{CSPNonce.attr}>document.querySelectorAll("#link-back-choose").forEach(elem => elem.addEventListener("click", () => window.history.go(-1)));</script>
         </p>
     }
-
+    @if(code == 63082) {
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("ServiceMessage." + (code) + ".try.p") <a class="govuk-link" href="#" id="link-try-again">@messages("Service.tryagain")</a>
+                <script @{CSPNonce.attr}>document.getElementById("link-try-again").addEventListener("click", () => window.history.go(-1));</script></li>
+            <li><a class="govuk-link" id="link-back-summary" href='@summaryLink'>
+                @messages("ServiceMessage." + (code) + ".back.overview")
+            </a></li>
+        </ul>
+    }
     <div class="govuk-form-group">
         @code match {
-            case 63082 => {
-                <a class="govuk-link" id="link-try-again">@messages("Service.tryagain")</a>
-                <script @{CSPNonce.attr}>document.getElementById("link-try-again").addEventListener("click", () => window.history.go(-1));</script>
-            }
             case 63090 | 63092  => {
                 <a class="govuk-link" id="link-add-another">@messages("Service.excludeanotheremployee")</a>
                 <script @{CSPNonce.attr}>document.getElementById("link-add-another").addEventListener("click", () => window.history.go(-1));</script>
@@ -100,10 +108,13 @@
     }
 
     @backLink match {
-        case _ if(code != 0 && code != 10001 && code != 65176 && code!=65355)=>{
+        case _ if(code != 0 && code != 10001 && code != 65176 && code!=65355 && code != 63082)=>{
             <a class="govuk-link" id="link-back-summary" href='@summaryLink'>
                 @messages("Service.back.overview")
             </a>
+        }
+        case _ if(code == 63082 )=>{
+            @Html("")
         }
         case _ => {
             <a class="govuk-link" id="link-back-summary" href='@summaryLink'>
