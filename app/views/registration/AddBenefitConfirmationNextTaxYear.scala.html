@@ -32,15 +32,7 @@
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(isCurrentYear) cyminus1 else cy}
 @summaryLink = @{
-    if(mpbik){
         routes.HomePageController.onPageLoad
-    } else {
-        if(isCurrentYear){
-            routes.HomePageController.onPageLoadCY
-        } else {
-            routes.HomePageController.onPageLoadCY1
-        }
-    }
 }
 
 @additionalPrintCSS = @{

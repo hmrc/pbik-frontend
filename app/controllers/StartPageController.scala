@@ -67,19 +67,7 @@ class StartPageController @Inject() (
   def selectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     // TODO remove function as part of clean up MPBIK
     val resultFuture: Future[Result] =
-      if (mpbikToggle) {
-        Future.failed(new InvalidURIException())
-      } else {
-        val taxYearRange = controllersReferenceData.yearRange
-        for {
-          currentYearList <- bikListService.currentYearList
-        } yield
-          if (currentYearList.getBenefitInKindWithCount.isEmpty) {
-            Redirect(routes.HomePageController.onPageLoadCY1)
-          } else {
-            Ok(selectYearPageView(taxYearRange, formMappings.selectYearForm))
-          }
-      }
+      Future.failed(new InvalidURIException())
 
     controllersReferenceData.responseErrorHandler(resultFuture)
   }
@@ -87,25 +75,7 @@ class StartPageController @Inject() (
   def submitSelectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     // TODO remove function as part of clean up MPBIK
     val resultFuture: Future[Result] =
-      if (mpbikToggle) {
-        Future.failed(new InvalidURIException())
-      } else {
-        val taxYearRange = controllersReferenceData.yearRange
-        formMappings.selectYearForm
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(selectYearPageView(taxYearRange, formWithErrors))),
-            values =>
-              values.year match {
-                case utils.FormMappingsConstants.CY   =>
-                  Future.successful(Redirect(routes.HomePageController.onPageLoadCY))
-                case utils.FormMappingsConstants.CYP1 =>
-                  Future.successful(Redirect(routes.HomePageController.onPageLoadCY1))
-                case _                                =>
-                  Future.failed(throw new InvalidYearURIException())
-              }
-          )
-      }
+      Future.failed(new InvalidURIException())
 
     controllersReferenceData.responseErrorHandler(resultFuture)
   }

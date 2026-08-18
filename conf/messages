@@ -153,6 +153,28 @@ PayrollingSummaryMPBIK.p1.agent = You can use this service to manage benefits be
 PayrollingSummaryMPBIK.p2.agent = These are the benefits that you have registered to tax through your client''s payroll from 6 April {0}.
 
 #*************************************************************
+# Payrolling Summary Page MPBIK2
+#*************************************************************
+
+PayrollingSummaryMPBIK2.heading = Payrolling summary
+PayrollingSummaryMPBIK2.tab.taxYear = Tax year {0} to {1}
+PayrollingSummaryMPBIK2.tab.heading = Registered benefits
+PayrollingSummaryMPBIK2.table.header = Benefit
+PayrollingSummaryMPBIK2.table.exclude.link.text = Exclude employees
+PayrollingSummaryMPBIK2.table.manage.link.text = Manage employees
+PayrollingSummaryMPBIK2.you.can = You can
+
+PayrollingSummaryMPBIK2.p1.organisation = You can use this service to register and manage benefits being taxed through payroll.
+PayrollingSummaryMPBIK2.no.benefits.text.organisation = You have no benefits registered to tax through payroll from 6 April {0}.
+PayrollingSummaryMPBIK2.benefits.text.organisation = These are the benefits that you have registered to tax through payroll from 6 April {0}.
+PayrollingSummaryMPBIK2.choose.benefit.link.text.organisation = choose a benefit to tax through payroll
+
+PayrollingSummaryMPBIK2.p1.agent = You can use this service to register and manage benefits being taxed through {0}''s payroll.
+PayrollingSummaryMPBIK2.no.benefits.text.agent = Your client has no benefits registered to tax through payroll from 6 April {0}.
+PayrollingSummaryMPBIK2.benefits.text.agent = These are the benefits that you have registered to tax through your client''s payroll from 6 April {0}.
+PayrollingSummaryMPBIK2.choose.benefit.link.text.agent = choose a benefit to tax through your client''s payroll
+
+#*************************************************************
 # Select Year
 #*************************************************************
 

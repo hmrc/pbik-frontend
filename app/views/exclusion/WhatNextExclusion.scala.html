@@ -35,15 +35,7 @@
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
 @summaryLink = @{
-    if(mpbik){
         routes.HomePageController.onPageLoad
-    } else {
-        if(year=="cy"){
-            routes.HomePageController.onPageLoadCY
-        } else {
-            routes.HomePageController.onPageLoadCY1
-        }
-    }
 }
 
 @govukLayoutWrapper(PageTitle(messages("whatNext.exclude.heading")),

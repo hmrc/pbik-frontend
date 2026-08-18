@@ -28,20 +28,11 @@
         code: Int = 0,
         pageHeading: String ="An error has occurred",
         backLink: String= "overview",
-        iabdType: Option[IabdType] = None,
-        mpbik: Boolean
+        iabdType: Option[IabdType] = None
 )(implicit request:Request[?], messages: Messages)
 
 @summaryLink = @{
-    if(mpbik){
-        routes.HomePageController.onPageLoad
-    } else {
-        if(isCurrentTaxYear == utils.FormMappingsConstants.CY) {
-            routes.HomePageController.onPageLoadCY
-        } else {
-            routes.HomePageController.onPageLoadCY1
-        }
-    }
+    routes.HomePageController.onPageLoad
 }
 
 @govukLayoutWrapper(PageTitle(messages("Service.title"))) {
