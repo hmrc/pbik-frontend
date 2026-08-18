@@ -51,7 +51,7 @@ Service.continueMPBIK = Parhau
 Service.confirm = Cadarnhau
 Service.confirmAndContinue = Cadarnhau ac yn eich blaen
 Service.confirmAndContinueMPBIK = Cadarnhau a pharhau
-Service.tryagain = Rhowch gynnig arall arni
+Service.tryagain = rhowch gynnig arall arni
 
 Service.print.link = Argraffwch y dudalen hon
 
@@ -414,8 +414,11 @@ ServiceMessage.10003.2 = Ewch yn ôl i’ch <a class="govuk-link" href = "/payro
 ServiceMessage.64990.h1 = Mae gwall wedi digwydd
 ServiceMessage.64990 = Ni allwch ganslo talu buddiant drwy’r gyflogres yn ystod y flwyddyn dreth bresennol.
 
-ServiceMessage.63082.h1 = Nid oedd modd dod o hyd i’r cyflogai
-ServiceMessage.63082 = Dylech wirio bod gennych y manylion cywir a chwilio eto.
+ServiceMessage.63082.h1 = Nid yw’r manylion a nodwyd gennych yn cyd-fynd â’n cofnodion
+ServiceMessage.63082 = Nid oeddem yn gallu paru manylion y cyflogai a nodwyd gennych â’r cofnodion sydd gan CThEF.
+ServiceMessage.63082.p.2 = Gallwch chi wneud y canlynol:
+ServiceMessage.63082.try.p = gwiriwch manylion y cyflogai a
+ServiceMessage.63082.back.overview = yn ôl i’ch buddiannau a threuliau cofrestredig
 
 ServiceMessage.63088.h1 = Nid yw’r buddiant yn bodoli mwyach
 ServiceMessage.63088.1 = Nid yw’r buddiant hwn yn bodoli mwyach fel buddiant ar ei ben ei hun y mae’n rhoi gwybod amdano.

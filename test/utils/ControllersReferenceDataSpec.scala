@@ -137,7 +137,7 @@ class ControllersReferenceDataSpec extends FakePBIKApplication {
       }
 
       "show an error page when the Future completes with a GenericServerErrorException" in new Test {
-        p.failure(new GenericServerErrorException("63083"))
+        p.failure(new GenericServerErrorException("63082"))
         val result: Result = await(mockControllersReferenceData.responseErrorHandler(p.future)(authenticatedRequest))
 
         result.header.status mustBe INTERNAL_SERVER_ERROR

@@ -761,7 +761,7 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
           )
 
         status(result) mustBe NOT_FOUND
-        contentAsString(result) must include(messages("ServiceMessage.65127.h1"))
+        contentAsString(result) must include(messages("ServiceMessage.63082.h1"))
       }
 
       if (april2026MpbikToggle) {
