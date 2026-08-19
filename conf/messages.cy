@@ -78,38 +78,6 @@ Service.error = Gwall
 Service.errorSummary.headingMPBIK = Mae problem
 
 #*************************************************************
-# Start Page
-#*************************************************************
-
-StartPage.heading.organisation = Talu buddiannau a threuliau drwy’r gyflogres
-StartPage.p1.organisation = Defnyddiwch y gwasanaeth hwn i wneud y canlynol:
-StartPage.p2.organisation = cofrestru buddiannau a threuliau i dreth drwy’r gyflogres
-StartPage.p3.organisation = tynnu buddiant neu draul oddi wrth y gyflogres
-StartPage.p4.organisation = eithrio cyflogeion rhag buddiant neu draul
-StartPage.p5.organisation = Buddiannau a threuliau na allwch eu cofrestru
-StartPage.p6.organisation = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru’r canlynol:
-StartPage.p7.organisation = lwfans treuliau cyffredinol ar gyfer teithio busnes
-StartPage.p8.organisation = benthyciadau di-log a llog isel
-StartPage.p9.organisation = llety preswyl
-StartPage.p10.text.organisation = Er mwyn rhoi gwybod am y costau hyn, mae’n rhaid i chi
-StartPage.p10.link.text.organisation = defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd)
-StartPage.link.organisation = Dechrau nawr
-
-StartPage.heading.agent = Talu buddiannau a threuliau drwy’r gyflogres ar gyfer eich cleient
-StartPage.p1.agent = Os oes gennych ganiatâd gan eich cleient, gallwch ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
-StartPage.p2.agent = cofrestru buddiannau a threuliau i dreth drwy’r gyflogres
-StartPage.p3.agent = tynnu buddiant neu draul oddi wrth y gyflogres
-StartPage.p4.agent = eithrio cyflogeion rhag buddiant neu draul
-StartPage.p5.agent = Buddiannau a threuliau na allwch eu cofrestru
-StartPage.p6.agent = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru’r canlynol:
-StartPage.p7.agent = lwfans treuliau cyffredinol ar gyfer teithio busnes
-StartPage.p8.agent = benthyciadau di-log a llog isel
-StartPage.p9.agent = llety preswyl
-StartPage.p10.text.agent = Er mwyn rhoi gwybod am y costau hyn, mae’n rhaid i chi
-StartPage.p10.link.text.agent = defnyddio ffurflen P11D (yn agor ffenestr neu dab newydd)
-StartPage.link.agent = Dechrau nawr
-
-#*************************************************************
 # Start Page MPBIK
 #*************************************************************
 
@@ -128,6 +96,44 @@ StartPageMPBIK.p3.agent = gweld pa fuddiannau a threuliau sydd wedi eu cofrestru
 StartPageMPBIK.p4.agent = gweld pa fuddiannau a threuliau sydd wedi eu heithrio rhag cael buddiant penodol
 StartPageMPBIK.p5.agent = eithrio cyflogeion rhag cael buddiant penodol ar gyfer y flwyddyn hon
 StartPageMPBIK.link.agent = Dechrau nawr
+
+#*************************************************************
+# Start Page MPBIK Phase 2
+#*************************************************************
+
+StartPageMPBIK2.heading.organisation = Talu buddiannau a threuliau drwy’r gyflogres
+StartPageMPBIK2.p1.organisation = Defnyddiwch y gwasanaeth hwn i gofrestru buddiannau a threuliau y byddwch yn eu trethu trwy gyflogres.
+StartPageMPBIK2.p2.organisation = Gallwch hefyd ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
+StartPageMPBIK2.p3.organisation = eithrio cyflogeion rhag cael buddiant ar gyfer y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf
+StartPageMPBIK2.p4.organisation = ychwanegu cyflogai yn ôl at fuddiant ar gyfer blwyddyn dreth nesaf
+StartPageMPBIK2.p5.organisation = rhoi gwybod i CThEF nad ydych yn trethu buddiant drwy’r gyflogres mwyach
+StartPageMPBIK2.inset.organisation = O 6 Ebrill 2027 ymlaen, mae’r ffordd rydych yn talu am fuddiannau a threuliau drwy’r gyflogres yn newid.
+StartPageMPBIK2.inset.link.text.organisation = Dysgu sut i roi gwybod am fuddiannau a threuliau ar ôl 6 Ebrill 2027 (yn agor ffenestr neu dab newydd)
+StartPageMPBIK2.h2.organisation = Buddiannau na allwch gofrestru gan ddefnyddio’r gwasanaeth yma
+StartPageMPBIK2.p6.organisation = Nid oes angen i chi ddefnyddio’r gwasanaeth hwn i gofrestru’r buddiannau canlynol i’w trethu trwy’r gyflogres:
+StartPageMPBIK2.p7.organisation = ceir a thanwydd ceir
+StartPageMPBIK2.p8.organisation = faniau a thanwydd faniau
+StartPageMPBIK2.p9.organisation = yswiriant meddygol a deintyddol preifat
+StartPageMPBIK2.p10.organisation = Os ydych chi’n cynnig y buddiannau hyn i gyflogeion,
+StartPageMPBIK2.p10.link.text.organisation = rhaid i chi nawr roi gwybod beth yw gwerth y buddiannau a’r treuliau hyn mewn amser real (yn agor ffenestr neu dab newydd)
+StartPageMPBIK2.link.organisation = Dechrau nawr
+
+StartPageMPBIK2.heading.agent = Talu buddiannau a threuliau drwy’r gyflogres
+StartPageMPBIK2.p1.agent = Defnyddiwch y gwasanaeth hwn i gofrestru buddiannau a threuliau y byddwch yn eu trethu trwy gyflogres eich cleient.
+StartPageMPBIK2.p2.agent = Gallwch chi hefyd ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
+StartPageMPBIK2.p3.agent = eithrio cyflogeion rhag cael buddiant ar gyfer y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf
+StartPageMPBIK2.p4.agent = ychwanegu cyflogai yn ôl at fuddiant ar gyfer blwyddyn dreth nesaf
+StartPageMPBIK2.p5.agent = rhoi gwybod i CThEF nad yw’ch cleient bellach yn trethu buddiant drwy’r gyflogres
+StartPageMPBIK2.inset.agent = O 6 Ebrill 2027 ymlaen, mae’r ffordd rydych yn talu am fuddiannau a threuliau drwy’r gyflogres yn newid.
+StartPageMPBIK2.inset.link.text.agent = Dysgu sut i roi gwybod am fuddiannau a threuliau ar ôl 6 Ebrill 2027 (yn agor ffenestr neu dab newydd)
+StartPageMPBIK2.h2.agent = Buddiannau na allwch gofrestru gan ddefnyddio’r gwasanaeth yma
+StartPageMPBIK2.p6.agent = Nid oes angen i chi ddefnyddio’r gwasanaeth hwn i gofrestru’r buddiannau canlynol i’w trethu trwy gyflogres eich cleient:
+StartPageMPBIK2.p7.agent = ceir a thanwydd ceir
+StartPageMPBIK2.p8.agent = faniau a thanwydd faniau
+StartPageMPBIK2.p9.agent = yswiriant meddygol a deintyddol preifat
+StartPageMPBIK2.p10.agent = Os yw’ch cleient yn cynnig y buddiannau hyn i gyflogeion,
+StartPageMPBIK2.p10.link.text.agent = rhaid i chi nawr roi gwybod beth yw gwerth y buddiannau a’r treuliau hyn mewn amser real (yn agor ffenestr neu dab newydd)
+StartPageMPBIK2.link.agent = Dechrau nawr
 
 #*************************************************************
 # Payrolling Summary Page MPBIK

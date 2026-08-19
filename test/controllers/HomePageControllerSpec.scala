@@ -128,7 +128,7 @@ class HomePageControllerSpec extends FakePBIKApplication {
           val result                                                = homePageController.onPageLoad(request)
 
           status(result) mustBe OK
-          contentAsString(result) must include(messages("StartPage.heading.organisation"))
+          contentAsString(result) must include(messages("StartPageMPBIK.heading.organisation"))
           contentAsString(result) must include(
             "Is this page not working properly? (opens in new tab)"
           )

@@ -78,38 +78,6 @@ Service.error = Error
 Service.errorSummary.headingMPBIK = There is a problem
 
 #*************************************************************
-# Start Page
-#*************************************************************
-
-StartPage.heading.organisation = Payrolling benefits and expenses
-StartPage.p1.organisation = Use this service to:
-StartPage.p2.organisation = register benefits and expenses to tax through payroll
-StartPage.p3.organisation = remove a benefit or expense from payroll
-StartPage.p4.organisation = exclude employees from a benefit or an expense
-StartPage.p5.organisation = Benefits and expenses you cannot register
-StartPage.p6.organisation = You cannot use this service to register:
-StartPage.p7.organisation = general expenses allowance for business travel
-StartPage.p8.organisation = interest-free and low-interest loans
-StartPage.p9.organisation = living accommodation
-StartPage.p10.text.organisation = To report these expenses you must
-StartPage.p10.link.text.organisation = use a P11D form (opens in a new window or tab)
-StartPage.link.organisation = Start now
-
-StartPage.heading.agent = Payrolling benefits and expenses for your client
-StartPage.p1.agent = If you have permission from your client you can use this service to:
-StartPage.p2.agent = register benefits and expenses to tax through payroll
-StartPage.p3.agent = remove a benefit or expense from payroll
-StartPage.p4.agent = exclude employees from a benefit or an expense
-StartPage.p5.agent = Benefits and expenses you cannot register
-StartPage.p6.agent = You cannot use this service to register:
-StartPage.p7.agent = general expenses allowance for business travel
-StartPage.p8.agent = interest-free and low-interest loans
-StartPage.p9.agent = living accommodation
-StartPage.p10.text.agent = To report these expenses you must
-StartPage.p10.link.text.agent = use a P11D form (opens in a new window or tab)
-StartPage.link.agent = Start now
-
-#*************************************************************
 # Start Page MPBIK
 #*************************************************************
 
@@ -128,6 +96,44 @@ StartPageMPBIK.p3.agent = view registered benefits and expenses for the current 
 StartPageMPBIK.p4.agent = view employees who have been excluded from a benefit
 StartPageMPBIK.p5.agent = exclude employees from a benefit for the current year
 StartPageMPBIK.link.agent = Start now
+
+#*************************************************************
+# Start Page MPBIK Phase 2
+#*************************************************************
+
+StartPageMPBIK2.heading.organisation = Payrolling benefits and expenses
+StartPageMPBIK2.p1.organisation = Use this service to register benefits and expenses that you will tax through payroll.
+StartPageMPBIK2.p2.organisation = You can also use this service to:
+StartPageMPBIK2.p3.organisation = exclude employees from a benefit for the current or next tax year
+StartPageMPBIK2.p4.organisation = add an employee back to a benefit for the next tax year
+StartPageMPBIK2.p5.organisation = tell HMRC that you are no longer taxing a benefit through payroll
+StartPageMPBIK2.inset.organisation = From 6 April 2027, the way you payroll benefits and expenses is changing.
+StartPageMPBIK2.inset.link.text.organisation = Find out how to report benefits and expenses after 6 April 2027 (opens in a new window or tab)
+StartPageMPBIK2.h2.organisation = Benefits you cannot register in this service
+StartPageMPBIK2.p6.organisation = You do not need to use this service to register the following benefits to tax through payroll:
+StartPageMPBIK2.p7.organisation = cars and car fuel
+StartPageMPBIK2.p8.organisation = vans and van fuel
+StartPageMPBIK2.p9.organisation = private medical and dental insurance
+StartPageMPBIK2.p10.organisation = If you offer these benefits to employees,
+StartPageMPBIK2.p10.link.text.organisation = you must now report the values of these benefits and expenses in real time (opens in a new window or tab)
+StartPageMPBIK2.link.organisation = Start now
+
+StartPageMPBIK2.heading.agent = Payrolling benefits and expenses
+StartPageMPBIK2.p1.agent = Use this service to register benefits and expenses that you will tax through your client''s payroll.
+StartPageMPBIK2.p2.agent = You can also use this service to:
+StartPageMPBIK2.p3.agent = exclude employees from a benefit for the current or next tax year
+StartPageMPBIK2.p4.agent = add an employee back to a benefit for next tax year
+StartPageMPBIK2.p5.agent = tell HMRC that your client is no longer taxing a benefit through payroll
+StartPageMPBIK2.inset.agent = From 6 April 2027, the way you payroll benefits and expenses is changing.
+StartPageMPBIK2.inset.link.text.agent = Find out how to report benefits and expenses after 6 April 2027 (opens in a new window or tab)
+StartPageMPBIK2.h2.agent = Benefits you cannot register in this service
+StartPageMPBIK2.p6.agent = You do not need to use this service to register the following benefits to tax through your client''s payroll:
+StartPageMPBIK2.p7.agent = cars and car fuel
+StartPageMPBIK2.p8.agent = vans and van fuel
+StartPageMPBIK2.p9.agent = private medical and dental insurance
+StartPageMPBIK2.p10.agent = If your client offers  these benefits to employees,
+StartPageMPBIK2.p10.link.text.agent = you must now report the values of these benefits and expenses in real time (opens in a new window or tab)
+StartPageMPBIK2.link.agent = Start now
 
 #*************************************************************
 # Payrolling Summary Page MPBIK

@@ -40,7 +40,7 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
 
   private val bikListService: BikListService = mock(classOf[BikListService])
 
-  private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+  private val nov2026MpbikToggle: Boolean = pbikAppConfig.mpbikTogglePhase2
 
   override def fakeApplication(): Application = GuiceApplicationBuilder()
     .configure(configMap)
@@ -87,7 +87,31 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
   "StartPageController - organisation" when {
     ".onPageLoad" must {
 
-      if (april2026MpbikToggle) {
+      if (nov2026MpbikToggle) {
+        "return OK and the correct view for a GET with Start Now Button - English" in {
+          val result = startPageController.onPageLoad.apply(organisationRequest)
+
+          status(result) mustEqual OK
+          contentAsString(result) must include(messages("StartPageMPBIK2.heading." + organisationRequest.userType))
+          contentAsString(result) must include(messages("StartPageMPBIK2.p5." + organisationRequest.userType))
+          contentAsString(result) must include(
+            messages("StartPageMPBIK2.inset.link.text." + organisationRequest.userType)
+          )
+        }
+
+        "return OK and the correct view for a GET with Start Now Button - Welsh" in {
+          val result = startPageController.onPageLoad.apply(organisationRequestWelsh)
+
+          status(result) mustEqual OK
+          contentAsString(result) must include(
+            cyMessages("StartPageMPBIK2.heading." + organisationRequestWelsh.userType)
+          )
+          contentAsString(result) must include(cyMessages("StartPageMPBIK2.p5." + organisationRequestWelsh.userType))
+          contentAsString(result) must include(
+            cyMessages("StartPageMPBIK2.inset.link.text." + organisationRequestWelsh.userType)
+          )
+        }
+      } else {
         "return OK and the correct view for a GET with Start Now Button if existent biks - English" in {
           when(bikListService.currentYearList(any(), any())).thenReturn(Future.successful(bikResponseWithBenefits))
           val result = startPageController.onPageLoad.apply(organisationRequest)
@@ -134,22 +158,6 @@ class StartPageControllerOrganisationSpec extends FakePBIKApplication {
           contentAsString(result) mustNot include(
             cyMessages("StartPageMPBIK.link." + organisationRequestWelsh.userType)
           )
-        }
-      } else {
-        "return OK and the correct view for a GET - English" in {
-          val result = startPageController.onPageLoad.apply(organisationRequest)
-
-          status(result) mustEqual OK
-          contentAsString(result) must include(messages("StartPage.heading." + organisationRequest.userType))
-          contentAsString(result) must include(messages("StartPage.p5." + organisationRequest.userType))
-        }
-
-        "return OK and the correct view for a GET - Welsh" in {
-          val result = startPageController.onPageLoad.apply(organisationRequestWelsh)
-
-          status(result) mustEqual OK
-          contentAsString(result) must include(cyMessages("StartPage.heading." + organisationRequestWelsh.userType))
-          contentAsString(result) must include(cyMessages("StartPage.p5." + organisationRequestWelsh.userType))
         }
       }
     }
