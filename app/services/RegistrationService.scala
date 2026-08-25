@@ -57,7 +57,12 @@ class RegistrationService @Inject() (
       Set[Int]
     ) => HtmlFormat.Appendable
   )(implicit hc: HeaderCarrier, request: AuthenticatedRequest[AnyContent]): Future[Result] = {
-    val decommissionedBikIds: Set[IabdType] = pbikAppConfig.biksDecommissioned
+    val decommissionedBikIds: Set[IabdType] =
+      if (pbikAppConfig.mpbikTogglePhase2) {
+        pbikAppConfig.biksDecommissioned ++ pbikAppConfig.biksMpbikPhase2Decommissioned
+      } else {
+        pbikAppConfig.biksDecommissioned
+      }
     val nonLegislationBiks: Set[IabdType]   = pbikAppConfig.biksNotSupported
     val isCurrentYear: String               =
       if (taxDateUtils.isCurrentTaxYear(year)) {
@@ -105,24 +110,48 @@ class RegistrationService @Inject() (
     val sortedMegedData: RegistrationList = bikListUtils.sortRegistrationsAlphabeticallyByLabels(mergedData)
 
     if (sortedMegedData.active.isEmpty) {
-      Ok(
-        errorPageView(
-          ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
-          controllersReferenceData.yearRange,
-          isCurrentYear,
-          code = -1,
-          pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING
+
+      if (pbikAppConfig.mpbikTogglePhase2) {
+        Ok(
+          errorPageView(
+            ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
+            controllersReferenceData.yearRange,
+            isCurrentYear,
+            code = -1,
+            pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING_MPBIK2(request.userType)
+          )
         )
-      )
+      } else {
+        Ok(
+          errorPageView(
+            ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD,
+            controllersReferenceData.yearRange,
+            isCurrentYear,
+            code = -1,
+            pageHeading = ControllersReferenceDataCodes.NO_MORE_BENEFITS_TO_ADD_HEADING
+          )
+        )
+      }
     } else {
-      Ok(
-        generateViewBasedOnFormItems(
-          formMappings.objSelectedForm.fill(sortedMegedData),
-          registeredListOption.getBenefitInKindWithCount.size == biksListOption.size,
-          nonLegislationBiks.map(_.id),
-          pbikAppConfig.biksDecommissioned.map(_.id)
+      if (pbikAppConfig.mpbikTogglePhase2) {
+        Ok(
+          generateViewBasedOnFormItems(
+            formMappings.objSelectedForm.fill(sortedMegedData),
+            registeredListOption.getBenefitInKindWithCount.size == biksListOption.size,
+            nonLegislationBiks.map(_.id),
+            pbikAppConfig.biksDecommissioned.map(_.id) ++ pbikAppConfig.biksMpbikPhase2Decommissioned.map(_.id)
+          )
         )
-      )
+      } else {
+        Ok(
+          generateViewBasedOnFormItems(
+            formMappings.objSelectedForm.fill(sortedMegedData),
+            registeredListOption.getBenefitInKindWithCount.size == biksListOption.size,
+            nonLegislationBiks.map(_.id),
+            pbikAppConfig.biksDecommissioned.map(_.id)
+          )
+        )
+      }
     }
   }
 

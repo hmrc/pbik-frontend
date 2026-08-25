@@ -42,13 +42,14 @@ object ControllersReferenceDataCodes {
   val NO: String                           = "no"
   val OTHER: String                        = "other"
 
-  val VALIDATION_ERROR_REFERENCE: String      = "ErrorPage.validationError"
-  val NO_MORE_BENEFITS_TO_ADD_HEADING: String = "AddBenefits.Heading"
-  val NO_MORE_BENEFITS_TO_ADD: String         = "ErrorPage.noBenefitsToAdd"
-  val INVALID_YEAR_REFERENCE: String          = "ErrorPage.invalidYear"
-  val INVALID_BIK_TYPE_REFERENCE: String      = "ErrorPage.invalidBikType"
-  val INVALID_FORM_ERROR: String              = "ErrorPage.invalidForm"
-  val AUTHORISATION_ERROR: String             = "ErrorPage.authorisationError"
+  val VALIDATION_ERROR_REFERENCE: String                               = "ErrorPage.validationError"
+  val NO_MORE_BENEFITS_TO_ADD_HEADING: String                          = "AddBenefits.Heading"
+  def NO_MORE_BENEFITS_TO_ADD_HEADING_MPBIK2(userType: String): String = s"AddBenefitsMPBIK2.Heading.$userType"
+  val NO_MORE_BENEFITS_TO_ADD: String                                  = "ErrorPage.noBenefitsToAdd"
+  val INVALID_YEAR_REFERENCE: String                                   = "ErrorPage.invalidYear"
+  val INVALID_BIK_TYPE_REFERENCE: String                               = "ErrorPage.invalidBikType"
+  val INVALID_FORM_ERROR: String                                       = "ErrorPage.invalidForm"
+  val AUTHORISATION_ERROR: String                                      = "ErrorPage.authorisationError"
 }
 
 @Singleton

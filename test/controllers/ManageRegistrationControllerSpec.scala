@@ -104,10 +104,10 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
     "loading the nextTaxYearAddOnPageLoad, an authorised user" should {
       "be directed to cy + 1 page with list of biks" in {
-        val title  = messages("AddBenefits.Heading")
         val result = registrationController.nextTaxYearAddOnPageLoad()(mockRequest)
 
-        if (pbikAppConfig.mpbikTogglePhase2) { // check this one
+        if (pbikAppConfig.mpbikTogglePhase2) {
+          val title = messages("AddBenefitsMPBIK2.Heading.organisation")
           status(result) mustBe OK
           contentAsString(result) must include(title)
           contentAsString(result) must include(messages(s"BenefitInKind.label.${IabdType.EmployerProvidedServices.id}"))
@@ -129,7 +129,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
         val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
 
-        if (pbikAppConfig.mpbikToggle) {
+        if (!pbikAppConfig.mpbikTogglePhase2) {
           status(result) mustBe NOT_FOUND
         } else {
           status(result) mustBe SEE_OTHER
@@ -145,11 +145,11 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
         val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
 
-        if (pbikAppConfig.mpbikToggle) {
+        if (!pbikAppConfig.mpbikTogglePhase2) {
           status(result) mustBe NOT_FOUND
         } else {
           status(result) mustBe BAD_REQUEST
-          contentAsString(result) must include(messages("AddBenefits.noselection.error"))
+          contentAsString(result) must include(messages("AddBenefitsMPBIK2.noselection.error"))
         }
       }
     }

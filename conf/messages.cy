@@ -232,6 +232,21 @@ AddBenefits.Confirm.Multiple.key = Buddiannau a threuliau dethol
 AddBenefits.Confirm.help.desc = Gallwch eithrio cyflogeion rhag talu’r buddiannau drwy’r gyflogres ar ôl i chi gofrestru, ond bydd yn rhaid i chi anfon ffurflen P11D er mwyn datgan y buddiannau sydd heb eu talu drwy’r gyflogres. Os nad yw cyflogai wedi cael y buddiant, does dim rhaid i chi ei eithrio gan nad oes treth yn ddyledus.
 
 #*************************************************************
+# Add benefits MPBIK Phase 2
+#*************************************************************
+
+AddBenefitsMPBIK2.p = Select which benefits you want to tax through payroll from 6 April {0}.
+AddBenefitsMPBIK2.p2 = You must payroll all selected benefits.
+
+AddBenefitsMPBIK2.Heading.organisation = Choose which benefits to tax through payroll
+
+AddBenefitsMPBIK2.Heading.agent = Dewiswch pa fuddiannau i’w trethu drwy gyflogres eich cleient
+
+AddBenefitsMPBIK2.selectAll = Dewiswch bob un sy’n gymwys
+
+AddBenefitsMPBIK2.noselection.error = Mae’n rhaid i chi ddewis o leiaf un buddiant
+
+#*************************************************************
 # Remove benefits
 #*************************************************************
 
@@ -421,6 +436,44 @@ BenefitInKind.label.43 = Lwfans treuliau cyffredinol ar gyfer teithio at ddibeni
 BenefitInKind.label.32 = Taliadau am ddefnyddio ffôn y cartref
 
 BenefitInKind.label.45 = Treuliau adleoli anghymwys
+
+#*************************************************************
+# Benefits messages MPBIK Phase 2
+#*************************************************************
+
+BenefitInKindMPBIK2.label.38 = Llety
+
+BenefitInKindMPBIK2.label.37 = Benthyciadau
+
+BenefitInKindMPBIK2.label.40 = Asedion sydd wedi’u trosglwyddo (ceir, eiddo, nwyddau neu asedion eraill)
+
+BenefitInKindMPBIK2.label.48 = Taliadau a wnaed ar ran cyflogai
+
+BenefitInKindMPBIK2.label.54 = Talebau a chardiau credyd
+
+BenefitInKindMPBIK2.label.44 = Lwfans milltiroedd a thaliadau teithwyr
+
+BenefitInKindMPBIK2.label.30 = Triniaeth neu yswiriant meddygol preifat
+
+BenefitInKindMPBIK2.label.50 = Taliadau, buddiannau a threuliau adleoli cymwys
+
+BenefitInKindMPBIK2.label.8 = Gwasanaethau a ddarparwyd
+
+BenefitInKindMPBIK2.label.39 = Asedion a oedd ar gael i’r cyflogai
+
+BenefitInKindMPBIK2.label.47 = Eitemau eraill gan gynnwys tanysgrifiadau a ffioedd proffesiynol
+
+BenefitInKindMPBIK2.label.52 = Treth Incwm a dalwyd ond na chafodd ei didynnu oddi wrth dâl y cyfarwyddwr
+
+BenefitInKindMPBIK2.label.53 = Taliadau teithio a chynhaliaeth
+
+BenefitInKindMPBIK2.label.42 = Gwesteia
+
+BenefitInKindMPBIK2.label.43 = Lwfans treuliau cyffredinol ar gyfer teithio at ddibenion busnes
+
+BenefitInKindMPBIK2.label.32 = Taliadau am ddefnyddio ffôn y cartref
+
+BenefitInKindMPBIK2.label.45 = Treuliau adleoli anghymwys
 
 #*************************************************************
 # Service Messages

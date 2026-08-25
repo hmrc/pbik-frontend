@@ -34,7 +34,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import utils.{TaxDateUtils, TestMinimalAuthAction}
-import views.html.registration.NextTaxYear
+import views.html.registration.{NextTaxYear, NextTaxYearBenefitMPBIK2}
 
 import scala.concurrent.Future
 
@@ -98,6 +98,7 @@ class RegistrationServiceSpec extends FakePBIKApplication {
 
   val request: FakeRequest[AnyContentAsEmpty.type]                    = mockRequest
   lazy val nextTaxYearView: NextTaxYear                               = injected[NextTaxYear]
+  lazy val nextTaxYearBenefitMPBIK2View: NextTaxYearBenefitMPBIK2     = injected[NextTaxYearBenefitMPBIK2]
   implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(request)
   implicit val hc: HeaderCarrier                                      = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
 
@@ -118,14 +119,24 @@ class RegistrationServiceSpec extends FakePBIKApplication {
       }
 
       "return the error page if no more benefits to add" in {
-        val result =
-          registrationService.generateViewForBikRegistrationSelection(
-            taxDateUtils.getTaxYearRange().cy,
-            nextTaxYearView(_, additive = true, taxDateUtils.getTaxYearRange(), _, _, _)
-          )
+        if (pbikAppConfig.mpbikTogglePhase2) {
+          val result =
+            registrationService.generateViewForBikRegistrationSelection(
+              taxDateUtils.getTaxYearRange().cy,
+              nextTaxYearBenefitMPBIK2View(_, additive = true, taxDateUtils.getTaxYearRange(), _, _, _)
+            )
 
-        status(result) mustBe OK
-        contentAsString(result) must include(messages("ErrorPage.noBenefitsToAdd"))
+          status(result) mustBe OK
+        } else {
+          val result =
+            registrationService.generateViewForBikRegistrationSelection(
+              taxDateUtils.getTaxYearRange().cy,
+              nextTaxYearView(_, additive = true, taxDateUtils.getTaxYearRange(), _, _, _)
+            )
+
+          status(result) mustBe OK
+          contentAsString(result) must include(messages("ErrorPage.noBenefitsToAdd"))
+        }
       }
 
     }
