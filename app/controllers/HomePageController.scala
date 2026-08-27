@@ -48,7 +48,6 @@ class HomePageController @Inject() (
   taxDateUtils: TaxDateUtils,
   pbikAppConfig: PbikAppConfig,
   errorPageView: ErrorPage,
-  summaryPage: Summary,
   payrollingSummaryView: PayrollingSummaryPageMpbik,
   payrollingSummaryMpbikPhase2View: PayrollingSummaryPageMpbikPhase2
 )(implicit val ec: ExecutionContext)

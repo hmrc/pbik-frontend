@@ -31,7 +31,7 @@
         form: Form[MandatoryRadioButton]
 )(implicit request: AuthenticatedRequest[?], messages: Messages)
 
-@expenseOrBenefit = @{messages(s"BenefitInKind.label.${iabdType.id}")}
+@expenseOrBenefit = @{messages(s"BenefitInKindMPBIK2.label.${iabdType.id}")}
 @govukLayoutWrapper(PageTitle(messages("ExclusionNinoDecision.title", form.hasErrors), form.hasErrors)) {
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>

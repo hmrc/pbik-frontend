@@ -37,7 +37,6 @@ class BikListUtils @Inject() ()(val pbikAppConfig: PbikAppConfig)(val messagesAp
       } else {
         biks.map(bik => (bik, Messages("BenefitInKind.label." + bik.iabdType.id)))
       }
-    biks.map(bik => (bik, Messages("BenefitInKind.label." + bik.iabdType.id)))
     val sortedListOfIdLabelPairs: List[(BenefitInKindWithCount, String)] =
       listOfIdLabelPairs.sortWith((bik1: (BenefitInKindWithCount, String), bik2: (BenefitInKindWithCount, String)) =>
         bik1._2 < bik2._2

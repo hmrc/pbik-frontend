@@ -131,7 +131,7 @@ class SummaryViewSpec extends PBIKViewSpec {
       behave like pageWithBackLink()
       behave like pageWithLinkHiddenText(
         s"cy1-remove-$carIabdType",
-        s"${messages("BenefitInKind.label." + carIabdType)} ${messages("Overview.current.from")} ${messages("Overview.current.payroll.p11d")}"
+        s"${messages("BenefitInKindMPBIK2.label." + carIabdType)} ${messages("Overview.current.from")} ${messages("Overview.current.payroll.p11d")}"
       )
       behave like pageWithLink(messages("Overview.change.year.cy1.text.link"), "/payrollbik/select-year")
 

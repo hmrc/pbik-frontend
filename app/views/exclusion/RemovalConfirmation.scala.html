@@ -28,7 +28,7 @@
         person:PbikExclusionPerson
 )(implicit request: AuthenticatedRequest[?], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
+@benefitLabel = @{ messages("BenefitInKindMPBIK2.label." + iabdType.id) }
 
 @govukLayoutWrapper(PageTitle(messages("ExclusionRemovalConfirmation.title"))) {
     <span class="govuk-caption-xl">@benefitLabel</span>

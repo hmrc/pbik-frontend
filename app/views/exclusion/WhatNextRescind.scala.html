@@ -29,7 +29,7 @@
         mpbik: Boolean
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
+@benefitLabel = @{ messages("BenefitInKindMPBIK2.label." + iabdType.id) }
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(year=="cy") cyminus1 else cy}
@@ -50,7 +50,7 @@ showECLBackLink = request.showECLBackLink) {
     @printLink(messages("Service.print.link"))
 
     <p class="govuk-body" id="confirmation-p">
-        @messages("ExclusionRemoval.WhatNext.p1", person.fullName, messages("BenefitInKind.label." + iabdType.id), s"${taxYearRange.cy}")
+        @messages("ExclusionRemoval.WhatNext.p1", person.fullName, messages("BenefitInKindMPBIK2.label." + iabdType.id), s"${taxYearRange.cy}")
     </p>
 
     <h2 class="govuk-heading-m">

@@ -42,8 +42,8 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   "exclusionOverview - organisation" must {
     implicit val html: Html = viewWithForm(form)(organisationRequest)
 
-    behave like pageWithTitle(messages(s"BenefitInKind.label.${iabdType.id}"))
-    behave like pageWithHeader(messages(s"BenefitInKind.label.${iabdType.id}"))
+    behave like pageWithTitle(messages(s"BenefitInKindMPBIK2.label.${iabdType.id}"))
+    behave like pageWithHeader(messages(s"BenefitInKindMPBIK2.label.${iabdType.id}"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/excluded-employees", "Continue")
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 
@@ -60,8 +60,8 @@ class ExclusionOverviewViewSpec extends PBIKViewSpec {
   "exclusionOverview - agent" must {
     implicit val html: Html = viewWithForm(form)(agentRequest)
 
-    behave like pageWithTitle(messages(s"BenefitInKind.label.${iabdType.id}"))
-    behave like pageWithHeader(messages(s"BenefitInKind.label.${iabdType.id}"))
+    behave like pageWithTitle(messages(s"BenefitInKindMPBIK2.label.${iabdType.id}"))
+    behave like pageWithHeader(messages(s"BenefitInKindMPBIK2.label.${iabdType.id}"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/excluded-employees", "Continue")
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 

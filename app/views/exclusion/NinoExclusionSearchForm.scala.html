@@ -35,7 +35,7 @@
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @excludedEmployeesLink = {<a class="govuk-link" href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">}
-@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
+@benefitLabel = @{ messages("BenefitInKindMPBIK2.label." + iabdType.id) }
 
 @govukLayoutWrapper(PageTitle(messages(if(config.mpbikToggle) "ExclusionSearchMPBIK.form.title" else "ExclusionSearch.form.title"), searchForm.hasErrors)) {
 

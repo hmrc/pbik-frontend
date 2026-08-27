@@ -172,7 +172,7 @@ PayrollingSummaryMPBIK2.choose.benefit.link.text.organisation = choose a benefit
 PayrollingSummaryMPBIK2.p1.agent = You can use this service to register and manage benefits being taxed through {0}''s payroll.
 PayrollingSummaryMPBIK2.no.benefits.text.agent = Your client has no benefits registered to tax through payroll from 6 April {0}.
 PayrollingSummaryMPBIK2.benefits.text.agent = These are the benefits that you have registered to tax through your client''s payroll from 6 April {0}.
-PayrollingSummaryMPBIK2.choose.benefit.link.text.agent = choose a benefit to tax through your client''s payroll
+PayrollingSummaryMPBIK2.choose.benefit.link.text.agent = choose a benefit to tax through your client’s payroll
 
 #*************************************************************
 # Select Year
@@ -294,6 +294,25 @@ RemoveBenefits.confirm.p1.agent = By confirming, you will stop taxing {0} throug
 RemoveBenefits.confirm.p2.agent = Your client must report the value of any benefit or expense for the current tax year by submitting a P11D to HMRC. They should do this at the end of the tax year.
 
 #*************************************************************
+# Remove benefits MPBIK Phase 2
+#*************************************************************
+
+RemoveBenefitsMPBIK2.link = Remove from payroll
+RemoveBenefitsMPBIK2.selected.benefit = Selected benefit
+
+RemoveBenefitsMPBIK2.reason.Title.organisation = Declare the benefit to stop taxing through payroll
+RemoveBenefitsMPBIK2.confirm.p1.organisation = By confirming you are telling HMRC that you will stop taxing the following benefits through your payroll from 6 April {0}:
+RemoveBenefitsMPBIK2.confirm.declaration.organisation = I confirm that:
+RemoveBenefitsMPBIK2.confirm.bullet1.organisation = I will send a P11D for each employee who has received this benefit to report the value to HMRC
+RemoveBenefitsMPBIK2.confirm.bullet2.organisation = I will send any P11Ds at the end of the tax year
+
+RemoveBenefitsMPBIK2.reason.Title.agent = Declare the benefit to stop taxing through your client’s payroll
+RemoveBenefitsMPBIK2.confirm.p1.agent = By confirming you are telling HMRC that your client will stop taxing the following benefits through their payroll from 6 April {0}:
+RemoveBenefitsMPBIK2.confirm.declaration.agent = I confirm I will tell my client that:
+RemoveBenefitsMPBIK2.confirm.bullet1.agent = they must send a P11D for each employee who has received this benefit to report the value to HMRC
+RemoveBenefitsMPBIK2.confirm.bullet2.agent = they must send any P11Ds at the end of the tax year
+
+#*************************************************************
 # Exclusion overview
 #*************************************************************
 
@@ -369,7 +388,7 @@ ExclusionOverviewMPBIK.notExcludedEmployee.p1.agent = {0} is taxed through your 
 ExclusionOverviewMPBIK.p1 = You can exclude employees who get this expense or benefit.
 ExclusionOverviewMPBIK.p2.organisation = For excluded employees, you need to report the value of this benefit or expense by sending HMRC a P11D. You should do this at the end of the tax year.
 ExclusionOverviewMPBIK.p2.agent = For excluded employees, your client must report the value of this benefit or expense by sending HMRC a P11D. They should do this at the end of the tax year.
-ExclusionOverviewMPBIK.benefitsManage.inset = You cannot restart payrolling for excluded employees in the current tax year.
+ExclusionOverviewMPBIK.benefitsManage.inset = From 6 April 2027, employers will have to tax all employee benefits through payroll (except loans and accommodation). Any employees excluded from benefits for the 2026 to 2027 tax year will no longer be excluded from having their benefits taxed through payroll.
 
 #*************************************************************
 # Exclusion search MPBIK
@@ -385,7 +404,8 @@ ExclusionSearchMPBIK.form.tax.year = Tax year April {0} to {1}
 error.exclusionMPBIK.multi.selection = Choose the employee to exclude
 ExclusionSearchMPBIK.title.single = Declare the employee to exclude from this benefit
 ExclusionSearchMPBIK.title.span.taxYear.cy0 = Tax year April {0} to {1}
-ExclusionImportantMPBIK.Reminder = By confirming, you will exclude this employee from having {0} taxed through payroll from {1}.
+ExclusionImportantMPBIK.Reminder.CY = By confirming, you will exclude this employee from having {0} taxed through payroll from {1}.
+ExclusionImportantMPBIK.Reminder.CYP1 = By confirming, you will exclude this employee from having {0} taxed through payroll from 6 April {1}.
 
 ExclusionSearchMPBIK.field.employee.name = Employee name
 ExclusionSearchMPBIK.field.employee.ni = National Insurance number (last letter not shown)
@@ -401,9 +421,15 @@ ExclusionSearchMPBIK.confirmation.agent.bullet1 = they must report the value of 
 ExclusionSearchMPBIK.confirmation.agent.bullet2 = they must send the P11D at the end of the tax year
 
 ExclusionSearchMPBIK.understanding.organisation.p = I understand that:
-ExclusionSearchMPBIK.understanding.organisation.bullet1 = I cannot add this employee back to this benefit for this tax year
+ExclusionSearchMPBIK.understanding.organisation.bullet1.cy = I cannot add this employee back to this benefit for this tax year
+ExclusionSearchMPBIK.understanding.organisation.bullet1.cyp1 = I can choose to add this employee back to this benefit until 5 April {0}
+ExclusionSearchMPBIK.understanding.organisation.bullet2.cy = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
+ExclusionSearchMPBIK.understanding.organisation.bullet2.cyp1 = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
 ExclusionSearchMPBIK.understanding.agent.p = I understand that:
-ExclusionSearchMPBIK.understanding.agent.bullet1 = I cannot add this employee back to this benefit for this tax year
+ExclusionSearchMPBIK.understanding.agent.bullet1.cy = I cannot add this employee back to this benefit for this tax year
+ExclusionSearchMPBIK.understanding.agent.bullet1.cyp1 = this employee can be added back to this benefit until 5 April {0}
+ExclusionSearchMPBIK.understanding.agent.bullet2.cy = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
+ExclusionSearchMPBIK.understanding.agent.bullet2.cyp1 = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
 
 #*************************************************************
 # Benefits messages
@@ -463,6 +489,14 @@ BenefitInKindMPBIK2.label.48 = Payments made on behalf of employee
 BenefitInKindMPBIK2.label.54 = Vouchers and credit cards
 
 BenefitInKindMPBIK2.label.44 = Mileage allowance and passenger payments
+
+BenefitInKindMPBIK2.label.31 = Car and car fuel
+
+BenefitInKindMPBIK2.label.29 = Car fuel
+
+BenefitInKindMPBIK2.label.35 = Vans
+
+BenefitInKindMPBIK2.label.36 = Van fuel
 
 BenefitInKindMPBIK2.label.30 = Private medical treatment or insurance
 
@@ -715,7 +749,7 @@ whatNext.exclude.p1.link.organisation = submitting a P11D to HMRC
 whatNext.exclude.p1.after.organisation = for {0}. You should do this at the end of the tax year.
 
 whatNextMPBIK.exclude.p1.before.organisation = You should report the value of this benefit by
-whatNextMPBIK.exclude.p1.link.organisation = sending HMRC a P11d
+whatNextMPBIK.exclude.p1.link.organisation = sending HMRC a P11D
 whatNextMPBIK.exclude.p1.after.organisation = for {0}. You should do this at the end of the tax year.
 
 whatNext.exclude.p1.before.agent = Your client should report the value of this benefit by
@@ -723,7 +757,7 @@ whatNext.exclude.p1.link.agent = submitting a P11D to HMRC
 whatNext.exclude.p1.after.agent = for {0}. They should do this at the end of the tax year.
 
 whatNextMPBIK.exclude.p1.before.agent = Your client should report the value of this benefit by
-whatNextMPBIK.exclude.p1.link.agent = sending HMRC a P11d
+whatNextMPBIK.exclude.p1.link.agent = sending HMRC a P11D
 whatNextMPBIK.exclude.p1.after.agent = for {0}. They should do this at the end of the tax year.
 
 whatNext.exclude.p1.cy.before.organisation = You must report the value of this benefit by
@@ -731,7 +765,7 @@ whatNext.exclude.p1.cy.link.organisation = submitting a P11D to HMRC
 whatNext.exclude.p1.cy.after.organisation = for {0}. You must:
 
 whatNextMPBIK.exclude.p1.cy.before.organisation = You should report the value of this benefit by
-whatNextMPBIK.exclude.p1.cy.link.organisation = sending HMRC a P11d
+whatNextMPBIK.exclude.p1.cy.link.organisation = sending HMRC a P11D
 whatNextMPBIK.exclude.p1.cy.after.organisation = for {0}. You should do this at the end of the tax year.
 
 whatNext.exclude.p1.cy.before.agent = Your client must report the value of this benefit by
@@ -739,7 +773,7 @@ whatNext.exclude.p1.cy.link.agent = submitting a P11D to HMRC
 whatNext.exclude.p1.cy.after.agent = for {0}. They must:
 
 whatNextMPBIK.exclude.p1.cy.before.agent = Your client should report the value of this benefit by
-whatNextMPBIK.exclude.p1.cy.link.agent = sending HMRC a P11d
+whatNextMPBIK.exclude.p1.cy.link.agent = sending HMRC a P11D
 whatNextMPBIK.exclude.p1.cy.after.agent = for {0}. They should do this at the end of the tax year.
 
 whatNext.exclude.li1.cy = calculate the full cash equivalent value of the benefit for the employee
@@ -765,7 +799,7 @@ whatNext.exclude.you.do.p.cy.link.agent = return to this year’s benefits and e
 whatNext.exclude.you.do.p.cy.after.agent = to exclude employees from this year’s benefits and expenses for this client.
 
 whatNextMPBIK.exclude.you.do.p.cy.before.agent = You can
-whatNextMPBIK.exclude.you.do.p.cy.link.agent = return to your client''s payrolling summary
+whatNextMPBIK.exclude.you.do.p.cy.link.agent = return to your client’s payrolling summary
 whatNextMPBIK.exclude.you.do.p.cy.after.agent = to:
 
 
@@ -782,7 +816,7 @@ whatNext.exclude.you.do.p.link.agent = return to your client''s registered benef
 whatNext.exclude.you.do.p.after.agent = to:
 
 whatNextMPBIK.exclude.you.do.p.before.agent = You can
-whatNextMPBIK.exclude.you.do.p.link.agent = return to your client''s payrolling summary
+whatNextMPBIK.exclude.you.do.p.link.agent = return to your client’s payrolling summary
 whatNextMPBIK.exclude.you.do.p.after.agent = to:
 
 whatNext.exclude.you.do.li1 = exclude employees from the benefits and expenses you have registered
@@ -868,7 +902,7 @@ whatYouNeedToKnow.subHeading.after.p3.link.agent = submit a P11D(b) to report Cl
 whatYouCanDoNext.subHeading.h2 = What you can do next
 whatYouCanDoNext.subHeading.p.text.before = You can
 whatYouCanDoNext.subHeading.p.link.organisation = return to your registered benefits and expenses
-whatYouCanDoNext.subHeading.p.link.agent = return to your client''s registered benefits and expenses
+whatYouCanDoNext.subHeading.p.link.agent = return to your client’s registered benefits and expenses
 whatYouCanDoNext.subHeading.p.text.after = to:
 whatYouCanDoNext.subHeading.li1 = exclude employees from the benefits and expenses you have registered
 whatYouCanDoNext.subHeading.li2 = register more benefits and expenses
@@ -882,6 +916,40 @@ global.page.not.found.error.check.web.address.full=If you pasted the web address
 global.page.not.found.error.contact=If the web address is correct or you selected a link or button, {0} if you need to speak to someone about the benefits and expenses you manage through your payroll.
 global.page.not.found.error.contact.link.text=contact the employers helpline
 global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries
+
+#*************************************************************
+# What next MPBIK 2
+#*************************************************************
+
+whatNextMPBIK2.add.heading = Registration complete
+
+whatNextMPBIK2.remove.p1 = You will not tax {0} through your payroll from 6 April {1}.
+whatNextMPBIK2.remove.h2 = What happens next
+
+ServiceMPBIK2.field.selected.benefits = Selected benefits
+ServiceMPBIK2.field.removed.benefit = Removed benefit
+
+whatYouNeedToKnowMPBIK2.subHeading.after.li1 = add the cash equivalent or relevant amount to employees’ pay
+whatYouNeedToKnowMPBIK2.subHeading.after.li2 = tax the benefits through payroll
+whatYouNeedToKnowMPBIK2.subHeading.after.li3 = work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
+whatYouCanDoNextMPBIK2.subHeading.li1 = exclude employees from the benefits you have registered
+whatYouCanDoNextMPBIK2.subHeading.li2 = remove benefits you no longer want to tax through payroll
+
+whatYouNeedToKnowMPBIK2.subHeading.organisation = What you must do now
+whatYouNeedToKnowMPBIK2.subHeading.after.p1.organisation = You do not need to send P11Ds for employee’s who have these benefits taxed through payroll.
+whatNextMPBIK2.add.p.organisation = You have registered the following benefits to tax through your payroll from 6 April {0}:
+whatYouCanDoNextMPBIK2.subHeading.p.link.organisation = return to your payrolling summary
+whatYouNeedToKnowMPBIK2.subHeading.before.p1.organisation = You should write to your employees explaining that:
+whatYouNeedToKnowMPBIK2.subHeading.before.li1.organisation = these benefits will be taxed through payroll from 6 April {0}
+whatYouNeedToKnowMPBIK2.subHeading.before.li2.organisation = their tax codes may change
+
+whatYouNeedToKnowMPBIK2.subHeading.agent = What you must tell your client
+whatYouNeedToKnowMPBIK2.subHeading.after.p1.agent = Your client can stop sending HMRC P11Ds for employees who now have their benefits and expenses taxed through payroll.
+whatNextMPBIK2.add.p.agent = You have registered the following benefits to tax through your client''s payroll from 6 April {0}:
+whatYouCanDoNextMPBIK2.subHeading.p.link.agent = return to your client’s payrolling summary
+whatYouNeedToKnowMPBIK2.subHeading.before.p1.agent = Your client should write to their employees explaining that:
+whatYouNeedToKnowMPBIK2.subHeading.before.li1.agent = these benefits will be taxed through payroll from 6 April {0}
+whatYouNeedToKnowMPBIK2.subHeading.before.li2.agent = their tax codes may change
 
 #********************************************************************
 # timeout text

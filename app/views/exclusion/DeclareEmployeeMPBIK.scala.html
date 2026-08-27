@@ -32,7 +32,7 @@
         employee: TracePersonResponse
 )(implicit request: AuthenticatedRequest[?], messages: Messages)
 
-@expenseOrBenefit = @{messages(s"BenefitInKind.label.${iabdType.id}")}
+@expenseOrBenefit = @{messages(s"BenefitInKindMPBIK2.label.${iabdType.id}")}
 @govukLayoutWrapper(PageTitle(messages("ExclusionSearchMPBIK.title.single"))) {
 
     <h1 id="title" class="govuk-heading-xl">
@@ -51,7 +51,15 @@
 
     <h2 class="govuk-heading-m">@expenseOrBenefit</h2>
 
-    <p class="govuk-body">@messages("ExclusionImportantMPBIK.Reminder", expenseOrBenefit, taxDateUtils.getDisplayTodayDate())</p>
+    @if(year == FormMappingsConstants.CY){
+        <p class="govuk-body">@messages("ExclusionImportantMPBIK.Reminder.CY", expenseOrBenefit, taxDateUtils.getDisplayTodayDate())</p>
+    } else {
+        <p class="govuk-body">@messages("ExclusionImportantMPBIK.Reminder.CYP1", expenseOrBenefit, s"${taxYearRange.cy}")</p>
+    }
+
+    <div class="govuk-inset-text">
+        @messages("ExclusionOverviewMPBIK.benefitsManage.inset")
+    </div>
 
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
@@ -68,10 +76,12 @@
         </div>
     </dl>
 
-    @govukWarningText(WarningText(
-        iconFallbackText = Some(messages("site.warning")),
-        content = Text(messages("ExclusionSearchMPBIK.warning"))
-    ))
+    @if(year == FormMappingsConstants.CY){
+        @govukWarningText(WarningText(
+            iconFallbackText = Some(messages("site.warning")),
+            content = Text(messages("ExclusionSearchMPBIK.warning"))
+        ))
+    }
 
     <p id="i-confirm-that" class="govuk-body">
         @messages("ExclusionSearchMPBIK.confirmation." + request.userType + ".p")
@@ -84,10 +94,18 @@
     <p id="i-understand-that" class="govuk-body">
         @messages("ExclusionSearchMPBIK.understanding." + request.userType + ".p")
     </p>
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("ExclusionSearchMPBIK.understanding." + request.userType + ".bullet1")</li>
-    </ul>
 
+    @if(year == FormMappingsConstants.CY){
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("ExclusionSearchMPBIK.understanding." + request.userType + ".bullet1.cy")</li>
+            <li>@messages("ExclusionSearchMPBIK.understanding." + request.userType + ".bullet2.cy")</li>
+        </ul>
+    } else {
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("ExclusionSearchMPBIK.understanding." + request.userType + ".bullet1.cyp1", s"${taxYearRange.cy}")</li>
+            <li>@messages("ExclusionSearchMPBIK.understanding." + request.userType + ".bullet2.cyp1")</li>
+        </ul>
+    }
     <div class="govuk-form-group">
         <a href="@routes.ExclusionListController.updateExclusions(year, iabdType)" class="govuk-button" role="button" id="button-confirm">@messages("Service.confirmAndContinueMPBIK")</a>
     </div>

@@ -58,7 +58,7 @@
 
         <p class="govuk-body">@messages("AddBenefitsMPBIK2.p2")</p>
 
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.checkYourAnswersAddNextTaxYear) {
+        @formWithCSRF(action = controllers.routes.ManageRegistrationController.checkYourAnswersAddNextTaxYear) {
 
             @if(isExhausted) {
                 <div class="govuk-panel govuk-panel--confirmation">
@@ -84,7 +84,7 @@
                             </span>
                         }
 
-                        <div class="govuk-checkboxes govuk-checkboxes--small">
+                        <div class="govuk-checkboxes govuk-checkboxes">
                             @repeatWithIndex(form("actives"), min=0) { (activeField, index) =>
                                 @if(activeField("uid").value.isDefined && activeField("uid").value.get != "47" && !nonLegislationBiks.contains(activeField("uid").value.get.toInt) && !decommissionedBiks.contains(activeField("uid").value.get.toInt)) {
                                     <div class="govuk-checkboxes__item">

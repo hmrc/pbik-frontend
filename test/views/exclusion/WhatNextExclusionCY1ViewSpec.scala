@@ -22,12 +22,12 @@ import models.v1.IabdType
 import play.twirl.api.Html
 import utils.{FormMappings, TaxDateUtils}
 import views.helper.PBIKViewSpec
-import views.html.exclusion.WhatNextExclusion
+import views.html.exclusion.WhatNextExclusionMpbik
 
 class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings               = injected[FormMappings]
-  val whatNextExclusionView: WhatNextExclusion = injected[WhatNextExclusion]
+  val formMappings: FormMappings                    = injected[FormMappings]
+  val whatNextExclusionView: WhatNextExclusionMpbik = injected[WhatNextExclusionMpbik]
 
   implicit val appConfig: PbikAppConfig = injected[PbikAppConfig]
 
@@ -35,30 +35,23 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
   private val taxDateUtils = new TaxDateUtils
 
   implicit def view()(implicit request: AuthenticatedRequest[?]): Html =
-    whatNextExclusionView(taxYearRange, "cy", iabdType, tracePerson, mpbik = mpbikToggle)
+    whatNextExclusionView(taxYearRange, "cyp1", iabdType, tracePerson, mpbik = mpbikToggle)
 
   "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)
 
     behave like pageWithTitle(messages("whatNext.exclude.heading"))
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
-    if (mpbikToggle) {
-      behave like pageWithLink(
-        messages("whatNext.exclude.you.do.p.cy.link." + organisationRequest.userType),
-        "/payrollbik/registered-benefits-expenses"
-      )
-    } else {
-      behave like pageWithLink(
-        messages("whatNext.exclude.you.do.p.cy.link." + organisationRequest.userType),
-        "/payrollbik/cy/registered-benefits-expenses"
-      )
-    }
     behave like pageWithLink(
-      messages("whatNext.exclude.more.p.cy.link", "Vans"),
-      s"/payrollbik/cy/${iabdType.id}/excluded-employees"
+      messages("whatNextMPBIK.exclude.you.do.p.link." + organisationRequest.userType),
+      "/payrollbik/registered-benefits-expenses"
+    )
+    behave like pageWithLink(
+      messages("whatNextMPBIK.exclude.more.p.cy.link", "Vans"),
+      s"/payrollbik/cyp1/${iabdType.id}/excluded-employees"
     )
     behave like pageWithIdAndText(
-      "John A Doe will not have Vans taxed through payroll from " + taxDateUtils.getDisplayTodayDate(),
+      "John A Doe will not have Vans taxed through payroll from " + taxDateUtils.getDisplayStartOfCYP1() + ".",
       "confirmation-p"
     )
   }
@@ -68,23 +61,17 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("whatNext.exclude.heading"))
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
-    if (mpbikToggle) {
-      behave like pageWithLink(
-        messages("whatNext.exclude.you.do.p.cy.link." + agentRequest.userType),
-        "/payrollbik/registered-benefits-expenses"
-      )
-    } else {
-      behave like pageWithLink(
-        messages("whatNext.exclude.you.do.p.cy.link." + agentRequest.userType),
-        "/payrollbik/cy/registered-benefits-expenses"
-      )
-    }
     behave like pageWithLink(
-      messages("whatNext.exclude.more.p.cy.link", "Vans"),
-      s"/payrollbik/cy/${iabdType.id}/excluded-employees"
+      messages("whatNextMPBIK.exclude.you.do.p.link.agent"),
+      "/payrollbik/registered-benefits-expenses"
+    )
+    behave like pageWithLink(
+      messages("whatNextMPBIK.exclude.more.p.link", "Vans"),
+      s"/payrollbik/cyp1/${iabdType.id}/excluded-employees"
     )
     behave like pageWithIdAndText(
-      "John A Doe will not have Vans taxed through payroll from " + taxDateUtils.getDisplayTodayDate(),
+      s"John A Doe will not have Vans taxed through ${agentRequest.clientName.getOrElse("")}'s payroll from " + taxDateUtils
+        .getDisplayStartOfCYP1() + ".",
       "confirmation-p"
     )
 

@@ -19,7 +19,6 @@ package controllers
 import base.FakePBIKApplication
 import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
-import controllers.registration.ManageRegistrationController
 import models.*
 import models.auth.AuthenticatedRequest
 import models.form.{BinaryRadioButtonWithDesc, OtherReason}
@@ -110,7 +109,9 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           val title = messages("AddBenefitsMPBIK2.Heading.organisation")
           status(result) mustBe OK
           contentAsString(result) must include(title)
-          contentAsString(result) must include(messages(s"BenefitInKind.label.${IabdType.EmployerProvidedServices.id}"))
+          contentAsString(result) must include(
+            messages(s"BenefitInKindMPBIK2.label.${IabdType.EmployerProvidedServices.id}")
+          )
         } else {
           status(result) mustBe NOT_FOUND
         }
@@ -184,37 +185,6 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       }
     }
 
-    "loading checkYourAnswersRemoveNextTaxYear, an authorised user" should {
-      "be directed cy + 1 confirmation page to remove bik" in {
-        when(registrationController.sessionService.fetchPbikSession()(any()))
-          .thenReturn(
-            Future.successful(
-              Some(
-                PbikSession(
-                  sessionId,
-                  Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
-                  None,
-                  None,
-                  None,
-                  None,
-                  None,
-                  None
-                )
-              )
-            )
-          )
-        val result = registrationController.checkYourAnswersRemoveNextTaxYear(iabdType)(mockRequest)
-
-        if (pbikAppConfig.mpbikToggle) {
-          status(result) mustBe NOT_FOUND
-        } else {
-          val title = messages("RemoveBenefits.reason.Title").substring(beginIndex, endIndex)
-          status(result) mustBe OK
-          contentAsString(result) must include(title)
-        }
-      }
-    }
-
     "loading the addNextYearRegisteredBenefitTypes" should {
       "persist changes of an authorised user and redirect this user to the what next page" in {
         val mockRegistrationList = RegistrationList(
@@ -243,11 +213,11 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         val mockRequestForm      = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm)
 
-        if (pbikAppConfig.mpbikToggle) {
-          status(result) mustBe NOT_FOUND
-        } else {
+        if (pbikAppConfig.mpbikTogglePhase2) {
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(s"/payrollbik/${FormMappingsConstants.CYP1}/registration-complete")
+        } else {
+          status(result) mustBe NOT_FOUND
         }
       }
 
@@ -273,46 +243,6 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
     }
 
     "a user removes a benefit" should {
-      "redirect to what next page" when {
-        def test(selectionValue: String): Unit =
-          s"$selectionValue is selected" in {
-            val mockRegistrationList = RegistrationList(
-              None,
-              List(RegistrationItem(iabdType, active = true, enabled = true)),
-              Some(BinaryRadioButtonWithDesc(selectionValue, None))
-            )
-            when(registrationController.sessionService.fetchPbikSession()(any()))
-              .thenReturn(
-                Future.successful(
-                  Some(
-                    PbikSession(
-                      sessionId,
-                      Some(mockRegistrationList),
-                      Some(RegistrationItem(iabdType, active = true, enabled = true)),
-                      None,
-                      None,
-                      None,
-                      None,
-                      None
-                    )
-                  )
-                )
-              )
-            val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc(selectionValue, None))
-            val mockRequestForm      = mockRequest
-              .withFormUrlEncodedBody(form.data.toSeq *)
-            val result               = registrationController.removeNextYearRegisteredBenefitTypes(iabdType).apply(mockRequestForm)
-
-            if (pbikAppConfig.mpbikToggle) {
-              status(result) mustBe NOT_FOUND
-            } else {
-              status(result) mustBe SEE_OTHER
-              redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/declare-remove-benefit-expense")
-            }
-          }
-
-        Seq("software", "guidance", "not-clear", "not-offering").foreach(test)
-      }
 
       "redirect to why-remove-benefit-expense page when other is selected" in {
         val mockRegistrationList = RegistrationList(
@@ -342,11 +272,11 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           .withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.removeNextYearRegisteredBenefitTypes(iabdType).apply(mockRequestForm)
 
-        if (pbikAppConfig.mpbikToggle) {
-          status(result) mustBe NOT_FOUND
-        } else {
+        if (pbikAppConfig.mpbikTogglePhase2) {
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/why-remove-benefit-expense")
+          redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/declare-remove-benefit-expense")
+        } else {
+          status(result) mustBe NOT_FOUND
         }
       }
     }
@@ -387,11 +317,11 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       val resultSelection  =
         registrationController.updateBiksFutureAction(year, cyBenefitRequest.toList, additive = false)
 
-      if (pbikAppConfig.mpbikToggle) {
-        status(resultSelection) mustBe NOT_FOUND
-      } else {
+      if (pbikAppConfig.mpbikTogglePhase2) {
         status(resultSelection) mustBe OK
         contentAsString(resultSelection) must include(errorMsg)
+      } else {
+        status(resultSelection) mustBe NOT_FOUND
       }
     }
 
@@ -430,14 +360,14 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         )
 
       val form            = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+      val mockRequestForm = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
 
       val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
 
-      if (pbikAppConfig.mpbikToggle) {
-        result.header.status mustBe NOT_FOUND
-      } else {
+      if (pbikAppConfig.mpbikTogglePhase2) {
         result.header.status mustBe CONFLICT
+      } else {
+        result.header.status mustBe NOT_FOUND
       }
     }
 
@@ -471,14 +401,14 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         )
 
       val form            = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+      val mockRequestForm = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
 
       val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
 
-      if (pbikAppConfig.mpbikToggle) {
-        result.header.status mustBe NOT_FOUND
-      } else {
+      if (pbikAppConfig.mpbikTogglePhase2) {
         result.header.status mustBe INTERNAL_SERVER_ERROR
+      } else {
+        result.header.status mustBe NOT_FOUND
       }
     }
 
@@ -539,114 +469,10 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         )
       )
 
-      if (pbikAppConfig.mpbikToggle) {
-        result.header.status mustBe NOT_FOUND
-      } else {
+      if (pbikAppConfig.mpbikTogglePhase2) {
         result.header.status mustBe INTERNAL_SERVER_ERROR
-      }
-    }
-
-    "loading the why-remove-benefit-expense, an unauthorised user" should {
-      "be directed to the login page" in {
-        val result = registrationController.showRemoveBenefitOtherReason(iabdType)(noSessionIdRequest)
-
-        status(result) mustBe UNAUTHORIZED
-        contentAsString(result) must include(
-          "Request was not authenticated user should be redirected"
-        )
-      }
-    }
-
-    "loading why-remove-benefit-expense, an authorised user" should {
-      "be directed cy + 1 confirmation page to remove bik for other reason" in {
-        when(registrationController.sessionService.fetchPbikSession()(any()))
-          .thenReturn(
-            Future.successful(
-              Some(
-                PbikSession(
-                  sessionId,
-                  Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
-                  None,
-                  None,
-                  None,
-                  None,
-                  None,
-                  None
-                )
-              )
-            )
-          )
-
-        val result = registrationController.showRemoveBenefitOtherReason(iabdType)(mockRequest)
-
-        if (pbikAppConfig.mpbikToggle) {
-          status(result) mustBe NOT_FOUND
-        } else {
-          val title = messages("RemoveBenefits.other.title").substring(beginIndex, endIndex)
-          status(result) mustBe OK
-          contentAsString(result) must include(title)
-        }
-      }
-
-      "be redirected to what next page when a valid other reason is provided" in {
-        val otherReason          = "Here's our other info"
-        val mockRegistrationList = RegistrationList(
-          None,
-          List(RegistrationItem(iabdType, active = true, enabled = true)),
-          Some(BinaryRadioButtonWithDesc("other", Some(otherReason)))
-        )
-        when(registrationController.sessionService.fetchPbikSession()(any()))
-          .thenReturn(
-            Future.successful(
-              Some(
-                PbikSession(
-                  sessionId,
-                  Some(mockRegistrationList),
-                  Some(RegistrationItem(iabdType, active = true, enabled = true)),
-                  None,
-                  None,
-                  None,
-                  None,
-                  None
-                )
-              )
-            )
-          )
-        val form                 = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
-        val mockRequestForm      = mockPostRequest
-          .withFormUrlEncodedBody(form.data.toSeq *)
-        val result               = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
-
-        if (pbikAppConfig.mpbikToggle) {
-          status(result) mustBe NOT_FOUND
-        } else {
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/declare-remove-benefit-expense")
-        }
-      }
-
-      "return to the same page with an error when other reason is not provided" in {
-        val errorMsg        = messages("RemoveBenefits.other.error.required")
-        val form            = formMappings.removalOtherReasonForm.fill(OtherReason(""))
-        val mockRequestForm = mockPostRequest
-          .withFormUrlEncodedBody(form.data.toSeq *)
-        val result          = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
-
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) must include(errorMsg)
-      }
-
-      "return to the same page with an error when other reason of more than 100 chars is provided" in {
-        val errorMsg        = messages("RemoveBenefits.other.error.length")
-        val reason          =
-          "this is a test other reason to remove the benefits, if user wants to remove the benefits from payroll"
-        val form            = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
-        val mockRequestForm = mockPostRequest
-          .withFormUrlEncodedBody(form.data.toSeq *)
-        val result          = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
-
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) must include(errorMsg)
+      } else {
+        result.header.status mustBe NOT_FOUND
       }
     }
 
@@ -672,12 +498,12 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
         val result = registrationController.showConfirmRemoveNextTaxYear(iabdType)(mockRequest)
 
-        if (pbikAppConfig.mpbikToggle) {
-          status(result) mustBe NOT_FOUND
-        } else {
-          val title = messages("RemoveBenefits.confirm.heading")
+        if (pbikAppConfig.mpbikTogglePhase2) {
+          val title = messages("RemoveBenefitsMPBIK2.reason.Title.organisation")
           status(result) mustBe OK
           contentAsString(result) must include(title)
+        } else {
+          status(result) mustBe NOT_FOUND
         }
       }
     }
@@ -713,11 +539,11 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
           val result = registrationController.submitConfirmRemoveNextTaxYear(iabdType)(mockRequest)
 
-          if (pbikAppConfig.mpbikToggle) {
-            status(result) mustBe NOT_FOUND
-          } else {
+          if (pbikAppConfig.mpbikTogglePhase2) {
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/benefit-removed")
+          } else {
+            status(result) mustBe NOT_FOUND
           }
         }
       }

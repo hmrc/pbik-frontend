@@ -35,7 +35,7 @@
         form: Form[MandatoryRadioButton]
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
+@benefitLabel = @{ messages("BenefitInKindMPBIK2.label." + iabdType.id) }
 
 @govukLayoutWrapper(PageTitle(benefitLabel, form.hasErrors)) {
 
