@@ -45,7 +45,7 @@ class ConfirmUpdateNextTaxYearViewSpec extends PBIKViewSpec {
     implicit def html: Html = view(organisationRequest)
 
     behave like pageWithTitle(messages("AddBenefits.Confirm.Multiple.Title"))
-    behave like pageWithHeader(messages("AddBenefits.Confirm.Multiple.Heading"))
+    behave like pageWithHeader(messages("AddBenefits.Confirm.Multiple.Title"))
     behave like pageWithContinueButtonForm("/payrollbik/cy1/check-the-benefits", "Confirm and continue")
   }
 
@@ -53,7 +53,7 @@ class ConfirmUpdateNextTaxYearViewSpec extends PBIKViewSpec {
     implicit def html: Html = view(agentRequest)
 
     behave like pageWithTitle(messages("AddBenefits.Confirm.Multiple.Title"))
-    behave like pageWithHeader(messages("AddBenefits.Confirm.Multiple.Heading"))
+    behave like pageWithHeader(messages("AddBenefits.Confirm.Multiple.Title"))
     behave like pageWithContinueButtonForm("/payrollbik/cy1/check-the-benefits", "Confirm and continue")
   }
 }

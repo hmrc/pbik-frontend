@@ -224,12 +224,23 @@ AddBenefits.selectAll = Dewiswch bob un sy’n gymwys
 
 AddBenefits.noselection.error = Mae’n rhaid i chi ddewis o leiaf 1 buddiant neu draul cyn i chi allu mynd yn eich blaen
 
-AddBenefits.Confirm.Multiple.Title = Datgan y buddiannau a’r treuliau rydych am eu cofrestru
-AddBenefits.Confirm.Multiple.Heading = Datgan y buddiannau a’r treuliau rydych am eu cofrestru
-AddBenefits.Confirm.Multiple.p.organisation = Trwy gadarnhau eich bod yn rhoi gwybod i CThEF y bydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen:
-AddBenefits.Confirm.Multiple.p.agent = Trwy gadarnhau eich bod yn rhoi gwybod i CThEF y bydd y buddiannau a’r treuliau canlynol yn cael eu trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen:
-AddBenefits.Confirm.Multiple.key = Buddiannau a threuliau dethol
-AddBenefits.Confirm.help.desc = Gallwch eithrio cyflogeion rhag talu’r buddiannau drwy’r gyflogres ar ôl i chi gofrestru, ond bydd yn rhaid i chi anfon ffurflen P11D er mwyn datgan y buddiannau sydd heb eu talu drwy’r gyflogres. Os nad yw cyflogai wedi cael y buddiant, does dim rhaid i chi ei eithrio gan nad oes treth yn ddyledus.
+AddBenefits.Confirm.Multiple.Title = Datgan y buddiannau rydych am eu cofrestru
+AddBenefits.Confirm.Multiple.key = Buddiannau a ddewiswyd
+AddBenefits.Confirm.understand.statement = Rwy’n deall y canlynol:
+
+AddBenefits.Confirm.statement.organisation = Rwy’n cadarnhau’r canlynol:
+AddBenefits.Confirm.bullet1.organisation = Byddaf yn trethu’r buddiannau hyn drwy’r gyflogres o 6 Ebrill {0} ymlaen
+AddBenefits.Confirm.bullet2.organisation = Byddaf yn cyfrifo’r cyfraniadau Yswiriant Gwladol Dosbarth 1A ar gyfer y buddiannau a ddewiswyd ac yn eu talu drwy’r gyflogres
+AddBenefits.Confirm.bullet3.organisation = Byddaf yn rhoi gwybod i’r cyflogeion y gall eu codau treth newid
+AddBenefits.Confirm.bullet4.organisation = Gallaf eithrio cyflogeion rhag cael buddiannau wedi’u trethu drwy’r gyflogres pan fyddaf wedi cofrestru’r buddiannau a ddewiswyd
+AddBenefits.Confirm.bullet5.organisation = Nid oes angen i mi eithrio cyflogeion sydd ddim yn cael y buddiant hwn oherwydd nad oes angen iddynt dalu treth ychwanegol na chyfraniadau Yswiriant Gwladol Dosbarth 1A
+
+AddBenefits.Confirm.statement.agent = Rwy’n cadarnhau y byddaf yn dweud y canlynol wrth fy nghleient:
+AddBenefits.Confirm.bullet1.agent = bod yn rhaid iddo drethu’r buddiannau a ddewiswyd drwy’r gyflogres o 6 Ebrill {0}
+AddBenefits.Confirm.bullet2.agent = bod yn rhaid iddo gyfrifo’r cyfraniadau Yswiriant Gwladol Dosbarth 1A ar gyfer y buddiannau a ddewiswyd a’u talu drwy’r gyflogres
+AddBenefits.Confirm.bullet3.agent = bod yn rhaid iddo roi gwybod i’r cyflogeion y gallai eu codau treth newid
+AddBenefits.Confirm.bullet4.agent = bod modd eithrio cyflogeion o’r broses o drethu buddiannau drwy’r gyflogres pan fydd y buddiannau a ddewiswyd yn cael eu cofrestru
+AddBenefits.Confirm.bullet5.agent = nid oes angen eithrio cyflogeion nad ydynt yn cael y buddiant oherwydd nad oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
 
 #*************************************************************
 # Add benefits MPBIK Phase 2
