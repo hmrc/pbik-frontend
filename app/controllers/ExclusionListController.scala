@@ -104,15 +104,7 @@ class ExclusionListController @Inject() (
                     .withOrWithoutNinoOnPageLoad(isCurrentTaxYear, iabdType)
                 )
               case ControllersReferenceDataCodes.NO  =>
-                if (mpbikToggle) {
-                  Redirect(routes.HomePageController.onPageLoad)
-                } else {
-                  if (isCurrentTaxYear == utils.FormMappingsConstants.CY) {
-                    Redirect(routes.HomePageController.onPageLoadCY)
-                  } else {
-                    Redirect(routes.HomePageController.onPageLoadCY1)
-                  }
-                }
+                Redirect(routes.HomePageController.onPageLoad)
             }
           }
         )
@@ -223,8 +215,7 @@ class ExclusionListController @Inject() (
         Ok(
           errorPageView(
             ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-            taxDateUtils.getTaxYearRange(),
-            mpbik = mpbikToggle
+            taxDateUtils.getTaxYearRange()
           )
         )
       )
@@ -268,8 +259,7 @@ class ExclusionListController @Inject() (
         Forbidden(
           errorPageView(
             ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-            taxDateUtils.getTaxYearRange(),
-            mpbik = mpbikToggle
+            taxDateUtils.getTaxYearRange()
           )
         )
       }
@@ -297,8 +287,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              mpbik = mpbikToggle
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -333,8 +322,7 @@ class ExclusionListController @Inject() (
           InternalServerError(
             errorPageView(
               ControllersReferenceDataCodes.INVALID_FORM_ERROR,
-              taxDateUtils.getTaxYearRange(),
-              mpbik = mpbikToggle
+              taxDateUtils.getTaxYearRange()
             )
           )
       }
@@ -377,8 +365,7 @@ class ExclusionListController @Inject() (
                                     s"ServiceMessage.${value.failures.head.code}",
                                     controllersReferenceData.yearRange,
                                     isCurrentTaxYear,
-                                    value.failures.head.codeAsInt,
-                                    mpbik = mpbikToggle
+                                    value.failures.head.codeAsInt
                                   )
                                 )
                               )
@@ -429,8 +416,7 @@ class ExclusionListController @Inject() (
                                     s"ServiceMessage.${value.failures.head.code}",
                                     controllersReferenceData.yearRange,
                                     isCurrentTaxYear,
-                                    value.failures.head.codeAsInt,
-                                    mpbik = mpbikToggle
+                                    value.failures.head.codeAsInt
                                   )
                                 )
                               )
@@ -461,8 +447,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              mpbik = mpbikToggle
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -509,8 +494,7 @@ class ExclusionListController @Inject() (
               taxYearRange = controllersReferenceData.yearRange,
               isCurrentTaxYear = isCurrentTaxYear,
               code = errorCode,
-              iabdType = Some(iabdType),
-              mpbik = mpbikToggle
+              iabdType = Some(iabdType)
             )
           )
         } else {
@@ -522,8 +506,7 @@ class ExclusionListController @Inject() (
               taxYearRange = controllersReferenceData.yearRange,
               isCurrentTaxYear = isCurrentTaxYear,
               code = errorCode,
-              iabdType = Some(iabdType),
-              mpbik = mpbikToggle
+              iabdType = Some(iabdType)
             )
           )
         }
@@ -634,8 +617,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              mpbik = mpbikToggle
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -678,8 +660,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              mpbik = mpbikToggle
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -716,7 +697,7 @@ class ExclusionListController @Inject() (
         case Left(value)                 =>
           val error = value.failures.head
           InternalServerError(
-            errorPageView(s"ServiceMessage.${error.code}", controllersReferenceData.yearRange, mpbik = mpbikToggle)
+            errorPageView(s"ServiceMessage.${error.code}", controllersReferenceData.yearRange)
           )
         case Right(unexpectedStatus)     =>
           logger.warn(
@@ -724,7 +705,7 @@ class ExclusionListController @Inject() (
               s"successfully: received $unexpectedStatus response"
           )
           InternalServerError(
-            errorPageView("Could not perform update operation", controllersReferenceData.yearRange, mpbik = mpbikToggle)
+            errorPageView("Could not perform update operation", controllersReferenceData.yearRange)
           )
       }
   }
@@ -761,8 +742,7 @@ class ExclusionListController @Inject() (
               NotFound(
                 errorPageView(
                   ControllersReferenceDataCodes.DEFAULT_ERROR,
-                  taxDateUtils.getTaxYearRange(),
-                  mpbik = mpbikToggle
+                  taxDateUtils.getTaxYearRange()
                 )
               )
             )
@@ -784,8 +764,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              mpbik = mpbikToggle
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -861,8 +840,7 @@ class ExclusionListController @Inject() (
           Forbidden(
             errorPageView(
               ControllersReferenceDataCodes.FEATURE_RESTRICTED,
-              taxDateUtils.getTaxYearRange(),
-              mpbik = mpbikToggle
+              taxDateUtils.getTaxYearRange()
             )
           )
         )
@@ -918,8 +896,7 @@ class ExclusionListController @Inject() (
                     InternalServerError(
                       errorPageView(
                         s"ServiceMessage.${error.code}",
-                        controllersReferenceData.yearRange,
-                        mpbik = mpbikToggle
+                        controllersReferenceData.yearRange
                       )
                     )
                   case Right(unexpectedStatus)     =>
@@ -930,8 +907,7 @@ class ExclusionListController @Inject() (
                     BadRequest(
                       errorPageView(
                         "Could not perform update operation",
-                        controllersReferenceData.yearRange,
-                        mpbik = mpbikToggle
+                        controllersReferenceData.yearRange
                       )
                     )
                 }
@@ -942,7 +918,7 @@ class ExclusionListController @Inject() (
         logger.info("[ExclusionListController][removeExclusionsCommit] Exclusions not allowed, showing error page")
         Future.successful(
           Forbidden(
-            errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxYearRange, mpbik = mpbikToggle)
+            errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxYearRange)
           )
         )
       }

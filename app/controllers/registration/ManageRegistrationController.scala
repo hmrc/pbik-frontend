@@ -54,8 +54,6 @@ class ManageRegistrationController @Inject() (
   splunkLogger: SplunkLogger,
   pbikAppConfig: PbikAppConfig,
   nextTaxYearView: NextTaxYear,
-  currentTaxYearView: CurrentTaxYear,
-  confirmAddCurrentTaxYearView: ConfirmAddCurrentTaxYear,
   confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear,
   removeBenefitNextTaxYearView: RemoveBenefitNextTaxYear,
   removeBenefitOtherReason: RemoveBenefitOtherReason,
@@ -66,88 +64,23 @@ class ManageRegistrationController @Inject() (
     with Logging
     with WithUrlEncodedOnlyFormBinding {
 
-  private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+  private val mpbikToggle: Boolean       = pbikAppConfig.mpbikToggle
+  private val mpbikPhase2Toggle: Boolean = pbikAppConfig.mpbikTogglePhase2
 
   def nextTaxYearAddOnPageLoad: Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       val staticDataRequest =
-        if (mpbikToggle) {
-          Future.failed(new InvalidURIException())
-        } else {
+        if (mpbikPhase2Toggle) {
           registrationService.generateViewForBikRegistrationSelection(
             controllersReferenceData.yearRange.cy,
             generateViewBasedOnFormItems =
               nextTaxYearView(_, additive = true, controllersReferenceData.yearRange, _, _, _)
           )
+        } else {
+          Future.failed(new InvalidURIException())
         }
       controllersReferenceData.responseErrorHandler(staticDataRequest)
     }
-
-  def currentTaxYearOnPageLoad: Action[AnyContent] =
-    (authenticate andThen noSessionCheck).async { implicit request =>
-      if (mpbikToggle) {
-        controllersReferenceData.responseErrorHandler(Future.failed(new InvalidURIException()))
-      } else {
-        registrationService.generateViewForBikRegistrationSelection(
-          controllersReferenceData.yearRange.cyminus1,
-          generateViewBasedOnFormItems =
-            currentTaxYearView(_, controllersReferenceData.yearRange, _, _, _, mpbik = mpbikToggle)
-        )
-        controllersReferenceData.responseCheckCYEnabled()
-      }
-    }
-
-  def checkYourAnswersAddCurrentTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
-    implicit request =>
-      if (mpbikToggle) {
-        controllersReferenceData.responseErrorHandler(Future.failed(new InvalidURIException()))
-      } else {
-        for {
-          result <- formMappings.objSelectedForm
-                      .bindFromRequest()
-                      .fold(
-                        formWithErrors =>
-                          Future.successful(
-                            BadRequest(
-                              currentTaxYearView(
-                                formWithErrors,
-                                controllersReferenceData.yearRange,
-                                isExhausted = false,
-                                nonLegislationBiks = pbikAppConfig.biksNotSupported.map(_.id),
-                                decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id),
-                                mpbik = mpbikToggle
-                              )
-                            )
-                          ),
-                        values =>
-                          sessionService.storeRegistrationList(values).flatMap { _ =>
-                            Future.successful(
-                              Redirect(routes.ManageRegistrationController.showCheckYourAnswersAddCurrentTaxYear)
-                            )
-                          }
-                      )
-        } yield result
-        controllersReferenceData.responseCheckCYEnabled()
-      }
-  }
-
-  def showCheckYourAnswersAddCurrentTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
-    implicit request =>
-      val resultFuture =
-        if (mpbikToggle) {
-          Future.failed(new InvalidURIException())
-        } else {
-          sessionService.fetchPbikSession().flatMap { session =>
-            val activeReg                    = session.flatMap(_.getActiveRegistrationItems).getOrElse(List.empty[RegistrationItem])
-            val registrationList             = RegistrationList(None, activeReg, None)
-            val form: Form[RegistrationList] = formMappings.objSelectedForm.fill(registrationList)
-            Future.successful(
-              Ok(confirmAddCurrentTaxYearView(form, controllersReferenceData.yearRange))
-            )
-          }
-        }
-      controllersReferenceData.responseErrorHandler(resultFuture)
-  }
 
   def checkYourAnswersAddNextTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
@@ -229,7 +162,7 @@ class ManageRegistrationController @Inject() (
         )
       )
     )
-  } // todo, check if we can reach this function with the mpbik flag on
+  }
 
   def showConfirmRemoveNextTaxYear(iabdType: IabdType): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
@@ -329,22 +262,22 @@ class ManageRegistrationController @Inject() (
         )
     }
 
-  def updateCurrentYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
-    implicit request =>
-      if (mpbikToggle) {
-        controllersReferenceData.responseErrorHandler(Future.failed(new InvalidURIException()))
-      } else {
-        sessionService.fetchPbikSession().flatMap { session =>
-          val activeReg = session.flatMap(_.getActiveRegistrationItems).getOrElse(List.empty[RegistrationItem])
-
-          val persistentBiks = activeReg
-            .filter(biks => biks.active)
-            .map(bik => BenefitInKindRequest(bik.iabdType, PbikAction.ReinstatePayrolledBenefitInKind, request.isAgent))
-          updateBiksFutureAction(controllersReferenceData.yearRange.cyminus1, persistentBiks, additive = true)
-        }
-        controllersReferenceData.responseCheckCYEnabled()
-      }
-  }
+//  def updateCurrentYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
+//    implicit request =>
+//      if (mpbikToggle) {
+//        controllersReferenceData.responseErrorHandler(Future.failed(new InvalidURIException()))
+//      } else {
+//        sessionService.fetchPbikSession().flatMap { session =>
+//          val activeReg = session.flatMap(_.getActiveRegistrationItems).getOrElse(List.empty[RegistrationItem])
+//
+//          val persistentBiks = activeReg
+//            .filter(biks => biks.active)
+//            .map(bik => BenefitInKindRequest(bik.iabdType, PbikAction.ReinstatePayrolledBenefitInKind, request.isAgent))
+//          updateBiksFutureAction(controllersReferenceData.yearRange.cyminus1, persistentBiks, additive = true)
+//        }
+//        controllersReferenceData.responseCheckCYEnabled()
+//      }
+//  }
 
   def addNextYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>

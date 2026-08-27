@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.*
 import utils.Exceptions.InvalidURIException
-import views.html.{ErrorPage, PayrollingSummaryPageMpbik, Summary}
+import views.html.{ErrorPage, PayrollingSummaryPageMpbik, PayrollingSummaryPageMpbikPhase2, Summary}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,20 +49,21 @@ class HomePageController @Inject() (
   pbikAppConfig: PbikAppConfig,
   errorPageView: ErrorPage,
   summaryPage: Summary,
-  payrollingSummaryView: PayrollingSummaryPageMpbik
+  payrollingSummaryView: PayrollingSummaryPageMpbik,
+  payrollingSummaryMpbikPhase2View: PayrollingSummaryPageMpbikPhase2
 )(implicit val ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport
     with Logging {
 
-  private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+  private val mpbikToggle: Boolean       = pbikAppConfig.mpbikToggle
+  private val mpbikPhase2Toggle: Boolean = pbikAppConfig.mpbikTogglePhase2
 
   def notAuthorised: Action[AnyContent] = authenticate { implicit request =>
     Unauthorized(
       errorPageView(
         ControllersReferenceDataCodes.AUTHORISATION_ERROR,
-        taxDateUtils.getTaxYearRange(),
-        mpbik = mpbikToggle
+        taxDateUtils.getTaxYearRange()
       )
     )
   }
@@ -99,7 +100,23 @@ class HomePageController @Inject() (
   }
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    if (mpbikToggle) {
+    if (mpbikPhase2Toggle) {
+      val startTaxYear                   = controllersReferenceData.yearRange.cy
+      val pageLoadFuture: Future[Result] = for {
+        _               <- sessionService.resetAll()
+        currentYearList <- bikListService.currentYearList
+        nextYearList    <- bikListService.nextYearList
+        _               <- auditHomePageView()
+      } yield Ok(
+        payrollingSummaryMpbikPhase2View(
+          startTaxYear,
+          currentYearList.getBenefitInKindWithCount,
+          nextYearList.getBenefitInKindWithCount
+        )
+      )
+
+      controllersReferenceData.responseErrorHandler(pageLoadFuture)
+    } else { // current code - DO NOT CHANGE
       val startTaxYear                   = controllersReferenceData.yearRange.cy
       val pageLoadFuture: Future[Result] = for {
         _               <- sessionService.resetAll()
@@ -108,62 +125,7 @@ class HomePageController @Inject() (
       } yield Ok(payrollingSummaryView(startTaxYear, currentYearList.getBenefitInKindWithCount))
 
       controllersReferenceData.responseErrorHandler(pageLoadFuture)
-    } else {
-      Future.successful(Redirect(routes.RedirectController.redirectIfFromStart()))
     }
-  }
-
-  def onPageLoadCY1: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    val taxYearRange: TaxYearRange     = controllersReferenceData.yearRange
-    val pageLoadFuture: Future[Result] =
-      if (mpbikToggle) {
-        Future.failed(new InvalidURIException())
-      } else {
-        for {
-          _               <- sessionService.resetAll()
-          biksListCYP1    <- bikListService.getAllBenefitsForYear(controllersReferenceData.yearRange.cy)
-          nextYearList    <- bikListService.nextYearList
-          currentYearList <- bikListService.currentYearList
-          _               <- auditHomePageView()
-        } yield Ok(
-          summaryPage(
-            selectedYear = "cy1",
-            taxYearRange,
-            List.empty,
-            nextYearList.getBenefitInKindWithCount,
-            0,
-            biksListCYP1.size,
-            currentYearList.getBenefitInKindWithCount.nonEmpty
-          )
-        )
-      }
-    controllersReferenceData.responseErrorHandler(pageLoadFuture)
-  }
-
-  def onPageLoadCY: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    val taxYearRange: TaxYearRange     = taxDateUtils.getTaxYearRange()
-    val pageLoadFuture: Future[Result] =
-      if (mpbikToggle) {
-        Future.failed(new InvalidURIException())
-      } else {
-        for {
-          _               <- sessionService.resetAll()
-          biksListCY      <- bikListService.getAllBenefitsForYear(controllersReferenceData.yearRange.cyminus1)
-          currentYearList <- bikListService.currentYearList
-          _               <- auditHomePageView()
-        } yield Ok(
-          summaryPage(
-            selectedYear = "cy",
-            taxYearRange,
-            currentYearList.getBenefitInKindWithCount,
-            List.empty,
-            biksListCY.size,
-            0,
-            showChangeYearLink = true
-          )
-        )
-      }
-    controllersReferenceData.responseErrorHandler(pageLoadFuture)
   }
 
   private def auditHomePageView()(implicit hc: HeaderCarrier, request: AuthenticatedRequest[?]): Future[AuditResult] =

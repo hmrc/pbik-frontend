@@ -86,8 +86,7 @@ class ControllersReferenceData @Inject() (
             ControllersReferenceDataCodes.CY_RESTRICTED,
             yearRange,
             "",
-            errorCode,
-            mpbik = mpbikToggle
+            errorCode
           )
         )
       )
@@ -102,22 +101,20 @@ class ControllersReferenceData @Inject() (
         NotFound(
           errorPageView(
             ControllersReferenceDataCodes.VALIDATION_ERROR_REFERENCE,
-            yearRange,
-            mpbik = mpbikToggle
+            yearRange
           )
         )
       case e1: InvalidYearURIException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
         BadRequest(
-          errorPageView(ControllersReferenceDataCodes.INVALID_YEAR_REFERENCE, yearRange, mpbik = mpbikToggle)
+          errorPageView(ControllersReferenceDataCodes.INVALID_YEAR_REFERENCE, yearRange)
         )
       case e2: InvalidBikTypeException =>
         logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeException was handled : $e2")
         BadRequest(
           errorPageView(
             ControllersReferenceDataCodes.INVALID_BIK_TYPE_REFERENCE,
-            yearRange,
-            mpbik = mpbikToggle
+            yearRange
           )
         )
 
@@ -144,8 +141,7 @@ class ControllersReferenceData @Inject() (
                 Messages("ServiceMessage." + msgValue),
                 yearRange,
                 "",
-                msgValue.toInt,
-                mpbik = mpbikToggle
+                msgValue.toInt
               )
             )
           }

@@ -153,6 +153,28 @@ PayrollingSummaryMPBIK.p1.agent = Gallwch ddefnyddio’r gwasanaeth hwn i reoli�
 PayrollingSummaryMPBIK.p2.agent = Dyma’r buddiannau rydych wedi’u cofrestru i’w trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen.
 
 #*************************************************************
+# Payrolling Summary Page MPBIK2
+#*************************************************************
+
+PayrollingSummaryMPBIK2.heading = Crynodeb o drethu buddiannau drwy’r gyflogres
+PayrollingSummaryMPBIK2.tab.taxYear = Blwyddyn dreth {0} i {1}
+PayrollingSummaryMPBIK2.tab.heading = Buddiannau sydd wedi eu cofrestru
+PayrollingSummaryMPBIK2.table.header = Buddiant
+PayrollingSummaryMPBIK2.table.exclude.link.text = Eithrio cyflogeion
+PayrollingSummaryMPBIK2.table.manage.link.text = Rheoli cyflogeion
+PayrollingSummaryMPBIK2.you.can = Gallwch
+
+PayrollingSummaryMPBIK2.p1.organisation = You can use this service to register and manage benefits being taxed through payroll.
+PayrollingSummaryMPBIK2.no.benefits.text.organisation = You have no benefits registered to tax through payroll from 6 April {0}.
+PayrollingSummaryMPBIK2.benefits.text.organisation = These are the benefits that you have registered to tax through payroll from 6 April {0}.
+PayrollingSummaryMPBIK2.choose.benefit.link.text.organisation = ddewis buddiant i’w drethu drwy’r gyflogres
+
+PayrollingSummaryMPBIK2.p1.agent = You can use this service to register and manage benefits being taxed through {0}''s payroll.
+PayrollingSummaryMPBIK2.no.benefits.text.agent = Your client has no benefits registered to tax through payroll from 6 April {0}.
+PayrollingSummaryMPBIK2.benefits.text.agent = Dyma’r buddiannau rydych wedi’u cofrestru i’w trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen.
+PayrollingSummaryMPBIK2.choose.benefit.link.text.agent = ddewis buddiant i’w drethu drwy gyflogres eich cleient
+
+#*************************************************************
 # Select Year
 #*************************************************************
 

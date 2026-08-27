@@ -34,15 +34,7 @@
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(year=="cy") cyminus1 else cy}
 @summaryLink = @{
-    if(mpbik){
         routes.HomePageController.onPageLoad
-    } else {
-        if(year=="cy"){
-            routes.HomePageController.onPageLoadCY
-        } else {
-            routes.HomePageController.onPageLoadCY1
-        }
-    }
 }
 @govukLayoutWrapper(PageTitle(messages("whatNext.rescind.heading")),
 showBackLink = true,

@@ -38,8 +38,7 @@ class ErrorPageViewSpec extends PBIKViewSpec {
       taxYearRange = taxYearRange,
       code = code,
       isCurrentTaxYear = isCurrentTaxYear,
-      iabdType = iabdType,
-      mpbik = mpbikToggle
+      iabdType = iabdType
     )
 
   "ServiceMessage view" must {

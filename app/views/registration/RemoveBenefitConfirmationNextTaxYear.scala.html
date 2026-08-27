@@ -34,15 +34,7 @@
 @taxYear = @{if(isCurrentYear) cyminus1 else cy}
 @benefitLabel = @{messages(s"BenefitInKind.label.${iabdType.id}")}
 @summaryLink = @{
-    if(mpbik){
         routes.HomePageController.onPageLoad
-    } else {
-        if(isCurrentYear){
-            routes.HomePageController.onPageLoadCY
-        } else {
-            routes.HomePageController.onPageLoadCY1
-        }
-    }
 }
 @govukLayoutWrapper(PageTitle(messages("whatNext.remove.heading")), showBackLink = true, showYTABackLink = request.showYTABackLink, showECLBackLink = request.showECLBackLink) {
 
