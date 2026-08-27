@@ -927,9 +927,7 @@ class ExclusionListController @Inject() (
   def showRemovalWhatsNext(iabdType: IabdType): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val futureResult =
-        if (mpbikToggle) {
-          Future.failed(new InvalidURIException())
-        } else {
+        if (pbikAppConfig.mpbikTogglePhase2) {
           sessionService.fetchPbikSession().map { session =>
             val individual = session.get.eiLPerson.get
             Ok(
@@ -942,6 +940,8 @@ class ExclusionListController @Inject() (
               )
             )
           }
+        } else {
+          Future.failed(new InvalidURIException())
         }
       controllersReferenceData.responseErrorHandler(futureResult)
   }

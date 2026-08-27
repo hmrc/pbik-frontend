@@ -52,7 +52,7 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
 
   implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(mockRequest)
 
-  private val iabdType: IabdType                             = IabdType.MedicalInsurance
+  private val iabdType: IabdType                             = IabdType.Accommodation
   private val whatNextPageController: WhatNextPageController = injected[WhatNextPageController]
 
   private val cyBenefits   = IabdType.values.toList
@@ -101,7 +101,7 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
           status(result) mustBe OK
           contentAsString(result) must include("Registration complete")
           contentAsString(result) must include(
-            "Benefits and expenses you have registered to tax through your payroll from 6 April"
+            "You have registered the following benefits to tax through your payroll from 6 April"
           )
         }
 
@@ -137,7 +137,7 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
 
         status(result) mustBe OK
         contentAsString(result) must include("Registration complete")
-        contentAsString(result) must include("Private medical treatment or insurance")
+        contentAsString(result) must include("Accommodation")
         contentAsString(result) must include("Services supplied")
       }
     }
@@ -163,14 +163,14 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
           )
         val result = whatNextPageController.showWhatNextRemovedBik(iabdType).apply(authenticatedRequest)
 
-        if (pbikAppConfig.mpbikToggle) {
-          status(result) mustBe NOT_FOUND
-        } else {
+        if (pbikAppConfig.mpbikTogglePhase2) {
           status(result) mustBe OK
           contentAsString(result) must include("Benefit removed")
           contentAsString(result) must include(
-            "You have removed Private medical treatment or insurance from being taxed through payroll from 6 April"
+            "You will not tax Accommodation through your payroll from 6 April"
           )
+        } else {
+          status(result) mustBe NOT_FOUND
         }
       }
     }
