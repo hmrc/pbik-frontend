@@ -34,24 +34,17 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
     RegistrationList(active = List(RegistrationItem(IabdType.MedicalInsurance, active = true, enabled = true)))
 
   def view()(implicit request: AuthenticatedRequest[?]): Html =
-    addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList, mpbik = mpbikToggle)
+    addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList)
 
   "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)
 
     behave like pageWithTitle(messages("whatNext.add.heading"))
     behave like pageWithHeader(messages("whatNext.add.heading"))
-    if (mpbikToggle) {
-      behave like pageWithLink(
-        messages("whatYouCanDoNext.subHeading.p.link." + organisationRequest.userType),
-        "/payrollbik/registered-benefits-expenses"
-      )
-    } else {
-      behave like pageWithLink(
-        messages("whatYouCanDoNext.subHeading.p.link." + organisationRequest.userType),
-        "/payrollbik/cy/registered-benefits-expenses"
-      )
-    }
+    behave like pageWithLink(
+      messages("whatYouCanDoNextMPBIK2.subHeading.p.link." + organisationRequest.userType),
+      "/payrollbik/registered-benefits-expenses"
+    )
   }
 
   "whatNextAddRemove - agent" must {
@@ -59,16 +52,9 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
 
     behave like pageWithTitle(messages("whatNext.add.heading"))
     behave like pageWithHeader(messages("whatNext.add.heading"))
-    if (mpbikToggle) {
-      behave like pageWithLink(
-        messages("whatYouCanDoNext.subHeading.p.link." + agentRequest.userType),
-        "/payrollbik/registered-benefits-expenses"
-      )
-    } else {
-      behave like pageWithLink(
-        messages("whatYouCanDoNext.subHeading.p.link." + agentRequest.userType),
-        "/payrollbik/cy/registered-benefits-expenses"
-      )
-    }
+    behave like pageWithLink(
+      messages("whatYouCanDoNextMPBIK2.subHeading.p.link." + agentRequest.userType),
+      "/payrollbik/registered-benefits-expenses"
+    )
   }
 }

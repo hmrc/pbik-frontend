@@ -294,6 +294,25 @@ RemoveBenefits.confirm.p1.agent = By confirming, you will stop taxing {0} throug
 RemoveBenefits.confirm.p2.agent = Your client must report the value of any benefit or expense for the current tax year by submitting a P11D to HMRC. They should do this at the end of the tax year.
 
 #*************************************************************
+# Remove benefits MPBIK Phase 2
+#*************************************************************
+
+RemoveBenefitsMPBIK2.link = Remove from payroll
+RemoveBenefitsMPBIK2.selected.benefit = Selected benefit
+
+RemoveBenefitsMPBIK2.reason.Title.organisation = Declare the benefit to stop taxing through payroll
+RemoveBenefitsMPBIK2.confirm.p1.organisation = By confirming you are telling HMRC that you will stop taxing the following benefits through your payroll from 6 April {0}:
+RemoveBenefitsMPBIK2.confirm.declaration.organisation = I confirm that:
+RemoveBenefitsMPBIK2.confirm.bullet1.organisation = I will send a P11D for each employee who has received this benefit to report the value to HMRC
+RemoveBenefitsMPBIK2.confirm.bullet2.organisation = I will send any P11Ds at the end of the tax year.
+
+RemoveBenefitsMPBIK2.reason.Title.agent = Declare the benefit to stop taxing through your client''s payroll
+RemoveBenefitsMPBIK2.confirm.p1.agent = By confirming you are telling HMRC that your client will stop taxing the following benefits through their payroll from 6 April {0}:
+RemoveBenefitsMPBIK2.confirm.declaration.agent = I confirm I will tell my client that:
+RemoveBenefitsMPBIK2.confirm.bullet1.agent = they must send a P11D for each employee who has received this benefit to report the value to HMRC
+RemoveBenefitsMPBIK2.confirm.bullet2.agent = they must send any P11Ds at the end of the tax year.
+
+#*************************************************************
 # Exclusion overview
 #*************************************************************
 
@@ -463,6 +482,14 @@ BenefitInKindMPBIK2.label.48 = Payments made on behalf of employee
 BenefitInKindMPBIK2.label.54 = Vouchers and credit cards
 
 BenefitInKindMPBIK2.label.44 = Mileage allowance and passenger payments
+
+BenefitInKindMPBIK2.label.31 = Car and car fuel
+
+BenefitInKindMPBIK2.label.29 = Car fuel
+
+BenefitInKindMPBIK2.label.35 = Vans
+
+BenefitInKindMPBIK2.label.36 = Van fuel
 
 BenefitInKindMPBIK2.label.30 = Private medical treatment or insurance
 
@@ -882,6 +909,41 @@ global.page.not.found.error.check.web.address.full=If you pasted the web address
 global.page.not.found.error.contact=If the web address is correct or you selected a link or button, {0} if you need to speak to someone about the benefits and expenses you manage through your payroll.
 global.page.not.found.error.contact.link.text=contact the employers helpline
 global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries
+
+#*************************************************************
+# What next MPBIK 2
+#*************************************************************
+
+whatNextMPBIK2.add.heading1 = Registration
+whatNextMPBIK2.add.heading2 = complete
+
+whatNextMPBIK2.remove.p1 = You will not tax {0} through your payroll from 6 April {1}.
+whatNextMPBIK2.remove.h2 = What happens next
+
+ServiceMPBIK2.field.selected.benefits = Selected benefits
+ServiceMPBIK2.field.removed.benefit = Removed benefit
+
+whatYouNeedToKnowMPBIK2.subHeading.after.li1 = add the cash equivalent or relevant amount to employees’ pay
+whatYouNeedToKnowMPBIK2.subHeading.after.li2 = tax the benefits through payroll
+whatYouNeedToKnowMPBIK2.subHeading.after.li3 = work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
+whatYouCanDoNextMPBIK2.subHeading.li1 = exclude employees from the benefits you have registered
+whatYouCanDoNextMPBIK2.subHeading.li2 = remove benefits you no longer want to tax through payroll
+
+whatYouNeedToKnowMPBIK2.subHeading.organisation = What you must do now
+whatYouNeedToKnowMPBIK2.subHeading.after.p1.organisation = You do not need to send P11Ds for employee’s who have these benefits taxed through payroll.
+whatNextMPBIK2.add.p.organisation = You have registered the following benefits to tax through your payroll from 6 April {0}:
+whatYouCanDoNextMPBIK2.subHeading.p.link.organisation = return to your payrolling summary
+whatYouNeedToKnowMPBIK2.subHeading.before.p1.organisation = You should write to your employees explaining that:
+whatYouNeedToKnowMPBIK2.subHeading.before.li1.organisation = these benefits will be taxed through payroll from 6 April {0}
+whatYouNeedToKnowMPBIK2.subHeading.before.li2.organisation = their tax codes may change
+
+whatYouNeedToKnowMPBIK2.subHeading.agent = What you must tell your client
+whatYouNeedToKnowMPBIK2.subHeading.after.p1.agent = Your client can stop sending HMRC P11Ds for employees who now have their benefits and expenses taxed through payroll.
+whatNextMPBIK2.add.p.agent = You have registered the following benefits to tax through your client''s payroll from 6 April {0}:
+whatYouCanDoNextMPBIK2.subHeading.p.link.agent = return to your client''s payrolling summary
+whatYouNeedToKnowMPBIK2.subHeading.before.p1.agent = Your client should write to their employees explaining that:
+whatYouNeedToKnowMPBIK2.subHeading.before.li1.agent = these benefits will be taxed through payroll from 6 April {0}
+whatYouNeedToKnowMPBIK2.subHeading.before.li2.agent = their tax codes may change
 
 #********************************************************************
 # timeout text

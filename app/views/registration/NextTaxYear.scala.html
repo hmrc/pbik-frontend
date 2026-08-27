@@ -56,7 +56,7 @@
 
         <p class="govuk-body">@messages("AddBenefits.p", s"${taxYearRange.cy}")</p>
 
-        @formWithCSRF(action = controllers.registration.routes.ManageRegistrationController.checkYourAnswersAddNextTaxYear) {
+        @formWithCSRF(action = controllers.routes.ManageRegistrationController.checkYourAnswersAddNextTaxYear) {
 
             @if(isExhausted) {
                 <div class="govuk-panel govuk-panel--confirmation">

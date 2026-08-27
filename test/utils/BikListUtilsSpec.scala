@@ -27,12 +27,24 @@ class BikListUtilsSpec extends FakePBIKApplication {
 
   val bikListUtils: BikListUtils                            = injected[BikListUtils]
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val iabds: Set[IabdType]                                  = IabdType.values
-    .filter(x => x.id != IabdType.CarFuelBenefit.id)
-  val biks: List[BenefitInKindWithCount]                    = iabds
-    .filter(x => x.id != IabdType.CarFuelBenefit.id)
-    .map(x => BenefitInKindWithCount(x, 1))
-    .toList
+  val iabds: Set[IabdType]                                  = if (pbikAppConfig.mpbikTogglePhase2) {
+    IabdType.values
+      .filter(x => !pbikAppConfig.biksMpbikPhase2Decommissioned.map(_.id).contains(x.id))
+  } else {
+    IabdType.values
+      .filter(x => x.id != IabdType.CarFuelBenefit.id)
+  }
+  val biks: List[BenefitInKindWithCount]                    = if (pbikAppConfig.mpbikTogglePhase2) {
+    iabds
+      .filter(x => !pbikAppConfig.biksMpbikPhase2Decommissioned.map(_.id).contains(x.id))
+      .map(x => BenefitInKindWithCount(x, 1))
+      .toList
+  } else {
+    iabds
+      .filter(x => x.id != IabdType.CarFuelBenefit.id)
+      .map(x => BenefitInKindWithCount(x, 1))
+      .toList
+  }
   val bikIabds: Set[IabdType]                               = biks.map(x => x.iabdType).toSet
   private val alphaSorted                                   =
     if (pbikAppConfig.mpbikTogglePhase2) {
@@ -40,9 +52,6 @@ class BikListUtilsSpec extends FakePBIKApplication {
         Accommodation,
         Assets,
         AssetTransfer,
-        CarBenefit,
-        VanBenefit,
-        VanFuelBenefit,
         Entertaining,
         Expenses,
         IncomeTaxPaidButNotDeductedFromDirectorRemuneration,
@@ -52,7 +61,6 @@ class BikListUtilsSpec extends FakePBIKApplication {
         OtherItems,
         Telephone,
         PaymentsOnEmployeeBehalf,
-        MedicalInsurance,
         QualifyingRelocationExpenses,
         EmployerProvidedServices,
         TravelAndSubsistence,
@@ -82,7 +90,11 @@ class BikListUtilsSpec extends FakePBIKApplication {
         VouchersAndCreditCards
       )
     }
-  private val registeredIabs                                = Set(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, VanBenefit, Mileage)
+  private val registeredIabs                                = if (pbikAppConfig.mpbikTogglePhase2) {
+    Set(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, Mileage)
+  } else {
+    Set(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, VanBenefit, Mileage)
+  }
   private val registered: Set[BenefitInKindWithCount]       =
     registeredIabs.map(x => BenefitInKindWithCount(x, 1))
 

@@ -164,13 +164,13 @@ PayrollingSummaryMPBIK2.table.exclude.link.text = Eithrio cyflogeion
 PayrollingSummaryMPBIK2.table.manage.link.text = Rheoli cyflogeion
 PayrollingSummaryMPBIK2.you.can = Gallwch
 
-PayrollingSummaryMPBIK2.p1.organisation = You can use this service to register and manage benefits being taxed through payroll.
-PayrollingSummaryMPBIK2.no.benefits.text.organisation = You have no benefits registered to tax through payroll from 6 April {0}.
-PayrollingSummaryMPBIK2.benefits.text.organisation = These are the benefits that you have registered to tax through payroll from 6 April {0}.
+PayrollingSummaryMPBIK2.p1.organisation = Gallwch chi ddefnyddio’r gwasanaeth hwn i gofrestru a chadw trefn ar y buddiannau sy’n cael eu trethu drwy’r gyflogres.
+PayrollingSummaryMPBIK2.no.benefits.text.organisation = Nid oes gennych unrhyw fuddiannau wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
+PayrollingSummaryMPBIK2.benefits.text.organisation = Dyma’r buddiannau yr ydych wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
 PayrollingSummaryMPBIK2.choose.benefit.link.text.organisation = ddewis buddiant i’w drethu drwy’r gyflogres
 
-PayrollingSummaryMPBIK2.p1.agent = You can use this service to register and manage benefits being taxed through {0}''s payroll.
-PayrollingSummaryMPBIK2.no.benefits.text.agent = Your client has no benefits registered to tax through payroll from 6 April {0}.
+PayrollingSummaryMPBIK2.p1.agent = Gallwch chi ddefnyddio’r gwasanaeth hwn i gofrestru a chadw trefn ar y buddiannau sy’n cael eu trethu drwy gyflogres {0}.
+PayrollingSummaryMPBIK2.no.benefits.text.agent = Nid oes gan eich cleient unrhyw fuddiannau wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
 PayrollingSummaryMPBIK2.benefits.text.agent = Dyma’r buddiannau rydych wedi’u cofrestru i’w trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen.
 PayrollingSummaryMPBIK2.choose.benefit.link.text.agent = ddewis buddiant i’w drethu drwy gyflogres eich cleient
 
@@ -246,10 +246,10 @@ AddBenefits.Confirm.bullet5.agent = nid oes angen eithrio cyflogeion nad ydynt y
 # Add benefits MPBIK Phase 2
 #*************************************************************
 
-AddBenefitsMPBIK2.p = Select which benefits you want to tax through payroll from 6 April {0}.
-AddBenefitsMPBIK2.p2 = You must payroll all selected benefits.
+AddBenefitsMPBIK2.p = Dewiswch pa fuddiannau yr ydych eisiau eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
+AddBenefitsMPBIK2.p2 = Mae’n rhaid i chi drethu’r holl fuddiannau a ddewiswyd drwy’r gyflogres.
 
-AddBenefitsMPBIK2.Heading.organisation = Choose which benefits to tax through payroll
+AddBenefitsMPBIK2.Heading.organisation = Dewiswch pa fuddiannau i’w trethu drwy’r gyflogres
 
 AddBenefitsMPBIK2.Heading.agent = Dewiswch pa fuddiannau i’w trethu drwy gyflogres eich cleient
 
@@ -292,6 +292,25 @@ RemoveBenefits.confirm.p2.organisation = Mae’n rhaid i chi roi gwybod am werth
 
 RemoveBenefits.confirm.p1.agent = Drwy gadarnhau, byddwch yn rhoi’r gorau i drethu {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 RemoveBenefits.confirm.p2.agent = Mae’n rhaid i’ch cleient rhoi gwybod am werth unrhyw fuddiant neu draul ar gyfer y flwyddyn dreth gyfredol drwy gyflwyno P11D i CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
+
+#*************************************************************
+# Remove benefits MPBIK Phase 2
+#*************************************************************
+
+RemoveBenefitsMPBIK2.link = Tynnu oddi ar y gyflogres
+RemoveBenefitsMPBIK2.selected.benefit = Y buddiant a ddewiswyd
+
+RemoveBenefitsMPBIK2.reason.Title.organisation = Datgan y buddiant i roi’r gorau i’w drethu drwy’r gyflogres
+RemoveBenefitsMPBIK2.confirm.p1.organisation = Drwy gadarnhau, rydych yn rhoi gwybod i CThEF eich bod am roi’r gorau i drethu’r canlynol drwy’ch cyflogres o 6 Ebrill {0} ymlaen:
+RemoveBenefitsMPBIK2.confirm.declaration.organisation = Rwy’n cadarnhau’r canlynol:
+RemoveBenefitsMPBIK2.confirm.bullet1.organisation = Byddaf yn anfon P11D ar gyfer pob cyflogai sydd wedi cael y buddiant hwn er mwyn rhoi gwybod am y gwerth i CThEF
+RemoveBenefitsMPBIK2.confirm.bullet2.organisation = Byddaf yn anfon unrhyw P11D ar ddiwedd y flwyddyn dreth.
+
+RemoveBenefitsMPBIK2.reason.Title.agent = Datgan y buddiant rydych am roi’r gorau i’w drethu drwy gyflogres eich cleient
+RemoveBenefitsMPBIK2.confirm.p1.agent = Drwy gadarnhau hyn, rydych yn dweud wrth CThEF y bydd eich cleient yn rhoi’r gorau i drethu’r buddiannau canlynol drwy ei gyflogres o 6 Ebrill {0}:
+RemoveBenefitsMPBIK2.confirm.declaration.agent = Rwy’n cadarnhau y byddaf yn dweud y canlynol wrth fy nghleient:
+RemoveBenefitsMPBIK2.confirm.bullet1.agent = bod yn rhaid iddo anfon P11D ar gyfer pob cyflogai sydd wedi cael y buddiant hwn i adrodd am y gwerth wrth CThEF
+RemoveBenefitsMPBIK2.confirm.bullet2.agent = bod yn rhaid iddo anfon unrhyw P11D ar ddiwedd y flwyddyn dreth
 
 #*************************************************************
 # Exclusion Overview
@@ -463,6 +482,14 @@ BenefitInKindMPBIK2.label.48 = Taliadau a wnaed ar ran cyflogai
 BenefitInKindMPBIK2.label.54 = Talebau a chardiau credyd
 
 BenefitInKindMPBIK2.label.44 = Lwfans milltiroedd a thaliadau teithwyr
+
+BenefitInKindMPBIK2.label.31 = Ceir a thanwydd ceir
+
+BenefitInKindMPBIK2.label.29 = Tanwydd ceir
+
+BenefitInKindMPBIK2.label.35 = Faniau
+
+BenefitInKindMPBIK2.label.36 = Tanwydd faniau
 
 BenefitInKindMPBIK2.label.30 = Triniaeth neu yswiriant meddygol preifat
 
@@ -880,6 +907,42 @@ global.page.not.found.error.check.web.address.full=Os gwnaethoch ludo’r cyfeir
 global.page.not.found.error.contact=Os yw’r cyfeiriad gwe yn gywir neu os ydych wedi dewis cysylltiad neu fotwm, {0} os oes angen i chi siarad â rhywun am y buddiannau a’r treuliau rydych yn eu rheoli drwy’ch cyflogres.
 global.page.not.found.error.contact.link.text=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEF
 global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines
+
+#*************************************************************
+# What next MPBIK 2
+#*************************************************************
+
+whatNextMPBIK2.add.heading1 = Cofrestriad wedi’i
+whatNextMPBIK2.add.heading2 = gwblhau
+
+whatNextMPBIK2.remove.p1 = O 6 Ebrill  {1} ymlaen, ni fyddwch yn trethu’r buddiant canlynol drwy’r gyflogres: {0}.
+whatNextMPBIK2.remove.h2 = Yr hyn sy’n digwydd nesaf
+
+ServiceMPBIK2.field.selected.benefits = Buddiannau a ddewiswyd
+ServiceMPBIK2.field.removed.benefit = Buddiant wedi’i dynnu
+
+ServiceMPBIK2.field.selected.benefits = Buddiannau a ddewiswyd
+whatYouNeedToKnowMPBIK2.subHeading.after.li1 = adio’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog y cyflogeion
+whatYouNeedToKnowMPBIK2.subHeading.after.li2 = trethu’r buddiannau drwy’r gyflogres
+whatYouNeedToKnowMPBIK2.subHeading.after.li3 = cyfrifo’r cyfraniadau Yswiriant Gwladol Dosbarth 1A ar gyfer y buddiannau a ddewiswyd a’u talu drwy’r gyflogres
+whatYouCanDoNextMPBIK2.subHeading.li1 = eithrio cyflogeion rhag y buddiannau rydych wedi’u cofrestru
+whatYouCanDoNextMPBIK2.subHeading.li2 = tynnu buddiannau nad ydych eisiau eu trethu drwy’r gyflogres mwyach
+
+whatYouNeedToKnowMPBIK2.subHeading.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
+whatYouNeedToKnowMPBIK2.subHeading.after.p1.organisation = Nid oes angen i chi anfon ffurflenni P11D ar gyfer cyflogeion os ydynt yn cael y buddiannau hyn wedi’u trethu drwy’r gyflogres.
+whatNextMPBIK2.add.p.organisation = Rydych wedi cofrestru’r buddiannau canlynol i’w trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen:
+whatYouCanDoNextMPBIK2.subHeading.p.link.organisation = fynd yn ôl i’ch crynodeb o dalu buddiannau drwy’r gyflogres
+whatYouNeedToKnowMPBIK2.subHeading.before.p1.organisation = Dylech ysgrifennu at eich cyflogeion gan egluro’r canlynol:
+whatYouNeedToKnowMPBIK2.subHeading.before.li1.organisation = bydd y buddiannau hyn yn cael eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
+whatYouNeedToKnowMPBIK2.subHeading.before.li2.organisation = mae’n bosibl y gall eu codau treth newid
+
+whatYouNeedToKnowMPBIK2.subHeading.agent = Yr hyn y mae’n rhaid i’ch cleient gael gwybod gennych
+whatYouNeedToKnowMPBIK2.subHeading.after.p1.agent = Gall eich cleient roi’r gorau i anfon P11D at CThEF ar gyfer gweithwyr sy’n cael trethu eu buddion a’u treuliau drwy’r gyflogres bellach.
+whatNextMPBIK2.add.p.agent = Rydych wedi cofrestru’r buddiannau canlynol i’w trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen:
+whatYouCanDoNextMPBIK2.subHeading.p.link.agent = fynd yn ôl i grynodeb o dalu buddiannau drwy’r gyflogres eich cleient
+whatYouNeedToKnowMPBIK2.subHeading.before.p1.agent = Dylai eich cleient ysgrifennu at eu cyflogeion i egluro’r canlynol:
+whatYouNeedToKnowMPBIK2.subHeading.before.li1.agent = bydd y buddiannau hyn yn cael eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen
+whatYouNeedToKnowMPBIK2.subHeading.before.li2.agent = mae’n bosibl y gall eu codau treth newid
 
 #********************************************************************
 # timeout text
