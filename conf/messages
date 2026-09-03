@@ -224,12 +224,23 @@ AddBenefits.selectAll = Select all that apply
 
 AddBenefits.noselection.error = You need to select at least 1 benefit or expense before you can continue
 
-AddBenefits.Confirm.Multiple.Title = Declare the benefits and expenses you want to register
-AddBenefits.Confirm.Multiple.Heading = Declare the benefits and expenses you want to register
-AddBenefits.Confirm.Multiple.p.organisation = By confirming you are telling HMRC that the following benefits and expenses will be taxed through your payroll from 6 April {0}:
-AddBenefits.Confirm.Multiple.p.agent = By confirming you are telling HMRC that the following benefits and expenses will be taxed through your client''s payroll from 6 April {0}:
-AddBenefits.Confirm.Multiple.key = Selected benefits and expenses
-AddBenefits.Confirm.help.desc = You can exclude employees from payrolling once you’re registered, but you’ll need to send a P11D to declare the non-payrolled benefits. If an employee did not receive the benefit, there is no need to exclude them as there is no tax due.
+AddBenefits.Confirm.Multiple.Title = Declare the benefits you want to register
+AddBenefits.Confirm.Multiple.key = Selected benefits
+AddBenefits.Confirm.understand.statement = I understand that:
+
+AddBenefits.Confirm.statement.organisation = I confirm that:
+AddBenefits.Confirm.bullet1.organisation = I will tax the selected benefits through payroll from 6 April {0}
+AddBenefits.Confirm.bullet2.organisation = I will work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
+AddBenefits.Confirm.bullet3.organisation = I will inform employees that their tax codes may change
+AddBenefits.Confirm.bullet4.organisation = I can exclude employees from payrolling when I’ve registered the selected benefits
+AddBenefits.Confirm.bullet5.organisation = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
+
+AddBenefits.Confirm.statement.agent = I confirm I will tell my client that:
+AddBenefits.Confirm.bullet1.agent = they must tax the selected benefits through payroll from 6 April {0}
+AddBenefits.Confirm.bullet2.agent = they must work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
+AddBenefits.Confirm.bullet3.agent = they must inform employees that their tax codes may change
+AddBenefits.Confirm.bullet4.agent = employees can be excluded from payrolling when selected benefits are registered
+AddBenefits.Confirm.bullet5.agent = employees who do not receive the benefit do not need to be excluded because there is no extra tax or Class 1A National Insurance contributions due
 
 #*************************************************************
 # Add benefits MPBIK Phase 2

@@ -121,9 +121,7 @@ class ManageRegistrationController @Inject() (
   def showCheckYourAnswersAddNextTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture =
-        if (mpbikToggle) {
-          Future.failed(new InvalidURIException())
-        } else {
+        if (mpbikPhase2Toggle) {
           sessionService.fetchPbikSession().flatMap { session =>
             val activeReg        = session.flatMap(_.getActiveRegistrationItems).getOrElse(List.empty[RegistrationItem])
             val registrationList = RegistrationList(None, activeReg, None)
@@ -133,6 +131,8 @@ class ManageRegistrationController @Inject() (
               )
             )
           }
+        } else {
+          Future.failed(new InvalidURIException())
         }
       controllersReferenceData.responseErrorHandler(resultFuture)
   }
