@@ -53,7 +53,7 @@ class ManageRegistrationController @Inject() (
   controllersReferenceData: ControllersReferenceData,
   splunkLogger: SplunkLogger,
   pbikAppConfig: PbikAppConfig,
-  nextTaxYearView: NextTaxYear,
+  nextTaxYearBenefitMPBIK2View: NextTaxYearBenefitMPBIK2,
   confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear,
   removeBenefitNextTaxYearView: RemoveBenefitNextTaxYear,
   removeBenefitOtherReason: RemoveBenefitOtherReason,
@@ -74,7 +74,7 @@ class ManageRegistrationController @Inject() (
           registrationService.generateViewForBikRegistrationSelection(
             controllersReferenceData.yearRange.cy,
             generateViewBasedOnFormItems =
-              nextTaxYearView(_, additive = true, controllersReferenceData.yearRange, _, _, _)
+              nextTaxYearBenefitMPBIK2View(_, additive = true, controllersReferenceData.yearRange, _, _, _)
           )
         } else {
           Future.failed(new InvalidURIException())
@@ -85,7 +85,7 @@ class ManageRegistrationController @Inject() (
   def checkYourAnswersAddNextTaxYear: Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val resultFuture =
-        if (mpbikToggle) {
+        if (!mpbikPhase2Toggle) {
           Future.failed(new InvalidURIException())
         } else {
           for {
@@ -95,12 +95,13 @@ class ManageRegistrationController @Inject() (
                           formWithErrors =>
                             Future.successful(
                               BadRequest(
-                                nextTaxYearView(
+                                nextTaxYearBenefitMPBIK2View(
                                   form = formWithErrors,
                                   additive = true,
                                   taxYearRange = controllersReferenceData.yearRange,
                                   nonLegislationBiks = pbikAppConfig.biksNotSupported.map(_.id),
-                                  decommissionedBiks = pbikAppConfig.biksDecommissioned.map(_.id),
+                                  decommissionedBiks = pbikAppConfig.biksDecommissioned
+                                    .map(_.id) ++ pbikAppConfig.biksMpbikPhase2Decommissioned.map(_.id),
                                   isExhausted = false
                                 )
                               )

@@ -232,6 +232,21 @@ AddBenefits.Confirm.Multiple.key = Selected benefits and expenses
 AddBenefits.Confirm.help.desc = You can exclude employees from payrolling once you’re registered, but you’ll need to send a P11D to declare the non-payrolled benefits. If an employee did not receive the benefit, there is no need to exclude them as there is no tax due.
 
 #*************************************************************
+# Add benefits MPBIK Phase 2
+#*************************************************************
+
+AddBenefitsMPBIK2.p = Select which benefits you want to tax through payroll from 6 April {0}.
+AddBenefitsMPBIK2.p2 = You must payroll all selected benefits.
+
+AddBenefitsMPBIK2.Heading.organisation = Choose which benefits to tax through payroll
+
+AddBenefitsMPBIK2.Heading.agent = Choose which benefits to tax through your client''s payroll
+
+AddBenefitsMPBIK2.selectAll = Select all that apply
+
+AddBenefitsMPBIK2.noselection.error = You must select at least one benefit
+
+#*************************************************************
 # Remove benefits
 #*************************************************************
 
@@ -421,6 +436,44 @@ BenefitInKind.label.43 = General expenses allowance for business travel
 BenefitInKind.label.32 = Payments for use of home telephone
 
 BenefitInKind.label.45 = Non-qualifying relocation expenses
+
+#*************************************************************
+# Benefits messages MPBIK Phase 2
+#*************************************************************
+
+BenefitInKindMPBIK2.label.38 = Accommodation
+
+BenefitInKindMPBIK2.label.37 = Loans
+
+BenefitInKindMPBIK2.label.40 = Assets transferred (cars, property, goods or other assets)
+
+BenefitInKindMPBIK2.label.48 = Payments made on behalf of employee
+
+BenefitInKindMPBIK2.label.54 = Vouchers and credit cards
+
+BenefitInKindMPBIK2.label.44 = Mileage allowance and passenger payments
+
+BenefitInKindMPBIK2.label.30 = Private medical treatment or insurance
+
+BenefitInKindMPBIK2.label.50 = Qualifying relocation expenses, payments and benefits
+
+BenefitInKindMPBIK2.label.8 = Services supplied
+
+BenefitInKindMPBIK2.label.39 = Assets placed at the employee’s disposal
+
+BenefitInKindMPBIK2.label.47 = Other items including subscriptions and professional fees
+
+BenefitInKindMPBIK2.label.52 = Income Tax paid but not deducted from director’s remuneration
+
+BenefitInKindMPBIK2.label.53 = Travelling and subsistence payments
+
+BenefitInKindMPBIK2.label.42 = Entertainment
+
+BenefitInKindMPBIK2.label.43 = General expenses allowance for business travel
+
+BenefitInKindMPBIK2.label.32 = Payments for use of home telephone
+
+BenefitInKindMPBIK2.label.45 = Non-qualifying relocation expenses
 
 #*************************************************************
 # Service messages
