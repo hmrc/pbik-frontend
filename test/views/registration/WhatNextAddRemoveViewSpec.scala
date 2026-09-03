@@ -34,7 +34,7 @@ class WhatNextAddRemoveViewSpec extends PBIKViewSpec {
     RegistrationList(active = List(RegistrationItem(IabdType.MedicalInsurance, active = true, enabled = true)))
 
   def view()(implicit request: AuthenticatedRequest[?]): Html =
-    addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList, mpbik = mpbikToggle)
+    addBenefitConfirmationNextTaxYearView(isCurrentYear = true, taxYearRange, regList)
 
   "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)

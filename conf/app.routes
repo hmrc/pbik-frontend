@@ -64,10 +64,6 @@ GET         /:year/:iabdType/check-employee-details              controllers.Exc
 GET         /:iabdType/employee-registration-complete            controllers.ExclusionListController.showRemovalWhatsNext(iabdType: models.v1.IabdType.IabdType)
 POST        /:iabdType/employee-registration-complete            controllers.ExclusionListController.removeExclusionsCommit(iabdType: models.v1.IabdType.IabdType)
 
-## Remove registrations other
-GET         /cy1/:iabdType/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.showRemoveBenefitOtherReason(iabdType: models.v1.IabdType.IabdType)
-POST        /cy1/:iabdType/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdType: models.v1.IabdType.IabdType)
-
 GET         /keep-alive                                          controllers.SignedOutController.keepAlive()
 GET         /we-signed-you-out                                   controllers.SignedOutController.signedOut()
 GET         /individual-signed-out                               controllers.SignedOutController.individualSignedOut()

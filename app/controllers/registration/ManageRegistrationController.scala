@@ -55,8 +55,7 @@ class ManageRegistrationController @Inject() (
   pbikAppConfig: PbikAppConfig,
   nextTaxYearBenefitMPBIK2View: NextTaxYearBenefitMPBIK2,
   confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear,
-  removeBenefitNextTaxYearView: RemoveBenefitNextTaxYear,
-  removeBenefitOtherReason: RemoveBenefitOtherReason,
+  removeBenefitNextTaxYearView: RemoveBenefitNextTaxYear, // todo remove and remove reason form mapping
   confirmRemoveNextTaxYear: ConfirmRemoveNextTaxYear
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
@@ -142,6 +141,8 @@ class ManageRegistrationController @Inject() (
       controllersReferenceData.responseErrorHandler(
         if (mpbikToggle) {
           Future.failed(new InvalidURIException())
+        } else if (mpbikPhase2Toggle) {
+          Future.failed(new InvalidURIException())
         } else {
           showCheckYourAnswersRemoveNextTaxYear(iabdType, formMappings.removalReasonForm)
         }
@@ -167,10 +168,13 @@ class ManageRegistrationController @Inject() (
 
   def showConfirmRemoveNextTaxYear(iabdType: IabdType): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
-      val response = if (mpbikToggle) {
-        Future.failed(new InvalidURIException())
-      } else {
+      val response = if (mpbikPhase2Toggle) {
+        val bikToRemove = RegistrationItem(iabdType, active = true, enabled = true)
+        sessionService.storeBikRemoved(RegistrationItem(iabdType, active = false, enabled = true))
+
         Future.successful(Ok(confirmRemoveNextTaxYear(iabdType, controllersReferenceData.yearRange)))
+      } else {
+        Future.failed(new InvalidURIException())
       }
       controllersReferenceData.responseErrorHandler(response)
     }
@@ -178,16 +182,14 @@ class ManageRegistrationController @Inject() (
   def submitConfirmRemoveNextTaxYear(iabdType: IabdType): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       val registeredFuture =
-        if (mpbikToggle) {
-          Future.failed(new InvalidURIException())
-        } else {
+        if (mpbikPhase2Toggle) {
           sessionService.fetchPbikSession().flatMap { session =>
             val registeredResponseOption = session.get.nyRegisteredBiks
             val reason                   = session.flatMap(_.registrations.filter(_.reason.isDefined)).flatMap(_.reason)
             val bikToRemove              = registeredResponseOption.flatMap(_.getBenefitInKindWithCount.find(_.iabdType == iabdType))
 
             removeBenefitReasonValidation(
-              reason,
+              reasonOption = Option(BinaryRadioButtonWithDesc("other", None)),
               controllersReferenceData.yearRange.cy,
               registeredResponseOption.map(_.currentEmployerOptimisticLock).getOrElse(0),
               bikToRemove.get,
@@ -195,6 +197,8 @@ class ManageRegistrationController @Inject() (
             )
               .map(_ => Redirect(controllers.routes.WhatNextPageController.showWhatNextRemovedBik(iabdType)))
           }
+        } else {
+          Future.failed(new InvalidURIException())
         }
 
       controllersReferenceData.responseErrorHandler(registeredFuture)
@@ -203,64 +207,16 @@ class ManageRegistrationController @Inject() (
   def removeNextYearRegisteredBenefitTypes(iabdType: IabdType): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       val registeredFuture =
-        if (mpbikToggle) {
-          Future.failed(new InvalidURIException())
-        } else {
+        if (mpbikPhase2Toggle) {
           sessionService.fetchPbikSession().flatMap { session =>
             val bikId       = session.flatMap(_.bikRemoved.map(_.iabdType)).get
             val bikToRemove = BenefitInKindRequest(bikId, PbikAction.RemovePayrolledBenefitInKind, request.isAgent)
             updateBiksFutureAction(controllersReferenceData.yearRange.cy, List(bikToRemove), additive = false)
           }
+        } else {
+          Future.failed(new InvalidURIException())
         }
       controllersReferenceData.responseErrorHandler(registeredFuture)
-    }
-
-  def showRemoveBenefitOtherReason(iabdType: IabdType): Action[AnyContent] =
-    (authenticate andThen noSessionCheck).async { implicit request =>
-      val result =
-        if (mpbikToggle) {
-          Future.failed(new InvalidURIException())
-        } else {
-          Future.successful(
-            Ok(removeBenefitOtherReason(formMappings.removalOtherReasonForm, iabdType))
-          )
-        }
-      controllersReferenceData.responseErrorHandler(result)
-    }
-
-  def submitRemoveBenefitOtherReason(iabdType: IabdType): Action[AnyContent] =
-    (authenticate andThen noSessionCheck).async { implicit request =>
-      formMappings.removalOtherReasonForm
-        .bindFromRequest()
-        .fold(
-          formWithErrors => {
-            logger.warn("[ManageRegistrationController][submitRemoveBenefitOtherReason] No removal reason entered")
-            Future.successful(BadRequest(removeBenefitOtherReason(formWithErrors, iabdType)))
-          },
-          otherReason => {
-            val registeredFuture =
-              if (mpbikToggle) {
-                Future.failed(new InvalidURIException())
-              } else {
-                sessionService.fetchPbikSession().flatMap { session =>
-                  val activeReg      = session.flatMap(_.getActiveRegistrationItems).getOrElse(List.empty[RegistrationItem])
-                  val listWithReason =
-                    RegistrationList(
-                      None,
-                      activeReg,
-                      reason =
-                        Some(BinaryRadioButtonWithDesc(ControllersReferenceDataCodes.OTHER, Some(otherReason.reason)))
-                    )
-                  sessionService.storeRegistrationList(listWithReason).map { _ =>
-                    Redirect(
-                      routes.ManageRegistrationController.showConfirmRemoveNextTaxYear(iabdType)
-                    )
-                  }
-                }
-              }
-            controllersReferenceData.responseErrorHandler(registeredFuture)
-          }
-        )
     }
 
 //  def updateCurrentYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
@@ -283,9 +239,7 @@ class ManageRegistrationController @Inject() (
   def addNextYearRegisteredBenefitTypes(): Action[AnyContent] = (authenticate andThen noSessionCheck).async {
     implicit request =>
       val actionFuture =
-        if (mpbikToggle) {
-          Future.failed(new InvalidURIException())
-        } else {
+        if (mpbikPhase2Toggle) {
           sessionService.fetchPbikSession().flatMap { session =>
             val activeReg = session.flatMap(_.getActiveRegistrationItems).getOrElse(List.empty[RegistrationItem])
 
@@ -296,6 +250,8 @@ class ManageRegistrationController @Inject() (
               )
             updateBiksFutureAction(controllersReferenceData.yearRange.cy, persistentBiks, additive = true)
           }
+        } else {
+          Future.failed(new InvalidURIException())
         }
       controllersReferenceData.responseErrorHandler(actionFuture)
   }
@@ -304,9 +260,7 @@ class ManageRegistrationController @Inject() (
     request: AuthenticatedRequest[AnyContent]
   ): Future[Result] = {
     val actionFuture =
-      if (mpbikToggle) {
-        Future.failed(new InvalidURIException())
-      } else {
+      if (mpbikPhase2Toggle) {
         bikListService
           .getRegisteredBenefitsForYear(year)
           .flatMap { registeredResponse =>
@@ -341,15 +295,7 @@ class ManageRegistrationController @Inject() (
                     },
                     values =>
                       values.selectionValue match {
-                        case ControllersReferenceDataCodes.OTHER =>
-                          Future.successful(
-                            Redirect(
-                              routes.ManageRegistrationController.showRemoveBenefitOtherReason(
-                                changes.head.iabdType
-                              )
-                            )
-                          )
-                        case _                                   =>
+                        case _ =>
                           val activeReg =
                             session.flatMap(_.getActiveRegistrationItems).getOrElse(List.empty[RegistrationItem])
 
@@ -369,6 +315,8 @@ class ManageRegistrationController @Inject() (
               }
             }
           }
+      } else {
+        Future.failed(new InvalidURIException())
       }
     controllersReferenceData.responseErrorHandler(actionFuture)
   }

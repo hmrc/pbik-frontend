@@ -24,8 +24,7 @@
 @(
         isCurrentYear: Boolean,
         taxYearRange:TaxYearRange,
-        bikList: RegistrationList,
-        mpbik: Boolean
+        bikList: RegistrationList
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @cyminus1 = @{""+taxYearRange.cyminus1}
@@ -41,19 +40,17 @@
 
 @govukLayoutWrapper(PageTitle(messages("whatNext.add.heading")), showBackLink = true, showYTABackLink = request.showYTABackLink, showECLBackLink = request.showECLBackLink, additionalCSS = Some(additionalPrintCSS)) {
 
-    <div id="confirmation" class="govuk-panel govuk-panel--confirmation govuk-!-padding-top-9 govuk-!-padding-bottom-9">
+    <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
         <h1 id="title" class="govuk-panel__title">
-            @messages("whatNext.add.heading")
+            @messages("whatNextMPBIK2.add.heading1")
+            <br>
+            @messages("whatNextMPBIK2.add.heading2")
         </h1>
     </div>
 
     @printLink(messages("Service.print.link"))
 
-    @if(request.isAgent) {
-        <p class="govuk-body">@messages("whatNext.add.p.agent", request.clientName.get, taxYear)</p>
-    } else {
-        <p class="govuk-body">@messages("whatNext.add.p.organisation", taxYear)</p>
-    }
+    <p class="govuk-body">@messages("whatNextMPBIK2.add.p." + request.userType, taxYear)</p>
 
     <h2 class="govuk-heading-m">
         @messages("whatNext.add.list.heading")
@@ -80,72 +77,61 @@
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                @messages("Service.field.selected.benefits")
+                @messages("ServiceMPBIK2.field.selected.benefits")
             </dt>
             <dd class="govuk-summary-list__value">
                 @for(item <- bikList.active.indices) {
-                    <p class="govuk-body">@messages("BenefitInKind.label." + bikList.active(item).iabdType.id)</p>
+                    <p class="govuk-body">@messages("BenefitInKindMPBIK2.label." + bikList.active(item).iabdType.id)</p>
                 }
             </dd>
         </div>
     </dl>
 
-    <h2 class="govuk-heading-l">
-        @messages("whatYouNeedToKnow.subHeading." + request.userType)
+    <h2 class="govuk-heading-m">
+        @messages("whatYouNeedToKnowMPBIK2.subHeading." + request.userType)
     </h2>
 
     <div class="govuk-form-group" id="next-steps">
-        @if(request.isAgent) {
-            <h3 class="govuk-heading-m">
-                @messages("whatYouNeedToKnow.subHeading.before.h3." + request.userType, taxYear)
-            </h3>
-        }
+        <h3 class="govuk-heading-s">
+            @messages("whatYouNeedToKnow.subHeading.before.h3." + request.userType, taxYear)
+        </h3>
 
-        <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.before.p1." + request.userType)</p>
+        <p class="govuk-body">@messages("whatYouNeedToKnowMPBIK2.subHeading.before.p1." + request.userType)</p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("whatYouNeedToKnow.subHeading.before.li1." + request.userType, taxYear)</li>
-            <li>@messages("whatYouNeedToKnow.subHeading.before.li2." + request.userType)</li>
-            <li>@messages("whatYouNeedToKnow.subHeading.before.li3." + request.userType)</li>
+            <li>@messages("whatYouNeedToKnowMPBIK2.subHeading.before.li1." + request.userType, taxYear)</li>
+            <li>@messages("whatYouNeedToKnowMPBIK2.subHeading.before.li2." + request.userType)</li>
         </ul>
 
-        <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.before.p2." + request.userType)</p>
-
-        <h3 class="govuk-heading-m">
+        <h3 class="govuk-heading-s">
             @messages("whatYouNeedToKnow.subHeading.after.h3." + request.userType, taxYear)
         </h3>
 
-        <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.after.p1." + request.userType)</p>
         <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.after.p2." + request.userType)</p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("whatYouNeedToKnow.subHeading.after.li1." + request.userType)</li>
-            <li>@messages("whatYouNeedToKnow.subHeading.after.li2." + request.userType)</li>
+            <li>@messages("whatYouNeedToKnowMPBIK2.subHeading.after.li1")</li>
+            <li>@messages("whatYouNeedToKnowMPBIK2.subHeading.after.li2")</li>
+            <li>@messages("whatYouNeedToKnowMPBIK2.subHeading.after.li3")</li>
         </ul>
 
-        <p class="govuk-body">
-            @messages("whatYouNeedToKnow.subHeading.after.p3.text." + request.userType)
-            <a class="govuk-link" target="_blank" rel="noopener noreferrer" href = "https://www.gov.uk/employer-reporting-expenses-benefits/reporting-and-paying">
-                @messages("whatYouNeedToKnow.subHeading.after.p3.link." + request.userType)
-            </a>.
-        </p>
+        <p class="govuk-body">@messages("whatYouNeedToKnowMPBIK2.subHeading.after.p1." + request.userType)</p>
 
     </div>
 
-    <h2 class="govuk-heading-l">
+    <h2 class="govuk-heading-m">
         @messages("whatYouCanDoNext.subHeading.h2")
     </h2>
 
     <p class="govuk-body">
         @messages("whatYouCanDoNext.subHeading.p.text.before")
         <a class="govuk-link" id="link-back" href = "@summaryLink">
-            @messages("whatYouCanDoNext.subHeading.p.link." + request.userType)
+            @messages("whatYouCanDoNextMPBIK2.subHeading.p.link." + request.userType)
         </a>
         @messages("whatYouCanDoNext.subHeading.p.text.after")
     </p>
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("whatYouCanDoNext.subHeading.li1")</li>
-        <li>@messages("whatYouCanDoNext.subHeading.li2")</li>
-        <li>@messages("whatYouCanDoNext.subHeading.li3")</li>
+        <li>@messages("whatYouCanDoNextMPBIK2.subHeading.li1")</li>
+        <li>@messages("whatYouCanDoNextMPBIK2.subHeading.li2")</li>
     </ul>
 
 }

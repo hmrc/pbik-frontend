@@ -25,14 +25,13 @@
         isCurrentYear: Boolean,
         taxYearRange:TaxYearRange,
         bikList: RegistrationList,
-        iabdType: IabdType,
-        mpbik: Boolean
+        iabdType: IabdType
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(isCurrentYear) cyminus1 else cy}
-@benefitLabel = @{messages(s"BenefitInKind.label.${iabdType.id}")}
+@benefitLabel = @{messages(s"BenefitInKindMPBIK2.label.${iabdType.id}")}
 @summaryLink = @{
         routes.HomePageController.onPageLoad
 }
@@ -46,7 +45,7 @@
 
     @printLink(messages("Service.print.link"))
 
-    <p class="govuk-body">@messages("whatNext.remove.p1", benefitLabel, taxYear)</p>
+    <p class="govuk-body">@messages("whatNextMPBIK2.remove.p1", benefitLabel, taxYear)</p>
 
     <h2 class="govuk-heading-m">
         @messages("whatNext.remove.table.heading")
@@ -73,7 +72,7 @@
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                @messages("Service.field.removed.benefit")
+                @messages("ServiceMPBIK2.field.removed.benefit")
             </dt>
             <dd class="govuk-summary-list__value">
                 @for(item <- bikList.active.indices) {
@@ -83,8 +82,8 @@
         </div>
     </dl>
 
-    <h2 class="govuk-heading-l">
-        @messages("whatNext.remove.h2." + request.userType)
+    <h2 class="govuk-heading-m">
+        @messages("whatNextMPBIK2.remove.h2")
     </h2>
 
     <div class="govuk-form-group" id="next-steps">
@@ -97,22 +96,21 @@
 
     </div>
 
-    <h2 class="govuk-heading-l">
+    <h2 class="govuk-heading-m">
         @messages("whatYouCanDoNext.subHeading.h2")
     </h2>
 
     <p class="govuk-body">
         @messages("whatYouCanDoNext.subHeading.p.text.before")
         <a class="govuk-link" id="link-back" href = "@summaryLink">
-            @messages("whatYouCanDoNext.subHeading.p.link." + request.userType)
+            @messages("whatYouCanDoNextMPBIK2.subHeading.p.link." + request.userType)
         </a>
         @messages("whatYouCanDoNext.subHeading.p.text.after")
     </p>
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("whatYouCanDoNext.subHeading.li1")</li>
-        <li>@messages("whatYouCanDoNext.subHeading.li2")</li>
-        <li>@messages("whatYouCanDoNext.subHeading.li3")</li>
+        <li>@messages("whatYouCanDoNextMPBIK2.subHeading.li1")</li>
+        <li>@messages("whatYouCanDoNextMPBIK2.subHeading.li2")</li>
     </ul>
 
     }

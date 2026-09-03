@@ -430,7 +430,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         )
 
       val form            = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+      val mockRequestForm = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
 
       val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
 
@@ -471,7 +471,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         )
 
       val form            = formMappings.objSelectedForm.fill(mockRegistrationList)
-      val mockRequestForm = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq: _*)
+      val mockRequestForm = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
 
       val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
 
@@ -543,110 +543,6 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         result.header.status mustBe NOT_FOUND
       } else {
         result.header.status mustBe INTERNAL_SERVER_ERROR
-      }
-    }
-
-    "loading the why-remove-benefit-expense, an unauthorised user" should {
-      "be directed to the login page" in {
-        val result = registrationController.showRemoveBenefitOtherReason(iabdType)(noSessionIdRequest)
-
-        status(result) mustBe UNAUTHORIZED
-        contentAsString(result) must include(
-          "Request was not authenticated user should be redirected"
-        )
-      }
-    }
-
-    "loading why-remove-benefit-expense, an authorised user" should {
-      "be directed cy + 1 confirmation page to remove bik for other reason" in {
-        when(registrationController.sessionService.fetchPbikSession()(any()))
-          .thenReturn(
-            Future.successful(
-              Some(
-                PbikSession(
-                  sessionId,
-                  Some(RegistrationList(active = List(RegistrationItem(iabdType, active = true, enabled = true)))),
-                  None,
-                  None,
-                  None,
-                  None,
-                  None,
-                  None
-                )
-              )
-            )
-          )
-
-        val result = registrationController.showRemoveBenefitOtherReason(iabdType)(mockRequest)
-
-        if (pbikAppConfig.mpbikToggle) {
-          status(result) mustBe NOT_FOUND
-        } else {
-          val title = messages("RemoveBenefits.other.title").substring(beginIndex, endIndex)
-          status(result) mustBe OK
-          contentAsString(result) must include(title)
-        }
-      }
-
-      "be redirected to what next page when a valid other reason is provided" in {
-        val otherReason          = "Here's our other info"
-        val mockRegistrationList = RegistrationList(
-          None,
-          List(RegistrationItem(iabdType, active = true, enabled = true)),
-          Some(BinaryRadioButtonWithDesc("other", Some(otherReason)))
-        )
-        when(registrationController.sessionService.fetchPbikSession()(any()))
-          .thenReturn(
-            Future.successful(
-              Some(
-                PbikSession(
-                  sessionId,
-                  Some(mockRegistrationList),
-                  Some(RegistrationItem(iabdType, active = true, enabled = true)),
-                  None,
-                  None,
-                  None,
-                  None,
-                  None
-                )
-              )
-            )
-          )
-        val form                 = formMappings.removalOtherReasonForm.fill(OtherReason(otherReason))
-        val mockRequestForm      = mockPostRequest
-          .withFormUrlEncodedBody(form.data.toSeq *)
-        val result               = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
-
-        if (pbikAppConfig.mpbikToggle) {
-          status(result) mustBe NOT_FOUND
-        } else {
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/declare-remove-benefit-expense")
-        }
-      }
-
-      "return to the same page with an error when other reason is not provided" in {
-        val errorMsg        = messages("RemoveBenefits.other.error.required")
-        val form            = formMappings.removalOtherReasonForm.fill(OtherReason(""))
-        val mockRequestForm = mockPostRequest
-          .withFormUrlEncodedBody(form.data.toSeq *)
-        val result          = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
-
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) must include(errorMsg)
-      }
-
-      "return to the same page with an error when other reason of more than 100 chars is provided" in {
-        val errorMsg        = messages("RemoveBenefits.other.error.length")
-        val reason          =
-          "this is a test other reason to remove the benefits, if user wants to remove the benefits from payroll"
-        val form            = formMappings.removalOtherReasonForm.fill(OtherReason(reason))
-        val mockRequestForm = mockPostRequest
-          .withFormUrlEncodedBody(form.data.toSeq *)
-        val result          = registrationController.submitRemoveBenefitOtherReason(iabdType)(mockRequestForm)
-
-        status(result) mustBe BAD_REQUEST
-        contentAsString(result) must include(errorMsg)
       }
     }
 

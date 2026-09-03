@@ -27,17 +27,21 @@
         taxYearRange:TaxYearRange
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
+@benefitLabel = @{ messages("BenefitInKindMPBIK2.label." + iabdType.id) }
 
-@govukLayoutWrapper(PageTitle(messages("RemoveBenefits.confirm.title"))) {
+@govukLayoutWrapper(PageTitle(messages("RemoveBenefitsMPBIK2.reason.Title." + request.userType))) {
 
-    @pageTitleHeading(messages("RemoveBenefits.confirm.heading"))
+    @pageTitleHeading(messages("RemoveBenefitsMPBIK2.reason.Title." + request.userType))
+
+    <p class="govuk-body" id="benefit-info">
+        @messages("RemoveBenefitsMPBIK2.confirm.p1." + request.userType, ""+taxYearRange.cy)
+    </p>
 
     <div class="data">
             <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key" id="table-key">
-                                @messages("Service.field.stop.benefit")
+                                @messages("RemoveBenefitsMPBIK2.selected.benefit")
                             </dt>
                             <dd class="govuk-summary-list__value" id="table-value">
                                     <p class="govuk-body">
@@ -47,13 +51,14 @@
                         </div>
             </dl>
 
-            <p class="govuk-body" id="benefit-info">
-                @messages("RemoveBenefits.confirm.p1." + request.userType, benefitLabel, ""+taxYearRange.cy)
+            <p class="govuk-body">
+                @messages("RemoveBenefitsMPBIK2.confirm.declaration." + request.userType)
             </p>
 
-            <div class="govuk-inset-text" id="user-info">
-                @messages("RemoveBenefits.confirm.p2." + request.userType)
-            </div>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("RemoveBenefitsMPBIK2.confirm.bullet1." + request.userType)</li>
+                <li>@messages("RemoveBenefitsMPBIK2.confirm.bullet2." + request.userType)</li>
+            </ul>
 
             <a class="govuk-button" href="@controllers.registration.routes.ManageRegistrationController.submitConfirmRemoveNextTaxYear(iabdType)" id="button-confirm">
                 @messages("Service.confirmAndContinue")
