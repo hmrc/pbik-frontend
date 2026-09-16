@@ -90,6 +90,13 @@
                         <td class="govuk-table__cell" id="name-@person.nationalInsuranceNumber">@person.firstForename @person.surname</td>
                         <td class="govuk-table__cell" id="nino-@person.nationalInsuranceNumber">@person.nationalInsuranceNumber</td>
                         <td class="govuk-table__cell" id="wpn-@person.nationalInsuranceNumber">@person.worksPayrollNumber.getOrElse("")</td>
+                        @if(isCurrentTaxYear=="cyp1"){
+                            <td class="govuk-table__cell">
+                                <a class="govuk-link" id='@person.nationalInsuranceNumber-remove' href="@controllers.routes.ExclusionListController.remove(isCurrentTaxYear, iabdType, person.nationalInsuranceNumber)">
+                                    @messages("Service.removeexclusion")<span class="govuk-visually-hidden">@messages("Service.for") @person.firstForename @person.surname @person.nationalInsuranceNumber</span>
+                                </a>
+                            </td>
+                        }
                     </tr>
                 }
             </table>

@@ -29,7 +29,7 @@
         form: Form[BinaryRadioButtonWithDesc]
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
-@benefitLabel = @{messages(s"BenefitInKind.label.${removalBik.iabdType.id}")}
+@benefitLabel = @{messages(s"BenefitInKindMPBIK2.label.${removalBik.iabdType.id}")}
 
 @title = @{ messages("RemoveBenefits.reason.Title") }
 
