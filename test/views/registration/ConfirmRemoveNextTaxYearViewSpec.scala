@@ -32,19 +32,21 @@ class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
   "confirmRemoveNextTaxYear - organisation" must {
     implicit def html: Html = view(organisationRequest)
 
-    behave like pageWithTitle(messages("RemoveBenefits.confirm.title"))
-    behave like pageWithHeader(messages("RemoveBenefits.confirm.heading"))
-    behave like pageWithIdAndText(messages("Service.field.stop.benefit"), "table-key")
-    behave like pageWithIdAndText(messages("BenefitInKind.label." + benefit.id), "table-value")
+    behave like pageWithTitle(messages("RemoveBenefitsMPBIK2.reason.Title." + organisationRequest.userType))
+    behave like pageWithHeader(messages("RemoveBenefitsMPBIK2.reason.Title." + organisationRequest.userType))
+    behave like pageWithIdAndText(messages("RemoveBenefitsMPBIK2.selected.benefit"), "table-key")
+    behave like pageWithIdAndText(messages("BenefitInKindMPBIK2.label." + benefit.id), "table-value")
     behave like pageWithIdAndText(
       messages(
-        "RemoveBenefits.confirm.p1." + organisationRequest.userType,
-        messages("BenefitInKind.label." + benefit.id),
+        "RemoveBenefitsMPBIK2.confirm.p1." + organisationRequest.userType,
         taxYearRange.cy.toString
       ),
       "benefit-info"
     )
-    behave like pageWithIdAndText(messages("RemoveBenefits.confirm.p2." + organisationRequest.userType), "user-info")
+    behave like pageWithIdAndText(
+      messages("RemoveBenefitsMPBIK2.confirm.declaration." + organisationRequest.userType),
+      "user-info"
+    )
     behave like pageWithConfirmAndContinueButtonAndLinkAndText(
       "button-confirm",
       s"/payrollbik/cy1/${benefit.id}/confirm-remove-benefit-expense",
@@ -55,19 +57,21 @@ class ConfirmRemoveNextTaxYearViewSpec extends PBIKViewSpec {
   "confirmRemoveNextTaxYear - agent" must {
     implicit def html: Html = view(agentRequest)
 
-    behave like pageWithTitle(messages("RemoveBenefits.confirm.title"))
-    behave like pageWithHeader(messages("RemoveBenefits.confirm.heading"))
-    behave like pageWithIdAndText(messages("Service.field.stop.benefit"), "table-key")
-    behave like pageWithIdAndText(messages("BenefitInKind.label." + benefit.id), "table-value")
+    behave like pageWithTitle(messages("RemoveBenefitsMPBIK2.reason.Title." + agentRequest.userType))
+    behave like pageWithHeader(messages("RemoveBenefitsMPBIK2.reason.Title." + agentRequest.userType))
+    behave like pageWithIdAndText(messages("RemoveBenefitsMPBIK2.selected.benefit"), "table-key")
+    behave like pageWithIdAndText(messages("BenefitInKindMPBIK2.label." + benefit.id), "table-value")
     behave like pageWithIdAndText(
       messages(
-        "RemoveBenefits.confirm.p1." + agentRequest.userType,
-        messages("BenefitInKind.label." + benefit.id),
+        "RemoveBenefitsMPBIK2.confirm.p1." + agentRequest.userType,
         taxYearRange.cy.toString
       ),
       "benefit-info"
     )
-    behave like pageWithIdAndText(messages("RemoveBenefits.confirm.p2." + agentRequest.userType), "user-info")
+    behave like pageWithIdAndText(
+      messages("RemoveBenefitsMPBIK2.confirm.declaration." + agentRequest.userType),
+      "user-info"
+    )
     behave like pageWithConfirmAndContinueButtonAndLinkAndText(
       "button-confirm",
       s"/payrollbik/cy1/${benefit.id}/confirm-remove-benefit-expense",

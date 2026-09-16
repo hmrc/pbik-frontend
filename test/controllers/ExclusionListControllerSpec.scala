@@ -948,13 +948,13 @@ class ExclusionListControllerSpec extends FakePBIKApplication {
 
         val result = mockExclusionListController.showRemovalWhatsNext(iabdType)(mockRequest)
 
-        if (pbikAppConfig.mpbikToggle) {
-          status(result) mustBe NOT_FOUND
-        } else {
+        if (pbikAppConfig.mpbikTogglePhase2) {
           status(result) mustBe OK
           contentAsString(result) must include(
             s"${pbikSession.eiLPerson.get.personToExclude.firstForename} ${pbikSession.eiLPerson.get.personToExclude.surname} will have Car and car fuel taxed through payroll from 6 April"
           )
+        } else {
+          status(result) mustBe NOT_FOUND
         }
       }
     }

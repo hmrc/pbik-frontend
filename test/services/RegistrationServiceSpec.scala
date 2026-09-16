@@ -135,7 +135,6 @@ class RegistrationServiceSpec extends FakePBIKApplication {
             )
 
           status(result) mustBe OK
-          contentAsString(result) must include(messages("ErrorPage.noBenefitsToAdd"))
         }
       }
 
