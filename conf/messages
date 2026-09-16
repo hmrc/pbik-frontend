@@ -431,6 +431,22 @@ ExclusionSearchMPBIK.understanding.agent.bullet1.cyp1 = this employee can be add
 ExclusionSearchMPBIK.understanding.agent.bullet2.cy = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
 ExclusionSearchMPBIK.understanding.agent.bullet2.cyp1 = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
 
+ExclusionRemovalConfirmationMPBIK2.title = Declare the employee you want to add back to this benefit
+
+ExclusionRemovalConfirmationMPBIK2.p.organisation = By confirming, you will start taxing this employee for {0} through your payroll from 6 April {1}.
+ExclusionRemovalConfirmationMPBIK2.bullet1.organisation = I will tax {0}''s selected benefits through payroll from 6 April {1}
+ExclusionRemovalConfirmationMPBIK2.bullet2.organisation = I will inform {0} that their tax code may change
+ExclusionRemovalConfirmationMPBIK2.bullet3.organisation = I will work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
+ExclusionRemovalConfirmationMPBIK2.bullet4.organisation = I must add the cash equivalent to the benefit or relevant amount to {0}''s pay and tax it through payroll
+ExclusionRemovalConfirmationMPBIK2.bullet5.organisation = all other benefits offered to employees must also be taxed through payroll
+
+ExclusionRemovalConfirmationMPBIK2.p.agent = By confirming, you will start taxing this employee for {0} through your client''s payroll from 6 April {1}.
+ExclusionRemovalConfirmationMPBIK2.bullet1.agent = they must tax {0}''s selected benefits through payroll from 6 April {1}
+ExclusionRemovalConfirmationMPBIK2.bullet2.agent = they must inform {0} that their tax code may change
+ExclusionRemovalConfirmationMPBIK2.bullet3.agent = they must work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
+ExclusionRemovalConfirmationMPBIK2.bullet4.agent = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
+ExclusionRemovalConfirmationMPBIK2.bullet5.agent = all other benefits offered to employees must also be taxed through payroll
+
 #*************************************************************
 # Benefits messages
 #*************************************************************

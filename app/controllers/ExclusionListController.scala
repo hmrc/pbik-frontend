@@ -40,6 +40,7 @@ import utils.Exceptions.{InvalidBikTypeException, InvalidURIException}
 import utils.*
 import views.html.ErrorPage
 import views.html.exclusion.*
+import views.html.registration.AddBenefitConfirmationNextTaxYear
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -80,6 +81,7 @@ class ExclusionListController @Inject() (
 
   val exclusionsAllowed: Boolean   = pbikAppConfig.exclusionsAllowed
   private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
+  private val mpbikTogglePhase2: Boolean = pbikAppConfig.mpbikTogglePhase2
 
   def performPageLoad(isCurrentTaxYear: String, iabdType: IabdType): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
@@ -816,11 +818,9 @@ class ExclusionListController @Inject() (
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
       if (exclusionsAllowed) {
         val resultFuture =
-          if (mpbikToggle) {
-            Future.failed(new InvalidURIException())
-          } else {
+          if (mpbikTogglePhase2) {
             sessionService.fetchPbikSession().flatMap { session =>
-              val employerOptimisticLock: Int                 = session.get.currentExclusions.get.currentEmployerOptimisticLock
+              val employerOptimisticLock: Int = session.get.currentExclusions.get.currentEmployerOptimisticLock
               val currentExclusions: Seq[PbikExclusionPerson] =
                 session.map(_.currentExclusions.map(_.exclusions).getOrElse(List.empty)).getOrElse(List.empty)
               val selectedPerson: Option[PbikExclusionPerson] = currentExclusions
@@ -832,6 +832,8 @@ class ExclusionListController @Inject() (
                   Redirect(routes.ExclusionListController.showRemovalConfirmation(year, iabdType))
                 }
             }
+          } else {
+            Future.failed(new InvalidURIException())
           }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
@@ -850,9 +852,7 @@ class ExclusionListController @Inject() (
   def showRemovalConfirmation(year: String, iabdType: IabdType): Action[AnyContent] =
     (authenticate andThen noSessionCheck).async { implicit request =>
       val futureResult =
-        if (mpbikToggle) {
-          Future.failed(new InvalidURIException())
-        } else {
+        if (mpbikTogglePhase2) {
           sessionService.fetchPbikSession().map { session =>
             Ok(
               removalConfirmationView(
@@ -862,6 +862,8 @@ class ExclusionListController @Inject() (
               )
             )
           }
+        } else {
+          Future.failed(new InvalidURIException())
         }
       controllersReferenceData.responseErrorHandler(futureResult)
     }
@@ -872,12 +874,10 @@ class ExclusionListController @Inject() (
       val taxYearRange               = taxDateUtils.getTaxYearRange()
       if (exclusionsAllowed) {
         val resultFuture =
-          if (mpbikToggle) {
-            Future.failed(new InvalidURIException())
-          } else {
+          if (mpbikTogglePhase2) {
             sessionService.fetchPbikSession().flatMap { session =>
-              val individual            = session.get.eiLPerson.get
-              val year                  = taxYearRange.cy
+              val individual = session.get.eiLPerson.get
+              val year = taxYearRange.cy
               val individualWithBenefit =
                 PbikExclusionPersonWithBenefitRequest(individual.employerOptimisticLock, individual.personToExclude)
               tierConnector
@@ -891,7 +891,7 @@ class ExclusionListController @Inject() (
                       iabdType
                     )
                     Redirect(routes.ExclusionListController.showRemovalWhatsNext(iabdType))
-                  case Left(value)                 =>
+                  case Left(value) =>
                     val error = value.failures.head
                     InternalServerError(
                       errorPageView(
@@ -899,7 +899,7 @@ class ExclusionListController @Inject() (
                         controllersReferenceData.yearRange
                       )
                     )
-                  case Right(unexpectedStatus)     =>
+                  case Right(unexpectedStatus) =>
                     logger.warn(
                       s"[ExclusionListController][removeExclusionsCommit] Exclusion list update operation was unable to be executed successfully:" +
                         s" received $unexpectedStatus response"
@@ -912,6 +912,8 @@ class ExclusionListController @Inject() (
                     )
                 }
             }
+          } else {
+            Future.failed(new InvalidURIException())
           }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
