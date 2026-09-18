@@ -46,7 +46,7 @@ class WhatNextPageController @Inject() (
     extends FrontendController(cc)
     with I18nSupport {
 
-  private val mpbik: Boolean = pbikAppConfig.mpbikToggle
+  private val mpbikPhase2: Boolean = pbikAppConfig.mpbikTogglePhase2
 
   def showWhatNextRegisteredBik(year: String): Action[AnyContent] =
     authenticate.async { implicit request =>
@@ -59,8 +59,7 @@ class WhatNextPageController @Inject() (
           addBenefitConfirmationNextTaxYearView(
             taxDateUtils.isCurrentTaxYear(yearInt),
             controllersReferenceData.yearRange,
-            addedBiksAsList,
-            mpbik
+            addedBiksAsList
           )
         )
       }
@@ -70,9 +69,7 @@ class WhatNextPageController @Inject() (
   def showWhatNextRemovedBik(iabdType: IabdType): Action[AnyContent] =
     authenticate.async { implicit request =>
       val resultFuture =
-        if (mpbik) {
-          Future.failed(new InvalidURIException())
-        } else {
+        if (mpbikPhase2) {
           sessionService.fetchPbikSession().map { session =>
             val removedBikAsList: RegistrationList =
               RegistrationList(active = List(session.get.bikRemoved.get))
@@ -81,11 +78,12 @@ class WhatNextPageController @Inject() (
                 taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
                 controllersReferenceData.yearRange,
                 removedBikAsList,
-                iabdType,
-                mpbik
+                iabdType
               )
             )
           }
+        } else {
+          Future.failed(new InvalidURIException())
         }
       controllersReferenceData.responseErrorHandler(resultFuture)
     }

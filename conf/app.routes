@@ -27,19 +27,19 @@ GET         /setLanguage                                         controllers.Hom
 GET         /registered-benefits-expenses                       controllers.HomePageController.onPageLoad
 
 ## Add registrations
-GET         /cy1/choose-benefit-expense                          controllers.registration.ManageRegistrationController.nextTaxYearAddOnPageLoad
-POST        /cy1/choose-benefit-expense                          controllers.registration.ManageRegistrationController.checkYourAnswersAddNextTaxYear
+GET         /cy1/choose-benefit-expense                          controllers.ManageRegistrationController.nextTaxYearAddOnPageLoad
+POST        /cy1/choose-benefit-expense                          controllers.ManageRegistrationController.checkYourAnswersAddNextTaxYear
 
-GET         /cy1/check-the-benefits                             controllers.registration.ManageRegistrationController.showCheckYourAnswersAddNextTaxYear
-POST        /cy1/check-the-benefits                             controllers.registration.ManageRegistrationController.addNextYearRegisteredBenefitTypes()
+GET         /cy1/check-the-benefits                             controllers.ManageRegistrationController.showCheckYourAnswersAddNextTaxYear
+POST        /cy1/check-the-benefits                             controllers.ManageRegistrationController.addNextYearRegisteredBenefitTypes()
 
 GET         /:year/registration-complete                         controllers.WhatNextPageController.showWhatNextRegisteredBik(year: String)
 
 ## Remove registrations
-GET         /cy1/:iabdType/remove-benefit-expense                controllers.registration.ManageRegistrationController.checkYourAnswersRemoveNextTaxYear(iabdType: models.v1.IabdType.IabdType)
-POST        /cy1/:iabdType/remove-benefit-expense                controllers.registration.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(iabdType: models.v1.IabdType.IabdType)
-GET         /cy1/:iabdType/declare-remove-benefit-expense        controllers.registration.ManageRegistrationController.showConfirmRemoveNextTaxYear(iabdType: models.v1.IabdType.IabdType)
-GET         /cy1/:iabdType/confirm-remove-benefit-expense        controllers.registration.ManageRegistrationController.submitConfirmRemoveNextTaxYear(iabdType: models.v1.IabdType.IabdType)
+GET         /cy1/:iabdType/remove-benefit-expense                controllers.ManageRegistrationController.checkYourAnswersRemoveNextTaxYear(iabdType: models.v1.IabdType.IabdType)
+POST        /cy1/:iabdType/remove-benefit-expense                controllers.ManageRegistrationController.removeNextYearRegisteredBenefitTypes(iabdType: models.v1.IabdType.IabdType)
+GET         /cy1/:iabdType/declare-remove-benefit-expense        controllers.ManageRegistrationController.showConfirmRemoveNextTaxYear(iabdType: models.v1.IabdType.IabdType)
+GET         /cy1/:iabdType/confirm-remove-benefit-expense        controllers.ManageRegistrationController.submitConfirmRemoveNextTaxYear(iabdType: models.v1.IabdType.IabdType)
 
 GET         /cy1/:iabdType/benefit-removed                       controllers.WhatNextPageController.showWhatNextRemovedBik(iabdType: models.v1.IabdType.IabdType)
 
@@ -63,10 +63,6 @@ GET         /:year/:iabdType/exclude-employee-remove/:nino       controllers.Exc
 GET         /:year/:iabdType/check-employee-details              controllers.ExclusionListController.showRemovalConfirmation(year: String, iabdType: models.v1.IabdType.IabdType)
 GET         /:iabdType/employee-registration-complete            controllers.ExclusionListController.showRemovalWhatsNext(iabdType: models.v1.IabdType.IabdType)
 POST        /:iabdType/employee-registration-complete            controllers.ExclusionListController.removeExclusionsCommit(iabdType: models.v1.IabdType.IabdType)
-
-## Remove registrations other
-GET         /cy1/:iabdType/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.showRemoveBenefitOtherReason(iabdType: models.v1.IabdType.IabdType)
-POST        /cy1/:iabdType/why-remove-benefit-expense            controllers.registration.ManageRegistrationController.submitRemoveBenefitOtherReason(iabdType: models.v1.IabdType.IabdType)
 
 GET         /keep-alive                                          controllers.SignedOutController.keepAlive()
 GET         /we-signed-you-out                                   controllers.SignedOutController.signedOut()

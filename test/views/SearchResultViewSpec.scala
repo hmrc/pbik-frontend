@@ -44,7 +44,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
 
       behave like pageWithTitle(messages("ExclusionSearch.title.single"))
       behave like pageWithHeader(
-        messages(s"BenefitInKind.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.single")
+        messages(s"BenefitInKindMPBIK2.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.single")
       )
       behave like pageWithElementAndText(
         "button-confirm",
@@ -87,7 +87,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
 
       behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
       behave like pageWithHeader(
-        messages(s"BenefitInKind.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.multiple")
+        messages(s"BenefitInKindMPBIK2.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.multiple")
       )
       behave like pageWithContinueButtonForm(
         s"/payrollbik/cyp1/${iabdType.id}//exclude-employee-results",
@@ -103,7 +103,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
 
       behave like pageWithTitle(messages("ExclusionSearch.title.single"))
       behave like pageWithHeader(
-        messages(s"BenefitInKind.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.single")
+        messages(s"BenefitInKindMPBIK2.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.single")
       )
       behave like pageWithElementAndText(
         "button-confirm",
@@ -146,7 +146,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
 
       behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
       behave like pageWithHeader(
-        messages(s"BenefitInKind.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.multiple")
+        messages(s"BenefitInKindMPBIK2.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.multiple")
       )
       behave like pageWithContinueButtonForm(
         s"/payrollbik/cyp1/${iabdType.id}//exclude-employee-results",

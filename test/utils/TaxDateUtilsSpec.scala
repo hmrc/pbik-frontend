@@ -95,7 +95,7 @@ class TaxDateUtilsSpec extends FakePBIKApplication {
       )
     }
     ".getDisplayStartOfCYP1" in
-      assert(taxDateUtils.getDisplayStartOfCYP1()(messages) == "06 April " + cyp1)
+      assert(taxDateUtils.getDisplayStartOfCYP1()(messages) == "6 April " + cyp1)
   }
 
 }

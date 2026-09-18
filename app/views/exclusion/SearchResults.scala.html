@@ -33,7 +33,7 @@
         formType: String
 )(implicit request: Request[?], messages: Messages)
 
-@expenseOrBenefit = @{messages(s"BenefitInKind.label.${iabdType.id}")}
+@expenseOrBenefit = @{messages(s"BenefitInKindMPBIK2.label.${iabdType.id}")}
 @title = @{if(listOfMatches.length > 1){ messages("ExclusionSearch.title.multiple") } else { messages("ExclusionSearch.title.single") }}
 @govukLayoutWrapper(PageTitle(title, listOfMatchesForm.hasErrors)) {
 

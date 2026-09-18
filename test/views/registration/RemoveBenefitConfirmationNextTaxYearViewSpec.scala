@@ -43,8 +43,7 @@ class RemoveBenefitConfirmationNextTaxYearViewSpec extends PBIKViewSpec {
       isCurrentYear = true,
       taxYearRange,
       bikList,
-      IabdType.MedicalInsurance,
-      mpbik = mpbikToggle
+      IabdType.MedicalInsurance
     )
 
   "RemoveBenefitConfirmationNextTaxYear view" must {
@@ -68,7 +67,7 @@ class RemoveBenefitConfirmationNextTaxYearViewSpec extends PBIKViewSpec {
 
       doc.select(".govuk-panel.govuk-panel--confirmation").size() must be > 0
       doc.text()                                                  must include(messages("whatNext.remove.heading"))
-      doc.text()                                                  must include(messages("BenefitInKind.label." + IabdType.MedicalInsurance.id))
+      doc.text()                                                  must include(messages("BenefitInKindMPBIK2.label." + IabdType.MedicalInsurance.id))
     }
 
   }

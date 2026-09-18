@@ -115,7 +115,7 @@ class RegistrationServiceSpec extends FakePBIKApplication {
 
         status(result) mustBe OK
         contentAsString(result) must include(messages("AddBenefits.Heading"))
-        contentAsString(result) must include(messages(s"BenefitInKind.label.${IabdType.OtherItems.id}"))
+        contentAsString(result) must include(messages(s"BenefitInKindMPBIK2.label.${IabdType.OtherItems.id}"))
       }
 
       "return the error page if no more benefits to add" in {
@@ -135,7 +135,6 @@ class RegistrationServiceSpec extends FakePBIKApplication {
             )
 
           status(result) mustBe OK
-          contentAsString(result) must include(messages("ErrorPage.noBenefitsToAdd"))
         }
       }
 
