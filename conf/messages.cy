@@ -433,12 +433,12 @@ ExclusionSearchMPBIK.understanding.agent.bullet2.cyp1 = Nid oes angen i fi eithr
 
 ExclusionRemovalConfirmationMPBIK2.title = Datgan y cyflogai rydych am ei ychwanegu’n ôl at y buddiant hwn
 
-ExclusionRemovalConfirmationMPBIK2.p.organisation = By confirming, you will start taxing this employee for {0} through your payroll from 6 April {1}.
-ExclusionRemovalConfirmationMPBIK2.bullet1.organisation = I will tax {0}''s selected benefits through payroll from 6 April {1}
-ExclusionRemovalConfirmationMPBIK2.bullet2.organisation = I will inform {0} that their tax code may change
-ExclusionRemovalConfirmationMPBIK2.bullet3.organisation = I will work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
-ExclusionRemovalConfirmationMPBIK2.bullet4.organisation = I must add the cash equivalent to the benefit or relevant amount to {0}''s pay and tax it through payroll
-ExclusionRemovalConfirmationMPBIK2.bullet5.organisation = all other benefits offered to employees must also be taxed through payroll
+ExclusionRemovalConfirmationMPBIK2.p.organisation = Drwy gadarnhau hyn, byddwch yn dechrau trethu buddiant {0} y cyflogai drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
+ExclusionRemovalConfirmationMPBIK2.bullet1.organisation = Byddaf yn trethu buddiannau a ddewiswyd gan {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen
+ExclusionRemovalConfirmationMPBIK2.bullet2.organisation = Byddaf yn hysbysu {0} y gallai ei god treth newid
+ExclusionRemovalConfirmationMPBIK2.bullet3.organisation = Byddaf yn cyfrifo’r cyfraniadau Yswiriant Gwladol Dosbarth 1A ar gyfer y buddiannau a ddewiswyd a’u talu drwy’r gyflogres
+ExclusionRemovalConfirmationMPBIK2.bullet4.organisation = mae’n rhaid i mi ychwanegu swm cyfwerth i’r buddiant mewn arian parod neu swm perthnasol i gyflog {0} a’i drethu drwy’r gyflogres
+ExclusionRemovalConfirmationMPBIK2.bullet5.organisation = mae’n rhaid trethu pob buddiant arall a gynigir i gyflogeion drwy’r gyflogres hefyd
 
 ExclusionRemovalConfirmationMPBIK2.p.agent = Drwy gadarnhau hyn, byddwch yn dechrau trethubuddiant {0} y cyflogai drwy gyflogres eich cleient o 6 Ebrill {1}.
 ExclusionRemovalConfirmationMPBIK2.bullet1.agent = bod yn rhaid iddo drethu buddiannau a ddewiswyd {0} drwy’r gyflogres o 6 Ebrill {1}
