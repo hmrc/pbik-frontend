@@ -49,7 +49,7 @@ Service.nino.lastletterMPBIK = (heb ddangos y llythyren olaf)
 Service.continue = Yn eich blaen
 Service.continueMPBIK = Parhau
 Service.confirm = Cadarnhau
-Service.confirmAndContinue = Cadarnhau ac yn eich blaen
+Service.confirmAndContinue = Cadarnhau a pharhau
 Service.confirmAndContinueMPBIK = Cadarnhau a pharhau
 Service.tryagain = rhowch gynnig arall arni
 
