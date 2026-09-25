@@ -46,7 +46,7 @@ Service.nino.lastletter = (Nid yw’r llythyren olaf yn cael ei dangos)
 
 Service.nino.lastletterMPBIK = (heb ddangos y llythyren olaf)
 
-Service.continue = Yn eich blaen
+Service.continue = Parhau
 Service.continueMPBIK = Parhau
 Service.confirm = Cadarnhau
 Service.confirmAndContinue = Cadarnhau a pharhau
