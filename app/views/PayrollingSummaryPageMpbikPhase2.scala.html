@@ -26,7 +26,8 @@
 
 @(      startTaxYear: Int,
         registeredBenefitsCurrentYear: List[BenefitInKindWithCount],
-        registeredBenefitsCY1: List[BenefitInKindWithCount]
+        registeredBenefitsCY1: List[BenefitInKindWithCount],
+        isExhaustedCY1: Boolean
 )(implicit request: AuthenticatedRequest[?], messages: Messages)
 
 @govukLayoutWrapper(PageTitle(messages("PayrollingSummaryMPBIK2.heading")), showBackLink = true) {
@@ -89,13 +90,15 @@
             }
             <div class="govuk-tabs__panel govuk-tabs_panel--hidden" id="tab-2" role="tabpanel" aria-labelledby="tab_tab-2">
                 <h2 class="govuk-heading-l" id="benefits-cy1-tab">@messages("PayrollingSummaryMPBIK2.tab.heading")</h2>
-                <p class="govuk-body">
-                    @messages("PayrollingSummaryMPBIK2.you.can")
-                    <a class="govuk-link govuk-link--no-visited-state" href = "@controllers.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
-                        @messages("PayrollingSummaryMPBIK2.choose.benefit.link.text." + request.userType)
-                    </a>
-                    .
-                </p>
+                @if(!isExhaustedCY1){
+                    <p class="govuk-body">
+                        @messages("PayrollingSummaryMPBIK2.you.can")
+                        <a class="govuk-link govuk-link--no-visited-state" href = "@controllers.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
+                            @messages("PayrollingSummaryMPBIK2.choose.benefit.link.text." + request.userType)
+                        </a>
+                        .
+                    </p>
+                }
                 @if(registeredBenefitsCY1.isEmpty){
                     <p class="govuk-body">@messages("PayrollingSummaryMPBIK2.no.benefits.text." + request.userType, s"${startTaxYear}")</p>
                 } else {
