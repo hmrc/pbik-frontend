@@ -39,7 +39,7 @@ class PayrollingSummaryPageViewSpec extends PBIKViewSpec {
     nextYearBenefits: List[BenefitInKindWithCount] = List.empty[BenefitInKindWithCount]
   )(implicit request: AuthenticatedRequest[?]): Html =
     if (mpbikPhase2Toggle) {
-      phase2View(taxYearRange.cy, benefits, nextYearBenefits)
+      phase2View(taxYearRange.cy, benefits, nextYearBenefits, isExhaustedCY1 = false)
     } else {
       payrollingSummaryPageView(taxYearRange.cy, benefits)
     }

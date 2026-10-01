@@ -105,15 +105,16 @@ class HomePageController @Inject() (
         _               <- sessionService.resetAll()
         currentYearList <- bikListService.currentYearList
         nextYearList    <- bikListService.nextYearList
+        biksListOption  <- bikListService.getAllBenefitsForYear(startTaxYear)
         _               <- auditHomePageView()
       } yield Ok(
         payrollingSummaryMpbikPhase2View(
           startTaxYear,
           currentYearList.getBenefitInKindWithCount,
-          nextYearList.getBenefitInKindWithCount
+          nextYearList.getBenefitInKindWithCount,
+          nextYearList.getBenefitInKindWithCount.size == (biksListOption.size - pbikAppConfig.biksMpbikPhase2Decommissioned.size)
         )
       )
-
       controllersReferenceData.responseErrorHandler(pageLoadFuture)
     } else { // current code - DO NOT CHANGE
       val startTaxYear                   = controllersReferenceData.yearRange.cy

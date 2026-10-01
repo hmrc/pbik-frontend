@@ -53,9 +53,7 @@ Service.confirmAndContinue = Cadarnhau a pharhau
 Service.confirmAndContinueMPBIK = Cadarnhau a pharhau
 Service.tryagain = rhowch gynnig arall arni
 
-Service.print.link = Argraffwch y dudalen hon
-
-Service.print.linkMPBIK = Argraffu’r dudalen hon
+Service.print.link = Argraffu’r dudalen hon
 
 Service.notEnrolled.title = Ymrestru i ddefnyddio’r gwasanaeth hwn
 Service.notEnrolled.text1 = Rydych wedi’ch mewngofnodi i Wasanaethau Ar-lein CThEF, ond mae’n rhaid i’ch cyflogwr gofrestru ar gyfer Talu Wrth Ennill (TWE) y Cyflogwr cyn i chi allu mynd yn eich blaen.
@@ -728,13 +726,13 @@ whatNext.add.p.agent = Buddiannau a threuliau rydych wedi eu cofrestru i’w tre
 
 whatNext.add.list.heading = Manylion cofrestru
 
-whatNext.rescind.p1.intro.organisation = {0} will have {1} taxed through payroll from 6 April {2}.
+whatNext.rescind.p1.intro.organisation = Bydd {1} {0} yn cael eu trethu drwy’r gyflogres o 6 Ebrill {2} ymlaen.
 whatNext.rescind.p1.intro.agent = Bydd buddiant {1} {0} yn cael ei drethu drwy gyflogres {2}''s o 6 Ebrill {3}.
 
 whatNext.rescind.list.heading = Manylion cofrestru
 
 whatNext.rescind.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
-whatNext.rescind.p1.organisation = You must write to {0} to tell them that:
+whatNext.rescind.p1.organisation = Mae’n rhaid i chi ysgrifennu at {0} i roi gwybod iddi am hyn:
 
 whatNext.rescind.h2.agent = Yr hyn y mae’n rhaid i’ch cleient ei wneud nawr
 whatNext.rescind.p1.agent = Mae’n rhaid i’ch cleient ysgrifennu at {0} i’w hysbysu am y canlynol:

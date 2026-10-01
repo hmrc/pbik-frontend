@@ -55,8 +55,6 @@ Service.tryagain = try again
 
 Service.print.link = Print this page
 
-Service.print.linkMPBIK = Print this page
-
 Service.notEnrolled.title = Enrol to use this service
 Service.notEnrolled.text1 = You’re signed in to HMRC Online Services but your employer must enrol for employer Pay As You Earn before you can continue.
 Service.notEnrolled.text2 = To enrol you’ll need:
