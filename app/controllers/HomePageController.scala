@@ -20,6 +20,7 @@ import config.PbikAppConfig
 import controllers.actions.{AuthAction, NoSessionCheckAction, UnauthorisedAction}
 import models.*
 import models.auth.AuthenticatedRequest
+import models.v1.IabdType.IabdType
 import play.api.Logging
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc.*
@@ -98,6 +99,9 @@ class HomePageController @Inject() (
       .withLang(newLang)(messagesApi)
   }
 
+  private def filterDecommissioned(iabdTypes: Set[IabdType]): Set[IabdType] =
+    iabdTypes.diff(pbikAppConfig.biksMpbikPhase2Decommissioned).diff(pbikAppConfig.biksDecommissioned)
+
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     if (mpbikPhase2Toggle) {
       val startTaxYear                   = controllersReferenceData.yearRange.cy
@@ -112,7 +116,7 @@ class HomePageController @Inject() (
           startTaxYear,
           currentYearList.getBenefitInKindWithCount,
           nextYearList.getBenefitInKindWithCount,
-          nextYearList.getBenefitInKindWithCount.size == (biksListOption.size - pbikAppConfig.biksMpbikPhase2Decommissioned.size)
+          nextYearList.getBenefitInKindWithCount.size == filterDecommissioned(biksListOption).size
         )
       )
       controllersReferenceData.responseErrorHandler(pageLoadFuture)
