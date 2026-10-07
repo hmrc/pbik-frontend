@@ -732,16 +732,16 @@ whatNext.rescind.p1.intro.agent = Bydd buddiant {1} {0} yn cael ei drethu drwy g
 whatNext.rescind.list.heading = Manylion cofrestru
 
 whatNext.rescind.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
-whatNext.rescind.p1.organisation = Mae’n rhaid i chi ysgrifennu at {0} i roi gwybod iddi am hyn:
+whatNext.rescind.p1.organisation = Mae’n rhaid i chi ysgrifennu at {0} i’w hysbysu am y canlynol:
 
 whatNext.rescind.h2.agent = Yr hyn y mae’n rhaid i’ch cleient ei wneud nawr
 whatNext.rescind.p1.agent = Mae’n rhaid i’ch cleient ysgrifennu at {0} i’w hysbysu am y canlynol:
 
-whatNext.rescind.li1 = bydd {0} yn cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen
-whatNext.rescind.li2 = efallai y bydd eu cod treth yn newid
-whatNext.rescind.li3 = bydd yn cael llythyr gan CThEF gyda’i god treth newydd
+whatNext.rescind.li1 = bydd {0} yn cael ei drethu drwy’r gyflogres o 6 Ebrill {1} ymlaen
+whatNext.rescind.li2 = efallai y bydd y cod treth yn newid
+whatNext.rescind.li3 = bydd yn cael llythyr gan CThEF sy’n cynnwys y cod treth newydd
 
-whatNext.rescind.p2.organisation = O 6 Ebrill {0} ymlaen, mae angen i chi ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog {1} a’u trethu drwy’ch cyflogres.
+whatNext.rescind.p2.organisation = O 6 Ebrill {0} ymlaen, mae angen i chi ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog {1} a’i drethu drwy’ch cyflogres.
 whatNext.rescind.p2.agent = O 6 Ebrill {0} ymlaen, bydd yn rhaid i’ch cleient ychwanegu’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog {1} a’u trethu drwy’r gyflogres.
 
 whatNext.rescind.you.do.li1 = gweld buddiannau
