@@ -3,6 +3,7 @@ description: This microservice retrieves and writes data from/to a `HoD` system 
 repoVisibility: public_0C3F0CE3E6E6448FAD341E7BFA50FCD333E06A20CFF05FCACE61154DDBBADF71
 type: Service
 service-type: Frontend
+serviceNowMapping: SNSVC0005753
 test-repositories:
   - pbik-acceptance-tests
   - pbik-performance-tests
