@@ -386,7 +386,14 @@ ExclusionOverviewMPBIK.notExcludedEmployee.p1.agent = Caiff y buddiant {0} ei dr
 ExclusionOverviewMPBIK.p1 = Gallwch eithrio cyflogeion sy’n cael y buddiant hwn neu’r draul hon.
 ExclusionOverviewMPBIK.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy anfon P11D at CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 ExclusionOverviewMPBIK.p2.agent = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i’ch cleient adrodd am werth y buddiant hwn neu’r draul hon drwy anfon P11D at CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
-ExclusionOverviewMPBIK.benefitsManage.inset = O 6 Ebrill 2027 ymlaen, bydd angen i gyflogwyr drethu holl fuddiannau cyflogeion drwy’r gyflogres (ac eithrio benthyciadau a llety). Ni fydd buddiannau unrhyw gyflogeion yn cael eu heithrio rhag cael eu trethu drwy’r gyflogres, hyd yn oed os yw’r cyflogeion hynny wedi’u heithrio rhag buddiannau ar gyfer blwyddyn dreth 2026 i 2027.
+
+ExclusionOverviewMPBIK.benefitsManage.inset.group1.organisation = O 6 Ebrill 2027 ymlaen, bydd yn rhaid i chi drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
+ExclusionOverviewMPBIK.benefitsManage.inset.group1.agent = O 6 Ebrill 2027 ymlaen, mae’n rhaid i’ch cleient drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
+
+ExclusionOverviewMPBIK.benefitsManage.inset.group2.organisation = O 6 Ebrill 2028 ymlaen, bydd yn rhaid i chi drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
+ExclusionOverviewMPBIK.benefitsManage.inset.group2.agent = O 6 Ebrill 2028 ymlaen, mae’n rhaid i’ch cleient drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
+
+ExclusionOverviewMPBIK.benefitsManage.inset.link = Dysgwch ragor am newidiadau sy’n ymwneud â thalu buddiannau drwy’r gyflogres (yn agor ffenestr neu dab newydd)
 
 #*************************************************************
 # Exclusion search MPBIK

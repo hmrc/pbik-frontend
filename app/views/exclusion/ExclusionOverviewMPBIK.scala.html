@@ -16,6 +16,7 @@
 
 @import views.templatemodels.PageTitle
 @import utils.FormMappingsConstants
+@import utils.BenefitGroup
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
@@ -67,9 +68,25 @@
 
     @formWithCSRF(action = routes.ExclusionListController.submitExcludedEmployees(isCurrentTaxYear, iabdType)) {
         @if(currentWithNextYearDate.isEmpty) {
-            <div class="govuk-inset-text">
-                @messages("ExclusionOverviewMPBIK.benefitsManage.inset")
-            </div>
+            @if(BenefitGroup.isGroup1(iabdType.id)){
+                <div class="govuk-inset-text">
+                    @messages("ExclusionOverviewMPBIK.benefitsManage.inset.group1." + request.userType)
+                    <br><br>
+                    <a class="govuk-link govuk-link--no-visited-state" href = "https://www.gov.uk/guidance/draft-guidance-and-legislation-to-aid-preparation-for-reporting-benefits-in-kind-in-real-time">
+                        @messages("ExclusionOverviewMPBIK.benefitsManage.inset.link")
+                    </a>
+                    .
+                </div>
+            } else if(BenefitGroup.isGroup2(iabdType.id)) {
+                <div class="govuk-inset-text">
+                    @messages("ExclusionOverviewMPBIK.benefitsManage.inset.group2." + request.userType)
+                    <br><br>
+                    <a class="govuk-link govuk-link--no-visited-state" href = "https://www.gov.uk/guidance/draft-guidance-and-legislation-to-aid-preparation-for-reporting-benefits-in-kind-in-real-time">
+                        @messages("ExclusionOverviewMPBIK.benefitsManage.inset.link")
+                    </a>
+                    .
+                </div>
+            }
             <h2 class="govuk-heading-m">@messages("ExcludedEmployeesMPBIK.h1")</h2>
             @if(isCurrentTaxYear == FormMappingsConstants.CY){
                 <p class="govuk-body">@messages("ExclusionOverviewMPBIK.notExcludedEmployee.p1." + request.userType, benefitLabel, taxYearRange.cyminus1.toString())</p>
@@ -77,9 +94,25 @@
                 <p class="govuk-body">@messages("ExclusionOverviewMPBIK.notExcludedEmployee.p1." + request.userType, benefitLabel, taxYearRange.cy.toString())</p>
             }
         } else {
-            <div class="govuk-inset-text">
-                @messages("ExclusionOverviewMPBIK.benefitsManage.inset")
-            </div>
+            @if(BenefitGroup.isGroup1(iabdType.id)){
+                <div class="govuk-inset-text">
+                    @messages("ExclusionOverviewMPBIK.benefitsManage.inset.group1." + request.userType)
+                    <br><br>
+                    <a class="govuk-link govuk-link--no-visited-state" href = "https://www.gov.uk/guidance/draft-guidance-and-legislation-to-aid-preparation-for-reporting-benefits-in-kind-in-real-time">
+                        @messages("ExclusionOverviewMPBIK.benefitsManage.inset.link")
+                    </a>
+                    .
+                </div>
+            } else if(BenefitGroup.isGroup2(iabdType.id)) {
+                <div class="govuk-inset-text">
+                    @messages("ExclusionOverviewMPBIK.benefitsManage.inset.group2." + request.userType)
+                    <br><br>
+                    <a class="govuk-link govuk-link--no-visited-state" href = "https://www.gov.uk/guidance/draft-guidance-and-legislation-to-aid-preparation-for-reporting-benefits-in-kind-in-real-time">
+                        @messages("ExclusionOverviewMPBIK.benefitsManage.inset.link")
+                    </a>
+                    .
+                </div>
+            }
             <h2 class="govuk-heading-l">@messages("ExclusionOverview.excludedEmployee.table.title")</h2>
             <table class="govuk-table" style="width: 100%; table-layout: fixed;">
                 <thead class="govuk-table__head">
