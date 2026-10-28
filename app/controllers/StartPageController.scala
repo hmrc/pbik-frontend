@@ -16,17 +16,14 @@
 
 package controllers
 
-import config.PbikAppConfig
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.*
-import services.BikListService
 import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.Exceptions.{InvalidURIException, InvalidYearURIException}
-import utils.{ControllersReferenceData, FormMappings}
-import views.html.{SelectYearPage, StartPageMpbik, StartPageMpbik2}
+import utils.ControllersReferenceData
+import views.html.StartPage
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,48 +33,17 @@ class StartPageController @Inject() (
   cc: MessagesControllerComponents,
   authenticate: AuthAction,
   noSessionCheck: NoSessionCheckAction,
-  bikListService: BikListService,
-  formMappings: FormMappings,
   controllersReferenceData: ControllersReferenceData,
-  startPageMpbikToggleView: StartPageMpbik,
-  startPageMpbikPhase2View: StartPageMpbik2,
-  selectYearPageView: SelectYearPage, // todo remove after mpbik cleanup
-  pbikAppConfig: PbikAppConfig
+  startPageView: StartPage
 )(implicit val ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport
     with Logging
     with WithUrlEncodedOnlyFormBinding {
 
-  private val mpbikToggle: Boolean       = pbikAppConfig.mpbikToggle
-  private val mpbikTogglePhase2: Boolean = pbikAppConfig.mpbikTogglePhase2
-
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val resultFuture: Future[Result] =
-      if (mpbikTogglePhase2) {
-        Future.successful(Ok(startPageMpbikPhase2View()))
-      } else {
-        for {
-          currentYearList <- bikListService.currentYearList
-        } yield Ok(startPageMpbikToggleView(currentYearList.getBenefitInKindWithCount.nonEmpty))
-      }
+      Future.successful(Ok(startPageView()))
     controllersReferenceData.responseErrorHandler(resultFuture)
   }
-
-  def selectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    // TODO remove function as part of clean up MPBIK
-    val resultFuture: Future[Result] =
-      Future.failed(new InvalidURIException())
-
-    controllersReferenceData.responseErrorHandler(resultFuture)
-  }
-
-  def submitSelectYearPage: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
-    // TODO remove function as part of clean up MPBIK
-    val resultFuture: Future[Result] =
-      Future.failed(new InvalidURIException())
-
-    controllersReferenceData.responseErrorHandler(resultFuture)
-  }
-
 }

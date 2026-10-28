@@ -22,12 +22,12 @@ import models.v1.IabdType
 import play.twirl.api.Html
 import utils.{FormMappings, TaxDateUtils}
 import views.helper.PBIKViewSpec
-import views.html.exclusion.WhatNextExclusionMpbik
+import views.html.exclusion.WhatNextExclusion
 
 class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings                    = injected[FormMappings]
-  val whatNextExclusionView: WhatNextExclusionMpbik = injected[WhatNextExclusionMpbik]
+  val formMappings: FormMappings               = injected[FormMappings]
+  val whatNextExclusionView: WhatNextExclusion = injected[WhatNextExclusion]
 
   implicit val appConfig: PbikAppConfig = injected[PbikAppConfig]
 
@@ -35,7 +35,7 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
   private val taxDateUtils = new TaxDateUtils
 
   implicit def view()(implicit request: AuthenticatedRequest[?]): Html =
-    whatNextExclusionView(taxYearRange, "cy", iabdType, tracePerson, mpbik = mpbikToggle)
+    whatNextExclusionView(taxYearRange, "cy", iabdType, tracePerson)
 
   "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)
@@ -43,7 +43,7 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
     behave like pageWithTitle(messages("whatNext.exclude.heading"))
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     behave like pageWithLink(
-      messages("whatNextMPBIK.exclude.you.do.p.cy.link." + organisationRequest.userType),
+      messages("whatNext.exclude.you.do.p.cy.link." + organisationRequest.userType),
       "/payrollbik/registered-benefits-expenses"
     )
     behave like pageWithLink(
@@ -63,11 +63,11 @@ class WhatNextExclusionCYViewSpec extends PBIKViewSpec {
     behave like pageWithTitle(messages("whatNext.exclude.heading"))
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     behave like pageWithLink(
-      messages("whatNextMPBIK.exclude.you.do.p.cy.link." + agentRequest.userType),
+      messages("whatNext.exclude.you.do.p.cy.link." + agentRequest.userType),
       "/payrollbik/registered-benefits-expenses"
     )
     behave like pageWithLink(
-      messages("whatNextMPBIK.exclude.more.p.cy.link", "Private medical treatment or insurance"),
+      messages("whatNext.exclude.more.p.cy.link", "Private medical treatment or insurance"),
       s"/payrollbik/cy/${iabdType.id}/excluded-employees"
     )
     behave like pageWithIdAndText(

@@ -17,7 +17,7 @@
 package utils
 
 import base.FakePBIKApplication
-import models.form.{ExclusionNino, MandatoryRadioButton, SelectYear}
+import models.form.{ExclusionNino, MandatoryRadioButton}
 
 import java.time.Month._
 
@@ -165,13 +165,6 @@ class FormMappingsSpec extends FakePBIKApplication {
       "result in correct result" in {
         formMappings.navigationRadioButton.fill(MandatoryRadioButton("cy")) mustBe
           formMappings.navigationRadioButton.bind(Map(("navigation", "cy")))
-      }
-    }
-
-    "selectYearForm is filled" should {
-      "result in correct result" in {
-        formMappings.selectYearForm.fill(SelectYear("cy")) mustBe
-          formMappings.selectYearForm.bind(Map(("year", "cy")))
       }
     }
   }

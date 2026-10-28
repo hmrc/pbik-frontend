@@ -39,18 +39,13 @@ Service.back.excluded = Yn ôl i’ch cyflogeion sydd wedi’u heithrio
 Service.back.yta = Yn ôl i’ch cyfrif treth
 Service.back.ecl = Yn ôl i’r rhestr o gleientiaid TWE
 
-Service.back.eclMPBIK = Yn ôl i’r rhestr o gleientiaid TWE
-
 Service.paye.label = Cyfeirnod TWE y cyflogwr:
-Service.nino.lastletter = (Nid yw’r llythyren olaf yn cael ei dangos)
 
-Service.nino.lastletterMPBIK = (heb ddangos y llythyren olaf)
+Service.nino.lastletter = (heb ddangos y llythyren olaf)
 
 Service.continue = Parhau
-Service.continueMPBIK = Parhau
 Service.confirm = Cadarnhau
 Service.confirmAndContinue = Cadarnhau a pharhau
-Service.confirmAndContinueMPBIK = Cadarnhau a pharhau
 Service.tryagain = rhowch gynnig arall arni
 
 Service.print.link = Argraffu’r dudalen hon
@@ -66,121 +61,72 @@ Service.notEnrolled.button = Ymrestru
 
 Service.removeexclusion = Canslo’r gwaharddiad
 Service.finish.rescinded = Gweld cyflogeion sydd wedi’u heithrio
-Service.for = ar gyfer
 
 Service.excludeanotheremployee = Eithrio cyflogai arall
 
-Service.errorSummary.heading = Mae problem wedi codi
 Service.error = Gwall
 
-Service.errorSummary.headingMPBIK = Mae problem
+Service.errorSummary.heading = Mae problem
 
 #*************************************************************
-# Start Page MPBIK
+# Start Page
 #*************************************************************
 
-StartPageMPBIK.heading.organisation = Talu buddiannau a threuliau drwy’r gyflogres
-StartPageMPBIK.p1.organisation = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru buddiannau a threuliau ar gyfer blwyddyn dreth 2026 i 2027 oherwydd daeth y cyfnod cofrestru i ben ar 5 Ebrill. Byddwch yn gallu defnyddio’r gwasanaeth hwn i gofrestru buddiannau a threuliau penodol o fis Tachwedd 2026 ymlaen.
-StartPageMPBIK.p2.organisation = Os ydych wedi cofrestru buddiannau neu dreuliau, gallwch ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
-StartPageMPBIK.p3.organisation = gweld buddiannau a threuliau sydd wedi eu cofrestru ar gyfer y flwyddyn hon
-StartPageMPBIK.p4.organisation = gweld cyflogeion sydd wedi eu heithrio rhag cael buddiant penodol
-StartPageMPBIK.p5.organisation = eithrio cyflogeion rhag cael buddiant penodol ar gyfer y flwyddyn hon
-StartPageMPBIK.link.organisation = Dechrau nawr
+StartPage.heading.organisation = Talu buddiannau a threuliau drwy’r gyflogres
+StartPage.p1.organisation = Defnyddiwch y gwasanaeth hwn i gofrestru buddiannau a threuliau y byddwch yn eu trethu trwy gyflogres.
+StartPage.p2.organisation = Gallwch hefyd ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
+StartPage.p3.organisation = eithrio cyflogeion rhag cael buddiant ar gyfer y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf
+StartPage.p4.organisation = ychwanegu cyflogai yn ôl at fuddiant ar gyfer blwyddyn dreth nesaf
+StartPage.p5.organisation = rhoi gwybod i CThEF nad ydych yn trethu buddiant drwy’r gyflogres mwyach
+StartPage.inset.organisation = O 6 Ebrill 2027 ymlaen, mae’r ffordd rydych yn talu am fuddiannau a threuliau drwy’r gyflogres yn newid.
+StartPage.inset.link.text.organisation = Dysgu sut i roi gwybod am fuddiannau a threuliau ar ôl 6 Ebrill 2027 (yn agor ffenestr neu dab newydd)
+StartPage.h2.organisation = Buddiannau na allwch gofrestru gan ddefnyddio’r gwasanaeth yma
+StartPage.p6.organisation = Nid oes angen i chi ddefnyddio’r gwasanaeth hwn i gofrestru’r buddiannau canlynol i’w trethu trwy’r gyflogres:
+StartPage.p7.organisation = ceir a thanwydd ceir
+StartPage.p8.organisation = faniau a thanwydd faniau
+StartPage.p9.organisation = yswiriant meddygol a deintyddol preifat
+StartPage.p10.organisation = Os ydych chi’n cynnig y buddiannau hyn i gyflogeion,
+StartPage.p10.link.text.organisation = rhaid i chi nawr roi gwybod beth yw gwerth y buddiannau a’r treuliau hyn mewn amser real (yn agor ffenestr neu dab newydd)
+StartPage.link.organisation = Dechrau nawr
 
-StartPageMPBIK.heading.agent = Talu buddiannau a threuliau drwy’r gyflogres
-StartPageMPBIK.p1.agent = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru buddiannau a threuliau ar gyfer blwyddyn dreth 2026 i 2027 oherwydd daeth y cyfnod cofrestru i ben ar 5 Ebrill. Byddwch yn gallu defnyddio’r gwasanaeth hwn i gofrestru buddiannau a threuliau penodol ar gyfer eich cleient o fis Tachwedd 2026 ymlaen.
-StartPageMPBIK.p2.agent = Os yw’ch cleient wedi cofrestru buddiannau neu dreuliau, gallwch ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
-StartPageMPBIK.p3.agent = gweld pa fuddiannau a threuliau sydd wedi eu cofrestru ar gyfer y flwyddyn hon
-StartPageMPBIK.p4.agent = gweld pa fuddiannau a threuliau sydd wedi eu heithrio rhag cael buddiant penodol
-StartPageMPBIK.p5.agent = eithrio cyflogeion rhag cael buddiant penodol ar gyfer y flwyddyn hon
-StartPageMPBIK.link.agent = Dechrau nawr
-
-#*************************************************************
-# Start Page MPBIK Phase 2
-#*************************************************************
-
-StartPageMPBIK2.heading.organisation = Talu buddiannau a threuliau drwy’r gyflogres
-StartPageMPBIK2.p1.organisation = Defnyddiwch y gwasanaeth hwn i gofrestru buddiannau a threuliau y byddwch yn eu trethu trwy gyflogres.
-StartPageMPBIK2.p2.organisation = Gallwch hefyd ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
-StartPageMPBIK2.p3.organisation = eithrio cyflogeion rhag cael buddiant ar gyfer y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf
-StartPageMPBIK2.p4.organisation = ychwanegu cyflogai yn ôl at fuddiant ar gyfer blwyddyn dreth nesaf
-StartPageMPBIK2.p5.organisation = rhoi gwybod i CThEF nad ydych yn trethu buddiant drwy’r gyflogres mwyach
-StartPageMPBIK2.inset.organisation = O 6 Ebrill 2027 ymlaen, mae’r ffordd rydych yn talu am fuddiannau a threuliau drwy’r gyflogres yn newid.
-StartPageMPBIK2.inset.link.text.organisation = Dysgu sut i roi gwybod am fuddiannau a threuliau ar ôl 6 Ebrill 2027 (yn agor ffenestr neu dab newydd)
-StartPageMPBIK2.h2.organisation = Buddiannau na allwch gofrestru gan ddefnyddio’r gwasanaeth yma
-StartPageMPBIK2.p6.organisation = Nid oes angen i chi ddefnyddio’r gwasanaeth hwn i gofrestru’r buddiannau canlynol i’w trethu trwy’r gyflogres:
-StartPageMPBIK2.p7.organisation = ceir a thanwydd ceir
-StartPageMPBIK2.p8.organisation = faniau a thanwydd faniau
-StartPageMPBIK2.p9.organisation = yswiriant meddygol a deintyddol preifat
-StartPageMPBIK2.p10.organisation = Os ydych chi’n cynnig y buddiannau hyn i gyflogeion,
-StartPageMPBIK2.p10.link.text.organisation = rhaid i chi nawr roi gwybod beth yw gwerth y buddiannau a’r treuliau hyn mewn amser real (yn agor ffenestr neu dab newydd)
-StartPageMPBIK2.link.organisation = Dechrau nawr
-
-StartPageMPBIK2.heading.agent = Talu buddiannau a threuliau drwy’r gyflogres
-StartPageMPBIK2.p1.agent = Defnyddiwch y gwasanaeth hwn i gofrestru buddiannau a threuliau y byddwch yn eu trethu trwy gyflogres eich cleient.
-StartPageMPBIK2.p2.agent = Gallwch chi hefyd ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
-StartPageMPBIK2.p3.agent = eithrio cyflogeion rhag cael buddiant ar gyfer y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf
-StartPageMPBIK2.p4.agent = ychwanegu cyflogai yn ôl at fuddiant ar gyfer blwyddyn dreth nesaf
-StartPageMPBIK2.p5.agent = rhoi gwybod i CThEF nad yw’ch cleient bellach yn trethu buddiant drwy’r gyflogres
-StartPageMPBIK2.inset.agent = O 6 Ebrill 2027 ymlaen, mae’r ffordd rydych yn talu am fuddiannau a threuliau drwy’r gyflogres yn newid.
-StartPageMPBIK2.inset.link.text.agent = Dysgu sut i roi gwybod am fuddiannau a threuliau ar ôl 6 Ebrill 2027 (yn agor ffenestr neu dab newydd)
-StartPageMPBIK2.h2.agent = Buddiannau na allwch gofrestru gan ddefnyddio’r gwasanaeth yma
-StartPageMPBIK2.p6.agent = Nid oes angen i chi ddefnyddio’r gwasanaeth hwn i gofrestru’r buddiannau canlynol i’w trethu trwy gyflogres eich cleient:
-StartPageMPBIK2.p7.agent = ceir a thanwydd ceir
-StartPageMPBIK2.p8.agent = faniau a thanwydd faniau
-StartPageMPBIK2.p9.agent = yswiriant meddygol a deintyddol preifat
-StartPageMPBIK2.p10.agent = Os yw’ch cleient yn cynnig y buddiannau hyn i gyflogeion,
-StartPageMPBIK2.p10.link.text.agent = rhaid i chi nawr roi gwybod beth yw gwerth y buddiannau a’r treuliau hyn mewn amser real (yn agor ffenestr neu dab newydd)
-StartPageMPBIK2.link.agent = Dechrau nawr
+StartPage.heading.agent = Talu buddiannau a threuliau drwy’r gyflogres
+StartPage.p1.agent = Defnyddiwch y gwasanaeth hwn i gofrestru buddiannau a threuliau y byddwch yn eu trethu trwy gyflogres eich cleient.
+StartPage.p2.agent = Gallwch chi hefyd ddefnyddio’r gwasanaeth hwn i wneud y canlynol:
+StartPage.p3.agent = eithrio cyflogeion rhag cael buddiant ar gyfer y flwyddyn dreth bresennol neu’r flwyddyn dreth nesaf
+StartPage.p4.agent = ychwanegu cyflogai yn ôl at fuddiant ar gyfer blwyddyn dreth nesaf
+StartPage.p5.agent = rhoi gwybod i CThEF nad yw’ch cleient bellach yn trethu buddiant drwy’r gyflogres
+StartPage.inset.agent = O 6 Ebrill 2027 ymlaen, mae’r ffordd rydych yn talu am fuddiannau a threuliau drwy’r gyflogres yn newid.
+StartPage.inset.link.text.agent = Dysgu sut i roi gwybod am fuddiannau a threuliau ar ôl 6 Ebrill 2027 (yn agor ffenestr neu dab newydd)
+StartPage.h2.agent = Buddiannau na allwch gofrestru gan ddefnyddio’r gwasanaeth yma
+StartPage.p6.agent = Nid oes angen i chi ddefnyddio’r gwasanaeth hwn i gofrestru’r buddiannau canlynol i’w trethu trwy gyflogres eich cleient:
+StartPage.p7.agent = ceir a thanwydd ceir
+StartPage.p8.agent = faniau a thanwydd faniau
+StartPage.p9.agent = yswiriant meddygol a deintyddol preifat
+StartPage.p10.agent = Os yw’ch cleient yn cynnig y buddiannau hyn i gyflogeion,
+StartPage.p10.link.text.agent = rhaid i chi nawr roi gwybod beth yw gwerth y buddiannau a’r treuliau hyn mewn amser real (yn agor ffenestr neu dab newydd)
+StartPage.link.agent = Dechrau nawr
 
 #*************************************************************
-# Payrolling Summary Page MPBIK
+# Payrolling Summary
 #*************************************************************
 
-PayrollingSummaryMPBIK.heading = Crynodeb o drethu buddiannau drwy’r gyflogres
-PayrollingSummaryMPBIK.tab.taxYear.cy0 = Blwyddyn dreth Ebrill {0} i {1}
-PayrollingSummaryMPBIK.tab.heading = Buddiannau sydd wedi eu cofrestru
-PayrollingSummaryMPBIK.table.header = Buddiant
-PayrollingSummaryMPBIK.table.exclude.link.text = Eithrio cyflogeion
-PayrollingSummaryMPBIK.table.manage.link.text = Rheoli cyflogeion
+PayrollingSummary.heading = Crynodeb o drethu buddiannau drwy’r gyflogres
+PayrollingSummary.tab.taxYear = Blwyddyn dreth {0} i {1}
+PayrollingSummary.tab.heading = Buddiannau sydd wedi eu cofrestru
+PayrollingSummary.table.header = Buddiant
+PayrollingSummary.table.exclude.link.text = Eithrio cyflogeion
+PayrollingSummary.table.manage.link.text = Rheoli cyflogeion
+PayrollingSummary.you.can = Gallwch
 
-PayrollingSummaryMPBIK.p1.organisation = Gallwch ddefnyddio’r gwasanaeth hwn i reoli buddiannau sy’n cael eu trethu drwy’r gyflogres.
-PayrollingSummaryMPBIK.p2.organisation = Dyma’r buddiannau yr ydych wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
+PayrollingSummary.p1.organisation = Gallwch chi ddefnyddio’r gwasanaeth hwn i gofrestru a chadw trefn ar y buddiannau sy’n cael eu trethu drwy’r gyflogres.
+PayrollingSummary.no.benefits.text.organisation = Nid oes gennych unrhyw fuddiannau wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
+PayrollingSummary.benefits.text.organisation = Dyma’r buddiannau yr ydych wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
+PayrollingSummary.choose.benefit.link.text.organisation = ddewis buddiant i’w drethu drwy’r gyflogres
 
-PayrollingSummaryMPBIK.p1.agent = Gallwch ddefnyddio’r gwasanaeth hwn i reoli’r buddiannau sy’n cael eu trethu drwy gyflogres {0}.
-PayrollingSummaryMPBIK.p2.agent = Dyma’r buddiannau rydych wedi’u cofrestru i’w trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen.
-
-#*************************************************************
-# Payrolling Summary Page MPBIK2
-#*************************************************************
-
-PayrollingSummaryMPBIK2.heading = Crynodeb o drethu buddiannau drwy’r gyflogres
-PayrollingSummaryMPBIK2.tab.taxYear = Blwyddyn dreth {0} i {1}
-PayrollingSummaryMPBIK2.tab.heading = Buddiannau sydd wedi eu cofrestru
-PayrollingSummaryMPBIK2.table.header = Buddiant
-PayrollingSummaryMPBIK2.table.exclude.link.text = Eithrio cyflogeion
-PayrollingSummaryMPBIK2.table.manage.link.text = Rheoli cyflogeion
-PayrollingSummaryMPBIK2.you.can = Gallwch
-
-PayrollingSummaryMPBIK2.p1.organisation = Gallwch chi ddefnyddio’r gwasanaeth hwn i gofrestru a chadw trefn ar y buddiannau sy’n cael eu trethu drwy’r gyflogres.
-PayrollingSummaryMPBIK2.no.benefits.text.organisation = Nid oes gennych unrhyw fuddiannau wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
-PayrollingSummaryMPBIK2.benefits.text.organisation = Dyma’r buddiannau yr ydych wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
-PayrollingSummaryMPBIK2.choose.benefit.link.text.organisation = ddewis buddiant i’w drethu drwy’r gyflogres
-
-PayrollingSummaryMPBIK2.p1.agent = Gallwch chi ddefnyddio’r gwasanaeth hwn i gofrestru a chadw trefn ar y buddiannau sy’n cael eu trethu drwy gyflogres {0}.
-PayrollingSummaryMPBIK2.no.benefits.text.agent = Nid oes gan eich cleient unrhyw fuddiannau wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
-PayrollingSummaryMPBIK2.benefits.text.agent = Dyma’r buddiannau rydych wedi’u cofrestru i’w trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen.
-PayrollingSummaryMPBIK2.choose.benefit.link.text.agent = ddewis buddiant i’w drethu drwy gyflogres eich cleient
-
-#*************************************************************
-# Select Year
-#*************************************************************
-
-SelectYear.title = Beth hoffech chi ei wneud
-SelectYear.heading = Beth hoffech chi ei wneud?
-SelectYear.option1 = Cofrestru a rheoli buddiannau a threuliau o 6 Ebrill {0} ymlaen
-SelectYear.option2 = Eithrio cyflogeion rhag buddiannau a threuliau yn y flwyddyn dreth bresennol
-SelectYear.error.empty = Dewiswch os hoffech gofrestru a rheoli buddiannau a threuliau o 6 Ebrill {0} ymlaen neu eithrio cyflogeion rhag buddiannau a threuliau yn y flwyddyn dreth bresennol
+PayrollingSummary.p1.agent = Gallwch chi ddefnyddio’r gwasanaeth hwn i gofrestru a chadw trefn ar y buddiannau sy’n cael eu trethu drwy gyflogres {0}.
+PayrollingSummary.no.benefits.text.agent = Nid oes gan eich cleient unrhyw fuddiannau wedi’u cofrestru i’w trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
+PayrollingSummary.benefits.text.agent = Dyma’r buddiannau rydych wedi’u cofrestru i’w trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen.
+PayrollingSummary.choose.benefit.link.text.agent = ddewis buddiant i’w drethu drwy gyflogres eich cleient
 
 #*************************************************************
 # Rwyf wedi cofrestru i dalu drwy’r gyflogres
@@ -189,38 +135,16 @@ SelectYear.error.empty = Dewiswch os hoffech gofrestru a rheoli buddiannau a thr
 Overview.benefitsRegistered.heading = Cofrestru buddiant neu draul
 Overview.benefitsManage.heading = Rheoli buddiant neu draul
 Overview.next.heading = 6 Ebrill {0} i 5 Ebrill {1}
-Overview.next.lead.empty = Gallwch ddefnyddio’r gwasanaeth hwn i ychwanegu buddiant neu draul i’w trethu drwy’r gyflogres.
-Overview.empty.benefits.h2 = Crynodeb o dalu drwy’r gyflogres o 6 Ebrill {0} ymlaen
-Overview.empty.benefits.p = Nid ydych wedi cofrestru unrhyw fuddiannau na threuliau i’w trethu drwy’r gyflogres.
 Overview.current.from=o
 Overview.current.payroll.p11d=y gyflogres ac adrodd ar P11D
-Overview.table.exclude.link = Rheoli cyflogeion
-Overview.table.exclude.none.link = Eithrio cyflogai
-Overview.table.remove.link = Dileu
-Overview.table.add.link = Ychwanegu buddiant neu draul
 
 ManagingRegistration.add.exhausted = Rydych eisoes wedi ychwanegu’r holl fuddiannau neu dreuliau sydd ar gael yn y categori hwn.
-
-Overview.change.year.cy0.link.before = Gallwch
-Overview.change.year.cy0.text.link = newid y flwyddyn dreth
-Overview.change.year.cy0.link.after = er mwyn ychwanegu buddiannau a threuliau at y gyflogres o 6 Ebrill {0} ymlaen.
-
-Overview.change.year.cy1.link.before = Gallwch
-Overview.change.year.cy1.text.link = newid y flwyddyn dreth
-Overview.change.year.cy1.link.after = er mwyn eithrio cyflogeion rhag buddiannau a threuliau yn y flwyddyn dreth bresennol.
-
-Overview.benefitsManage.p2 = Os ydych chi’n eithrio cyflogeion rhag buddiannau a threuliau ar gyfer y flwyddyn dreth bresennol, mae’n rhaid i chi roi gwybod am y buddiant neu’r draul drwy gyflwyno P11D i CThEF.
-Overview.benefitsManage.inset = Ni allwch ailddechrau talu drwy’r gyflogres yn y flwyddyn dreth bresennol ar gyfer cyflogeion sydd wedi’u heithrio.
 
 #*************************************************************
 # Add benefits
 #*************************************************************
 
 AddBenefits.Heading = Pa fuddiannau neu dreuliau y byddwch yn eu trethu drwy’r gyflogres?
-AddBenefits.p = Dewiswch ba fuddiannau a threuliau y byddwch yn eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
-AddBenefits.selectAll = Dewiswch bob un sy’n gymwys
-
-AddBenefits.noselection.error = Mae’n rhaid i chi ddewis o leiaf 1 buddiant neu draul cyn i chi allu mynd yn eich blaen
 
 AddBenefits.Confirm.Multiple.Title = Datgan y buddiannau rydych am eu cofrestru
 AddBenefits.Confirm.Multiple.key = Buddiannau a ddewiswyd
@@ -241,19 +165,19 @@ AddBenefits.Confirm.bullet4.agent = bod modd eithrio cyflogeion o’r broses o d
 AddBenefits.Confirm.bullet5.agent = nid oes angen eithrio cyflogeion nad ydynt yn cael y buddiant oherwydd nad oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
 
 #*************************************************************
-# Add benefits MPBIK Phase 2
+# Add benefits
 #*************************************************************
 
-AddBenefitsMPBIK2.p = Dewiswch pa fuddiannau yr ydych eisiau eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
-AddBenefitsMPBIK2.p2 = Mae’n rhaid i chi drethu’r holl fuddiannau a ddewiswyd drwy’r gyflogres.
+AddBenefits.p = Dewiswch pa fuddiannau yr ydych eisiau eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
+AddBenefits.p2 = Mae’n rhaid i chi drethu’r holl fuddiannau a ddewiswyd drwy’r gyflogres.
 
-AddBenefitsMPBIK2.Heading.organisation = Dewiswch pa fuddiannau i’w trethu drwy’r gyflogres
+AddBenefits.Heading.organisation = Dewiswch pa fuddiannau i’w trethu drwy’r gyflogres
 
-AddBenefitsMPBIK2.Heading.agent = Dewiswch pa fuddiannau i’w trethu drwy gyflogres eich cleient
+AddBenefits.Heading.agent = Dewiswch pa fuddiannau i’w trethu drwy gyflogres eich cleient
 
-AddBenefitsMPBIK2.selectAll = Dewiswch bob un sy’n gymwys
+AddBenefits.selectAll = Dewiswch bob un sy’n gymwys
 
-AddBenefitsMPBIK2.noselection.error = Mae’n rhaid i chi ddewis o leiaf un buddiant
+AddBenefits.noselection.error = Mae’n rhaid i chi ddewis o leiaf un buddiant
 
 #*************************************************************
 # Remove benefits
@@ -285,51 +209,34 @@ RemoveBenefits.other.error.length = Mae’n rhaid i ‘Pam yr ydych am ddileu’
 RemoveBenefits.confirm.title = Datgan y buddiant neu’r draul i roi’r gorau i drethu drwy’r gyflogres
 RemoveBenefits.confirm.heading = Datgan y buddiant neu’r draul i roi’r gorau i drethu drwy’r gyflogres
 
-RemoveBenefits.confirm.p1.organisation = Drwy gadarnhau, byddwch yn rhoi’r gorau i drethu {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 RemoveBenefits.confirm.p2.organisation = Mae’n rhaid i chi roi gwybod am werth unrhyw fuddiant neu draul ar gyfer y flwyddyn dreth gyfredol drwy gyflwyno P11D i CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 
-RemoveBenefits.confirm.p1.agent = Drwy gadarnhau, byddwch yn rhoi’r gorau i drethu {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 RemoveBenefits.confirm.p2.agent = Mae’n rhaid i’ch cleient rhoi gwybod am werth unrhyw fuddiant neu draul ar gyfer y flwyddyn dreth gyfredol drwy gyflwyno P11D i CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
 
 #*************************************************************
-# Remove benefits MPBIK Phase 2
+# Remove benefits
 #*************************************************************
 
-RemoveBenefitsMPBIK2.link = Tynnu oddi ar y gyflogres
-RemoveBenefitsMPBIK2.selected.benefit = Y buddiant a ddewiswyd
+RemoveBenefits.link = Tynnu oddi ar y gyflogres
+RemoveBenefits.selected.benefit = Y buddiant a ddewiswyd
 
-RemoveBenefitsMPBIK2.reason.Title.organisation = Datgan y buddiant i roi’r gorau i’w drethu drwy’r gyflogres
-RemoveBenefitsMPBIK2.confirm.p1.organisation = Drwy gadarnhau, rydych yn rhoi gwybod i CThEF eich bod am roi’r gorau i drethu’r canlynol drwy’ch cyflogres o 6 Ebrill {0} ymlaen:
-RemoveBenefitsMPBIK2.confirm.declaration.organisation = Rwy’n cadarnhau’r canlynol:
-RemoveBenefitsMPBIK2.confirm.bullet1.organisation = Byddaf yn anfon P11D ar gyfer pob cyflogai sydd wedi cael y buddiant hwn er mwyn rhoi gwybod am y gwerth i CThEF
-RemoveBenefitsMPBIK2.confirm.bullet2.organisation = Byddaf yn anfon unrhyw P11D ar ddiwedd y flwyddyn dreth
+RemoveBenefits.reason.Title.organisation = Datgan y buddiant i roi’r gorau i’w drethu drwy’r gyflogres
+RemoveBenefits.confirm.p1.organisation = Drwy gadarnhau, rydych yn rhoi gwybod i CThEF eich bod am roi’r gorau i drethu’r canlynol drwy’ch cyflogres o 6 Ebrill {0} ymlaen:
+RemoveBenefits.confirm.declaration.organisation = Rwy’n cadarnhau’r canlynol:
+RemoveBenefits.confirm.bullet1.organisation = Byddaf yn anfon P11D ar gyfer pob cyflogai sydd wedi cael y buddiant hwn er mwyn rhoi gwybod am y gwerth i CThEF
+RemoveBenefits.confirm.bullet2.organisation = Byddaf yn anfon unrhyw P11D ar ddiwedd y flwyddyn dreth
 
-RemoveBenefitsMPBIK2.reason.Title.agent = Datgan y buddiant rydych am roi’r gorau i’w drethu drwy gyflogres eich cleient
-RemoveBenefitsMPBIK2.confirm.p1.agent = Drwy gadarnhau hyn, rydych yn dweud wrth CThEF y bydd eich cleient yn rhoi’r gorau i drethu’r buddiannau canlynol drwy ei gyflogres o 6 Ebrill {0}:
-RemoveBenefitsMPBIK2.confirm.declaration.agent = Rwy’n cadarnhau y byddaf yn dweud y canlynol wrth fy nghleient:
-RemoveBenefitsMPBIK2.confirm.bullet1.agent = bod yn rhaid iddo anfon P11D ar gyfer pob cyflogai sydd wedi cael y buddiant hwn i adrodd am y gwerth wrth CThEF
-RemoveBenefitsMPBIK2.confirm.bullet2.agent = bod yn rhaid iddo anfon unrhyw P11D ar ddiwedd y flwyddyn dreth
+RemoveBenefits.reason.Title.agent = Datgan y buddiant rydych am roi’r gorau i’w drethu drwy gyflogres eich cleient
+RemoveBenefits.confirm.p1.agent = Drwy gadarnhau hyn, rydych yn dweud wrth CThEF y bydd eich cleient yn rhoi’r gorau i drethu’r buddiannau canlynol drwy ei gyflogres o 6 Ebrill {0}:
+RemoveBenefits.confirm.declaration.agent = Rwy’n cadarnhau y byddaf yn dweud y canlynol wrth fy nghleient:
+RemoveBenefits.confirm.bullet1.agent = bod yn rhaid iddo anfon P11D ar gyfer pob cyflogai sydd wedi cael y buddiant hwn i adrodd am y gwerth wrth CThEF
+RemoveBenefits.confirm.bullet2.agent = bod yn rhaid iddo anfon unrhyw P11D ar ddiwedd y flwyddyn dreth
 
 #*************************************************************
 # Exclusion Overview
 #*************************************************************
 
-ExclusionOverview.excludecount.exceeded = Ni allwch wahardd rhagor o weithwyr.
-
-ExclusionOverview.notExcludedEmployee.p1 = Mae {0} yn cael ei drethu drwy’r gyflogres ar gyfer pob cyflogai o 6 Ebrill {1} ymlaen.
-
 ExclusionOverview.excludedEmployee.table.title = Cyflogeion sydd wedi’u heithrio
-ExclusionOverview.excludedEmployee.canceledExclusion = Wedi’i dalu drwy’r gyflogres o fis Ebrill {0} ymlaen
-
-ExclusionOverview.p1.organisation = Dylech ond eithrio cyflogeion sy’n cael y buddiant neu’r draul hon.
-ExclusionOverview.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy gyflwyno P11D i CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
-ExclusionOverview.p3.cy = Nid yw’r buddiant neu’r traul hwn wedi’i gofrestru i’w dalu drwy’r gyflogres yn y flwyddyn dreth nesaf.
-
-ExclusionOverview.p1.agent = Dylech ond eithrio cyflogeion sy’n cael y buddiant neu’r draul hon.
-ExclusionOverview.p2.agent = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i’ch cleient roi gwybod am werth y buddiant hwn neu’r draul hon gyflwyno P11D i CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
-
-ExclusionOverview.p1.cy = Ni allwch ailddechrau talu drwy’r gyflogres yn y flwyddyn dreth bresennol ar gyfer cyflogeion sydd wedi’u heithrio.
-ExclusionOverview.p2.cy = Os ydych chi’n tynnu cyflogai o’r rhestr cyflogeion wedi’u heithrio, trethir y buddiant neu’r draul sydd dan sylw drwy gyflog y cyflogai hwnnw o ddechrau’r flwyddyn dreth nesaf.
 
 ExclusionOverview.h2 = A oes angen i chi eithrio cyflogai?
 ExclusionOverview.h2.hint = Gallwch eithrio hyd at {0} o gyflogeion.
@@ -338,26 +245,17 @@ ExclusionOverview.error.required = Dewiswch ‘Iawn’ os oes angen i chi eithri
 ExclusionDecision.noselection.error = Dewiswch ‘Iawn’ os ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai.
 ExclusionNinoDecision.title = A ydych yn gwybod beth yw rhif Yswiriant Gwladol y cyflogai yr hoffech ei eithrio?
 
-ExclusionSearch.title.multiple = Pa gyflogai ydych am ei eithrio?
-ExclusionSearch.title.single = Datgan y cyflogai sydd i’w eithrio rhag y buddiant neu’r draul sydd dan sylw
-ExclusionSearch.form.title = Chwiliwch am y cyflogai i’w eithrio
-ExclusionSearch.form.header = Chwiliwch am y cyflogai rydych am ei eithrio
-ExclusionSearch.caption = Cyflogai i’w eithrio
 ExclusionSearch.payroll.date = 6 Ebrill {0}
 
-ExclusionSearchMPBIK.form.title = Chwilio am y cyflogai i’w eithrio
-ExclusionSearchMPBIK.form.header = Chwilio am y cyflogai i’w eithrio o {0}
+ExclusionSearch.form.title = Chwilio am y cyflogai i’w eithrio
+ExclusionSearch.form.header = Chwilio am y cyflogai i’w eithrio o {0}
 
 ExclusionSearch.Fail.Desc = Nid oedd modd dod o hyd i’r cyflogai hwn
 ExclusionSearch.Fail.Exists.Desc = Mae’r cyflogai hwn eisoes wedi’i eithrio ar gyfer {0}. Gallwch ei weld yn eich {1}rhestr o gyflogeion sydd wedi’u heithrio{2}.
 ExclusionSearch.Fail.Exists.P = Chwilio eto am gyflogai gwahanol
 
-ExclusionSearch.warning = Ni fyddwch yn gallu rhoi’r buddiant neu’r draul sydd dan sylw drwy’r gyflogres ar gyfer y cyflogai hwn eto yn y flwyddyn dreth hon.
+ExclusionSearch.form.current.tax.year = Blwyddyn dreth Ebrill {0} i {1}
 
-ExclusionSearchMPBIK.form.current.tax.year = Blwyddyn dreth Ebrill {0} i {1}
-
-ExclusionImportant.Reminder = Drwy gadarnhau, byddwch yn eithrio’r cyflogai hwn rhag cael ei drethu o ran {0} drwy’r gyflogres o {1} ymlaen.
-ExclusionRemovalConfirmation.title = Datgan y cyflogai sydd i’w ychwanegu at y buddiant neu’r draul sydd dan sylw
 ExclusionRemovalConfirmation.table.title = Manylion gweithwyr
 ExclusionRemovalConfirmation.p = Drwy gadarnhau, bydd {0} yn cael ei drethu o ran {1} drwy’r gyflogres o 6 Ebrill {2} ymlaen.
 
@@ -375,171 +273,104 @@ ExclusionRemoval.Service.finish.rescinded = Bwrw golwg dros eich cyflogeion sydd
 ExclusionRemoval.Service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
 #*************************************************************
-# Excluded employees MPBIK
+# Excluded employees
 #*************************************************************
 
-ExclusionOverviewMPBIK.excludecount.exceeded = Ni allwch wahardd rhagor o weithwyr.
-ExcludedEmployeesMPBIK.form.current.tax.year = Blwyddyn dreth Ebrill {0} i {1}
-ExcludedEmployeesMPBIK.h1 = Nid ydych wedi eithrio unrhyw gyflogai
-ExclusionOverviewMPBIK.notExcludedEmployee.p1.organisation = O 6 Ebrill {1} ymlaen mae’r buddiant canlynol yn cael ei drethu drwy’r gyflogres ar gyfer pob cyflogai sy’n ei gael: {0}
-ExclusionOverviewMPBIK.notExcludedEmployee.p1.agent = Caiff y buddiant {0} ei drethu drwy gyflogres eich cleient ar gyfer pob cyflogai sy’n cael y buddiant hwn o 6 Ebrill {1} ymlaen.
-ExclusionOverviewMPBIK.p1 = Gallwch eithrio cyflogeion sy’n cael y buddiant hwn neu’r draul hon.
-ExclusionOverviewMPBIK.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy anfon P11D at CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
-ExclusionOverviewMPBIK.p2.agent = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i’ch cleient adrodd am werth y buddiant hwn neu’r draul hon drwy anfon P11D at CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
+ExclusionOverview.excludecount.exceeded = Ni allwch wahardd rhagor o weithwyr.
+ExcludedEmployees.form.current.tax.year = Blwyddyn dreth Ebrill {0} i {1}
+ExcludedEmployees.h1 = Nid ydych wedi eithrio unrhyw gyflogai
+ExclusionOverview.notExcludedEmployee.p1.organisation = O 6 Ebrill {1} ymlaen mae’r buddiant canlynol yn cael ei drethu drwy’r gyflogres ar gyfer pob cyflogai sy’n ei gael: {0}
+ExclusionOverview.notExcludedEmployee.p1.agent = Caiff y buddiant {0} ei drethu drwy gyflogres eich cleient ar gyfer pob cyflogai sy’n cael y buddiant hwn o 6 Ebrill {1} ymlaen.
+ExclusionOverview.p1 = Gallwch eithrio cyflogeion sy’n cael y buddiant hwn neu’r draul hon.
+ExclusionOverview.p2.organisation = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i chi roi gwybod am werth y buddiant hwn neu’r draul hon drwy anfon P11D at CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+ExclusionOverview.p2.agent = Ar gyfer cyflogeion sydd wedi’u heithrio, mae’n rhaid i’ch cleient adrodd am werth y buddiant hwn neu’r draul hon drwy anfon P11D at CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
 
-ExclusionOverviewMPBIK.benefitsManage.inset.group1.organisation = O 6 Ebrill 2027 ymlaen, bydd yn rhaid i chi drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
-ExclusionOverviewMPBIK.benefitsManage.inset.group1.agent = O 6 Ebrill 2027 ymlaen, mae’n rhaid i’ch cleient drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
+ExclusionOverview.benefitsManage.inset.group1.organisation = O 6 Ebrill 2027 ymlaen, bydd yn rhaid i chi drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
+ExclusionOverview.benefitsManage.inset.group1.agent = O 6 Ebrill 2027 ymlaen, mae’n rhaid i’ch cleient drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
 
-ExclusionOverviewMPBIK.benefitsManage.inset.group2.organisation = O 6 Ebrill 2028 ymlaen, bydd yn rhaid i chi drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
-ExclusionOverviewMPBIK.benefitsManage.inset.group2.agent = O 6 Ebrill 2028 ymlaen, mae’n rhaid i’ch cleient drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
+ExclusionOverview.benefitsManage.inset.group2.organisation = O 6 Ebrill 2028 ymlaen, bydd yn rhaid i chi drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
+ExclusionOverview.benefitsManage.inset.group2.agent = O 6 Ebrill 2028 ymlaen, mae’n rhaid i’ch cleient drethu’r buddiant hwn drwy’r gyflogres. Ni fydd y cyflogeion sydd wedi’u heithrio rhag cael y buddiant hwn wedi’i drethu drwy’r gyflogres yn cael eu heithrio bellach.
 
-ExclusionOverviewMPBIK.benefitsManage.inset.link = Dysgwch ragor am newidiadau sy’n ymwneud â thalu buddiannau drwy’r gyflogres (yn agor ffenestr neu dab newydd)
-
-#*************************************************************
-# Exclusion search MPBIK
-#*************************************************************
-
-ExclusionSearchMPBIK.title.multiple = Pa gyflogai rydych am ei eithrio?
-ExclusionSearchMPBIK.form.tax.year = Blwyddyn dreth Ebrill {0} i {1}
+ExclusionOverview.benefitsManage.inset.link = Dysgwch ragor am newidiadau sy’n ymwneud â thalu buddiannau drwy’r gyflogres (yn agor ffenestr neu dab newydd)
 
 #*************************************************************
-# Exclusion overview MPBIK
+# Exclusion overview
 #*************************************************************
 
-error.exclusionMPBIK.multi.selection = Dewiswch pa gyflogai i’w eithrio
-ExclusionSearchMPBIK.title.single = Datgan y cyflogai i’w eithrio rhag y buddiant hwn
-ExclusionSearchMPBIK.title.span.taxYear.cy0 = Blwyddyn dreth Ebrill {0} i {1}
-ExclusionImportantMPBIK.Reminder.CY = Drwy gadarnhau hyn, byddwch yn eithrio’r cyflogai hwn rhag cael y buddiant, {0}, wedi’i drethu drwy’r gyflogres o {1} ymlaen.
-ExclusionImportantMPBIK.Reminder.CYP1 = Drwy gadarnhau hyn, byddwch yn eithrio’r cyflogai hwn rhag cael y buddiant, {0}, wedi’i drethu drwy’r gyflogres o 6 Ebrill {1} ymlaen.
+error.exclusion.multi.selection = Dewiswch pa gyflogai i’w eithrio
+ExclusionSearch.title.single = Datgan y cyflogai i’w eithrio rhag y buddiant hwn
+ExclusionSearch.title.span.taxYear.cy0 = Blwyddyn dreth Ebrill {0} i {1}
+ExclusionImportant.Reminder.CY = Drwy gadarnhau hyn, byddwch yn eithrio’r cyflogai hwn rhag cael y buddiant, {0}, wedi’i drethu drwy’r gyflogres o {1} ymlaen.
+ExclusionImportant.Reminder.CYP1 = Drwy gadarnhau hyn, byddwch yn eithrio’r cyflogai hwn rhag cael y buddiant, {0}, wedi’i drethu drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 
-ExclusionSearchMPBIK.field.employee.name = Enw’r cyflogai
-ExclusionSearchMPBIK.field.employee.ni = Rhif Yswiriant Gwladol (heb ddangos y llythyren olaf)
-ExclusionSearchMPBIK.field.employee.payrollId = ID y gyflogres neu rif gwaith
+ExclusionSearch.title.multiple = Pa gyflogai rydych am ei eithrio?
+ExclusionSearch.form.tax.year = Blwyddyn dreth Ebrill {0} i {1}
 
-ExclusionSearchMPBIK.warning = Ni fydd modd i chi dalu’r buddiant hwn drwy’r gyflogres ar gyfer y cyflogai hwn eto ac ar gyfer y flwyddyn dreth hon.
+ExclusionSearch.field.employee.name = Enw’r cyflogai
+ExclusionSearch.field.employee.ni = Rhif Yswiriant Gwladol (heb ddangos y llythyren olaf)
+ExclusionSearch.field.employee.payrollId = ID y gyflogres neu rif gwaith
 
-ExclusionSearchMPBIK.confirmation.organisation.p = Rwy’n cadarnhau’r canlynol:
-ExclusionSearchMPBIK.confirmation.organisation.bullet1 = Byddaf yn rhoi gwybod am werth y buddiant ar gyfer y cyflogai hwn ar P11D
-ExclusionSearchMPBIK.confirmation.organisation.bullet2 = Byddaf yn anfon y P11D ar ddiwedd y flwyddyn dreth
-ExclusionSearchMPBIK.confirmation.agent.p = Rwy’n cadarnhau y byddaf yn dweud y canlynol wrth fy nghleient:
-ExclusionSearchMPBIK.confirmation.agent.bullet1 = bod yn rhaid iddo adrodd am werth y buddiant ar gyfer y cyflogai hwn ar P11D
-ExclusionSearchMPBIK.confirmation.agent.bullet2 = bod yn rhaid iddo anfon y P11D ar ddiwedd y flwyddyn dreth
+ExclusionSearch.warning = Ni fydd modd i chi dalu’r buddiant hwn drwy’r gyflogres ar gyfer y cyflogai hwn eto ac ar gyfer y flwyddyn dreth hon.
 
-ExclusionSearchMPBIK.understanding.organisation.p = Rwy’n deall y canlynol:
-ExclusionSearchMPBIK.understanding.organisation.bullet1.cy = Ni allaf ychwanegu’r cyflogai hwn yn ôl at y buddiant hwn ar gyfer y flwyddyn dreth hon
-ExclusionSearchMPBIK.understanding.organisation.bullet1.cyp1 = Gallaf ddewis ychwanegu’r cyflogai hwn yn ôl at y buddiant hwn hyd at 5 Ebrill {0}
-ExclusionSearchMPBIK.understanding.organisation.bullet2.cy = Nid oes angen i fi eithrio cyflogeion nad ydynt yn cael y buddiant dan sylw oherwydd nid oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
-ExclusionSearchMPBIK.understanding.organisation.bullet2.cyp1 = Nid oes angen i fi eithrio cyflogeion nad ydynt yn cael y buddiant dan sylw oherwydd nid oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
-ExclusionSearchMPBIK.understanding.agent.p = Rwy’n deall:
-ExclusionSearchMPBIK.understanding.agent.bullet1.cy = Ni allaf ychwanegu’r cyflogai hwn yn ôl at y buddiant hwn ar gyfer y flwyddyn dreth hon
-ExclusionSearchMPBIK.understanding.agent.bullet1.cyp1 = bod modd ychwanegu’r cyflogai hwn yn ôl at y buddiant hwn hyd at 5 Ebrill {0}
-ExclusionSearchMPBIK.understanding.agent.bullet2.cy = Nid oes angen i fi eithrio cyflogeion nad ydynt yn cael y buddiant dan sylw oherwydd nid oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
-ExclusionSearchMPBIK.understanding.agent.bullet2.cyp1 = Nid oes angen i fi eithrio cyflogeion nad ydynt yn cael y buddiant dan sylw oherwydd nid oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
+ExclusionSearch.confirmation.organisation.p = Rwy’n cadarnhau’r canlynol:
+ExclusionSearch.confirmation.organisation.bullet1 = Byddaf yn rhoi gwybod am werth y buddiant ar gyfer y cyflogai hwn ar P11D
+ExclusionSearch.confirmation.organisation.bullet2 = Byddaf yn anfon y P11D ar ddiwedd y flwyddyn dreth
+ExclusionSearch.confirmation.agent.p = Rwy’n cadarnhau y byddaf yn dweud y canlynol wrth fy nghleient:
+ExclusionSearch.confirmation.agent.bullet1 = bod yn rhaid iddo adrodd am werth y buddiant ar gyfer y cyflogai hwn ar P11D
+ExclusionSearch.confirmation.agent.bullet2 = bod yn rhaid iddo anfon y P11D ar ddiwedd y flwyddyn dreth
 
-ExclusionRemovalConfirmationMPBIK2.title = Datgan y cyflogai rydych am ei ychwanegu’n ôl at y buddiant hwn
+ExclusionSearch.understanding.organisation.p = Rwy’n deall y canlynol:
+ExclusionSearch.understanding.organisation.bullet1.cy = Ni allaf ychwanegu’r cyflogai hwn yn ôl at y buddiant hwn ar gyfer y flwyddyn dreth hon
+ExclusionSearch.understanding.organisation.bullet1.cyp1 = Gallaf ddewis ychwanegu’r cyflogai hwn yn ôl at y buddiant hwn hyd at 5 Ebrill {0}
+ExclusionSearch.understanding.organisation.bullet2.cy = Nid oes angen i fi eithrio cyflogeion nad ydynt yn cael y buddiant dan sylw oherwydd nid oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
+ExclusionSearch.understanding.organisation.bullet2.cyp1 = Nid oes angen i fi eithrio cyflogeion nad ydynt yn cael y buddiant dan sylw oherwydd nid oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
+ExclusionSearch.understanding.agent.p = Rwy’n deall:
+ExclusionSearch.understanding.agent.bullet1.cy = Ni allaf ychwanegu’r cyflogai hwn yn ôl at y buddiant hwn ar gyfer y flwyddyn dreth hon
+ExclusionSearch.understanding.agent.bullet1.cyp1 = bod modd ychwanegu’r cyflogai hwn yn ôl at y buddiant hwn hyd at 5 Ebrill {0}
+ExclusionSearch.understanding.agent.bullet2.cy = Nid oes angen i fi eithrio cyflogeion nad ydynt yn cael y buddiant dan sylw oherwydd nid oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
+ExclusionSearch.understanding.agent.bullet2.cyp1 = Nid oes angen i fi eithrio cyflogeion nad ydynt yn cael y buddiant dan sylw oherwydd nid oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
 
-ExclusionRemovalConfirmationMPBIK2.p.organisation = Drwy gadarnhau hyn, byddwch yn dechrau trethu buddiant {0} y cyflogai drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
-ExclusionRemovalConfirmationMPBIK2.bullet1.organisation = Byddaf yn trethu buddiannau a ddewiswyd gan {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen
-ExclusionRemovalConfirmationMPBIK2.bullet2.organisation = Byddaf yn hysbysu {0} y gallai ei god treth newid
-ExclusionRemovalConfirmationMPBIK2.bullet3.organisation = Byddaf yn cyfrifo’r cyfraniadau Yswiriant Gwladol Dosbarth 1A ar gyfer y buddiannau a ddewiswyd a’u talu drwy’r gyflogres
-ExclusionRemovalConfirmationMPBIK2.bullet4.organisation = mae’n rhaid i mi ychwanegu swm cyfwerth i’r buddiant mewn arian parod neu swm perthnasol i gyflog {0} a’i drethu drwy’r gyflogres
-ExclusionRemovalConfirmationMPBIK2.bullet5.organisation = mae’n rhaid trethu pob buddiant arall a gynigir i gyflogeion drwy’r gyflogres hefyd
+ExclusionRemovalConfirmation.title = Datgan y cyflogai rydych am ei ychwanegu’n ôl at y buddiant hwn
 
-ExclusionRemovalConfirmationMPBIK2.p.agent = Drwy gadarnhau hyn, byddwch yn dechrau trethubuddiant {0} y cyflogai drwy gyflogres eich cleient o 6 Ebrill {1}.
-ExclusionRemovalConfirmationMPBIK2.bullet1.agent = bod yn rhaid iddo drethu buddiannau a ddewiswyd {0} drwy’r gyflogres o 6 Ebrill {1}
-ExclusionRemovalConfirmationMPBIK2.bullet2.agent = bod yn rhaid iddo hysbysu {0} y gallai eu cod treth newid
-ExclusionRemovalConfirmationMPBIK2.bullet3.agent = bod yn rhaid iddo gyfrifo’r cyfraniadau Yswiriant Gwladol Dosbarth 1A ar gyfer y buddiannau a ddewiswyd a’u talu drwy’r gyflogres
-ExclusionRemovalConfirmationMPBIK2.bullet4.agent = Nid oes angen i fi eithrio cyflogeion nad ydynt yn cael y buddiant dan sylw oherwydd nid oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
-ExclusionRemovalConfirmationMPBIK2.bullet5.agent = bod yn rhaid trethu pob buddiant arall a gynigir i gyflogeion drwy’r gyflogres hefyd
+ExclusionRemovalConfirmation.p.organisation = Drwy gadarnhau hyn, byddwch yn dechrau trethu buddiant {0} y cyflogai drwy’ch cyflogres o 6 Ebrill {1} ymlaen.
+ExclusionRemovalConfirmation.bullet1.organisation = Byddaf yn trethu buddiannau a ddewiswyd gan {0} drwy’r gyflogres o 6 Ebrill {1} ymlaen
+ExclusionRemovalConfirmation.bullet2.organisation = Byddaf yn hysbysu {0} y gallai ei god treth newid
+ExclusionRemovalConfirmation.bullet3.organisation = Byddaf yn cyfrifo’r cyfraniadau Yswiriant Gwladol Dosbarth 1A ar gyfer y buddiannau a ddewiswyd a’u talu drwy’r gyflogres
+ExclusionRemovalConfirmation.bullet4.organisation = mae’n rhaid i mi ychwanegu swm cyfwerth i’r buddiant mewn arian parod neu swm perthnasol i gyflog {0} a’i drethu drwy’r gyflogres
+ExclusionRemovalConfirmation.bullet5.organisation = mae’n rhaid trethu pob buddiant arall a gynigir i gyflogeion drwy’r gyflogres hefyd
+
+ExclusionRemovalConfirmation.p.agent = Drwy gadarnhau hyn, byddwch yn dechrau trethubuddiant {0} y cyflogai drwy gyflogres eich cleient o 6 Ebrill {1}.
+ExclusionRemovalConfirmation.bullet1.agent = bod yn rhaid iddo drethu buddiannau a ddewiswyd {0} drwy’r gyflogres o 6 Ebrill {1}
+ExclusionRemovalConfirmation.bullet2.agent = bod yn rhaid iddo hysbysu {0} y gallai eu cod treth newid
+ExclusionRemovalConfirmation.bullet3.agent = bod yn rhaid iddo gyfrifo’r cyfraniadau Yswiriant Gwladol Dosbarth 1A ar gyfer y buddiannau a ddewiswyd a’u talu drwy’r gyflogres
+ExclusionRemovalConfirmation.bullet4.agent = Nid oes angen i fi eithrio cyflogeion nad ydynt yn cael y buddiant dan sylw oherwydd nid oes unrhyw dreth na chyfraniadau Yswiriant Gwladol Dosbarth 1A ychwanegol yn ddyledus
+ExclusionRemovalConfirmation.bullet5.agent = bod yn rhaid trethu pob buddiant arall a gynigir i gyflogeion drwy’r gyflogres hefyd
 
 #*************************************************************
-# Benefits Messages
+# Benefits messages
 #*************************************************************
-
-BenefitInKind.label.40 = Asedion sydd wedi’u trosglwyddo (ceir, eiddo, nwyddau neu asedion eraill)
-
-BenefitInKind.label.48 = Taliadau a wnaed ar ran cyflogai
-
-BenefitInKind.label.54 = Talebau a chardiau credyd
-
-BenefitInKind.label.44 = Lwfans milltiroedd a thaliadau teithwyr
-
-BenefitInKind.label.31 = Ceir a thanwydd ceir
-
-BenefitInKind.label.29 = Tanwydd ceir
-
-BenefitInKind.label.35 = Faniau
-
-BenefitInKind.label.36 = Tanwydd faniau
-
-BenefitInKind.label.30 = Triniaeth neu yswiriant meddygol preifat
-
-BenefitInKind.label.50 = Taliadau, buddiannau a threuliau adleoli cymwys
 
 BenefitInKind.label.8 = Gwasanaethau a ddarparwyd
-
-BenefitInKind.label.39 = Asedion a oedd ar gael i’r cyflogai
-
-BenefitInKind.label.47 = Eitemau eraill (gan gynnwys tanysgrifiadau a ffioedd proffesiynol)
-BenefitInKind.hint.47 = Mae’n rhaid i chi dalu, drwy’r gyflogres, yr holl eitemau rydych yn rhoi gwybod amdanynt yn yr adran hon, neu dim ohonynt, heblaw am Dreth Incwm a dalwyd ond na chafodd ei didynnu oddi wrth dâl y cyfarwyddwr, sy’n fuddiant ar ei ben ei hun.
-
-BenefitInKind.label.52 = Treth Incwm a dalwyd ond na chafodd ei didynnu oddi wrth dâl y cyfarwyddwr
-
-BenefitInKind.label.53 = Taliadau teithio a chynhaliaeth
-
-BenefitInKind.label.42 = Gwesteia
-
-BenefitInKind.label.43 = Lwfans treuliau cyffredinol ar gyfer teithio at ddibenion busnes
-
+BenefitInKind.label.29 = Tanwydd ceir
+BenefitInKind.label.30 = Triniaeth neu yswiriant meddygol preifat
+BenefitInKind.label.31 = Ceir a thanwydd ceir
 BenefitInKind.label.32 = Taliadau am ddefnyddio ffôn y cartref
-
+BenefitInKind.label.35 = Faniau
+BenefitInKind.label.36 = Tanwydd faniau
+BenefitInKind.label.37 = Benthyciadau
+BenefitInKind.label.38 = Llety
+BenefitInKind.label.39 = Asedion a oedd ar gael i’r cyflogai
+BenefitInKind.label.40 = Asedion sydd wedi’u trosglwyddo (ceir, eiddo, nwyddau neu asedion eraill)
+BenefitInKind.label.42 = Gwesteia
+BenefitInKind.label.43 = Lwfans treuliau cyffredinol ar gyfer teithio at ddibenion busnes
+BenefitInKind.label.44 = Lwfans milltiroedd a thaliadau teithwyr
 BenefitInKind.label.45 = Treuliau adleoli anghymwys
-
-#*************************************************************
-# Benefits messages MPBIK Phase 2
-#*************************************************************
-
-BenefitInKindMPBIK2.label.38 = Llety
-
-BenefitInKindMPBIK2.label.37 = Benthyciadau
-
-BenefitInKindMPBIK2.label.40 = Asedion sydd wedi’u trosglwyddo (ceir, eiddo, nwyddau neu asedion eraill)
-
-BenefitInKindMPBIK2.label.48 = Taliadau a wnaed ar ran cyflogai
-
-BenefitInKindMPBIK2.label.54 = Talebau a chardiau credyd
-
-BenefitInKindMPBIK2.label.44 = Lwfans milltiroedd a thaliadau teithwyr
-
-BenefitInKindMPBIK2.label.31 = Ceir a thanwydd ceir
-
-BenefitInKindMPBIK2.label.29 = Tanwydd ceir
-
-BenefitInKindMPBIK2.label.35 = Faniau
-
-BenefitInKindMPBIK2.label.36 = Tanwydd faniau
-
-BenefitInKindMPBIK2.label.30 = Triniaeth neu yswiriant meddygol preifat
-
-BenefitInKindMPBIK2.label.50 = Taliadau, buddiannau a threuliau adleoli cymwys
-
-BenefitInKindMPBIK2.label.8 = Gwasanaethau a ddarparwyd
-
-BenefitInKindMPBIK2.label.39 = Asedion a oedd ar gael i’r cyflogai
-
-BenefitInKindMPBIK2.label.47 = Eitemau eraill gan gynnwys tanysgrifiadau a ffioedd proffesiynol
-
-BenefitInKindMPBIK2.label.52 = Treth Incwm a dalwyd ond na chafodd ei didynnu oddi wrth dâl y cyfarwyddwr
-
-BenefitInKindMPBIK2.label.53 = Taliadau teithio a chynhaliaeth
-
-BenefitInKindMPBIK2.label.42 = Gwesteia
-
-BenefitInKindMPBIK2.label.43 = Lwfans treuliau cyffredinol ar gyfer teithio at ddibenion busnes
-
-BenefitInKindMPBIK2.label.32 = Taliadau am ddefnyddio ffôn y cartref
-
-BenefitInKindMPBIK2.label.45 = Treuliau adleoli anghymwys
+BenefitInKind.label.47 = Eitemau eraill gan gynnwys tanysgrifiadau a ffioedd proffesiynol
+BenefitInKind.label.48 = Taliadau a wnaed ar ran cyflogai
+BenefitInKind.label.50 = Taliadau, buddiannau a threuliau adleoli cymwys
+BenefitInKind.label.52 = Treth Incwm a dalwyd ond na chafodd ei didynnu oddi wrth dâl y cyfarwyddwr
+BenefitInKind.label.53 = Taliadau teithio a chynhaliaeth
+BenefitInKind.label.54 = Talebau a chardiau credyd
 
 #*************************************************************
 # Service Messages
@@ -634,12 +465,10 @@ Service.field.firstname = Enw cyntaf
 Service.field.surname = Enw olaf
 Service.field.name = Enw llawn
 Service.field.nino = Rhif Yswiriant Gwladol
-Service.field.nino.2lines = Rhif Yswiriant Gwladol
 Service.field.ninohint = Er enghraifft, QQ123456A
 Service.field.dob = Dyddiad geni
-Service.field.worksnumber = ID y gyflogres neu Rif gwaith
 
-Service.field.worksnumberMPBIK = ID y gyflogres neu rif gwaith
+Service.field.worksnumber = ID y gyflogres neu rif gwaith
 
 Service.field.dobhint = Er enghraifft, 31 3 1980
 Service.field.dob.day = Diwrnod
@@ -650,12 +479,9 @@ Service.field.gender.male = Gwryw
 Service.field.gender.female = Benyw
 Service.field.employee.name = Enw’r cyflogai
 Service.field.client.name = Enw’r cleient
-Service.field.employer.paye = Cyfeirnod TWE y cyflogwr
-
-Service.field.employer.payeMPBIK = Cyfeirnod TWE y Cyflogwr
-
-Service.field.selected.benefits = Buddiannau a threuliau sydd wedi cael eu dewis
-Service.field.removed.benefit = Wedi dileu’r buddiant neu’r draul
+Service.field.employer.paye = Cyfeirnod TWE y Cyflogwr
+Service.field.selected.benefits = Buddiannau a ddewiswyd
+Service.field.removed.benefit = Buddiant wedi’i dynnu
 Service.field.stop.benefit = Buddiant neu draul
 Service.field.date.of.exclusion = Dyddiad eithrio
 Service.field.payroll.date = Dyddiad dechrau talu drwy’r gyflogres
@@ -701,35 +527,26 @@ error.empty.firstname = Nodwch enw cyntaf.
 error.empty.lastname = Nodwch enw olaf.
 
 error.incorrect.nino = Nodwch rif Yswiriant Gwladol y cyflogai yn y fformat cywir.
-error.incorrect.firstname = Nodwch enw cyntaf nad yw’n cynnwys rhifau neu gymeriadau arbennig.
-error.incorrect.lastname = Nodwch enw olaf nad yw’n cynnwys rhifau neu gymeriadau arbennig.
+error.incorrect.firstname = Mae’n rhaid i’r enw cyntaf gynnwys y llythrennau a i z yn unig.
+error.incorrect.lastname = Mae’n rhaid i’r enw olaf gynnwys y llythrennau a i z yn unig.
 
-error.incorrect.firstnameMPBIK = Mae’n rhaid i’r enw cyntaf gynnwys y llythrennau a i z yn unig.
-error.incorrect.lastnameMPBIK = Mae’n rhaid i’r enw olaf gynnwys y llythrennau a i z yn unig.
-error.firstname.lengthMPBIK = Mae’n rhaid i’r enw cyntaf fod yn 35 o gymeriadau neu lai.
-error.lastname.lengthMPBIK = Mae’n rhaid i’r enw olaf fod yn 35 o gymeriadau neu lai.
+error.firstname.length = Mae’n rhaid i’r enw cyntaf fod yn 35 o gymeriadau neu lai.
+error.lastname.length = Mae’n rhaid i’r enw olaf fod yn 35 o gymeriadau neu lai.
 
 error.empty.dob = Nodwch ddyddiad geni.
 error.invaliddate.day = Nodwch ddiwrnod dilys.
 error.invaliddate.month = Nodwch fis dilys.
 error.invaliddate.year = Nodwch flwyddyn ddilys.
-error.invaliddate.future.year = Ni all blwyddyn y dyddiad geni fod yn y dyfodol.
+error.invaliddate.future.year = Mae’n rhaid i’r dyddiad geni fod yn y gorffennol
 error.invaliddate.past.year = Mae’n rhaid i flwyddyn y dyddiad geni fod yn ystod y 130 mlynedd diwethaf.
 
 error.invaliddate.date = Mae’n rhaid i’r dyddiad geni fod yn ddyddiad go iawn.
-error.invaliddate.future.yearMPBIK = Mae’n rhaid i’r dyddiad geni fod yn y gorffennol
-
-error.exclusion.multi.selection = Mae’n rhaid i chi ddewis pa gyflogai yr ydych am ei eithrio cyn i chi allu mynd yn eich blaen
 
 #*************************************************************
 # What Next
 #*************************************************************
 
-whatNext.add.heading = Cofrestriad wedi’i gwblhau
 whatNext.remove.heading = Buddiant wedi’i ddileu
-
-whatNext.add.p.organisation = Buddiannau a threuliau rydych wedi eu cofrestru i’w trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen.
-whatNext.add.p.agent = Buddiannau a threuliau rydych wedi eu cofrestru i’w trethu drwy gyflogres {0} o 6 Ebrill {1} ymlaen.
 
 whatNext.add.list.heading = Manylion cofrestru
 
@@ -764,172 +581,95 @@ whatNext.exclude.heading = Eithriad wedi’i gyflawni
 whatNext.exclude.table.heading = Manylion yr eithriad
 
 whatNext.exclude.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud
-whatNext.exclude.h2.agent = Beth ddylech chi ddweud wrth eich cleient
-
-whatNextMPBIK.exclude.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud
-whatNextMPBIK.exclude.h2.agent = Yr hyn y mae’n rhaid i’ch cleient gael gwybod gennych
+whatNext.exclude.h2.agent = Yr hyn y mae’n rhaid i’ch cleient gael gwybod gennych
 
 whatNext.exclude.p1.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
-whatNext.exclude.p1.link.organisation = cyflwyno P11D i CThEF
+whatNext.exclude.p1.link.organisation = anfon P11D at CThEF
 whatNext.exclude.p1.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 
-whatNextMPBIK.exclude.p1.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
-whatNextMPBIK.exclude.p1.link.organisation = anfon P11D at CThEF
-whatNextMPBIK.exclude.p1.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
-
-whatNext.exclude.p1.before.agent = Dylai’ch cleient roi gwybod am werth y buddiant hwn drwy
-whatNext.exclude.p1.link.agent = cyflwyno P11D i CThEF
+whatNext.exclude.p1.before.agent = Dylai’ch cleient adrodd am werth y buddiant hwn drwy
+whatNext.exclude.p1.link.agent = anfon P11D at CThEF
 whatNext.exclude.p1.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
 
-whatNextMPBIK.exclude.p1.before.agent = Dylai’ch cleient adrodd am werth y buddiant hwn drwy
-whatNextMPBIK.exclude.p1.link.agent = anfon P11D at CThEF
-whatNextMPBIK.exclude.p1.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
+whatNext.exclude.p1.cy.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
+whatNext.exclude.p1.cy.link.organisation = anfon P11D at CThEF
+whatNext.exclude.p1.cy.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
 
-whatNext.exclude.p1.cy.before.organisation = Mae’n rhaid i chi roi gwybod am werth y buddiant hwn drwy
-whatNext.exclude.p1.cy.link.organisation = gyflwyno P11D i CThEF
-whatNext.exclude.p1.cy.after.organisation = ar gyfer {0}. Mae’n rhaid i chi wneud y canlynol:
-
-whatNextMPBIK.exclude.p1.cy.before.organisation = Dylech roi gwybod am werth y buddiant hwn drwy
-whatNextMPBIK.exclude.p1.cy.link.organisation = anfon P11D at CThEF
-whatNextMPBIK.exclude.p1.cy.after.organisation = ar gyfer {0}. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
-
-whatNext.exclude.p1.cy.before.agent = Mae’n rhaid i’ch cleient roi gwybod am werth y buddiant hwn drwy
-whatNext.exclude.p1.cy.link.agent = gyflwyno P11D i CThEF
-whatNext.exclude.p1.cy.after.agent = ar gyfer {0}. Mae’n rhaid iddo wneud y canlynol:
-
-whatNextMPBIK.exclude.p1.cy.before.agent = Dylai’ch cleient adrodd am werth y buddiant hwn drwy
-whatNextMPBIK.exclude.p1.cy.link.agent = anfon P11D at CThEF
-whatNextMPBIK.exclude.p1.cy.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
-
-whatNext.exclude.li1.cy = cyfrifo cyfwerth llawn y buddiant ar gyfer y cyflogai mewn arian parod
-whatNext.exclude.li2.cy = didynnu unrhyw daliadau y mae wedi’u gwneud yn y flwyddyn dreth bresennol
-whatNext.exclude.li3.cy = rhoi gwybod am y gwerth sy’n weddill ar y P11D
-
-whatNext.exclude.p2.cy = Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
+whatNext.exclude.p1.cy.before.agent = Dylai’ch cleient adrodd am werth y buddiant hwn drwy
+whatNext.exclude.p1.cy.link.agent = anfon P11D at CThEF
+whatNext.exclude.p1.cy.after.agent = ar gyfer {0}. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
 
 whatNext.exclude.you.do.h2 = Yr hyn y gallwch ei wneud nesaf
 
-whatNext.exclude.you.do.p.cy.before.organisation = Gallwch
 whatNext.exclude.you.do.p.cy.link.organisation = ddychwelyd i fuddiannau a threuliau’r flwyddyn hon
-whatNext.exclude.you.do.p.cy.after.organisation = i eithrio cyflogeion rhag buddiannau a threuliau’r flwyddyn hon.
 
-whatNextMPBIK.exclude.you.do.p.cy.before.organisation = Gallwch
-whatNextMPBIK.exclude.you.do.p.cy.link.organisation = fynd yn ôl i’ch crynodeb o dalu buddiannau drwy’r gyflogres
-whatNextMPBIK.exclude.you.do.p.cy.after.organisation = er mwyn gwneud y canlynol:
-whatNextMPBIK.exclude.li.view.benefits = gweld buddiannau
-whatNextMPBIK.exclude.li.other.benefits = eithrio cyflogeion rhag buddiannau eraill
+whatNext.exclude.you.do.p.cy.before.organisation = Gallwch
+whatNext.exclude.you.do.p.cy.link.organisation = fynd yn ôl i’ch crynodeb o dalu buddiannau drwy’r gyflogres
+whatNext.exclude.you.do.p.cy.after.organisation = er mwyn gwneud y canlynol:
+whatNext.exclude.li.view.benefits = gweld buddiannau
+whatNext.exclude.li.other.benefits = eithrio cyflogeion rhag buddiannau eraill
+
+whatNext.exclude.you.do.p.cy.link.agent = ddychwelyd i fuddiannau a threuliau’r flwyddyn hon
 
 whatNext.exclude.you.do.p.cy.before.agent = Gallwch
-whatNext.exclude.you.do.p.cy.link.agent = ddychwelyd i fuddiannau a threuliau’r flwyddyn hon
-whatNext.exclude.you.do.p.cy.after.agent = i eithrio cyflogeion rhag buddiannau a threuliau’r flwyddyn hon ar gyfer y cleient hwn.
-
-whatNextMPBIK.exclude.you.do.p.cy.before.agent = Gallwch
-whatNextMPBIK.exclude.you.do.p.cy.link.agent = fynd yn ôl i grynodeb o dalu buddiannau drwy’r gyflogres eich cleient
-whatNextMPBIK.exclude.you.do.p.cy.after.agent = er mwyn gwneud y canlynol:
+whatNext.exclude.you.do.p.cy.link.agent = fynd yn ôl i grynodeb o dalu buddiannau drwy’r gyflogres eich cleient
+whatNext.exclude.you.do.p.cy.after.agent = er mwyn gwneud y canlynol:
 
 whatNext.exclude.you.do.p.before.organisation = Gallwch
-whatNext.exclude.you.do.p.link.organisation = fynd yn ôl i’ch buddiannau a threuliau cofrestredig
-whatNext.exclude.you.do.p.after.organisation = er mwyn:
-
-whatNextMPBIK.exclude.you.do.p.before.organisation = Gallwch
-whatNextMPBIK.exclude.you.do.p.link.organisation = fynd yn ôl i’ch crynodeb o dalu buddiannau drwy’r gyflogres
-whatNextMPBIK.exclude.you.do.p.after.organisation = er mwyn gwneud y canlynol:
+whatNext.exclude.you.do.p.link.organisation = fynd yn ôl i’ch crynodeb o dalu buddiannau drwy’r gyflogres
+whatNext.exclude.you.do.p.after.organisation = er mwyn gwneud y canlynol:
 
 whatNext.exclude.you.do.p.before.agent = Gallwch
-whatNext.exclude.you.do.p.link.agent = fynd yn ôl i fuddiannau a threuliau cofrestredig eich cleient
-whatNext.exclude.you.do.p.after.agent = er mwyn:
+whatNext.exclude.you.do.p.link.agent = fynd yn ôl i grynodeb o dalu buddiannau drwy’r gyflogres eich cleient
+whatNext.exclude.you.do.p.after.agent = er mwyn gwneud y canlynol:
 
-whatNextMPBIK.exclude.you.do.p.before.agent = Gallwch
-whatNextMPBIK.exclude.you.do.p.link.agent = fynd yn ôl i grynodeb o dalu buddiannau drwy’r gyflogres eich cleient
-whatNextMPBIK.exclude.you.do.p.after.agent = er mwyn gwneud y canlynol:
-
-whatNext.exclude.you.do.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau rydych wedi’u cofrestru
-whatNext.exclude.you.do.li2 = cofrestru rhagor o fuddiannau a threuliau
-whatNext.exclude.you.do.li3 = tynnu buddiannau neu dreuliau nad ydych am eu trethu drwy’r gyflogres mwyach
-
-whatNext.exclude.more.h3 = Os ydych chi am eithrio cyflogai arall rhag y buddiant neu’r draul sydd dan sylw
-
-whatNextMPBIK.exclude.more.h3 = Os ydych am eithrio cyflogai arall rhag y buddiant neu’r draul dan sylw
+whatNext.exclude.more.h3 = Os ydych am eithrio cyflogai arall rhag y buddiant neu’r draul dan sylw
 
 whatNext.exclude.more.p.cy.before = Gallwch
-whatNext.exclude.more.p.cy.link = ddychwelyd i’r adran {0}
-whatNext.exclude.more.p.cy.after = i eithrio cyflogai arall rhag y buddiant neu’r draul sydd dan sylw.
-
-whatNextMPBIK.exclude.more.p.cy.before = Gallwch
-whatNextMPBIK.exclude.more.p.cy.link = fynd yn ôl i’r buddiant canlynol – {0}
-whatNextMPBIK.exclude.more.p.cy.after = i eithrio cyflogai arall rhag y buddiant hwn.
+whatNext.exclude.more.p.cy.link = fynd yn ôl i’r buddiant canlynol – {0}
+whatNext.exclude.more.p.cy.after = i eithrio cyflogai arall rhag y buddiant hwn.
 
 whatNext.exclude.more.p.before = Gallwch
-whatNext.exclude.more.p.link = yn ôl i {0}
-whatNext.exclude.more.p.after = er mwyn:
-
-whatNextMPBIK.exclude.more.p.before = Gallwch
-whatNextMPBIK.exclude.more.p.link = fynd yn ôl i’r buddiant canlynol – {0}
-whatNextMPBIK.exclude.more.p.after = i eithrio cyflogai arall rhag y buddiant hwn.
-
-whatNext.exclude.more.li1 = eithrio cyflogai arall o’r buddiant neu’r draul hon
-whatNext.exclude.more.li2 = ychwanegu cyflogai yn ôl i’r buddiant neu’r draul hon
+whatNext.exclude.more.p.link = fynd yn ôl i’r buddiant canlynol – {0}
+whatNext.exclude.more.p.after = i eithrio cyflogai arall rhag y buddiant hwn.
 
 whatNext.subHeading = Camau nesaf
 whatNext.rescind.heading = Cofrestriad wedi’i gwblhau
-whatNext.exclude.lede = Ni fydd {0} yn cael ei drethu drwy’r gyflogres o ran {1} o {2} ymlaen.
 whatNext.service.back.overview.ViewYourSummary = Bwrw golwg dros eich crynodeb o fuddiannau a threuliau cofrestredig
 
-whatNextMPBIK.exclude.lede = Ni fydd {0} yn cael y buddiant {1} wedi’i drethu drwy gyflogres o {2}.
-whatNextMPBIK.exclude.lede.agent = Ni fydd {0} yn cael y buddiant {1} wedi’i drethu drwy gyflogres {3} o {2}.
-whatNextMPBIK.exclude.lede.cy.agent = Ni fydd {0} yn cael y buddiant {1} wedi’i drethu drwy gyflogres {3} o {2} ymlaen.
+whatNext.exclude.lede = Ni fydd {0} yn cael y buddiant {1} wedi’i drethu drwy gyflogres o {2}.
+whatNext.exclude.lede.agent = Ni fydd {0} yn cael y buddiant {1} wedi’i drethu drwy gyflogres {3} o {2}.
+whatNext.exclude.lede.cy.agent = Ni fydd {0} yn cael y buddiant {1} wedi’i drethu drwy gyflogres {3} o {2} ymlaen.
 
-whatNext.remove.p1 = Rydych wedi tynnu {0} rhag cael eu trethu drwy’r gyflogres o 6 Ebrill {1} ymlaen.
 whatNext.remove.table.heading = Manylion y buddiant neu draul
 
-whatNext.remove.h2.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
 whatNext.remove.p2.before.organisation = Os ydych chi’n dal i ddarparu’r buddiant neu’r draul hon i unrhyw un o’ch cyflogeion, bydd angen i chi
 whatNext.remove.p2.link.organisation = cyflwyno P11D i CThEF ar eu cyfer ar ddiwedd y flwyddyn dreth (yn agor ffenestr neu dab newydd)
 
-whatNext.remove.h2.agent = Beth ddylech chi ddweud wrth eich cleient
 whatNext.remove.p2.before.agent = Os yw’ch cleient yn dal i ddarparu’r buddiant neu’r draul hon i unrhyw un o’ch cyflogeion, bydd angen i chi
 whatNext.remove.p2.link.agent = cyflwyno P11D i CThEF ar eu cyfer ar ddiwedd y flwyddyn dreth (yn agor ffenestr neu dab newydd)
 
-whatYouNeedToKnow.subHeading.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
-whatYouNeedToKnow.subHeading.agent = Beth ddylech chi ddweud wrth eich cleient
-
 whatYouNeedToKnow.subHeading.before.h3.organisation = Cyn 6 Ebrill {0}
-whatYouNeedToKnow.subHeading.before.p1.organisation = Mae’n rhaid i chi anfon llythyr at eich staff yn egluro’r canlynol:
-whatYouNeedToKnow.subHeading.before.li1.organisation = bydd eu fuddiannau a threuliau yn cael eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen
-whatYouNeedToKnow.subHeading.before.li2.organisation = bydd eu codau treth yn newid
 whatYouNeedToKnow.subHeading.before.li3.organisation = byddant yn cael llythyr gan CThEF gyda’u cod treth newydd
 whatYouNeedToKnow.subHeading.before.p2.organisation = Mae’n rhaid i chi gyflwyno ffurflen P11Ds i roi gwybod am unrhyw fuddiannau a threuliau nad ydynt yn cael eu trethu drwy’r gyflogres yn y flwyddyn dreth hon.
 
 whatYouNeedToKnow.subHeading.before.h3.agent = Cyn 6 Ebrill {0}
-whatYouNeedToKnow.subHeading.before.p1.agent = Mae’n rhaid i’ch cleient anfon llythyr at eich staff yn egluro’r canlynol:
-whatYouNeedToKnow.subHeading.before.li1.agent = bydd eu fuddiannau a threuliau yn cael eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen
-whatYouNeedToKnow.subHeading.before.li2.agent = bydd eu codau treth yn newid
 whatYouNeedToKnow.subHeading.before.li3.agent = byddant yn cael llythyr gan CThEF gyda’u cod treth newydd
 whatYouNeedToKnow.subHeading.before.p2.agent = Mae’n rhaid i’ch cleient gyflwyno ffurflen P11Ds i roi gwybod am unrhyw fuddiannau a threuliau nad ydynt yn cael eu trethu drwy’r gyflogres yn y flwyddyn dreth hon.
 
 whatYouNeedToKnow.subHeading.after.h3.organisation = Ar ôl 6 Ebrill {0}
-whatYouNeedToKnow.subHeading.after.p1.organisation = Gallwch roi’r gorau i gyflwyno’r ffurflenni P11D atom ar gyfer cyflogeion y mae eu buddiannau a’u treuliau bellach yn cael eu trethu drwy’r gyflogres.
 whatYouNeedToKnow.subHeading.after.p2.organisation = Bydd angen i chi wneud y canlynol:
-whatYouNeedToKnow.subHeading.after.li1.organisation = ychwanegwch yr arian parod sy’n cyfateb i gyflog cyflogai
-whatYouNeedToKnow.subHeading.after.li2.organisation = trethu ei fuddiannau a threuliau drwy’ch cyflogres
 whatYouNeedToKnow.subHeading.after.p3.text.organisation = Mae’n rhaid i chi dal
 whatYouNeedToKnow.subHeading.after.p3.link.organisation = cyflwyno ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd)
 
 whatYouNeedToKnow.subHeading.after.h3.agent = Ar ôl 6 Ebrill {0}
-whatYouNeedToKnow.subHeading.after.p1.agent = Gallwch eich cleient rhoi’r gorau i anfon y ffurflenni P11D atom ar gyfer unrhyw gyflogeion y mae eu buddiannau a’u treuliau bellach yn cael eu trethu drwy’r gyflogres.
 whatYouNeedToKnow.subHeading.after.p2.agent = Mae angen i’ch cleient wneud y canlynol:
-whatYouNeedToKnow.subHeading.after.li1.agent = ychwanegwch yr arian parod sy’n cyfateb i gyflog cyflogai
-whatYouNeedToKnow.subHeading.after.li2.agent = trethu buddiannau a threuliau cyflogeion drwy’r gyflogres
 whatYouNeedToKnow.subHeading.after.p3.text.agent = Mae’n rhaid i’ch cleient dal
 whatYouNeedToKnow.subHeading.after.p3.link.agent = cyflwyno ffurflen P11D(b) er mwyn rhoi gwybod am gyfraniadau Yswiriant Gwladol Dosbarth 1A (yn agor ffenestr neu dab newydd)
 
 whatYouCanDoNext.subHeading.h2 = Yr hyn y gallwch ei wneud nesaf
 whatYouCanDoNext.subHeading.p.text.before = Gallwch
-whatYouCanDoNext.subHeading.p.link.organisation = fynd yn ôl i’ch buddiannau a threuliau cofrestredig
-whatYouCanDoNext.subHeading.p.link.agent = fynd yn ôl i fuddiannau a threuliau cofrestredig eich cleient
 whatYouCanDoNext.subHeading.p.text.after = er mwyn:
-whatYouCanDoNext.subHeading.li1 = eithrio cyflogeion o’r buddiannau a’r treuliau rydych wedi’u cofrestru
-whatYouCanDoNext.subHeading.li2 = cofrestru rhagor o fuddiannau a threuliau
 whatYouCanDoNext.subHeading.li3 = tynnu buddiannau neu dreuliau nad ydych am eu trethu drwy’r gyflogres mwyach
 
 whatYouNeedToTellYourEmployees.subHeading = Yr hyn y mae angen i chi ei ddweud wrth eich cyflogeion
@@ -942,38 +682,35 @@ global.page.not.found.error.contact.link.text=cysylltwch â Gwasanaeth Cwsmeriai
 global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/welsh-language-helplines
 
 #*************************************************************
-# What next MPBIK 2
+# What next
 #*************************************************************
 
-whatNextMPBIK2.add.heading = Cofrestriad wedi’i gwblhau
+whatNext.add.heading = Cofrestriad wedi’i gwblhau
 
-whatNextMPBIK2.remove.p1 = O 6 Ebrill  {1} ymlaen, ni fyddwch yn trethu’r buddiant canlynol drwy’r gyflogres: {0}.
-whatNextMPBIK2.remove.h2 = Yr hyn sy’n digwydd nesaf
+whatNext.remove.p1 = O 6 Ebrill  {1} ymlaen, ni fyddwch yn trethu’r buddiant canlynol drwy’r gyflogres: {0}.
+whatNext.remove.h2 = Yr hyn sy’n digwydd nesaf
 
-ServiceMPBIK2.field.selected.benefits = Buddiannau a ddewiswyd
-ServiceMPBIK2.field.removed.benefit = Buddiant wedi’i dynnu
+whatYouNeedToKnow.subHeading.after.li1 = adio’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog y cyflogeion
+whatYouNeedToKnow.subHeading.after.li2 = trethu’r buddiannau drwy’r gyflogres
+whatYouNeedToKnow.subHeading.after.li3 = cyfrifo’r cyfraniadau Yswiriant Gwladol Dosbarth 1A ar gyfer y buddiannau a ddewiswyd a’u talu drwy’r gyflogres
+whatYouCanDoNext.subHeading.li1 = eithrio cyflogeion rhag y buddiannau rydych wedi’u cofrestru
+whatYouCanDoNext.subHeading.li2 = tynnu buddiannau nad ydych eisiau eu trethu drwy’r gyflogres mwyach
 
-whatYouNeedToKnowMPBIK2.subHeading.after.li1 = adio’r cyfwerth mewn arian parod neu’r swm perthnasol at gyflog y cyflogeion
-whatYouNeedToKnowMPBIK2.subHeading.after.li2 = trethu’r buddiannau drwy’r gyflogres
-whatYouNeedToKnowMPBIK2.subHeading.after.li3 = cyfrifo’r cyfraniadau Yswiriant Gwladol Dosbarth 1A ar gyfer y buddiannau a ddewiswyd a’u talu drwy’r gyflogres
-whatYouCanDoNextMPBIK2.subHeading.li1 = eithrio cyflogeion rhag y buddiannau rydych wedi’u cofrestru
-whatYouCanDoNextMPBIK2.subHeading.li2 = tynnu buddiannau nad ydych eisiau eu trethu drwy’r gyflogres mwyach
+whatYouNeedToKnow.subHeading.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
+whatYouNeedToKnow.subHeading.after.p1.organisation = Nid oes angen i chi anfon ffurflenni P11D ar gyfer cyflogeion os ydynt yn cael y buddiannau hyn wedi’u trethu drwy’r gyflogres.
+whatNext.add.p.organisation = Rydych wedi cofrestru’r buddiannau canlynol i’w trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen:
+whatYouCanDoNext.subHeading.p.link.organisation = fynd yn ôl i’ch crynodeb o dalu buddiannau drwy’r gyflogres
+whatYouNeedToKnow.subHeading.before.p1.organisation = Dylech ysgrifennu at eich cyflogeion gan egluro’r canlynol:
+whatYouNeedToKnow.subHeading.before.li1.organisation = bydd y buddiannau hyn yn cael eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
+whatYouNeedToKnow.subHeading.before.li2.organisation = mae’n bosibl y gall eu codau treth newid
 
-whatYouNeedToKnowMPBIK2.subHeading.organisation = Yr hyn y mae’n rhaid i chi ei wneud nawr
-whatYouNeedToKnowMPBIK2.subHeading.after.p1.organisation = Nid oes angen i chi anfon ffurflenni P11D ar gyfer cyflogeion os ydynt yn cael y buddiannau hyn wedi’u trethu drwy’r gyflogres.
-whatNextMPBIK2.add.p.organisation = Rydych wedi cofrestru’r buddiannau canlynol i’w trethu drwy’ch cyflogres o 6 Ebrill {0} ymlaen:
-whatYouCanDoNextMPBIK2.subHeading.p.link.organisation = fynd yn ôl i’ch crynodeb o dalu buddiannau drwy’r gyflogres
-whatYouNeedToKnowMPBIK2.subHeading.before.p1.organisation = Dylech ysgrifennu at eich cyflogeion gan egluro’r canlynol:
-whatYouNeedToKnowMPBIK2.subHeading.before.li1.organisation = bydd y buddiannau hyn yn cael eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen.
-whatYouNeedToKnowMPBIK2.subHeading.before.li2.organisation = mae’n bosibl y gall eu codau treth newid
-
-whatYouNeedToKnowMPBIK2.subHeading.agent = Yr hyn y mae’n rhaid i’ch cleient gael gwybod gennych
-whatYouNeedToKnowMPBIK2.subHeading.after.p1.agent = Gall eich cleient roi’r gorau i anfon P11D at CThEF ar gyfer gweithwyr sy’n cael trethu eu buddion a’u treuliau drwy’r gyflogres bellach.
-whatNextMPBIK2.add.p.agent = Rydych wedi cofrestru’r buddiannau canlynol i’w trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen:
-whatYouCanDoNextMPBIK2.subHeading.p.link.agent = fynd yn ôl i grynodeb o dalu buddiannau drwy’r gyflogres eich cleient
-whatYouNeedToKnowMPBIK2.subHeading.before.p1.agent = Dylai eich cleient ysgrifennu at eu cyflogeion i egluro’r canlynol:
-whatYouNeedToKnowMPBIK2.subHeading.before.li1.agent = bydd y buddiannau hyn yn cael eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen
-whatYouNeedToKnowMPBIK2.subHeading.before.li2.agent = mae’n bosibl y gall eu codau treth newid
+whatYouNeedToKnow.subHeading.agent = Yr hyn y mae’n rhaid i’ch cleient gael gwybod gennych
+whatYouNeedToKnow.subHeading.after.p1.agent = Gall eich cleient roi’r gorau i anfon P11D at CThEF ar gyfer gweithwyr sy’n cael trethu eu buddion a’u treuliau drwy’r gyflogres bellach.
+whatNext.add.p.agent = Rydych wedi cofrestru’r buddiannau canlynol i’w trethu drwy gyflogres eich cleient o 6 Ebrill {0} ymlaen:
+whatYouCanDoNext.subHeading.p.link.agent = fynd yn ôl i grynodeb o dalu buddiannau drwy’r gyflogres eich cleient
+whatYouNeedToKnow.subHeading.before.p1.agent = Dylai eich cleient ysgrifennu at eu cyflogeion i egluro’r canlynol:
+whatYouNeedToKnow.subHeading.before.li1.agent = bydd y buddiannau hyn yn cael eu trethu drwy’r gyflogres o 6 Ebrill {0} ymlaen
+whatYouNeedToKnow.subHeading.before.li2.agent = mae’n bosibl y gall eu codau treth newid
 
 #********************************************************************
 # timeout text

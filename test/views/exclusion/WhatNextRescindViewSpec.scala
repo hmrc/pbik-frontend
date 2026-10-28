@@ -40,7 +40,7 @@ class WhatNextRescindViewSpec extends PBIKViewSpec {
     behave like pageWithTitle(messages("whatNext.rescind.heading"))
     behave like pageWithHeader(messages("whatNext.rescind.heading"))
     behave like pageWithLink(
-      messages("whatNextMPBIK.exclude.you.do.p.cy.link." + organisationRequest.userType),
+      messages("whatNext.exclude.you.do.p.cy.link." + organisationRequest.userType),
       "/payrollbik/registered-benefits-expenses"
     )
     behave like pageWithLink(
@@ -55,7 +55,7 @@ class WhatNextRescindViewSpec extends PBIKViewSpec {
     behave like pageWithTitle(messages("whatNext.rescind.heading"))
     behave like pageWithHeader(messages("whatNext.rescind.heading"))
     behave like pageWithLink(
-      messages("whatNextMPBIK.exclude.you.do.p.cy.link." + agentRequest.userType),
+      messages("whatNext.exclude.you.do.p.cy.link." + agentRequest.userType),
       "/payrollbik/registered-benefits-expenses"
     )
     behave like pageWithLink(

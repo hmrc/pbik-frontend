@@ -28,16 +28,16 @@
         person:PbikExclusionPerson
 )(implicit request: AuthenticatedRequest[?], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKindMPBIK2.label." + iabdType.id) }
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
-@govukLayoutWrapper(PageTitle(messages("ExclusionRemovalConfirmationMPBIK2.title"))) {
+@govukLayoutWrapper(PageTitle(messages("ExclusionRemovalConfirmation.title"))) {
     <span class="govuk-caption-xl">@benefitLabel</span>
     <h1 id="title" class="govuk-heading-xl">
-        @messages("ExclusionRemovalConfirmationMPBIK2.title")
+        @messages("ExclusionRemovalConfirmation.title")
     </h1>
 
     <p class="govuk-body">
-        @messages("ExclusionRemovalConfirmationMPBIK2.p." + request.userType, benefitLabel, ""+taxYearRange.cy)
+        @messages("ExclusionRemovalConfirmation.p." + request.userType, benefitLabel, ""+taxYearRange.cy)
     </p>
 
     @formWithCSRF(action=routes.ExclusionListController.removeExclusionsCommit(iabdType)) {
@@ -52,7 +52,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    @messages("ExclusionSearchMPBIK.field.employee.ni")
+                    @messages("ExclusionSearch.field.employee.ni")
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <p class="govuk-body" id="nino">@person.nationalInsuranceNumber</p>
@@ -60,7 +60,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    @messages("ExclusionSearchMPBIK.field.employee.payrollId")
+                    @messages("ExclusionSearch.field.employee.payrollId")
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <p class="govuk-body" id="wpn">@person.worksPayrollNumber</p>
@@ -69,22 +69,22 @@
         </dl>
 
         <p class="govuk-body" id="user-info">
-            @messages("RemoveBenefitsMPBIK2.confirm.declaration." + request.userType)
+            @messages("RemoveBenefits.confirm.declaration." + request.userType)
         </p>
 
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("ExclusionRemovalConfirmationMPBIK2.bullet1." + request.userType, ""+person.fullName, ""+taxYearRange.cy)</li>
-            <li>@messages("ExclusionRemovalConfirmationMPBIK2.bullet2." + request.userType, ""+person.fullName)</li>
-            <li>@messages("ExclusionRemovalConfirmationMPBIK2.bullet3." + request.userType)</li>
+            <li>@messages("ExclusionRemovalConfirmation.bullet1." + request.userType, ""+person.fullName, ""+taxYearRange.cy)</li>
+            <li>@messages("ExclusionRemovalConfirmation.bullet2." + request.userType, ""+person.fullName)</li>
+            <li>@messages("ExclusionRemovalConfirmation.bullet3." + request.userType)</li>
         </ul>
 
         <p class="govuk-body" id="user-info-2">
-            @messages("ExclusionSearchMPBIK.understanding." + request.userType + ".p")
+            @messages("ExclusionSearch.understanding." + request.userType + ".p")
         </p>
 
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("ExclusionRemovalConfirmationMPBIK2.bullet4." + request.userType, ""+person.fullName)</li>
-            <li>@messages("ExclusionRemovalConfirmationMPBIK2.bullet5." + request.userType)</li>
+            <li>@messages("ExclusionRemovalConfirmation.bullet4." + request.userType, ""+person.fullName)</li>
+            <li>@messages("ExclusionRemovalConfirmation.bullet5." + request.userType)</li>
         </ul>
 
         <input type="submit" class="govuk-button" role="button" id="button-confirm" value="@messages("Service.confirmAndContinue")">

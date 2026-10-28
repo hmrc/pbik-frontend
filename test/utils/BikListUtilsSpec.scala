@@ -27,74 +27,35 @@ class BikListUtilsSpec extends FakePBIKApplication {
 
   val bikListUtils: BikListUtils                            = injected[BikListUtils]
   implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val iabds: Set[IabdType]                                  = if (pbikAppConfig.mpbikTogglePhase2) {
+  val iabds: Set[IabdType]                                  =
     IabdType.values
-      .filter(x => !pbikAppConfig.biksMpbikPhase2Decommissioned.map(_.id).contains(x.id))
-  } else {
-    IabdType.values
-      .filter(x => x.id != IabdType.CarFuelBenefit.id)
-  }
-  val biks: List[BenefitInKindWithCount]                    = if (pbikAppConfig.mpbikTogglePhase2) {
+      .filter(x => !pbikAppConfig.biksDecommissioned.map(_.id).contains(x.id))
+  val biks: List[BenefitInKindWithCount]                    =
     iabds
-      .filter(x => !pbikAppConfig.biksMpbikPhase2Decommissioned.map(_.id).contains(x.id))
+      .filter(x => !pbikAppConfig.biksDecommissioned.map(_.id).contains(x.id))
       .map(x => BenefitInKindWithCount(x, 1))
       .toList
-  } else {
-    iabds
-      .filter(x => x.id != IabdType.CarFuelBenefit.id)
-      .map(x => BenefitInKindWithCount(x, 1))
-      .toList
-  }
   val bikIabds: Set[IabdType]                               = biks.map(x => x.iabdType).toSet
   private val alphaSorted                                   =
-    if (pbikAppConfig.mpbikTogglePhase2) {
-      List(
-        Accommodation,
-        Assets,
-        AssetTransfer,
-        Entertaining,
-        Expenses,
-        IncomeTaxPaidButNotDeductedFromDirectorRemuneration,
-        BeneficialLoan,
-        Mileage,
-        NonQualifyingRelocationExpenses,
-        OtherItems,
-        Telephone,
-        PaymentsOnEmployeeBehalf,
-        QualifyingRelocationExpenses,
-        EmployerProvidedServices,
-        TravelAndSubsistence,
-        VouchersAndCreditCards
-      )
-    } else {
-      List(
-        Assets,
-        AssetTransfer,
-        BeneficialLoan,
-        Accommodation,
-        CarBenefit,
-        Entertaining,
-        Expenses,
-        IncomeTaxPaidButNotDeductedFromDirectorRemuneration,
-        Mileage,
-        NonQualifyingRelocationExpenses,
-        OtherItems,
-        Telephone,
-        PaymentsOnEmployeeBehalf,
-        MedicalInsurance,
-        QualifyingRelocationExpenses,
-        EmployerProvidedServices,
-        TravelAndSubsistence,
-        VanFuelBenefit,
-        VanBenefit,
-        VouchersAndCreditCards
-      )
-    }
-  private val registeredIabs                                = if (pbikAppConfig.mpbikTogglePhase2) {
+    List(
+      Accommodation,
+      Assets,
+      AssetTransfer,
+      Entertaining,
+      IncomeTaxPaidButNotDeductedFromDirectorRemuneration,
+      BeneficialLoan,
+      Mileage,
+      NonQualifyingRelocationExpenses,
+      OtherItems,
+      Telephone,
+      PaymentsOnEmployeeBehalf,
+      QualifyingRelocationExpenses,
+      EmployerProvidedServices,
+      TravelAndSubsistence,
+      VouchersAndCreditCards
+    )
+  private val registeredIabs                                =
     Set(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, Mileage)
-  } else {
-    Set(AssetTransfer, PaymentsOnEmployeeBehalf, VouchersAndCreditCards, VanBenefit, Mileage)
-  }
   private val registered: Set[BenefitInKindWithCount]       =
     registeredIabs.map(x => BenefitInKindWithCount(x, 1))
 

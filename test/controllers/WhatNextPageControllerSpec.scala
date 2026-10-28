@@ -163,15 +163,11 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
           )
         val result = whatNextPageController.showWhatNextRemovedBik(iabdType).apply(authenticatedRequest)
 
-        if (pbikAppConfig.mpbikTogglePhase2) {
-          status(result) mustBe OK
-          contentAsString(result) must include("Benefit removed")
-          contentAsString(result) must include(
-            "You will not tax Accommodation through your payroll from 6 April"
-          )
-        } else {
-          status(result) mustBe NOT_FOUND
-        }
+        status(result) mustBe OK
+        contentAsString(result) must include("Benefit removed")
+        contentAsString(result) must include(
+          "You will not tax Accommodation through your payroll from 6 April"
+        )
       }
     }
   }

@@ -43,19 +43,6 @@ class ControllersReferenceDataSpec extends FakePBIKApplication {
   }
 
   "ControllersReferenceData" when {
-    "CY mode is disabled" should {
-      "display the result passed to it" in new Test {
-        val result: Result = await(mockControllersReferenceData.responseCheckCYEnabled()(authenticatedRequest))
-
-        if (pbikAppConfig.mpbikToggle) {
-          result.header.status mustBe NOT_FOUND
-        } else {
-          result.header.status mustBe FORBIDDEN
-          result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.10003.1"))
-          result.body.asInstanceOf[Strict].data.utf8String must include(messages("ServiceMessage.10003.2"))
-        }
-      }
-    }
 
     "parsing the response in the responseErrorHandler" should {
       "show an error page when the Future completes with a NoSuchElementException" in new Test {
