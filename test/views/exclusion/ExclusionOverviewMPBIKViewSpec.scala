@@ -25,12 +25,12 @@ import play.api.data.Form
 import play.twirl.api.Html
 import utils.FormMappings
 import views.helper.PBIKViewSpec
-import views.html.exclusion.ExclusionOverviewMPBIK
+import views.html.exclusion.ExclusionOverview
 
-class ExclusionOverviewMPBIKViewSpec extends PBIKViewSpec {
+class ExclusionOverviewViewSpec extends PBIKViewSpec {
 
   val formMappings: FormMappings                         = injected[FormMappings]
-  val exclusionOverviewView: ExclusionOverviewMPBIK      = injected[ExclusionOverviewMPBIK]
+  val exclusionOverviewView: ExclusionOverview           = injected[ExclusionOverview]
   private val form: Form[MandatoryRadioButton]           = formMappings.binaryRadioButton
   private val formWithErrors: Form[MandatoryRadioButton] = form.withError("test", "error")
 
@@ -42,8 +42,8 @@ class ExclusionOverviewMPBIKViewSpec extends PBIKViewSpec {
   "exclusionOverview - organisation" must {
     implicit val html: Html = viewWithForm(form)(organisationRequest)
 
-    behave like pageWithTitle(messages(s"BenefitInKindMPBIK2.label.${iabdType.id}"))
-    behave like pageWithHeader(messages(s"BenefitInKindMPBIK2.label.${iabdType.id}"))
+    behave like pageWithTitle(messages(s"BenefitInKind.label.${iabdType.id}"))
+    behave like pageWithHeader(messages(s"BenefitInKind.label.${iabdType.id}"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cy/${iabdType.id}/excluded-employees", "Continue")
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 
@@ -60,8 +60,8 @@ class ExclusionOverviewMPBIKViewSpec extends PBIKViewSpec {
   "exclusionOverview - agent" must {
     implicit val html: Html = viewWithForm(form)(agentRequest)
 
-    behave like pageWithTitle(messages(s"BenefitInKindMPBIK2.label.${iabdType.id}"))
-    behave like pageWithHeader(messages(s"BenefitInKindMPBIK2.label.${iabdType.id}"))
+    behave like pageWithTitle(messages(s"BenefitInKind.label.${iabdType.id}"))
+    behave like pageWithHeader(messages(s"BenefitInKind.label.${iabdType.id}"))
     behave like pageWithContinueButtonForm(s"/payrollbik/cy/${iabdType.id}/excluded-employees", "Continue")
     behave like pageWithYesNoRadioButton("confirmation-yes", "confirmation-yes")
 
@@ -96,7 +96,7 @@ class ExclusionOverviewMPBIKViewSpec extends PBIKViewSpec {
 
       val doc = Jsoup.parse(viewWithMaximumExclusionsExceeded.toString)
 
-      val expectedMessage = messages("ExclusionOverviewMPBIK.excludecount.exceeded")
+      val expectedMessage = messages("ExclusionOverview.excludecount.exceeded")
       doc.select(".govuk-body").text must include(expectedMessage)
     }
   }

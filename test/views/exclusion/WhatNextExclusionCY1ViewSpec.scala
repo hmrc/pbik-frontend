@@ -22,12 +22,12 @@ import models.v1.IabdType
 import play.twirl.api.Html
 import utils.{FormMappings, TaxDateUtils}
 import views.helper.PBIKViewSpec
-import views.html.exclusion.WhatNextExclusionMpbik
+import views.html.exclusion.WhatNextExclusion
 
 class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
 
-  val formMappings: FormMappings                    = injected[FormMappings]
-  val whatNextExclusionView: WhatNextExclusionMpbik = injected[WhatNextExclusionMpbik]
+  val formMappings: FormMappings               = injected[FormMappings]
+  val whatNextExclusionView: WhatNextExclusion = injected[WhatNextExclusion]
 
   implicit val appConfig: PbikAppConfig = injected[PbikAppConfig]
 
@@ -35,7 +35,7 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
   private val taxDateUtils = new TaxDateUtils
 
   implicit def view()(implicit request: AuthenticatedRequest[?]): Html =
-    whatNextExclusionView(taxYearRange, "cyp1", iabdType, tracePerson, mpbik = mpbikToggle)
+    whatNextExclusionView(taxYearRange, "cyp1", iabdType, tracePerson)
 
   "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)
@@ -43,11 +43,11 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
     behave like pageWithTitle(messages("whatNext.exclude.heading"))
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     behave like pageWithLink(
-      messages("whatNextMPBIK.exclude.you.do.p.link." + organisationRequest.userType),
+      messages("whatNext.exclude.you.do.p.link." + organisationRequest.userType),
       "/payrollbik/registered-benefits-expenses"
     )
     behave like pageWithLink(
-      messages("whatNextMPBIK.exclude.more.p.cy.link", "Vans"),
+      messages("whatNext.exclude.more.p.cy.link", "Vans"),
       s"/payrollbik/cyp1/${iabdType.id}/excluded-employees"
     )
     behave like pageWithIdAndText(
@@ -62,11 +62,11 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
     behave like pageWithTitle(messages("whatNext.exclude.heading"))
     behave like pageWithHeader(messages("whatNext.exclude.heading"))
     behave like pageWithLink(
-      messages("whatNextMPBIK.exclude.you.do.p.link.agent"),
+      messages("whatNext.exclude.you.do.p.link.agent"),
       "/payrollbik/registered-benefits-expenses"
     )
     behave like pageWithLink(
-      messages("whatNextMPBIK.exclude.more.p.link", "Vans"),
+      messages("whatNext.exclude.more.p.link", "Vans"),
       s"/payrollbik/cyp1/${iabdType.id}/excluded-employees"
     )
     behave like pageWithIdAndText(

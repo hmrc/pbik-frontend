@@ -30,44 +30,44 @@
         isExhaustedCY1: Boolean
 )(implicit request: AuthenticatedRequest[?], messages: Messages)
 
-@govukLayoutWrapper(PageTitle(messages("PayrollingSummaryMPBIK2.heading")), showBackLink = true) {
+@govukLayoutWrapper(PageTitle(messages("PayrollingSummary.heading")), showBackLink = true) {
 
-        @pageTitleHeading(messages("PayrollingSummaryMPBIK2.heading"))
+        @pageTitleHeading(messages("PayrollingSummary.heading"))
 
         @if(request.clientName.isDefined){
-            <p class="govuk-body" id="service-use">@messages("PayrollingSummaryMPBIK2.p1." + request.userType, request.clientName.get)</p>
+            <p class="govuk-body" id="service-use">@messages("PayrollingSummary.p1." + request.userType, request.clientName.get)</p>
         } else {
-            <p class="govuk-body" id="service-use">@messages("PayrollingSummaryMPBIK2.p1." + request.userType)</p>
+            <p class="govuk-body" id="service-use">@messages("PayrollingSummary.p1." + request.userType)</p>
         }
         <div class="govuk-tabs" data-module="govuk-tabs">
             <ul class="govuk-tabs__list" role="tablist">
                 @if(registeredBenefitsCurrentYear.isEmpty){
                     <li class="govuk-tabs__list-item" role="presentation">
                         <a class="govuk-tabs__tab" href="#tab-2" id="tab_tab-2" role="tab" aria-controls="tab-2" aria-selected="false" tabindex="-1">
-                            @messages("PayrollingSummaryMPBIK2.tab.taxYear", s"${startTaxYear}", s"${startTaxYear + 1}")
+                            @messages("PayrollingSummary.tab.taxYear", s"${startTaxYear}", s"${startTaxYear + 1}")
                         </a>
                     </li>
                 } else {
                     <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
                         <a class="govuk-tabs__tab" href="#tab-1" id="tab_tab-1" role="tab" aria-controls="tab-1" aria-selected="true" tabindex="0">
-                            @messages("PayrollingSummaryMPBIK2.tab.taxYear", s"${startTaxYear - 1}", s"${startTaxYear}")
+                            @messages("PayrollingSummary.tab.taxYear", s"${startTaxYear - 1}", s"${startTaxYear}")
                         </a>
                     </li>
                     <li class="govuk-tabs__list-item" role="presentation">
                         <a class="govuk-tabs__tab" href="#tab-2" id="tab_tab-2" role="tab" aria-controls="tab-2" aria-selected="false" tabindex="-1">
-                            @messages("PayrollingSummaryMPBIK2.tab.taxYear", s"${startTaxYear}", s"${startTaxYear + 1}")
+                            @messages("PayrollingSummary.tab.taxYear", s"${startTaxYear}", s"${startTaxYear + 1}")
                         </a>
                     </li>
                 }
             </ul>
             @if(!registeredBenefitsCurrentYear.isEmpty) {
                 <div class="govuk-tabs__panel" id="tab-1" role="tabpanel" aria-labelledby="tab_tab-1">
-                    <h2 class="govuk-heading-l" id="benefits-tab">@messages("PayrollingSummaryMPBIK2.tab.heading")</h2>
-                    <p class="govuk-body">@messages("PayrollingSummaryMPBIK2.benefits.text." + request.userType, s"${startTaxYear - 1}")</p>
+                    <h2 class="govuk-heading-l" id="benefits-tab">@messages("PayrollingSummary.tab.heading")</h2>
+                    <p class="govuk-body">@messages("PayrollingSummary.benefits.text." + request.userType, s"${startTaxYear - 1}")</p>
                     <table class="govuk-table">
                         <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header" id="cy-benefits-table-header">@messages("PayrollingSummaryMPBIK2.table.header")</th>
+                            <th scope="col" class="govuk-table__header" id="cy-benefits-table-header">@messages("PayrollingSummary.table.header")</th>
                             <th scope="col" class="govuk-table__header" style="width: 10em;">
                                 <span class="govuk-visually-hidden">@messages("Service.action")</span>
                             </th>
@@ -76,10 +76,10 @@
                         <tbody class="govuk-table__body">
                         @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCurrentYear).zipWithIndex ) {
                         <tr class="govuk-table__row">
-                            <td class="govuk-table__cell" id="cy-@n.iabdType.id">@messages("BenefitInKindMPBIK2.label." + n.iabdType.id)</td>
+                            <td class="govuk-table__cell" id="cy-@n.iabdType.id">@messages("BenefitInKind.label." + n.iabdType.id)</td>
                             <td class="govuk-table__cell govuk-table__cell--numeric">
                                 <a id="cy-exclude-@n.iabdType.id" href='@controllers.routes.ExclusionListController.performPageLoad("cy", n.iabdType)' class="govuk-link">
-                                    @if(n.payrolledBenefitInKindExclusionCount == 0) {@messages("PayrollingSummaryMPBIK2.table.exclude.link.text")} else {@messages("PayrollingSummaryMPBIK2.table.manage.link.text")}
+                                    @if(n.payrolledBenefitInKindExclusionCount == 0) {@messages("PayrollingSummary.table.exclude.link.text")} else {@messages("PayrollingSummary.table.manage.link.text")}
                                 </a>
                             </td>
                         </tr>
@@ -89,25 +89,25 @@
                 </div>
             }
             <div class="govuk-tabs__panel govuk-tabs_panel--hidden" id="tab-2" role="tabpanel" aria-labelledby="tab_tab-2">
-                <h2 class="govuk-heading-l" id="benefits-cy1-tab">@messages("PayrollingSummaryMPBIK2.tab.heading")</h2>
+                <h2 class="govuk-heading-l" id="benefits-cy1-tab">@messages("PayrollingSummary.tab.heading")</h2>
                 @if(!isExhaustedCY1){
                     <p class="govuk-body">
-                        @messages("PayrollingSummaryMPBIK2.you.can")
+                        @messages("PayrollingSummary.you.can")
                         <a class="govuk-link govuk-link--no-visited-state" href = "@controllers.routes.ManageRegistrationController.nextTaxYearAddOnPageLoad">
-                            @messages("PayrollingSummaryMPBIK2.choose.benefit.link.text." + request.userType)
+                            @messages("PayrollingSummary.choose.benefit.link.text." + request.userType)
                         </a>
                         .
                     </p>
                 }
                 @if(registeredBenefitsCY1.isEmpty){
-                    <p class="govuk-body">@messages("PayrollingSummaryMPBIK2.no.benefits.text." + request.userType, s"${startTaxYear}")</p>
+                    <p class="govuk-body">@messages("PayrollingSummary.no.benefits.text." + request.userType, s"${startTaxYear}")</p>
                 } else {
-                <p class="govuk-body">@messages("PayrollingSummaryMPBIK2.benefits.text." + request.userType, s"${startTaxYear}")</p>
+                <p class="govuk-body">@messages("PayrollingSummary.benefits.text." + request.userType, s"${startTaxYear}")</p>
                 <table class="govuk-table" style="width: 100%; table-layout: fixed;">
                     <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th scope="col" class="govuk-table__header" id="cy1-benefits-table-header" style="width: 35%;">
-                            @messages("PayrollingSummaryMPBIK2.table.header")
+                            @messages("PayrollingSummary.table.header")
                         </th>
                         <th scope="col" class="govuk-table__header" style="width: 65%;">
                             <span class="govuk-visually-hidden">@messages("Service.action")</span>
@@ -118,14 +118,14 @@
                     <tbody class="govuk-table__body">
                     @for( (n, index) <- bikListUtils.sortAlphabeticallyByLabels(registeredBenefitsCY1).zipWithIndex ) {
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell" id="cy1-@n.iabdType.id">@messages("BenefitInKindMPBIK2.label." + n.iabdType.id)</td>
+                        <td class="govuk-table__cell" id="cy1-@n.iabdType.id">@messages("BenefitInKind.label." + n.iabdType.id)</td>
                         <td class="govuk-table__cell">
                             <a id="cy1-exclude-@n.iabdType.id" href='@controllers.routes.ExclusionListController.performPageLoad("cyp1", n.iabdType)' class="govuk-link">
-                                @if(n.payrolledBenefitInKindExclusionCount == 0) {@messages("PayrollingSummaryMPBIK2.table.exclude.link.text")} else {@messages("PayrollingSummaryMPBIK2.table.manage.link.text")}
+                                @if(n.payrolledBenefitInKindExclusionCount == 0) {@messages("PayrollingSummary.table.exclude.link.text")} else {@messages("PayrollingSummary.table.manage.link.text")}
                             </a>
                             &nbsp;&nbsp;&nbsp;
                             <a id="cy1-remove-@n.iabdType.id" href='@controllers.routes.ManageRegistrationController.showConfirmRemoveNextTaxYear(n.iabdType)' class="govuk-link">
-                                @messages("RemoveBenefitsMPBIK2.link")
+                                @messages("RemoveBenefits.link")
                             </a>
                         </td>
                     </tr>
