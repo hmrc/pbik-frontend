@@ -83,16 +83,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       doc must haveErrorNotification(messages("error.incorrect.nino"))
 
       val msgIncorrectFirstname =
-        if (april2026MpbikToggle)
-          "error.incorrect.firstnameMPBIK"
-        else
-          "error.incorrect.firstname"
+        "error.incorrect.firstname"
 
       val msgIncorrectLastname =
-        if (april2026MpbikToggle)
-          "error.incorrect.lastnameMPBIK"
-        else
-          "error.incorrect.lastname"
+        "error.incorrect.lastname"
 
       doc must haveErrorSummary(messages(msgIncorrectFirstname).replace(".", ""))
       doc must haveErrorNotification(messages(msgIncorrectFirstname))
@@ -116,10 +110,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       )(organisationRequest)
 
       if (april2026MpbikToggle) {
-        doc must haveErrorSummary(messages("error.firstname.lengthMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.firstname.lengthMPBIK"))
-        doc must haveErrorSummary(messages("error.lastname.lengthMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.lastname.lengthMPBIK"))
+        doc must haveErrorSummary(messages("error.firstname.length").replace(".", ""))
+        doc must haveErrorNotification(messages("error.firstname.length"))
+        doc must haveErrorSummary(messages("error.lastname.length").replace(".", ""))
+        doc must haveErrorNotification(messages("error.lastname.length"))
       }
     }
   }
@@ -168,16 +162,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       doc must haveErrorNotification(messages("error.incorrect.nino"))
 
       val msgIncorrectFirstname =
-        if (april2026MpbikToggle)
-          "error.incorrect.firstnameMPBIK"
-        else
-          "error.incorrect.firstname"
+        "error.incorrect.firstname"
 
       val msgIncorrectLastname =
-        if (april2026MpbikToggle)
-          "error.incorrect.lastnameMPBIK"
-        else
-          "error.incorrect.lastname"
+        "error.incorrect.lastname"
 
       doc must haveErrorSummary(messages(msgIncorrectFirstname).replace(".", ""))
       doc must haveErrorNotification(messages(msgIncorrectFirstname))
@@ -201,10 +189,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       )(agentRequest)
 
       if (april2026MpbikToggle) {
-        doc must haveErrorSummary(messages("error.firstname.lengthMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.firstname.lengthMPBIK"))
-        doc must haveErrorSummary(messages("error.lastname.lengthMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.lastname.lengthMPBIK"))
+        doc must haveErrorSummary(messages("error.firstname.length").replace(".", ""))
+        doc must haveErrorNotification(messages("error.firstname.length"))
+        doc must haveErrorSummary(messages("error.lastname.length").replace(".", ""))
+        doc must haveErrorNotification(messages("error.lastname.length"))
       }
     }
 

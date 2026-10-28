@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.PbikAppConfig
 import controllers.actions.AuthAction
 import models.*
 import models.v1.IabdType.IabdType
@@ -40,13 +39,10 @@ class WhatNextPageController @Inject() (
   controllersReferenceData: ControllersReferenceData,
   cc: MessagesControllerComponents,
   addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear,
-  removeBenefitConfirmationNextTaxYearView: RemoveBenefitConfirmationNextTaxYear,
-  pbikAppConfig: PbikAppConfig
+  removeBenefitConfirmationNextTaxYearView: RemoveBenefitConfirmationNextTaxYear
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport {
-
-  private val mpbikPhase2: Boolean = pbikAppConfig.mpbikTogglePhase2
 
   def showWhatNextRegisteredBik(year: String): Action[AnyContent] =
     authenticate.async { implicit request =>
@@ -69,21 +65,17 @@ class WhatNextPageController @Inject() (
   def showWhatNextRemovedBik(iabdType: IabdType): Action[AnyContent] =
     authenticate.async { implicit request =>
       val resultFuture =
-        if (mpbikPhase2) {
-          sessionService.fetchPbikSession().map { session =>
-            val removedBikAsList: RegistrationList =
-              RegistrationList(active = List(session.get.bikRemoved.get))
-            Ok(
-              removeBenefitConfirmationNextTaxYearView(
-                taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
-                controllersReferenceData.yearRange,
-                removedBikAsList,
-                iabdType
-              )
+        sessionService.fetchPbikSession().map { session =>
+          val removedBikAsList: RegistrationList =
+            RegistrationList(active = List(session.get.bikRemoved.get))
+          Ok(
+            removeBenefitConfirmationNextTaxYearView(
+              taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
+              controllersReferenceData.yearRange,
+              removedBikAsList,
+              iabdType
             )
-          }
-        } else {
-          Future.failed(new InvalidURIException())
+          )
         }
       controllersReferenceData.responseErrorHandler(resultFuture)
     }

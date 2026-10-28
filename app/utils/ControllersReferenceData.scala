@@ -16,7 +16,6 @@
 
 package utils
 
-import config.PbikAppConfig
 import models.*
 import models.auth.AuthenticatedRequest
 import play.api.Logging
@@ -61,37 +60,12 @@ class ControllersReferenceData @Inject() (
   maintenancePageView: MaintenancePage,
   pageNotFound: page_not_found_template
 )(implicit
-  ec: ExecutionContext,
-  val pbikAppConfig: PbikAppConfig
-) extends FormMappings(pbikAppConfig, messagesApi)
+  ec: ExecutionContext
+) extends FormMappings(messagesApi)
     with I18nSupport
     with Logging {
 
-  private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
-
   def yearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
-
-  def responseCheckCYEnabled()(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
-    if (mpbikToggle) {
-      logger.error(s"[ControllersReferenceData][responseCheckCYEnabled] Page not found for URI: ${request.uri}")
-      Future(
-        NotFound(
-          pageNotFound()
-        )
-      )
-    } else {
-      val errorCode = 10003
-      Future(
-        Forbidden(
-          errorPageView(
-            ControllersReferenceDataCodes.CY_RESTRICTED,
-            yearRange,
-            "",
-            errorCode
-          )
-        )
-      )
-    }
 
   def responseErrorHandler(
     staticDataRequest: Future[Result]

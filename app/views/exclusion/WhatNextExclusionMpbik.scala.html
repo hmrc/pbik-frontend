@@ -30,8 +30,7 @@
     taxYearRange:TaxYearRange,
     year:String,
     iabdType:IabdType,
-    person:TracePersonResponse,
-    mpbik: Boolean
+    person:TracePersonResponse
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
 @benefitLabel = @{ messages("BenefitInKindMPBIK2.label." + iabdType.id) }

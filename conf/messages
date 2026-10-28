@@ -701,23 +701,20 @@ error.empty.firstname = Enter a first name.
 error.empty.lastname = Enter a last name.
 
 error.incorrect.nino = Enter the employee''s National Insurance number in the correct format.
-error.incorrect.firstname = Enter a first name that doesn’t contain any numbers or special characters.
-error.incorrect.lastname = Enter a last name that doesn’t contain any numbers or special characters.
+error.incorrect.firstname = First name must only contain letters a to z.
+error.incorrect.lastname = Last name must only contain letters a to z.
 
-error.incorrect.firstnameMPBIK = First name must only contain letters a to z.
-error.incorrect.lastnameMPBIK = Last name must only contain letters a to z.
-error.firstname.lengthMPBIK = First name must be 35 characters or less.
-error.lastname.lengthMPBIK = Last name must be 35 characters or less.
+error.firstname.length = First name must be 35 characters or less.
+error.lastname.length = Last name must be 35 characters or less.
 
 error.empty.dob = Enter a date of birth.
 error.invaliddate.day = Enter a valid day.
 error.invaliddate.month = Enter a valid month.
 error.invaliddate.year = Enter a valid year.
-error.invaliddate.future.year = Year of date of birth can’t be in the future.
+error.invaliddate.future.year = Date of birth must be in the past
 error.invaliddate.past.year = Year of date of birth must be in the last 130 years.
 
 error.invaliddate.date = Date of birth must be a real date.
-error.invaliddate.future.yearMPBIK = Date of birth must be in the past
 
 error.exclusion.multi.selection = You need to choose which employee you want to exclude before you can continue
 

@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.PbikAppConfig
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -41,26 +40,16 @@ class StartPageController @Inject() (
   controllersReferenceData: ControllersReferenceData,
   startPageMpbikToggleView: StartPageMpbik,
   startPageMpbikPhase2View: StartPageMpbik2,
-  selectYearPageView: SelectYearPage, // todo remove after mpbik cleanup
-  pbikAppConfig: PbikAppConfig
+  selectYearPageView: SelectYearPage // todo remove after mpbik cleanup
 )(implicit val ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport
     with Logging
     with WithUrlEncodedOnlyFormBinding {
 
-  private val mpbikToggle: Boolean       = pbikAppConfig.mpbikToggle
-  private val mpbikTogglePhase2: Boolean = pbikAppConfig.mpbikTogglePhase2
-
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val resultFuture: Future[Result] =
-      if (mpbikTogglePhase2) {
-        Future.successful(Ok(startPageMpbikPhase2View()))
-      } else {
-        for {
-          currentYearList <- bikListService.currentYearList
-        } yield Ok(startPageMpbikToggleView(currentYearList.getBenefitInKindWithCount.nonEmpty))
-      }
+      Future.successful(Ok(startPageMpbikPhase2View()))
     controllersReferenceData.responseErrorHandler(resultFuture)
   }
 
