@@ -44,10 +44,6 @@ class DefaultSessionRepository @Inject() (config: PbikAppConfig, mongo: MongoCom
           IndexOptions()
             .name("userAnswersExpiry")
             .expireAfter(config.mongoTTL.toLong, TimeUnit.SECONDS)
-        ),
-        IndexModel(
-          ascending("sessionId"),
-          IndexOptions().name("sessionIdIdx")
         )
       )
     )
