@@ -26,17 +26,13 @@ import play.api.mvc.Request
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BikListUtils @Inject() ()(val pbikAppConfig: PbikAppConfig)(val messagesApi: MessagesApi) extends I18nSupport {
+class BikListUtils @Inject() ()(val messagesApi: MessagesApi) extends I18nSupport {
 
   def sortAlphabeticallyByLabels[A](
     biks: List[BenefitInKindWithCount]
   )(implicit request: Request[A]): List[BenefitInKindWithCount] = {
     val listOfIdLabelPairs: List[(BenefitInKindWithCount, String)]       =
-      if (pbikAppConfig.mpbikTogglePhase2) {
-        biks.map(bik => (bik, Messages("BenefitInKindMPBIK2.label." + bik.iabdType.id)))
-      } else {
-        biks.map(bik => (bik, Messages("BenefitInKind.label." + bik.iabdType.id)))
-      }
+      biks.map(bik => (bik, Messages("BenefitInKindMPBIK2.label." + bik.iabdType.id)))
     val sortedListOfIdLabelPairs: List[(BenefitInKindWithCount, String)] =
       listOfIdLabelPairs.sortWith((bik1: (BenefitInKindWithCount, String), bik2: (BenefitInKindWithCount, String)) =>
         bik1._2 < bik2._2
@@ -48,11 +44,7 @@ class BikListUtils @Inject() ()(val pbikAppConfig: PbikAppConfig)(val messagesAp
     registeredBiksList: RegistrationList
   )(implicit request: Request[A]): RegistrationList = {
     val listOfIdLabelPairs: List[(IabdType, String)]       =
-      if (pbikAppConfig.mpbikTogglePhase2) {
-        registeredBiksList.active.map(bik => (bik.iabdType, Messages("BenefitInKindMPBIK2.label." + bik.iabdType.id)))
-      } else {
-        registeredBiksList.active.map(bik => (bik.iabdType, Messages("BenefitInKind.label." + bik.iabdType.id)))
-      }
+      registeredBiksList.active.map(bik => (bik.iabdType, Messages("BenefitInKindMPBIK2.label." + bik.iabdType.id)))
     val sortedListOfIdLabelPairs: List[(IabdType, String)] =
       listOfIdLabelPairs.sortWith((bik1: (IabdType, String), bik2: (IabdType, String)) => bik1._2 < bik2._2)
     val registrationItemList: List[RegistrationItem]       =

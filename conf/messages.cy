@@ -701,23 +701,20 @@ error.empty.firstname = Nodwch enw cyntaf.
 error.empty.lastname = Nodwch enw olaf.
 
 error.incorrect.nino = Nodwch rif Yswiriant Gwladol y cyflogai yn y fformat cywir.
-error.incorrect.firstname = Nodwch enw cyntaf nad yw’n cynnwys rhifau neu gymeriadau arbennig.
-error.incorrect.lastname = Nodwch enw olaf nad yw’n cynnwys rhifau neu gymeriadau arbennig.
+error.incorrect.firstname = Mae’n rhaid i’r enw cyntaf gynnwys y llythrennau a i z yn unig.
+error.incorrect.lastname = Mae’n rhaid i’r enw olaf gynnwys y llythrennau a i z yn unig.
 
-error.incorrect.firstnameMPBIK = Mae’n rhaid i’r enw cyntaf gynnwys y llythrennau a i z yn unig.
-error.incorrect.lastnameMPBIK = Mae’n rhaid i’r enw olaf gynnwys y llythrennau a i z yn unig.
-error.firstname.lengthMPBIK = Mae’n rhaid i’r enw cyntaf fod yn 35 o gymeriadau neu lai.
-error.lastname.lengthMPBIK = Mae’n rhaid i’r enw olaf fod yn 35 o gymeriadau neu lai.
+error.firstname.length = Mae’n rhaid i’r enw cyntaf fod yn 35 o gymeriadau neu lai.
+error.lastname.length = Mae’n rhaid i’r enw olaf fod yn 35 o gymeriadau neu lai.
 
 error.empty.dob = Nodwch ddyddiad geni.
 error.invaliddate.day = Nodwch ddiwrnod dilys.
 error.invaliddate.month = Nodwch fis dilys.
 error.invaliddate.year = Nodwch flwyddyn ddilys.
-error.invaliddate.future.year = Ni all blwyddyn y dyddiad geni fod yn y dyfodol.
+error.invaliddate.future.year = Mae’n rhaid i’r dyddiad geni fod yn y gorffennol
 error.invaliddate.past.year = Mae’n rhaid i flwyddyn y dyddiad geni fod yn ystod y 130 mlynedd diwethaf.
 
 error.invaliddate.date = Mae’n rhaid i’r dyddiad geni fod yn ddyddiad go iawn.
-error.invaliddate.future.yearMPBIK = Mae’n rhaid i’r dyddiad geni fod yn y gorffennol
 
 error.exclusion.multi.selection = Mae’n rhaid i chi ddewis pa gyflogai yr ydych am ei eithrio cyn i chi allu mynd yn eich blaen
 

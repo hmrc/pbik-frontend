@@ -37,6 +37,7 @@ class PbikAppConfig @Inject() (configuration: Configuration) {
     configuration.get[Seq[Int]]("pbik.decommissioned.biks").map(IabdType(_)).toSet
   lazy val biksMpbikPhase2Decommissioned: Set[IabdType] =
     configuration.get[Seq[Int]]("pbik.decommissioned.mpbik2.biks").map(IabdType(_)).toSet
+  // todo unify this 2 lists
 
   lazy val timeout: Int          = configuration.get[Int]("timeout.timeout")
   lazy val timeoutCountdown: Int = configuration.get[Int]("timeout.countdown")

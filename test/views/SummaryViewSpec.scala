@@ -27,73 +27,19 @@ import scala.collection.immutable.List
 
 class SummaryViewSpec extends PBIKViewSpec {
 
-  private val summaryView: Summary                                       = injected[Summary]
   private lazy val payrollingSummaryPageView: PayrollingSummaryPageMpbik = injected[PayrollingSummaryPageMpbik]
   private val carIabdType: String                                        = IabdType.CarBenefit.id.toString
   private val carBik: BenefitInKindWithCount                             = BenefitInKindWithCount(IabdType.CarBenefit, 2)
   private val medicalBik: BenefitInKindWithCount                         = BenefitInKindWithCount(IabdType.MedicalInsurance, 2)
-  private val serviceBiksCountCY: Int                                    = 0
-  private val serviceBiksCountCYP1: Int                                  = 200
 
   private def view(
-    selectedYear: String,
-    benefitsCY: List[BenefitInKindWithCount],
-    benefitsCYP1: List[BenefitInKindWithCount],
-    showChangeYearLink: Boolean = true
+    benefitsCY: List[BenefitInKindWithCount]
   )(implicit request: AuthenticatedRequest[?]): Html =
-    if (pbikAppConfig.mpbikToggle) {
-      payrollingSummaryPageView(taxYearRange.cy, benefitsCY)
-    } else {
-      summaryView(
-        selectedYear,
-        taxYearRange,
-        benefitsCY,
-        benefitsCYP1,
-        serviceBiksCountCY,
-        serviceBiksCountCYP1,
-        showChangeYearLink
-      )
-    }
+    payrollingSummaryPageView(taxYearRange.cy, benefitsCY)
 
   private def testCYView(userType: String)(implicit request: AuthenticatedRequest[?]): Unit =
     s"overview for CY - $userType" must {
-      implicit val html: Html = view("cy", List(carBik, medicalBik), List.empty)
-
-      behave like pageWithTitle(messages("Overview.benefitsManage.heading"))
-      behave like pageWithHeader(messages("Overview.benefitsManage.heading"))
-      behave like pageWithBackLink()
-
-      "not display empty benefits message when CY benefits are present" in {
-        val doc          = Jsoup.parse(view("cy", List(carBik, medicalBik), List.empty).toString())
-        val emptyMessage = messages("Overview.empty.benefits.p")
-        doc.body().text() must not include emptyMessage
-      }
-
-      "show empty message if CY benefits are empty" in {
-        val doc = Jsoup.parse(view("cy", List.empty, List.empty).toString())
-        doc.body().text() must include(messages("Overview.empty.benefits.p"))
-      }
-
-      "show correct heading h2 for the page for CY" in {
-        val doc = Jsoup.parse(view("cy", List.empty, List.empty).toString())
-        doc.select("#benefits-heading-2").text() mustBe messages(
-          "Overview.empty.benefits.h2",
-          taxYearRange.cyminus1.toString
-        )
-      }
-
-      "not show no benefits message when CY list is empty and CYP1 list is full" in {
-        val lotsOfBiks   = List.fill(200)(carBik)
-        val doc          = Jsoup.parse(view("cy", List.empty, lotsOfBiks).toString)
-        val emptyMessage = messages("Overview.empty.benefits.p")
-        doc.body().text() must not include emptyMessage
-      }
-
-    }
-
-  private def testCYViewMPBIK(userType: String)(implicit request: AuthenticatedRequest[?]): Unit =
-    s"overview for CY - $userType" must {
-      implicit val html: Html = view("cy", List(carBik, medicalBik), List.empty)
+      implicit val html: Html = view(List(carBik, medicalBik))
 
       behave like pageWithTitle(messages(s"PayrollingSummaryMPBIK.heading"))
       behave like pageWithHeader(messages(s"PayrollingSummaryMPBIK.heading"))
@@ -104,14 +50,14 @@ class SummaryViewSpec extends PBIKViewSpec {
       behave like pageWithBackLink()
 
       "show correct title for the tab for CY" in {
-        val doc = Jsoup.parse(view("cy", List.empty, List.empty).toString())
+        val doc = Jsoup.parse(view(List.empty).toString())
         doc.select("#benefits-tab").text() mustBe messages(
           "PayrollingSummaryMPBIK.tab.heading"
         )
       }
 
       "show correct tab tag for CY" in {
-        val doc = Jsoup.parse(view("cy", List.empty, List.empty).toString())
+        val doc = Jsoup.parse(view(List.empty).toString())
         doc.select("#tab-tag-cy").text() mustBe messages(
           "PayrollingSummaryMPBIK.tab.taxYear.cy0",
           taxYearRange.cyminus1.toString,
@@ -123,7 +69,7 @@ class SummaryViewSpec extends PBIKViewSpec {
 
   private def testCYP1View(userType: String)(implicit request: AuthenticatedRequest[?]): Unit =
     s"overview for CYP1 - $userType" must {
-      implicit val html: Html = view("cy1", List.empty, List(carBik, medicalBik))
+      implicit val html: Html = view(List.empty)
 
       behave like pageWithTitle(messages("Overview.benefitsRegistered.heading"))
       behave like pageWithHeader(messages("Overview.benefitsRegistered.heading"))
@@ -136,36 +82,28 @@ class SummaryViewSpec extends PBIKViewSpec {
       behave like pageWithLink(messages("Overview.change.year.cy1.text.link"), "/payrollbik/select-year")
 
       "not display empty benefits message when CYP1 benefits are present" in {
-        val doc          = Jsoup.parse(view("cy1", List.empty, List(carBik)).toString())
+        val doc          = Jsoup.parse(view(List.empty).toString())
         val emptyMessage = messages("Overview.empty.benefits.p")
         doc.body().text() must not include emptyMessage
       }
 
       "show empty message if CYP1 benefits are empty" in {
-        val doc = Jsoup.parse(view("cy1", List.empty, List.empty).toString)
+        val doc = Jsoup.parse(view(List.empty).toString)
         doc.body().text() must include(messages("Overview.empty.benefits.p"))
       }
 
       "not show change year link if disabled" in {
-        val doc = Jsoup.parse(view("cy1", List.empty, List.empty, showChangeYearLink = false).toString())
+        val doc = Jsoup.parse(view(List.empty).toString())
         doc.select("#tax-year-select").first() mustBe None.orNull
       }
 
       "show correct heading h2 for the page for CY+1" in {
-        val doc = Jsoup.parse(view("cy1", List.empty, List.empty).toString())
+        val doc = Jsoup.parse(view(List.empty).toString())
         doc.select("#benefits-heading-2").text() mustBe messages("Overview.empty.benefits.h2", taxYearRange.cy.toString)
       }
     }
 
   // Run tests for both user types
-  if (pbikAppConfig.mpbikToggle) {
-    testCYViewMPBIK("organisation")(organisationRequest)
-    testCYViewMPBIK("agent")(agentRequest)
-  } else {
-    testCYView("organisation")(organisationRequest)
-    testCYP1View("organisation")(organisationRequest)
-
-    testCYView("agent")(agentRequest)
-    testCYP1View("agent")(agentRequest)
-  }
+  testCYView("organisation")(organisationRequest)
+  testCYView("agent")(agentRequest)
 }

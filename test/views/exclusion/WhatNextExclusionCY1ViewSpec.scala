@@ -35,7 +35,7 @@ class WhatNextExclusionCY1ViewSpec extends PBIKViewSpec {
   private val taxDateUtils = new TaxDateUtils
 
   implicit def view()(implicit request: AuthenticatedRequest[?]): Html =
-    whatNextExclusionView(taxYearRange, "cyp1", iabdType, tracePerson, mpbik = mpbikToggle)
+    whatNextExclusionView(taxYearRange, "cyp1", iabdType, tracePerson)
 
   "whatNextAddRemove - organisation" must {
     implicit val html: Html = view()(organisationRequest)
