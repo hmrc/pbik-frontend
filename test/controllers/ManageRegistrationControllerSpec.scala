@@ -105,16 +105,12 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       "be directed to cy + 1 page with list of biks" in {
         val result = registrationController.nextTaxYearAddOnPageLoad()(mockRequest)
 
-        if (pbikAppConfig.mpbikTogglePhase2) {
-          val title = messages("AddBenefitsMPBIK2.Heading.organisation")
-          status(result) mustBe OK
-          contentAsString(result) must include(title)
-          contentAsString(result) must include(
-            messages(s"BenefitInKindMPBIK2.label.${IabdType.EmployerProvidedServices.id}")
-          )
-        } else {
-          status(result) mustBe NOT_FOUND
-        }
+        val title = messages("AddBenefits.Heading.organisation")
+        status(result) mustBe OK
+        contentAsString(result) must include(title)
+        contentAsString(result) must include(
+          messages(s"BenefitInKind.label.${IabdType.EmployerProvidedServices.id}")
+        )
       }
     }
 
@@ -130,12 +126,8 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
         val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
 
-        if (!pbikAppConfig.mpbikTogglePhase2) {
-          status(result) mustBe NOT_FOUND
-        } else {
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).get mustBe "/payrollbik/cy1/check-the-benefits"
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe "/payrollbik/cy1/check-the-benefits"
       }
 
       "be shown the form with errors if not filled in correctly" in {
@@ -146,12 +138,8 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
         val result = registrationController.checkYourAnswersAddNextTaxYear()(mockRequestForm)
 
-        if (!pbikAppConfig.mpbikTogglePhase2) {
-          status(result) mustBe NOT_FOUND
-        } else {
-          status(result) mustBe BAD_REQUEST
-          contentAsString(result) must include(messages("AddBenefitsMPBIK2.noselection.error"))
-        }
+        status(result) mustBe BAD_REQUEST
+        contentAsString(result) must include(messages("AddBenefits.noselection.error"))
       }
     }
 
@@ -176,12 +164,8 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           )
         val result = registrationController.showCheckYourAnswersAddNextTaxYear()(mockRequest)
 
-        if (pbikAppConfig.mpbikTogglePhase2) {
-          status(result) mustBe OK
-          contentAsString(result) must include(messages(s"BenefitInKindMPBIK2.label.${iabdType.id}"))
-        } else {
-          status(result) mustBe NOT_FOUND
-        }
+        status(result) mustBe OK
+        contentAsString(result) must include(messages(s"BenefitInKind.label.${iabdType.id}"))
       }
     }
 
@@ -213,12 +197,8 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         val mockRequestForm      = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm)
 
-        if (pbikAppConfig.mpbikTogglePhase2) {
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(s"/payrollbik/${FormMappingsConstants.CYP1}/registration-complete")
-        } else {
-          status(result) mustBe NOT_FOUND
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(s"/payrollbik/${FormMappingsConstants.CYP1}/registration-complete")
       }
 
       "direct an unauthorised user to the login page" in {
@@ -272,12 +252,8 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           .withFormUrlEncodedBody(form.data.toSeq *)
         val result               = registrationController.removeNextYearRegisteredBenefitTypes(iabdType).apply(mockRequestForm)
 
-        if (pbikAppConfig.mpbikTogglePhase2) {
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/declare-remove-benefit-expense")
-        } else {
-          status(result) mustBe NOT_FOUND
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/declare-remove-benefit-expense")
       }
     }
 
@@ -317,12 +293,8 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       val resultSelection  =
         registrationController.updateBiksFutureAction(year, cyBenefitRequest.toList, additive = false)
 
-      if (pbikAppConfig.mpbikTogglePhase2) {
-        status(resultSelection) mustBe OK
-        contentAsString(resultSelection) must include(errorMsg)
-      } else {
-        status(resultSelection) mustBe NOT_FOUND
-      }
+      status(resultSelection) mustBe OK
+      contentAsString(resultSelection) must include(errorMsg)
     }
 
     "return connector result for CONFLICT error statuses when adding next year benefits" in {
@@ -364,11 +336,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
       val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
 
-      if (pbikAppConfig.mpbikTogglePhase2) {
-        result.header.status mustBe CONFLICT
-      } else {
-        result.header.status mustBe NOT_FOUND
-      }
+      result.header.status mustBe CONFLICT
     }
 
     "return connector result for other error statuses when adding next year benefits" in {
@@ -405,11 +373,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
       val result = await(registrationController.addNextYearRegisteredBenefitTypes()(mockRequestForm))
 
-      if (pbikAppConfig.mpbikTogglePhase2) {
-        result.header.status mustBe INTERNAL_SERVER_ERROR
-      } else {
-        result.header.status mustBe NOT_FOUND
-      }
+      result.header.status mustBe INTERNAL_SERVER_ERROR
     }
 
     "handle optimistic lock conflict when removing next year benefits" in {
@@ -469,11 +433,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
         )
       )
 
-      if (pbikAppConfig.mpbikTogglePhase2) {
-        result.header.status mustBe INTERNAL_SERVER_ERROR
-      } else {
-        result.header.status mustBe NOT_FOUND
-      }
+      result.header.status mustBe INTERNAL_SERVER_ERROR
     }
 
     "loading showConfirmRemoveNextTaxYear, an authorised user" should {
@@ -498,13 +458,9 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
         val result = registrationController.showConfirmRemoveNextTaxYear(iabdType)(mockRequest)
 
-        if (pbikAppConfig.mpbikTogglePhase2) {
-          val title = messages("RemoveBenefitsMPBIK2.reason.Title.organisation")
-          status(result) mustBe OK
-          contentAsString(result) must include(title)
-        } else {
-          status(result) mustBe NOT_FOUND
-        }
+        val title = messages("RemoveBenefits.reason.Title.organisation")
+        status(result) mustBe OK
+        contentAsString(result) must include(title)
       }
     }
 
@@ -539,12 +495,8 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
           val result = registrationController.submitConfirmRemoveNextTaxYear(iabdType)(mockRequest)
 
-          if (pbikAppConfig.mpbikTogglePhase2) {
-            status(result) mustBe SEE_OTHER
-            redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/benefit-removed")
-          } else {
-            status(result) mustBe NOT_FOUND
-          }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/benefit-removed")
         }
       }
   }

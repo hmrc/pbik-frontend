@@ -17,12 +17,9 @@
 @import views.html.localhelpers.TextInput
 @import views.html.localhelpers.DateFieldsNumberInputs
 @import views.templatemodels.PageTitle
-@import config.PbikAppConfig
 @import utils.FormMappingsConstants
 
-
 @this(
-        config:PbikAppConfig,
         govukLayoutWrapper: GovukLayoutWrapper,
         dateFieldsNumberInputs: DateFieldsNumberInputs,
         textInput: TextInput,
@@ -39,14 +36,14 @@
 
 @excludedEmployeesLink = {<a href="@routes.ExclusionListController.performPageLoad(isCurrentTaxYear, iabdType)">}
 
-@benefitLabel = @{ messages("BenefitInKindMPBIK2.label." + iabdType.id) }
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
-    @govukLayoutWrapper(PageTitle(messages(if(config.mpbikToggle) "ExclusionSearchMPBIK.form.title" else "ExclusionSearch.form.title"), searchForm.hasErrors)) {
+    @govukLayoutWrapper(PageTitle(messages("ExclusionSearch.form.title"), searchForm.hasErrors)) {
     @if(searchForm.hasErrors) {
         <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-1" tabindex="-1">
 
             <h2 class="govuk-error-summary__title" id="error-summary-heading-1">
-                @(if(config.mpbikToggle) messages("Service.errorSummary.headingMPBIK") else messages("Service.errorSummary.heading"))
+                @messages("Service.errorSummary.heading")
             </h2>
 
             @if(searchForm("status").hasErrors) {
@@ -84,24 +81,17 @@
             </div>
         </div>
     }
-        @if(config.mpbikToggle) {
-            @if(request.isAgent){
-                @for(clientName <- request.clientName) {
-                    <span id="client-name" class="govuk-caption-l">@clientName</span>
-                }
-            }
-            @if(isCurrentTaxYear == FormMappingsConstants.CY){
-                <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.current.tax.year", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)</span>
-            } else{
-                <span class="govuk-caption-l">@messages("ExclusionSearchMPBIK.form.current.tax.year", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</span>
-            }
-            <h1 id="title" class="govuk-heading-l">@messages("ExclusionSearchMPBIK.form.header", ""+benefitLabel)</h1>
-        }else{
-            <h1 id="title" class="govuk-heading-xl">
-                <span class="govuk-caption-xl">@benefitLabel</span>
-                @messages("ExclusionSearch.form.header")
-            </h1>
+    @if(request.isAgent){
+        @for(clientName <- request.clientName) {
+            <span id="client-name" class="govuk-caption-l">@clientName</span>
         }
+    }
+    @if(isCurrentTaxYear == FormMappingsConstants.CY){
+        <span class="govuk-caption-l">@messages("ExclusionSearch.form.current.tax.year", ""+taxYearRange.cyminus1, ""+taxYearRange.cy)</span>
+    } else{
+        <span class="govuk-caption-l">@messages("ExclusionSearch.form.current.tax.year", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)</span>
+    }
+    <h1 id="title" class="govuk-heading-l">@messages("ExclusionSearch.form.header", ""+benefitLabel)</h1>
 
     @formWithCSRF(action = routes.ExclusionListController.searchResults(isCurrentTaxYear, iabdType, "no-nino"), Symbol("autocomplete") -> "off", Symbol("novalidate") -> "true") {
 
@@ -114,9 +104,9 @@
 
             <fieldset class="govuk-fieldset">
 
-                @textInput(searchForm("firstname"), Symbol("_label") -> messages("Service.field.firstname"), Symbol("_inputClass") -> (if(config.mpbikToggle) "govuk-!-width-one-half" else "govuk-!-width-two-thirds"))
+                @textInput(searchForm("firstname"), Symbol("_label") -> messages("Service.field.firstname"), Symbol("_inputClass") -> ("govuk-!-width-one-half"))
 
-                @textInput(searchForm("surname"), Symbol("_label") -> messages("Service.field.surname"), Symbol("_inputClass") -> (if(config.mpbikToggle) "govuk-!-width-one-half" else "govuk-!-width-two-thirds"))
+                @textInput(searchForm("surname"), Symbol("_label") -> messages("Service.field.surname"), Symbol("_inputClass") -> ("govuk-!-width-one-half"))
 
                 @dateFieldsNumberInputs(searchForm, "dob","dob.day", "dob.month", "dob.year", new Html(messages("Service.field.dob")), Symbol("_hintText")->messages("Service.field.dobhint"))
 
@@ -151,7 +141,7 @@
         </div>
 
         <div class="govuk-form-group">
-            <input type="submit" class="govuk-button" role="button" id="button-continue" value='@(if(config.mpbikToggle) messages("Service.continueMPBIK") else messages("Service.continue"))'>
+            <input type="submit" class="govuk-button" role="button" id="button-continue" value='@(messages("Service.continue"))'>
         </div>
 
 }

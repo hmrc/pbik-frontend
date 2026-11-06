@@ -34,7 +34,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{contentAsString, defaultAwaitTimeout, status}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import utils.{TaxDateUtils, TestMinimalAuthAction}
-import views.html.registration.{NextTaxYear, NextTaxYearBenefitMPBIK2}
+import views.html.registration.NextTaxYearBenefit
 
 import scala.concurrent.Future
 
@@ -97,8 +97,7 @@ class RegistrationServiceSpec extends FakePBIKApplication {
   implicit val messages: Messages = injected[MessagesApi].preferred(Seq(lang))
 
   val request: FakeRequest[AnyContentAsEmpty.type]                    = mockRequest
-  lazy val nextTaxYearView: NextTaxYear                               = injected[NextTaxYear]
-  lazy val nextTaxYearBenefitMPBIK2View: NextTaxYearBenefitMPBIK2     = injected[NextTaxYearBenefitMPBIK2]
+  lazy val nextTaxYearBenefitView: NextTaxYearBenefit                 = injected[NextTaxYearBenefit]
   implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(request)
   implicit val hc: HeaderCarrier                                      = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
 
@@ -110,32 +109,22 @@ class RegistrationServiceSpec extends FakePBIKApplication {
         val result =
           registrationService.generateViewForBikRegistrationSelection(
             taxDateUtils.getTaxYearRange().cyminus1,
-            nextTaxYearView(_, additive = true, taxDateUtils.getTaxYearRange(), _, _, _)
+            nextTaxYearBenefitView(_, additive = true, taxDateUtils.getTaxYearRange(), _, _, _)
           )
 
         status(result) mustBe OK
         contentAsString(result) must include(messages("AddBenefits.Heading"))
-        contentAsString(result) must include(messages(s"BenefitInKindMPBIK2.label.${IabdType.OtherItems.id}"))
+        contentAsString(result) must include(messages(s"BenefitInKind.label.${IabdType.OtherItems.id}"))
       }
 
       "return the error page if no more benefits to add" in {
-        if (pbikAppConfig.mpbikTogglePhase2) {
-          val result =
-            registrationService.generateViewForBikRegistrationSelection(
-              taxDateUtils.getTaxYearRange().cy,
-              nextTaxYearBenefitMPBIK2View(_, additive = true, taxDateUtils.getTaxYearRange(), _, _, _)
-            )
+        val result =
+          registrationService.generateViewForBikRegistrationSelection(
+            taxDateUtils.getTaxYearRange().cy,
+            nextTaxYearBenefitView(_, additive = true, taxDateUtils.getTaxYearRange(), _, _, _)
+          )
 
-          status(result) mustBe OK
-        } else {
-          val result =
-            registrationService.generateViewForBikRegistrationSelection(
-              taxDateUtils.getTaxYearRange().cy,
-              nextTaxYearView(_, additive = true, taxDateUtils.getTaxYearRange(), _, _, _)
-            )
-
-          status(result) mustBe OK
-        }
+        status(result) mustBe OK
       }
 
     }

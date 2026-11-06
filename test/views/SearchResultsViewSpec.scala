@@ -27,7 +27,7 @@ import utils.FormMappings
 import views.helper.PBIKViewSpec
 import views.html.exclusion.SearchResults
 
-class SearchResultViewSpec extends PBIKViewSpec {
+class SearchResultsViewSpec extends PBIKViewSpec {
 
   val formMappings: FormMappings       = injected[FormMappings]
   val searchResultsView: SearchResults = injected[SearchResults]
@@ -37,18 +37,20 @@ class SearchResultViewSpec extends PBIKViewSpec {
   def viewWithForm(form: Form[ExclusionNino])(implicit request: AuthenticatedRequest[?]): Html =
     searchResultsView(taxYearRange, "cyp1", iabdType, List(tracePerson), form, "")
 
-  "organisation" must {
+  "Organisation" must {
     "exclusionNinoOrNoNinoForm" should {
 
       implicit def view: Html = viewWithForm(formMappings.individualSelectionForm)(organisationRequest)
 
-      behave like pageWithTitle(messages("ExclusionSearch.title.single"))
+      behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
       behave like pageWithHeader(
-        messages(s"BenefitInKindMPBIK2.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.single")
+        messages("ExclusionSearch.form.tax.year", "2019", "2020") + " " + messages(
+          "ExclusionSearch.title.multiple"
+        )
       )
-      behave like pageWithElementAndText(
-        "button-confirm",
-        messages("Service.confirm")
+      behave like pageWithContinueButtonForm(
+        s"/payrollbik/cyp1/${iabdType.id}//exclude-employee-results",
+        messages("Service.continue")
       )
     }
 
@@ -63,9 +65,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
           )
         )(organisationRequest)
 
-      behave like pageWithIdAndText(s"${tracePerson.fullName}", "name")
-      behave like pageWithIdAndText(tracePerson.nationalInsuranceNumber, "nino")
-      behave like pageWithIdAndText(tracePerson.getWorksPayrollNumber, "wpn")
+      behave like pageWithIdAndText(tracePerson.nationalInsuranceNumber, "employee-hint-0")
     }
 
     "check the individual nino search page for multiple active matches" should {
@@ -87,11 +87,13 @@ class SearchResultViewSpec extends PBIKViewSpec {
 
       behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
       behave like pageWithHeader(
-        messages(s"BenefitInKindMPBIK2.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.multiple")
+        messages("ExclusionSearch.form.tax.year", "2019", "2020") + " " + messages(
+          "ExclusionSearch.title.multiple"
+        )
       )
       behave like pageWithContinueButtonForm(
         s"/payrollbik/cyp1/${iabdType.id}//exclude-employee-results",
-        "Confirm and continue"
+        "Continue"
       )
     }
   }
@@ -101,13 +103,17 @@ class SearchResultViewSpec extends PBIKViewSpec {
 
       implicit def view: Html = viewWithForm(formMappings.individualSelectionForm)(agentRequest)
 
-      behave like pageWithTitle(messages("ExclusionSearch.title.single"))
+      behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
       behave like pageWithHeader(
-        messages(s"BenefitInKindMPBIK2.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.single")
+        agentClient.get.name.getOrElse("") + " " + messages(
+          "ExclusionSearch.form.tax.year",
+          "2019",
+          "2020"
+        ) + " " + messages("ExclusionSearch.title.multiple")
       )
-      behave like pageWithElementAndText(
-        "button-confirm",
-        messages("Service.confirm")
+      behave like pageWithContinueButtonForm(
+        s"/payrollbik/cyp1/${iabdType.id}//exclude-employee-results",
+        "Continue"
       )
     }
 
@@ -122,9 +128,7 @@ class SearchResultViewSpec extends PBIKViewSpec {
           )
         )(agentRequest)
 
-      behave like pageWithIdAndText(s"${tracePerson.fullName}", "name")
-      behave like pageWithIdAndText(tracePerson.nationalInsuranceNumber, "nino")
-      behave like pageWithIdAndText(tracePerson.getWorksPayrollNumber, "wpn")
+      behave like pageWithIdAndText(tracePerson.nationalInsuranceNumber, "employee-hint-0")
     }
 
     "check the individual nino search page for multiple active matches" should {
@@ -146,11 +150,15 @@ class SearchResultViewSpec extends PBIKViewSpec {
 
       behave like pageWithTitle(messages("ExclusionSearch.title.multiple"))
       behave like pageWithHeader(
-        messages(s"BenefitInKindMPBIK2.label.${iabdType.id}") + " " + messages("ExclusionSearch.title.multiple")
+        agentClient.get.name.getOrElse("") + " " + messages(
+          "ExclusionSearch.form.tax.year",
+          "2019",
+          "2020"
+        ) + " " + messages("ExclusionSearch.title.multiple")
       )
       behave like pageWithContinueButtonForm(
         s"/payrollbik/cyp1/${iabdType.id}//exclude-employee-results",
-        "Confirm and continue"
+        "Continue"
       )
     }
   }

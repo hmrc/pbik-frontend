@@ -37,20 +37,15 @@ Service.back.overview.ViewYourSummary = View your summary of registered benefits
 Service.back.cancel = Back to your summary
 Service.back.excluded = Back to your excluded employees
 Service.back.yta = Back to your tax account
-Service.back.ecl = Return to PAYE client list
-
-Service.back.eclMPBIK = Back to PAYE client list
+Service.back.ecl = Back to PAYE client list
 
 Service.paye.label = Employer PAYE reference:
-Service.nino.lastletter = (Last letter not shown)
 
-Service.nino.lastletterMPBIK = (last letter not shown)
+Service.nino.lastletter = (last letter not shown)
 
 Service.continue = Continue
-Service.continueMPBIK = Continue
 Service.confirm = Confirm
 Service.confirmAndContinue = Confirm and continue
-Service.confirmAndContinueMPBIK = Confirm and continue
 Service.tryagain = try again
 
 Service.print.link = Print this page
@@ -66,121 +61,72 @@ Service.notEnrolled.button = Enrol
 
 Service.removeexclusion = Cancel exclusion
 Service.finish.rescinded = View excluded employees
-Service.for = for
 
 Service.excludeanotheremployee = Exclude another employee
 
-Service.errorSummary.heading = There’s a problem
 Service.error = Error
 
-Service.errorSummary.headingMPBIK = There is a problem
+Service.errorSummary.heading = There is a problem
 
 #*************************************************************
-# Start Page MPBIK
+# Start Page
 #*************************************************************
 
-StartPageMPBIK.heading.organisation = Payrolling benefits and expenses
-StartPageMPBIK.p1.organisation = You cannot use this service to register benefits or expenses for the 2026 to 2027 tax year, registration closed on 5 April. You will be able to use this service to register certain benefits and expenses from November 2026.
-StartPageMPBIK.p2.organisation = If you have registered benefits or expenses, you can use this service to:
-StartPageMPBIK.p3.organisation = view registered benefits and expenses for the current year
-StartPageMPBIK.p4.organisation = view employees who have been excluded from a benefit
-StartPageMPBIK.p5.organisation = exclude employees from a benefit for the current year
-StartPageMPBIK.link.organisation = Start now
+StartPage.heading.organisation = Payrolling benefits and expenses
+StartPage.p1.organisation = Use this service to register benefits and expenses that you will tax through payroll.
+StartPage.p2.organisation = You can also use this service to:
+StartPage.p3.organisation = exclude employees from a benefit for the current or next tax year
+StartPage.p4.organisation = add an employee back to a benefit for the next tax year
+StartPage.p5.organisation = tell HMRC that you are no longer taxing a benefit through payroll
+StartPage.inset.organisation = From 6 April 2027, the way you payroll benefits and expenses is changing.
+StartPage.inset.link.text.organisation = Find out how to report benefits and expenses after 6 April 2027 (opens in a new window or tab)
+StartPage.h2.organisation = Benefits you cannot register in this service
+StartPage.p6.organisation = You do not need to use this service to register the following benefits to tax through payroll:
+StartPage.p7.organisation = cars and car fuel
+StartPage.p8.organisation = vans and van fuel
+StartPage.p9.organisation = private medical and dental insurance
+StartPage.p10.organisation = If you offer these benefits to employees,
+StartPage.p10.link.text.organisation = you must now report the values of these benefits and expenses in real time (opens in a new window or tab)
+StartPage.link.organisation = Start now
 
-StartPageMPBIK.heading.agent = Payrolling benefits and expenses
-StartPageMPBIK.p1.agent = You cannot use this service to register benefits or expenses for the 2026 to 2027 tax year, registration closed on 5 April. You will be able to use this service to register certain benefits and expenses for your client from November 2026.
-StartPageMPBIK.p2.agent = If your client has registered benefits or expenses, you can use this service to:
-StartPageMPBIK.p3.agent = view registered benefits and expenses for the current year
-StartPageMPBIK.p4.agent = view employees who have been excluded from a benefit
-StartPageMPBIK.p5.agent = exclude employees from a benefit for the current year
-StartPageMPBIK.link.agent = Start now
-
-#*************************************************************
-# Start Page MPBIK Phase 2
-#*************************************************************
-
-StartPageMPBIK2.heading.organisation = Payrolling benefits and expenses
-StartPageMPBIK2.p1.organisation = Use this service to register benefits and expenses that you will tax through payroll.
-StartPageMPBIK2.p2.organisation = You can also use this service to:
-StartPageMPBIK2.p3.organisation = exclude employees from a benefit for the current or next tax year
-StartPageMPBIK2.p4.organisation = add an employee back to a benefit for the next tax year
-StartPageMPBIK2.p5.organisation = tell HMRC that you are no longer taxing a benefit through payroll
-StartPageMPBIK2.inset.organisation = From 6 April 2027, the way you payroll benefits and expenses is changing.
-StartPageMPBIK2.inset.link.text.organisation = Find out how to report benefits and expenses after 6 April 2027 (opens in a new window or tab)
-StartPageMPBIK2.h2.organisation = Benefits you cannot register in this service
-StartPageMPBIK2.p6.organisation = You do not need to use this service to register the following benefits to tax through payroll:
-StartPageMPBIK2.p7.organisation = cars and car fuel
-StartPageMPBIK2.p8.organisation = vans and van fuel
-StartPageMPBIK2.p9.organisation = private medical and dental insurance
-StartPageMPBIK2.p10.organisation = If you offer these benefits to employees,
-StartPageMPBIK2.p10.link.text.organisation = you must now report the values of these benefits and expenses in real time (opens in a new window or tab)
-StartPageMPBIK2.link.organisation = Start now
-
-StartPageMPBIK2.heading.agent = Payrolling benefits and expenses
-StartPageMPBIK2.p1.agent = Use this service to register benefits and expenses that you will tax through your client''s payroll.
-StartPageMPBIK2.p2.agent = You can also use this service to:
-StartPageMPBIK2.p3.agent = exclude employees from a benefit for the current or next tax year
-StartPageMPBIK2.p4.agent = add an employee back to a benefit for next tax year
-StartPageMPBIK2.p5.agent = tell HMRC that your client is no longer taxing a benefit through payroll
-StartPageMPBIK2.inset.agent = From 6 April 2027, the way you payroll benefits and expenses is changing.
-StartPageMPBIK2.inset.link.text.agent = Find out how to report benefits and expenses after 6 April 2027 (opens in a new window or tab)
-StartPageMPBIK2.h2.agent = Benefits you cannot register in this service
-StartPageMPBIK2.p6.agent = You do not need to use this service to register the following benefits to tax through your client''s payroll:
-StartPageMPBIK2.p7.agent = cars and car fuel
-StartPageMPBIK2.p8.agent = vans and van fuel
-StartPageMPBIK2.p9.agent = private medical and dental insurance
-StartPageMPBIK2.p10.agent = If your client offers  these benefits to employees,
-StartPageMPBIK2.p10.link.text.agent = you must now report the values of these benefits and expenses in real time (opens in a new window or tab)
-StartPageMPBIK2.link.agent = Start now
+StartPage.heading.agent = Payrolling benefits and expenses
+StartPage.p1.agent = Use this service to register benefits and expenses that you will tax through your client''s payroll.
+StartPage.p2.agent = You can also use this service to:
+StartPage.p3.agent = exclude employees from a benefit for the current or next tax year
+StartPage.p4.agent = add an employee back to a benefit for next tax year
+StartPage.p5.agent = tell HMRC that your client is no longer taxing a benefit through payroll
+StartPage.inset.agent = From 6 April 2027, the way you payroll benefits and expenses is changing.
+StartPage.inset.link.text.agent = Find out how to report benefits and expenses after 6 April 2027 (opens in a new window or tab)
+StartPage.h2.agent = Benefits you cannot register in this service
+StartPage.p6.agent = You do not need to use this service to register the following benefits to tax through your client''s payroll:
+StartPage.p7.agent = cars and car fuel
+StartPage.p8.agent = vans and van fuel
+StartPage.p9.agent = private medical and dental insurance
+StartPage.p10.agent = If your client offers  these benefits to employees,
+StartPage.p10.link.text.agent = you must now report the values of these benefits and expenses in real time (opens in a new window or tab)
+StartPage.link.agent = Start now
 
 #*************************************************************
-# Payrolling Summary Page MPBIK
+# Payrolling Summary
 #*************************************************************
 
-PayrollingSummaryMPBIK.heading = Payrolling summary
-PayrollingSummaryMPBIK.tab.taxYear.cy0 = Tax year April {0} to {1}
-PayrollingSummaryMPBIK.tab.heading = Registered benefits
-PayrollingSummaryMPBIK.table.header = Benefit
-PayrollingSummaryMPBIK.table.exclude.link.text = Exclude employees
-PayrollingSummaryMPBIK.table.manage.link.text = Manage employees
+PayrollingSummary.heading = Payrolling summary
+PayrollingSummary.tab.taxYear = Tax year {0} to {1}
+PayrollingSummary.tab.heading = Registered benefits
+PayrollingSummary.table.header = Benefit
+PayrollingSummary.table.exclude.link.text = Exclude employees
+PayrollingSummary.table.manage.link.text = Manage employees
+PayrollingSummary.you.can = You can
 
-PayrollingSummaryMPBIK.p1.organisation = You can use this service to manage benefits being taxed through payroll.
-PayrollingSummaryMPBIK.p2.organisation = These are the benefits that you have registered to tax through payroll from 6 April {0}.
+PayrollingSummary.p1.organisation = You can use this service to register and manage benefits being taxed through payroll.
+PayrollingSummary.no.benefits.text.organisation = You have no benefits registered to tax through payroll from 6 April {0}.
+PayrollingSummary.benefits.text.organisation = These are the benefits that you have registered to tax through payroll from 6 April {0}.
+PayrollingSummary.choose.benefit.link.text.organisation = choose a benefit to tax through payroll
 
-PayrollingSummaryMPBIK.p1.agent = You can use this service to manage benefits being taxed through {0}''s payroll.
-PayrollingSummaryMPBIK.p2.agent = These are the benefits that you have registered to tax through your client''s payroll from 6 April {0}.
-
-#*************************************************************
-# Payrolling Summary Page MPBIK2
-#*************************************************************
-
-PayrollingSummaryMPBIK2.heading = Payrolling summary
-PayrollingSummaryMPBIK2.tab.taxYear = Tax year {0} to {1}
-PayrollingSummaryMPBIK2.tab.heading = Registered benefits
-PayrollingSummaryMPBIK2.table.header = Benefit
-PayrollingSummaryMPBIK2.table.exclude.link.text = Exclude employees
-PayrollingSummaryMPBIK2.table.manage.link.text = Manage employees
-PayrollingSummaryMPBIK2.you.can = You can
-
-PayrollingSummaryMPBIK2.p1.organisation = You can use this service to register and manage benefits being taxed through payroll.
-PayrollingSummaryMPBIK2.no.benefits.text.organisation = You have no benefits registered to tax through payroll from 6 April {0}.
-PayrollingSummaryMPBIK2.benefits.text.organisation = These are the benefits that you have registered to tax through payroll from 6 April {0}.
-PayrollingSummaryMPBIK2.choose.benefit.link.text.organisation = choose a benefit to tax through payroll
-
-PayrollingSummaryMPBIK2.p1.agent = You can use this service to register and manage benefits being taxed through {0}''s payroll.
-PayrollingSummaryMPBIK2.no.benefits.text.agent = Your client has no benefits registered to tax through payroll from 6 April {0}.
-PayrollingSummaryMPBIK2.benefits.text.agent = These are the benefits that you have registered to tax through your client''s payroll from 6 April {0}.
-PayrollingSummaryMPBIK2.choose.benefit.link.text.agent = choose a benefit to tax through your client’s payroll
-
-#*************************************************************
-# Select Year
-#*************************************************************
-
-SelectYear.title = What do you want to do
-SelectYear.heading = What do you want to do?
-SelectYear.option1 = Register and manage benefits and expenses from 6 April {0}
-SelectYear.option2 = Exclude employees from benefits and expenses in the current tax year
-SelectYear.error.empty = Select if you want to register and manage benefits and expenses from 6 April {0} or exclude employees from benefits and expenses in the current tax year
+PayrollingSummary.p1.agent = You can use this service to register and manage benefits being taxed through {0}''s payroll.
+PayrollingSummary.no.benefits.text.agent = Your client has no benefits registered to tax through payroll from 6 April {0}.
+PayrollingSummary.benefits.text.agent = These are the benefits that you have registered to tax through your client''s payroll from 6 April {0}.
+PayrollingSummary.choose.benefit.link.text.agent = choose a benefit to tax through your client’s payroll
 
 #*************************************************************
 # Overview
@@ -189,38 +135,16 @@ SelectYear.error.empty = Select if you want to register and manage benefits and 
 Overview.benefitsRegistered.heading = Register a benefit or an expense
 Overview.benefitsManage.heading = Manage a benefit or expense
 Overview.next.heading =6 April {0} to 5 April {1}
-Overview.next.lead.empty = You can use this service to add a benefit or expense to tax through payroll.
-Overview.empty.benefits.h2 = Payrolling summary from 6 April {0}
-Overview.empty.benefits.p = You have not registered any benefits or expenses to tax through payroll.
 Overview.current.from=from
 Overview.current.payroll.p11d=payroll and report on a P11D
-Overview.table.exclude.link = Manage employees
-Overview.table.exclude.none.link = Exclude an employee
-Overview.table.remove.link = Remove
-Overview.table.add.link = Add a benefit or expense
 
 ManagingRegistration.add.exhausted = You’ve already added all of the benefits or expenses that are available in this category.
-
-Overview.change.year.cy0.link.before = You can
-Overview.change.year.cy0.text.link = change tax year
-Overview.change.year.cy0.link.after = to add benefits and expenses to payroll from 6 April {0}.
-
-Overview.change.year.cy1.link.before = You can
-Overview.change.year.cy1.text.link = change tax year
-Overview.change.year.cy1.link.after = to exclude employees from benefits and expenses in the current tax year.
-
-Overview.benefitsManage.p2 = If you exclude employees from benefits or expenses for the current tax year you must report the benefit or expense by submitting a P11D to HMRC.
-Overview.benefitsManage.inset = You cannot restart payrolling for excluded employees in the current tax year.
 
 #*************************************************************
 # Add benefits
 #*************************************************************
 
 AddBenefits.Heading = What benefits or expenses will you tax through payroll?
-AddBenefits.p = Select which benefits and expenses to tax through payroll from 6 April {0}.
-AddBenefits.selectAll = Select all that apply
-
-AddBenefits.noselection.error = You need to select at least 1 benefit or expense before you can continue
 
 AddBenefits.Confirm.Multiple.Title = Declare the benefits you want to register
 AddBenefits.Confirm.Multiple.key = Selected benefits
@@ -241,19 +165,19 @@ AddBenefits.Confirm.bullet4.agent = employees can be excluded from payrolling wh
 AddBenefits.Confirm.bullet5.agent = employees who do not receive the benefit do not need to be excluded because there is no extra tax or Class 1A National Insurance contributions due
 
 #*************************************************************
-# Add benefits MPBIK Phase 2
+# Add benefits
 #*************************************************************
 
-AddBenefitsMPBIK2.p = Select which benefits you want to tax through payroll from 6 April {0}.
-AddBenefitsMPBIK2.p2 = You must payroll all selected benefits.
+AddBenefits.p = Select which benefits you want to tax through payroll from 6 April {0}.
+AddBenefits.p2 = You must payroll all selected benefits.
 
-AddBenefitsMPBIK2.Heading.organisation = Choose which benefits to tax through payroll
+AddBenefits.Heading.organisation = Choose which benefits to tax through payroll
 
-AddBenefitsMPBIK2.Heading.agent = Choose which benefits to tax through your client''s payroll
+AddBenefits.Heading.agent = Choose which benefits to tax through your client''s payroll
 
-AddBenefitsMPBIK2.selectAll = Select all that apply
+AddBenefits.selectAll = Select all that apply
 
-AddBenefitsMPBIK2.noselection.error = You must select at least one benefit
+AddBenefits.noselection.error = You must select at least one benefit
 
 #*************************************************************
 # Remove benefits
@@ -285,79 +209,53 @@ RemoveBenefits.other.error.length = Why you want to remove the benefit or expens
 RemoveBenefits.confirm.title = Declare the benefit or expense to stop taxing through payroll
 RemoveBenefits.confirm.heading = Declare the benefit or expense to stop taxing through payroll
 
-RemoveBenefits.confirm.p1.organisation = By confirming, you will stop taxing {0} through payroll from 6 April {1}.
 RemoveBenefits.confirm.p2.organisation = You must report the value of any benefit or expense for the current tax year by submitting a P11D to HMRC. You should do this at the end of the tax year.
 
-RemoveBenefits.confirm.p1.agent = By confirming, you will stop taxing {0} through payroll from 6 April {1}.
 RemoveBenefits.confirm.p2.agent = Your client must report the value of any benefit or expense for the current tax year by submitting a P11D to HMRC. They should do this at the end of the tax year.
 
 #*************************************************************
-# Remove benefits MPBIK Phase 2
+# Remove benefits
 #*************************************************************
 
-RemoveBenefitsMPBIK2.link = Remove from payroll
-RemoveBenefitsMPBIK2.selected.benefit = Selected benefit
+RemoveBenefits.link = Remove from payroll
+RemoveBenefits.selected.benefit = Selected benefit
 
-RemoveBenefitsMPBIK2.reason.Title.organisation = Declare the benefit to stop taxing through payroll
-RemoveBenefitsMPBIK2.confirm.p1.organisation = By confirming you are telling HMRC that you will stop taxing the following benefits through your payroll from 6 April {0}:
-RemoveBenefitsMPBIK2.confirm.declaration.organisation = I confirm that:
-RemoveBenefitsMPBIK2.confirm.bullet1.organisation = I will send a P11D for each employee who has received this benefit to report the value to HMRC
-RemoveBenefitsMPBIK2.confirm.bullet2.organisation = I will send any P11Ds at the end of the tax year
+RemoveBenefits.reason.Title.organisation = Declare the benefit to stop taxing through payroll
+RemoveBenefits.confirm.p1.organisation = By confirming you are telling HMRC that you will stop taxing the following benefits through your payroll from 6 April {0}:
+RemoveBenefits.confirm.declaration.organisation = I confirm that:
+RemoveBenefits.confirm.bullet1.organisation = I will send a P11D for each employee who has received this benefit to report the value to HMRC
+RemoveBenefits.confirm.bullet2.organisation = I will send any P11Ds at the end of the tax year
 
-RemoveBenefitsMPBIK2.reason.Title.agent = Declare the benefit to stop taxing through your client’s payroll
-RemoveBenefitsMPBIK2.confirm.p1.agent = By confirming you are telling HMRC that your client will stop taxing the following benefits through their payroll from 6 April {0}:
-RemoveBenefitsMPBIK2.confirm.declaration.agent = I confirm I will tell my client that:
-RemoveBenefitsMPBIK2.confirm.bullet1.agent = they must send a P11D for each employee who has received this benefit to report the value to HMRC
-RemoveBenefitsMPBIK2.confirm.bullet2.agent = they must send any P11Ds at the end of the tax year
+RemoveBenefits.reason.Title.agent = Declare the benefit to stop taxing through your client’s payroll
+RemoveBenefits.confirm.p1.agent = By confirming you are telling HMRC that your client will stop taxing the following benefits through their payroll from 6 April {0}:
+RemoveBenefits.confirm.declaration.agent = I confirm I will tell my client that:
+RemoveBenefits.confirm.bullet1.agent = they must send a P11D for each employee who has received this benefit to report the value to HMRC
+RemoveBenefits.confirm.bullet2.agent = they must send any P11Ds at the end of the tax year
 
 #*************************************************************
 # Exclusion overview
 #*************************************************************
 
-ExclusionOverview.excludecount.exceeded = You can’t exclude any more employees.
-
-ExclusionOverview.notExcludedEmployee.p1 = {0} is taxed through payroll for all employees from 6 April {1}.
-
 ExclusionOverview.excludedEmployee.table.title = Excluded employees
-ExclusionOverview.excludedEmployee.canceledExclusion = Payrolled from April {0}
-ExclusionOverview.p1.organisation = You can only exclude employees who get this benefit or expense.
-ExclusionOverview.p2.organisation = For excluded employees, you need to report the value of this benefit or expense by submitting a P11D to HMRC. You should do this at the end of the tax year.
-
-ExclusionOverview.p1.agent = You can only exclude employees who get this benefit or expense.
-ExclusionOverview.p2.agent = For excluded employees, your client needs to report the value of this benefit or expense by submitting a P11D to HMRC. They should do this at the end of the tax year.
-
-ExclusionOverview.p1.cy = You cannot restart payrolling for excluded employees in the current tax year.
-ExclusionOverview.p2.cy = If you remove an employee from the excluded employee list they will have this benefit or expense taxed through their pay from the beginning of the next tax year.
-ExclusionOverview.p3.cy = This benefit or expense is not registered for payrolling in the next tax year.
 
 ExclusionOverview.h2 = Do you need to exclude an employee?
 ExclusionOverview.h2.hint = You can exclude up to {0} employees.
-
 ExclusionOverview.error.required = Select yes if you need to exclude an employee.
 
 ExclusionDecision.noselection.error = Select yes if you know the employee’s National Insurance number.
 ExclusionNinoDecision.title = Do you know the National Insurance number of the employee you want to exclude?
 
-ExclusionSearch.title.multiple = Which employee do you want to exclude?
-ExclusionSearch.title.single = Declare the employee to exclude from this benefit or expense
-ExclusionSearch.form.title = Search for the employee to exclude
-ExclusionSearch.form.header = Search for the employee you want to exclude
-ExclusionSearch.caption = Employee to be excluded
 ExclusionSearch.payroll.date = 6 April {0}
 
-ExclusionSearchMPBIK.form.title = Search for the employee to exclude
-ExclusionSearchMPBIK.form.header = Search for the employee to exclude from {0}
+ExclusionSearch.form.title = Search for the employee to exclude
+ExclusionSearch.form.header = Search for the employee to exclude from {0}
 
 ExclusionSearch.Fail.Desc = This employee can’t be found.
 ExclusionSearch.Fail.Exists.Desc = This employee has already been excluded for {0}. You can see them in your {1}excluded employee list{2}.
 ExclusionSearch.Fail.Exists.P = Search again for a different employee
 
-ExclusionSearch.warning = You will not be able to payroll this benefit or expense for this employee again in this tax year.
+ExclusionSearch.form.current.tax.year = Tax year April {0} to {1}
 
-ExclusionSearchMPBIK.form.current.tax.year = Tax year April {0} to {1}
-
-ExclusionImportant.Reminder = By confirming, you will exclude this employee from having {0} taxed through payroll from {1}.
-ExclusionRemovalConfirmation.title = Declare the employee to add to this benefit or expense
 ExclusionRemovalConfirmation.table.title = Employee details
 ExclusionRemovalConfirmation.p = By confirming, {0} will have {1} taxed through payroll from 6 April {2}.
 
@@ -375,171 +273,104 @@ ExclusionRemoval.Service.finish.rescinded = View your excluded employees
 ExclusionRemoval.Service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses
 
 #*************************************************************
-# Excluded employees MPBIK
+# Excluded employees
 #*************************************************************
 
-ExclusionOverviewMPBIK.excludecount.exceeded = You can’t exclude any more employees.
-ExcludedEmployeesMPBIK.form.current.tax.year = Tax year April {0} to {1}
-ExcludedEmployeesMPBIK.h1 = You have not excluded any employees
-ExclusionOverviewMPBIK.notExcludedEmployee.p1.organisation = {0} is taxed through payroll for all employees that get this benefit from 6 April {1}.
-ExclusionOverviewMPBIK.notExcludedEmployee.p1.agent = {0} is taxed through your client''s payroll for all employees that get this benefit from 6 April {1}.
-ExclusionOverviewMPBIK.p1 = You can exclude employees who get this expense or benefit.
-ExclusionOverviewMPBIK.p2.organisation = For excluded employees, you need to report the value of this benefit or expense by sending HMRC a P11D. You should do this at the end of the tax year.
-ExclusionOverviewMPBIK.p2.agent = For excluded employees, your client must report the value of this benefit or expense by sending HMRC a P11D. They should do this at the end of the tax year.
+ExclusionOverview.excludecount.exceeded = You can’t exclude any more employees.
+ExcludedEmployees.form.current.tax.year = Tax year April {0} to {1}
+ExcludedEmployees.h1 = You have not excluded any employees
+ExclusionOverview.notExcludedEmployee.p1.organisation = {0} is taxed through payroll for all employees that get this benefit from 6 April {1}.
+ExclusionOverview.notExcludedEmployee.p1.agent = {0} is taxed through your client''s payroll for all employees that get this benefit from 6 April {1}.
+ExclusionOverview.p1 = You can exclude employees who get this expense or benefit.
+ExclusionOverview.p2.organisation = For excluded employees, you need to report the value of this benefit or expense by sending HMRC a P11D. You should do this at the end of the tax year.
+ExclusionOverview.p2.agent = For excluded employees, your client must report the value of this benefit or expense by sending HMRC a P11D. They should do this at the end of the tax year.
 
-ExclusionOverviewMPBIK.benefitsManage.inset.group1.organisation = From 6 April 2027, you must tax this benefit through payroll. Employees excluded from having this benefit taxed through payroll will no longer be excluded.
-ExclusionOverviewMPBIK.benefitsManage.inset.group1.agent = From 6 April 2027, your client must tax this benefit through payroll. Employees excluded from having this benefit taxed through payroll will no longer be excluded.
+ExclusionOverview.benefitsManage.inset.group1.organisation = From 6 April 2027, you must tax this benefit through payroll. Employees excluded from having this benefit taxed through payroll will no longer be excluded.
+ExclusionOverview.benefitsManage.inset.group1.agent = From 6 April 2027, your client must tax this benefit through payroll. Employees excluded from having this benefit taxed through payroll will no longer be excluded.
 
-ExclusionOverviewMPBIK.benefitsManage.inset.group2.organisation = From 6 April 2028, you must tax this benefit through payroll. Employees excluded from having this benefit taxed through payroll will no longer be excluded.
-ExclusionOverviewMPBIK.benefitsManage.inset.group2.agent = From 6 April 2028, your client must tax this benefit through payroll. Employees excluded from having this benefit taxed through payroll will no longer be excluded.
+ExclusionOverview.benefitsManage.inset.group2.organisation = From 6 April 2028, you must tax this benefit through payroll. Employees excluded from having this benefit taxed through payroll will no longer be excluded.
+ExclusionOverview.benefitsManage.inset.group2.agent = From 6 April 2028, your client must tax this benefit through payroll. Employees excluded from having this benefit taxed through payroll will no longer be excluded.
 
-ExclusionOverviewMPBIK.benefitsManage.inset.link = Find out more about changes to the payrolling of benefits (opens in a new window or tab)
-
-#*************************************************************
-# Exclusion search MPBIK
-#*************************************************************
-
-ExclusionSearchMPBIK.title.multiple = Which employee do you want to exclude?
-ExclusionSearchMPBIK.form.tax.year = Tax year April {0} to {1}
+ExclusionOverview.benefitsManage.inset.link = Find out more about changes to the payrolling of benefits (opens in a new window or tab)
 
 #*************************************************************
-# Exclusion overview MPBIK
+# Exclusion overview
 #*************************************************************
 
-error.exclusionMPBIK.multi.selection = Choose the employee to exclude
-ExclusionSearchMPBIK.title.single = Declare the employee to exclude from this benefit
-ExclusionSearchMPBIK.title.span.taxYear.cy0 = Tax year April {0} to {1}
-ExclusionImportantMPBIK.Reminder.CY = By confirming, you will exclude this employee from having {0} taxed through payroll from {1}.
-ExclusionImportantMPBIK.Reminder.CYP1 = By confirming, you will exclude this employee from having {0} taxed through payroll from 6 April {1}.
+error.exclusion.multi.selection = Choose the employee to exclude
+ExclusionSearch.title.single = Declare the employee to exclude from this benefit
+ExclusionSearch.title.span.taxYear.cy0 = Tax year April {0} to {1}
+ExclusionImportant.Reminder.CY = By confirming, you will exclude this employee from having {0} taxed through payroll from {1}.
+ExclusionImportant.Reminder.CYP1 = By confirming, you will exclude this employee from having {0} taxed through payroll from 6 April {1}.
 
-ExclusionSearchMPBIK.field.employee.name = Employee name
-ExclusionSearchMPBIK.field.employee.ni = National Insurance number (last letter not shown)
-ExclusionSearchMPBIK.field.employee.payrollId = Payroll ID or Works number
+ExclusionSearch.title.multiple = Which employee do you want to exclude?
+ExclusionSearch.form.tax.year = Tax year April {0} to {1}
 
-ExclusionSearchMPBIK.warning = You will not be able to payroll this benefit for this employee again for this tax year.
+ExclusionSearch.field.employee.name = Employee name
+ExclusionSearch.field.employee.ni = National Insurance number (last letter not shown)
+ExclusionSearch.field.employee.payrollId = Payroll ID or Works number
 
-ExclusionSearchMPBIK.confirmation.organisation.p = I confirm that:
-ExclusionSearchMPBIK.confirmation.organisation.bullet1 = I will report the value of the benefit for this employee on a P11D
-ExclusionSearchMPBIK.confirmation.organisation.bullet2 = I will send the P11D at the end of the tax year
-ExclusionSearchMPBIK.confirmation.agent.p = I confirm I will tell my client that:
-ExclusionSearchMPBIK.confirmation.agent.bullet1 = they must report the value of the benefit for this employee on a P11D
-ExclusionSearchMPBIK.confirmation.agent.bullet2 = they must send the P11D at the end of the tax year
+ExclusionSearch.warning = You will not be able to payroll this benefit for this employee again for this tax year.
 
-ExclusionSearchMPBIK.understanding.organisation.p = I understand that:
-ExclusionSearchMPBIK.understanding.organisation.bullet1.cy = I cannot add this employee back to this benefit for this tax year
-ExclusionSearchMPBIK.understanding.organisation.bullet1.cyp1 = I can choose to add this employee back to this benefit until 5 April {0}
-ExclusionSearchMPBIK.understanding.organisation.bullet2.cy = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
-ExclusionSearchMPBIK.understanding.organisation.bullet2.cyp1 = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
-ExclusionSearchMPBIK.understanding.agent.p = I understand that:
-ExclusionSearchMPBIK.understanding.agent.bullet1.cy = I cannot add this employee back to this benefit for this tax year
-ExclusionSearchMPBIK.understanding.agent.bullet1.cyp1 = this employee can be added back to this benefit until 5 April {0}
-ExclusionSearchMPBIK.understanding.agent.bullet2.cy = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
-ExclusionSearchMPBIK.understanding.agent.bullet2.cyp1 = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
+ExclusionSearch.confirmation.organisation.p = I confirm that:
+ExclusionSearch.confirmation.organisation.bullet1 = I will report the value of the benefit for this employee on a P11D
+ExclusionSearch.confirmation.organisation.bullet2 = I will send the P11D at the end of the tax year
+ExclusionSearch.confirmation.agent.p = I confirm I will tell my client that:
+ExclusionSearch.confirmation.agent.bullet1 = they must report the value of the benefit for this employee on a P11D
+ExclusionSearch.confirmation.agent.bullet2 = they must send the P11D at the end of the tax year
 
-ExclusionRemovalConfirmationMPBIK2.title = Declare the employee you want to add back to this benefit
+ExclusionSearch.understanding.organisation.p = I understand that:
+ExclusionSearch.understanding.organisation.bullet1.cy = I cannot add this employee back to this benefit for this tax year
+ExclusionSearch.understanding.organisation.bullet1.cyp1 = I can choose to add this employee back to this benefit until 5 April {0}
+ExclusionSearch.understanding.organisation.bullet2.cy = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
+ExclusionSearch.understanding.organisation.bullet2.cyp1 = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
+ExclusionSearch.understanding.agent.p = I understand that:
+ExclusionSearch.understanding.agent.bullet1.cy = I cannot add this employee back to this benefit for this tax year
+ExclusionSearch.understanding.agent.bullet1.cyp1 = this employee can be added back to this benefit until 5 April {0}
+ExclusionSearch.understanding.agent.bullet2.cy = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
+ExclusionSearch.understanding.agent.bullet2.cyp1 = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
 
-ExclusionRemovalConfirmationMPBIK2.p.organisation = By confirming, you will start taxing this employee for {0} through your payroll from 6 April {1}.
-ExclusionRemovalConfirmationMPBIK2.bullet1.organisation = I will tax {0}''s selected benefits through payroll from 6 April {1}
-ExclusionRemovalConfirmationMPBIK2.bullet2.organisation = I will inform {0} that their tax code may change
-ExclusionRemovalConfirmationMPBIK2.bullet3.organisation = I will work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
-ExclusionRemovalConfirmationMPBIK2.bullet4.organisation = I must add the cash equivalent to the benefit or relevant amount to {0}''s pay and tax it through payroll
-ExclusionRemovalConfirmationMPBIK2.bullet5.organisation = all other benefits offered to employees must also be taxed through payroll
+ExclusionRemovalConfirmation.title = Declare the employee you want to add back to this benefit
 
-ExclusionRemovalConfirmationMPBIK2.p.agent = By confirming, you will start taxing this employee for {0} through your client''s payroll from 6 April {1}.
-ExclusionRemovalConfirmationMPBIK2.bullet1.agent = they must tax {0}''s selected benefits through payroll from 6 April {1}
-ExclusionRemovalConfirmationMPBIK2.bullet2.agent = they must inform {0} that their tax code may change
-ExclusionRemovalConfirmationMPBIK2.bullet3.agent = they must work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
-ExclusionRemovalConfirmationMPBIK2.bullet4.agent = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
-ExclusionRemovalConfirmationMPBIK2.bullet5.agent = all other benefits offered to employees must also be taxed through payroll
+ExclusionRemovalConfirmation.p.organisation = By confirming, you will start taxing this employee for {0} through your payroll from 6 April {1}.
+ExclusionRemovalConfirmation.bullet1.organisation = I will tax {0}''s selected benefits through payroll from 6 April {1}
+ExclusionRemovalConfirmation.bullet2.organisation = I will inform {0} that their tax code may change
+ExclusionRemovalConfirmation.bullet3.organisation = I will work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
+ExclusionRemovalConfirmation.bullet4.organisation = I must add the cash equivalent to the benefit or relevant amount to {0}''s pay and tax it through payroll
+ExclusionRemovalConfirmation.bullet5.organisation = all other benefits offered to employees must also be taxed through payroll
+
+ExclusionRemovalConfirmation.p.agent = By confirming, you will start taxing this employee for {0} through your client''s payroll from 6 April {1}.
+ExclusionRemovalConfirmation.bullet1.agent = they must tax {0}''s selected benefits through payroll from 6 April {1}
+ExclusionRemovalConfirmation.bullet2.agent = they must inform {0} that their tax code may change
+ExclusionRemovalConfirmation.bullet3.agent = they must work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
+ExclusionRemovalConfirmation.bullet4.agent = I don’t need to exclude employees who do not receive the benefit because there is no extra tax or Class 1A National Insurance contributions due
+ExclusionRemovalConfirmation.bullet5.agent = all other benefits offered to employees must also be taxed through payroll
 
 #*************************************************************
 # Benefits messages
 #*************************************************************
 
-BenefitInKind.label.40 = Assets transferred (cars, property, goods or other assets)
-
-BenefitInKind.label.48 = Payments made on behalf of employee
-
-BenefitInKind.label.54 = Vouchers and credit cards
-
-BenefitInKind.label.44 = Mileage allowance and passenger payments
-
-BenefitInKind.label.31 = Car and car fuel
-
-BenefitInKind.label.29 = Car fuel
-
-BenefitInKind.label.35 = Vans
-
-BenefitInKind.label.36 = Van fuel
-
-BenefitInKind.label.30 = Private medical treatment or insurance
-
-BenefitInKind.label.50 = Qualifying relocation expenses, payments and benefits
-
 BenefitInKind.label.8 = Services supplied
-
-BenefitInKind.label.39 = Assets placed at the employee’s disposal
-
-BenefitInKind.label.47 = Other items (including subscriptions and professional fees)
-BenefitInKind.hint.47 = You must payroll all items you report under this section or none, except Income Tax paid but not deducted from director’s remuneration, which is a standalone benefit.
-
-BenefitInKind.label.52 = Income Tax paid but not deducted from director’s remuneration
-
-BenefitInKind.label.53 = Travelling and subsistence payments
-
-BenefitInKind.label.42 = Entertainment
-
-BenefitInKind.label.43 = General expenses allowance for business travel
-
+BenefitInKind.label.29 = Car fuel
+BenefitInKind.label.30 = Private medical treatment or insurance
+BenefitInKind.label.31 = Car and car fuel
 BenefitInKind.label.32 = Payments for use of home telephone
-
+BenefitInKind.label.35 = Vans
+BenefitInKind.label.36 = Van fuel
+BenefitInKind.label.37 = Loans
+BenefitInKind.label.38 = Accommodation
+BenefitInKind.label.39 = Assets placed at the employee’s disposal
+BenefitInKind.label.40 = Assets transferred (cars, property, goods or other assets)
+BenefitInKind.label.42 = Entertainment
+BenefitInKind.label.43 = General expenses allowance for business travel
+BenefitInKind.label.44 = Mileage allowance and passenger payments
 BenefitInKind.label.45 = Non-qualifying relocation expenses
-
-#*************************************************************
-# Benefits messages MPBIK Phase 2
-#*************************************************************
-
-BenefitInKindMPBIK2.label.38 = Accommodation
-
-BenefitInKindMPBIK2.label.37 = Loans
-
-BenefitInKindMPBIK2.label.40 = Assets transferred (cars, property, goods or other assets)
-
-BenefitInKindMPBIK2.label.48 = Payments made on behalf of employee
-
-BenefitInKindMPBIK2.label.54 = Vouchers and credit cards
-
-BenefitInKindMPBIK2.label.44 = Mileage allowance and passenger payments
-
-BenefitInKindMPBIK2.label.31 = Car and car fuel
-
-BenefitInKindMPBIK2.label.29 = Car fuel
-
-BenefitInKindMPBIK2.label.35 = Vans
-
-BenefitInKindMPBIK2.label.36 = Van fuel
-
-BenefitInKindMPBIK2.label.30 = Private medical treatment or insurance
-
-BenefitInKindMPBIK2.label.50 = Qualifying relocation expenses, payments and benefits
-
-BenefitInKindMPBIK2.label.8 = Services supplied
-
-BenefitInKindMPBIK2.label.39 = Assets placed at the employee’s disposal
-
-BenefitInKindMPBIK2.label.47 = Other items including subscriptions and professional fees
-
-BenefitInKindMPBIK2.label.52 = Income Tax paid but not deducted from director’s remuneration
-
-BenefitInKindMPBIK2.label.53 = Travelling and subsistence payments
-
-BenefitInKindMPBIK2.label.42 = Entertainment
-
-BenefitInKindMPBIK2.label.43 = General expenses allowance for business travel
-
-BenefitInKindMPBIK2.label.32 = Payments for use of home telephone
-
-BenefitInKindMPBIK2.label.45 = Non-qualifying relocation expenses
+BenefitInKind.label.47 = Other items including subscriptions and professional fees
+BenefitInKind.label.48 = Payments made on behalf of employee
+BenefitInKind.label.50 = Qualifying relocation expenses, payments and benefits
+BenefitInKind.label.52 = Income Tax paid but not deducted from director’s remuneration
+BenefitInKind.label.53 = Travelling and subsistence payments
+BenefitInKind.label.54 = Vouchers and credit cards
 
 #*************************************************************
 # Service messages
@@ -634,12 +465,10 @@ Service.field.firstname = First name
 Service.field.surname = Last name
 Service.field.name = Full Name
 Service.field.nino = National Insurance number
-Service.field.nino.2lines = National Insurance number
 Service.field.ninohint = For example, QQ123456A
 Service.field.dob = Date of birth
-Service.field.worksnumber = Payroll ID or Works number
 
-Service.field.worksnumberMPBIK = Payroll ID or Works number
+Service.field.worksnumber = Payroll ID or Works number
 
 Service.field.dobhint = For example, 31 3 1980
 Service.field.dob.day = Day
@@ -651,11 +480,8 @@ Service.field.gender.female = Female
 Service.field.employee.name = Employee name
 Service.field.client.name = Client name
 Service.field.employer.paye = Employer PAYE reference
-
-Service.field.employer.payeMPBIK = Employer PAYE reference
-
-Service.field.selected.benefits = Selected benefits and expenses
-Service.field.removed.benefit = Removed benefit or expense
+Service.field.selected.benefits = Selected benefits
+Service.field.removed.benefit = Removed benefit
 Service.field.stop.benefit = Benefit or expense
 Service.field.date.of.exclusion = Date of exclusion
 Service.field.payroll.date = Payrolling start date
@@ -701,35 +527,26 @@ error.empty.firstname = Enter a first name.
 error.empty.lastname = Enter a last name.
 
 error.incorrect.nino = Enter the employee''s National Insurance number in the correct format.
-error.incorrect.firstname = Enter a first name that doesn’t contain any numbers or special characters.
-error.incorrect.lastname = Enter a last name that doesn’t contain any numbers or special characters.
+error.incorrect.firstname = First name must only contain letters a to z.
+error.incorrect.lastname = Last name must only contain letters a to z.
 
-error.incorrect.firstnameMPBIK = First name must only contain letters a to z.
-error.incorrect.lastnameMPBIK = Last name must only contain letters a to z.
-error.firstname.lengthMPBIK = First name must be 35 characters or less.
-error.lastname.lengthMPBIK = Last name must be 35 characters or less.
+error.firstname.length = First name must be 35 characters or less.
+error.lastname.length = Last name must be 35 characters or less.
 
 error.empty.dob = Enter a date of birth.
 error.invaliddate.day = Enter a valid day.
 error.invaliddate.month = Enter a valid month.
 error.invaliddate.year = Enter a valid year.
-error.invaliddate.future.year = Year of date of birth can’t be in the future.
+error.invaliddate.future.year = Date of birth must be in the past
 error.invaliddate.past.year = Year of date of birth must be in the last 130 years.
 
 error.invaliddate.date = Date of birth must be a real date.
-error.invaliddate.future.yearMPBIK = Date of birth must be in the past
-
-error.exclusion.multi.selection = You need to choose which employee you want to exclude before you can continue
 
 #*************************************************************
 # What next
 #*************************************************************
 
-whatNext.add.heading = Registration complete
 whatNext.remove.heading = Benefit removed
-
-whatNext.add.p.organisation = Benefits and expenses you have registered to tax through your payroll from 6 April {0}.
-whatNext.add.p.agent = Benefits and expenses you have registered to tax through {0}''s payroll from 6 April {1}.
 
 whatNext.add.list.heading = Registration details
 
@@ -766,170 +583,93 @@ whatNext.exclude.table.heading = Exclusion details
 whatNext.exclude.h2.organisation = What you must do
 whatNext.exclude.h2.agent = What you must tell your client
 
-whatNextMPBIK.exclude.h2.organisation = What you must do
-whatNextMPBIK.exclude.h2.agent = What you must tell your client
-
 whatNext.exclude.p1.before.organisation = You should report the value of this benefit by
-whatNext.exclude.p1.link.organisation = submitting a P11D to HMRC
+whatNext.exclude.p1.link.organisation = sending HMRC a P11D
 whatNext.exclude.p1.after.organisation = for {0}. You should do this at the end of the tax year.
 
-whatNextMPBIK.exclude.p1.before.organisation = You should report the value of this benefit by
-whatNextMPBIK.exclude.p1.link.organisation = sending HMRC a P11D
-whatNextMPBIK.exclude.p1.after.organisation = for {0}. You should do this at the end of the tax year.
-
 whatNext.exclude.p1.before.agent = Your client should report the value of this benefit by
-whatNext.exclude.p1.link.agent = submitting a P11D to HMRC
+whatNext.exclude.p1.link.agent = sending HMRC a P11D
 whatNext.exclude.p1.after.agent = for {0}. They should do this at the end of the tax year.
 
-whatNextMPBIK.exclude.p1.before.agent = Your client should report the value of this benefit by
-whatNextMPBIK.exclude.p1.link.agent = sending HMRC a P11D
-whatNextMPBIK.exclude.p1.after.agent = for {0}. They should do this at the end of the tax year.
+whatNext.exclude.p1.cy.before.organisation = You should report the value of this benefit by
+whatNext.exclude.p1.cy.link.organisation = sending HMRC a P11D
+whatNext.exclude.p1.cy.after.organisation = for {0}. You should do this at the end of the tax year.
 
-whatNext.exclude.p1.cy.before.organisation = You must report the value of this benefit by
-whatNext.exclude.p1.cy.link.organisation = submitting a P11D to HMRC
-whatNext.exclude.p1.cy.after.organisation = for {0}. You must:
-
-whatNextMPBIK.exclude.p1.cy.before.organisation = You should report the value of this benefit by
-whatNextMPBIK.exclude.p1.cy.link.organisation = sending HMRC a P11D
-whatNextMPBIK.exclude.p1.cy.after.organisation = for {0}. You should do this at the end of the tax year.
-
-whatNext.exclude.p1.cy.before.agent = Your client must report the value of this benefit by
-whatNext.exclude.p1.cy.link.agent = submitting a P11D to HMRC
-whatNext.exclude.p1.cy.after.agent = for {0}. They must:
-
-whatNextMPBIK.exclude.p1.cy.before.agent = Your client should report the value of this benefit by
-whatNextMPBIK.exclude.p1.cy.link.agent = sending HMRC a P11D
-whatNextMPBIK.exclude.p1.cy.after.agent = for {0}. They should do this at the end of the tax year.
-
-whatNext.exclude.li1.cy = calculate the full cash equivalent value of the benefit for the employee
-whatNext.exclude.li2.cy = deduct any payments that they have made in the current tax year
-whatNext.exclude.li3.cy = report the remaining value on the P11D
-
-whatNext.exclude.p2.cy = You should do this at the end of the tax year.
+whatNext.exclude.p1.cy.before.agent = Your client should report the value of this benefit by
+whatNext.exclude.p1.cy.link.agent = sending HMRC a P11D
+whatNext.exclude.p1.cy.after.agent = for {0}. They should do this at the end of the tax year.
 
 whatNext.exclude.you.do.h2 = What you can do next
 
-whatNext.exclude.you.do.p.cy.before.organisation = You can
 whatNext.exclude.you.do.p.cy.link.organisation = return to this year’s benefits and expenses
-whatNext.exclude.you.do.p.cy.after.organisation = to exclude employees from this year’s benefits and expenses.
 
-whatNextMPBIK.exclude.you.do.p.cy.before.organisation = You can
-whatNextMPBIK.exclude.you.do.p.cy.link.organisation = return to your payrolling summary
-whatNextMPBIK.exclude.you.do.p.cy.after.organisation = to:
-whatNextMPBIK.exclude.li.view.benefits = view benefits
-whatNextMPBIK.exclude.li.other.benefits = exclude employees from other benefits
+whatNext.exclude.you.do.p.cy.before.organisation = You can
+whatNext.exclude.you.do.p.cy.link.organisation = return to your payrolling summary
+whatNext.exclude.you.do.p.cy.after.organisation = to:
+whatNext.exclude.li.view.benefits = view benefits
+whatNext.exclude.li.other.benefits = exclude employees from other benefits
+
+whatNext.exclude.you.do.p.cy.link.agent = return to this year’s benefits and expenses
 
 whatNext.exclude.you.do.p.cy.before.agent = You can
-whatNext.exclude.you.do.p.cy.link.agent = return to this year’s benefits and expenses
-whatNext.exclude.you.do.p.cy.after.agent = to exclude employees from this year’s benefits and expenses for this client.
-
-whatNextMPBIK.exclude.you.do.p.cy.before.agent = You can
-whatNextMPBIK.exclude.you.do.p.cy.link.agent = return to your client’s payrolling summary
-whatNextMPBIK.exclude.you.do.p.cy.after.agent = to:
+whatNext.exclude.you.do.p.cy.link.agent = return to your client’s payrolling summary
+whatNext.exclude.you.do.p.cy.after.agent = to:
 
 whatNext.exclude.you.do.p.before.organisation = You can
-whatNext.exclude.you.do.p.link.organisation = return to your registered benefits and expenses
+whatNext.exclude.you.do.p.link.organisation = return to your payrolling summary
 whatNext.exclude.you.do.p.after.organisation = to:
 
-whatNextMPBIK.exclude.you.do.p.before.organisation = You can
-whatNextMPBIK.exclude.you.do.p.link.organisation = return to your payrolling summary
-whatNextMPBIK.exclude.you.do.p.after.organisation = to:
-
 whatNext.exclude.you.do.p.before.agent = You can
-whatNext.exclude.you.do.p.link.agent = return to your client''s registered benefits and expenses
+whatNext.exclude.you.do.p.link.agent = return to your client’s payrolling summary
 whatNext.exclude.you.do.p.after.agent = to:
-
-whatNextMPBIK.exclude.you.do.p.before.agent = You can
-whatNextMPBIK.exclude.you.do.p.link.agent = return to your client’s payrolling summary
-whatNextMPBIK.exclude.you.do.p.after.agent = to:
-
-whatNext.exclude.you.do.li1 = exclude employees from the benefits and expenses you have registered
-whatNext.exclude.you.do.li2 = register more benefits or expenses
-whatNext.exclude.you.do.li3 = remove benefits or expenses you no longer want to tax through payroll
 
 whatNext.exclude.more.h3 = If you want to exclude another employee from this benefit or expense
 
-whatNextMPBIK.exclude.more.h3 = If you want to exclude another employee from this benefit or expense
-
 whatNext.exclude.more.p.cy.before = You can
 whatNext.exclude.more.p.cy.link = return to {0}
-whatNext.exclude.more.p.cy.after = to exclude another employee from this benefit or expense.
-
-whatNextMPBIK.exclude.more.p.cy.before = You can
-whatNextMPBIK.exclude.more.p.cy.link = return to {0}
-whatNextMPBIK.exclude.more.p.cy.after = to exclude another employee from this benefit.
+whatNext.exclude.more.p.cy.after = to exclude another employee from this benefit.
 
 whatNext.exclude.more.p.before = You can
 whatNext.exclude.more.p.link = return to {0}
-whatNext.exclude.more.p.after = to:
-
-whatNextMPBIK.exclude.more.p.before = You can
-whatNextMPBIK.exclude.more.p.link = return to {0}
-whatNextMPBIK.exclude.more.p.after = to exclude another employee from this benefit.
-
-whatNext.exclude.more.li1 = exclude another employee from this benefit or expense
-whatNext.exclude.more.li2 = add an employee back to this benefit or expense
+whatNext.exclude.more.p.after = to exclude another employee from this benefit.
 
 whatNext.subHeading = Next steps
 whatNext.rescind.heading = Registration complete
-whatNext.exclude.lede = {0} will not have {1} taxed through payroll from {2}.
 whatNext.service.back.overview.ViewYourSummary = View your summary of registered benefits and expenses
 
-whatNextMPBIK.exclude.lede = {0} will not have {1} taxed through payroll from {2}.
-whatNextMPBIK.exclude.lede.agent = {0} will not have {1} taxed through {3}''s payroll from {2}.
-whatNextMPBIK.exclude.lede.cy.agent = {0} will not have {1} taxed through {3}''s payroll from {2}.
+whatNext.exclude.lede = {0} will not have {1} taxed through payroll from {2}.
+whatNext.exclude.lede.agent = {0} will not have {1} taxed through {3}''s payroll from {2}.
+whatNext.exclude.lede.cy.agent = {0} will not have {1} taxed through {3}''s payroll from {2}.
 
-whatNext.remove.p1 = You have removed {0} from being taxed through payroll from 6 April {1}.
 whatNext.remove.table.heading = Benefit or expense details
 
-whatNext.remove.h2.organisation = What you must do
 whatNext.remove.p2.before.organisation = If you are still providing this benefit or expense to any of your employees, you will need to
 whatNext.remove.p2.link.organisation = submit a P11D to HMRC for them at the end of the tax year (opens in new window or tab)
 
-whatNext.remove.h2.agent = What you must tell your client
 whatNext.remove.p2.before.agent = If your client is still providing this benefit or expense to any of their employees, they will need to
 whatNext.remove.p2.link.agent = submit a P11D to HMRC for them at the end of the tax year (opens in new window or tab)
 
-whatYouNeedToKnow.subHeading.organisation = What you must do now
-whatYouNeedToKnow.subHeading.agent = What you must tell your client
-
 whatYouNeedToKnow.subHeading.before.h3.organisation = Before 6 April {0}
-whatYouNeedToKnow.subHeading.before.p1.organisation = You must send a letter to your employees explaining that:
-whatYouNeedToKnow.subHeading.before.li1.organisation = their benefits and expenses will be taxed through payroll from 6 April {0}
-whatYouNeedToKnow.subHeading.before.li2.organisation = their tax codes will change
 whatYouNeedToKnow.subHeading.before.li3.organisation = they will receive a letter from HMRC with their new tax code
 whatYouNeedToKnow.subHeading.before.p2.organisation = You must submit P11Ds to report any benefits and expenses that are not taxed through payroll in this tax year.
 
 whatYouNeedToKnow.subHeading.before.h3.agent = Before 6 April {0}
-whatYouNeedToKnow.subHeading.before.p1.agent = Your client must send a letter to their employees explaining that:
-whatYouNeedToKnow.subHeading.before.li1.agent = their benefits and expenses will be taxed through payroll from 6 April {0}
-whatYouNeedToKnow.subHeading.before.li2.agent = their tax codes will change
 whatYouNeedToKnow.subHeading.before.li3.agent = they will receive a letter from HMRC with their new tax code
 whatYouNeedToKnow.subHeading.before.p2.agent = Your client must submit P11Ds to report any benefits and expenses that are not taxed through payroll in this tax year.
 
 whatYouNeedToKnow.subHeading.after.h3.organisation = After 6 April {0}
-whatYouNeedToKnow.subHeading.after.p1.organisation = You can stop submitting P11Ds for employees who now have their benefits and expenses taxed through payroll.
 whatYouNeedToKnow.subHeading.after.p2.organisation = You will need to:
-whatYouNeedToKnow.subHeading.after.li1.organisation = add the cash equivalent to employees'' pay
-whatYouNeedToKnow.subHeading.after.li2.organisation = tax their benefits and expenses through your payroll
 whatYouNeedToKnow.subHeading.after.p3.text.organisation = You must still
 whatYouNeedToKnow.subHeading.after.p3.link.organisation = submit a P11D(b) to report Class 1A National Insurance contributions (opens in a new window or tab)
 
 whatYouNeedToKnow.subHeading.after.h3.agent = After 6 April {0}
-whatYouNeedToKnow.subHeading.after.p1.agent = Your client can stop submitting P11Ds for employees who now have their benefits and expenses taxed through payroll.
 whatYouNeedToKnow.subHeading.after.p2.agent = Your client will need to:
-whatYouNeedToKnow.subHeading.after.li1.agent = add the cash equivalent to employees'' pay
-whatYouNeedToKnow.subHeading.after.li2.agent = tax employees'' benefits and expenses through payroll
 whatYouNeedToKnow.subHeading.after.p3.text.agent = Your client must still
 whatYouNeedToKnow.subHeading.after.p3.link.agent = submit a P11D(b) to report Class 1A National Insurance contributions (opens in a new window or tab)
 
 whatYouCanDoNext.subHeading.h2 = What you can do next
 whatYouCanDoNext.subHeading.p.text.before = You can
-whatYouCanDoNext.subHeading.p.link.organisation = return to your registered benefits and expenses
-whatYouCanDoNext.subHeading.p.link.agent = return to your client’s registered benefits and expenses
 whatYouCanDoNext.subHeading.p.text.after = to:
-whatYouCanDoNext.subHeading.li1 = exclude employees from the benefits and expenses you have registered
-whatYouCanDoNext.subHeading.li2 = register more benefits and expenses
 whatYouCanDoNext.subHeading.li3 = remove benefits or expenses you no longer want to tax through payroll
 
 whatYouNeedToTellYourEmployees.subHeading = What you need to tell your employees
@@ -942,38 +682,35 @@ global.page.not.found.error.contact.link.text=contact the employers helpline
 global.page.not.found.error.contact.link=https://www.gov.uk/government/organisations/hm-revenue-customs/contact/employer-enquiries
 
 #*************************************************************
-# What next MPBIK 2
+# What next
 #*************************************************************
 
-whatNextMPBIK2.add.heading = Registration complete
+whatNext.add.heading = Registration complete
 
-whatNextMPBIK2.remove.p1 = You will not tax {0} through your payroll from 6 April {1}.
-whatNextMPBIK2.remove.h2 = What happens next
+whatNext.remove.p1 = You will not tax {0} through your payroll from 6 April {1}.
+whatNext.remove.h2 = What happens next
 
-ServiceMPBIK2.field.selected.benefits = Selected benefits
-ServiceMPBIK2.field.removed.benefit = Removed benefit
+whatYouNeedToKnow.subHeading.after.li1 = add the cash equivalent or relevant amount to employees’ pay
+whatYouNeedToKnow.subHeading.after.li2 = tax the benefits through payroll
+whatYouNeedToKnow.subHeading.after.li3 = work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
+whatYouCanDoNext.subHeading.li1 = exclude employees from the benefits you have registered
+whatYouCanDoNext.subHeading.li2 = remove benefits you no longer want to tax through payroll
 
-whatYouNeedToKnowMPBIK2.subHeading.after.li1 = add the cash equivalent or relevant amount to employees’ pay
-whatYouNeedToKnowMPBIK2.subHeading.after.li2 = tax the benefits through payroll
-whatYouNeedToKnowMPBIK2.subHeading.after.li3 = work out the Class 1A National Insurance contributions for the selected benefits and pay them through payroll
-whatYouCanDoNextMPBIK2.subHeading.li1 = exclude employees from the benefits you have registered
-whatYouCanDoNextMPBIK2.subHeading.li2 = remove benefits you no longer want to tax through payroll
+whatYouNeedToKnow.subHeading.organisation = What you must do now
+whatYouNeedToKnow.subHeading.after.p1.organisation = You do not need to send P11Ds for employee’s who have these benefits taxed through payroll.
+whatNext.add.p.organisation = You have registered the following benefits to tax through your payroll from 6 April {0}:
+whatYouCanDoNext.subHeading.p.link.organisation = return to your payrolling summary
+whatYouNeedToKnow.subHeading.before.p1.organisation = You should write to your employees explaining that:
+whatYouNeedToKnow.subHeading.before.li1.organisation = these benefits will be taxed through payroll from 6 April {0}
+whatYouNeedToKnow.subHeading.before.li2.organisation = their tax codes may change
 
-whatYouNeedToKnowMPBIK2.subHeading.organisation = What you must do now
-whatYouNeedToKnowMPBIK2.subHeading.after.p1.organisation = You do not need to send P11Ds for employee’s who have these benefits taxed through payroll.
-whatNextMPBIK2.add.p.organisation = You have registered the following benefits to tax through your payroll from 6 April {0}:
-whatYouCanDoNextMPBIK2.subHeading.p.link.organisation = return to your payrolling summary
-whatYouNeedToKnowMPBIK2.subHeading.before.p1.organisation = You should write to your employees explaining that:
-whatYouNeedToKnowMPBIK2.subHeading.before.li1.organisation = these benefits will be taxed through payroll from 6 April {0}
-whatYouNeedToKnowMPBIK2.subHeading.before.li2.organisation = their tax codes may change
-
-whatYouNeedToKnowMPBIK2.subHeading.agent = What you must tell your client
-whatYouNeedToKnowMPBIK2.subHeading.after.p1.agent = Your client can stop sending HMRC P11Ds for employees who now have their benefits and expenses taxed through payroll.
-whatNextMPBIK2.add.p.agent = You have registered the following benefits to tax through your client''s payroll from 6 April {0}:
-whatYouCanDoNextMPBIK2.subHeading.p.link.agent = return to your client’s payrolling summary
-whatYouNeedToKnowMPBIK2.subHeading.before.p1.agent = Your client should write to their employees explaining that:
-whatYouNeedToKnowMPBIK2.subHeading.before.li1.agent = these benefits will be taxed through payroll from 6 April {0}
-whatYouNeedToKnowMPBIK2.subHeading.before.li2.agent = their tax codes may change
+whatYouNeedToKnow.subHeading.agent = What you must tell your client
+whatYouNeedToKnow.subHeading.after.p1.agent = Your client can stop sending HMRC P11Ds for employees who now have their benefits and expenses taxed through payroll.
+whatNext.add.p.agent = You have registered the following benefits to tax through your client''s payroll from 6 April {0}:
+whatYouCanDoNext.subHeading.p.link.agent = return to your client’s payrolling summary
+whatYouNeedToKnow.subHeading.before.p1.agent = Your client should write to their employees explaining that:
+whatYouNeedToKnow.subHeading.before.li1.agent = these benefits will be taxed through payroll from 6 April {0}
+whatYouNeedToKnow.subHeading.before.li2.agent = their tax codes may change
 
 #********************************************************************
 # timeout text

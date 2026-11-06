@@ -14,11 +14,10 @@ object CodeCoverageSettings {
 
   private val settings: Seq[Setting[?]] = Seq(
     coverageExcludedPackages := excludedPackages,
-    coverageMinimumStmtTotal := 83,
+    coverageMinimumStmtTotal := 94,
     coverageFailOnMinimum := true,
     coverageHighlighting := true
   )
-//TODO recover coverage back to 95 after MPBIK clean up
-  def apply(): Seq[Setting[?]]          = settings
 
+  def apply(): Seq[Setting[?]] = settings
 }
