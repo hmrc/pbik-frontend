@@ -42,7 +42,7 @@ object FormMappingsConstants {
 @Singleton
 class FormMappings @Inject() (pbikAppConfig: PbikAppConfig, val messagesApi: MessagesApi) extends I18nSupport {
 
-  private val nameValidationRegex        = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
+  private val nameValidationRegex        = "[A-Za-z '-]*"
   private val validNinoFormat            = "[[A-Z]&&[^DFIQUV]][[A-Z]&&[^DFIQUVO]] ?\\d{2} ?\\d{2} ?\\d{2} ?[A-D]?"
   private val dateDayRegex               = "^([1-9]|0[1-9]|[12][0-9]|3[01])$"
   private val dateMonthRegex             = "^([1-9]|0[1-9]|1[0-2])$"
