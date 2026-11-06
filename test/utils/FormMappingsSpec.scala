@@ -168,6 +168,46 @@ class FormMappingsSpec extends FakePBIKApplication {
       }
     }
 
+    "exclusion search forms validate names in line with the NPS API" should {
+      val validNames   = Seq("John", "O'Neil", "Smith-Jones", "Mary Ann", "  John  ")
+      val invalidNames = Seq("Renée", "Zoë", "Siân", "Gwŷn", "John1", "J@ne", "John\tSmith", "Ann_Marie")
+
+      def ninoFormErrors(firstname: String, surname: String) =
+        formMappings
+          .exclusionSearchFormWithNino(mockRequest)
+          .bind(Map("firstname" -> firstname, "surname" -> surname, "nino" -> "AA111111A"))
+          .errors
+
+      def noNinoFormErrors(firstname: String, surname: String) =
+        formMappings
+          .exclusionSearchFormWithoutNino(mockRequest)
+          .bind(
+            Map(
+              "firstname" -> firstname,
+              "surname"   -> surname,
+              "dob.day"   -> "01",
+              "dob.month" -> "01",
+              "dob.year"  -> "1990",
+              "gender"    -> "male"
+            )
+          )
+          .errors
+
+      validNames.foreach { name =>
+        s"accept '$name' as a first name and surname" in {
+          ninoFormErrors(name, name) mustBe empty
+          noNinoFormErrors(name, name) mustBe empty
+        }
+      }
+
+      invalidNames.foreach { name =>
+        s"reject '$name' as a first name and surname" in {
+          ninoFormErrors(name, name).map(_.key)   must contain allOf ("firstname", "surname")
+          noNinoFormErrors(name, name).map(_.key) must contain allOf ("firstname", "surname")
+        }
+      }
+    }
+
     "selectYearForm is filled" should {
       "result in correct result" in {
         formMappings.selectYearForm.fill(SelectYear("cy")) mustBe
