@@ -33,9 +33,7 @@
     decommissionedBiks: Set[Int]
 )(implicit request: AuthenticatedRequest[?], messages: Messages)
 
-@title = @{if(additive) {messages("AddBenefits.Heading." + request.userType, "" + taxYearRange.cy, "" + taxYearRange.cyplus1)} else {messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)}}
-
-@govukLayoutWrapper(PageTitle(title, form.hasErrors)){
+@govukLayoutWrapper(PageTitle(messages("AddBenefits.Heading." + request.userType), form.hasErrors)){
 
         @if(form("actives").hasErrors) {
             <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">

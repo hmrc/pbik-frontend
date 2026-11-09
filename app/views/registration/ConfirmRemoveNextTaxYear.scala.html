@@ -29,9 +29,9 @@
 
 @benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 
-@govukLayoutWrapper(PageTitle(messages("RemoveBenefits.reason.Title." + request.userType))) {
+@govukLayoutWrapper(PageTitle(messages("RemoveBenefits.Title." + request.userType))) {
 
-    @pageTitleHeading(messages("RemoveBenefits.reason.Title." + request.userType))
+    @pageTitleHeading(messages("RemoveBenefits.Title." + request.userType))
 
     <p class="govuk-body" id="benefit-info">
         @messages("RemoveBenefits.confirm.p1." + request.userType, ""+taxYearRange.cy)

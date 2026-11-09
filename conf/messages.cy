@@ -183,50 +183,16 @@ AddBenefits.noselection.error = Mae’n rhaid i chi ddewis o leiaf un buddiant
 # Remove benefits
 #*************************************************************
 
-RemoveBenefits.reason.Title = Pam yr ydych am ddileu’r buddiant neu’r draul?
-RemoveBenefits.reason.Heading = Pam yr ydych am ddileu {0}?
-RemoveBenefits.Heading = Dileu buddiannau neu dreuliau o’r flwyddyn dreth sy’n dechrau ar 6 Ebrill {0}
-
-RemoveBenefits.reason.no.selection = Dewis pam yr ydych am ddileu’r buddiant neu’r draul
-
-RemoveBenefits.reason.software.organisation = Nid yw ein meddalwedd yn cynnal y gallu i drethu buddiannau a threuliau drwy’r gyflogres
-RemoveBenefits.reason.guidance.organisation = Nid oedd yr arweiniad ar gyfer y gwasanaeth hwn yn eglur
-RemoveBenefits.reason.not-clear.organisation = Nid oedd diben y gwasanaeth hwn yn eglur
-RemoveBenefits.reason.not-offering.organisation = Nid ydym yn cynnig y buddiant hwn i’n cyflogeion mwyach
-RemoveBenefits.reason.other.organisation = Arall
-
-RemoveBenefits.reason.software.agent = Nid yw meddalwedd ein cleient yn cynnal y gallu i drethu buddiannau a threuliau drwy’r gyflogres
-RemoveBenefits.reason.guidance.agent = Nid oedd yr arweiniad ar gyfer y gwasanaeth hwn yn eglur
-RemoveBenefits.reason.not-clear.agent = Nid oedd diben y gwasanaeth hwn yn eglur
-RemoveBenefits.reason.not-offering.agent = Nid yw’r cleient yn cynnig y buddiant hwn i’w cyflogeion mwyach
-RemoveBenefits.reason.other.agent = Arall
-
-RemoveBenefits.other.title = Rhoi gwybod i ni pam rydych am ddileu’r buddiant neu’r draul
-RemoveBenefits.other.heading = Rhoi gwybod i ni pam rydych am ddileu {0}
-RemoveBenefits.other.error.required = Nodwch pam yr ydych am ddileu’r buddiant neu’r draul
-RemoveBenefits.other.error.length = Mae’n rhaid i ‘Pam yr ydych am ddileu’r buddiant neu’r draul’ fod yn 100 o gymeriadau neu lai
-
-RemoveBenefits.confirm.title = Datgan y buddiant neu’r draul i roi’r gorau i drethu drwy’r gyflogres
-RemoveBenefits.confirm.heading = Datgan y buddiant neu’r draul i roi’r gorau i drethu drwy’r gyflogres
-
-RemoveBenefits.confirm.p2.organisation = Mae’n rhaid i chi roi gwybod am werth unrhyw fuddiant neu draul ar gyfer y flwyddyn dreth gyfredol drwy gyflwyno P11D i CThEF. Dylech wneud hyn ar ddiwedd y flwyddyn dreth.
-
-RemoveBenefits.confirm.p2.agent = Mae’n rhaid i’ch cleient rhoi gwybod am werth unrhyw fuddiant neu draul ar gyfer y flwyddyn dreth gyfredol drwy gyflwyno P11D i CThEF. Dylai wneud hyn ar ddiwedd y flwyddyn dreth.
-
-#*************************************************************
-# Remove benefits
-#*************************************************************
-
 RemoveBenefits.link = Tynnu oddi ar y gyflogres
 RemoveBenefits.selected.benefit = Y buddiant a ddewiswyd
 
-RemoveBenefits.reason.Title.organisation = Datgan y buddiant i roi’r gorau i’w drethu drwy’r gyflogres
+RemoveBenefits.Title.organisation = Datgan y buddiant i roi’r gorau i’w drethu drwy’r gyflogres
 RemoveBenefits.confirm.p1.organisation = Drwy gadarnhau, rydych yn rhoi gwybod i CThEF eich bod am roi’r gorau i drethu’r canlynol drwy’ch cyflogres o 6 Ebrill {0} ymlaen:
 RemoveBenefits.confirm.declaration.organisation = Rwy’n cadarnhau’r canlynol:
 RemoveBenefits.confirm.bullet1.organisation = Byddaf yn anfon P11D ar gyfer pob cyflogai sydd wedi cael y buddiant hwn er mwyn rhoi gwybod am y gwerth i CThEF
 RemoveBenefits.confirm.bullet2.organisation = Byddaf yn anfon unrhyw P11D ar ddiwedd y flwyddyn dreth
 
-RemoveBenefits.reason.Title.agent = Datgan y buddiant rydych am roi’r gorau i’w drethu drwy gyflogres eich cleient
+RemoveBenefits.Title.agent = Datgan y buddiant rydych am roi’r gorau i’w drethu drwy gyflogres eich cleient
 RemoveBenefits.confirm.p1.agent = Drwy gadarnhau hyn, rydych yn dweud wrth CThEF y bydd eich cleient yn rhoi’r gorau i drethu’r buddiannau canlynol drwy ei gyflogres o 6 Ebrill {0}:
 RemoveBenefits.confirm.declaration.agent = Rwy’n cadarnhau y byddaf yn dweud y canlynol wrth fy nghleient:
 RemoveBenefits.confirm.bullet1.agent = bod yn rhaid iddo anfon P11D ar gyfer pob cyflogai sydd wedi cael y buddiant hwn i adrodd am y gwerth wrth CThEF

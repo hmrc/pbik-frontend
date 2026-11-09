@@ -53,7 +53,7 @@ class NextTaxYearBenefitViewSpec extends PBIKViewSpec {
     "display different title when additive is false" must {
       implicit def html: Html = viewWithForm(formMappings.objSelectedForm, additive = false)(organisationRequest)
 
-      behave like pageWithTitle(messages("RemoveBenefits.Heading", year2019.toString))
+      behave like pageWithTitle(messages("AddBenefits.Heading.organisation", year2019.toString))
     }
 
     "display exhausted panel when isExhausted is true" in {

@@ -183,50 +183,16 @@ AddBenefits.noselection.error = You must select at least one benefit
 # Remove benefits
 #*************************************************************
 
-RemoveBenefits.reason.Title = Why do you want to remove the benefit or expense
-RemoveBenefits.reason.Heading = Why do you want to remove {0}?
-RemoveBenefits.Heading = Remove benefits or expenses from the tax year starting 6 April {0}
-
-RemoveBenefits.reason.no.selection = Select why you want to remove the benefit or expense
-
-RemoveBenefits.reason.software.organisation = Our software does not support taxing benefits and expenses through payroll
-RemoveBenefits.reason.guidance.organisation = The guidance for this service was not clear
-RemoveBenefits.reason.not-clear.organisation = The purpose of this service was not clear
-RemoveBenefits.reason.not-offering.organisation = We are no longer offering this benefit to our employees
-RemoveBenefits.reason.other.organisation = Other
-
-RemoveBenefits.reason.software.agent = The client''s software does not support taxing benefits and expenses through payroll
-RemoveBenefits.reason.guidance.agent = The guidance for this service was not clear
-RemoveBenefits.reason.not-clear.agent = The purpose of this service was not clear
-RemoveBenefits.reason.not-offering.agent = The client is no longer offering this benefit to their employees
-RemoveBenefits.reason.other.agent = Other
-
-RemoveBenefits.other.title = Tell us why you want to remove the benefit or expense
-RemoveBenefits.other.heading = Tell us why you want to remove {0}
-RemoveBenefits.other.error.required = Enter why you want to remove the benefit or expense
-RemoveBenefits.other.error.length = Why you want to remove the benefit or expense must be 100 characters or less
-
-RemoveBenefits.confirm.title = Declare the benefit or expense to stop taxing through payroll
-RemoveBenefits.confirm.heading = Declare the benefit or expense to stop taxing through payroll
-
-RemoveBenefits.confirm.p2.organisation = You must report the value of any benefit or expense for the current tax year by submitting a P11D to HMRC. You should do this at the end of the tax year.
-
-RemoveBenefits.confirm.p2.agent = Your client must report the value of any benefit or expense for the current tax year by submitting a P11D to HMRC. They should do this at the end of the tax year.
-
-#*************************************************************
-# Remove benefits
-#*************************************************************
-
 RemoveBenefits.link = Remove from payroll
 RemoveBenefits.selected.benefit = Selected benefit
 
-RemoveBenefits.reason.Title.organisation = Declare the benefit to stop taxing through payroll
+RemoveBenefits.Title.organisation = Declare the benefit to stop taxing through payroll
 RemoveBenefits.confirm.p1.organisation = By confirming you are telling HMRC that you will stop taxing the following benefits through your payroll from 6 April {0}:
 RemoveBenefits.confirm.declaration.organisation = I confirm that:
 RemoveBenefits.confirm.bullet1.organisation = I will send a P11D for each employee who has received this benefit to report the value to HMRC
 RemoveBenefits.confirm.bullet2.organisation = I will send any P11Ds at the end of the tax year
 
-RemoveBenefits.reason.Title.agent = Declare the benefit to stop taxing through your client’s payroll
+RemoveBenefits.Title.agent = Declare the benefit to stop taxing through your client’s payroll
 RemoveBenefits.confirm.p1.agent = By confirming you are telling HMRC that your client will stop taxing the following benefits through their payroll from 6 April {0}:
 RemoveBenefits.confirm.declaration.agent = I confirm I will tell my client that:
 RemoveBenefits.confirm.bullet1.agent = they must send a P11D for each employee who has received this benefit to report the value to HMRC

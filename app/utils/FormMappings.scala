@@ -41,7 +41,7 @@ object FormMappingsConstants {
 @Singleton
 class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport {
 
-  private val nameValidationRegex      = "([a-zA-Z-'\\sôéàëŵŷáîïâêûü])*"
+  private val nameValidationRegex      = "[A-Za-z '-]*"
   private val validNinoFormat          = "[[A-Z]&&[^DFIQUV]][[A-Z]&&[^DFIQUVO]] ?\\d{2} ?\\d{2} ?\\d{2} ?[A-D]?"
   private val dateDayRegex             = "^([1-9]|0[1-9]|[12][0-9]|3[01])$"
   private val dateMonthRegex           = "^([1-9]|0[1-9]|1[0-2])$"
@@ -118,13 +118,7 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
           "enabled" -> boolean
         )(RegistrationItem.apply)(o => Some(Tuple.fromProductTyped(o)))
       )
-        .verifying("Error message goes here", selectionList => selectionList.exists(listItem => listItem.active)),
-      "reason"     -> optional(
-        mapping(
-          "selectionValue" -> text,
-          "info"           -> optional(text)
-        )(BinaryRadioButtonWithDesc.apply)(o => Some(Tuple.fromProductTyped(o)))
-      )
+        .verifying("Error message goes here", selectionList => selectionList.exists(listItem => listItem.active))
     )(RegistrationList.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
@@ -217,15 +211,4 @@ class FormMappings @Inject() (val messagesApi: MessagesApi) extends I18nSupport 
       "individualNino" -> nonEmptyText
     )(ExclusionNino.apply)(o => Some(o.nino))
   )
-
-  val removalReasonForm: Form[BinaryRadioButtonWithDesc] = {
-    val noReasonError = "RemoveBenefits.reason.no.selection"
-    Form(
-      mapping(
-        "selectionValue" -> text.verifying(noReasonError, selectionValue => selectionValue.trim.nonEmpty),
-        "info"           -> optional(text)
-      )(BinaryRadioButtonWithDesc.apply)(o => Some(Tuple.fromProductTyped(o)))
-    )
-
-  }
 }

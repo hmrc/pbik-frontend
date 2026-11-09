@@ -31,16 +31,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 object ControllersReferenceDataCodes {
-  val CY_RESTRICTED: String                = "ServiceMessage.10003"
-  val FEATURE_RESTRICTED: String           = "ServiceMessage.10002"
-  val DEFAULT_ERROR: String                = "ServiceMessage.10001"
-  val FORM_TYPE_NINO: String               = "nino"
-  val FORM_TYPE_NONINO: String             = "no-nino"
-  val BIK_REMOVE_REASON_LIST: List[String] =
-    List("software", "guidance", "not-clear", "not-offering", "other") // todo remove
-  val YES: String                          = "yes"
-  val NO: String                           = "no"
-  val OTHER: String                        = "other"
+  val CY_RESTRICTED: String      = "ServiceMessage.10003"
+  val FEATURE_RESTRICTED: String = "ServiceMessage.10002"
+  val DEFAULT_ERROR: String      = "ServiceMessage.10001"
+  val FORM_TYPE_NINO: String     = "nino"
+  val FORM_TYPE_NONINO: String   = "no-nino"
+  val YES: String                = "yes"
+  val NO: String                 = "no"
+  val OTHER: String              = "other"
 
   val VALIDATION_ERROR_REFERENCE: String                             = "ErrorPage.validationError"
   val NO_MORE_BENEFITS_TO_ADD_HEADING: String                        = "AddBenefits.Heading"

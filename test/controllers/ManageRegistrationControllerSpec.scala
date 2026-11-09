@@ -21,7 +21,6 @@ import connectors.PbikConnector
 import controllers.actions.{AuthAction, NoSessionCheckAction}
 import models.*
 import models.auth.AuthenticatedRequest
-import models.form.{BinaryRadioButtonWithDesc, OtherReason}
 import models.v1.*
 import models.v1.IabdType.IabdType
 import org.mockito.ArgumentMatchers.{any, anyInt}
@@ -118,8 +117,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       "be taken to the check your answers screen if the form is filled in correctly" in {
         val mockRegistrationList = RegistrationList(
           None,
-          List(RegistrationItem(iabdType, active = true, enabled = true)),
-          Some(BinaryRadioButtonWithDesc("software", None))
+          List(RegistrationItem(iabdType, active = true, enabled = true))
         )
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
         val mockRequestForm      = mockPostRequest.withFormUrlEncodedBody(form.data.toSeq *)
@@ -131,7 +129,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       }
 
       "be shown the form with errors if not filled in correctly" in {
-        val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem], None)
+        val mockRegistrationList = RegistrationList(None, List.empty[RegistrationItem])
         val form                 = formMappings.objSelectedForm.fill(mockRegistrationList)
         val mockRequestForm      = mockPostRequest
           .withFormUrlEncodedBody(form.data.toSeq *)
@@ -196,8 +194,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       "persist changes of an authorised user and redirect this user to the what next page" in {
         val mockRegistrationList = RegistrationList(
           None,
-          List(RegistrationItem(iabdType, active = true, enabled = true)),
-          Some(BinaryRadioButtonWithDesc("software", None))
+          List(RegistrationItem(iabdType, active = true, enabled = true))
         )
         when(registrationController.sessionService.fetchPbikSession()(any()))
           .thenReturn(
@@ -245,81 +242,6 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
       }
     }
 
-    "a user removes a benefit" should {
-
-      "redirect to why-remove-benefit-expense page when other is selected" in {
-        val mockRegistrationList = RegistrationList(
-          None,
-          List(RegistrationItem(iabdType, active = true, enabled = true)),
-          Some(BinaryRadioButtonWithDesc("other", Some("Here's our other info")))
-        )
-        when(registrationController.sessionService.fetchPbikSession()(any()))
-          .thenReturn(
-            Future.successful(
-              Some(
-                PbikSession(
-                  sessionId,
-                  Some(mockRegistrationList),
-                  Some(RegistrationItem(iabdType, active = true, enabled = true)),
-                  None,
-                  None,
-                  None,
-                  None,
-                  None
-                )
-              )
-            )
-          )
-        val form                 = formMappings.removalReasonForm.fill(BinaryRadioButtonWithDesc("other", None))
-        val mockRequestForm      = mockPostRequest
-          .withFormUrlEncodedBody(form.data.toSeq *)
-        val result               = registrationController.removeNextYearRegisteredBenefitTypes(iabdType).apply(mockRequestForm)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/declare-remove-benefit-expense")
-      }
-    }
-
-    "selecting nothing should return to the same page with an error" in {
-      when(registrationController.sessionService.fetchPbikSession()(any()))
-        .thenReturn(
-          Future.successful(
-            Some(
-              PbikSession(
-                sessionId,
-                None,
-                Some(RegistrationItem(iabdType, active = true, enabled = true)),
-                None,
-                None,
-                None,
-                None,
-                None
-              )
-            )
-          )
-        )
-
-      val year                                                            = controllersReferenceData.yearRange.cy
-      val benefitInKindWithCount                                          = BenefitInKindWithCount(iabdType, 76)
-      implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(mockRequest)
-      val errorMsg                                                        = messages("RemoveBenefits.reason.no.selection")
-
-      val result =
-        registrationController.removeBenefitReasonValidation(None, year, 12, benefitInKindWithCount, iabdType)
-
-      status(result) mustBe OK
-      contentAsString(result) must include(errorMsg)
-
-      val cyBenefitRequest = cyBiks.map(x =>
-        BenefitInKindRequest(x.iabdType, PbikAction.ReinstatePayrolledBenefitInKind, authenticatedRequest.isAgent)
-      )
-      val resultSelection  =
-        registrationController.updateBiksFutureAction(year, cyBenefitRequest.toList, additive = false)
-
-      status(resultSelection) mustBe OK
-      contentAsString(resultSelection) must include(errorMsg)
-    }
-
     "return connector result for CONFLICT error statuses when adding next year benefits" in {
       when(mockConnector.updateOrganisationsRegisteredBiks(anyInt(), any)(any(), any[AuthenticatedRequest[?]]))
         .thenReturn(
@@ -333,8 +255,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
       val mockRegistrationList = RegistrationList(
         None,
-        List(RegistrationItem(iabdType, active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None))
+        List(RegistrationItem(iabdType, active = true, enabled = true))
       )
       when(mockSessionService.fetchPbikSession()(any()))
         .thenReturn(
@@ -370,8 +291,7 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
       val mockRegistrationList = RegistrationList(
         None,
-        List(RegistrationItem(iabdType, active = true, enabled = true)),
-        Some(BinaryRadioButtonWithDesc("software", None))
+        List(RegistrationItem(iabdType, active = true, enabled = true))
       )
       when(mockSessionService.fetchPbikSession()(any()))
         .thenReturn(
@@ -412,11 +332,10 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
       val year                                                            = controllersReferenceData.yearRange.cy
       val benefitInKindWithCount                                          = BenefitInKindWithCount(iabdType, 76)
-      val reason                                                          = Some(BinaryRadioButtonWithDesc("software", None))
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(mockRequest)
 
       val result = await(
-        registrationController.removeBenefitReasonValidation(reason, year, 12, benefitInKindWithCount, iabdType)
+        registrationController.removeBenefitValidation(year, 12, benefitInKindWithCount, iabdType)
       )
 
       result.header.status mustBe CONFLICT
@@ -430,11 +349,10 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
       val year                                                            = controllersReferenceData.yearRange.cy
       val benefitInKindWithCount                                          = BenefitInKindWithCount(iabdType, 76)
-      val reason                                                          = Some(BinaryRadioButtonWithDesc("software", None))
       implicit val authenticatedRequest: AuthenticatedRequest[AnyContent] = createAuthenticatedRequest(mockRequest)
 
       val result = await(
-        registrationController.removeBenefitReasonValidation(reason, year, 12, benefitInKindWithCount, iabdType)
+        registrationController.removeBenefitValidation(year, 12, benefitInKindWithCount, iabdType)
       )
 
       result.header.status mustBe INTERNAL_SERVER_ERROR
@@ -481,46 +399,41 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
 
         val result = registrationController.showConfirmRemoveNextTaxYear(iabdType)(mockRequest)
 
-        val title = messages("RemoveBenefits.reason.Title.organisation")
+        val title = messages("RemoveBenefits.Title.organisation")
         status(result) mustBe OK
         contentAsString(result) must include(title)
       }
     }
 
-    "loading submitConfirmRemoveNextTaxYear, an authorised user" should
-      Seq(
-        BinaryRadioButtonWithDesc("other", Some("Here's our other info")),
-        BinaryRadioButtonWithDesc("software", None)
-      ).foreach { reason =>
-        s"be directed cy + 1 removal confirmation page for reason $reason" in {
-          when(registrationController.sessionService.fetchPbikSession()(any()))
-            .thenReturn(
-              Future.successful(
-                Some(
-                  PbikSession(
-                    sessionId,
-                    Some(
-                      RegistrationList(
-                        active = List(RegistrationItem(iabdType, active = true, enabled = true)),
-                        reason = Some(reason)
-                      )
-                    ),
-                    None,
-                    None,
-                    None,
-                    None,
-                    None,
-                    Some(BenefitListResponse(Some(cyBiks.toList), 44))
-                  )
+    "loading submitConfirmRemoveNextTaxYear, an authorised user" should {
+      s"be directed cy + 1 removal confirmation page" in {
+        when(registrationController.sessionService.fetchPbikSession()(any()))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  sessionId,
+                  Some(
+                    RegistrationList(
+                      active = List(RegistrationItem(iabdType, active = true, enabled = true))
+                    )
+                  ),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None,
+                  Some(BenefitListResponse(Some(cyBiks.toList), 44))
                 )
               )
             )
+          )
 
-          val result = registrationController.submitConfirmRemoveNextTaxYear(iabdType)(mockRequest)
+        val result = registrationController.submitConfirmRemoveNextTaxYear(iabdType)(mockRequest)
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/benefit-removed")
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(s"/payrollbik/cy1/${iabdType.id}/benefit-removed")
       }
+    }
   }
 }

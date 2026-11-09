@@ -34,19 +34,17 @@ object SplunkLogger {
   val pbik_event_name   = "PBIK"
   val pbik_no_ref       = "Not available"
 
-  val key_event_name         = "event"
-  val key_gateway_user       = "gatewayUser"
-  val key_empref             = "empref"
-  val key_tier               = "tier"
-  val key_nino               = "nino"
-  val key_action             = "action"
-  val key_target             = "target"
-  val key_period             = "period"
-  val key_iabd               = "iabd"
-  val key_message            = "message"
-  val key_remove_reason      = "removeReason"
-  val key_remove_reason_desc = "removeReasonDesc"
-  val key_error              = "error"
+  val key_event_name   = "event"
+  val key_gateway_user = "gatewayUser"
+  val key_empref       = "empref"
+  val key_tier         = "tier"
+  val key_nino         = "nino"
+  val key_action       = "action"
+  val key_target       = "target"
+  val key_period       = "period"
+  val key_iabd         = "iabd"
+  val key_message      = "message"
+  val key_error        = "error"
 
 }
 
@@ -105,8 +103,6 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
     msg: String,
     nino: Option[String] = None,
     iabd: Option[String] = None,
-    removeReason: Option[String] = None,
-    removeReasonDesc: Option[String] = None,
     name: Option[String],
     empRef: Option[EmpRef]
   ): DataEvent = {
@@ -116,11 +112,8 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
       case EIL => pbik_exclude_type
     }
 
-    val entityIABD             = if (iabd.isDefined) Seq(key_iabd -> iabd.get) else Nil
-    val entityNINO             = if (nino.isDefined) Seq(key_nino -> nino.get) else Nil
-    val entityRemoveReason     = if (removeReason.isDefined) Seq(key_remove_reason -> removeReason.get) else Nil
-    val entityRemoveReasonDesc =
-      if (removeReasonDesc.isDefined) Seq(key_remove_reason_desc -> removeReasonDesc.get) else Nil
+    val entityIABD = if (iabd.isDefined) Seq(key_iabd -> iabd.get) else Nil
+    val entityNINO = if (nino.isDefined) Seq(key_nino -> nino.get) else Nil
 
     val entities = Seq(
       key_event_name   -> pbik_event_name,
@@ -131,7 +124,7 @@ class SplunkLogger @Inject() (taxDateUtils: TaxDateUtils, val auditConnector: Au
       key_target       -> target.toString,
       key_period       -> period.toString,
       key_message      -> msg
-    ) ++ entityIABD ++ entityNINO ++ entityRemoveReason ++ entityRemoveReasonDesc
+    ) ++ entityIABD ++ entityNINO
 
     DataEvent(auditSource = pbik_audit_source, auditType = derivedAuditType, detail = Map(entities *))
   }
