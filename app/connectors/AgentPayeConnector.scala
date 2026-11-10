@@ -43,7 +43,7 @@ class AgentPayeConnector @Inject() (
   ): Future[Option[Client]] =
     agentCode match {
       case None =>
-        logger.warn("[AgentPayeConnector][getClient] agentCode is empty")
+        logger.warn("Agent Code is empty")
         Future.successful(None)
 
       case Some(code) =>
@@ -78,19 +78,19 @@ class AgentPayeConnector @Inject() (
             response.json.validate[Client] match {
               case JsSuccess(data, _) => Some(data)
               case JsError(errors)    =>
-                logger.warn(s"[AgentPayeConnector][fetchFromAgentPaye] Unable to parse response: $errors")
+                logger.warn(s"Unable to parse the response received from Agent PAYE: $errors")
                 None
             }
 
           case ACCEPTED | NOT_FOUND => None
 
           case other =>
-            logger.warn(s"[AgentPayeConnector][fetchFromAgentPaye] GET $fullURL returned $other")
+            logger.warn(s"GET request to $fullURL returned $other")
             None
         }
       }
       .recover { case ex: Exception =>
-        logger.warn(s"[AgentPayeConnector][fetchFromAgentPaye] ${ex.getMessage}")
+        logger.warn(s"Error: ${ex.getMessage}")
         None
       }
   }

@@ -279,7 +279,7 @@ class ManageRegistrationController @Inject() (
                   .bindFromRequest()
                   .fold(
                     formWithErrors => {
-                      logger.warn("[ManageRegistrationController][updateBiksFutureAction] No removal reason selected")
+                      logger.warn("No removal reason selected")
                       showCheckYourAnswersRemoveNextTaxYear(
                         changes.head.iabdType,
                         formWithErrors
@@ -346,7 +346,7 @@ class ManageRegistrationController @Inject() (
         controllersReferenceData.responseErrorHandler(eventualResult)
       case _ =>
         logger.warn(
-          s"[ManageRegistrationController][removeBenefitReasonValidation] Couldn't find reason from request form"
+          s"Couldn't find reason from request form"
         )
         showCheckYourAnswersRemoveNextTaxYear(
           iabdType,

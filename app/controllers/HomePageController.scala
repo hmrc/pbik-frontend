@@ -88,7 +88,7 @@ class HomePageController @Inject() (
 
   def setLanguage(): Action[AnyContent] = Action { implicit request =>
     val lang    = request.getQueryString("lang").getOrElse("en")
-    logger.info(s"[HomePageController][setLanguage] Request received: set language to $lang")
+    logger.info(s"Request received: set language to $lang")
     val newLang = Lang(lang)
     Redirect(
       request.headers.toMap

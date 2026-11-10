@@ -62,7 +62,7 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
       case Some(sessionId) =>
         Right(sessionId.value)
       case _               =>
-        logger.warn("[SessionService][getSessionFromHeaderCarrier] No session Id present at header carrier")
+        logger.warn("No session Id present at header carrier")
         Left(new MissingSessionIdException("Unable to retrieve session ID"))
     }
 
@@ -105,7 +105,7 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
   def resetAll()(implicit hc: HeaderCarrier): Future[Boolean] =
     getSessionFromHeaderCarrier(hc) match {
       case Left(_)   =>
-        logger.info("[SessionService][resetAll] No session to reset")
+        logger.info("No session to reset")
         Future.successful(false)
       case Right(id) => sessionRepository.remove(id)
     }
@@ -131,7 +131,7 @@ class SessionService @Inject() (val sessionRepository: SessionRepository)(implic
           val encryptedClient  = client.encrypt
           session.copy(clientInfo = session.clientInfo + (empRef -> encryptedClient))
         case _                           =>
-          logger.warn(s"[SessionService][storeSession] No matching keys found - returning current session")
+          logger.warn(s"No matching keys found - returning current session")
           session
       }
 
