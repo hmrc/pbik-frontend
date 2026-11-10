@@ -28,12 +28,14 @@ import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.*
+import play.api.mvc.Results.NotFound
 import services.{BikListService, RegistrationService, SessionService}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.WithUrlEncodedOnlyFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.*
 import utils.Exceptions.InvalidURIException
+import views.html.page_not_found_template
 import views.html.registration.*
 
 import javax.inject.{Inject, Singleton}
@@ -56,7 +58,8 @@ class ManageRegistrationController @Inject() (
   nextTaxYearBenefitMPBIK2View: NextTaxYearBenefitMPBIK2,
   confirmUpdateNextTaxYearView: ConfirmUpdateNextTaxYear,
   removeBenefitNextTaxYearView: RemoveBenefitNextTaxYear, // todo remove and remove reason form mapping
-  confirmRemoveNextTaxYear: ConfirmRemoveNextTaxYear
+  confirmRemoveNextTaxYear: ConfirmRemoveNextTaxYear,
+  pageNotFound: page_not_found_template
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport
@@ -124,11 +127,19 @@ class ManageRegistrationController @Inject() (
           sessionService.fetchPbikSession().flatMap { session =>
             val activeReg        = session.flatMap(_.getActiveRegistrationItems).getOrElse(List.empty[RegistrationItem])
             val registrationList = RegistrationList(None, activeReg)
-            Future.successful(
-              Ok(
-                confirmUpdateNextTaxYearView(registrationList, controllersReferenceData.yearRange)
+            if (registrationList.active.isEmpty) {
+              Future.successful(
+                NotFound(
+                  pageNotFound()
+                )
               )
-            )
+            } else {
+              Future.successful(
+                Ok(
+                  confirmUpdateNextTaxYearView(registrationList, controllersReferenceData.yearRange)
+                )
+              )
+            }
           }
         } else {
           Future.failed(new InvalidURIException())

@@ -183,6 +183,29 @@ class ManageRegistrationControllerSpec extends FakePBIKApplication {
           status(result) mustBe NOT_FOUND
         }
       }
+
+      "avoid showing the check your answers screen if accessed directly" in {
+        when(registrationController.sessionService.fetchPbikSession()(any()))
+          .thenReturn(
+            Future.successful(
+              Some(
+                PbikSession(
+                  sessionId,
+                  Some(RegistrationList(active = List.empty[RegistrationItem])),
+                  None,
+                  None,
+                  None,
+                  None,
+                  None,
+                  None
+                )
+              )
+            )
+          )
+        val result = registrationController.showCheckYourAnswersAddNextTaxYear()(mockRequest)
+
+        status(result) mustBe NOT_FOUND
+      }
     }
 
     "loading the addNextYearRegisteredBenefitTypes" should {
