@@ -246,7 +246,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
           )
         }
 
-        result.message mustBe s"[updateOrganisationsRegisteredBiks] Optimistic lock conflict from NPS, status: $CONFLICT"
+        result.message mustBe s"Optimistic lock conflict from NPS while updating organisations Registered Biks, status: $CONFLICT"
       }
 
       "return an exception when INTERNAL_SERVER_ERROR" in {
@@ -398,7 +398,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
           )
         }
 
-        result.message mustBe s"[excludeEiLPersonFromBik] Optimistic lock conflict from NPS, status: $CONFLICT"
+        result.message mustBe s"Optimistic lock conflict from NPS while excluding person from Bik, status: $CONFLICT"
       }
 
     }
@@ -469,7 +469,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
           )
         }
 
-        result.message mustBe s"[removeEiLPersonExclusionFromBik] Optimistic lock conflict from NPS, status: $CONFLICT"
+        result.message mustBe s"Optimistic lock conflict from NPS while removing person exclusion from Bik, status: $CONFLICT"
       }
 
     }
@@ -599,7 +599,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
           )
         }
 
-        result.message mustBe s"[findPerson] Optimistic lock conflict from NPS, status: $CONFLICT"
+        result.message mustBe s"Optimistic lock conflict from NPS while finding a person, status: $CONFLICT"
       }
     }
 
@@ -684,7 +684,7 @@ class PbikConnectorSpec extends FakePBIKApplication {
           )
         }
 
-        result.message mustBe s"[findPerson] Optimistic lock conflict from NPS, status: $CONFLICT"
+        result.message mustBe s"Optimistic lock conflict from NPS while finding a person, status: $CONFLICT"
       }
     }
 

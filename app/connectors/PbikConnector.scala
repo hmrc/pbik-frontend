@@ -157,11 +157,11 @@ class PbikConnector @Inject() (
             Future.successful(Right(response.status))
           case CONFLICT             =>
             logger.warn(
-              s"Optimistic lock conflict from NPS, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
+              s"Optimistic lock conflict from NPS while excluding person from Bik, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
             )
             Future.failed(
               new OptimisticLockConflictException(
-                s"Optimistic lock conflict from NPS, status: 409",
+                s"Optimistic lock conflict from NPS while excluding person from Bik, status: 409",
                 year
               )
             )
@@ -205,7 +205,7 @@ class PbikConnector @Inject() (
             )
             Future.failed(
               new OptimisticLockConflictException(
-                s"[removeEiLPersonExclusionFromBik] Optimistic lock conflict from NPS, status: 409",
+                s"Optimistic lock conflict from NPS while removing person exclusion from Bik, status: 409",
                 year
               )
             )
@@ -254,11 +254,11 @@ class PbikConnector @Inject() (
 
           case CONFLICT =>
             logger.warn(
-              s"Optimistic lock conflict from NPS, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
+              s"Optimistic lock conflict from NPS while updating organisations Registered Biks, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
             )
             Future.failed(
               new OptimisticLockConflictException(
-                s"Optimistic lock conflict from NPS, status: 409",
+                s"Optimistic lock conflict from NPS while updating organisations Registered Biks, status: 409",
                 year
               )
             )
@@ -300,10 +300,13 @@ class PbikConnector @Inject() (
             }
           case CONFLICT             =>
             logger.warn(
-              s"Optimistic lock conflict from NPS, status: ${response.status}, request body: ${body.toString()}, response body: ${response.body}"
+              s"Optimistic lock conflict from NPS while finding a person, status: ${response.status}, request body: ${body.toString()}, response body: ${response.body}"
             )
             Future.failed(
-              new OptimisticLockConflictException(s"Optimistic lock conflict from NPS, status: 409", year)
+              new OptimisticLockConflictException(
+                s"Optimistic lock conflict from NPS while finding a person, status: 409",
+                year
+              )
             )
           case UNPROCESSABLE_ENTITY =>
             logger.error(
