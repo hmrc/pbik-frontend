@@ -28,7 +28,7 @@ import utils.*
 import views.html.registration.{AddBenefitConfirmationNextTaxYear, RemoveBenefitConfirmationNextTaxYear}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WhatNextPageController @Inject() (
