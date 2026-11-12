@@ -90,7 +90,7 @@ class AgentPayeConnector @Inject() (
         }
       }
       .recover { case ex: Exception =>
-        logger.warn(s"Error: ${ex.getMessage}")
+        logger.warn(s"Fetch from Agent PAYE: ${ex.getMessage}")
         None
       }
   }

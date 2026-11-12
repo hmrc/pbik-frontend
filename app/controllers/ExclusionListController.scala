@@ -245,7 +245,7 @@ class ExclusionListController @Inject() (
         }
       }
     } else {
-      logger.info("While show with or without nino, exclusions are not allowed; displaying the error page")
+      logger.info("While show with or without nino, exclusions are not allowed; showing error page")
       Future {
         Forbidden(
           errorPageView(
@@ -574,7 +574,7 @@ class ExclusionListController @Inject() (
         }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
-        logger.info("While updating multiple exclusions, exclusions are not permitted; displaying the error page.")
+        logger.info("While updating multiple exclusions, exclusions are not permitted; showing error page.")
         Future.successful(
           Forbidden(
             errorPageView(
