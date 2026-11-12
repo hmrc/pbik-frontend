@@ -835,7 +835,7 @@ class ExclusionListController @Inject() (
                   )
                 case Right(unexpectedStatus)     =>
                   logger.warn(
-                    s"[ExclusionListController][removeExclusionsCommit] Exclusion list update operation was unable to be executed successfully:" +
+                    s"Exclusion list update operation was unable to be executed successfully:" +
                       s" received $unexpectedStatus response"
                   )
                   BadRequest(
