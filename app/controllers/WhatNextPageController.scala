@@ -22,6 +22,7 @@ import models.*
 import models.v1.IabdType.IabdType
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.*
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.*
@@ -52,18 +53,18 @@ class WhatNextPageController @Inject() (
     authenticate.async { implicit request =>
       val yearInt = taxDateUtils.mapYearStringToInt(year)
 
-      val resultFuture = sessionService.fetchPbikSession().map { session =>
-        val addedBiksAsList: RegistrationList =
-          RegistrationList(active = session.get.registrations.get.active.filter(item => item.active))
-        Ok(
-          addBenefitConfirmationNextTaxYearView(
-            taxDateUtils.isCurrentTaxYear(yearInt),
-            controllersReferenceData.yearRange,
-            addedBiksAsList
-          )
+      val pageLoadFuture: Future[Result] = for {
+        session        <- sessionService.fetchPbikSession()
+        addedBiksAsList = RegistrationList(active = session.get.registrations.get.active.filter(item => item.active))
+        _              <- sessionService.resetAll()
+      } yield Ok(
+        addBenefitConfirmationNextTaxYearView(
+          taxDateUtils.isCurrentTaxYear(yearInt),
+          controllersReferenceData.yearRange,
+          addedBiksAsList
         )
-      }
-      controllersReferenceData.responseErrorHandler(resultFuture)
+      )
+      controllersReferenceData.responseErrorHandler(pageLoadFuture)
     }
 
   def showWhatNextRemovedBik(iabdType: IabdType): Action[AnyContent] =
