@@ -96,6 +96,8 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
                 )
               )
             )
+          when(mockSessionService.resetAll()(any())).thenReturn(Future.successful(true))
+
           val result = whatNextPageController.showWhatNextRegisteredBik(year).apply(authenticatedRequest)
 
           status(result) mustBe OK
@@ -132,6 +134,8 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
               )
             )
           )
+        when(mockSessionService.resetAll()(any())).thenReturn(Future.successful(true))
+
         val result =
           whatNextPageController.showWhatNextRegisteredBik(FormMappingsConstants.CYP1).apply(authenticatedRequest)
 
