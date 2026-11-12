@@ -29,7 +29,7 @@ case class NPSError(reason: String, code: String) {
   def codeAsInt: Int = Try(code.toInt) match {
     case Success(value) => value
     case Failure(_)     =>
-      logger.error(s"[NPSError][codeAsInt] Error converting code to Int, default to $defaultCode")
+      logger.error(s"Error converting code to Int, default to $defaultCode")
       defaultCode
   }
 

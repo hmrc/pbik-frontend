@@ -39,7 +39,7 @@ class NoSessionCheckActionImpl @Inject() ()(implicit val executionContext: Execu
     val sessionId = request.session.get(SessionKeys.sessionId)
     sessionId match {
       case None =>
-        logger.warn("[NoSessionCheckAction][refine] No session ID found in request")
+        logger.warn("No session ID found in request")
         Future.successful(
           Left(
             Results

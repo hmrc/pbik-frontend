@@ -76,13 +76,13 @@ class AuthActionImpl @Inject() (
                 )
               case _                               =>
                 logger.warn(
-                  s"[AuthAction][authAsEmployer] Authentication failed: invalid $taxOfficeNumber and/or $taxOfficeReferenceKey"
+                  s"Authentication failed: invalid $taxOfficeNumber and/or $taxOfficeReferenceKey"
                 )
                 Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
             }
           }
           .getOrElse {
-            logger.warn(s"[AuthAction][authAsEmployer] Authentication failed - $enrolmentKey key not found")
+            logger.warn(s"Authentication failed - $enrolmentKey key not found")
             Future.successful(Results.Redirect(controllers.routes.AuthController.notAuthorised))
           }
       }
@@ -94,13 +94,13 @@ class AuthActionImpl @Inject() (
 
     clientEmpRef match {
       case None                         =>
-        logger.warn("[AuthAction][authAsAgent] No client EmpRef found in session")
+        logger.warn("No client EmpRef found in session")
         Future.successful(Redirect(config.agentClientListUrl))
       case Some(agentEmployerReference) =>
         val empRefs = agentEmployerReference.split("/")
 
         if (empRefs.size != 2) {
-          logger.warn("[AuthAction][authAsAgent] Invalid client EmpRef found in session")
+          logger.warn("Invalid client EmpRef found in session")
           Future.successful(Redirect(config.agentClientListUrl))
         } else {
 
@@ -148,24 +148,24 @@ class AuthActionImpl @Inject() (
             // Individual
             case AffinityGroup.Individual   =>
               logger.warn(
-                s"[AuthAction][invokeBlock] Authentication failed - AffinityGroup not supported: ${affinityGroup.toString}"
+                s"Authentication failed - AffinityGroup not supported: ${affinityGroup.toString}"
               )
               Future.successful(Results.Redirect(controllers.routes.AuthController.affinityIndividual))
           }
         case _                               =>
-          logger.warn("[AuthAction][invokeBlock] Authentication failed - AffinityGroup not found")
+          logger.warn("Authentication failed - AffinityGroup not found")
           throw new IllegalArgumentException("AffinityGroup not found")
       }
       .recover {
         case ex: NoActiveSession =>
-          logger.warn("[AuthAction][invokeBlock] No Active Session")
+          logger.warn("No Active Session")
           Redirect(
             config.authSignIn,
             Map("continue_url" -> Seq(config.loginCallbackUrl), "origin" -> Seq("pbik-frontend"))
           )
 
         case ex: InsufficientEnrolments =>
-          logger.warn("[AuthAction][invokeBlock] Insufficient enrolments provided with request")
+          logger.warn("Insufficient enrolments provided with request")
           Results.Redirect(controllers.routes.AuthController.notAuthorised)
       }
   }

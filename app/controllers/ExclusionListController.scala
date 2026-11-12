@@ -195,7 +195,7 @@ class ExclusionListController @Inject() (
       )
 
     } else {
-      logger.info("[ExclusionListController][showExcludedPage] Exclusions not allowed, showing error page")
+      logger.info("Exclusions not allowed, showing error page")
       Future.successful(
         Ok(
           errorPageView(
@@ -239,7 +239,7 @@ class ExclusionListController @Inject() (
         }
       }
     } else {
-      logger.info("[ExclusionListController][showWithOrWithoutNino] Exclusions not allowed, showing error page")
+      logger.info("While show with or without nino, exclusions are not allowed; showing error page")
       Future {
         Forbidden(
           errorPageView(
@@ -267,7 +267,7 @@ class ExclusionListController @Inject() (
           )
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
-        logger.info("[ExclusionListController][withOrWithoutNinoDecision] Exclusions not allowed, showing error page")
+        logger.info("While show with or without nino decision, exclusions not allowed; showing error page")
         Future.successful(
           Forbidden(
             errorPageView(
@@ -427,7 +427,7 @@ class ExclusionListController @Inject() (
 
         controllersReferenceData.responseErrorHandler(futureResult)
       } else {
-        logger.info("[ExclusionListController][searchResults] Exclusions not allowed, showing error page")
+        logger.info("While search results, exclusions not allowed; showing error page")
         Future.successful(
           Forbidden(
             errorPageView(
@@ -468,10 +468,10 @@ class ExclusionListController @Inject() (
       exclusionService.searchResultsRemoveAlreadyExcluded(currentExclusions, listOfMatches)
     uniqueListOfMatches.size match {
       case 0       =>
-        logger.warn("[ExclusionListController][searchResultsHandleValidResult] List of un-excluded matches is empty")
+        logger.warn("List of un-excluded matches is empty")
         val message = Messages("ExclusionSearch.Fail.Exists.P")
         if (listOfMatches.nonEmpty) {
-          logger.info("[ExclusionListController][searchResultsHandleValidResult] Matching has already been excluded")
+          logger.info("Matching has already been excluded")
           val errorCode = 63085
           NotFound(
             errorPageView(
@@ -483,7 +483,7 @@ class ExclusionListController @Inject() (
             )
           )
         } else {
-          logger.warn("[ExclusionListController][searchResultsHandleValidResult] Cached list of matches is empty")
+          logger.warn("Cached list of matches is empty")
           val errorCode = 63082
           NotFound(
             errorPageView(
@@ -568,7 +568,7 @@ class ExclusionListController @Inject() (
         }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
-        logger.info("[ExclusionListController][updateMultipleExclusions] Exclusions not allowed, showing error page")
+        logger.info("While updating multiple exclusions, exclusions are not permitted; showing error page.")
         Future.successful(
           Forbidden(
             errorPageView(
@@ -604,14 +604,14 @@ class ExclusionListController @Inject() (
               )
             case None           =>
               logger.warn(
-                "[ExclusionListController][declareEmployeeToExclude] Required session data missing for declare employee to exclude"
+                "Required session data missing for declare employee to exclude"
               )
               InternalServerError("Required session data missing for declare employee to exclude")
           }
         }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
-        logger.info("[ExclusionListController][declareEmployeeToExclude] Exclusions not allowed, showing error page")
+        logger.info("While declare employee to exclude, Exclusions not allowed; showing error page")
         Future.successful(
           Forbidden(
             errorPageView(
@@ -657,7 +657,7 @@ class ExclusionListController @Inject() (
           )
         case Right(unexpectedStatus)     =>
           logger.warn(
-            s"[ExclusionListController][commitExclusion] Exclusion list update operation was unable to be executed " +
+            s"Exclusion list update operation was unable to be executed " +
               s"successfully: received $unexpectedStatus response"
           )
           InternalServerError(
@@ -692,7 +692,7 @@ class ExclusionListController @Inject() (
         val resultFuture = sessionService.fetchPbikSession().flatMap { (session: Option[PbikSession]) =>
           getExcludedPerson(session).fold {
             logger.error(
-              "[ExclusionListController][updateExclusions] can not get excludedPerson, session data not filled"
+              "Can not get excluded person, session data not filled"
             )
             Future.successful(
               NotFound(
@@ -715,7 +715,7 @@ class ExclusionListController @Inject() (
         }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
-        logger.info("[ExclusionListController][updateExclusions] Exclusions not allowed, showing error page")
+        logger.info("While update, exclusions not allowed; showing error page")
         Future.successful(
           Forbidden(
             errorPageView(
@@ -776,7 +776,7 @@ class ExclusionListController @Inject() (
           }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
-        logger.info("[ExclusionListController][remove] Exclusions not allowed, showing error page")
+        logger.info("While remove, exclusions not allowed; showing error page")
         Future.successful(
           Forbidden(
             errorPageView(
@@ -835,7 +835,7 @@ class ExclusionListController @Inject() (
                   )
                 case Right(unexpectedStatus)     =>
                   logger.warn(
-                    s"[ExclusionListController][removeExclusionsCommit] Exclusion list update operation was unable to be executed successfully:" +
+                    s"Exclusion list update operation was unable to be executed successfully:" +
                       s" received $unexpectedStatus response"
                   )
                   BadRequest(
@@ -848,7 +848,7 @@ class ExclusionListController @Inject() (
           }
         controllersReferenceData.responseErrorHandler(resultFuture)
       } else {
-        logger.info("[ExclusionListController][removeExclusionsCommit] Exclusions not allowed, showing error page")
+        logger.info("Exclusions not allowed, showing error page")
         Future.successful(
           Forbidden(
             errorPageView(ControllersReferenceDataCodes.FEATURE_RESTRICTED, taxYearRange)

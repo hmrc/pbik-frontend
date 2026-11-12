@@ -62,7 +62,7 @@ class BikListService @Inject() (
   def getAllBenefitsForYear(year: Int)(implicit hc: HeaderCarrier): Future[Set[IabdType]] =
     tierConnector.getAllAvailableBiks(year).map {
       case Left(errors)        =>
-        logger.error(s"[BikListService][getAllBenefitsForYear] Error getting all benefits for year $year: $errors")
+        logger.error(s"Error getting all benefits for year $year: $errors")
         throw new GenericServerErrorException(errors.toString)
       case Right(benefitTypes) => benefitTypes.pbikTypes
     }

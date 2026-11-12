@@ -71,7 +71,7 @@ class ControllersReferenceData @Inject() (
   )(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
     staticDataRequest.recover {
       case e0: NoSuchElementException  =>
-        logger.error(s"[ControllersReferenceData][responseErrorHandler] A NoSuchElementException was handled: $e0")
+        logger.error(s"A NoSuchElementException was handled: $e0")
         NotFound(
           errorPageView(
             ControllersReferenceDataCodes.VALIDATION_ERROR_REFERENCE,
@@ -79,12 +79,12 @@ class ControllersReferenceData @Inject() (
           )
         )
       case e1: InvalidYearURIException =>
-        logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidYearURIException was handled : $e1")
+        logger.warn(s"An InvalidYearURIException was handled : $e1")
         BadRequest(
           errorPageView(ControllersReferenceDataCodes.INVALID_YEAR_REFERENCE, yearRange)
         )
       case e2: InvalidBikTypeException =>
-        logger.warn(s"[ControllersReferenceData][responseErrorHandler] An InvalidBikTypeException was handled : $e2")
+        logger.warn(s"An InvalidBikTypeException was handled : $e2")
         BadRequest(
           errorPageView(
             ControllersReferenceDataCodes.INVALID_BIK_TYPE_REFERENCE,
@@ -94,7 +94,7 @@ class ControllersReferenceData @Inject() (
 
       case UpstreamErrorResponse(message, code, _, _) =>
         logger.error(
-          s"[ControllersReferenceData][responseErrorHandler] An Upstream5xxResponse was handled with code: " +
+          s"An Upstream5xxResponse was handled with code: " +
             s"$code and message:$message"
         )
         InternalServerError(maintenancePageView())
@@ -102,7 +102,7 @@ class ControllersReferenceData @Inject() (
       case e4: GenericServerErrorException     =>
         try {
           logger.warn(
-            s"[ControllersReferenceData][responseErrorHandler] A GenericServerErrorException was handled: " +
+            s"A GenericServerErrorException was handled: " +
               s"${e4.message}",
             e4
           )
@@ -122,7 +122,7 @@ class ControllersReferenceData @Inject() (
         } catch {
           case ex: Exception =>
             logger.warn(
-              s"[ControllersReferenceData][responseErrorHandler] Could not parse GenericServerError System Error number:" +
+              s"Could not parse GenericServerError System Error number:" +
                 s" ${if (e4.message.nonEmpty) e4.message else "<no error code>"}. Showing default error page instead",
               ex
             )
@@ -130,19 +130,19 @@ class ControllersReferenceData @Inject() (
         }
       case e5: OptimisticLockConflictException =>
         logger.warn(
-          s"[ControllersReferenceData][responseErrorHandler] An OptimisticLockConflictException was handled : $e5"
+          s"An OptimisticLockConflictException was handled : $e5"
         )
         Conflict(
           optimisticLockErrorPage(taxDateUtils.isCurrentTaxYear(e5.year))
         )
       case e6: InvalidURIException             =>
-        logger.error(s"[ControllersReferenceData][responseErrorHandler] Page not found for URI: ${request.uri}")
+        logger.error(s"Page not found for URI: ${request.uri}")
         NotFound(
           pageNotFound()
         )
       case e7                                  =>
         logger.warn(
-          s"[ControllersReferenceData][responseErrorHandler]. An exception was handled: ${e7.getMessage}. " +
+          s"An exception was handled: ${e7.getMessage}. " +
             s"Showing default error page",
           e7
         )

@@ -57,7 +57,7 @@ class PbikConnector @Inject() (
             response.json.validate[BenefitListResponse] match {
               case JsSuccess(value, _) => Future.successful(value)
               case JsError(errors)     =>
-                logger.error(s"[PbikConnector][getRegisteredBiks] Failed to parse BenefitListResponse: $errors")
+                logger.error(s"Failed to parse the BenefitListResponse: $errors")
                 Future.failed(
                   new GenericServerErrorException(
                     s"Failed to get registered benefits for $year, status: ${response.status}"
@@ -83,7 +83,7 @@ class PbikConnector @Inject() (
             response.json.validate[BenefitTypes] match {
               case JsSuccess(value, _) => Future.successful(Right(value))
               case JsError(errors)     =>
-                logger.error(s"[PbikConnector][getAllAvailableBiks] Failed to parse BenefitTypes: $errors")
+                logger.error(s"Failed to parse BenefitTypes: $errors")
                 Future.failed[Either[NPSErrors, BenefitTypes]](
                   new GenericServerErrorException("Failed to get available BIKs, status: " + response.status)
                 )
@@ -91,12 +91,12 @@ class PbikConnector @Inject() (
             }
           case BAD_REQUEST =>
             logger.error(
-              s"[PbikConnector][getAllAvailableBiks] a pbik error code was returned. Error: ${response.body}"
+              s"A pbik error code was returned while retrieving all available BIKs. Error: ${response.body}"
             )
             response.json.validate[NPSErrors] match {
               case JsSuccess(value, _) => Future.successful(Left(value))
               case JsError(errors)     =>
-                logger.error(s"[PbikConnector][getAllAvailableBiks] Failed to parse NPSErrors: $errors")
+                logger.error(s"Failed to parse NPSErrors while retrieving all available BIKs: $errors")
                 Future.failed[Either[NPSErrors, BenefitTypes]](
                   new GenericServerErrorException("Failed to get available BIKs, status: " + response.status)
                 )
@@ -118,7 +118,7 @@ class PbikConnector @Inject() (
             response.json.validate[PbikExclusions] match {
               case JsSuccess(value, _) => Future.successful(Right(value))
               case JsError(errors)     =>
-                logger.error(s"[PbikConnector][getAllExcludedEiLPersonForBik] Failed to parse PbikExclusion: $errors")
+                logger.error(s"Failed to parse PbikExclusion: $errors")
                 Future.failed(
                   new GenericServerErrorException("Failed to get excluded persons, status: " + response.status)
                 )
@@ -127,14 +127,14 @@ class PbikConnector @Inject() (
             response.json.validate[NPSErrors] match {
               case JsSuccess(value, _) => Future.successful(Left(value))
               case JsError(errors)     =>
-                logger.error(s"[PbikConnector][getAllExcludedEiLPersonForBik] Failed to parse NPSErrors: $errors")
+                logger.error(s"Failed to parse NPSErrors while retrieving all excluded person from Bik: $errors")
                 Future.failed(
                   new GenericServerErrorException(s"Failed to get excluded persons, status: ${response.status}")
                 )
             }
           case _                    =>
             logger.error(
-              s"[PbikConnector][getAllExcludedEiLPersonForBik] a pbik error code was returned. Error: ${response.body}"
+              s"A pbik error code was returned while retrieving all excluded person from Bik. Error: ${response.body}"
             )
             Future.failed(
               new GenericServerErrorException(s"Failed to get available EilPerson, status: ${response.status}")
@@ -157,11 +157,11 @@ class PbikConnector @Inject() (
             Future.successful(Right(response.status))
           case CONFLICT             =>
             logger.warn(
-              s"[PbikConnector][excludeEiLPersonFromBik] Optimistic lock conflict from NPS, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
+              s"Optimistic lock conflict from NPS while excluding person from Bik, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
             )
             Future.failed(
               new OptimisticLockConflictException(
-                s"[excludeEiLPersonFromBik] Optimistic lock conflict from NPS, status: 409",
+                s"Optimistic lock conflict from NPS while excluding person from Bik, status: 409",
                 year
               )
             )
@@ -169,14 +169,14 @@ class PbikConnector @Inject() (
             response.json.validate[NPSErrors] match {
               case JsSuccess(value, _) => Future.successful(Left(value))
               case JsError(errors)     =>
-                logger.error(s"[PbikConnector][excludeEiLPersonFromBik] Failed to parse NPSErrors: $errors")
+                logger.error(s"Failed to parse NPSErrors while excluding person from Bik: $errors")
                 Future.failed(
                   new GenericServerErrorException("Failed to exclude person, status: " + response.status)
                 )
             }
           case _                    =>
             logger.error(
-              s"[PbikConnector][excludeEiLPersonFromBik] a pbik error code was returned. Error: ${response.body}"
+              s"A pbik error code was returned while excluding person from Bik. Error: ${response.body}"
             )
             Future.failed(
               new GenericServerErrorException("Failed to exclude person, status: " + response.status)
@@ -201,11 +201,11 @@ class PbikConnector @Inject() (
             Future.successful(Right(response.status))
           case CONFLICT             =>
             logger.warn(
-              s"[PbikConnector][removeEiLPersonExclusionFromBik] Optimistic lock conflict from NPS, status: ${response.status}, response body: ${response.body}"
+              s"Optimistic lock conflict from NPS while removing person exclusion from Bik, status: ${response.status}, response body: ${response.body}"
             )
             Future.failed(
               new OptimisticLockConflictException(
-                s"[removeEiLPersonExclusionFromBik] Optimistic lock conflict from NPS, status: 409",
+                s"Optimistic lock conflict from NPS while removing person exclusion from Bik, status: 409",
                 year
               )
             )
@@ -213,7 +213,7 @@ class PbikConnector @Inject() (
             response.json.validate[NPSErrors] match {
               case JsSuccess(value, _) => Future.successful(Left(value))
               case JsError(errors)     =>
-                logger.error(s"[PbikConnector][removeEiLPersonExclusionFromBik] Failed to parse NPSErrors: $errors")
+                logger.error(s"Failed to parse NPSErrors while removing person exclusion from Bik: $errors")
                 Future.failed(
                   new GenericServerErrorException(
                     "Failed to remove excluded person from benefit, status: " + response.status
@@ -222,7 +222,7 @@ class PbikConnector @Inject() (
             }
           case _                    =>
             logger.error(
-              s"[PbikConnector][removeEiLPersonExclusionFromBik] a pbik error code was returned. Error: ${response.body}"
+              s"A pbik error code was returned while removing person exclusion from Bik. Error: ${response.body}"
             )
             Future.failed(
               new GenericServerErrorException(
@@ -240,7 +240,7 @@ class PbikConnector @Inject() (
     val payloadAsJson = Json.toJson(payload)
 
     logger.info(
-      s"[PbikConnector][updateOrganisationsRegisteredBiks] Updated BIKs ${payload.pbikRegistrationUpdate.size} with lock value: ${payload.employerOptimisticLockRequest}"
+      s"Updated BIKs ${payload.pbikRegistrationUpdate.size} with lock value: ${payload.employerOptimisticLockRequest}"
     )
 
     client
@@ -254,17 +254,17 @@ class PbikConnector @Inject() (
 
           case CONFLICT =>
             logger.warn(
-              s"[PbikConnector][updateOrganisationsRegisteredBiks] Optimistic lock conflict from NPS, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
+              s"Optimistic lock conflict from NPS while updating organisations Registered Biks, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
             )
             Future.failed(
               new OptimisticLockConflictException(
-                s"[updateOrganisationsRegisteredBiks] Optimistic lock conflict from NPS, status: 409",
+                s"Optimistic lock conflict from NPS while updating organisations Registered Biks, status: 409",
                 year
               )
             )
           case _        =>
             logger.error(
-              s"[PbikConnector][updateOrganisationsRegisteredBiks] Failed to update benefit list, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
+              s"Failed to update benefit list, status: ${response.status}, request body: ${payloadAsJson.toString()}, response body: ${response.body}"
             )
             Future.failed(
               new GenericServerErrorException(
@@ -278,7 +278,7 @@ class PbikConnector @Inject() (
   private def findPerson(empRef: EmpRef, year: Int, body: JsValue)(implicit
     hc: HeaderCarrier
   ): Future[Either[NPSErrors, TracePersonListResponse]] = {
-    logger.info(s"[PbikConnector][findPerson] Finding person for empRef: $empRef and year: $year")
+    logger.info(s"Finding person for empRef: $empRef and year: $year")
     client
       .post(url"${config.postTraceByPersonalDetailsURL(year, empRef)}")
       .withBody(body)
@@ -290,7 +290,7 @@ class PbikConnector @Inject() (
               case JsSuccess(value, _) => Future.successful(Right(value))
               case JsError(errors)     =>
                 logger.error(
-                  s"[PbikConnector][findPerson] Failed to parse TracePersonListResponse: $errors"
+                  s"Failed to parse TracePersonListResponse: $errors"
                 )
                 Future.failed(
                   new GenericServerErrorException(
@@ -300,19 +300,22 @@ class PbikConnector @Inject() (
             }
           case CONFLICT             =>
             logger.warn(
-              s"[PbikConnector][findPerson] Optimistic lock conflict from NPS, status: ${response.status}, request body: ${body.toString()}, response body: ${response.body}"
+              s"Optimistic lock conflict from NPS while finding a person, status: ${response.status}, request body: ${body.toString()}, response body: ${response.body}"
             )
             Future.failed(
-              new OptimisticLockConflictException(s"[findPerson] Optimistic lock conflict from NPS, status: 409", year)
+              new OptimisticLockConflictException(
+                s"Optimistic lock conflict from NPS while finding a person, status: 409",
+                year
+              )
             )
           case UNPROCESSABLE_ENTITY =>
             logger.error(
-              s"[PbikConnector][findPerson] Pbik error code was returned. status: ${response.status} error: ${response.body}"
+              s"Pbik error code was returned. status: ${response.status} error: ${response.body}"
             )
             response.json.validate[NPSErrors] match {
               case JsSuccess(value, _) => Future.successful(Left(value))
               case JsError(errors)     =>
-                logger.error(s"[PbikConnector][findPerson] Failed to parse NPSErrors: $errors")
+                logger.error(s"Failed to parse NPSErrors: $errors")
                 Future.failed(
                   new GenericServerErrorException(
                     "Failed to find person by personal details OR nino details, status: " + response.status
