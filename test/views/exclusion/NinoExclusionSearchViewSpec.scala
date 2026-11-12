@@ -34,8 +34,6 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
   private val iabdType        = IabdType.Mileage
   private val iabdTypeMileage = "Mileage allowance and passenger payments"
 
-  private val april2026MpbikToggle: Boolean = pbikAppConfig.mpbikToggle
-
   def viewWithForm(form: Form[NinoForm])(implicit request: AuthenticatedRequest[?]): Html =
     ninoExclusionSearchFormView(taxYearRange, "cyp1", iabdType, form, alreadyExists = true)
 
@@ -44,10 +42,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       viewWithForm(formMappings.exclusionSearchFormWithNino(organisationRequest))(organisationRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
-    if (april2026MpbikToggle)
-      behave like pageWithHeader(messages("ExclusionSearchMPBIK.form.header", "" + iabdTypeMileage))
-    else
-      behave like pageWithHeader(messages("ExclusionSearch.form.header"))
+    behave like pageWithHeader(messages("ExclusionSearch.form.header", "" + iabdTypeMileage))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee", "Continue")
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
@@ -83,16 +78,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       doc must haveErrorNotification(messages("error.incorrect.nino"))
 
       val msgIncorrectFirstname =
-        if (april2026MpbikToggle)
-          "error.incorrect.firstnameMPBIK"
-        else
-          "error.incorrect.firstname"
+        "error.incorrect.firstname"
 
       val msgIncorrectLastname =
-        if (april2026MpbikToggle)
-          "error.incorrect.lastnameMPBIK"
-        else
-          "error.incorrect.lastname"
+        "error.incorrect.lastname"
 
       doc must haveErrorSummary(messages(msgIncorrectFirstname).replace(".", ""))
       doc must haveErrorNotification(messages(msgIncorrectFirstname))
@@ -115,12 +104,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
           )
       )(organisationRequest)
 
-      if (april2026MpbikToggle) {
-        doc must haveErrorSummary(messages("error.firstname.lengthMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.firstname.lengthMPBIK"))
-        doc must haveErrorSummary(messages("error.lastname.lengthMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.lastname.lengthMPBIK"))
-      }
+      doc must haveErrorSummary(messages("error.firstname.length").replace(".", ""))
+      doc must haveErrorNotification(messages("error.firstname.length"))
+      doc must haveErrorSummary(messages("error.lastname.length").replace(".", ""))
+      doc must haveErrorNotification(messages("error.lastname.length"))
     }
   }
 
@@ -129,10 +116,7 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       viewWithForm(formMappings.exclusionSearchFormWithNino(agentRequest))(agentRequest)
 
     behave like pageWithTitle(messages("ExclusionSearch.form.title"))
-    if (april2026MpbikToggle)
-      behave like pageWithHeader(messages("ExclusionSearchMPBIK.form.header", "" + iabdTypeMileage))
-    else
-      behave like pageWithHeader(messages("ExclusionSearch.form.header"))
+    behave like pageWithHeader(messages("ExclusionSearch.form.header", "" + iabdTypeMileage))
     behave like pageWithContinueButtonForm(s"/payrollbik/cyp1/${iabdType.id}/nino/search-for-employee", "Continue")
     behave like pageWithTextBox("nino", messages("Service.field.nino"))
     behave like pageWithTextBox("firstname", messages("Service.field.firstname"))
@@ -168,16 +152,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
       doc must haveErrorNotification(messages("error.incorrect.nino"))
 
       val msgIncorrectFirstname =
-        if (april2026MpbikToggle)
-          "error.incorrect.firstnameMPBIK"
-        else
-          "error.incorrect.firstname"
+        "error.incorrect.firstname"
 
       val msgIncorrectLastname =
-        if (april2026MpbikToggle)
-          "error.incorrect.lastnameMPBIK"
-        else
-          "error.incorrect.lastname"
+        "error.incorrect.lastname"
 
       doc must haveErrorSummary(messages(msgIncorrectFirstname).replace(".", ""))
       doc must haveErrorNotification(messages(msgIncorrectFirstname))
@@ -200,12 +178,10 @@ class NinoExclusionSearchViewSpec extends PBIKViewSpec {
           )
       )(agentRequest)
 
-      if (april2026MpbikToggle) {
-        doc must haveErrorSummary(messages("error.firstname.lengthMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.firstname.lengthMPBIK"))
-        doc must haveErrorSummary(messages("error.lastname.lengthMPBIK").replace(".", ""))
-        doc must haveErrorNotification(messages("error.lastname.lengthMPBIK"))
-      }
+      doc must haveErrorSummary(messages("error.firstname.length").replace(".", ""))
+      doc must haveErrorNotification(messages("error.firstname.length"))
+      doc must haveErrorSummary(messages("error.lastname.length").replace(".", ""))
+      doc must haveErrorNotification(messages("error.lastname.length"))
     }
 
     "show status error when status has errors" in {

@@ -16,13 +16,11 @@
 
 package models
 
-import models.form.BinaryRadioButtonWithDesc
 import play.api.libs.json.{Json, OFormat}
 
 case class RegistrationList(
   selectAll: Option[String] = None,
-  active: List[RegistrationItem],
-  reason: Option[BinaryRadioButtonWithDesc] = None
+  active: List[RegistrationItem]
 )
 
 object RegistrationList {

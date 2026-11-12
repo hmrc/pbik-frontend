@@ -42,13 +42,13 @@
 
     <div id="confirmation" class="govuk-panel govuk-panel--confirmation">
         <h1 id="title" class="govuk-panel__title">
-            @messages("whatNextMPBIK2.add.heading")
+            @messages("whatNext.add.heading")
         </h1>
     </div>
 
     @printLink(messages("Service.print.link"))
 
-    <p class="govuk-body">@messages("whatNextMPBIK2.add.p." + request.userType, taxYear)</p>
+    <p class="govuk-body">@messages("whatNext.add.p." + request.userType, taxYear)</p>
 
     <h2 class="govuk-heading-m">
         @messages("whatNext.add.list.heading")
@@ -75,18 +75,18 @@
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                @messages("ServiceMPBIK2.field.selected.benefits")
+                @messages("Service.field.selected.benefits")
             </dt>
             <dd class="govuk-summary-list__value">
                 @for(item <- bikList.active.indices) {
-                    <p class="govuk-body">@messages("BenefitInKindMPBIK2.label." + bikList.active(item).iabdType.id)</p>
+                    <p class="govuk-body">@messages("BenefitInKind.label." + bikList.active(item).iabdType.id)</p>
                 }
             </dd>
         </div>
     </dl>
 
     <h2 class="govuk-heading-m">
-        @messages("whatYouNeedToKnowMPBIK2.subHeading." + request.userType)
+        @messages("whatYouNeedToKnow.subHeading." + request.userType)
     </h2>
 
     <div class="govuk-form-group" id="next-steps">
@@ -94,10 +94,10 @@
             @messages("whatYouNeedToKnow.subHeading.before.h3." + request.userType, taxYear)
         </h3>
 
-        <p class="govuk-body">@messages("whatYouNeedToKnowMPBIK2.subHeading.before.p1." + request.userType)</p>
+        <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.before.p1." + request.userType)</p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("whatYouNeedToKnowMPBIK2.subHeading.before.li1." + request.userType, taxYear)</li>
-            <li>@messages("whatYouNeedToKnowMPBIK2.subHeading.before.li2." + request.userType)</li>
+            <li>@messages("whatYouNeedToKnow.subHeading.before.li1." + request.userType, taxYear)</li>
+            <li>@messages("whatYouNeedToKnow.subHeading.before.li2." + request.userType)</li>
         </ul>
 
         <h3 class="govuk-heading-s">
@@ -106,12 +106,12 @@
 
         <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.after.p2." + request.userType)</p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("whatYouNeedToKnowMPBIK2.subHeading.after.li1")</li>
-            <li>@messages("whatYouNeedToKnowMPBIK2.subHeading.after.li2")</li>
-            <li>@messages("whatYouNeedToKnowMPBIK2.subHeading.after.li3")</li>
+            <li>@messages("whatYouNeedToKnow.subHeading.after.li1")</li>
+            <li>@messages("whatYouNeedToKnow.subHeading.after.li2")</li>
+            <li>@messages("whatYouNeedToKnow.subHeading.after.li3")</li>
         </ul>
 
-        <p class="govuk-body">@messages("whatYouNeedToKnowMPBIK2.subHeading.after.p1." + request.userType)</p>
+        <p class="govuk-body">@messages("whatYouNeedToKnow.subHeading.after.p1." + request.userType)</p>
 
     </div>
 
@@ -122,14 +122,14 @@
     <p class="govuk-body">
         @messages("whatYouCanDoNext.subHeading.p.text.before")
         <a class="govuk-link" id="link-back" href = "@summaryLink">
-            @messages("whatYouCanDoNextMPBIK2.subHeading.p.link." + request.userType)
+            @messages("whatYouCanDoNext.subHeading.p.link." + request.userType)
         </a>
         @messages("whatYouCanDoNext.subHeading.p.text.after")
     </p>
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("whatYouCanDoNextMPBIK2.subHeading.li1")</li>
-        <li>@messages("whatYouCanDoNextMPBIK2.subHeading.li2")</li>
+        <li>@messages("whatYouCanDoNext.subHeading.li1")</li>
+        <li>@messages("whatYouCanDoNext.subHeading.li2")</li>
     </ul>
 
 }

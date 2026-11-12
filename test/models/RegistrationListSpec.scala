@@ -17,7 +17,6 @@
 package models
 
 import base.FakePBIKApplication
-import models.form.BinaryRadioButtonWithDesc
 import models.v1.IabdType
 import play.api.libs.json.{JsValue, Json}
 
@@ -26,17 +25,13 @@ class RegistrationListSpec extends FakePBIKApplication {
   private val item1: RegistrationItem = RegistrationItem(IabdType.CarBenefit, active = true, enabled = false)
   private val item2: RegistrationItem = RegistrationItem(IabdType.MedicalInsurance, active = false, enabled = true)
 
-  private val reason: BinaryRadioButtonWithDesc =
-    BinaryRadioButtonWithDesc(selectionValue = "no", info = Some("Test reason"))
-
   "RegistrationList" when {
     ".writes/reads" must {
 
       "serialize and deserialize RegistrationList with all fields" in {
         val list = RegistrationList(
           selectAll = Some("all"),
-          active = List(item1, item2),
-          reason = Some(reason)
+          active = List(item1, item2)
         )
 
         val json         = Json.toJson(list)
@@ -48,8 +43,7 @@ class RegistrationListSpec extends FakePBIKApplication {
       "serialize and deserialize RegistrationList with minimal fields" in {
         val list = RegistrationList(
           selectAll = None,
-          active = List(item1),
-          reason = None
+          active = List(item1)
         )
 
         val json         = Json.toJson(list)
@@ -61,16 +55,13 @@ class RegistrationListSpec extends FakePBIKApplication {
       "serialize to expected JSON structure" in {
         val list = RegistrationList(
           selectAll = Some("all"),
-          active = List(item1),
-          reason = Some(reason)
+          active = List(item1)
         )
 
         val json = Json.toJson(list)
 
         (json \ "selectAll").as[String] mustBe "all"
         (json \ "active").as[List[JsValue]].size mustBe 1
-        (json \ "reason" \ "selectionValue").as[String] mustBe "no"
-        (json \ "reason" \ "info").as[String] mustBe "Test reason"
       }
 
       "deserialize JSON into RegistrationList" in {
@@ -81,11 +72,7 @@ class RegistrationListSpec extends FakePBIKApplication {
             |  "active": [
             |    { "iabdType": "Car Benefit", "active": true, "enabled": false },
             |    { "iabdType": "Medical Insurance", "active": false, "enabled": true }
-            |  ],
-            |  "reason": {
-            |    "selectionValue": "yes",
-            |    "info": "Another reason"
-            |  }
+            |  ]
             |}
             |""".stripMargin
         )
@@ -94,8 +81,7 @@ class RegistrationListSpec extends FakePBIKApplication {
 
         deserialized mustBe RegistrationList(
           selectAll = Some("none"),
-          active = List(item1, item2),
-          reason = Some(BinaryRadioButtonWithDesc(selectionValue = "yes", info = Some("Another reason")))
+          active = List(item1, item2)
         )
       }
 
