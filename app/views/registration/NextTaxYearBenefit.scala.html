@@ -33,9 +33,7 @@
     decommissionedBiks: Set[Int]
 )(implicit request: AuthenticatedRequest[?], messages: Messages)
 
-@title = @{if(additive) {messages("AddBenefitsMPBIK2.Heading." + request.userType, "" + taxYearRange.cy, "" + taxYearRange.cyplus1)} else {messages("RemoveBenefits.Heading", ""+taxYearRange.cy, ""+taxYearRange.cyplus1)}}
-
-@govukLayoutWrapper(PageTitle(title, form.hasErrors)){
+@govukLayoutWrapper(PageTitle(messages("AddBenefits.Heading." + request.userType), form.hasErrors)){
 
         @if(form("actives").hasErrors) {
             <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
@@ -45,18 +43,18 @@
                 <div class="govuk-error-summary__body">
                     <ul class="govuk-list govuk-error-summary__list">
                         <li>
-                            <a href="#@CheckboxId.first(form.data)" id="error-link">@messages("AddBenefitsMPBIK2.noselection.error")</a>
+                            <a href="#@CheckboxId.first(form.data)" id="error-link">@messages("AddBenefits.noselection.error")</a>
                         </li>
                     </ul>
                 </div>
             </div>
         }
 
-        @pageTitleHeading(messages("AddBenefitsMPBIK2.Heading." + request.userType))
+        @pageTitleHeading(messages("AddBenefits.Heading." + request.userType))
 
-        <p class="govuk-body">@messages("AddBenefitsMPBIK2.p", s"${taxYearRange.cy}")</p>
+        <p class="govuk-body">@messages("AddBenefits.p", s"${taxYearRange.cy}")</p>
 
-        <p class="govuk-body">@messages("AddBenefitsMPBIK2.p2")</p>
+        <p class="govuk-body">@messages("AddBenefits.p2")</p>
 
         @formWithCSRF(action = controllers.routes.ManageRegistrationController.checkYourAnswersAddNextTaxYear) {
 
@@ -70,17 +68,17 @@
                 <div class='govuk-form-group @if(form("actives").hasErrors) {govuk-form-group--error}' id="list-benefits">
                     <fieldset class="govuk-fieldset" aria-describedby="benefit-hint@if(form("actives").hasErrors){ error-list-no-selection}">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <span class="govuk-visually-hidden">@messages("AddBenefitsMPBIK2.Heading")</span>
+                            <span class="govuk-visually-hidden">@messages("AddBenefits.Heading")</span>
                         </legend>
 
                         <div id="benefit-hint" class="govuk-hint">
-                            @messages("AddBenefitsMPBIK2.selectAll")
+                            @messages("AddBenefits.selectAll")
                         </div>
 
                         @if(form("actives").hasErrors && additive){
                             <span id="error-list-no-selection" class="govuk-error-message">
                                 <span class="govuk-visually-hidden">@messages("Service.error"):</span>
-                                @messages("AddBenefitsMPBIK2.noselection.error")
+                                @messages("AddBenefits.noselection.error")
                             </span>
                         }
 
@@ -90,7 +88,7 @@
                                     <div class="govuk-checkboxes__item">
                                         <input type="hidden" id='actives_@{index}_uid' name='actives[@index].uid' value='@activeField("uid").value.get'/>
                                         <input class="govuk-checkboxes__input" type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true"/>
-                                        <label class="govuk-label govuk-checkboxes__label" for="checkbox-@activeField("uid").value.get">@messages("BenefitInKindMPBIK2.label." + activeField("uid").value.get)</label>
+                                        <label class="govuk-label govuk-checkboxes__label" for="checkbox-@activeField("uid").value.get">@messages("BenefitInKind.label." + activeField("uid").value.get)</label>
                                     </div>
                                 }
                             }
@@ -101,7 +99,7 @@
                                             index
                                         }_uid' name='actives[@index].uid' value='@activeField("uid").value.get'/>
                                         <input class="govuk-checkboxes__input" type="checkbox" id='checkbox-@activeField("uid").value.get' name='actives[@index].active' value="true"/>
-                                        <label class="govuk-label govuk-checkboxes__label" for="checkbox-@activeField("uid").value.get">@messages("BenefitInKindMPBIK2.label." + activeField("uid").value.get)</label>
+                                        <label class="govuk-label govuk-checkboxes__label" for="checkbox-@activeField("uid").value.get">@messages("BenefitInKind.label." + activeField("uid").value.get)</label>
                                     </div>
                                 }
                             }

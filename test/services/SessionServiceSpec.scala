@@ -63,8 +63,7 @@ class SessionServiceSpec extends FakePBIKApplication {
     "cache a list of registrations" in {
       val regList = RegistrationList(
         None,
-        List(RegistrationItem(IabdType.CarBenefit, active = true, enabled = true)),
-        None
+        List(RegistrationItem(IabdType.CarBenefit, active = true, enabled = true))
       )
       val session = pbikSession.copy(registrations = Some(regList))
       when(mockSessionRepository.get(any())).thenReturn(Future.successful(None))

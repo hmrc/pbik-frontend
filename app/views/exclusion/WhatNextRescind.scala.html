@@ -28,7 +28,7 @@
         person: PbikExclusionPerson
 )(implicit request:AuthenticatedRequest[?], messages: Messages)
 
-@benefitLabel = @{ messages("BenefitInKindMPBIK2.label." + iabdType.id) }
+@benefitLabel = @{ messages("BenefitInKind.label." + iabdType.id) }
 @cyminus1 = @{""+taxYearRange.cyminus1}
 @cy = @{""+taxYearRange.cy}
 @taxYear = @{if(year=="cy") cyminus1 else cy}
@@ -50,11 +50,11 @@ showECLBackLink = request.showECLBackLink) {
 
     @if(request.isAgent) {
         <p class="govuk-body" id="confirmation-p">
-            @messages("whatNext.rescind.p1.intro.agent", person.fullName, messages("BenefitInKindMPBIK2.label." + iabdType.id), s"${request.clientName.get}", s"${taxYearRange.cy}")
+            @messages("whatNext.rescind.p1.intro.agent", person.fullName, messages("BenefitInKind.label." + iabdType.id), s"${request.clientName.get}", s"${taxYearRange.cy}")
         </p>
     } else {
         <p class="govuk-body" id="confirmation-p">
-            @messages("whatNext.rescind.p1.intro.organisation", person.fullName, messages("BenefitInKindMPBIK2.label." + iabdType.id), s"${taxYearRange.cy}")
+            @messages("whatNext.rescind.p1.intro.organisation", person.fullName, messages("BenefitInKind.label." + iabdType.id), s"${taxYearRange.cy}")
         </p>
     }
 
@@ -136,7 +136,7 @@ showECLBackLink = request.showECLBackLink) {
 
     <p id="you-can-do-next-info" class="govuk-body">
         @messages("whatNext.exclude.you.do.p.before." + request.userType)
-        <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("whatNextMPBIK.exclude.you.do.p.cy.link." + request.userType) </a>
+        <a class="govuk-link" href="@summaryLink" id="link-back"> @messages("whatNext.exclude.you.do.p.cy.link." + request.userType) </a>
         @messages("whatNext.exclude.you.do.p.after." + request.userType)
     </p>
     <ul class="govuk-list govuk-list--bullet">

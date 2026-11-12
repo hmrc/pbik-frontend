@@ -15,12 +15,10 @@
  *@
 
 @import views.templatemodels.PageTitle
-@import config.PbikAppConfig
 
 @this(
         govukLayoutWrapper: GovukLayoutWrapper,
-        formWithCSRF: FormWithCSRF,
-        config:PbikAppConfig
+        formWithCSRF: FormWithCSRF
 )
 
 @(
@@ -31,7 +29,7 @@
         form: Form[MandatoryRadioButton]
 )(implicit request: AuthenticatedRequest[?], messages: Messages)
 
-@expenseOrBenefit = @{messages(s"BenefitInKindMPBIK2.label.${iabdType.id}")}
+@expenseOrBenefit = @{messages(s"BenefitInKind.label.${iabdType.id}")}
 @govukLayoutWrapper(PageTitle(messages("ExclusionNinoDecision.title", form.hasErrors), form.hasErrors)) {
 
     @defining( if(isCurrentTaxYear=="cy"){""+taxYearRange.cyminus1}else{""+taxYearRange.cy} ) { yearvalue =>
@@ -54,7 +52,7 @@
             <div class="govuk-form-group @if(form.hasErrors){govuk-form-group--error}">
                 <fieldset class="govuk-fieldset" @if(form.hasErrors){aria-describedby="error-list-no-selection"}>
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        @if(config.mpbikToggle && request.isAgent){
+                        @if(request.isAgent){
                             <span id="client-name" class="govuk-caption-l">@request.getClientName</span>
                         }
                         <span class="govuk-caption-l">@expenseOrBenefit</span>

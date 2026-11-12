@@ -16,20 +16,19 @@
 
 package controllers
 
-import config.PbikAppConfig
 import controllers.actions.AuthAction
 import models.*
 import models.v1.IabdType.IabdType
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.*
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.*
-import utils.Exceptions.InvalidURIException
 import views.html.registration.{AddBenefitConfirmationNextTaxYear, RemoveBenefitConfirmationNextTaxYear}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class WhatNextPageController @Inject() (
@@ -40,50 +39,43 @@ class WhatNextPageController @Inject() (
   controllersReferenceData: ControllersReferenceData,
   cc: MessagesControllerComponents,
   addBenefitConfirmationNextTaxYearView: AddBenefitConfirmationNextTaxYear,
-  removeBenefitConfirmationNextTaxYearView: RemoveBenefitConfirmationNextTaxYear,
-  pbikAppConfig: PbikAppConfig
+  removeBenefitConfirmationNextTaxYearView: RemoveBenefitConfirmationNextTaxYear
 )(implicit ec: ExecutionContext)
     extends FrontendController(cc)
     with I18nSupport {
-
-  private val mpbikPhase2: Boolean = pbikAppConfig.mpbikTogglePhase2
 
   def showWhatNextRegisteredBik(year: String): Action[AnyContent] =
     authenticate.async { implicit request =>
       val yearInt = taxDateUtils.mapYearStringToInt(year)
 
-      val resultFuture = sessionService.fetchPbikSession().map { session =>
-        val addedBiksAsList: RegistrationList =
-          RegistrationList(active = session.get.registrations.get.active.filter(item => item.active))
-        Ok(
-          addBenefitConfirmationNextTaxYearView(
-            taxDateUtils.isCurrentTaxYear(yearInt),
-            controllersReferenceData.yearRange,
-            addedBiksAsList
-          )
+      val pageLoadFuture: Future[Result] = for {
+        session        <- sessionService.fetchPbikSession()
+        addedBiksAsList = RegistrationList(active = session.get.registrations.get.active.filter(item => item.active))
+        _              <- sessionService.resetAll()
+      } yield Ok(
+        addBenefitConfirmationNextTaxYearView(
+          taxDateUtils.isCurrentTaxYear(yearInt),
+          controllersReferenceData.yearRange,
+          addedBiksAsList
         )
-      }
-      controllersReferenceData.responseErrorHandler(resultFuture)
+      )
+      controllersReferenceData.responseErrorHandler(pageLoadFuture)
     }
 
   def showWhatNextRemovedBik(iabdType: IabdType): Action[AnyContent] =
     authenticate.async { implicit request =>
       val resultFuture =
-        if (mpbikPhase2) {
-          sessionService.fetchPbikSession().map { session =>
-            val removedBikAsList: RegistrationList =
-              RegistrationList(active = List(session.get.bikRemoved.get))
-            Ok(
-              removeBenefitConfirmationNextTaxYearView(
-                taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
-                controllersReferenceData.yearRange,
-                removedBikAsList,
-                iabdType
-              )
+        sessionService.fetchPbikSession().map { session =>
+          val removedBikAsList: RegistrationList =
+            RegistrationList(active = List(session.get.bikRemoved.get))
+          Ok(
+            removeBenefitConfirmationNextTaxYearView(
+              taxDateUtils.isCurrentTaxYear(controllersReferenceData.yearRange.cyplus1),
+              controllersReferenceData.yearRange,
+              removedBikAsList,
+              iabdType
             )
-          }
-        } else {
-          Future.failed(new InvalidURIException())
+          )
         }
       controllersReferenceData.responseErrorHandler(resultFuture)
     }

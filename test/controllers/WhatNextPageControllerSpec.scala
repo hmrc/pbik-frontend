@@ -96,6 +96,8 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
                 )
               )
             )
+          when(mockSessionService.resetAll()(any())).thenReturn(Future.successful(true))
+
           val result = whatNextPageController.showWhatNextRegisteredBik(year).apply(authenticatedRequest)
 
           status(result) mustBe OK
@@ -132,6 +134,8 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
               )
             )
           )
+        when(mockSessionService.resetAll()(any())).thenReturn(Future.successful(true))
+
         val result =
           whatNextPageController.showWhatNextRegisteredBik(FormMappingsConstants.CYP1).apply(authenticatedRequest)
 
@@ -163,15 +167,11 @@ class WhatNextPageControllerSpec extends FakePBIKApplication {
           )
         val result = whatNextPageController.showWhatNextRemovedBik(iabdType).apply(authenticatedRequest)
 
-        if (pbikAppConfig.mpbikTogglePhase2) {
-          status(result) mustBe OK
-          contentAsString(result) must include("Benefit removed")
-          contentAsString(result) must include(
-            "You will not tax Accommodation through your payroll from 6 April"
-          )
-        } else {
-          status(result) mustBe NOT_FOUND
-        }
+        status(result) mustBe OK
+        contentAsString(result) must include("Benefit removed")
+        contentAsString(result) must include(
+          "You will not tax Accommodation through your payroll from 6 April"
+        )
       }
     }
   }

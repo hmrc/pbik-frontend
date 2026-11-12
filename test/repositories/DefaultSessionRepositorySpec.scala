@@ -56,8 +56,7 @@ class DefaultSessionRepositorySpec extends FakePBIKApplication {
           Some(
             RegistrationList(
               None,
-              List(RegistrationItem(IabdType.CarBenefit, active = true, enabled = true)),
-              None
+              List(RegistrationItem(IabdType.CarBenefit, active = true, enabled = true))
             )
           )
         )

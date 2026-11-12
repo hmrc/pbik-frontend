@@ -18,7 +18,6 @@ package models
 
 import base.FakePBIKApplication
 import crypto.CryptoProvider
-import models.form.BinaryRadioButtonWithDesc
 import models.v1.IabdType
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.crypto.{Decrypter, Encrypter}
@@ -30,12 +29,10 @@ class PbikSessionSpec extends FakePBIKApplication {
   private val item1: RegistrationItem = RegistrationItem(IabdType.CarBenefit, active = true, enabled = false)
   private val item2: RegistrationItem = RegistrationItem(IabdType.MedicalInsurance, active = false, enabled = true)
 
-  private val reason: BinaryRadioButtonWithDesc =
-    BinaryRadioButtonWithDesc(selectionValue = "no", info = Some("Test reason"))
-  implicit val crypto: Encrypter & Decrypter    = cryptoProvider.getCrypto
+  implicit val crypto: Encrypter & Decrypter = cryptoProvider.getCrypto
 
   private val registrations: RegistrationList =
-    RegistrationList(selectAll = Some("all"), active = List(item1, item2), reason = Some(reason))
+    RegistrationList(selectAll = Some("all"), active = List(item1, item2))
 
   private val fixedInstant: Instant = Instant.parse("2025-08-18T12:00:00Z")
 
@@ -80,8 +77,6 @@ class PbikSessionSpec extends FakePBIKApplication {
         (json \ "sessionId").as[String] mustBe "12345"
         (json \ "registrations" \ "selectAll").as[String] mustBe "all"
         (json \ "registrations" \ "active").as[List[JsValue]].size mustBe 2
-        (json \ "registrations" \ "reason" \ "selectionValue").as[String] mustBe "no"
-        (json \ "registrations" \ "reason" \ "info").as[String] mustBe "Test reason"
       }
 
       "deserialize JSON into PbikSession" in {
@@ -94,8 +89,7 @@ class PbikSessionSpec extends FakePBIKApplication {
             |    "active": [
             |      { "iabdType": "Car Benefit", "active": true, "enabled": false },
             |      { "iabdType": "Medical Insurance", "active": false, "enabled": true }
-            |    ],
-            |    "reason": { "selectionValue": "no", "info": "Test reason" }
+            |    ]
             |  },
             |  "lastUpdated": { "$date": { "$numberLong": "1692362876570" } }
             |}
@@ -107,7 +101,6 @@ class PbikSessionSpec extends FakePBIKApplication {
           case Right(session) =>
             session.sessionId mustBe "12345"
             session.registrations.map(_.active.size) mustBe Some(2)
-            session.registrations.flatMap(_.reason.map(_.selectionValue)) mustBe Some("no")
           case Left(errors)   =>
             fail(s"JSON parse error: $errors")
         }
@@ -149,7 +142,6 @@ class PbikSessionSpec extends FakePBIKApplication {
         val result = Json.fromJson[PbikSession](emptyJson)
         result.isError mustBe true
       }
-
     }
   }
 }

@@ -16,7 +16,6 @@
 
 package utils
 
-import config.PbikAppConfig
 import models.*
 import models.auth.AuthenticatedRequest
 import play.api.Logging
@@ -32,24 +31,23 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 object ControllersReferenceDataCodes {
-  val CY_RESTRICTED: String                = "ServiceMessage.10003"
-  val FEATURE_RESTRICTED: String           = "ServiceMessage.10002"
-  val DEFAULT_ERROR: String                = "ServiceMessage.10001"
-  val FORM_TYPE_NINO: String               = "nino"
-  val FORM_TYPE_NONINO: String             = "no-nino"
-  val BIK_REMOVE_REASON_LIST: List[String] = List("software", "guidance", "not-clear", "not-offering", "other")
-  val YES: String                          = "yes"
-  val NO: String                           = "no"
-  val OTHER: String                        = "other"
+  val CY_RESTRICTED: String      = "ServiceMessage.10003"
+  val FEATURE_RESTRICTED: String = "ServiceMessage.10002"
+  val DEFAULT_ERROR: String      = "ServiceMessage.10001"
+  val FORM_TYPE_NINO: String     = "nino"
+  val FORM_TYPE_NONINO: String   = "no-nino"
+  val YES: String                = "yes"
+  val NO: String                 = "no"
+  val OTHER: String              = "other"
 
-  val VALIDATION_ERROR_REFERENCE: String                               = "ErrorPage.validationError"
-  val NO_MORE_BENEFITS_TO_ADD_HEADING: String                          = "AddBenefits.Heading"
-  def NO_MORE_BENEFITS_TO_ADD_HEADING_MPBIK2(userType: String): String = s"AddBenefitsMPBIK2.Heading.$userType"
-  val NO_MORE_BENEFITS_TO_ADD: String                                  = "ErrorPage.noBenefitsToAdd"
-  val INVALID_YEAR_REFERENCE: String                                   = "ErrorPage.invalidYear"
-  val INVALID_BIK_TYPE_REFERENCE: String                               = "ErrorPage.invalidBikType"
-  val INVALID_FORM_ERROR: String                                       = "ErrorPage.invalidForm"
-  val AUTHORISATION_ERROR: String                                      = "ErrorPage.authorisationError"
+  val VALIDATION_ERROR_REFERENCE: String                             = "ErrorPage.validationError"
+  val NO_MORE_BENEFITS_TO_ADD_HEADING: String                        = "AddBenefits.Heading"
+  def NO_MORE_BENEFITS_TO_ADD_HEADING_USER(userType: String): String = s"AddBenefits.Heading.$userType"
+  val NO_MORE_BENEFITS_TO_ADD: String                                = "ErrorPage.noBenefitsToAdd"
+  val INVALID_YEAR_REFERENCE: String                                 = "ErrorPage.invalidYear"
+  val INVALID_BIK_TYPE_REFERENCE: String                             = "ErrorPage.invalidBikType"
+  val INVALID_FORM_ERROR: String                                     = "ErrorPage.invalidForm"
+  val AUTHORISATION_ERROR: String                                    = "ErrorPage.authorisationError"
 }
 
 @Singleton
@@ -61,37 +59,12 @@ class ControllersReferenceData @Inject() (
   maintenancePageView: MaintenancePage,
   pageNotFound: page_not_found_template
 )(implicit
-  ec: ExecutionContext,
-  val pbikAppConfig: PbikAppConfig
-) extends FormMappings(pbikAppConfig, messagesApi)
+  ec: ExecutionContext
+) extends FormMappings(messagesApi)
     with I18nSupport
     with Logging {
 
-  private val mpbikToggle: Boolean = pbikAppConfig.mpbikToggle
-
   def yearRange: TaxYearRange = taxDateUtils.getTaxYearRange()
-
-  def responseCheckCYEnabled()(implicit request: AuthenticatedRequest[AnyContent]): Future[Result] =
-    if (mpbikToggle) {
-      logger.error(s"Page not found for URI: ${request.uri}")
-      Future(
-        NotFound(
-          pageNotFound()
-        )
-      )
-    } else {
-      val errorCode = 10003
-      Future(
-        Forbidden(
-          errorPageView(
-            ControllersReferenceDataCodes.CY_RESTRICTED,
-            yearRange,
-            "",
-            errorCode
-          )
-        )
-      )
-    }
 
   def responseErrorHandler(
     staticDataRequest: Future[Result]
