@@ -14,7 +14,7 @@ object CodeCoverageSettings {
 
   private val settings: Seq[Setting[?]] = Seq(
     coverageExcludedPackages := excludedPackages,
-    coverageMinimumStmtTotal := 93,
+    coverageMinimumStmtTotal := 94,
     coverageFailOnMinimum := true,
     coverageHighlighting := true
   )

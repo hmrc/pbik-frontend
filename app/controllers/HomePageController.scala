@@ -20,6 +20,7 @@ import config.PbikAppConfig
 import controllers.actions.{AuthAction, NoSessionCheckAction, UnauthorisedAction}
 import models.*
 import models.auth.AuthenticatedRequest
+import models.v1.BenefitInKindWithCount
 import models.v1.IabdType.IabdType
 import play.api.Logging
 import play.api.i18n.{I18nSupport, Lang, MessagesApi}
@@ -94,23 +95,27 @@ class HomePageController @Inject() (
       .withLang(newLang)(messagesApi)
   }
 
-  private def filterDecommissioned(iabdTypes: Set[IabdType]): Set[IabdType] =
+  private def filterDecommissionedIabdTypes(iabdTypes: Set[IabdType]): Set[IabdType] =
     iabdTypes.diff(pbikAppConfig.biksDecommissioned)
+
+  private def filterDecommissioned(biks: List[BenefitInKindWithCount]): List[BenefitInKindWithCount] =
+    biks.filter(p => !pbikAppConfig.biksDecommissioned.contains(p.iabdType))
 
   def onPageLoad: Action[AnyContent] = (authenticate andThen noSessionCheck).async { implicit request =>
     val startTaxYear                   = controllersReferenceData.yearRange.cy
     val pageLoadFuture: Future[Result] = for {
       _               <- sessionService.resetAll()
       currentYearList <- bikListService.currentYearList
-      nextYearList    <- bikListService.nextYearList
+      nextYearListNPS <- bikListService.nextYearList
+      nextYearList     = filterDecommissioned(nextYearListNPS.getBenefitInKindWithCount)
       biksListOption  <- bikListService.getAllBenefitsForYear(startTaxYear)
       _               <- auditHomePageView()
     } yield Ok(
       payrollingSummaryView(
         startTaxYear,
         currentYearList.getBenefitInKindWithCount,
-        nextYearList.getBenefitInKindWithCount,
-        nextYearList.getBenefitInKindWithCount.size == filterDecommissioned(biksListOption).size
+        nextYearList,
+        nextYearList.size == filterDecommissionedIabdTypes(biksListOption).size
       )
     )
     controllersReferenceData.responseErrorHandler(pageLoadFuture)
