@@ -64,10 +64,6 @@ class SummaryViewSpec extends PBIKViewSpec {
       "show correct tab tag for CY" in {
         val doc = Jsoup.parse(view(List(accommodationBik, loanBik)).toString())
 
-        println("ALE")
-        println(doc)
-        println("ALE")
-
         doc.select("#tab_tab-1").text() mustBe messages(
           "PayrollingSummary.tab.taxYear",
           taxYearRange.cyminus1.toString,
