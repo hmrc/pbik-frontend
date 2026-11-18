@@ -18,17 +18,17 @@ package services
 
 import config.PbikAppConfig
 import connectors.PbikConnector
-import models._
+import models.*
 import models.auth.AuthenticatedRequest
-import models.v1.BenefitListResponse
+import models.v1.{BenefitInKindWithCount, BenefitListResponse}
 import models.v1.IabdType.IabdType
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Results._
+import play.api.mvc.Results.*
 import play.api.mvc.{AnyContent, Result}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.http.HeaderCarrier
-import utils._
+import utils.*
 import views.html.ErrorPage
 
 import javax.inject.{Inject, Singleton}
@@ -87,6 +87,12 @@ class RegistrationService @Inject() (
     )
   }
 
+  private def filterDecommissionedIabdTypes(iabdTypes: Set[IabdType]): Set[IabdType] =
+    iabdTypes.diff(pbikAppConfig.biksDecommissioned)
+
+  private def filterDecommissioned(biks: List[BenefitInKindWithCount]): List[BenefitInKindWithCount] =
+    biks.filter(p => !pbikAppConfig.biksDecommissioned.contains(p.iabdType))
+
   private def result(
     hybridList: Set[IabdType],
     registeredListOption: BenefitListResponse,
@@ -119,7 +125,9 @@ class RegistrationService @Inject() (
       Ok(
         generateViewBasedOnFormItems(
           formMappings.objSelectedForm.fill(sortedMegedData),
-          registeredListOption.getBenefitInKindWithCount.size == biksListOption.size,
+          filterDecommissioned(registeredListOption.getBenefitInKindWithCount).size == filterDecommissionedIabdTypes(
+            biksListOption
+          ).size,
           nonLegislationBiks.map(_.id),
           pbikAppConfig.biksDecommissioned.map(_.id)
         )
